@@ -1,431 +1,479 @@
 name: Scaling Framework Monitor
-true:
+
+# Phase 4E Planset 010 - Enterprise Scaling Framework
+# Continuous monitoring, health checks, and SLA enforcement
+
+on:
   schedule:
-  - cron: 0 * * * *
-  - cron: 0 9 * * 0
-  - cron: 0 10 * * 1
-  workflow_dispatch: null
+    # Daily health checks
+    - cron: "0 * * * *"
+    # Weekly failover drills
+    - cron: "0 9 * * 0"
+    # Weekly cost reports
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
   push:
     paths:
-    - src/codex/scaling/**
-    - .github/workflows/scaling-framework-monitor.yml
+      - "src/codex/scaling/**"
+      - ".github/workflows/scaling-framework-monitor.yml"
+
 permissions:
   contents: read
+
 env:
   PYTHON_VERSION: "3.12"
-  TERRAFORM_VERSION: 1.6.0
+  TERRAFORM_VERSION: "1.6.0"
+
 jobs:
+  # ============================================================================
+  # Gate 1: Multi-Tenant Isolation Health Check
+  # ============================================================================
   multi_tenant_health:
     runs-on: ubuntu-latest
     name: Multi-Tenant Isolation Health
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest pytest-cov
+      - uses: actions/checkout@v5
 
-        "
-    - name: Test multi-tenant isolation
-      run: "pytest tests/scaling/test_multi_tenant_manager.py::TestMultiTenantIsolation
-        -v --tb=short
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Run isolation verification
-      run: "python -c "
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov
 
-        from src.codex.scaling import TenantManager
+      - name: Test multi-tenant isolation
+        run: |
+          pytest tests/scaling/test_multi_tenant_manager.py::TestMultiTenantIsolation -v --tb=short
 
-        mgr = TenantManager()
+      - name: Run isolation verification
+        run: |
+          python -c "
+          from src.codex.scaling import TenantManager
+          mgr = TenantManager()
+          # Create test tenants
+          t1 = mgr.create_tenant('test-1')
+          t2 = mgr.create_tenant('test-2')
+          # Verify isolation
+          report = mgr.verify_isolation()
+          print('Isolation Report:', report)
+          assert report['isolation_status'] == 'VERIFIED', 'Isolation verification failed'
+          assert report['cross_tenant_attempts'] == 0, 'Cross-tenant attempts detected'
+          "
 
-        # Create test tenants
+      - name: Generate isolation report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: isolation-report
+          path: isolation-report.json
 
-        t1 = mgr.create_tenant(""test-1"")
-
-        t2 = mgr.create_tenant(""test-2"")
-
-        # Verify isolation
-
-        report = mgr.verify_isolation()
-
-        print(""Isolation Report:"", report)
-
-        assert report[""isolation_status""] == ""VERIFIED"", ""Isolation verification
-        failed""
-
-        assert report[""cross_tenant_attempts""] == 0, ""Cross-tenant attempts detected""
-
-        "
-
-        "
-    - name: Generate isolation report
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-        name: isolation-report
-        path: isolation-report.json
-    timeout-minutes: 30
+  # ============================================================================
+  # Gate 2: Failover Capability Check
+  # ============================================================================
   failover_health:
     runs-on: ubuntu-latest
     name: Failover Capability Check
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest
+      - uses: actions/checkout@v5
 
-        "
-    - name: Test failover capability
-      run: "pytest tests/scaling/test_multi_tenant_manager.py::TestFailoverCapability
-        -v --tb=short
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Verify failover SLA
-      run: "python -c "
+      - name: Install dependencies
+        run: |
+          pip install pytest
 
-        from src.codex.scaling import FailoverManager
+      - name: Test failover capability
+        run: |
+          pytest tests/scaling/test_multi_tenant_manager.py::TestFailoverCapability -v --tb=short
 
-        mgr = FailoverManager()
+      - name: Verify failover SLA
+        run: |
+          python -c "
+          from src.codex.scaling import FailoverManager
+          mgr = FailoverManager()
+          report = mgr.verify_failover_capability()
+          print('Failover Report:', report)
+          assert report['detection_time_sla_met'], 'Detection time SLA missed'
+          assert report['failover_time_sla_met'], 'Failover time SLA missed'
+          "
 
-        report = mgr.verify_failover_capability()
+      - name: Multi-region health check
+        run: |
+          echo "Checking multi-region deployment health..."
+          # Check primary region
+          curl -f https://api.codex-scaling.local/health || exit 1
+          echo "✓ Primary region healthy"
 
-        print(""Failover Report:"", report)
-
-        assert report[""detection_time_sla_met""], ""Detection time SLA missed""
-
-        assert report[""failover_time_sla_met""], ""Failover time SLA missed""
-
-        "
-
-        "
-    - name: Multi-region health check
-      run: "echo "Checking multi-region deployment health..."
-
-        # Check primary region
-
-        curl -f https://api.codex-scaling.local/health || exit 1
-
-        echo "✓ Primary region healthy"
-
-        "
-    timeout-minutes: 30
+  # ============================================================================
+  # Gate 3: Load Distribution Verification
+  # ============================================================================
   load_balancer_health:
     runs-on: ubuntu-latest
     name: Load Distribution Check
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest
+      - uses: actions/checkout@v5
 
-        "
-    - name: Test load distribution
-      run: "pytest tests/scaling/test_multi_tenant_manager.py::TestLoadBalancing -v
-        --tb=short
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Verify load variance <5%
-      run: "python -c \"\nfrom src.codex.scaling.load_balancer import LoadBalancer,\
-        \ LoadBalancerConfig, BackendNode, BackendState\n\nconfig = LoadBalancerConfig(algorithm="round_robin")\n\
-        lb = LoadBalancer(config)\n\n# Add 3 backends\nfor i in range(3):\n    backend\
-        \ = BackendNode(f"b{i}", f"host{i}", 8080)\n    backend.state = BackendState.HEALTHY\n\
-        \    lb.add_backend(backend)\n\n# Send 300 requests\nfor i in range(300):\n\
-        \    lb.select_backend(f"req-{i}")\n\n# Verify variance\nreport = lb.verify_load_distribution()\n\
-        print("Load Distribution Report:", report)\nassert report["variance_sla_met"],\
-        \ f\\\"Load variance {report["load_variance"]}% exceeds 5% SLA\\\"\nprint(f\\\
-        \"✓ Load variance: {report["load_variance"]:.2f}% (SLA: <5%)\\\")\n\"\n"
-    timeout-minutes: 30
+      - name: Install dependencies
+        run: |
+          pip install pytest
+
+      - name: Test load distribution
+        run: |
+          pytest tests/scaling/test_multi_tenant_manager.py::TestLoadBalancing -v --tb=short
+
+      - name: Verify load variance <5%
+        run: |
+          python -c "
+          from src.codex.scaling.load_balancer import LoadBalancer, LoadBalancerConfig, BackendNode, BackendState
+
+          config = LoadBalancerConfig(algorithm='round_robin')
+          lb = LoadBalancer(config)
+
+          # Add 3 backends
+          for i in range(3):
+              backend = BackendNode(f'b{i}', f'host{i}', 8080)
+              backend.state = BackendState.HEALTHY
+              lb.add_backend(backend)
+
+          # Send 300 requests
+          for i in range(300):
+              lb.select_backend(f'req-{i}')
+
+          # Verify variance
+          report = lb.verify_load_distribution()
+          print('Load Distribution Report:', report)
+          assert report['variance_sla_met'], f\"Load variance {report['load_variance']}% exceeds 5% SLA\"
+          print(f\"✓ Load variance: {report['load_variance']:.2f}% (SLA: <5%)\")
+          "
+
+  # ============================================================================
+  # Gate 4: Auto-Scaling Trigger Verification
+  # ============================================================================
   auto_scaling_health:
     runs-on: ubuntu-latest
     name: Auto-Scaling Trigger Check
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest
+      - uses: actions/checkout@v5
 
-        "
-    - name: Test auto-scaling triggers
-      run: "pytest tests/scaling/test_multi_tenant_manager.py::TestAutoScaling -v
-        --tb=short
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Verify scaling capability
-      run: "python -c "
+      - name: Install dependencies
+        run: |
+          pip install pytest
 
-        from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
+      - name: Test auto-scaling triggers
+        run: |
+          pytest tests/scaling/test_multi_tenant_manager.py::TestAutoScaling -v --tb=short
 
+      - name: Verify scaling capability
+        run: |
+          python -c "
+          from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
 
-        trigger = ScalingTrigger()
+          trigger = ScalingTrigger()
+          scaler = AutoScaler(trigger)
 
-        scaler = AutoScaler(trigger)
+          report = scaler.verify_scaling_capability()
+          print('Auto-Scaling Report:', report)
+          assert report['cpu_trigger_configured'], 'CPU trigger not configured'
+          assert report['memory_trigger_configured'], 'Memory trigger not configured'
+          assert report['request_rate_trigger_configured'], 'Request rate trigger not configured'
+          print('✓ All scaling triggers configured')
+          "
 
-
-        report = scaler.verify_scaling_capability()
-
-        print(""Auto-Scaling Report:"", report)
-
-        assert report[""cpu_trigger_configured""], ""CPU trigger not configured""
-
-        assert report[""memory_trigger_configured""], ""Memory trigger not configured""
-
-        assert report[""request_rate_trigger_configured""], ""Request rate trigger
-        not configured""
-
-        print(""✓ All scaling triggers configured"")
-
-        "
-
-        "
-    timeout-minutes: 30
+  # ============================================================================
+  # Gate 5: Cost Optimization Check
+  # ============================================================================
   cost_optimization_health:
     runs-on: ubuntu-latest
     name: Cost Optimization Check
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest
+      - uses: actions/checkout@v5
 
-        "
-    - name: Test cost optimization
-      run: "pytest tests/scaling/test_multi_tenant_manager.py::TestCostOptimization
-        -v --tb=short
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Generate cost report
-      run: "python -c \"\nfrom src.codex.scaling.cost_allocator import CostAllocator,\
-        \ CostAllocationConfig, InstancePricing\n\npricing = InstancePricing(on_demand_hourly=1.0,\
-        \ reserved_hourly=0.7, spot_hourly=0.3)\nconfig = CostAllocationConfig(pricing={"t3.medium":\
-        \ pricing})\n\nallocator = CostAllocator(config)\nreport = allocator.verify_cost_optimization()\n\
-        \nprint("Cost Optimization Report:", report)\nprint(f\\\"✓ RI Utilization:\
-        \ {report["ri_utilization"]:.1f}%\\\")\nprint(f\\\"✓ Cost Breakdown:\\\")\n\
-        for category, cost in report["cost_breakdown"].items():\n    print(f\\\" \
-        \ - {category}: \\${cost:.2f}\\\")\n\"\n"
-    timeout-minutes: 30
+      - name: Install dependencies
+        run: |
+          pip install pytest
+
+      - name: Test cost optimization
+        run: |
+          pytest tests/scaling/test_multi_tenant_manager.py::TestCostOptimization -v --tb=short
+
+      - name: Generate cost report
+        run: |
+          python -c "
+          from src.codex.scaling.cost_allocator import CostAllocator, CostAllocationConfig, InstancePricing
+
+          pricing = InstancePricing(on_demand_hourly=1.0, reserved_hourly=0.7, spot_hourly=0.3)
+          config = CostAllocationConfig(pricing={'t3.medium': pricing})
+
+          allocator = CostAllocator(config)
+          report = allocator.verify_cost_optimization()
+
+          print('Cost Optimization Report:', report)
+          print(f\"✓ RI Utilization: {report['ri_utilization']:.1f}%\")
+          print(f\"✓ Cost Breakdown:\")
+          for category, cost in report['cost_breakdown'].items():
+              print(f\"  - {category}: \${cost:.2f}\")
+          "
+
+  # ============================================================================
+  # Gate 6: SLA Compliance Check
+  # ============================================================================
   sla_compliance:
     runs-on: ubuntu-latest
     name: SLA Compliance Check
-    needs:
-    - multi_tenant_health
-    - failover_health
-    - load_balancer_health
-    - auto_scaling_health
+    needs: [multi_tenant_health, failover_health, load_balancer_health, auto_scaling_health]
     if: always()
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    - name: Check multi-region uptime
-      run: "echo \"Checking multi-region uptime...\"\nregions=(\"us-east-1\" \"us-west-2\"\
-        \ \"eu-west-1\")\nfor region in \"${regions[@]}\"; do\n  echo \"Checking $region...\"\
-        \n  # Mock health check\n  echo \"✓ $region: Healthy\"\ndone\n"
-    - name: Verify SLA >99%
-      run: "python -c \"\n# In production, this would query actual monitoring\nuptime\
-        \ = 99.95\nsla_target = 99.0\n\nif uptime >= sla_target:\n    print(f"✓ SLA\
-        \ Compliance: {uptime}% (target: {sla_target}%)")\n    exit(0)\nelse:\n  \
-        \  print(f"✗ SLA Compliance: {uptime}% (target: {sla_target}%)")\n    exit(1)\n\
-        \"\n"
-    timeout-minutes: 30
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Check multi-region uptime
+        run: |
+          echo "Checking multi-region uptime..."
+          regions=("us-east-1" "us-west-2" "eu-west-1")
+          for region in "${regions[@]}"; do
+            echo "Checking $region..."
+            # Mock health check
+            echo "✓ $region: Healthy"
+          done
+
+      - name: Verify SLA >99%
+        run: |
+          python -c "
+          # In production, this would query actual monitoring
+          uptime = 99.95
+          sla_target = 99.0
+
+          if uptime >= sla_target:
+              print(f'✓ SLA Compliance: {uptime}% (target: {sla_target}%)')
+              exit(0)
+          else:
+              print(f'✗ SLA Compliance: {uptime}% (target: {sla_target}%)')
+              exit(1)
+          "
+
+  # ============================================================================
+  # Test Coverage Report
+  # ============================================================================
   test_coverage:
     runs-on: ubuntu-latest
     name: Test Coverage Report
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-        cache: pip
-    - name: Install dependencies
-      run: "pip install pytest pytest-cov
+      - uses: actions/checkout@v5
 
-        "
-    - name: Run tests with coverage
-      run: "pytest tests/scaling/ --cov=src/codex/scaling --cov-report=xml --cov-report=term
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
 
-        "
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
-        flags: scaling-framework
-        name: scaling-framework-coverage
-        fail_ci_if_error: false
-    - name: Check coverage threshold
-      run: "python -c \"\nimport xml.etree.ElementTree as ET\nroot = ET.parse("coverage.xml").getroot()\n\
-        coverage_pct = float(root.get("line-rate", 0)) * 100\n\nif coverage_pct >=\
-        \ 85:\n    print(f"✓ Code coverage: {coverage_pct:.1f}% (target: ≥85%)")\n\
-        \    exit(0)\nelse:\n    print(f"✗ Code coverage: {coverage_pct:.1f}% (target:\
-        \ ≥85%)")\n    exit(1)\n\"\n"
-    timeout-minutes: 30
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: |
+          pytest tests/scaling/ --cov=src/codex/scaling --cov-report=xml --cov-report=term
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: scaling-framework
+          name: scaling-framework-coverage
+          fail_ci_if_error: false
+
+      - name: Check coverage threshold
+        run: |
+          python -c "
+          import xml.etree.ElementTree as ET
+          root = ET.parse('coverage.xml').getroot()
+          coverage_pct = float(root.get('line-rate', 0)) * 100
+
+          if coverage_pct >= 85:
+              print(f'✓ Code coverage: {coverage_pct:.1f}% (target: ≥85%)')
+              exit(0)
+          else:
+              print(f'✗ Code coverage: {coverage_pct:.1f}% (target: ≥85%)')
+              exit(1)
+          "
+
+  # ============================================================================
+  # Weekly Failover Drill
+  # ============================================================================
   failover_drill:
     runs-on: ubuntu-latest
     name: Weekly Failover Drill
-    if: github.event.schedule == "0 9 * * 0" || github.event_name == "workflow_dispatch"
+    if: github.event.schedule == '0 9 * * 0' || github.event_name == 'workflow_dispatch'
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    - name: Execute failover drill
-      run: "python -c \"\nfrom src.codex.scaling import FailoverManager, RegionConfig,\
-        \ HealthStatus\nimport time\n\nprint("=== Failover Drill ===")\n\nmgr = FailoverManager(check_interval=0.1)\n\
-        \n# Setup regions\nmgr.add_region(RegionConfig("us-east-1", "region-1", primary=True))\n\
-        mgr.add_region(RegionConfig("us-west-2", "region-2", primary=False))\n\nprint("✓\
-        \ Regions configured")\n\n# Mark primary as healthy\nmgr.region_states["region-1"]\
-        \ = HealthStatus.HEALTHY\nmgr.region_states["region-2"] = HealthStatus.HEALTHY\n\
-        print("✓ Primary and secondary healthy")\n\n# Simulate primary failure\nprint("Simulating\
-        \ primary region failure...")\nmgr.region_states["region-1"] = HealthStatus.UNHEALTHY\n\
-        mgr._make_failover_decision()\n\nif mgr.get_current_primary() == "region-2":\n\
-        \    print("✓ Failover successful")\nelse:\n    print("✗ Failover failed")\n\
-        \    exit(1)\n\n# Verify failover event\nif mgr.failover_events:\n    event\
-        \ = mgr.failover_events[-1]\n    print(f"  Failover time: {event.failover_time_ms:.1f}ms")\n\
-        \"\n"
-    - name: Report drill results
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-        name: failover-drill-report
-        path: failover-drill-*.json
-    timeout-minutes: 30
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Execute failover drill
+        run: |
+          python -c "
+          from src.codex.scaling import FailoverManager, RegionConfig, HealthStatus
+          import time
+
+          print('=== Failover Drill ===')
+
+          mgr = FailoverManager(check_interval=0.1)
+
+          # Setup regions
+          mgr.add_region(RegionConfig('us-east-1', 'region-1', primary=True))
+          mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))
+
+          print('✓ Regions configured')
+
+          # Mark primary as healthy
+          mgr.region_states['region-1'] = HealthStatus.HEALTHY
+          mgr.region_states['region-2'] = HealthStatus.HEALTHY
+          print('✓ Primary and secondary healthy')
+
+          # Simulate primary failure
+          print('Simulating primary region failure...')
+          mgr.region_states['region-1'] = HealthStatus.UNHEALTHY
+          mgr._make_failover_decision()
+
+          if mgr.get_current_primary() == 'region-2':
+              print('✓ Failover successful')
+          else:
+              print('✗ Failover failed')
+              exit(1)
+
+          # Verify failover event
+          if mgr.failover_events:
+              event = mgr.failover_events[-1]
+              print(f'  Failover time: {event.failover_time_ms:.1f}ms')
+          "
+
+      - name: Report drill results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: failover-drill-report
+          path: failover-drill-*.json
+
+  # ============================================================================
+  # Weekly Cost Report
+  # ============================================================================
   cost_report:
     runs-on: ubuntu-latest
     name: Weekly Cost Report
-    if: github.event.schedule == "0 10 * * 1" || github.event_name == "workflow_dispatch"
+    if: github.event.schedule == '0 10 * * 1' || github.event_name == 'workflow_dispatch'
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    - name: Generate cost report
-      run: "python -c "
+      - uses: actions/checkout@v5
 
-        from datetime import datetime
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-        from src.codex.scaling.cost_allocator import CostAllocator, CostAllocationConfig,
-        InstancePricing
+      - name: Generate cost report
+        run: |
+          python -c "
+          from datetime import datetime
+          from src.codex.scaling.cost_allocator import CostAllocator, CostAllocationConfig, InstancePricing
 
+          print('=== Weekly Cost Report ===')
 
-        print(""=== Weekly Cost Report ==="")
+          pricing = InstancePricing(on_demand_hourly=1.0, reserved_hourly=0.7, spot_hourly=0.3)
+          config = CostAllocationConfig(pricing={'t3.medium': pricing})
 
+          allocator = CostAllocator(config)
 
-        pricing = InstancePricing(on_demand_hourly=1.0, reserved_hourly=0.7, spot_hourly=0.3)
+          # Generate report
+          month = datetime.now().strftime('%Y-%m')
+          report = allocator.generate_monthly_report(month)
 
-        config = CostAllocationConfig(pricing={""t3.medium"": pricing})
+          print(f'Report: {report.report_id}')
+          print(f'Month: {report.report_month}')
+          print(f'Total Cost: \${report.total_cost:.2f}')
+          print(f'RI Utilization: {report.reserved_utilization:.1f}%')
+          print(f'Estimated Savings: \${report.estimated_savings:.2f}')
+          "
 
-
-        allocator = CostAllocator(config)
-
-
-        # Generate report
-
-        month = datetime.now().strftime(""%Y-%m"")
-
-        report = allocator.generate_monthly_report(month)
-
-
-        print(f""Report: {report.report_id}"")
-
-        print(f""Month: {report.report_month}"")
-
-        print(f""Total Cost: \${report.total_cost:.2f}"")
-
-        print(f""RI Utilization: {report.reserved_utilization:.1f}%"")
-
-        print(f""Estimated Savings: \${report.estimated_savings:.2f}"")
-
-        "
-
-        "
-    timeout-minutes: 30
+  # ============================================================================
+  # Summary Report
+  # ============================================================================
   summary:
     runs-on: ubuntu-latest
     name: Framework Health Summary
-    needs:
-    - multi_tenant_health
-    - failover_health
-    - load_balancer_health
-    - auto_scaling_health
-    - sla_compliance
-    - test_coverage
+    needs: [multi_tenant_health, failover_health, load_balancer_health, auto_scaling_health, sla_compliance, test_coverage]
     if: always()
     steps:
-    - name: Generate summary
-      run: "echo "## Scaling Framework Health Report"
+      - name: Generate summary
+        run: |
+          echo "## Scaling Framework Health Report"
+          echo ""
+          echo "### Gate Criteria Status"
+          echo "- Gate 1 (Isolation): ${{ needs.multi_tenant_health.result }}"
+          echo "- Gate 2 (Failover): ${{ needs.failover_health.result }}"
+          echo "- Gate 3 (Load Distribution): ${{ needs.load_balancer_health.result }}"
+          echo "- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result }}"
+          echo "- Gate 6 (SLA Compliance): ${{ needs.sla_compliance.result }}"
+          echo "- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}"
+          echo ""
+          echo "### Summary"
+          echo "All scaling framework components are operational."
+          echo ""
+          echo "**Phase 4E Planset 010**: ✅ ACTIVE"
 
-        echo ""
+      - name: Check all tests passed
+        if: failure()
+        run: |
+          echo "❌ Some tests failed. Review logs above."
+          exit 1
 
-        echo "### Gate Criteria Status"
-
-        echo "- Gate 1 (Isolation): ${{ needs.multi_tenant_health.result }}"
-
-        echo "- Gate 2 (Failover): ${{ needs.failover_health.result }}"
-
-        echo "- Gate 3 (Load Distribution): ${{ needs.load_balancer_health.result
-        }}"
-
-        echo "- Gate 4 (Auto-Scaling): ${{ needs.auto_scaling_health.result }}"
-
-        echo "- Gate 6 (SLA Compliance): ${{ needs.sla_compliance.result }}"
-
-        echo "- Gate 7 (Test Coverage): ${{ needs.test_coverage.result }}"
-
-        echo ""
-
-        echo "### Summary"
-
-        echo "All scaling framework components are operational."
-
-        echo ""
-
-        echo "**Phase 4E Planset 010**: ✅ ACTIVE"
-
-        "
-    - name: Check all tests passed
-      if: failure()
-      run: "echo "❌ Some tests failed. Review logs above."
-
-        exit 1
-
-        "
-    timeout-minutes: 30
+  # ============================================================================
+  # Notify on completion
+  # ============================================================================
   notify:
     runs-on: ubuntu-latest
     name: Notify Completion
-    needs:
-    - summary
+    needs: [summary]
     if: always()
     steps:
-    - name: Report status
-      run: "if [ \"${{ needs.summary.result }}\" == \"success\" ]; then\n  echo \"\
-        ✅ All scaling framework health checks passed\"\n  exit 0\nelse\n  echo \"\
-        ⚠️  Some health checks failed\"\n  exit 1\nfi\n"
-    timeout-minutes: 30
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+      - name: Report status
+        run: |
+          if [ "${{ needs.summary.result }}" == "success" ]; then
+            echo "✅ All scaling framework health checks passed"
+            exit 0
+          else
+            echo "⚠️  Some health checks failed"
+            exit 1
+          fi
+

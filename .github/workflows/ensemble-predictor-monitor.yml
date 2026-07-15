@@ -1,239 +1,341 @@
 name: Ensemble Predictor Monitoring
-true:
+
+# Daily monitoring of ensemble predictor health and accuracy
+on:
   schedule:
-  - cron: 0 0 * * *
-  workflow_dispatch: null
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+  workflow_dispatch:  # Manual trigger
+
 permissions:
   contents: read
+
 jobs:
   accuracy-tracking:
     runs-on: ubuntu-latest
     name: Model Accuracy Tracking
+
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - uses: actions/checkout@v5
 
-        python -m pip install --no-cache-dir -r requirements-test.txt
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
 
-        "
-    - name: Run accuracy tracking
-      run: "python -m pytest tests/ensemble/ -v --tb=short
+      - name: Install dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+          python -m pip install --no-cache-dir -r requirements-test.txt
 
-        echo "✓ All ensemble tests passed"
+      - name: Run accuracy tracking
+        run: |
+          python -m pytest tests/ensemble/ -v --tb=short
+          echo "✓ All ensemble tests passed"
 
-        "
-    - name: Collect performance metrics
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
-        \ json\nfrom pathlib import Path\n\n# Initialize predictor\npredictor = EnsemblePredictor()\n\
-        \n# Simulate some predictions for metrics\ntest_features = [\n    {\"confidence\"\
-        : 0.8, \"frequency\": 50, \"days_old\": 5},\n    {\"confidence\": 0.3, \"\
-        frequency\": 10, \"days_old\": 20},\n    {\"confidence\": 0.95, \"frequency\"\
-        : 100, \"days_old\": 1},\n]\n\nfor features in test_features:\n    predictor.predict(features)\n\
-        \n# Get metrics\nmetrics = predictor.get_ensemble_performance()\naccuracies\
-        \ = predictor.get_model_accuracy_estimates()\n\n# Print results\nprint(\"\\\
-        n\" + \"=\"*60)\nprint(\"ENSEMBLE PERFORMANCE METRICS\")\nprint(\"=\"*60)\n\
-        print(f\"Total Predictions: {metrics["total_predictions"]}\")\nprint(f\"Escalation\
-        \ Rate: {metrics["escalation_rate"]:.2%}\")\nprint(f\"Avg Execution Time:\
-        \ {metrics["avg_execution_time_ms"]:.1f}ms\")\nprint(f\"p99 Execution Time:\
-        \ {metrics["p99_execution_time_ms"]:.1f}ms\")\nprint(f\"Avg Confidence: {metrics["avg_confidence"]:.3f}\"\
-        )\n\nprint(\"\\nMODEL ACCURACY ESTIMATES\")\nprint(\"-\" * 60)\nfor model_type,\
-        \ accuracy in accuracies.items():\n    print(f\"{model_type:20} : {accuracy:.1%}\"\
-        )\n\nprint(\"=\"*60 + \"\\n\")\n\n# Save metrics\nmetrics_file = Path(\".codex/ensemble_metrics.json\"\
-        )\nmetrics_file.parent.mkdir(parents=True, exist_ok=True)\nwith open(metrics_file,\
-        \ \"w\") as f:\n    json.dump({\n        \"performance\": metrics,\n     \
-        \   \"accuracies\": accuracies,\n    }, f, indent=2)\nEOF\n"
-    - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
-      with:
-        name: ensemble-metrics
-        path: .codex/ensemble_metrics.json
-        retention-days: 30
-    timeout-minutes: 30
+      - name: Collect performance metrics
+        run: |
+          python << 'EOF'
+          from src.codex.ensemble import EnsemblePredictor
+          import json
+          from pathlib import Path
+
+          # Initialize predictor
+          predictor = EnsemblePredictor()
+
+          # Simulate some predictions for metrics
+          test_features = [
+              {"confidence": 0.8, "frequency": 50, "days_old": 5},
+              {"confidence": 0.3, "frequency": 10, "days_old": 20},
+              {"confidence": 0.95, "frequency": 100, "days_old": 1},
+          ]
+
+          for features in test_features:
+              predictor.predict(features)
+
+          # Get metrics
+          metrics = predictor.get_ensemble_performance()
+          accuracies = predictor.get_model_accuracy_estimates()
+
+          # Print results
+          print("\n" + "="*60)
+          print("ENSEMBLE PERFORMANCE METRICS")
+          print("="*60)
+          print(f"Total Predictions: {metrics['total_predictions']}")
+          print(f"Escalation Rate: {metrics['escalation_rate']:.2%}")
+          print(f"Avg Execution Time: {metrics['avg_execution_time_ms']:.1f}ms")
+          print(f"p99 Execution Time: {metrics['p99_execution_time_ms']:.1f}ms")
+          print(f"Avg Confidence: {metrics['avg_confidence']:.3f}")
+
+          print("\nMODEL ACCURACY ESTIMATES")
+          print("-" * 60)
+          for model_type, accuracy in accuracies.items():
+              print(f"{model_type:20} : {accuracy:.1%}")
+
+          print("="*60 + "\n")
+
+          # Save metrics
+          metrics_file = Path(".codex/ensemble_metrics.json")
+          metrics_file.parent.mkdir(parents=True, exist_ok=True)
+          with open(metrics_file, "w") as f:
+              json.dump({
+                  "performance": metrics,
+                  "accuracies": accuracies,
+              }, f, indent=2)
+          EOF
+
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: ensemble-metrics
+          path: .codex/ensemble_metrics.json
+          retention-days: 30
+
   drift-detection:
     runs-on: ubuntu-latest
     name: Model Drift Detection
-    steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
 
-        "
-    - name: Check for model drift
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nfrom\
-        \ src.codex.ensemble.types import ModelType\n\npredictor = EnsemblePredictor()\n\
-        \n# Get baseline accuracies (from last week if available)\nbaseline = {\n\
-        \    ModelType.HEURISTIC.value: 0.77,\n    ModelType.MACHINE_LEARNING.value:\
-        \ 0.87,\n    ModelType.SYMBOLIC.value: 0.82,\n}\n\n# Get current accuracies\n\
-        current = predictor.get_model_accuracy_estimates()\n\nprint(\"\\n\" + \"=\"\
-        *60)\nprint(\"DRIFT DETECTION REPORT\")\nprint(\"=\"*60)\n\ndrift_detected\
-        \ = False\nfor model_type in [ModelType.HEURISTIC, ModelType.MACHINE_LEARNING,\
-        \ ModelType.SYMBOLIC]:\n    mt_value = model_type.value\n    baseline_acc\
-        \ = baseline.get(mt_value, 0.0)\n    current_acc = current.get(mt_value, 0.0)\n\
-        \n    if baseline_acc > 0:\n        drift = (baseline_acc - current_acc) /\
-        \ baseline_acc\n    else:\n        drift = 0.0\n\n    status = \"⚠️\" if abs(drift)\
-        \ > 0.05 else \"✓\"\n    print(f\"{status} {mt_value:20} | Baseline: {baseline_acc:.1%}\
-        \ | Current: {current_acc:.1%} | Drift: {drift:+.1%}\")\n\n    if abs(drift)\
-        \ > 0.05:\n        drift_detected = True\n\nprint(\"=\"*60)\n\nif drift_detected:\n\
-        \    print(\"\\n⚠️ DRIFT DETECTED - Consider retraining\")\n    exit(1)\n\
-        else:\n    print(\"\\n✓ No significant drift detected\")\nEOF\n"
-    - name: Comment on drift detection
-      if: failure()
-      uses: actions/github-script@v8
-      with:
-        script: "github.rest.issues.createComment({\n  issue_number: github.context.issue.number,\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: "⚠️ **Model\
-          \ Drift Detected** in ensemble predictor. Consider running retraining workflow."\n\
-          })\n"
-    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+
+      - name: Check for model drift
+        run: |
+          python << 'EOF'
+          from src.codex.ensemble import EnsemblePredictor
+          from src.codex.ensemble.types import ModelType
+
+          predictor = EnsemblePredictor()
+
+          # Get baseline accuracies (from last week if available)
+          baseline = {
+              ModelType.HEURISTIC.value: 0.77,
+              ModelType.MACHINE_LEARNING.value: 0.87,
+              ModelType.SYMBOLIC.value: 0.82,
+          }
+
+          # Get current accuracies
+          current = predictor.get_model_accuracy_estimates()
+
+          print("\n" + "="*60)
+          print("DRIFT DETECTION REPORT")
+          print("="*60)
+
+          drift_detected = False
+          for model_type in [ModelType.HEURISTIC, ModelType.MACHINE_LEARNING, ModelType.SYMBOLIC]:
+              mt_value = model_type.value
+              baseline_acc = baseline.get(mt_value, 0.0)
+              current_acc = current.get(mt_value, 0.0)
+
+              if baseline_acc > 0:
+                  drift = (baseline_acc - current_acc) / baseline_acc
+              else:
+                  drift = 0.0
+
+              status = "⚠️" if abs(drift) > 0.05 else "✓"
+              print(f"{status} {mt_value:20} | Baseline: {baseline_acc:.1%} | Current: {current_acc:.1%} | Drift: {drift:+.1%}")
+
+              if abs(drift) > 0.05:
+                  drift_detected = True
+
+          print("="*60)
+
+          if drift_detected:
+              print("\n⚠️ DRIFT DETECTED - Consider retraining")
+              exit(1)
+          else:
+              print("\n✓ No significant drift detected")
+          EOF
+
+      - name: Comment on drift detection
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: github.context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **Model Drift Detected** in ensemble predictor. Consider running retraining workflow.'
+            })
+
   latency-monitoring:
     runs-on: ubuntu-latest
     name: Latency SLA Monitoring
-    steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
 
-        "
-    - name: Monitor latency
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
-        \ numpy as np\n\npredictor = EnsemblePredictor()\n\nprint(\"\\n\" + \"=\"\
-        *60)\nprint(\"LATENCY SLA MONITORING\")\nprint(\"=\"*60)\n\n# Test multiple\
-        \ predictions\nlatencies = []\nfor i in range(20):\n    features = {\"confidence\"\
-        : 0.7, \"frequency\": 50, \"days_old\": 5}\n    result = predictor.predict(features)\n\
-        \    latencies.append(result.total_execution_time_ms)\n\nlatencies = np.array(latencies)\n\
-        \nprint(f\"Mean Latency:     {np.mean(latencies):.1f}ms\")\nprint(f\"Median\
-        \ Latency:   {np.median(latencies):.1f}ms\")\nprint(f\"p95 Latency:      {np.percentile(latencies,\
-        \ 95):.1f}ms\")\nprint(f\"p99 Latency:      {np.percentile(latencies, 99):.1f}ms\"\
-        )\nprint(f\"Max Latency:      {np.max(latencies):.1f}ms\")\n\nprint(\"=\"\
-        *60)\n\n# Check SLA\np99 = np.percentile(latencies, 99)\nif p99 < 200:\n \
-        \   print(f\"\\n✓ SLA PASSED: p99 latency {p99:.1f}ms < 200ms\")\nelse:\n\
-        \    print(f\"\\n✗ SLA FAILED: p99 latency {p99:.1f}ms > 200ms\")\n    exit(1)\n\
-        EOF\n"
-    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+
+      - name: Monitor latency
+        run: |
+          python << 'EOF'
+          from src.codex.ensemble import EnsemblePredictor
+          import numpy as np
+
+          predictor = EnsemblePredictor()
+
+          print("\n" + "="*60)
+          print("LATENCY SLA MONITORING")
+          print("="*60)
+
+          # Test multiple predictions
+          latencies = []
+          for i in range(20):
+              features = {"confidence": 0.7, "frequency": 50, "days_old": 5}
+              result = predictor.predict(features)
+              latencies.append(result.total_execution_time_ms)
+
+          latencies = np.array(latencies)
+
+          print(f"Mean Latency:     {np.mean(latencies):.1f}ms")
+          print(f"Median Latency:   {np.median(latencies):.1f}ms")
+          print(f"p95 Latency:      {np.percentile(latencies, 95):.1f}ms")
+          print(f"p99 Latency:      {np.percentile(latencies, 99):.1f}ms")
+          print(f"Max Latency:      {np.max(latencies):.1f}ms")
+
+          print("="*60)
+
+          # Check SLA
+          p99 = np.percentile(latencies, 99)
+          if p99 < 200:
+              print(f"\n✓ SLA PASSED: p99 latency {p99:.1f}ms < 200ms")
+          else:
+              print(f"\n✗ SLA FAILED: p99 latency {p99:.1f}ms > 200ms")
+              exit(1)
+          EOF
+
   escalation-rate-check:
     runs-on: ubuntu-latest
     name: Escalation Rate Monitoring
-    steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
 
-        "
-    - name: Check escalation rate
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\n\n\
-        predictor = EnsemblePredictor()\n\nprint(\"\\n\" + \"=\"*60)\nprint(\"ESCALATION\
-        \ RATE MONITORING\")\nprint(\"=\"*60)\n\n# Simulate predictions with varying\
-        \ confidence\ntest_cases = [\n    {\"confidence\": 0.9, \"frequency\": 100},\
-        \  # High confidence\n    {\"confidence\": 0.5, \"frequency\": 30},   # Medium\
-        \ confidence\n    {\"confidence\": 0.2, \"frequency\": 5},    # Low confidence\n\
-        ] * 10  # Repeat 10 times for 30 predictions\n\nfor features in test_cases:\n\
-        \    predictor.predict(features)\n\nmetrics = predictor.get_ensemble_performance()\n\
-        escalation_rate = metrics[\"escalation_rate\"]\n\nprint(f\"Total Predictions:\
-        \      {metrics["total_predictions"]}\")\nprint(f\"Escalated Predictions:\
-        \  {metrics["escalated_predictions"]}\")\nprint(f\"Escalation Rate:      \
-        \  {escalation_rate:.1%}\")\nprint(f\"Target:                 <5%\")\n\nprint(\"\
-        =\"*60)\n\nif escalation_rate <= 0.05:\n    print(f\"\\n✓ ESCALATION RATE\
-        \ OK: {escalation_rate:.1%} ≤ 5%\")\nelse:\n    print(f\"\\n⚠️ HIGH ESCALATION\
-        \ RATE: {escalation_rate:.1%} > 5%\")\n    exit(1)\nEOF\n"
-    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+
+      - name: Check escalation rate
+        run: |
+          python << 'EOF'
+          from src.codex.ensemble import EnsemblePredictor
+
+          predictor = EnsemblePredictor()
+
+          print("\n" + "="*60)
+          print("ESCALATION RATE MONITORING")
+          print("="*60)
+
+          # Simulate predictions with varying confidence
+          test_cases = [
+              {"confidence": 0.9, "frequency": 100},  # High confidence
+              {"confidence": 0.5, "frequency": 30},   # Medium confidence
+              {"confidence": 0.2, "frequency": 5},    # Low confidence
+          ] * 10  # Repeat 10 times for 30 predictions
+
+          for features in test_cases:
+              predictor.predict(features)
+
+          metrics = predictor.get_ensemble_performance()
+          escalation_rate = metrics["escalation_rate"]
+
+          print(f"Total Predictions:      {metrics['total_predictions']}")
+          print(f"Escalated Predictions:  {metrics['escalated_predictions']}")
+          print(f"Escalation Rate:        {escalation_rate:.1%}")
+          print(f"Target:                 <5%")
+
+          print("="*60)
+
+          if escalation_rate <= 0.05:
+              print(f"\n✓ ESCALATION RATE OK: {escalation_rate:.1%} ≤ 5%")
+          else:
+              print(f"\n⚠️ HIGH ESCALATION RATE: {escalation_rate:.1%} > 5%")
+              exit(1)
+          EOF
+
   test-coverage:
     runs-on: ubuntu-latest
     name: Test Coverage Report
+
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - uses: actions/checkout@v5
 
-        python -m pip install --no-cache-dir -r requirements-test.txt
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
 
-        "
-    - name: Run tests with coverage
-      run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-report=term-missing
-        --cov-report=html
+      - name: Install dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+          python -m pip install --no-cache-dir -r requirements-test.txt
 
-        "
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v5
-      with:
-        name: coverage-report
-        path: htmlcov/
-        retention-days: 30
-    - name: Check coverage threshold
-      run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
+      - name: Run tests with coverage
+        run: |
+          python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-report=term-missing --cov-report=html
 
-        "
-    timeout-minutes: 30
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-report
+          path: htmlcov/
+          retention-days: 30
+
+      - name: Check coverage threshold
+        run: |
+          python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
+
   publish-results:
     runs-on: ubuntu-latest
     name: Publish Monitoring Results
-    needs:
-    - accuracy-tracking
-    - drift-detection
-    - latency-monitoring
-    - escalation-rate-check
+    needs: [accuracy-tracking, drift-detection, latency-monitoring, escalation-rate-check]
     if: always()
+
     steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v5
-      with:
-        path: monitoring-artifacts
-    - name: Publish job summary
-      run: "cat >> $GITHUB_STEP_SUMMARY << ""EOF""
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: monitoring-artifacts
 
-        # 📊 Ensemble Predictor Daily Monitoring Report
+      - name: Publish job summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          # 📊 Ensemble Predictor Daily Monitoring Report
 
+          **Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
 
-        **Date**: $(date -u +""%Y-%m-%d %H:%M:%S UTC"")
+          ## Test Results
+          - ✅ Accuracy Tracking: PASSED
+          - Drift Detection: ${{ needs.drift-detection.result == 'success' && '✅ PASSED' || '⚠️ WARNING' }}
+          - ✅ Latency SLA: PASSED
+          - ✅ Escalation Rate: PASSED
+          - ✅ Test Coverage: PASSED
 
+          ## Artifacts
+          - Performance Metrics: [`ensemble_metrics.json`](ensemble-metrics)
+          - Coverage Report: [`htmlcov/`](coverage-report)
 
-        ## Test Results
+          See workflow run for detailed logs.
+          EOF
 
-        - ✅ Accuracy Tracking: PASSED
-
-        - Drift Detection: ${{ needs.drift-detection.result == ""success"" && ""✅
-        PASSED"" || ""⚠️ WARNING"" }}
-
-        - ✅ Latency SLA: PASSED
-
-        - ✅ Escalation Rate: PASSED
-
-        - ✅ Test Coverage: PASSED
-
-
-        ## Artifacts
-
-        - Performance Metrics: [`ensemble_metrics.json`](ensemble-metrics)
-
-        - Coverage Report: [`htmlcov/`](coverage-report)
-
-
-        See workflow run for detailed logs.
-
-        EOF
-
-        "
-    timeout-minutes: 30
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true

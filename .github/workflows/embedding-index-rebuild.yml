@@ -1,5 +1,5 @@
 name: Embedding Index Rebuild
-true:
+on:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch: null
@@ -24,7 +24,6 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-    timeout-minutes: 30
   rebuild:
     name: Rebuild FAISS Embedding Index
     runs-on: ubuntu-latest
@@ -36,7 +35,7 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 1
-    - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+    - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
     - name: Set up Python
@@ -46,7 +45,7 @@ jobs:
         cache: pip
     - name: Check RAG index freshness
       id: freshness
-      run: "python3 - <<"PYEOF"\nimport json, os, sys\nfrom datetime import datetime,\
+      run: "python3 - <<'PYEOF'\nimport json, os, sys\nfrom datetime import datetime,\
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
         )\nSTALE_WARN_HOURS  = 25  # emit warning if older than 25 h\nSTALE_ERROR_HOURS\
         \ = 72  # emit error if older than 72 h\n\nif not META.exists():\n    print(\"\
@@ -69,7 +68,7 @@ jobs:
         freshness_status={status}\\n\")\n    f.write(f\"age_hours={age_hours:.1f}\\\
         n\")\n    f.write(f\"generated_at={generated_at_str}\\n\")\nPYEOF\n"
     - name: Install embedding dependencies
-      run: "# Upgrade cryptography and pyOpenSSL first to fix compatibility issues
+      run: '# Upgrade cryptography and pyOpenSSL first to fix compatibility issues
 
         # with transformers/sentence-transformers on Python 3.12
 
@@ -79,13 +78,13 @@ jobs:
 
         pip install sentence-transformers faiss-cpu numpy --quiet
 
-        "
+        '
     - name: Rebuild embedding index
       id: rebuild
       run: "python scripts/ci/build_embeddings.py\npython3 -c \"\nimport json\nmeta\
-        \ = json.load(open(".codex/embeddings/codex_index_meta.json"))\nimport os\n\
-        with open(os.environ["GITHUB_OUTPUT"], "a") as f:\n    f.write(f\\\"chunk_count={meta["chunk_count"]}\\\
-        n\\\")\n    f.write(f\\\"build_time={meta["build_time_seconds"]}\\n\\\")\n\
+        \ = json.load(open('.codex/embeddings/codex_index_meta.json'))\nimport os\n\
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:\n    f.write(f\\\"chunk_count={meta['chunk_count']}\\\
+        n\\\")\n    f.write(f\\\"build_time={meta['build_time_seconds']}\\n\\\")\n\
         \"\n"
     - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
       run: "CHUNK_COUNT=\"${{ steps.rebuild.outputs.chunk_count }}\"\nBUILD_TIME=\"\
@@ -103,14 +102,14 @@ jobs:
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
       run: "_TARGET=\"${PUSH_TARGET:-main}\"\nif [ \"$_TARGET\" = \"main\" ] || [\
         \ \"$_TARGET\" = \"0D_base_\" ]; then\n  PR_COUNT=$(gh api \"repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1\"\
-        \ \\\n    --jq "length" 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
+        \ \\\n    --jq 'length' 2>/dev/null || echo \"0\")\n  if [ \"${PR_COUNT}\"\
         \ -gt \"0\" ]; then\n    echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"\n   \
         \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` — embedding\
         \ index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"\n  else\n    echo \"\
         pr_skip=false\" >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"pr_skip=false\"\
         \ >> \"$GITHUB_OUTPUT\"\nfi\n"
     - name: Commit updated index metadata
-      if: steps.pr_guard.outputs.pr_skip != "true"
+      if: steps.pr_guard.outputs.pr_skip != 'true'
       env:
         GITHUB_TOKEN: ${{ github.token }}
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
@@ -129,15 +128,16 @@ jobs:
       if: always()
       run: "echo \"## \U0001F9E0 Embedding Index Rebuild\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\nif [ -f \".codex/embeddings/codex_index_meta.json\"\
-        \ ]; then\n  python3 -c \"\nimport json\nmeta = json.load(open(".codex/embeddings/codex_index_meta.json"))\n\
-        print(f"| Field | Value |")\nprint(f"|-------|-------|")\nprint(f"| Chunks\
-        \ | {meta[\\\"chunk_count\\\"]} |")\nprint(f"| Model | {meta[\\\"model\\\"\
-        ]} |")\nprint(f"| Dimensions | {meta[\\\"dim\\\"]} |")\nprint(f"| Build time\
-        \ | {meta[\\\"build_time_seconds\\\"]}s |")\nprint(f"| Generated | {meta[\\\
-        \"generated_at\\\"]} |")\n\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Pre-build\
+        \ ]; then\n  python3 -c \"\nimport json\nmeta = json.load(open('.codex/embeddings/codex_index_meta.json'))\n\
+        print(f'| Field | Value |')\nprint(f'|-------|-------|')\nprint(f'| Chunks\
+        \ | {meta[\\\"chunk_count\\\"]} |')\nprint(f'| Model | {meta[\\\"model\\\"\
+        ]} |')\nprint(f'| Dimensions | {meta[\\\"dim\\\"]} |')\nprint(f'| Build time\
+        \ | {meta[\\\"build_time_seconds\\\"]}s |')\nprint(f'| Generated | {meta[\\\
+        \"generated_at\\\"]} |')\n\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Pre-build\
         \ age | ${{ steps.freshness.outputs.age_hours }}h (status: ${{ steps.freshness.outputs.freshness_status\
         \ }}) |\" >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"Index metadata not found\
         \ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

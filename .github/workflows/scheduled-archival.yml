@@ -1,5 +1,5 @@
 name: Scheduled Archival
-true:
+on:
   schedule:
   - cron: 0 2 * * 0
   workflow_dispatch:
@@ -7,7 +7,7 @@ true:
       dry_run:
         description: Dry run mode (no actual archival)
         required: false
-        default: "true"
+        default: 'true'
         type: boolean
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -32,7 +32,6 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-    timeout-minutes: 30
   identify-candidates:
     name: Identify Archival Candidates
     runs-on: ubuntu-latest
@@ -43,9 +42,8 @@ jobs:
       count: ${{ steps.find.outputs.count }}
     steps:
     - name: Mask secrets
-      run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-
-        "
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
@@ -53,10 +51,10 @@ jobs:
         fetch-depth: 0
     - name: CacheManager health check
       continue-on-error: true
-      run: "python scripts/ci/generate_cache_keys.py --health --workflow scheduled-archival
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow scheduled-archival
         2>/dev/null || echo "Cache health: check skipped"
 
-        "
+        '
     - name: Find Archival Candidates
       id: find
       run: "echo \"## Archival Candidate Analysis\"\necho \"\"\n\n# Find markdown\
@@ -89,27 +87,27 @@ jobs:
       with:
         persist-credentials: false
     - name: Create Archival Issue
-      if: ${{ github.event.inputs.dry_run != "true" }}
+      if: ${{ github.event.inputs.dry_run != 'true' }}
       uses: actions/github-script@v8
       with:
         script: "const candidates = `${{ needs.identify-candidates.outputs.candidates\
-          \ }}`;\nconst count = "${{ needs.identify-candidates.outputs.count }}";\n\
-          \nconst body = `## Archival Proposal\n\n**Generated**: ${new Date().toISOString().split("T")[0]}\n\
-          **Candidates**: ${count} files\n\n### Files Proposed for Archival\n\nThe\
+          \ }}`;\nconst count = '${{ needs.identify-candidates.outputs.count }}';\n\
+        \nconst body = `## Archival Proposal\n\n**Generated**: ${new Date().toISOString().split('T')[0]}\n\
+        **Candidates**: ${count} files\n\n### Files Proposed for Archival\n\nThe\
           \ following files have not been modified in over 90 days and may be candidates\
-          \ for archival:\n\n\\`\\`\\`\n${candidates}\n\\`\\`\\`\n\n### Approval Required\n\
+        \ for archival:\n\n\\`\\`\\`\n${candidates}\n\\`\\`\\`\n\n### Approval Required\n\
           \n- [ ] Review each candidate file\n- [ ] Confirm no active references exist\n\
           - [ ] Approve archival by commenting \\`/approve-archival\\`\n\n### Archival\
           \ Process\n\n1. Files will be moved to \\`misc/repo-owner-review/archived/\\\
           `\n2. A redirect/reference will be added to original location\n3. Documentation\
           \ index will be updated\n\n---\n\nThis issue was automatically created by\
           \ the Scheduled Archival workflow.\n`;\n\nawait github.rest.issues.create({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `[Archival]\
-          \ ${count} files proposed for archival`,\n  body: body,\n  labels: ["archival",\
-          \ "needs-review"]\n});\n"
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `[Archival]\
+        \ ${count} files proposed for archival`,\n  body: body,\n  labels: ['archival',\
+          \ 'needs-review']\n});\n"
     - name: Dry Run Summary
-      if: ${{ github.event.inputs.dry_run == "true" }}
-      run: "echo "## Dry Run Summary"
+      if: ${{ github.event.inputs.dry_run == 'true' }}
+      run: 'echo "## Dry Run Summary"
 
         echo ""
 
@@ -122,7 +120,7 @@ jobs:
 
         echo "${{ needs.identify-candidates.outputs.candidates }}"
 
-        "
+        '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -131,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: identify-candidates
-    if: ${{ github.event.inputs.dry_run != "true" }}
+    if: ${{ github.event.inputs.dry_run != 'true' }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
@@ -149,3 +147,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
