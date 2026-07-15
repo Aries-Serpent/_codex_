@@ -48,7 +48,7 @@ jobs:
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
     env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 5
     outputs:
       tier: ${{ steps.estimate.outputs.tier }}
@@ -281,7 +281,7 @@ jobs:
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}

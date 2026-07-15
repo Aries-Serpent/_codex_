@@ -54,7 +54,9 @@ jobs:
     steps:
     - name: Mask secrets
       run: |
+
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
       - name: "🔍 Enumerate and cancel runs"
         uses: actions/github-script@v8  # v9
         env:

@@ -30,8 +30,11 @@ jobs:
     timeout-minutes: 8
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
+
       pull-requests: write
+
       contents: read
+
     steps:
       - name: Checkout (needed for session_wrapup_autofix.py)
         uses: actions/checkout@v5
