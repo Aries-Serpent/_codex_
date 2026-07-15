@@ -36,9 +36,9 @@ jobs:
       GH_TRICKLE_POLITE_SLEEP: '0.3'
       GH_TRICKLE_MIN_REMAINING: '50'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      steps:
+    steps:
       - name: Mask secrets
-    run: |
+        run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5
       with:
@@ -57,19 +57,19 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-    run: "python scripts/ci/github_api_trickle.py --status || {\n  echo \"::warning::All\
+        run: "python scripts/ci/github_api_trickle.py --status || {\n  echo \"::warning::All\
         \ GitHub API tokens exhausted \u2014 API steps will be skipped\"\n  echo \"\
         RATE_LIMITED=true\" >> \"$GITHUB_ENV\"\n}\n"
       - name: Detect WEC changes
-    id: detect
-    if: env.RATE_LIMITED != 'true'
+        id: detect
+        if: env.RATE_LIMITED != 'true'
       env:
         BODY_BEFORE: ${{ github.event.changes.body.from }}
         BODY_AFTER: ${{ github.event.pull_request.body }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         REPO: ${{ github.repository }}
-    run: "python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json\
+        run: "python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json\
         \ || true\nNEWLY_CHECKED=$(python3 -c \"import json,sys; d=json.load(open('wec_changes.json'));\
         \ print(json.dumps(d.get('newly_checked', [])))\" 2>/dev/null || echo \"[]\"\
         )\nNEWLY_UNCHECKED=$(python3 -c \"import json,sys; d=json.load(open('wec_changes.json'));\
@@ -82,7 +82,7 @@ jobs:
         \necho \"\u2705 Newly checked: ${NEWLY_CHECKED}\"\necho \"\u23ED\uFE0F Newly\
         \ unchecked: ${NEWLY_UNCHECKED}\"\n"
   cancel-unchecked:
-    name: Cancel Runs for Unchecked Workflows
+        name: Cancel Runs for Unchecked Workflows
     needs: detect-wec-changes
     if: needs.detect-wec-changes.outputs.has_changes == 'true' && needs.detect-wec-changes.outputs.newly_unchecked
       != '[]'
@@ -385,7 +385,7 @@ jobs:
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      steps:
+    steps:
       - name: Build and post execution plan comment
       env:
         GH_REPO: ${{ github.repository }}
@@ -396,7 +396,7 @@ jobs:
         GATE_TO_SKIP: ${{ needs.parse-checklist.outputs.workflows_to_skip }}
         GATE_HAS_CHECKLIST: ${{ needs.parse-checklist.outputs.has_checklist }}
         GATE_TRIGGER: ${{ github.event.inputs.triggered_by || github.event_name }}
-    run: "PR=\"${GATE_PR}\"\nTO_RUN=\"${GATE_TO_RUN}\"\nTO_SKIP=\"${GATE_TO_SKIP}\"\
+        run: "PR=\"${GATE_PR}\"\nTO_RUN=\"${GATE_TO_RUN}\"\nTO_SKIP=\"${GATE_TO_SKIP}\"\
         \nHAS_CHECKLIST=\"${GATE_HAS_CHECKLIST}\"\nTRIGGER=\"${GATE_TRIGGER}\"\nRUN_URL=\"\
         https://github.com/${GH_REPO}/actions/runs/${GH_RUN_ID}\"\nMARKER=\"<!-- workflow-execution-gate:${PR}\
         \ -->\"\n\nif [ \"$HAS_CHECKLIST\" != \"true\" ]; then\n  printf '%s\\n' \\\
@@ -449,7 +449,7 @@ jobs:
         \ \"${GH_REPO}\" --body \"$BODY\"\n  echo \"\u2705 Created new gate comment\
         \ on PR  #${PR}\"\nfi\n"
   fast-forward:
-    name: "\u26A1 Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode\
+        name: "\u26A1 Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode\
       \ }})"
     needs: parse-checklist
     if: 'needs.parse-checklist.result == ''success'' &&
