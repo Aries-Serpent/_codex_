@@ -6,6 +6,12 @@ All CI workflows call this script when they fail.  The script maintains
 the same commit *appends* its failure section to that same comment rather
 than creating a new one.
 
+When cascading Copilot errors are detected (10+ comments), the script implements
+**append-first batching**: instead of aborting, it appends to the existing
+successful rescue comment. Multiple workflow failures destined for the same
+commit are automatically batched and posted as a single append, preventing
+rate-limiting and sprawling comments.
+
 Marker: ``<!-- ci-rescue-sha:{pr_number}:{sha_short} -->``
 
 Two operating modes
@@ -38,6 +44,9 @@ SECTION_CONTENT Markdown content to append as a named ``<details>`` section.
 APPEND_ONLY     Set to "true" to skip creating a new comment when no existing
                 rescue comment is found.  Useful for RCA appends that should
                 only update an already-existing rescue thread.
+BATCH_WAIT_SECONDS  Time to wait for other workflows before flushing queued
+                    comments as a batch append (default: 3 seconds). Used when
+                    cascading errors are detected to prevent rate-limiting.
 
 Usage — PR-triggered workflow step
 ------------------------------------
@@ -77,6 +86,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import pathlib as _pathlib
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
 CONSOLIDATION_DELAY_SECONDS = 3
@@ -112,6 +122,104 @@ def _gh(
         except Exception:
             err_body = {}
         return exc.code, err_body
+
+
+def _get_batch_queue_module():
+    """Lazily import batch queue module, gracefully degrading if unavailable."""
+    try:
+        script_dir = str(_pathlib.Path(__file__).parent)
+        if script_dir not in sys.path:
+            sys.path.insert(0, script_dir)
+        import rescue_comment_batch_queue as batch_queue
+        return batch_queue
+    except ImportError:
+        return None
+
+
+def _handle_cascade_append(
+    token: str,
+    repo: str,
+    pr_number: int,
+    commit_sha: str,
+    existing_id: int | None,
+    workflow_name: str,
+    run_id: str,
+    run_url: str,
+    section_title: str | None,
+    section_content: str | None,
+) -> bool:
+    """Handle append-first behavior when cascade detected.
+    
+    If existing comment found, append to it immediately.
+    Otherwise, queue for batch posting.
+    
+    Returns True if handled, False otherwise.
+    """
+    if existing_id:
+        # Cascade detected but existing comment found — append to it
+        now = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        if section_title and section_content:
+            append_section = (
+                f"\n\n---\n\n"
+                f"<details><summary>📋 <code>{section_title}</code> — {now} · "
+                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+                f"{section_content}\n\n"
+                f"</details>"
+            )
+        else:
+            append_section = (
+                f"\n\n---\n\n"
+                f"<details><summary>🔴 <code>{workflow_name}</code> — {now} · "
+                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+                f"@copilot **{workflow_name}** failed on commit `{commit_sha[:12]}`. "
+                f"Check [run #{run_id}]({run_url}) for details.\n\n"
+                f"</details>"
+            )
+        
+        # Fetch existing comment
+        status, comments = _gh(
+            "GET",
+            f"/repos/{repo}/issues/comments/{existing_id}",
+            token,
+        )
+        if status != 200:
+            return False
+        
+        existing_body = (comments.get("body") or "").rstrip()
+        updated_body = (existing_body + append_section)[:MAX_COMMENT_LEN]
+        
+        status, _ = _gh(
+            "PATCH",
+            f"/repos/{repo}/issues/comments/{existing_id}",
+            token,
+            {"body": updated_body},
+        )
+        if status in (200, 201):
+            print(
+                f"✅ CASCADE: Appended `{workflow_name}` failure to rescue comment #{existing_id} "
+                f"(cascade handling, commit {commit_sha[:12]})"
+            )
+            return True
+        return False
+    else:
+        # Cascade detected but no existing comment — queue for batch
+        batch_queue = _get_batch_queue_module()
+        if batch_queue:
+            try:
+                batch_queue.queue_item(
+                    pr_number=pr_number,
+                    commit_sha=commit_sha,
+                    workflow_name=workflow_name,
+                    run_id=run_id,
+                    run_url=run_url,
+                    section_title=section_title,
+                    section_content=section_content,
+                )
+                return True
+            except Exception as exc:
+                print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
+        return False
+
 
 
 def _find_rescue_comment(
@@ -200,7 +308,7 @@ def _detect_cascading_copilot_errors(
             "is_cascading": bool,
             "error_count": int,
             "last_error_id": int or None,
-            "action": "SKIP_CONSOLIDATION" | "ABORT_POSTING" | "PROCEED",
+            "action": "APPEND_TO_EXISTING" | "QUEUE_FOR_BATCH" | "SKIP_CONSOLIDATION" | "PROCEED",
         }
     """
     page = 1
@@ -235,13 +343,14 @@ def _detect_cascading_copilot_errors(
         }
     
     # If more than threshold error comments, it's a cascade
+    # ACTION: APPEND_TO_EXISTING (or QUEUE_FOR_BATCH if no existing found)
     if len(error_comments) >= threshold:
         last_error = max(error_comments, key=lambda c: c.get("created_at", ""))
         return {
             "is_cascading": True,
             "error_count": len(error_comments),
             "last_error_id": last_error.get("id"),
-            "action": "ABORT_POSTING",
+            "action": "APPEND_TO_EXISTING",
         }
     
     # If exactly 5-9 errors, skip consolidation to prevent growth
@@ -414,18 +523,12 @@ def main() -> None:
             return
         pr_number = looked_up
     
-    # CRITICAL CASCADE CHECK: Abort if cascading Copilot errors detected (PR #5324)
-    # This prevents the rescue comment from triggering another error wave
+    # CRITICAL CASCADE CHECK: Handle cascading Copilot errors (PR #5324 pattern)
+    # NEW BEHAVIOR: Instead of aborting, append to existing comment or queue for batch
+    # This ensures no comments are lost and prevents multiple sprawling comments
+    cascade_info = None
     try:
         cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number)
-        if cascade_info["action"] == "ABORT_POSTING":
-            count = cascade_info["error_count"]
-            print(
-                f"🛑 CASCADE ABORT: {count} Copilot error comments detected. "
-                f"Skipping rescue comment to break feedback loop. (PR #5324)",
-                file=__import__('sys').stderr,
-            )
-            sys.exit(0)  # Exit gracefully to not trigger additional errors
     except Exception as exc:
         print(f"⚠️  Cascade check failed (non-blocking): {exc}", file=__import__('sys').stderr)
         # Continue execution—cascade check failure shouldn't block rescue posts
@@ -490,7 +593,47 @@ def main() -> None:
         )
         return
 
+    # CASCADE APPEND-FIRST: If cascade detected, prioritize appending to existing comment
+    # or queueing for batch posting instead of creating a new comment
+    if cascade_info and cascade_info.get("is_cascading"):
+        action = cascade_info.get("action")
+        count = cascade_info.get("error_count", 0)
+        
+        if action == "APPEND_TO_EXISTING":
+            print(
+                f"🔄 CASCADE APPEND: {count} Copilot error comments detected. "
+                f"Action: APPEND_TO_EXISTING. Attempting append-first strategy.",
+                file=sys.stderr,
+            )
+            # Try to append to existing comment or queue for batch
+            if _handle_cascade_append(
+                token,
+                repo,
+                pr_number,
+                commit_sha,
+                existing_id,
+                workflow,
+                run_id,
+                run_url,
+                section_title if section_title else None,
+                section_content if section_content else None,
+            ):
+                return  # Successfully appended or queued
+            # If append failed and no existing comment, fall through to normal create
+            
+        elif action == "SKIP_CONSOLIDATION":
+            print(
+                f"⚠️  CASCADE SKIP: {count} Copilot error comments detected. "
+                f"Skipping consolidation to prevent growth.",
+                file=sys.stderr,
+            )
+            # Skip consolidation but continue with normal append/create
+            if existing_id:
+                # Still append to existing comment even though consolidation is skipped
+                pass  # Fall through to normal append logic below
+
     if existing_id:
+
         # Append this workflow's section to the existing comment (collapsed).
         if section_title and section_content:
             append_section = (
@@ -611,12 +754,38 @@ def main() -> None:
             status == 403 and "rate limit" in msg.lower()
         )
         if is_rate_limit:
-            # Rescue comment is best-effort; transient rate limits must not fail CI.
-            print(
-                f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
-                "Rescue comment will be posted on the next run."
-            )
-            sys.exit(0)
+            # Rate limited: queue for batch posting instead of losing the comment
+            batch_queue = _get_batch_queue_module()
+            if batch_queue:
+                try:
+                    batch_queue.queue_item(
+                        pr_number=pr_number,
+                        commit_sha=commit_sha,
+                        workflow_name=workflow,
+                        run_id=run_id,
+                        run_url=run_url,
+                        section_title=section_title if section_title else None,
+                        section_content=section_content if section_content else None,
+                    )
+                    print(
+                        f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                        "Queued for batch posting on next workflow run."
+                    )
+                    sys.exit(0)
+                except Exception as exc:
+                    print(
+                        f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                        f"Batch queue also failed: {exc}. "
+                        "Rescue comment will be attempted on next run."
+                    )
+                    sys.exit(0)
+            else:
+                # Rescue comment is best-effort; transient rate limits must not fail CI.
+                print(
+                    f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                    "Rescue comment will be posted on the next run."
+                )
+                sys.exit(0)
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)
 
