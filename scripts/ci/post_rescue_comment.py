@@ -82,6 +82,7 @@ import datetime
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
@@ -319,7 +320,7 @@ def _detect_cascading_copilot_errors(
     token: str,
     repo: str,
     pr_number: int,
-    threshold: int = 10,
+    threshold: int = 5,
 ) -> dict:
     """Detect cascading Copilot error comments (PR #5324 pattern).
 
@@ -333,7 +334,7 @@ def _detect_cascading_copilot_errors(
             "is_cascading": bool,
             "error_count": int,
             "last_error_id": int or None,
-            "action": "APPEND_TO_EXISTING" | "SKIP_CONSOLIDATION" | "PROCEED",
+            "action": "CONSOLIDATE_ERRORS" | "APPEND_TO_EXISTING" | "PROCEED",
         }
     """
     page = 1
@@ -351,7 +352,9 @@ def _detect_cascading_copilot_errors(
             break
 
         for c in comments:
-            if "comment-generic-error" in (c.get("body") or ""):
+            body = c.get("body") or ""
+            # Detect both rescue-comment cascade markers and Copilot error markers
+            if ("comment-generic-error" in body or "cascade-consolidated-error" in body):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
 
@@ -367,23 +370,23 @@ def _detect_cascading_copilot_errors(
             "action": "PROCEED",
         }
 
-    # If more than threshold error comments, it's a cascade
+    # If already consolidated, skip further action
+    if any("cascade-consolidated-error" in (c.get("body") or "") for c in error_comments):
+        return {
+            "is_cascading": False,
+            "error_count": len(error_comments),
+            "last_error_id": None,
+            "action": "PROCEED",
+        }
+
+    # If more than threshold error comments, it's an active cascade
     if len(error_comments) >= threshold:
         last_error = max(error_comments, key=lambda c: c.get("created_at", ""))
         return {
             "is_cascading": True,
             "error_count": len(error_comments),
             "last_error_id": last_error.get("id"),
-            "action": "APPEND_TO_EXISTING",
-        }
-
-    # If exactly 5-9 errors, skip consolidation to prevent growth
-    if len(error_comments) >= 5:
-        return {
-            "is_cascading": True,
-            "error_count": len(error_comments),
-            "last_error_id": error_comments[-1].get("id"),
-            "action": "SKIP_CONSOLIDATION",
+            "action": "CONSOLIDATE_ERRORS",
         }
 
     return {
@@ -618,12 +621,47 @@ def main() -> None:
         return
 
     # CASCADE APPEND-FIRST: If cascade detected, prioritize appending to existing comment
-    # or queueing for batch posting instead of creating a new comment
+    # or consolidating existing errors instead of creating a new comment
     if cascade_info and cascade_info.get("is_cascading"):
         action = cascade_info.get("action")
         count = cascade_info.get("error_count", 0)
 
-        if action == "APPEND_TO_EXISTING":
+        if action == "CONSOLIDATE_ERRORS":
+            print(
+                f"🔄 CASCADE CONSOLIDATION: {count} Copilot error comments detected. "
+                f"Triggering error consolidation script.",
+                file=sys.stderr,
+            )
+            # Try to consolidate the existing error comments
+            try:
+                consolidate_script = str(pathlib.Path(__file__).parent / "consolidate_cascade_errors.py")
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        consolidate_script,
+                    ],
+                    env={
+                        **os.environ,
+                        "GH_TOKEN": token,
+                        "REPO": repo,
+                        "PR_NUMBER": str(pr_number),
+                    },
+                    timeout=30,
+                    capture_output=True,
+                    text=True,
+                )
+                if result.returncode == 0:
+                    print(result.stdout, file=sys.stderr)
+                    return  # Consolidation successful
+                else:
+                    print(f"⚠️  Consolidation script returned {result.returncode}", file=sys.stderr)
+                    if result.stderr:
+                        print(result.stderr, file=sys.stderr)
+            except Exception as exc:
+                print(f"⚠️  Failed to run consolidation script: {exc}", file=sys.stderr)
+            # Fall through to normal rescue comment creation
+
+        elif action == "APPEND_TO_EXISTING":
             print(
                 f"🔄 CASCADE APPEND: {count} Copilot error comments detected. "
                 f"Action: APPEND_TO_EXISTING. Attempting append-first strategy.",
@@ -644,14 +682,6 @@ def main() -> None:
             ):
                 return  # Successfully appended or queued
             # If append failed and no existing comment, fall through to normal create
-
-        elif action == "SKIP_CONSOLIDATION":
-            print(
-                f"⚠️  CASCADE SKIP: {count} Copilot error comments detected. "
-                f"Skipping consolidation to prevent growth.",
-                file=sys.stderr,
-            )
-            # Skip consolidation but continue with normal append to existing comment if found
 
     if existing_id:
         # Append this workflow's section to the existing comment (collapsed).
