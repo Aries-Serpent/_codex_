@@ -26,24 +26,24 @@ jobs:
       checks: read
       security-events: read
     steps:
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v5
-      with:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v5
+        with:
         fetch-depth: 0
-    - name: 🐍 Setup Python
-      uses: actions/setup-python@v6
-      with:
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v6
+        with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: 📦 Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: 📦 Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install requests pyyaml python-dateutil
 
         "
-    - name: 🔍 Collect Workflow Metrics
-      id: collect
-      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime,\
+      - name: 🔍 Collect Workflow Metrics
+        id: collect
+        run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime,\
         \ timedelta\nimport subprocess\n\nmetrics_file = os.getenv("METRICS_FILE")\n\
         \n# Load existing metrics\nwith open(metrics_file, "r") as f:\n    dashboard\
         \ = json.load(f)\n\n# Update timestamp\ndashboard["dashboard_metadata"]["last_updated"]\
@@ -63,9 +63,9 @@ jobs:
         \ = round(success_rate, 1)\n\n# Save updated metrics\nwith open(metrics_file,\
         \ "w") as f:\n    json.dump(dashboard, f, indent=2)\n\nprint(f\"✅ Metrics\
         \ collected: {total_runs} total runs, {successful_runs} successful\")\nEOF\n"
-    - name: 📈 Collect CodeQL Metrics
-      id: codeql
-      run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
+      - name: 📈 Collect CodeQL Metrics
+        id: codeql
+        run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
         \ = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith open(metrics_file,\
         \ "r") as f:\n    dashboard = json.load(f)\n\n# Get CodeQL alerts\ntry:\n\
         \    cmd = [\n        "gh", "api",\n        "repos/${{ github.repository }}/code-scanning/alerts",\n\
@@ -77,9 +77,9 @@ jobs:
         \ Exception as e:\n    print(f\"⚠️  Could not fetch CodeQL alerts: {e}\")\n\
         \n# Save updated metrics\nwith open(metrics_file, "w") as f:\n    json.dump(dashboard,\
         \ f, indent=2)\nEOF\n"
-    - name: 🔐 Collect Security Metrics
-      id: security
-      run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
+      - name: 🔐 Collect Security Metrics
+        id: security
+        run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
         \ = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith open(metrics_file,\
         \ "r") as f:\n    dashboard = json.load(f)\n\n# Get dependency alerts\ntry:\n\
         \    cmd = [\n        "gh", "api",\n        "repos/${{ github.repository }}/dependabot/alerts",\n\
@@ -91,9 +91,9 @@ jobs:
         )\nexcept Exception as e:\n    print(f\"⚠️  Could not fetch security metrics:\
         \ {e}\")\n\n# Save updated metrics\nwith open(metrics_file, "w") as f:\n \
         \   json.dump(dashboard, f, indent=2)\nEOF\n"
-    - name: ✅ Collect Test & Coverage Metrics
-      id: tests
-      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+      - name: ✅ Collect Test & Coverage Metrics
+        id: tests
+        run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
         \nmetrics_file = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith\
         \ open(metrics_file, "r") as f:\n    dashboard = json.load(f)\n\n# Simulate\
         \ collecting test metrics\n# In production, these would come from test result\
@@ -102,9 +102,9 @@ jobs:
         \ + "Z"\n\nprint(\"✅ Test and coverage metrics current\")\n\n# Save updated\
         \ metrics\nwith open(metrics_file, "w") as f:\n    json.dump(dashboard, f,\
         \ indent=2)\nEOF\n"
-    - name: 🎯 Analyze Health Status
-      id: analyze
-      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+      - name: 🎯 Analyze Health Status
+        id: analyze
+        run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
         \nmetrics_file = os.getenv("METRICS_FILE")\n\n# Load metrics\nwith open(metrics_file,\
         \ "r") as f:\n    dashboard = json.load(f)\n\n# Analyze metrics\nmetrics =\
         \ dashboard["metrics"]\non_target = 0\noff_target = 0\ncritical_count = 0\n\
@@ -141,18 +141,18 @@ jobs:
         \ "/dev/null"), "a") as f:\n    f.write(f\"health_status={health_status}\\\
         n\")\n    f.write(f\"health_icon={health_icon}\\n\")\n    f.write(f\"health_score={health_score}\\\
         n\")\nEOF\n"
-    - name: 📤 Commit metrics update
-      if: always()
-      run: "git config user.name \"Health Dashboard Bot\"\ngit config user.email \"\
+      - name: 📤 Commit metrics update
+        if: always()
+        run: "git config user.name \"Health Dashboard Bot\"\ngit config user.email \"\
         health-dashboard@codex.dev\"\n\nif git diff --quiet ${{ env.METRICS_FILE }};\
         \ then\n  echo \"✅ No changes to metrics file\"\nelse\n  git add ${{ env.METRICS_FILE\
         \ }}\n  git commit -m \"chore: update health dashboard metrics [skip ci]\"\
         \ --no-verify\n  git push origin ${{ github.ref }} || echo \"⚠️  Could not\
         \ push (expected on scheduled runs)\"\nfi\n"
-    - name: 🚨 Post Alert if Needed
-      if: "always() &&\n(steps.analyze.outputs.health_status == "CRITICAL" ||\n steps.analyze.outputs.health_status\
+      - name: 🚨 Post Alert if Needed
+        if: "always() &&\n(steps.analyze.outputs.health_status == "CRITICAL" ||\n steps.analyze.outputs.health_status\
         \ == "WARNING" ||\n github.event.inputs.force_alert != "")\n"
-      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+        run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
         import subprocess\n\nmetrics_file = os.getenv("METRICS_FILE")\nforce_alert\
         \ = \"${{ github.event.inputs.force_alert }}\" or \"${{ steps.analyze.outputs.health_status\
         \ }}\"\n\n# Load metrics\nwith open(metrics_file, "r") as f:\n    dashboard\
@@ -172,9 +172,9 @@ jobs:
         \ += f\"\\n\\n[View Full Dashboard](../operations/health-dashboard.md)\"\n\
         \n# TODO: Post to GitHub Discussions\n# For now, just log\nprint(\"Alert Message:\"\
         )\nprint(message)\nEOF\n"
-    - name: 📊 Generate Summary
-      if: always()
-      run: "echo "## 🏥 Health Dashboard Update" >> $GITHUB_STEP_SUMMARY
+      - name: 📊 Generate Summary
+        if: always()
+        run: "echo "## 🏥 Health Dashboard Update" >> $GITHUB_STEP_SUMMARY
 
         echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -213,19 +213,19 @@ jobs:
     permissions:
       contents: read
     steps:
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v5
-    - name: 📢 Prepare notification
-      id: notify
-      run: "echo "✅ Health dashboard metrics collection completed"
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v5
+      - name: 📢 Prepare notification
+        id: notify
+        run: "echo "✅ Health dashboard metrics collection completed"
 
         echo "📊 Metrics file: .codex/WORKFLOW_HEALTH_DASHBOARD.json"
 
         echo "📈 Dashboard: docs/operations/health-dashboard.md"
 
         "
-    - name: 📄 Post workflow summary
-      run: "echo "## Health Dashboard Metrics Collection" >> $GITHUB_STEP_SUMMARY
+      - name: 📄 Post workflow summary
+        run: "echo "## Health Dashboard Metrics Collection" >> $GITHUB_STEP_SUMMARY
 
         echo "" >> $GITHUB_STEP_SUMMARY
 
