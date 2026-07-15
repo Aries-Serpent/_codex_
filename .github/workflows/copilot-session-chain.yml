@@ -49,7 +49,7 @@ jobs:
     - name: Determine if chaining should proceed
       id: check
       uses: actions/github-script@v8
-      with:
+        with:
         script: "const INTEGRATION_BRANCHES = ['0D_base_'];\nconst event = context.eventName;\n\
           \nif (event === 'workflow_dispatch') {\n  const src = '${{ inputs.source_branch\
           \ }}' || '0D_base_';\n  core.setOutput('should_chain', 'true');\n  core.setOutput('integration_branch',\
@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Checkout integration branch
         uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         ref: ${{ needs.check-trigger.outputs.integration_branch }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -316,7 +316,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
