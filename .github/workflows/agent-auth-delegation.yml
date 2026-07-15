@@ -963,7 +963,6 @@ jobs:
         \ job passes.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   activate-delegation:
     name: Activate token delegation
     needs:
@@ -1348,7 +1347,6 @@ jobs:
           )\nexcept Exception as exc:\n    print(f\"\u26A0\uFE0F  AgentBrainAPI.report_completion()\
           \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
         \ module not installed in CI env)\")\nPYEOF\n"
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
     runs-on: ubuntu-latest
@@ -1522,7 +1520,6 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run:python scripts/ci/post_rescue_comment.py
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
 
 
