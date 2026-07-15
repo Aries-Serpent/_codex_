@@ -113,19 +113,7 @@ jobs:
         id: changelog
         run: |
           # Check that CHANGELOG.md has entry for this version
-          VERSION="${{ steps.version.outputs.version }}"
-          CLEAN_VERSION="${VERSION#v}"
-
-          if ! grep -q "$CLEAN_VERSION" CHANGELOG.md; then
-            echo "⚠️  Warning: CHANGELOG.md not updated for $CLEAN_VERSION"
-            # This is a warning, not a blocker for now
-          else
-            echo "✅ CHANGELOG.md updated"
-          fi
-      - name: Verify version bumped in pyproject.toml
-        id: version-check
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
+          VERSION="${{ steps.version.outputs.version }}" CLEAN_VERSION="${VERSION#v}"  if ! grep -q "$CLEAN_VERSION" CHANGELOG.md; then echo "⚠️  Warning: CHANGELOG.md not updated for $CLEAN_VERSION" # This is a warning, not a blocker for now else echo "✅ CHANGELOG.md updated" fi - name: Verify version bumped in pyproject.toml id: version-check run: | VERSION="${{ steps.version.outputs.version }}"
           # Remove any commit suffix for comparison with pyproject.toml
           CLEAN_VERSION="${VERSION%%-*}"
           CLEAN_VERSION="${CLEAN_VERSION#v}"
@@ -241,10 +229,7 @@ jobs:
           mkdir -p .codex/manifests/
           python scripts/ci/generate_wheel_manifest.py \
             --wheelhouse dist/ \
-            --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json
-
-          # Verify manifest was created
-          if [ ! -f ".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" ]; then
+            --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json  # Verify manifest was created if [ ! -f ".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" ]; then
             echo "❌ Manifest file not created"
             exit 1
           fi
@@ -252,39 +237,7 @@ jobs:
           echo "✓ Manifest generated successfully"
       - name: Verify manifest contents
         run: |
-          MANIFEST_FILE=".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json"
-          echo "Manifest contents:"
-          cat "$MANIFEST_FILE"
-
-          # Verify manifest contains wheels
-          WHEEL_COUNT=$(jq '.count // 0' "$MANIFEST_FILE")
-          if [ "$WHEEL_COUNT" -eq 0 ]; then
-            echo "❌ Manifest contains no wheels"
-            exit 1
-          fi
-          echo "✓ Manifest contains $WHEEL_COUNT wheels"
-      - name: Upload manifest artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: release-manifest
-          path: .codex/manifests/
-          retention-days: 5
-
-  # Generate SBOM (Lane 4 P1.3.2 output)
-  generate-sbom:
-    name: Generate SBOM
-    needs: build-wheels
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          MANIFEST_FILE=".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" echo "Manifest contents:" cat "$MANIFEST_FILE"  # Verify manifest contains wheels WHEEL_COUNT=$(jq '.count // 0' "$MANIFEST_FILE") if [ "$WHEEL_COUNT" -eq 0 ]; then echo "❌ Manifest contains no wheels" exit 1 fi echo "✓ Manifest contains $WHEEL_COUNT wheels" - name: Upload manifest artifact uses: actions/upload-artifact@v5 with: name: release-manifest path: .codex/manifests/ retention-days: 5  # Generate SBOM (Lane 4 P1.3.2 output) generate-sbom: name: Generate SBOM needs: build-wheels runs-on: ubuntu-latest timeout-minutes: 15 steps: - name: Checkout repository uses: actions/checkout@v5 with: persist-credentials: false - name: Set up Python uses: actions/setup-python@v6 with: python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
       - name: Install SBOM generation tools
         run: |
@@ -419,37 +372,7 @@ jobs:
 
           # Try to install from PyPI
           # Extract version and strip prefixes/suffixes for PEP 440 compliance
-          VERSION="${{ needs.pre-release-checks.outputs.version }}"
-          # Remove 'v' prefix if present
-          CLEAN_VERSION="${VERSION#v}"
-          # Remove any -final, -dev, etc. suffixes to get base version
-          CLEAN_VERSION=$(echo "${CLEAN_VERSION}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+' || echo "${CLEAN_VERSION}")
-
-          echo "Original version: ${VERSION}"
-          echo "Clean version for pip: ${CLEAN_VERSION}"
-
-          # Install and verify
-          pip install "codex-ml==${CLEAN_VERSION}" || {
-            echo "⚠️ Package not yet indexed on PyPI (normal for new releases)"
-            echo "PyPI indexing can take 5-15 minutes after publication"
-          }
-
-  # Create GitHub release with artifacts
-  create-release:
-    name: Create GitHub Release
-    needs: [publish-to-pypi, pre-release-checks]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-          fetch-depth: 0
-      - name: Set version from pre-release-checks output
-        id: version
-        env:
-          PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+          VERSION="${{ needs.pre-release-checks.outputs.version }}" # Remove 'v' prefix if present CLEAN_VERSION="${VERSION#v}" # Remove any -final, -dev, etc. suffixes to get base version CLEAN_VERSION=$(echo "${CLEAN_VERSION}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+' || echo "${CLEAN_VERSION}")  echo "Original version: ${VERSION}" echo "Clean version for pip: ${CLEAN_VERSION}"  # Install and verify pip install "codex-ml==${CLEAN_VERSION}" || { echo "⚠️ Package not yet indexed on PyPI (normal for new releases)" echo "PyPI indexing can take 5-15 minutes after publication" }  # Create GitHub release with artifacts create-release: name: Create GitHub Release needs: [publish-to-pypi, pre-release-checks] runs-on: ubuntu-latest timeout-minutes: 10 steps: - name: Checkout repository uses: actions/checkout@v5 with: persist-credentials: false fetch-depth: 0 - name: Set version from pre-release-checks output id: version env: PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
           # Use the version from pre-release-checks which handles both tags and dispatches
           VERSION="$PRE_RELEASE_VERSION"
@@ -484,49 +407,7 @@ jobs:
       - name: Generate release notes
         id: release-notes
         run: |
-          CLEAN_VERSION="${{ steps.version.outputs.version }}"
-          CLEAN_VERSION="${CLEAN_VERSION#v}"
-
-          {
-            echo "## Release Notes - v${CLEAN_VERSION}"
-            echo ""
-            echo "### 📦 Installation"
-            echo ""
-            echo "Install the package from PyPI:"
-            echo ""
-            echo "\`\`\`bash"
-            echo "pip install codex-ml==${CLEAN_VERSION}"
-            echo ""
-            echo "# Or with specific profile:"
-            echo "pip install 'codex-ml[core]==${CLEAN_VERSION}'  # Lightweight"
-            echo "pip install 'codex-ml[runtime]==${CLEAN_VERSION}'  # ML inference"
-            echo "pip install 'codex-ml[full]==${CLEAN_VERSION}'  # Full development"
-            echo "\`\`\`"
-            echo ""
-            echo "### 📋 What's Included"
-            echo ""
-            echo "- **Core Profile**: Minimal OODA loop, offline-first"
-            echo "- **Runtime Profile**: ML inference + pattern learning"
-            echo "- **Full Profile**: Complete development environment"
-            echo ""
-            echo "### ✅ Quality Assurance"
-            echo ""
-            echo "- Universal wheel built with deterministic hashes"
-            echo "- Manifest hash verification included"
-            echo "- SBOM (Software Bill of Materials) included"
-            echo "- Smoke tests passing for all profiles"
-            echo ""
-            echo "### 📚 Documentation"
-            echo ""
-            echo "See [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md) for:"
-            echo "- Installation instructions"
-            echo "- Profile selection guidance"
-            echo "- Troubleshooting common issues"
-          } >> release-notes.md
-      - name: Create GitHub release (as draft)
-        uses: actions/create-release@v1
-        env:
-         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          CLEAN_VERSION="${{ steps.version.outputs.version }}" CLEAN_VERSION="${CLEAN_VERSION#v}"  { echo "## Release Notes - v${CLEAN_VERSION}" echo "" echo "### 📦 Installation" echo "" echo "Install the package from PyPI:" echo "" echo "\`\`\`bash" echo "pip install codex-ml==${CLEAN_VERSION}" echo "" echo "# Or with specific profile:" echo "pip install 'codex-ml[core]==${CLEAN_VERSION}'  # Lightweight" echo "pip install 'codex-ml[runtime]==${CLEAN_VERSION}'  # ML inference" echo "pip install 'codex-ml[full]==${CLEAN_VERSION}'  # Full development" echo "\`\`\`" echo "" echo "### 📋 What's Included" echo "" echo "- **Core Profile**: Minimal OODA loop, offline-first" echo "- **Runtime Profile**: ML inference + pattern learning" echo "- **Full Profile**: Complete development environment" echo "" echo "### ✅ Quality Assurance" echo "" echo "- Universal wheel built with deterministic hashes" echo "- Manifest hash verification included" echo "- SBOM (Software Bill of Materials) included" echo "- Smoke tests passing for all profiles" echo "" echo "### 📚 Documentation" echo "" echo "See [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md) for:" echo "- Installation instructions" echo "- Profile selection guidance" echo "- Troubleshooting common issues" } >> release-notes.md - name: Create GitHub release (as draft) uses: actions/create-release@v1 env: GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
@@ -648,12 +529,4 @@ jobs:
     steps:
       - name: Check workflow status
         run: |
-          STATUS="${{ needs.post-release-notification.result }}"
-          if [ "${STATUS}" == "success" ]; then
-            echo "✅ Release workflow completed successfully"
-            exit 0
-          else
-            echo "❌ Release workflow failed with status: ${STATUS}"
-            exit 1
-          fi
-
+          STATUS="${{ needs.post-release-notification.result }}" if [ "${STATUS}" == "success" ]; then echo "✅ Release workflow completed successfully" exit 0 else echo "❌ Release workflow failed with status: ${STATUS}" exit 1 fi 

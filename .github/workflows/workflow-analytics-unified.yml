@@ -119,8 +119,7 @@ jobs:
         run: |
           if [ -f "scripts/quantum_workflow_health.py" ]; then
             python scripts/quantum_workflow_health.py \
-              --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \
-              ${{ inputs.full_analysis && '--full-analysis' || '' }}
+              --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \ ${{ inputs.full_analysis && '--full-analysis' || '' }}
           else
             echo "Quantum health script not found, running basic health check"
             # Fallback health check
@@ -167,21 +166,12 @@ jobs:
         run: |
           if [ -f ".github/scripts/workflow_analytics_runner.py" ]; then
             python .github/scripts/workflow_analytics_runner.py \
-              --analysis-period ${{ inputs.analysis_period || '100' }} \
-              --status-filter ${{ inputs.status_filter || 'all' }} \
-              --output-dir ".codex/reports" \
-              --create-report ${{ inputs.create_report || 'true' }}
+              --analysis-period ${{ inputs.analysis_period || '100' }} \ --status-filter ${{ inputs.status_filter || 'all' }} \ --output-dir ".codex/reports" \ --create-report ${{ inputs.create_report || 'true' }}
           else
             echo "Analytics script not found, running basic analysis"
             mkdir -p .codex/reports
             # Basic workflow analysis using gh CLI
-            gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json
-            echo "Analytics complete"
-          fi
-      - name: Create issue if patterns detected
-        if: inputs.create_issue == true
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+            gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json echo "Analytics complete" fi - name: Create issue if patterns detected if: inputs.create_issue == true env: GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Create issue with findings
           if [ -f ".codex/reports/findings.md" ]; then
@@ -231,35 +221,7 @@ jobs:
           mkdir -p .codex/reports
 
           # Gather workflow data
-          gh run list --limit ${{ inputs.analysis_period }} \
-            ${{ inputs.workflow_filter && format('--workflow {0}', inputs.workflow_filter) || '' }} \
-            ${{ inputs.status_filter != 'all' && format('--status {0}', inputs.status_filter) || '' }} \
-            --json name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json
-
-          # Generate report
-          if [ "${{ inputs.create_report }}" == "true" ]; then
-            echo "# Workflow Analytics Report" > .codex/reports/analytics-report.md
-            echo "" >> .codex/reports/analytics-report.md
-            echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .codex/reports/analytics-report.md
-            echo "Period: Last ${{ inputs.analysis_period }} runs" >> .codex/reports/analytics-report.md
-            echo "" >> .codex/reports/analytics-report.md
-
-            # Calculate basic metrics
-            total=$(jq 'length' .codex/reports/manual-analytics.json)
-            success=$(jq '[.[] | select(.conclusion == "success")] | length' .codex/reports/manual-analytics.json)
-            failure=$(jq '[.[] | select(.conclusion == "failure")] | length' .codex/reports/manual-analytics.json)
-            success_rate=$(echo "scale=2; $success * 100 / $total" | bc)
-
-            echo "## Summary" >> .codex/reports/analytics-report.md
-            echo "- Total runs: $total" >> .codex/reports/analytics-report.md
-            echo "- Success: $success" >> .codex/reports/analytics-report.md
-            echo "- Failure: $failure" >> .codex/reports/analytics-report.md
-            echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md
-          fi
-      - name: Upload manual analytics
-        uses: actions/upload-artifact@v5  # v7.0.1
-        with:
-          name: manual-analytics-${{ github.run_number }}
+          gh run list --limit ${{ inputs.analysis_period }} \ ${{ inputs.workflow_filter && format('--workflow {0}', inputs.workflow_filter) || '' }} \ ${{ inputs.status_filter != 'all' && format('--status {0}', inputs.status_filter) || '' }} \ --json name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json  # Generate report if [ "${{ inputs.create_report }}" == "true" ]; then echo "# Workflow Analytics Report" > .codex/reports/analytics-report.md echo "" >> .codex/reports/analytics-report.md echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .codex/reports/analytics-report.md echo "Period: Last ${{ inputs.analysis_period }} runs" >> .codex/reports/analytics-report.md echo "" >> .codex/reports/analytics-report.md  # Calculate basic metrics total=$(jq 'length' .codex/reports/manual-analytics.json) success=$(jq '[.[] | select(.conclusion == "success")] | length' .codex/reports/manual-analytics.json) failure=$(jq '[.[] | select(.conclusion == "failure")] | length' .codex/reports/manual-analytics.json) success_rate=$(echo "scale=2; $success * 100 / $total" | bc)  echo "## Summary" >> .codex/reports/analytics-report.md echo "- Total runs: $total" >> .codex/reports/analytics-report.md echo "- Success: $success" >> .codex/reports/analytics-report.md echo "- Failure: $failure" >> .codex/reports/analytics-report.md echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md fi - name: Upload manual analytics uses: actions/upload-artifact@v5  # v7.0.1 with: name: manual-analytics-${{ github.run_number }}
           path: |
             .codex/reports/manual-analytics.json
             .codex/reports/analytics-report.md

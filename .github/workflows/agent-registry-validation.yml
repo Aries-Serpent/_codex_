@@ -211,5 +211,5 @@ jobs:
           WORKFLOW_NAME: Agent Registry Validation
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
-       run: python scripts/ci/post_rescue_comment.py
+        run: python scripts/ci/post_rescue_comment.py
 

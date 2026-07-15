@@ -132,37 +132,8 @@ jobs:
           PYEOF
       - name: Summary — drift detection result
         run: |
-          SHOULD="${{ steps.drift.outputs.should_retrain }}"
-          SCORE="${{ steps.drift.outputs.drift_score }}"
-          SAMPLES="${{ steps.drift.outputs.samples_count }}"
-          echo "### 🔍 Drift Detection Result" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Drift Score | \`${SCORE}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Sample Count | \`${SAMPLES}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Should Retrain | \`${SHOULD}\` |" >> "$GITHUB_STEP_SUMMARY"
-
-  # ── Step 2: Retrain if drift exceeded ────────────────────────────────────────
-  retrain:
-    name: Auto-retrain model
-    needs: detect-drift
-    if: needs.detect-drift.outputs.should_retrain == 'true' && github.event.inputs.dry_run != 'true'
-    runs-on: ubuntu-latest-m
-    timeout-minutes: 60
-
-    steps:
-    steps:
-        with:
-        persist-credentials: false
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
-      - name: Setup Python (cached)
-        uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: training
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          SHOULD="${{ steps.drift.outputs.should_retrain }}" SCORE="${{ steps.drift.outputs.drift_score }}"
+          SAMPLES="${{ steps.drift.outputs.samples_count }}" echo "### 🔍 Drift Detection Result" >> "$GITHUB_STEP_SUMMARY" echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY" echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY" echo "| Drift Score | \`${SCORE}\` |" >> "$GITHUB_STEP_SUMMARY" echo "| Sample Count | \`${SAMPLES}\` |" >> "$GITHUB_STEP_SUMMARY" echo "| Should Retrain | \`${SHOULD}\` |" >> "$GITHUB_STEP_SUMMARY"  # ── Step 2: Retrain if drift exceeded ──────────────────────────────────────── retrain: name: Auto-retrain model needs: detect-drift if: needs.detect-drift.outputs.should_retrain == 'true' && github.event.inputs.dry_run != 'true' runs-on: ubuntu-latest-m timeout-minutes: 60  steps: steps: with: persist-credentials: false - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)" id: resolve-target uses: ./.github/actions/resolve-push-target - name: Setup Python (cached) uses: ./.github/actions/setup-python-cached with: python-version: '3.12.13' cache-tier: training cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install ML dependencies
         run: |
           pip install --quiet -e ".[ml]" || {
@@ -241,10 +212,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add models/ || true
           if ! git diff --cached --quiet; then
-            git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci]"
-            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
-            _TARGET="${PUSH_TARGET:-main}"
-            echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+            git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci]" # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above) _TARGET="${PUSH_TARGET:-main}" echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
             git fetch origin "$_TARGET" --depth=1
             git rebase "origin/$_TARGET" || {
               echo "⚠️  Rebase conflict — re-applying model registry on top of latest $_TARGET"
@@ -252,20 +220,9 @@ jobs:
               git reset --hard "origin/$_TARGET"
               git add models/ || true
               git diff --cached --quiet && { echo "ℹ️  No registry changes remain — skipping push"; exit 0; }
-              git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci] (post-rebase retry)"
-            }
-            git push origin "HEAD:$_TARGET"
-          else
-            echo "No registry changes to commit"
-          fi
-      - name: Open tracking issue
-        if: steps.retrain.outputs.new_version != ''
-        uses: actions/github-script@v8  # v9
-        with:
-          github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+              git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci] (post-rebase retry)" } git push origin "HEAD:$_TARGET" else echo "No registry changes to commit" fi - name: Open tracking issue if: steps.retrain.outputs.new_version != '' uses: actions/github-script@v8  # v9 with: github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
-            const version = '${{ steps.retrain.outputs.new_version }}';
-            const drift   = '${{ needs.detect-drift.outputs.drift_score }}';
+            const version = '${{ steps.retrain.outputs.new_version }}'; const drift   = '${{ needs.detect-drift.outputs.drift_score }}';
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -285,6 +242,4 @@ jobs:
     steps:
         run: |
           echo "### ⚠️ Dry Run — Retrain would have been triggered" >> "$GITHUB_STEP_SUMMARY"
-          echo "Drift score: \`${{ needs.detect-drift.outputs.drift_score }}\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "Re-run with \`dry_run=false\` to execute." >> "$GITHUB_STEP_SUMMARY"
-
+          echo "Drift score: \`${{ needs.detect-drift.outputs.drift_score }}\`" >> "$GITHUB_STEP_SUMMARY" echo "Re-run with \`dry_run=false\` to execute." >> "$GITHUB_STEP_SUMMARY" 
