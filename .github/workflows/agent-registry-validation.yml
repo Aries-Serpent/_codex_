@@ -182,9 +182,6 @@ jobs:
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
         env:
           GH_TOKEN: ${{ github.token }}
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

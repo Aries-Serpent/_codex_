@@ -56,7 +56,7 @@ jobs:
       reason: ${{ steps.estimate.outputs.reason }}
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
     steps:
-    - name: Mask secrets
+      - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5

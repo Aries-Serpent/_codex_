@@ -35,13 +35,13 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Mask secrets
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set version from tag or input
