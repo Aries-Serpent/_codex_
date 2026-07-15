@@ -28,7 +28,7 @@ jobs:
     - name: Upload pyramid report
       uses: actions/upload-artifact@v5
       with:
-        name: test-pyramid-${{ github.run_id }}
+      name: test-pyramid-${{ github.run_id }}
         path: reports/test_pyramid_latest.json
     - name: Gate on pyramid health
       run: "python3 - <<'PYEOF'\nimport json\nfrom pathlib import Path\n\np = Path(\"\

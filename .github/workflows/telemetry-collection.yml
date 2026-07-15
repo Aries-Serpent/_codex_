@@ -101,7 +101,7 @@ jobs:
       - name: Upload telemetry report
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: telemetry-report-${{ github.run_id }}
+        name: telemetry-report-${{ github.run_id }}
           path: telemetry_report_*.json
           retention-days: 90
       - name: Check for critical patterns

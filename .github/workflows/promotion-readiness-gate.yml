@@ -48,7 +48,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: promotion-readiness-report
+      name: promotion-readiness-report
         path: .codex/promotion-readiness-report.json
         retention-days: 30
         if-no-files-found: warn

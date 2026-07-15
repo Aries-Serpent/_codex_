@@ -109,7 +109,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: sigstore-verification-report-${{ github.run_id }}
+        name: sigstore-verification-report-${{ github.run_id }}
           path: sigstore-report.json
           if-no-files-found: warn
           retention-days: 30

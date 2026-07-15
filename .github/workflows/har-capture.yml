@@ -158,7 +158,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: playwright-har-capture-report-${{ github.run_id }}
+        name: playwright-har-capture-report-${{ github.run_id }}
           path: |
             cognitive_app/playwright-report/
             cognitive_app/playwright-results.json

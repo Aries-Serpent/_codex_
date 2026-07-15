@@ -23,14 +23,14 @@ jobs:
       REPO: ${{ github.repository }}
       steps:
       - name: Mask secrets
-      run: |
+    run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Resolve PR context
-      id: ctx
+    id: ctx
       env:
         PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         REVIEWER_LOGIN: ${{ github.event.review.user.login }}
-      run: "PR_SHA=\"${{ github.event.pull_request.head.sha }}\"\nPR_NUM=\"${{ github.event.pull_request.number\
+    run: "PR_SHA=\"${{ github.event.pull_request.head.sha }}\"\nPR_NUM=\"${{ github.event.pull_request.number\
         \ }}\"\nPR_REF=\"$PR_HEAD_REF\"\nREVIEWER=\"$REVIEWER_LOGIN\"\necho \"pr_sha=${PR_SHA}\"\
         \   >> \"$GITHUB_OUTPUT\"\necho \"pr_num=${PR_NUM}\"   >> \"$GITHUB_OUTPUT\"\
         \necho \"pr_ref=${PR_REF}\"   >> \"$GITHUB_OUTPUT\"\necho \"reviewer=${REVIEWER}\"\
@@ -41,7 +41,7 @@ jobs:
         \nfi\necho \"Approval by ${REVIEWER} on PR  #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
         \n"
       - name: Checkout
-      uses: actions/checkout@v5
+    uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
@@ -49,12 +49,12 @@ jobs:
           }}
         ref: ${{ github.event.pull_request.head.ref }}
       - name: Set up Python (for approve_pending_runs.py)
-      uses: actions/setup-python@v6
+    uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
       - name: Dispatch unified approval hub
-      uses: actions/github-script@v8
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -70,9 +70,9 @@ jobs:
         \  approval_ttl_hours: '2',\n      dry_run: 'false'\n    }\n  });\n  core.info('\u2705\
           \ auto-approve-workflows.yml dispatched');\n} catch (err) {\n  core.warning(`Hub\
         \ dispatch failed: ${err.message}`);\n}\n"
-      continue-on-error: true
+    continue-on-error: true
       - name: Dispatch Validation Pipeline (validate.yml)
-      uses: actions/github-script@v8
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -83,9 +83,9 @@ jobs:
         \ { mode: 'fast' },\n  });\n  core.info('\u2705 validate.yml dispatched');\n\
         } catch (err) {\n  core.warning(`validate.yml dispatch failed: ${err.message}`);\n\
           }\n"
-      continue-on-error: true
+    continue-on-error: true
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
-      uses: actions/github-script@v8
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -96,9 +96,9 @@ jobs:
         \    inputs: {},\n  });\n  core.info('\u2705 pre-merge-validation.yml dispatched');\n\
         } catch (err) {\n  core.warning(`pre-merge-validation.yml dispatch failed:\
           \ ${err.message}`);\n}\n"
-      continue-on-error: true
+    continue-on-error: true
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
-      uses: actions/github-script@v8
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
@@ -111,9 +111,9 @@ jobs:
           } catch (err) {\n  // Non-fatal \u2014 CODEX_MASTER_KEY may be absent in\
           \ fork contexts\n  core.warning(`codeql-alert-fetcher.yml dispatch failed\
         \ (needs CODEX_MASTER_KEY/security_events): ${err.message}`);\n}\n"
-      continue-on-error: true
+    continue-on-error: true
       - name: Post @copilot continue (resume agent session)
-      uses: actions/github-script@v8
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -132,10 +132,10 @@ jobs:
           \ body });\n  core.info('\u2705 @copilot continue comment posted');\n} catch\
         \ (err) {\n  core.warning(`Could not post @copilot continue comment: ${err.message}`);\n\
           }\n"
-      continue-on-error: true
+    continue-on-error: true
       - name: Summary
-      if: always()
-      run: 'echo "================================================================"
+    if: always()
+    run: 'echo "================================================================"
         | tee -a "$GITHUB_STEP_SUMMARY"
 
         echo "  Approval Dispatch Complete"                                     |

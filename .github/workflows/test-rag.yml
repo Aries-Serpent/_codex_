@@ -321,13 +321,13 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         flags: rag-modules
-        name: rag-coverage-${{ matrix.python-version }}
+      name: rag-coverage-${{ matrix.python-version }}
         fail_ci_if_error: false
     - name: Upload HTML coverage report
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: coverage-report-${{ matrix.python-version }}
+      name: coverage-report-${{ matrix.python-version }}
         path: htmlcov/
         retention-days: 30
         if-no-files-found: warn
@@ -425,7 +425,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: security-report-${{ matrix.python-version }}
+      name: security-report-${{ matrix.python-version }}
         path: bandit-report.txt
         retention-days: 30
         if-no-files-found: warn

@@ -111,7 +111,7 @@ jobs:
 
       steps:
       - name: Mask secrets
-      run: |
+    run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
     # ── 1. Probe the API endpoint ─────────────────────────────────────────

@@ -59,7 +59,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: ci-metrics
+      name: ci-metrics
         path: .codex/metrics/latest.json
         retention-days: 30
     env:
@@ -85,7 +85,7 @@ jobs:
     - name: Download metrics
       uses: actions/download-artifact@v5
       with:
-        name: ci-metrics
+      name: ci-metrics
         path: .codex/metrics
     - name: Generate dashboard
       run: 'python scripts/ci/phase_8_1_dashboard_generator.py
@@ -116,7 +116,7 @@ jobs:
     - name: Download metrics
       uses: actions/download-artifact@v5
       with:
-        name: ci-metrics
+      name: ci-metrics
         path: .codex/metrics
     - name: Run incident classifier
       run: 'python scripts/ci/phase_8_1_incident_classifier.py
@@ -148,7 +148,7 @@ jobs:
     - name: Download metrics
       uses: actions/download-artifact@v5
       with:
-        name: ci-metrics
+      name: ci-metrics
         path: .codex/metrics
     - name: Generate daily report
       run: "python << 'EOF'\nfrom datetime import datetime\nimport json\n\n# Load\
@@ -172,7 +172,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: daily-report
+      name: daily-report
         path: .codex/PHASE_8_1_DAILY_REPORT.md
         retention-days: 30
   notify:

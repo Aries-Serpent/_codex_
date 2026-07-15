@@ -36,29 +36,29 @@ jobs:
         }}
       steps:
       - name: Mask secrets
-      run: echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+    run: echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout
-      uses: actions/checkout@v5
+    uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
-      id: resolve-target
-      uses: ./.github/actions/resolve-push-target
+    id: resolve-target
+    uses: ./.github/actions/resolve-push-target
       - name: Setup Python (cached)
-      uses: ./.github/actions/setup-python-cached
+    uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Generate audit report
-      id: audit
+    id: audit
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
           }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-      run: "set -euo pipefail\n\nREPORT_PATH=\"docs/admin/variable_audit_latest.md\"\
+    run: "set -euo pipefail\n\nREPORT_PATH=\"docs/admin/variable_audit_latest.md\"\
         \nJSON_PATH=\".codex/variable_audit_latest.json\"\n\n# Generate Markdown report\n\
         .venv_ci/bin/python scripts/tools/variable_audit_cli.py report \\\n  --out\
         \ \"$REPORT_PATH\" 2>&1 || {\n    echo \"⚠️ Audit CLI failed — falling back\
@@ -74,7 +74,7 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\necho \"json_path=$JSON_PATH\"     >> \"$GITHUB_OUTPUT\"\
         \n"
       - name: Stamp sync timestamp in guide
-      run: "STAMP=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\nGUIDE=\"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
+    run: "STAMP=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\nGUIDE=\"docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\"\
         \n\n# Update or append the \"Last synced\" line in the guide header\nif grep\
         \ -q \"^> \\*\\*Last synced\" \"$GUIDE\"; then\n  sed -i \"s|^> \\*\\*Last\
         \ synced.*|> **Last synced:** \\`$STAMP\\` (auto-sync workflow)|\" \"$GUIDE\"\
@@ -82,16 +82,16 @@ jobs:
         \ synced:** \\`$STAMP\\` (auto-sync workflow)\\n\\n|\" \"$GUIDE\"\nfi\n\n\
         echo \"Stamped: $STAMP\"\n"
       - name: Detect changes
-      id: detect
-      run: "if git diff --quiet; then\n  echo \"changed=false\" >> \"$GITHUB_OUTPUT\"\
+    id: detect
+    run: "if git diff --quiet; then\n  echo \"changed=false\" >> \"$GITHUB_OUTPUT\"\
         \nelse\n  echo \"changed=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"Changed files:\"\
         \n  git diff --name-only\nfi\n"
       - name: Commit sync artifacts
-      if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
+    if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
       env:
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch || 'main' }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-      run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
+    run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
         _TARGET=\"${{ steps.resolve-target.outputs.branch || 'main' }}\"\necho \"\U0001F500\
         \ Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\
         \n\n# SECURITY: Validate target branch exists via API (no git fetch/checkout)\n\
@@ -111,14 +111,14 @@ jobs:
         \n\ngit push origin HEAD:\"$_TARGET\"\necho \"\U0001F4EC Pushed to $_TARGET\"\
         \n"
       - name: Upload audit report artifact
-      if: steps.detect.outputs.changed == 'true'
-      uses: actions/upload-artifact@v5
+    if: steps.detect.outputs.changed == 'true'
+    uses: actions/upload-artifact@v5
       with:
         name: variable-audit-report-${{ github.run_number }}
         path: docs/admin/variable_audit_latest.md
         retention-days: 30
       - name: Job summary
-      run: 'ABSENT="${{ steps.audit.outputs.absent_required }}"
+    run: 'ABSENT="${{ steps.audit.outputs.absent_required }}"
 
         CHANGED="${{ steps.detect.outputs.changed }}"
 
@@ -154,8 +154,8 @@ jobs:
 
         '
       - name: Open blocker issue if absent required variables
-      if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
-      uses: actions/github-script@v8
+    if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
+    uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -174,9 +174,9 @@ jobs:
           \ Date().toISOString()}\\n**Workflow:** ${context.workflow}`,\n  labels:\
           \ ['variable-blocker', 'ops', 'priority: high'],\n});\n"
       - name: Fail gate — absent required variables (workflow_dispatch)
-      if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch'
+    if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch'
         && inputs.dry_run != true
-      run: 'echo "::error::variable_audit_cli check: ${{ steps.audit.outputs.absent_required
+    run: 'echo "::error::variable_audit_cli check: ${{ steps.audit.outputs.absent_required
         }} required variable(s) absent."
 
         echo "Run: python scripts/tools/variable_audit_cli.py check --fail-on-absent"

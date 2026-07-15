@@ -51,7 +51,7 @@ jobs:
     - name: Upload accuracy report
       uses: actions/upload-artifact@v5
       with:
-        name: forecast-accuracy
+      name: forecast-accuracy
         path: forecast-accuracy.json
     timeout-minutes: 30
   bottleneck_validation:
@@ -95,7 +95,7 @@ jobs:
     - name: Upload bottleneck report
       uses: actions/upload-artifact@v5
       with:
-        name: bottleneck-report
+      name: bottleneck-report
         path: bottleneck-report.json
     timeout-minutes: 30
   recommendation_validation:
@@ -145,7 +145,7 @@ jobs:
     - name: Upload recommendation report
       uses: actions/upload-artifact@v5
       with:
-        name: recommendation-report
+      name: recommendation-report
         path: recommendation-report.json
     timeout-minutes: 30
   dashboard_performance:
@@ -186,7 +186,7 @@ jobs:
     - name: Upload performance report
       uses: actions/upload-artifact@v5
       with:
-        name: dashboard-performance
+      name: dashboard-performance
         path: dashboard-performance.json
     timeout-minutes: 30
   summary:

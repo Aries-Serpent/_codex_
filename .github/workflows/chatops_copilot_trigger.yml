@@ -46,7 +46,7 @@ jobs:
           ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
-          run: "# Normalize command\nCMD=$(echo \"$COMMENT_BODY\" | head -1 | xargs)\n\
+        run: "# Normalize command\nCMD=$(echo \"$COMMENT_BODY\" | head -1 | xargs)\n\
           echo \"FULL_CMD=${CMD}\" >> $GITHUB_OUTPUT\n\n# Extract subcommand: /copilot\
         \ <subcommand> [args...]\nSUBCMD=$(echo \"$CMD\" | awk '{print $2}')\nARGS=$(echo\
         \ \"$CMD\" | cut -d' ' -f3-)\necho \"SUBCMD=${SUBCMD}\" >> $GITHUB_OUTPUT\n\
@@ -66,7 +66,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
           \  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
           \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
           \ \\\n  -d \"{\\\"body\\\":\\\"\u26D4 **Chat-Ops:** Actor \\`${ACTOR}\\` is\
@@ -124,7 +124,7 @@ jobs:
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           PROMPT_ARG: ${{ steps.parse.outputs.ARGS }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\n\n# Resolve prompt file:\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\n\n# Resolve prompt file:\
         \ use arg if given, else latest followup prompt\nPROMPT=\"${PROMPT_ARG}\"\n\
         if [ -z \"$PROMPT\" ]; then\n  PROMPT=$(ls -t .github/copilot-prompts/active/*-followup.md\
         \ 2>/dev/null | head -1 || true)\nfi\nif [ -z \"$PROMPT\" ]; then\n  curl\
@@ -182,7 +182,7 @@ jobs:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          run: "# Trigger admin_setup_verification via repository_dispatch\nDISPATCH_STATUS=$(curl\
+        run: "# Trigger admin_setup_verification via repository_dispatch\nDISPATCH_STATUS=$(curl\
           \ -s -o /tmp/dispatch.json -w \"%{http_code}\" \\\n  -X POST \\\n  -H \"Authorization:\
           \ Bearer ${CODEX_MASTER_KEY}\" \\\n  -H \"Accept: application/vnd.github+json\"\
           \ \\\n  \"https://api.github.com/repos/${REPO}/dispatches\" \\\n  -d \"{\\\
@@ -207,7 +207,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           SUBCMD: ${{ steps.parse.outputs.SUBCMD }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\npip install pyyaml --quiet\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\npip install pyyaml --quiet\
         \ 2>/dev/null\n\nif [ \"$SUBCMD\" = \"tier-check\" ]; then\n  python scripts/ci/auto_promote_tier.py\
         \ --check-only > /tmp/tier_report.txt 2>&1 || true\n  TITLE=\"\U0001F530 Tier\
         \ Enforcement Scan\"\n  FOOTER=\"_[auto_promote_tier.py --check-only | dry-run\
@@ -250,7 +250,7 @@ jobs:
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\ncurl -s -X POST \\\n\
           \  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
           \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
           \ \\\n  -d '{\"body\":\"## \U0001F916 Chat-Ops Commands\\n\\n| Command | Description\
@@ -277,7 +277,7 @@ jobs:
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           ARGS: ${{ steps.parse.outputs.ARGS }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nISSUE_REF=\"${ARGS:-<issue-number>}\"\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nISSUE_REF=\"${ARGS:-<issue-number>}\"\
         \nprintf '@copilot Fix issue  #%s -- analyse the issue description, identify\
         \ the root cause in the codebase, and open a PR with a targeted fix. Follow\
         \ CODEBASE_AGENCY_POLICY.md.\\n\\n> Dispatched via chat-ops `/copilot fix`\
@@ -295,7 +295,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Review\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Review\
           \ this pull request thoroughly:\\n1. Check for correctness, security issues,\
         \ and test coverage gaps\\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\\\
         n3. Identify any Mermaid diagrams or documentation that need updating\\n4.\
@@ -315,7 +315,7 @@ jobs:
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           ARGS: ${{ steps.parse.outputs.ARGS }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nMODULE=\"${ARGS:-src/codex}\"\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nMODULE=\"${ARGS:-src/codex}\"\
           \nprintf '@copilot Improve test coverage for `%s`:\\n1. Identify untested\
         \ functions and branches\\n2. Write targeted tests in `tests/`\\n3. Ensure\
         \ new tests pass\\n4. Coverage increase should be measurable in the coverage\
@@ -334,7 +334,7 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
-          run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Run\
+        run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nprintf '@copilot Run\
           \ a security audit on this PR:\\n1. Check all changed files for injection,\
         \ path traversal, credential exposure, and supply-chain risks\\n2. Review\
         \ any new dependencies against the GitHub Advisory Database\\n3. Verify CodeQL\
@@ -350,7 +350,7 @@ jobs:
         if: steps.parse.outputs.AUTHORIZED == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
+        run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
         \ ]; then\n  echo \"\u26A0\uFE0F CODEX_MASTER_KEY not available \u2014 session\
         \ number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif ! gh\
           \ api \\\n  --method PATCH \\\n  -H \"Accept: application/vnd.github+json\"\

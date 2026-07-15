@@ -132,7 +132,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-baseline
+      name: validation-baseline
         path: .codex/validation/baseline.txt
         retention-days: 14
         if-no-files-found: warn
@@ -215,7 +215,7 @@ jobs:
     - name: Upload reference report
       uses: actions/upload-artifact@v5
       with:
-        name: reference-validation-report
+      name: reference-validation-report
         path: .codex/reports/reference_validation.md
         retention-days: 30
     env:
@@ -242,7 +242,7 @@ jobs:
       uses: actions/download-artifact@v5
       continue-on-error: true
       with:
-        name: validation-baseline
+      name: validation-baseline
         path: .codex/validation/
     - name: Compare with baseline
       run: "echo \"Comparing current state with baseline...\"\n\nif [ -f \".codex/validation/baseline.txt\"\
@@ -316,7 +316,7 @@ jobs:
     - name: Upload final report
       uses: actions/upload-artifact@v5
       with:
-        name: root-org-validation-report
+      name: root-org-validation-report
         path: .codex/reports/root_org_validation_${{ github.run_number }}.md
         retention-days: 90
     - name: Comment on PR (if applicable)

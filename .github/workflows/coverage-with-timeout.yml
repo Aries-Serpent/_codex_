@@ -104,7 +104,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-shard-${{ matrix.shard }}
+      name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
 
           htmlcov_shard_${{ matrix.shard }}/
@@ -117,7 +117,7 @@ jobs:
       if: steps.coverage.outputs.coverage_failed == 'true'
       uses: actions/upload-artifact@v5
       with:
-        name: timeout-logs-shard-${{ matrix.shard }}
+      name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
 
           *.log
@@ -175,7 +175,7 @@ jobs:
       if: steps.merge.outputs.merge_succeeded == 'true'
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-combined
+      name: coverage-combined
         path: 'coverage_combined.xml
 
           htmlcov_combined/

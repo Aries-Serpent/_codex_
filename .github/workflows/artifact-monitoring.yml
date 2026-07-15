@@ -75,7 +75,7 @@ jobs:
       id: download_state
       uses: actions/download-artifact@v5
       with:
-        name: monitor-state
+      name: monitor-state
         path: .codex/monitoring/state/
       continue-on-error: true
     - name: Run monitoring check
@@ -100,7 +100,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: monitor-state
+      name: monitor-state
         path: .codex/monitoring/state/
         retention-days: 90
     - name: Generate monitoring report

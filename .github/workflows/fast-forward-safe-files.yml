@@ -160,7 +160,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
+      name: fast-forward-result-pr${{ inputs.pr_number }}-${{ github.run_id }}
         path: /tmp/ff_result.json
         retention-days: 30
     - name: Write result summary

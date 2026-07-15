@@ -37,7 +37,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: sla-compliance-report
+      name: sla-compliance-report
         path: artifacts/sla-compliance-results.xml
         retention-days: 30
     timeout-minutes: 30
@@ -87,7 +87,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: pareto-frontier-report
+      name: pareto-frontier-report
         path: artifacts/pareto-frontier.json
         retention-days: 30
     timeout-minutes: 30
@@ -141,7 +141,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: monthly-billing-reports
+      name: monthly-billing-reports
         path: artifacts/billing_*.{csv,json}
         retention-days: 90
     timeout-minutes: 30
@@ -181,7 +181,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: tier-transition-audit
+      name: tier-transition-audit
         path: artifacts/tier-transition-audit.*
         retention-days: 30
     timeout-minutes: 45
@@ -226,7 +226,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: cost-anomaly-report
+      name: cost-anomaly-report
         path: artifacts/cost-anomaly-report.json
         retention-days: 30
     timeout-minutes: 30
@@ -272,7 +272,7 @@ jobs:
     - name: Upload summary
       uses: actions/upload-artifact@v5
       with:
-        name: optimization-summary
+      name: optimization-summary
         path: summary.json
         retention-days: 30
     - name: Comment on PR (if exists)

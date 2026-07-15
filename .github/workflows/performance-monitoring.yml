@@ -79,7 +79,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: performance-metrics
+      name: performance-metrics
         path: "metrics_current.json
 
           regression_report.json

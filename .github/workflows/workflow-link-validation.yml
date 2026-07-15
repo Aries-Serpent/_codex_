@@ -105,7 +105,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: link-validation-report
+      name: link-validation-report
         path: '${{ github.workspace }}/link-validation-report.json
 
           ${{ github.workspace }}/.github/workflows/*.md

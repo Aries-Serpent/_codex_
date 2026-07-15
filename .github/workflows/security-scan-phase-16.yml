@@ -102,7 +102,7 @@ jobs:
       with:
         sarif_file: semgrep-report.json
         category: security-scan-phase-16
-        continue-on-error: true
+      continue-on-error: true
     - name: Create Security Report Summary
       if: always()
       run: "echo \"# Phase 16.3 Security Scanning Report\" > security-report.md\n\
@@ -129,7 +129,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: security-reports
+      name: security-reports
         path: "bandit-report.json
 
           semgrep-report.json
@@ -187,13 +187,13 @@ jobs:
       with:
         files: ./coverage.xml
         flags: security-tests
-        name: phase-16-security-coverage
+      name: phase-16-security-coverage
         fail_ci_if_error: false
     - name: Upload coverage report
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-report
+      name: coverage-report
         path: htmlcov/
         retention-days: 30
   codeql-analysis:
@@ -289,7 +289,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: phase-16-test-results
+      name: phase-16-test-results
         path: "phase-16-3-results.txt
 
           phase-16-3-dep-results.txt
@@ -428,7 +428,7 @@ jobs:
     - name: Upload Summary
       uses: actions/upload-artifact@v5
       with:
-        name: phase-16-complete
+      name: phase-16-complete
         path: PHASE_16_RESULTS.md
     - name: Status
       run: "echo "## 🎯 Phase 16 Execution Complete"

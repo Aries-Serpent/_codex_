@@ -99,7 +99,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id
+      name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id
           }}
         path: /tmp/comment_review_report.json
         retention-days: 30
@@ -108,7 +108,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: session-requirements-${{ steps.pr_info.outputs.pr_number }}
+      name: session-requirements-${{ steps.pr_info.outputs.pr_number }}
         path: /tmp/session_requirements.md
         retention-days: 7
         if-no-files-found: warn

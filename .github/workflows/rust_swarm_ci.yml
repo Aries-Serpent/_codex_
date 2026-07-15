@@ -105,7 +105,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: rust-test-results
+      name: rust-test-results
         path: target/release/deps/*.log
   rust_benchmarks:
     name: Rust Benchmarks
@@ -145,7 +145,7 @@ jobs:
     - name: Upload benchmark results
       uses: actions/upload-artifact@v5
       with:
-        name: benchmark-results
+      name: benchmark-results
         path: "benchmark_results.txt
 
           target/criterion/
@@ -199,7 +199,7 @@ jobs:
     - name: Upload coverage report
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-report
+      name: coverage-report
         path: coverage/
         if-no-files-found: warn
   python_integration:
@@ -267,7 +267,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: integration-test-results
+      name: integration-test-results
         path: htmlcov/
         if-no-files-found: warn
   performance_regression:
@@ -287,7 +287,7 @@ jobs:
     - name: Download benchmark results
       uses: actions/download-artifact@v5
       with:
-        name: benchmark-results
+      name: benchmark-results
     - name: Verify benchmark results exist
       run: "echo \"=== Downloaded benchmark artifacts ===\"\nls -lah\n\nif [ -f \"\
         benchmark_results.txt\" ]; then\n  echo \"✅ Found benchmark_results.txt\"\n\
@@ -383,7 +383,7 @@ jobs:
     - name: Upload documentation
       uses: actions/upload-artifact@v5
       with:
-        name: rust-documentation
+      name: rust-documentation
         path: target/doc/
   release:
     name: Build Release
@@ -425,7 +425,7 @@ jobs:
     - name: Upload wheel
       uses: actions/upload-artifact@v5
       with:
-        name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
+      name: wheel-${{ matrix.os }}-py${{ matrix.python-version }}
         path: target/wheels/*.whl
   status_check:
     name: Overall Status

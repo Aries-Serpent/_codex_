@@ -510,7 +510,7 @@ jobs:
       - name: Upload package as artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
-          name: ${{ steps.package.outputs.package_name }}
+        name: ${{ steps.package.outputs.package_name }}
           path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format }}
           retention-days: 30
           compression-level: 0  # Already compressed
@@ -569,7 +569,7 @@ jobs:
       - name: Upload package manifest
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
-          name: ${{ steps.package.outputs.package_name }}-manifest
+        name: ${{ steps.package.outputs.package_name }}-manifest
           path: package_manifest.json
           retention-days: 90
 

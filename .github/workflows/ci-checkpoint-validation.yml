@@ -53,7 +53,7 @@ jobs:
           CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
           CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-          run: 'echo "CI checkpoint validation variables initialized:"
+        run: 'echo "CI checkpoint validation variables initialized:"
 
         echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 

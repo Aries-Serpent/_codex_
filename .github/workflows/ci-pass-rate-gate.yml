@@ -65,7 +65,7 @@ jobs:
       - name: Upload pass-rate report
         uses: actions/upload-artifact@v5
         with:
-          name: ci-pass-rate-${{ github.run_id }}
+        name: ci-pass-rate-${{ github.run_id }}
           path: reports/ci/ci_pass_rate_latest.json
       - name: Gate on 95% threshold
         env:

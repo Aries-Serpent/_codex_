@@ -83,7 +83,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: session-context-pr${{ inputs.pr_number }}
+      name: session-context-pr${{ inputs.pr_number }}
         path: .codex/session_contexts/session_${{ inputs.pr_number }}_*.json
         retention-days: 30
     env:
@@ -100,7 +100,7 @@ jobs:
     - name: Download context artifact
       uses: actions/download-artifact@v5
       with:
-        name: session-context-pr${{ inputs.pr_number }}
+      name: session-context-pr${{ inputs.pr_number }}
         path: context
     - name: Post context to PR
       if: hashFiles('context/*.json') != ''

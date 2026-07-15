@@ -85,7 +85,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: reasoning-engine-reports
+      name: reasoning-engine-reports
         path: ".codex/reasoning/daily_monitor_report.json
 
           test_report.json
@@ -95,7 +95,7 @@ jobs:
       if: always()
       uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
       with:
-        name: Reasoning Engine Tests
+      name: Reasoning Engine Tests
         path: test_report.json
         reporter: java-junit
         fail-on-error: false

@@ -64,7 +64,7 @@ jobs:
     - name: Upload health report artifact
       uses: actions/upload-artifact@v5
       with:
-        name: agent-env-health-${{ github.run_id }}
+      name: agent-env-health-${{ github.run_id }}
         path: /tmp/agent-env-health.json
         retention-days: 30
     - name: Write job summary

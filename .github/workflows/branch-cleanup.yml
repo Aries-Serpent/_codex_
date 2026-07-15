@@ -120,7 +120,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: branch-cleanup-report-${{ github.run_number }}
+      name: branch-cleanup-report-${{ github.run_number }}
         path: /tmp/branch_cleanup_report.json
         retention-days: 30
         if-no-files-found: ignore

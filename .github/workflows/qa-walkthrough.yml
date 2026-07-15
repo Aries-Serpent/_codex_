@@ -146,7 +146,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: qa-walkthrough-reports-${{ github.run_id }}
+      name: qa-walkthrough-reports-${{ github.run_id }}
         path: 'qa-report.json
 
           ruff-report.json

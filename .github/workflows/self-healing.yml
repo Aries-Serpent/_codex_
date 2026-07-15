@@ -246,7 +246,7 @@ jobs:
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-lane-contract
+        name: self-healing-lane-contract
           path: |
             .codex/contracts/lane-manifest.json
             .codex/contracts/input-lock.json
@@ -376,7 +376,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-detect-contract
+        name: self-healing-detect-contract
           path: |
             .codex/contracts/output-contract-self-healing-detect.json
           if-no-files-found: warn
@@ -464,7 +464,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-analyze-contract
+        name: self-healing-analyze-contract
           path: |
             security/self-healing-plan.json
             .codex/contracts/output-contract-self-healing-analyze.json
@@ -610,7 +610,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: self-healing-act-contract
+        name: self-healing-act-contract
           path: |
             security/self-healing-report.json
             security/artifact-provenance.json

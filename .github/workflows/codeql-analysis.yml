@@ -63,7 +63,7 @@ jobs:
       # pragma: allowlist secret
       uses: actions/upload-artifact@v5
       with:
-        name: codeql-sarif-${{ matrix.language }}
+      name: codeql-sarif-${{ matrix.language }}
         path: codeql-sarif/${{ matrix.language }}
         if-no-files-found: warn
     - name: Cache health report

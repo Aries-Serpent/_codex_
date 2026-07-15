@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
+        run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
         \ }}\" \\\n  --pr  \"${{ github.event.pull_request.number }}\" \\\n  --post-comment\
         \ \\\n  --auto-merge-skip-ci \\\n  --upsert-dashboard \\\n  --github-output\
         \ \\\n  --github-summary\n# Script exits 0 always in non-hard-fail mode —\

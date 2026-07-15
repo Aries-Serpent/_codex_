@@ -535,14 +535,14 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       steps:
       - name: Generate Cognitive Brain App token
-      id: app-token
-      uses: actions/create-github-app-token@v1
-      continue-on-error: true
+    id: app-token
+    uses: actions/create-github-app-token@v1
+    continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
       - name: Configure auto-approve mode
-      if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch'
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
@@ -550,7 +550,7 @@ jobs:
         PR_NUMBER: ${{ github.event.inputs.target_pr }}
         ENABLE_PERSISTENT: ${{ github.event.inputs.enable_persistent }}
         ENABLE_ONE_SESSION: ${{ github.event.inputs.enable_one_session }}
-      run: "set -euo pipefail\n\n# \u2500\u2500 Ensure labels exist in the repo \u2500\
+    run: "set -euo pipefail\n\n# \u2500\u2500 Ensure labels exist in the repo \u2500\
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500\nfor LABEL in \"wec:auto-approve\" \"wec:auto-approve-once\"\
@@ -586,7 +586,7 @@ jobs:
         \ Label 'wec:auto-approve-once' added \u2014 will auto-disable after next\
         \ Copilot session.\"\nfi\n"
       - name: Resolve target PR(s)
-      id: resolve
+    id: resolve
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
@@ -600,7 +600,7 @@ jobs:
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         REPO: ${{ github.repository }}
         EVENT_NAME: ${{ github.event_name }}
-      run: "set -euo pipefail\necho \"dry_run=${DRY_RUN:-false}\" >> \"$GITHUB_OUTPUT\"\
+    run: "set -euo pipefail\necho \"dry_run=${DRY_RUN:-false}\" >> \"$GITHUB_OUTPUT\"\
         \n\n# \u2500\u2500 Schedule: find ALL open PRs (unconditional \u2014 always-on)\
         \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nif [ \"${EVENT_NAME}\"\
         \ = \"schedule\" ]; then\n  echo \"\U0001F550 Schedule sweep \u2014 finding\
@@ -639,10 +639,10 @@ jobs:
         \necho \"skip=false\"            >> \"$GITHUB_OUTPUT\"\necho \"Resolved: PR\
         \  #${PR_NUM}, SHA=${HEAD_SHA:0:12}\"\n"
       - name: Approve pending (action_required) workflow runs
-      id: approve
-      if: steps.resolve.outputs.skip != 'true'
-      continue-on-error: true
-      uses: actions/github-script@v8
+    id: approve
+    if: steps.resolve.outputs.skip != 'true'
+    continue-on-error: true
+    uses: actions/github-script@v8
       env:
         MODE: ${{ steps.resolve.outputs.mode }}
         PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}
@@ -766,7 +766,7 @@ jobs:
           \nif (totalErrors > 0) {\n  core.setFailed(`${totalErrors} run(s) failed\
           \ to be approved \u2014 check the logs above`);\n}\n"
       - name: Monitor active Copilot session (60m)
-      if: github.event_name == 'workflow_run' && github.event.workflow_run.name ==
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.name ==
         'Copilot coding agent' && github.event.workflow_run.status == 'in_progress'
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
@@ -776,7 +776,7 @@ jobs:
         MONITOR_MINUTES: ${{ vars.CODEX_AUTO_APPROVE_MONITOR_MINUTES || '60' }}
         MONITOR_INTERVAL_SEC: ${{ vars.CODEX_AUTO_APPROVE_MONITOR_INTERVAL_SEC ||
           '120' }}
-      run: "set -euo pipefail\nif [ -z \"${PR_NUMBER}\" ]; then\n  echo \"\u2139\uFE0F\
+    run: "set -euo pipefail\nif [ -z \"${PR_NUMBER}\" ]; then\n  echo \"\u2139\uFE0F\
         \ No PR number resolved for active-session monitor; skipping.\"\n  exit 0\n\
         fi\n\nDURATION_SEC=$(( MONITOR_MINUTES * 60 ))\nSTART_TS=$(date +%s)\nEND_TS=$((\
         \ START_TS + DURATION_SEC ))\nHAS_FAILURE=0\n\necho \"### \u23F1\uFE0F Active\

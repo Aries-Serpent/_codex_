@@ -55,7 +55,7 @@ jobs:
     - name: Upload Patterns
       uses: actions/upload-artifact@v5
       with:
-        name: k8s-patterns
+      name: k8s-patterns
         path: k8s_patterns.json
         retention-days: 30
     env:
@@ -77,7 +77,7 @@ jobs:
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
-        name: k8s-patterns
+      name: k8s-patterns
     - name: Validate Configuration
       run: 'python scripts/deployment/validate_infrastructure_policy.py
 
@@ -85,7 +85,7 @@ jobs:
     - name: Upload Compliance Report
       uses: actions/upload-artifact@v5
       with:
-        name: compliance-report
+      name: compliance-report
         path: infrastructure_compliance_report.json
         retention-days: 30
     env:
@@ -107,7 +107,7 @@ jobs:
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
-        name: k8s-patterns
+      name: k8s-patterns
     - name: Estimate Costs
       run: 'python scripts/deployment/estimate_infrastructure_cost.py
 
@@ -115,7 +115,7 @@ jobs:
     - name: Upload Cost Estimate
       uses: actions/upload-artifact@v5
       with:
-        name: cost-estimate
+      name: cost-estimate
         path: cost_estimate.json
         retention-days: 30
     env:
@@ -137,7 +137,7 @@ jobs:
     - name: Download Patterns
       uses: actions/download-artifact@v5
       with:
-        name: k8s-patterns
+      name: k8s-patterns
     - name: Generate Terraform Configuration
       run: 'python scripts/deployment/generate_tf_config.py
 
@@ -145,7 +145,7 @@ jobs:
     - name: Upload Terraform Modules
       uses: actions/upload-artifact@v5
       with:
-        name: terraform-modules
+      name: terraform-modules
         path: infrastructure/terraform/
         retention-days: 30
     env:
@@ -167,7 +167,7 @@ jobs:
     - name: Download Terraform Modules
       uses: actions/download-artifact@v5
       with:
-        name: terraform-modules
+      name: terraform-modules
         path: infrastructure/terraform/
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd  # v3
@@ -180,7 +180,7 @@ jobs:
     - name: Upload Plan Summary
       uses: actions/upload-artifact@v5
       with:
-        name: terraform-plan
+      name: terraform-plan
         path: terraform_plan_summary.md
         retention-days: 30
     env:
@@ -284,7 +284,7 @@ jobs:
     - name: Upload Completion Report
       uses: actions/upload-artifact@v5
       with:
-        name: completion-report
+      name: completion-report
         path: completion_report.md
         retention-days: 30
     - name: Workflow Summary

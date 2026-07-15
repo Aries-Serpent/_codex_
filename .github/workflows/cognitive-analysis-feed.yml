@@ -120,7 +120,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: aftermath-evaluation-${{ github.run_number }}
+      name: aftermath-evaluation-${{ github.run_number }}
         path: 'cognitive/evaluations/*.json
 
           cognitive/learning/*.json
@@ -200,7 +200,7 @@ jobs:
     - name: Upload pattern artifacts
       uses: actions/upload-artifact@v5
       with:
-        name: cognitive-patterns-${{ github.run_number }}
+      name: cognitive-patterns-${{ github.run_number }}
         path: '.codex/cognitive_brain/patterns/*.json
 
           .codex/cognitive_brain/analysis/*.json

@@ -89,7 +89,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-          name: alert-triage-${{ github.run_id }}
+        name: alert-triage-${{ github.run_id }}
           path: |
             .codex/security/alert_inventory.json
             .codex/security/alert_analysis.md

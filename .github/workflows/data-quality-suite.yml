@@ -118,7 +118,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: data-validation-results-${{ github.run_number }}
+      name: data-validation-results-${{ github.run_number }}
         path: "reports/validation/*.json
 
           reports/drift/*.json
@@ -306,7 +306,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: determinism-reports-${{ github.run_number }}
+      name: determinism-reports-${{ github.run_number }}
         path: "determinism_pass1.log
 
           determinism_pass2.log
@@ -363,7 +363,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: dvc-status-${{ github.run_number }}
+      name: dvc-status-${{ github.run_number }}
         path: workbench/evidence/dvc_status.json
         if-no-files-found: ignore
         retention-days: 30

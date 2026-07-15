@@ -145,7 +145,7 @@ jobs:
       if: matrix.test-group == 'quick' && always()
       uses: actions/upload-artifact@v5
       with:
-        name: coverage-baseline
+      name: coverage-baseline
         path: 'coverage.json
 
           coverage.xml
@@ -157,7 +157,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-results-${{ matrix.test-group }}
+      name: validation-results-${{ matrix.test-group }}
         path: 'test-results/
 
           .coverage
@@ -250,7 +250,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
+      name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
         path: '.test_durations
 
           test-results/

@@ -71,7 +71,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: d-capable-promotion-report
+      name: d-capable-promotion-report
         path: .codex/promotion_report.json
         retention-days: 30
         if-no-files-found: ignore

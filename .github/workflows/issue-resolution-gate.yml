@@ -116,7 +116,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: issue-resolution-report
+      name: issue-resolution-report
         path: /tmp/issue-resolution-reports/
         retention-days: 30
     env:

@@ -156,7 +156,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: validation-reports
+      name: validation-reports
         path: 'validation_report.txt
 
           table_report.txt

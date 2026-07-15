@@ -836,7 +836,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        uses: actions/github-script@v8
+      uses: actions/github-script@v8
         with: null
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}

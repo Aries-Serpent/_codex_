@@ -92,7 +92,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: failure()
       with:
-        name: hook-failures-fast-${{ github.run_id }}
+      name: hook-failures-fast-${{ github.run_id }}
         path: hook_failures.json
         retention-days: 30
         if-no-files-found: warn
@@ -100,7 +100,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-log-fast-${{ github.run_id }}
+      name: validation-log-fast-${{ github.run_id }}
         path: validation.log
         retention-days: 30
         if-no-files-found: warn
@@ -108,7 +108,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-junit-fast-${{ github.run_id }}
+      name: validation-junit-fast-${{ github.run_id }}
         path: validation-junit.xml
         retention-days: 30
         if-no-files-found: warn
@@ -116,7 +116,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-summary-fast-${{ github.run_id }}
+      name: validation-summary-fast-${{ github.run_id }}
         path: validation_summary.json
         retention-days: 30
         if-no-files-found: warn
@@ -199,7 +199,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: failure()
       with:
-        name: hook-failures-full-${{ github.run_id }}
+      name: hook-failures-full-${{ github.run_id }}
         path: hook_failures.json
         retention-days: 30
         if-no-files-found: warn
@@ -207,7 +207,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-log-full-${{ github.run_id }}
+      name: validation-log-full-${{ github.run_id }}
         path: validation.log
         retention-days: 30
         if-no-files-found: warn
@@ -215,7 +215,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-junit-full-${{ github.run_id }}
+      name: validation-junit-full-${{ github.run_id }}
         path: validation-junit.xml
         retention-days: 30
         if-no-files-found: warn
@@ -223,7 +223,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-coverage-${{ github.run_id }}
+      name: validation-coverage-${{ github.run_id }}
         path: coverage.xml
         retention-days: 30
         if-no-files-found: warn
@@ -265,7 +265,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-        name: validation-summary-full-${{ github.run_id }}
+      name: validation-summary-full-${{ github.run_id }}
         path: validation_summary.json
         retention-days: 30
         if-no-files-found: warn
@@ -275,7 +275,7 @@ jobs:
       with:
         files: ./coverage.xml
         flags: full-validation
-        name: full-validation-coverage
+      name: full-validation-coverage
         fail_ci_if_error: false
       continue-on-error: true
     env:

@@ -102,7 +102,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: cascade-review-${{ github.run_number }}
+      name: cascade-review-${{ github.run_number }}
         path: '.codex/reviews/*.json
 
           .codex/reviews/*.md
@@ -177,7 +177,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-        name: evolution-artifacts-${{ github.run_number }}
+      name: evolution-artifacts-${{ github.run_number }}
         path: '.github/copilot-evolution/data/*.json
 
           .github/copilot-evolution/logs/*.log

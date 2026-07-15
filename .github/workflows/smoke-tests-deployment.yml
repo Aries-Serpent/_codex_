@@ -304,7 +304,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
+        name: smoke-test-results-${{ matrix.python-version }}-${{ matrix.profile }}-${{ matrix.ml-extras }}
           path: |
             installed-packages-*.txt
             test-metrics-*.json
