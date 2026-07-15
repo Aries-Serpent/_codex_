@@ -331,9 +331,13 @@ def _detect_cascading_copilot_errors(
 
     Cascades are identified by:
     - 5+ comments with "comment-generic-error" marker (fresh errors, threshold configurable)
-    - 5+ comments with cascade-consolidated-error marker (already consolidated)
+    - 5+ comments with "cascade-error-id" marker (already consolidated)
     - Created by Copilot user within short timespan
     - Repeating UUID patterns
+
+    Note: Consolidated cascades are detected by the presence of cascade-error-id markers,
+    which indicate that consolidation has already occurred. Both fresh and consolidated
+    error comments are counted, but consolidated cascades skip further processing.
 
     Args:
         token: GitHub API token
@@ -343,8 +347,8 @@ def _detect_cascading_copilot_errors(
 
     Returns:
         {
-            "is_cascading": bool - True if active cascade detected needing consolidation
-            "error_count": int - Total error comments found
+            "is_cascading": bool - True if cascade detected (fresh or already-consolidated)
+            "error_count": int - Total error comments found (fresh + consolidated)
             "last_error_id": int or None - Most recent error comment ID
             "action": str - One of "CONSOLIDATE_ERRORS", "ALREADY_CONSOLIDATED", "APPEND_TO_EXISTING", "PROCEED"
         }
@@ -366,10 +370,12 @@ def _detect_cascading_copilot_errors(
 
         for c in comments:
             body = c.get("body") or ""
-            # Detect both rescue-comment cascade markers and Copilot error markers
+            # Count both fresh error comments ("comment-generic-error") and already-consolidated
+            # errors (marked with "cascade-error-id"). Both indicate Copilot errors on this PR.
             if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
+                    # Track if any comments are already consolidated (have cascade-error-id markers)
                     if CASCADE_CONSOLIDATED_CHECK in body:
                         has_consolidated_error = True
 

@@ -50,7 +50,8 @@ def _extract_uuid_from_error(comment_body: str) -> str:
     Falls back to "unknown" if no UUID found.
     """
     # Try standard format first: "identifier so they can better serve you: `UUID`"
-    # Matches standard UUID format with at least one hex digit
+    # Pattern: at least one hex digit, optionally followed by (hyphen + hex digits) groups
+    # This ensures no standalone hyphens (e.g., 'abc' matches, 'abc-' doesn't, 'abc-def' matches)
     match = re.search(r"identifier so they can better serve you:\s*[`'\"]?([a-fA-F0-9]+(?:-[a-fA-F0-9]+)*)[`'\"]?", comment_body)
     if match:
         uuid = match.group(1).strip()
@@ -58,7 +59,7 @@ def _extract_uuid_from_error(comment_body: str) -> str:
             return uuid
     
     # Fall back to looking for any hex string that might be a UUID
-    # UUID format: 8-4-4-4-12 hex digits (standard format) or 32 continuous hex digits
+    # Matches two formats: (1) Standard UUID 8-4-4-4-12 hex digits, OR (2) 32 continuous hex digits
     hex_match = re.search(
         r"([a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[a-fA-F0-9]{32})",
         comment_body
