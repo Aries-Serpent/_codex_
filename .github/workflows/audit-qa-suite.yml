@@ -186,7 +186,7 @@ jobs:
       issues_found: ${{ steps.qa.outputs.issues_found }}
       critical_issues: ${{ steps.qa.outputs.critical_issues }}
     steps:
-    - name: Fetch repository structure via GitHub API (security-hardened, no git operations)
+    - name: Validate target ref for API fetch (security-hardened, no git operations)
       id: fetch_repo
       env:
         GH_TOKEN: ${{ github.token }}
@@ -219,7 +219,7 @@ jobs:
         echo "target_ref=$TARGET_REF" >> $GITHUB_OUTPUT
         echo "✅ Target ref validated: $TARGET_REF"
     
-    - name: Fetch repository structure via GitHub API
+    - name: Create required directory structure
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
@@ -298,7 +298,7 @@ jobs:
           echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main ($ERROR_MSG...) — will use fallback"
         fi
          
-        echo "✅ Trusted code fetched complete (API-based, no git operations)"
+        echo "✅ Trusted code fetch complete (API-based, no git operations)"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
