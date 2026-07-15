@@ -64,7 +64,7 @@ jobs:
       issues: write
       pull-requests: write
     env:
-        GIT_LFS_SKIP_SMUDGE: '1'
+      GIT_LFS_SKIP_SMUDGE: '1'
       CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
       CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       COPILOT_AGENT_CCA_VERSION_LOCK: stable
@@ -77,31 +77,32 @@ jobs:
         == 'full' || inputs.lfs_mode == 'targeted') }}
       LFS_TARGETED_ENABLED: "${{ github.event_name == 'workflow_dispatch' &&\n   \
         \ inputs.lfs_mode == 'targeted' &&\n    inputs.lfs_include_paths != '' }}"
-      LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}
+      LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode
+        == 'full' }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
-      - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-          lfs: false
-          clean: true
-          show-progress: true
-      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+    - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+        lfs: false
+        clean: true
+        show-progress: true
+    - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
       # DO NOT REFACTOR THIS STEP — it is canonically guarded by validate_setup_steps_yaml.sh
-        continue-on-error: true
-        run: |
-          echo "::group::Unified Session Context Pre-load"
+      continue-on-error: true
+      run: |
+        echo "::group::Unified Session Context Pre-load"
 
-          if ! python3 .github/scripts/session_preload.py; then
+        if ! python3 .github/scripts/session_preload.py; then
           echo "⚠️ session_preload.py failed (non-blocking)"
-          fi
+        fi
 
-          # Component 5: Load aggregated context from data aggregation system
-          MANIFEST=".codex/session_context_manifest.json"
+        # Component 5: Load aggregated context from data aggregation system
+        MANIFEST=".codex/session_context_manifest.json"
 
-          if [ -f "$MANIFEST" ]; then
+        if [ -f "$MANIFEST" ]; then
           echo "✅ Loading aggregated context from manifest"
 
           # Parse manifest safely with fallback to defaults
@@ -137,39 +138,39 @@ jobs:
           echo "| Recommendations | $RECOMMENDATIONS |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Generated | $LAST_UPDATED |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          else
+        else
           echo "ℹ️ Aggregated context manifest not found"
           echo "SESSION_CONTEXT_PHASE=unknown" >> "$GITHUB_ENV"
           echo "SESSION_CONTEXT_AGENTS_COUNT=0" >> "$GITHUB_ENV"
           echo "SESSION_CONTEXT_PATTERNS=0" >> "$GITHUB_ENV"
           echo "SESSION_CONTEXT_RECOMMENDATIONS=0" >> "$GITHUB_ENV"
-          fi
+        fi
 
-          echo "::endgroup::"
-      - name: "\U0001F50C Session Access Probe (token inventory + rate limits)"
-        id: access_probe
-        continue-on-error: true
+        echo "::endgroup::"
+    - name: "\U0001F50C Session Access Probe (token inventory + rate limits)"
+      id: access_probe
+      continue-on-error: true
       env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
-        run: "echo \"::group::Session Access Probe\"\nif ! python3 scripts/ci/session_access_probe.py;\
+      run: "echo \"::group::Session Access Probe\"\nif ! python3 scripts/ci/session_access_probe.py;\
         \ then\n  echo \"\u26A0\uFE0F Access probe failed (non-blocking) \u2014 agent\
         \ will use local-FS fallback\"\n  echo \"ACCESS_REST=unknown\"          >>\
         \ \"$GITHUB_ENV\"\n  echo \"ACCESS_GRAPHQL=unknown\"       >> \"$GITHUB_ENV\"\
         \n  echo \"ACCESS_GH_CLI=unknown\"        >> \"$GITHUB_ENV\"\n  echo \"ACCESS_CODEQL_CLI=unknown\"\
         \    >> \"$GITHUB_ENV\"\n  echo \"ACCESS_RECOMMENDED_METHOD=local_fs\" >>\
         \ \"$GITHUB_ENV\"\nfi\necho \"::endgroup::\"\n"
-      - name: "\U0001F9E0 Autonomous RAG Context Build (PR context + RAG query + incremental\
+    - name: "\U0001F9E0 Autonomous RAG Context Build (PR context + RAG query + incremental\
         \ index)"
-        id: rag_context
-        continue-on-error: true
+      id: rag_context
+      continue-on-error: true
       env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: "echo \"::group::Autonomous RAG Context Build\"\nif [ -n \"${GITHUB_PR_NUMBER:-}\"\
+      run: "echo \"::group::Autonomous RAG Context Build\"\nif [ -n \"${GITHUB_PR_NUMBER:-}\"\
         \ ]; then\n  if ! python3 scripts/ci/autonomous_rag_context.py --pr \"${GITHUB_PR_NUMBER}\"\
         ; then\n    echo \"\u26A0\uFE0F RAG context build failed (non-blocking) \u2014\
         \ agent will use cached context\"\n  fi\nelif ! python3 scripts/ci/autonomous_rag_context.py;\
@@ -177,36 +178,36 @@ jobs:
         \ agent will use cached context\"\nfi\nif [ -f .codex/session_access_strategy.json\
         \ ]; then\n  echo \"--- Access Strategy ---\"\n  cat .codex/session_access_strategy.json\n\
         fi\necho \"::endgroup::\"\n"
-      - name: "🧠 Phase 10.3: Context Scorer Invocation (pattern relevance scoring)"
-        id: context_scorer
-        continue-on-error: true
+    - name: "🧠 Phase 10.3: Context Scorer Invocation (pattern relevance scoring)"
+      id: context_scorer
+      continue-on-error: true
       env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         TASK_DESC_INPUT: ${{ github.event.pull_request.title || github.ref }}
-        run: |
-          echo "::group::Phase 10.3 Context Scorer"
+      run: |
+        echo "::group::Phase 10.3 Context Scorer"
 
-          # Extract session metadata for scoring
-          TASK_DESC="$TASK_DESC_INPUT"
-          DOMAIN="CI/CD"
-          AGENT_TYPES="cognitive-brain-session-injector"
+        # Extract session metadata for scoring
+        TASK_DESC="$TASK_DESC_INPUT"
+        DOMAIN="CI/CD"
+        AGENT_TYPES="cognitive-brain-session-injector"
 
-          # Check if context scorer is available
-          if [ ! -f scripts/ci/phase_10_3_context_scorer.py ]; then
+        # Check if context scorer is available
+        if [ ! -f scripts/ci/phase_10_3_context_scorer.py ]; then
           echo "⚠️ Context scorer not found (non-blocking) — skipping pattern injection"
           echo "CONTEXT_SCORER_STATUS=not_found" >> "$GITHUB_ENV"
           echo "::endgroup::"
           exit 0
-          fi
+        fi
 
-          # Run context scorer with TF-IDF scoring
-          SCORER_OUTPUT=".codex/phase_10_3_scored_patterns.json"
-          SCORER_START=$(date +%s%N)
+        # Run context scorer with TF-IDF scoring
+        SCORER_OUTPUT=".codex/phase_10_3_scored_patterns.json"
+        SCORER_START=$(date +%s%N)
 
-          if python3 scripts/ci/phase_10_3_context_scorer.py \
+        if python3 scripts/ci/phase_10_3_context_scorer.py \
           --patterns ".codex/patterns/ci_failure_patterns.yaml" \
           --ltm-db ".codex/ltm.db" \
           --output "$SCORER_OUTPUT" \
@@ -232,54 +233,54 @@ jobs:
             echo "CONTEXT_PATTERNS_AVG_SCORE=${AVG_SCORE}" >> "$GITHUB_ENV"
             echo "📊 Selected ${PATTERN_COUNT} patterns (avg relevance: ${AVG_SCORE})"
           fi
-          else
+        else
           echo "⚠️ Context scorer failed (non-blocking) — continuing without pattern injection"
           echo "CONTEXT_SCORER_STATUS=failed" >> "$GITHUB_ENV"
-          fi
+        fi
 
-          echo "::endgroup::"
+        echo "::endgroup::"
 
-      - name: "💉 Phase 10.3: Pattern Injection (inject context into system prompt)"
-        id: pattern_injection
-        continue-on-error: true
+    - name: "💉 Phase 10.3: Pattern Injection (inject context into system prompt)"
+      id: pattern_injection
+      continue-on-error: true
       env:
-          CONTEXT_PATTERNS_FILE: ".codex/phase_10_3_scored_patterns.json"
-        run: |
-          echo "::group::Pattern Injection"
+        CONTEXT_PATTERNS_FILE: ".codex/phase_10_3_scored_patterns.json"
+      run: |
+        echo "::group::Pattern Injection"
 
-          INJECT_START=$(date +%s%N)
+        INJECT_START=$(date +%s%N)
 
-          # Only inject if scorer succeeded and patterns exist
-          if [ ! -f "$CONTEXT_PATTERNS_FILE" ] || [ "$CONTEXT_SCORER_STATUS" != "success" ]; then
+        # Only inject if scorer succeeded and patterns exist
+        if [ ! -f "$CONTEXT_PATTERNS_FILE" ] || [ "$CONTEXT_SCORER_STATUS" != "success" ]; then
           echo "ℹ️ No patterns to inject (scorer status: $CONTEXT_SCORER_STATUS)"
           echo "CONTEXT_INJECTION_STATUS=skipped" >> "$GITHUB_ENV"
           echo "::endgroup::"
           exit 0
-          fi
+        fi
 
-          # Create injection metadata file
-          INJECTION_META=".codex/phase_10_3_injection_metadata.json"
-          python3 << 'PYTHON_INJECT'
-          import json
-          import os
-          from datetime import datetime
+        # Create injection metadata file
+        INJECTION_META=".codex/phase_10_3_injection_metadata.json"
+        python3 << 'PYTHON_INJECT'
+        import json
+        import os
+        from datetime import datetime
 
-          scored_file = os.environ.get('CONTEXT_PATTERNS_FILE', '')
-          if not os.path.exists(scored_file):
+        scored_file = os.environ.get('CONTEXT_PATTERNS_FILE', '')
+        if not os.path.exists(scored_file):
             print("✅ No patterns to inject")
             exit(0)
 
-          # Load scored patterns
-          with open(scored_file, 'r', encoding='utf-8') as f:
+        # Load scored patterns
+        with open(scored_file, 'r', encoding='utf-8') as f:
             scored_data = json.load(f)
 
-          patterns = scored_data.get('selected_patterns', [])
-          if not patterns:
+        patterns = scored_data.get('selected_patterns', [])
+        if not patterns:
             print("✅ No patterns above threshold")
             exit(0)
 
-          # Create injection metadata
-          metadata = {
+        # Create injection metadata
+        metadata = {
             'timestamp': datetime.now().isoformat(),
             'injection_timestamp': datetime.now().isoformat(),
             'patterns_injected': len(patterns),
@@ -293,67 +294,67 @@ jobs:
                     'improvement_area': p.get('improvement_area', ''),
                 } for p in patterns
             ]
-          }
+        }
 
-          # Write injection metadata
-          with open(os.environ.get('INJECTION_META', '.codex/phase_10_3_injection_metadata.json'), 'w', encoding='utf-8') as f:
+        # Write injection metadata
+        with open(os.environ.get('INJECTION_META', '.codex/phase_10_3_injection_metadata.json'), 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2)
 
-          # Print summary
-          print(f"✅ Injected {len(patterns)} patterns into session context")
-          for i, p in enumerate(patterns[:5], 1):
+        # Print summary
+        print(f"✅ Injected {len(patterns)} patterns into session context")
+        for i, p in enumerate(patterns[:5], 1):
             print(f"  {i}. {p.get('name', 'unknown')} (score: {p.get('score', 0.0):.2f})")
-          if len(patterns) > 5:
+        if len(patterns) > 5:
             print(f"  ... and {len(patterns) - 5} more patterns")
-          PYTHON_INJECT
+        PYTHON_INJECT
 
-          # Set environment variables for next steps
-          if [ -f "$INJECTION_META" ]; then
+        # Set environment variables for next steps
+        if [ -f "$INJECTION_META" ]; then
           PATTERNS_INJECTED=$(python3 -c "import json; data=json.load(open('$INJECTION_META')); print(data.get('patterns_injected', 0))" 2>/dev/null || echo "0")
           echo "PATTERNS_INJECTED=${PATTERNS_INJECTED}" >> "$GITHUB_ENV"
           echo "CONTEXT_INJECTION_STATUS=success" >> "$GITHUB_ENV"
           echo "✅ Injection metadata: $INJECTION_META"
-          else
+        else
           echo "CONTEXT_INJECTION_STATUS=failed" >> "$GITHUB_ENV"
-          fi
+        fi
 
-          INJECT_END=$(date +%s%N)
-          INJECT_TIME_MS=$(( (INJECT_END - INJECT_START) / 1000000 ))
-          echo "CONTEXT_INJECTION_TIME_MS=${INJECT_TIME_MS}" >> "$GITHUB_ENV"
-          echo "📊 Pattern injection completed in ${INJECT_TIME_MS}ms"
+        INJECT_END=$(date +%s%N)
+        INJECT_TIME_MS=$(( (INJECT_END - INJECT_START) / 1000000 ))
+        echo "CONTEXT_INJECTION_TIME_MS=${INJECT_TIME_MS}" >> "$GITHUB_ENV"
+        echo "📊 Pattern injection completed in ${INJECT_TIME_MS}ms"
 
-          echo "::endgroup::"
+        echo "::endgroup::"
 
-      - name: "📈 Phase 10.3: Performance Instrumentation (measure OODA improvement)"
-        id: performance_instrumentation
-        continue-on-error: true
+    - name: "📈 Phase 10.3: Performance Instrumentation (measure OODA improvement)"
+      id: performance_instrumentation
+      continue-on-error: true
       env:
-          SCORER_TIME_ENV: ${{ env.CONTEXT_SCORER_TIME_MS }}
+        SCORER_TIME_ENV: ${{ env.CONTEXT_SCORER_TIME_MS }}
         INJECT_TIME_ENV: ${{ env.CONTEXT_INJECTION_TIME_MS }}
         PATTERNS_COUNT_ENV: ${{ env.CONTEXT_PATTERNS_COUNT }}
         PATTERNS_SCORE_ENV: ${{ env.CONTEXT_PATTERNS_AVG_SCORE }}
-        run: |
-          echo "::group::Performance Instrumentation"
+      run: |
+        echo "::group::Performance Instrumentation"
 
-          SCORER_TIME="$SCORER_TIME_ENV"
-          INJECT_TIME="$INJECT_TIME_ENV"
-          PATTERNS_COUNT="$PATTERNS_COUNT_ENV"
-          PATTERNS_SCORE="$PATTERNS_SCORE_ENV"
+        SCORER_TIME="$SCORER_TIME_ENV"
+        INJECT_TIME="$INJECT_TIME_ENV"
+        PATTERNS_COUNT="$PATTERNS_COUNT_ENV"
+        PATTERNS_SCORE="$PATTERNS_SCORE_ENV"
 
-          # Calculate total injection overhead
-          TOTAL_OVERHEAD_MS=0
-          if [ -n "$SCORER_TIME" ] && [ -n "$INJECT_TIME" ]; then
+        # Calculate total injection overhead
+        TOTAL_OVERHEAD_MS=0
+        if [ -n "$SCORER_TIME" ] && [ -n "$INJECT_TIME" ]; then
           TOTAL_OVERHEAD_MS=$(( ${SCORER_TIME:-0} + ${INJECT_TIME:-0} ))
-          fi
+        fi
 
-          # Create performance report
-          PERF_REPORT=".codex/phase_10_3_performance_metrics.json"
-          python3 << 'PYTHON_PERF'
-          import json
-          import os
-          from datetime import datetime
+        # Create performance report
+        PERF_REPORT=".codex/phase_10_3_performance_metrics.json"
+        python3 << 'PYTHON_PERF'
+        import json
+        import os
+        from datetime import datetime
 
-          metrics = {
+        metrics = {
             'timestamp': datetime.now().isoformat(),
             'context_scorer_time_ms': int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0'),
             'pattern_injection_time_ms': int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0'),
@@ -362,80 +363,80 @@ jobs:
             'total_overhead_ms': 0,
             'ooda_baseline_ms': 2500,
             'ooda_improvement_percent': 0,
-          }
+        }
 
-          # Calculate totals
-          metrics['total_overhead_ms'] = metrics['context_scorer_time_ms'] + metrics['pattern_injection_time_ms']
+        # Calculate totals
+        metrics['total_overhead_ms'] = metrics['context_scorer_time_ms'] + metrics['pattern_injection_time_ms']
 
-          # Estimate OODA improvement (10%+ baseline with patterns)
-          if metrics['patterns_count'] > 0 and metrics['avg_relevance_score'] > 0.65:
+        # Estimate OODA improvement (10%+ baseline with patterns)
+        if metrics['patterns_count'] > 0 and metrics['avg_relevance_score'] > 0.65:
             metrics['ooda_improvement_percent'] = 10.0 + (metrics['avg_relevance_score'] - 0.65) * 20.0
 
-          metrics['ooda_with_context_ms'] = int(
+        metrics['ooda_with_context_ms'] = int(
             metrics['ooda_baseline_ms'] * (1.0 - metrics['ooda_improvement_percent'] / 100.0)
-          )
+        )
 
-          # Write metrics
-          with open(os.environ.get('PERF_REPORT', '.codex/phase_10_3_performance_metrics.json'), 'w', encoding='utf-8') as f:
+        # Write metrics
+        with open(os.environ.get('PERF_REPORT', '.codex/phase_10_3_performance_metrics.json'), 'w', encoding='utf-8') as f:
             json.dump(metrics, f, indent=2)
 
-          # Print summary
-          print("📊 PERFORMANCE METRICS")
-          print(f"  Scoring time: {metrics['context_scorer_time_ms']}ms")
-          print(f"  Injection time: {metrics['pattern_injection_time_ms']}ms")
-          print(f"  Total overhead: {metrics['total_overhead_ms']}ms")
-          print(f"  Patterns injected: {metrics['patterns_count']}")
-          print(f"  Avg relevance: {metrics['avg_relevance_score']:.2f}")
-          print(f"  OODA baseline: {metrics['ooda_baseline_ms']}ms")
-          print(f"  OODA with context: {metrics['ooda_with_context_ms']}ms")
-          print(f"  Improvement: {metrics['ooda_improvement_percent']:.1f}%")
+        # Print summary
+        print("📊 PERFORMANCE METRICS")
+        print(f"  Scoring time: {metrics['context_scorer_time_ms']}ms")
+        print(f"  Injection time: {metrics['pattern_injection_time_ms']}ms")
+        print(f"  Total overhead: {metrics['total_overhead_ms']}ms")
+        print(f"  Patterns injected: {metrics['patterns_count']}")
+        print(f"  Avg relevance: {metrics['avg_relevance_score']:.2f}")
+        print(f"  OODA baseline: {metrics['ooda_baseline_ms']}ms")
+        print(f"  OODA with context: {metrics['ooda_with_context_ms']}ms")
+        print(f"  Improvement: {metrics['ooda_improvement_percent']:.1f}%")
 
-          # Validate constraints
-          if metrics['total_overhead_ms'] > 100:
+        # Validate constraints
+        if metrics['total_overhead_ms'] > 100:
             print(f"  ⚠️ OVERHEAD ALERT: {metrics['total_overhead_ms']}ms > 100ms threshold")
-          else:
+        else:
             print(f"  ✅ OVERHEAD OK: {metrics['total_overhead_ms']}ms < 100ms")
 
-          if metrics['patterns_count'] < 10 or metrics['patterns_count'] > 20:
+        if metrics['patterns_count'] < 10 or metrics['patterns_count'] > 20:
             print(f"  ⚠️ PATTERN COUNT ALERT: {metrics['patterns_count']} (target: 10-20)")
-          else:
+        else:
             print(f"  ✅ PATTERN COUNT OK: {metrics['patterns_count']}")
 
-          if metrics['avg_relevance_score'] < 0.65:
+        if metrics['avg_relevance_score'] < 0.65:
             print(f"  ⚠️ RELEVANCE ALERT: {metrics['avg_relevance_score']:.2f} (target: >0.80)")
-          elif metrics['avg_relevance_score'] >= 0.80:
+        elif metrics['avg_relevance_score'] >= 0.80:
             print(f"  ✅ RELEVANCE OK: {metrics['avg_relevance_score']:.2f}")
-          else:
+        else:
             print(f"  ⚠️ RELEVANCE LOW: {metrics['avg_relevance_score']:.2f} (target: >0.80)")
-          PYTHON_PERF
+        PYTHON_PERF
 
-          echo "📈 Metrics written to $PERF_REPORT"
-          echo "::endgroup::"
+        echo "📈 Metrics written to $PERF_REPORT"
+        echo "::endgroup::"
 
-      - name: "🔀 Phase 10.3: A/B Test Tracking (record injection impact)"
-        id: ab_test_tracking
-        continue-on-error: true
+    - name: "🔀 Phase 10.3: A/B Test Tracking (record injection impact)"
+      id: ab_test_tracking
+      continue-on-error: true
       env:
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          echo "::group::A/B Test Tracking"
+        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        echo "::group::A/B Test Tracking"
 
-          AB_TEST_LOG=".codex/phase_10_3_ab_test_log.jsonl"
+        AB_TEST_LOG=".codex/phase_10_3_ab_test_log.jsonl"
 
-          python3 << 'PYTHON_AB'
-          import hashlib
-          import json
-          import os
-          from datetime import datetime
+        python3 << 'PYTHON_AB'
+        import hashlib
+        import json
+        import os
+        from datetime import datetime
 
-          pr_num = os.environ.get('GITHUB_PR_NUMBER', 'unknown')
+        pr_num = os.environ.get('GITHUB_PR_NUMBER', 'unknown')
 
-          # Simple hash-based assignment (deterministic for same PR)
-          hash_val = int(hashlib.md5(str(pr_num).encode()).hexdigest(), 16)
-          group = 'A' if hash_val % 2 == 0 else 'B'  # 50/50 split
+        # Simple hash-based assignment (deterministic for same PR)
+        hash_val = int(hashlib.md5(str(pr_num).encode()).hexdigest(), 16)
+        group = 'A' if hash_val % 2 == 0 else 'B'  # 50/50 split
 
-          # Create test record
-          record = {
+        # Create test record
+        record = {
             'timestamp': datetime.now().isoformat(),
             'github_ref': os.environ.get('GITHUB_REF', 'unknown'),
             'pr_number': pr_num,
@@ -447,39 +448,39 @@ jobs:
                 int(os.environ.get('CONTEXT_SCORER_TIME_MS', '0') or '0') +
                 int(os.environ.get('CONTEXT_INJECTION_TIME_MS', '0') or '0')
             ),
-          }
+        }
 
-          # Append to log
-          log_file = os.environ.get('AB_TEST_LOG', '.codex/phase_10_3_ab_test_log.jsonl')
-          os.makedirs(os.path.dirname(log_file) or '.', exist_ok=True)
+        # Append to log
+        log_file = os.environ.get('AB_TEST_LOG', '.codex/phase_10_3_ab_test_log.jsonl')
+        os.makedirs(os.path.dirname(log_file) or '.', exist_ok=True)
 
-          with open(log_file, 'a', encoding='utf-8') as f:
+        with open(log_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps(record) + '\n')
 
-          print(f"📊 A/B Test Group: {group}")
-          print(f"   - Patterns injected: {record['patterns_injected']}")
-          print(f"   - Relevance score: {record['avg_relevance_score']:.2f}")
-          print(f"   - Injection overhead: {record['injection_overhead_ms']}ms")
-          print(f"   - Status: {record['context_scorer_status']}")
+        print(f"📊 A/B Test Group: {group}")
+        print(f"   - Patterns injected: {record['patterns_injected']}")
+        print(f"   - Relevance score: {record['avg_relevance_score']:.2f}")
+        print(f"   - Injection overhead: {record['injection_overhead_ms']}ms")
+        print(f"   - Status: {record['context_scorer_status']}")
 
-          # Count records for progress
-          count = 0
-          if os.path.exists(log_file):
+        # Count records for progress
+        count = 0
+        if os.path.exists(log_file):
             with open(log_file, 'r', encoding='utf-8') as f:
                 count = len(f.readlines())
 
-          print(f"   📈 Total A/B test sessions recorded: {count}")
-          PYTHON_AB
+        print(f"   📈 Total A/B test sessions recorded: {count}")
+        PYTHON_AB
 
-          echo "✅ A/B test record appended to $AB_TEST_LOG"
-          echo "::endgroup::"
+        echo "✅ A/B test record appended to $AB_TEST_LOG"
+        echo "::endgroup::"
 
-      - name: "\u2699\uFE0F Configure git for non-interactive CI operation"
-        run: "git config --global core.editor \"true\"\ngit config --global advice.mergeConflict\
+    - name: "\u2699\uFE0F Configure git for non-interactive CI operation"
+      run: "git config --global core.editor \"true\"\ngit config --global advice.mergeConflict\
         \ false\necho \"\u2705 git configured: core.editor=true, advice.mergeConflict=false\"\
         \n"
-      - name: "\U0001F500 Fetch remote branch refs for PR diff support"
-        run: "git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null\
+    - name: "\U0001F500 Fetch remote branch refs for PR diff support"
+      run: "git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null\
         \ \\\n  && echo \"\u2705 Remote branch refs fetched (as origin/*)\" \\\n \
         \ || echo \"\u26A0\uFE0F Remote ref fetch failed (non-blocking)\"\ngit branch\
         \ -f main origin/main 2>/dev/null \\\n  && echo \"\u2705 main available as\
@@ -489,14 +490,15 @@ jobs:
         \ 2>/dev/null \\\n    && echo \"\u2705 $BASE available as local branch ref\"\
         \ \\\n    || echo \"\u26A0\uFE0F Could not create local $BASE ref (non-blocking)\"\
         \nfi\n"
-      - name: "\U0001F500 Merge Conflict Pre-Check (session start)"
-        continue-on-error: true
+    - name: "\U0001F500 Merge Conflict Pre-Check (session start)"
+      continue-on-error: true
       env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         HEAD_REF: ${{ github.head_ref }}
         BASE_REF: ${{ github.base_ref }}
         PR_NUMBER: ${{ github.event.pull_request.number || '' }}
-        run: "echo \"\u2500\u2500 \xA70.4: Inspecting PR for merge conflicts \u2500\u2500\
+      run: "echo \"\u2500\u2500 \xA70.4: Inspecting PR for merge conflicts \u2500\u2500\
         \"\nBASE=\"${BASE_REF}\"\n\nif [ -n \"$PR_NUMBER\" ]; then\n  MERGEABLE=$(gh\
         \ pr view \"$PR_NUMBER\" --json mergeable -q .mergeable 2>/dev/null || echo\
         \ \"UNKNOWN\")\n  echo \"PR  #${PR_NUMBER} mergeable status: ${MERGEABLE}\"\
@@ -527,11 +529,12 @@ jobs:
         \n    else\n      echo \"\u2705 merge-tree: no file-level conflicts detected\"\
         \n    fi\n  fi\nfi\n\necho \"\u2500\u2500 \xA70.4 merge conflict pre-check\
         \ complete \u2500\u2500\"\n"
-      - name: "\U0001F6A8 CI Failure Issue Check (session start)"
-        continue-on-error: true
+    - name: "\U0001F6A8 CI Failure Issue Check (session start)"
+      continue-on-error: true
       env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        run: "echo \"\u2500\u2500 \xA70.2: Checking for open CI failure report issues\
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+      run: "echo \"\u2500\u2500 \xA70.2: Checking for open CI failure report issues\
         \ \u2500\u2500\"\nREPO=\"Aries-Serpent/_codex_\"\n\nCI_FAILURES=$(gh issue\
         \ list --repo \"$REPO\" --label \"ci-failure\" --state open \\\n  --json number,title,updatedAt\
         \ --jq 'length' 2>/dev/null || echo \"0\")\necho \"Open ci-failure issues:\
@@ -551,9 +554,9 @@ jobs:
         ' 2>/dev/null || true\nelse\n  echo \"\u2705 No open CI failure report issues\"\
         \nfi\n\necho \"\u2500\u2500 \xA70.2 CI failure issue check complete \u2500\
         \u2500\"\n"
-      - name: "\U0001F50D Validate repo JSON files (non-blocking)"
-        continue-on-error: true
-        run: "echo \"\u2500\u2500 Validating JSON files in .codex/ and docs/ \u2500\u2500\
+    - name: "\U0001F50D Validate repo JSON files (non-blocking)"
+      continue-on-error: true
+      run: "echo \"\u2500\u2500 Validating JSON files in .codex/ and docs/ \u2500\u2500\
         \"\nFAIL=0\nINVALID_FILES=\"\"\n\nwhile IFS= read -r -d '' f; do\n  if ! python3\
         \ -m json.tool \"$f\" > /dev/null 2>&1; then\n    echo \"::warning file=${f}::Invalid\
         \ JSON detected (non-blocking): ${f}\"\n    INVALID_FILES=\"${INVALID_FILES}${f}\\\
@@ -564,31 +567,31 @@ jobs:
         \ JSON Files ---\"\n  printf '%s' \"$INVALID_FILES\"\n  echo \"--- Agent will\
         \ remediate these errors ---\"\nelse\n  echo \"\u2705 All JSON files valid\"\
         \nfi\n"
-      - name: "\U0001F511 Inject repo variable context for agent"
-        continue-on-error: true
-        run: "if [ ! -f .github/scripts/inject_context_vars.py ]; then\n  echo \"::warning::inject_context_vars.py\
+    - name: "\U0001F511 Inject repo variable context for agent"
+      continue-on-error: true
+      run: "if [ ! -f .github/scripts/inject_context_vars.py ]; then\n  echo \"::warning::inject_context_vars.py\
         \ not found (non-blocking)\"\nelse\n  python3 .github/scripts/inject_context_vars.py\
         \ || {\n    echo \"::warning::Failed to inject context vars (non-blocking)\
         \ \u2014 agent will proceed with defaults\"\n  }\nfi\n"
-      - name: "\u2699\uFE0F Inject cascade-control & tuning variables (live vars fallback)"
-        continue-on-error: true
+    - name: "\u2699\uFE0F Inject cascade-control & tuning variables (live vars fallback)"
+      continue-on-error: true
       env:
-          CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
+        CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
         CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
         CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
         COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
         COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
         CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
-        run: "for var in \\\n  CODEX_MAX_HEALER_RUNS_PER_HOUR \\\n  CODEX_SWEEP_SKIP_MAIN\
+      run: "for var in \\\n  CODEX_MAX_HEALER_RUNS_PER_HOUR \\\n  CODEX_SWEEP_SKIP_MAIN\
         \ \\\n  CODEX_HEALER_SKIP_SKIPCI \\\n  COPILOT_RUNNER_PROFILE \\\n  CODEX_CACHE_VERSION\
         \ \\\n  COPILOT_AGENT_STATE \\\n  CODEX_CI_LAST_GREEN_SHA; do\n  val=\"${!var}\"\
         \n  if [ -n \"$val\" ]; then\n    echo \"${var}=${val}\" >> \"$GITHUB_ENV\"\
         \n    echo \"  \u2705 ${var}=${val}\"\n  fi\ndone\necho \"\u2500\u2500 Cascade-control\
         \ var injection complete \u2500\u2500\"\n"
-      - name: "\U0001F6E1\uFE0F Install safe-git-show guard on PATH"
-        continue-on-error: true
-        run: "if [ ! -f scripts/ci/safe_git_show.sh ]; then\n  echo \"::warning::scripts/ci/safe_git_show.sh\
+    - name: "\U0001F6E1\uFE0F Install safe-git-show guard on PATH"
+      continue-on-error: true
+      run: "if [ ! -f scripts/ci/safe_git_show.sh ]; then\n  echo \"::warning::scripts/ci/safe_git_show.sh\
         \ not found (non-blocking) \u2014 agent will proceed without guard\"\nelse\n\
         \  install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh\
         \ 2>/dev/null || {\n    echo \"::warning::Failed to install safe_git_show\
@@ -596,10 +599,10 @@ jobs:
         \ /usr/local/bin/safe_git_show 2>/dev/null || true\n  echo \"\u2705 safe_git_show\
         \ installed at $(command -v safe_git_show 2>/dev/null || echo 'UNKNOWN')\"\
         \nfi\n"
-      - name: "\U0001F52D LFS diagnostics"
-        if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
-        continue-on-error: true
-        run: 'echo "Git version: $(git --version)"
+    - name: "\U0001F52D LFS diagnostics"
+      if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
+      continue-on-error: true
+      run: 'echo "Git version: $(git --version)"
 
         echo "LFS version: $(git lfs version 2>/dev/null || echo ''git-lfs not installed'')"
 
@@ -608,17 +611,17 @@ jobs:
         git lfs ls-files || true
 
         '
-      - name: "\U0001F4E5 Install git-lfs (if needed)"
-        if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
-        continue-on-error: true
-        run: "if ! command -v git-lfs >/dev/null 2>&1; then\n  if command -v apt-get\
+    - name: "\U0001F4E5 Install git-lfs (if needed)"
+      if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
+      continue-on-error: true
+      run: "if ! command -v git-lfs >/dev/null 2>&1; then\n  if command -v apt-get\
         \ >/dev/null 2>&1; then\n    sudo apt-get update && sudo apt-get install -y\
         \ git-lfs || {\n      echo \"::warning::Failed to install git-lfs (non-blocking)\"\
         \n    }\n  fi\nfi\ngit lfs install --local || true\n"
-      - name: "\U0001F3AF Targeted LFS fetch & checkout (guarded)"
-        if: ${{ env.LFS_TARGETED_ENABLED == 'true' }}
-        continue-on-error: true
-        run: "INCLUDES=\"${{ inputs.lfs_include_paths }}\"\nINCLUDES_CLEAN=$(echo \"\
+    - name: "\U0001F3AF Targeted LFS fetch & checkout (guarded)"
+      if: ${{ env.LFS_TARGETED_ENABLED == 'true' }}
+      continue-on-error: true
+      run: "INCLUDES=\"${{ inputs.lfs_include_paths }}\"\nINCLUDES_CLEAN=$(echo \"\
         $INCLUDES\" | tr -d ' ' | tr ',' ' ')\necho \"Targeted LFS includes: $INCLUDES_CLEAN\"\
         \n\nfor i in 1 2 3; do\n  echo \"Attempt $i: git lfs fetch --include=\\\"\
         $INCLUDES_CLEAN\\\" origin\"\n  if git lfs fetch --include=\"$INCLUDES_CLEAN\"\
@@ -626,20 +629,20 @@ jobs:
         \    echo \"git lfs fetch failed on attempt $i (non-blocking)\"\n    sleep\
         \ $((i * 5))\n  fi\ndone\n\ngit lfs checkout --include=\"$INCLUDES_CLEAN\"\
         \ || true\n"
-      - name: "\U0001F310 Full LFS fetch & checkout (guarded)"
-        if: ${{ env.LFS_FULL_ENABLED == 'true' }}
-        continue-on-error: true
-        run: "for i in 1 2 3; do\n  echo \"Attempt $i: git lfs fetch --all origin\"\n\
+    - name: "\U0001F310 Full LFS fetch & checkout (guarded)"
+      if: ${{ env.LFS_FULL_ENABLED == 'true' }}
+      continue-on-error: true
+      run: "for i in 1 2 3; do\n  echo \"Attempt $i: git lfs fetch --all origin\"\n\
         \  if git lfs fetch --all origin; then\n    echo \"git lfs fetch --all succeeded\"\
         \n    break\n  else\n    echo \"git lfs fetch --all failed on attempt $i (non-blocking)\"\
         \n    sleep $((i * 5))\n  fi\ndone\n\ngit lfs checkout || true\n"
-      - name: "\U0001F50D Detect Environment Type"
-        id: detect_env
-        continue-on-error: true
+    - name: "\U0001F50D Detect Environment Type"
+      id: detect_env
+      continue-on-error: true
       env:
-          HEAD_REF: ${{ github.head_ref }}
+        HEAD_REF: ${{ github.head_ref }}
         INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
-        run: "ENV_TYPE=\"${INPUT_ENV_TYPE}\"\nif [[ \"$ENV_TYPE\" == \"standard\" ]];\
+      run: "ENV_TYPE=\"${INPUT_ENV_TYPE}\"\nif [[ \"$ENV_TYPE\" == \"standard\" ]];\
         \ then\n  if [[ \"${HEAD_REF}\" == *\"ml\"* ]] || [[ \"${HEAD_REF}\" == *\"\
         rag\"* ]]; then\n    ENV_TYPE=\"ml-heavy\"\n  elif [[ \"${HEAD_REF}\" == *\"\
         security\"* ]] || [[ \"${HEAD_REF}\" == *\"sec\"* ]]; then\n    ENV_TYPE=\"\
@@ -647,9 +650,9 @@ jobs:
         \ == *\"documentation\"* ]]; then\n    ENV_TYPE=\"documentation\"\n  fi\n\
         fi\necho \"environment_type=$ENV_TYPE\" >> \"$GITHUB_OUTPUT\"\necho \"\u2705\
         \ Detected environment type: $ENV_TYPE\"\n"
-      - name: "\u2705 Validate Environment Setup"
-        continue-on-error: true
-        run: "trap '' PIPE\nset +o pipefail\n\necho \"==================== Environment\
+    - name: "\u2705 Validate Environment Setup"
+      continue-on-error: true
+      run: "trap '' PIPE\nset +o pipefail\n\necho \"==================== Environment\
         \ Validation ====================\"\necho \"Python Version: $(python --version\
         \ 2>&1)\"\necho \"Pip Version: $(pip --version 2>&1)\"\necho \"Node Version:\
         \ $(node --version 2>/dev/null || echo 'Not installed')\"\necho \"Rust Version:\
@@ -661,9 +664,9 @@ jobs:
         \ndf -h | grep -E \"^/dev\" || true\necho \"\"\necho \"\u2705 Environment\
         \ setup complete for type: ${{ steps.detect_env.outputs.environment_type }}\"\
         \n"
-      - name: "\U0001F3E5 Run Health Check"
-        continue-on-error: true
-        run: "echo \"Checking critical paths...\"\ntest -d src/codex && echo \"\u2705\
+    - name: "\U0001F3E5 Run Health Check"
+      continue-on-error: true
+      run: "echo \"Checking critical paths...\"\ntest -d src/codex && echo \"\u2705\
         \ src/codex exists\" || echo \"\u26A0\uFE0F src/codex missing (non-blocking)\"\
         \ntest -d .codex && echo \"\u2705 .codex exists\" || echo \"\u26A0\uFE0F .codex\
         \ missing (non-blocking)\"\ntest -d tests && echo \"\u2705 tests exists\"\
@@ -676,9 +679,9 @@ jobs:
         \ && echo \"\u2705 black available\" || echo \"\u26A0\uFE0F black not available\
         \ (non-blocking)\"\nwhich pytest && echo \"\u2705 pytest available\" || echo\
         \ \"\u26A0\uFE0F pytest not available (non-blocking)\"\n"
-      - name: "\U0001F4CA Session Lifecycle Metrics"
-        continue-on-error: true
-        run: "if [ -f scripts/session_tracker.py ]; then\n  echo \"\u2500\u2500\u2500\
+    - name: "\U0001F4CA Session Lifecycle Metrics"
+      continue-on-error: true
+      run: "if [ -f scripts/session_tracker.py ]; then\n  echo \"\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500 Session Lifecycle Metrics \u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500\"\n  python scripts/session_tracker.py metrics\
         \ || true\n  echo \"\"\n  # Write JSON metrics to GITHUB_STEP_SUMMARY\n  METRICS_JSON=$(python\
@@ -688,14 +691,14 @@ jobs:
         \ \"$GITHUB_STEP_SUMMARY\"\n  echo '```' >> \"$GITHUB_STEP_SUMMARY\"\nelse\n\
         \  echo \"\u26A0\uFE0F  session_tracker.py not found \u2014 skipping metrics\"\
         \nfi\n"
-      - name: "\U0001F4BE Prepare Cache Artifacts"
-        run: "mkdir -p .codex/cache\nmkdir -p .codex/sessions\necho \"\u2705 Cache directories\
+    - name: "\U0001F4BE Prepare Cache Artifacts"
+      run: "mkdir -p .codex/cache\nmkdir -p .codex/sessions\necho \"\u2705 Cache directories\
         \ prepared\"\n"
-      - name: "\U0001F4CA Accountability Auto-Update (session close hook)"
-        continue-on-error: true
+    - name: "\U0001F4CA Accountability Auto-Update (session close hook)"
+      continue-on-error: true
       env:
-          CODEX_SESSION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-        run: "# Run accountability auto-update in dry-run mode during setup to\n# pre-validate\
+        CODEX_SESSION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      run: "# Run accountability auto-update in dry-run mode during setup to\n# pre-validate\
         \ the script. The actual --commit run is triggered at\n# session close by\
         \ the agent itself or post-job hooks.\nif [ -f src/codex/session/accountability_autoupdate.py\
         \ ]; then\n  echo \"\u2705 Accountability auto-update script available\"\n\
@@ -704,20 +707,20 @@ jobs:
         \  \u26A0\uFE0F dry-run validation skipped (non-blocking)\"\nelse\n  echo\
         \ \"\u26A0\uFE0F accountability_autoupdate.py not found \u2014 skipping\"\n\
         fi\n"
-      - name: "\U0001F504 Rotate Cognitive Brain Status Files"
-        continue-on-error: true
-        run: "if [ -f scripts/ci/rotate_cognitive_brain_status.py ]; then\n  python\
+    - name: "\U0001F504 Rotate Cognitive Brain Status Files"
+      continue-on-error: true
+      run: "if [ -f scripts/ci/rotate_cognitive_brain_status.py ]; then\n  python\
         \ scripts/ci/rotate_cognitive_brain_status.py --keep 50 --threshold 60 ||\
         \ true\nfi\n"
-      - name: "\U0001F916 Initialize Cognitive Brain Context"
-        continue-on-error: true
-        run: "if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then\n  echo \"\u2705 Loading\
+    - name: "\U0001F916 Initialize Cognitive Brain Context"
+      continue-on-error: true
+      run: "if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then\n  echo \"\u2705 Loading\
         \ specialized agents from registry...\"\n  head -20 .github/agents/AGENT_REGISTRY.yaml\
         \ || true\nfi\nif [ -d cognitive/ ]; then\n  echo \"\u2705 Cognitive brain\
         \ components available\"\n  ls -la cognitive/ | head -10\nfi\n"
-      - name: "\U0001F4BB Start CLI API Server (background)"
-        continue-on-error: true
-        run: "if [ ! -f cognitive_app/src/server/cli_api_server.py ]; then\n  echo \"\
+    - name: "\U0001F4BB Start CLI API Server (background)"
+      continue-on-error: true
+      run: "if [ ! -f cognitive_app/src/server/cli_api_server.py ]; then\n  echo \"\
         \u26A0\uFE0F cli_api_server.py not found \u2014 skipping (non-blocking)\"\n\
         \  exit 0\nfi\npip install fastapi uvicorn httpx ptyprocess --quiet 2>/dev/null\
         \ || true\n# Explicitly forward auth tokens to the server process env.\n#\
@@ -751,11 +754,11 @@ jobs:
         \  fi\nelse\n  echo \"\u26A0\uFE0F CLI API Server did not respond after 5\
         \ s \u2014 see RUNNER_TEMP/cli_api_server.log\"\n  cat \"${RUNNER_TEMP}/cli_api_server.log\"\
         \ 2>/dev/null | tail -20 || true\nfi\n"
-      - name: "\U0001F4CA Generate Environment Report (temp path)"
-        id: gen_report
-        if: always()
-    shell: bash
-    run: "set -euo pipefail\nREPORT_DIR=\"${RUNNER_TEMP:-/tmp}\"\nREPORT=\"$REPORT_DIR/.copilot-agent-environment-report.txt\"\
+    - name: "\U0001F4CA Generate Environment Report (temp path)"
+      id: gen_report
+      if: always()
+      shell: bash
+      run: "set -euo pipefail\nREPORT_DIR=\"${RUNNER_TEMP:-/tmp}\"\nREPORT=\"$REPORT_DIR/.copilot-agent-environment-report.txt\"\
         \n{\n  echo \"==================== Copilot Agent Environment Report ====================\"\
         \n  echo \"Generated: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\"\n  echo \"Environment\
         \ Type: ${{ steps.detect_env.outputs.environment_type }}\"\n  echo \"Runner:\
@@ -767,11 +770,11 @@ jobs:
         \"\n  echo \"Status: \u2705 Environment ready for Copilot agent operations\"\
         \n} > \"$REPORT\"\necho \"Report written to $REPORT\"\nhead -20 \"$REPORT\"\
         \ || true\necho \"REPORT_PATH=$REPORT\" >> \"$GITHUB_OUTPUT\"\n"
-      - name: "\U0001F4E4 Upload Environment Report"
-    if: always()
-    uses: actions/upload-artifact@v5
-        with:
-          name: copilot-agent-environment-report
+    - name: "\U0001F4E4 Upload Environment Report"
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: copilot-agent-environment-report
         path: ${{ steps.gen_report.outputs.REPORT_PATH }}
         retention-days: 14
         if-no-files-found: warn
@@ -793,13 +796,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-        with:
-          persist-credentials: false
+      with:
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
       env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -809,6 +813,5 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
