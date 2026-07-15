@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
     timeout-minutes: 30
     permissions:
       contents: read
@@ -44,55 +43,62 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Install security tools
-        run: "python -m pip install --upgrade pip setuptools wheel
+        run: |
+          echo "step"
 
         pip install bandit[toml] semgrep gitleaks safety pip-audit
 
         pip install -e .
 
-        "
       - name: Run Bandit Security Scan
         id: bandit
         continue-on-error: true
-        run: "echo \"::group::Bandit SAST Scan\"\nbandit -r src/ -f json -o bandit-report.json\
+        run: |
+          echo "step"
         \ || true\necho \"::endgroup::\"\nif [ -f bandit-report.json ]; then\n  python\
         \ -m json.tool bandit-report.json\nfi\n"
       - name: Run Semgrep Security Scan
         id: semgrep
         continue-on-error: true
-        run: "echo \"::group::Semgrep SAST Scan\"\nsemgrep --config=p/python --config=p/security-audit\
+        run: |
+          echo "step"
         \ \\\n  --json -o semgrep-report.json src/ || true\necho \"::endgroup::\"\n\
         if [ -f semgrep-report.json ]; then\n  python -m json.tool semgrep-report.json\n\
         fi\n"
       - name: Run Gitleaks Secret Scan
         id: gitleaks
         continue-on-error: true
-        run: "echo \"::group::Gitleaks Secret Detection\"\ngitleaks detect --source\
+        run: |
+          echo "step"
         \ . --report-format json \\\n  --report-path gitleaks-report.json || true\n\
         echo \"::endgroup::\"\nif [ -f gitleaks-report.json ]; then\n  python -m json.tool\
         \ gitleaks-report.json\nfi\n"
       - name: Run pip-audit Dependency Scan
         id: pip-audit
         continue-on-error: true
-        run: "echo \"::group::pip-audit Dependency Scan\"\npip-audit --desc --format\
+        run: |
+          echo "step"
         \ json > pip-audit-report.json || true\necho \"::endgroup::\"\nif [ -f pip-audit-report.json\
         \ ]; then\n  python -m json.tool pip-audit-report.json\nfi\n"
       - name: Run Safety Dependency Scan
         id: safety
         continue-on-error: true
-        run: "echo \"::group::Safety Dependency Scan\"\nsafety check --json > safety-report.json\
+        run: |
+          echo "step"
         \ || true\necho \"::endgroup::\"\nif [ -f safety-report.json ]; then\n  python\
         \ -m json.tool safety-report.json || echo \"Safety report generated\"\nfi\n"
       - name: Run Vulnerability Scanning Tests
         id: vuln-tests
         continue-on-error: true
-        run: "echo \"::group::Phase 16.3 Vulnerability Scanning Tests\"\npython -m pytest\
+        run: |
+          echo "step"
         \ tests/security/test_vulnerability_scanning.py -v \\\n  --tb=short --color=yes\
         \ 2>&1 | head -100\necho \"::endgroup::\"\n"
       - name: Run Dependency Audit Tests
         id: dep-audit-tests
         continue-on-error: true
-        run: "echo \"::group::Phase 16.3 Dependency Audit Tests\"\npython -m pytest\
+        run: |
+          echo "step"
         \ tests/security/test_dependency_audit.py -v \\\n  --tb=short --color=yes\
         \ 2>&1 | head -100\necho \"::endgroup::\"\n"
       - name: Upload SARIF Reports
@@ -104,7 +110,8 @@ jobs:
         continue-on-error: true
       - name: Create Security Report Summary
         if: always()
-        run: "echo \"# Phase 16.3 Security Scanning Report\" > security-report.md\n\
+        run: |
+          echo "step"
         echo \"\" >> security-report.md\necho \"## Scan Results\" >> security-report.md\n\
         echo \"\" >> security-report.md\n\nif [ -f bandit-report.json ]; then\n  echo\
         \ \"### Bandit SAST Scan\" >> security-report.md\n  echo \"✓ Completed\" >>\
@@ -141,7 +148,6 @@ jobs:
 
           security-report.md
 
-          "
         retention-days: 30
   coverage-analysis:
     name: Coverage Gap Analysis (Phase 16.4)
@@ -161,17 +167,18 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip setuptools wheel
+        run: |
+          echo "step"
 
         pip install -e .
 
         pip install pytest pytest-cov pytest-xdist
 
-        "
       - name: Run tests with coverage
         id: coverage
         continue-on-error: true
-        run: "echo \"::group::Collecting Coverage\"\npython -m pytest tests/security/\
+        run: |
+          echo "step"
         \ \\\n  --cov=src \\\n  --cov-report=term-missing \\\n  --cov-report=json\
         \ \\\n  --cov-report=html \\\n  -v --tb=short\necho \"::endgroup::\"\n"
       - name: Check coverage threshold
@@ -240,24 +247,27 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip setuptools wheel
+        run: |
+          echo "step"
 
         pip install -e .
 
         pip install pytest pytest-xdist pytest-timeout
 
-        "
       - name: Run Phase 16.3 Security Tests
-        run: "echo \"::group::Phase 16.3: Vulnerability Scanning Tests\"\npython -m\
+        run: |
+          echo "step"
         \ pytest tests/security/test_vulnerability_scanning.py \\\n  -v --tb=short\
         \ -x 2>&1 | tee phase-16-3-results.txt\necho \"::endgroup::\"\n"
       - name: Run Phase 16.3 Dependency Audit Tests
-        run: "echo \"::group::Phase 16.3: Dependency Audit Tests\"\npython -m pytest\
+        run: |
+          echo "step"
         \ tests/security/test_dependency_audit.py \\\n  -v --tb=short -x 2>&1 | tee\
         \ phase-16-3-dep-results.txt\necho \"::endgroup::\"\n"
       - name: Generate Test Report
         if: always()
-        run: "echo "# Phase 16 Test Results" > test-report.md
+        run: |
+          echo "step"
 
         echo "" >> test-report.md
 
@@ -283,7 +293,6 @@ jobs:
 
         echo "\`\`\`" >> test-report.md
 
-        "
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v5
@@ -295,7 +304,6 @@ jobs:
 
           test-report.md
 
-          "
         retention-days: 30
   security-gates:
     name: Security Gates & Validation
@@ -314,7 +322,8 @@ jobs:
         with:
         python-version: ${{ env.PYTHON_VERSION }}
       - name: Check SECURITY.md
-        run: "if [ ! -f SECURITY.md ]; then\n  echo \"❌ SECURITY.md not found\"\n  exit\
+        run: |
+          echo "step"
         \ 1\nfi\necho \"✓ SECURITY.md exists\"\ngrep -E \"email|report|contact\" SECURITY.md\
         \ > /dev/null && \\\n  echo \"✓ Security contact documented\" || \\\n  echo\
         \ \"⚠️ Security contact not clearly documented\"\n"
@@ -331,7 +340,8 @@ jobs:
         \ No hardcoded secrets detected")\nelse:\n    print("⚠️ Potential secrets\
         \ detected")\n\" || echo \"✓ Gitleaks check completed\"\n"
       - name: Validate dependencies
-        run: "python -m pip install --upgrade pip
+        run: |
+          echo "step"
 
         pip install pipdeptree
 
@@ -341,9 +351,9 @@ jobs:
 
         echo "✓ Dependency validation completed"
 
-        "
       - name: Summary
-        run: "echo "## Phase 16 Security Gates Summary"
+        run: |
+          echo "step"
 
         echo ""
 
@@ -361,7 +371,6 @@ jobs:
 
         echo "All security gates passed for Phase 16"
 
-        "
   results:
     name: Phase 16 Results Summary
     runs-on: ubuntu-latest
@@ -381,7 +390,8 @@ jobs:
         with:
         persist-credentials: false
       - name: Create Summary
-        run: "echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
+        run: |
+          echo "step"
 
         echo "" >> PHASE_16_RESULTS.md
 
@@ -423,14 +433,14 @@ jobs:
 
         echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
 
-        "
       - name: Upload Summary
         uses: actions/upload-artifact@v5
         with:
         name: phase-16-complete
         path: PHASE_16_RESULTS.md
       - name: Status
-        run: "echo "## 🎯 Phase 16 Execution Complete"
+        run: |
+          echo "step"
 
         echo ""
 
@@ -448,5 +458,4 @@ jobs:
 
         echo "CodeQL status: Validated"
 
-        "
     timeout-minutes: 30

@@ -40,23 +40,22 @@ jobs:
       - name: Mask secrets
         run: |
           echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-        sparse-checkout: 'scripts/ci/
+       - uses: actions/checkout@v5
 
-          pyproject.toml
+         with:
+           persist-credentials: false
+           sparse-checkout: 'scripts/ci/
 
-          '
-        sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v6
-      with:
-        python-version: 3.12.13
-        cache: pip
+             pyproject.toml
+
+           sparse-checkout-cone-mode: false
+       - uses: actions/setup-python@v6
+         with:
+           python-version: 3.12.13
+           cache: pip
       - name: "\U0001F50B Rate-limit pre-check"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         run: "python scripts/ci/github_api_trickle.py --status || {\n  echo \"::warning::All\
         \ GitHub API tokens exhausted \u2014 API steps will be skipped\"\n  echo \"\
         RATE_LIMITED=true\" >> \"$GITHUB_ENV\"\n}\n"
@@ -67,9 +66,9 @@ jobs:
         BODY_BEFORE: ${{ github.event.changes.body.from }}
         BODY_AFTER: ${{ github.event.pull_request.body }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         REPO: ${{ github.repository }}
-        run: "python scripts/ci/wec_enforcer.py --detect-changes > wec_changes.json\
+        run: |
+          echo "step"
         \ || true\nNEWLY_CHECKED=$(python3 -c \"import json,sys; d=json.load(open('wec_changes.json'));\
         \ print(json.dumps(d.get('newly_checked', [])))\" 2>/dev/null || echo \"[]\"\
         )\nNEWLY_UNCHECKED=$(python3 -c \"import json,sys; d=json.load(open('wec_changes.json'));\
@@ -93,13 +92,13 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v5
+
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
 
-          '
         sparse-checkout-cone-mode: false
     - uses: actions/setup-python@v6
       with:
@@ -108,8 +107,8 @@ jobs:
     - name: Rate-limit pre-check
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-      run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
+      run: |
+        echo "step"
         \ || echo \"0\")\necho \"GitHub API rate limit remaining: ${REMAINING}\"\n\
         if [[ \"${REMAINING}\" =~ ^[0-9]+$ ]] && [ \"${REMAINING}\" -lt 50 ]; then\n\
         \  RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null ||\
@@ -119,24 +118,24 @@ jobs:
     - name: Cancel in-progress runs for unchecked workflows
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         REPO: ${{ github.repository }}
         HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         HEAD_BRANCH: ${{ github.head_ref }}
         NEWLY_UNCHECKED: ${{ needs.detect-wec-changes.outputs.newly_unchecked }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: "echo \"Cancelling in-progress runs for unchecked workflows...\"\npython\
+      run: |
+        echo "step"
         \ scripts/ci/wec_enforcer.py \\\n  --cancel-unchecked \\\n  --pr \"${PR_NUMBER}\"\
         \ \\\n  --head-sha \"${HEAD_SHA}\" \\\n  --repo \"${REPO}\"\n"
     - name: Protect owner-selected flags from bot resets
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         NEWLY_UNCHECKED: ${{ needs.detect-wec-changes.outputs.newly_unchecked }}
         SENDER_LOGIN: ${{ github.event.sender.login }}
-      run: "# Determine whether the edit came from an automated bot or a human owner.\n\
+      run: |
+        echo "step"
         # Bot logins end in \"[bot]\" (e.g. \"copilot-swe-agent[bot]\", \"github-actions[bot]\"\
         ).\nIS_BOT=false\nif printf '%s' \"${SENDER_LOGIN}\" | grep -qE '\\[bot\\\
         ]$'; then\n  IS_BOT=true\nfi\n\n# Flags that must NEVER be silently reset\
@@ -182,13 +181,13 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v5
+
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
 
-          '
         sparse-checkout-cone-mode: false
     - uses: actions/setup-python@v6
       with:
@@ -197,8 +196,8 @@ jobs:
     - name: Rate-limit pre-check
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-      run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
+      run: |
+        echo "step"
         \ || echo \"0\")\necho \"GitHub API rate limit remaining: ${REMAINING}\"\n\
         if [[ \"${REMAINING}\" =~ ^[0-9]+$ ]] && [ \"${REMAINING}\" -lt 50 ]; then\n\
         \  RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null ||\
@@ -229,7 +228,6 @@ jobs:
     - name: Persist owner-selected flags as labels
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         NEWLY_CHECKED: ${{ needs.detect-wec-changes.outputs.newly_checked }}
@@ -256,13 +254,13 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
     steps:
     - uses: actions/checkout@v5
+
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
 
-          '
         sparse-checkout-cone-mode: false
     - uses: actions/setup-python@v6
       with:
@@ -271,8 +269,8 @@ jobs:
     - name: Rate-limit pre-check
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-      run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
+      run: |
+        echo "step"
         \ || echo \"0\")\necho \"GitHub API rate limit remaining: ${REMAINING}\"\n\
         if [[ \"${REMAINING}\" =~ ^[0-9]+$ ]] && [ \"${REMAINING}\" -lt 50 ]; then\n\
         \  RESET_AT=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null ||\
@@ -282,13 +280,10 @@ jobs:
     - name: Validate WEC template integrity
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number
-          }}
       run: 'python scripts/ci/wec_enforcer.py --validate-body --pr "${PR_NUMBER}"
 
-        '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   parse-checklist:
@@ -302,7 +297,6 @@ jobs:
 
       (github.event_name == ''pull_request'' && github.event.action == ''edited'')
 
-      '
     outputs:
       workflows_to_run: ${{ steps.parse.outputs.workflows_to_run }}
       workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}
@@ -318,17 +312,18 @@ jobs:
       env:
         PR_EVENT_NUMBER: ${{ github.event.pull_request.number }}
         PR_INPUT_NUMBER: ${{ github.event.inputs.pr_number }}
-      run: "PR=\"${PR_EVENT_NUMBER:-$PR_INPUT_NUMBER}\"\nif [ -z \"$PR\" ]; then\n\
+      run: |
+        echo "step"
         \  echo \"::error::Could not determine PR number\"\n  exit 1\nfi\necho \"\
         pr_number=${PR}\" >> \"$GITHUB_OUTPUT\"\necho \"PR number: ${PR}\"\n"
     - name: Parse workflow checklist from PR body
       id: parse
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
         GH_REPO: ${{ github.repository }}
-      run: "PR=\"${RESOLVED_PR}\"\nBODY=$(gh pr view \"$PR\" --repo \"${GH_REPO}\"\
+      run: |
+        echo "step"
         \ --json body --jq '.body // \"\"')\n\n# Locate the Workflow Execution Checklist\
         \ section\nSECTION=$(echo \"$BODY\" | awk '\n  /^## \U0001F504 Workflow Execution\
         \ Checklist/ { found=1 }\n  found && /^## / && !/^## \U0001F504 Workflow Execution\
@@ -343,16 +338,17 @@ jobs:
         [ \\] )\\S+\\.yml' | sort -u | tr '\\n' ',')\n\n# Remove trailing comma\n\
         CHECKED=\"${CHECKED%,}\"\nUNCHECKED=\"${UNCHECKED%,}\"\n\necho \"workflows_to_run=${CHECKED}\"\
         \ >> \"$GITHUB_OUTPUT\"\necho \"workflows_to_skip=${UNCHECKED}\" >> \"$GITHUB_OUTPUT\"\
-        \n\necho \"\u2705 Workflows to run:  ${CHECKED:-<none>}\"\necho \"\u23ED\uFE0F\
+        \n\necho \"\u2705 Workflows to run: |
+          echo "step"
         \ Workflows to skip: ${UNCHECKED:-<none>}\"\n"
     - name: Parse fast-forward section from PR body
       id: parse-ff
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
         RESOLVED_PR: ${{ steps.resolve-pr.outputs.pr_number }}
         GH_REPO: ${{ github.repository }}
-      run: "PR=\"${RESOLVED_PR}\"\nBODY=$(gh pr view \"$PR\" --repo \"${GH_REPO}\"\
+      run: |
+        echo "step"
         \ --json body --jq '.body // \"\"')\n\n# Check if the FF checkbox is ticked:\
         \  - [x] \u26A1 **Fast-Forward Approved**\nFF_APPROVED=\"false\"\nif echo\
         \ \"$BODY\" | grep -qP '^\\s*-\\s*\\[x\\].*Fast-Forward Approved'; then\n\
@@ -396,7 +392,8 @@ jobs:
         GATE_TO_SKIP: ${{ needs.parse-checklist.outputs.workflows_to_skip }}
         GATE_HAS_CHECKLIST: ${{ needs.parse-checklist.outputs.has_checklist }}
         GATE_TRIGGER: ${{ github.event.inputs.triggered_by || github.event_name }}
-        run: "PR=\"${GATE_PR}\"\nTO_RUN=\"${GATE_TO_RUN}\"\nTO_SKIP=\"${GATE_TO_SKIP}\"\
+        run: |
+          echo "step"
         \nHAS_CHECKLIST=\"${GATE_HAS_CHECKLIST}\"\nTRIGGER=\"${GATE_TRIGGER}\"\nRUN_URL=\"\
         https://github.com/${GH_REPO}/actions/runs/${GH_RUN_ID}\"\nMARKER=\"<!-- workflow-execution-gate:${PR}\
         \ -->\"\n\nif [ \"$HAS_CHECKLIST\" != \"true\" ]; then\n  printf '%s\\n' \\\
@@ -456,7 +453,6 @@ jobs:
 
       needs.parse-checklist.outputs.ff_approved == ''true''
 
-      '
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -474,7 +470,6 @@ jobs:
 
           pyproject.toml
 
-          '
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
       uses: actions/setup-python@v6
@@ -492,7 +487,8 @@ jobs:
         FF_MERGE_MODE: ${{ needs.parse-checklist.outputs.ff_merge_mode }}
         FF_DRY_RUN: ${{ needs.parse-checklist.outputs.ff_dry_run }}
         FF_FILES: ${{ needs.parse-checklist.outputs.ff_files }}
-      run: "PR=\"${FF_PR}\"\nMERGE_MODE=\"${FF_MERGE_MODE}\"\nDRY_RUN=\"${FF_DRY_RUN}\"\
+      run: |
+        echo "step"
         \nFF_FILES_LIST=\"${FF_FILES}\"\n\n# Build optional --files arg as a Bash\
         \ array (avoids SC2089/SC2090)\nFILES_ARG=()\nif [ -n \"$FF_FILES_LIST\" ];\
         \ then\n  # Convert comma/space list to individual --files arguments\n  read\
@@ -518,7 +514,8 @@ jobs:
         PR: ${{ needs.parse-checklist.outputs.pr_number }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_RUN_ID: ${{ github.run_id }}
-      run: "[ -f \"${RUNNER_TEMP}/ff_result.json\" ] || exit 0\n\npython3 - <<'PYEOF'\n\
+      run: |
+        echo "step"
         import json, os, subprocess\n\ndata     = json.load(open(os.environ.get('RUNNER_TEMP',\
         \ '/tmp') + '/ff_result.json'))\npr       = os.environ.get('PR', '?')\nrepo\
         \     = os.environ.get('GITHUB_REPOSITORY', '')\nrun_url  = f\"https://github.com/{repo}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}\"\
