@@ -1,350 +1,225 @@
 name: Capacity Planner Monitor
-on:
+true:
   schedule:
-    # Run weekly on Mondays at 00:00 UTC
-    - cron: '0 0 * * 1'
+  - cron: 0 0 * * 1
   workflow_dispatch:
     inputs:
       forecast_horizon:
-        description: 'Forecast horizon (days)'
+        description: Forecast horizon (days)
         required: false
-        default: '30'
-
+        default: "30"
 permissions:
   contents: read
-
 jobs:
   forecast_accuracy:
     name: Forecast Accuracy Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install -q statsmodels prophet scikit-learn scipy pandas
+        numpy pytest
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        "
+    - name: Run forecasting tests
+      run: "pytest tests/forecasting/test_capacity_planner.py::TestARIMAModel -v
 
-      - name: Install dependencies
-        run: |
-          python -m pip install -q statsmodels prophet scikit-learn scipy pandas numpy pytest
+        pytest tests/forecasting/test_capacity_planner.py::TestProphetModel -v
 
-      - name: Run forecasting tests
-        run: |
-          pytest tests/forecasting/test_capacity_planner.py::TestARIMAModel -v
-          pytest tests/forecasting/test_capacity_planner.py::TestProphetModel -v
-          pytest tests/forecasting/test_capacity_planner.py::TestEnsembleForecaster -v
+        pytest tests/forecasting/test_capacity_planner.py::TestEnsembleForecaster
+        -v
 
-      - name: Generate accuracy report
-        run: |
-          python -c "
-          import json
-          import numpy as np
-          from src.codex.forecasting import TimeSeriesForecaster
-
-          # Generate synthetic metrics
-          np.random.seed(42)
-          metrics = {
-              'cpu': np.linspace(30, 70, 100) + np.random.normal(0, 3, 100),
-              'memory': np.linspace(40, 80, 100) + np.random.normal(0, 3, 100),
-              'disk': np.linspace(50, 75, 100) + np.random.normal(0, 3, 100),
-          }
-
-          # Fit and forecast
-          forecaster = TimeSeriesForecaster()
-          forecaster.fit(metrics)
-
-          accuracy = forecaster.get_forecast_accuracy()
-
-          # Report results
-          print('Forecast Accuracy Report')
-          print('========================')
-          for metric, mape in accuracy.items():
-              status = '✅ PASS' if mape < 10 else '⚠️  WARN'
-              print(f'{metric}: {mape:.2f}% MAPE {status}')
-
-          # Save to file for artifact
-          with open('forecast-accuracy.json', 'w') as f:
-              json.dump(accuracy, f, indent=2)
-          "
-
-      - name: Upload accuracy report
-        uses: actions/upload-artifact@v5
-        with:
-          name: forecast-accuracy
-          path: forecast-accuracy.json
-
+        "
+    - name: Generate accuracy report
+      run: "python -c \"\nimport json\nimport numpy as np\nfrom src.codex.forecasting\
+        \ import TimeSeriesForecaster\n\n# Generate synthetic metrics\nnp.random.seed(42)\n\
+        metrics = {\n    "cpu": np.linspace(30, 70, 100) + np.random.normal(0, 3,\
+        \ 100),\n    "memory": np.linspace(40, 80, 100) + np.random.normal(0, 3, 100),\n\
+        \    "disk": np.linspace(50, 75, 100) + np.random.normal(0, 3, 100),\n}\n\n\
+        # Fit and forecast\nforecaster = TimeSeriesForecaster()\nforecaster.fit(metrics)\n\
+        \naccuracy = forecaster.get_forecast_accuracy()\n\n# Report results\nprint("Forecast\
+        \ Accuracy Report")\nprint("========================")\nfor metric, mape in\
+        \ accuracy.items():\n    status = "✅ PASS" if mape < 10 else "⚠️  WARN"\n\
+        \    print(f"{metric}: {mape:.2f}% MAPE {status}")\n\n# Save to file for artifact\n\
+        with open("forecast-accuracy.json", "w") as f:\n    json.dump(accuracy, f,\
+        \ indent=2)\n\"\n"
+    - name: Upload accuracy report
+      uses: actions/upload-artifact@v5
+      with:
+        name: forecast-accuracy
+        path: forecast-accuracy.json
+    timeout-minutes: 30
   bottleneck_validation:
     name: Bottleneck Detection Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install -q statsmodels prophet scikit-learn scipy pandas
+        numpy pytest
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        "
+    - name: Run bottleneck tests
+      run: "pytest tests/forecasting/test_capacity_planner.py::TestBottleneckPredictor
+        -v
 
-      - name: Install dependencies
-        run: |
-          python -m pip install -q statsmodels prophet scikit-learn scipy pandas numpy pytest
-
-      - name: Run bottleneck tests
-        run: |
-          pytest tests/forecasting/test_capacity_planner.py::TestBottleneckPredictor -v
-
-      - name: Generate bottleneck report
-        run: |
-          python -c "
-          import json
-          import numpy as np
-          from src.codex.forecasting import BottleneckPredictor
-
-          predictor = BottleneckPredictor()
-
-          # Test scenarios
-          test_metrics = {
-              'cpu': {
-                  'current': 78.0,
-                  'forecast': np.linspace(78, 92, 30),
-              },
-              'memory': {
-                  'current': 65.0,
-                  'forecast': np.linspace(65, 88, 30),
-              },
-              'disk': {
-                  'current': 70.0,
-                  'forecast': np.linspace(70, 82, 30),
-              },
-          }
-
-          trend_strength = {'cpu': 0.90, 'memory': 0.85, 'disk': 0.60}
-
-          alerts = predictor.predict_bottlenecks(test_metrics, trend_strength)
-
-          # Report
-          print('Bottleneck Detection Report')
-          print('===========================')
-          print(f'Total Bottlenecks Detected: {len(alerts)}')
-          for alert in alerts:
-              print(f'  {alert.resource.upper()}:')
-              print(f'    Current: {alert.current_utilization_percent:.1f}%')
-              print(f'    Saturation: {alert.days_until_saturation} days')
-              print(f'    Severity: {alert.severity}')
-              print(f'    Confidence: {alert.confidence*100:.0f}%')
-
-          # Save metrics
-          metrics_dict = {
-              'total_bottlenecks': len(alerts),
-              'first_bottleneck': alerts[0].resource if alerts else None,
-              'earliest_saturation_days': alerts[0].days_until_saturation if alerts else None,
-          }
-
-          with open('bottleneck-report.json', 'w') as f:
-              json.dump(metrics_dict, f, indent=2)
-          "
-
-      - name: Upload bottleneck report
-        uses: actions/upload-artifact@v5
-        with:
-          name: bottleneck-report
-          path: bottleneck-report.json
-
+        "
+    - name: Generate bottleneck report
+      run: "python -c \"\nimport json\nimport numpy as np\nfrom src.codex.forecasting\
+        \ import BottleneckPredictor\n\npredictor = BottleneckPredictor()\n\n# Test\
+        \ scenarios\ntest_metrics = {\n    "cpu": {\n        "current": 78.0,\n  \
+        \      "forecast": np.linspace(78, 92, 30),\n    },\n    "memory": {\n   \
+        \     "current": 65.0,\n        "forecast": np.linspace(65, 88, 30),\n   \
+        \ },\n    "disk": {\n        "current": 70.0,\n        "forecast": np.linspace(70,\
+        \ 82, 30),\n    },\n}\n\ntrend_strength = {"cpu": 0.90, "memory": 0.85, "disk":\
+        \ 0.60}\n\nalerts = predictor.predict_bottlenecks(test_metrics, trend_strength)\n\
+        \n# Report\nprint("Bottleneck Detection Report")\nprint("===========================")\n\
+        print(f"Total Bottlenecks Detected: {len(alerts)}")\nfor alert in alerts:\n\
+        \    print(f"  {alert.resource.upper()}:")\n    print(f"    Current: {alert.current_utilization_percent:.1f}%")\n\
+        \    print(f"    Saturation: {alert.days_until_saturation} days")\n    print(f"\
+        \    Severity: {alert.severity}")\n    print(f"    Confidence: {alert.confidence*100:.0f}%")\n\
+        \n# Save metrics\nmetrics_dict = {\n    "total_bottlenecks": len(alerts),\n\
+        \    "first_bottleneck": alerts[0].resource if alerts else None,\n    "earliest_saturation_days":\
+        \ alerts[0].days_until_saturation if alerts else None,\n}\n\nwith open("bottleneck-report.json",\
+        \ "w") as f:\n    json.dump(metrics_dict, f, indent=2)\n\"\n"
+    - name: Upload bottleneck report
+      uses: actions/upload-artifact@v5
+      with:
+        name: bottleneck-report
+        path: bottleneck-report.json
+    timeout-minutes: 30
   recommendation_validation:
     name: Provisioning Recommendation Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install -q scikit-learn scipy pandas numpy pytest
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        "
+    - name: Run recommendation tests
+      run: "pytest tests/forecasting/test_capacity_planner.py::TestProvisioningRecommender
+        -v
 
-      - name: Install dependencies
-        run: |
-          python -m pip install -q scikit-learn scipy pandas numpy pytest
-
-      - name: Run recommendation tests
-        run: |
-          pytest tests/forecasting/test_capacity_planner.py::TestProvisioningRecommender -v
-
-      - name: Generate recommendation report
-        run: |
-          python -c "
-          import json
-          from src.codex.forecasting import ProvisioningRecommender
-
-          recommender = ProvisioningRecommender()
-
-          # Generate sample recommendations
-          recs = []
-
-          cpu_rec = recommender.recommend_cpu_scaling(80, 4, 10, 0.92)
-          recs.append({
-              'type': cpu_rec.recommendation_type,
-              'resource': cpu_rec.resource,
-              'current': cpu_rec.current_capacity,
-              'recommended': cpu_rec.recommended_capacity,
-              'monthly_savings': cpu_rec.estimated_savings_monthly,
-              'roi_months': cpu_rec.roi_months,
-          })
-
-          memory_rec = recommender.recommend_memory_scaling(75, 16, 12, 0.85)
-          recs.append({
-              'type': memory_rec.recommendation_type,
-              'resource': memory_rec.resource,
-              'current': memory_rec.current_capacity,
-              'recommended': memory_rec.recommended_capacity,
-              'monthly_savings': memory_rec.estimated_savings_monthly,
-              'roi_months': memory_rec.roi_months,
-          })
-
-          ri_rec = recommender.recommend_reserved_instances(1000.0)
-          recs.append({
-              'type': ri_rec.recommendation_type,
-              'resource': ri_rec.resource,
-              'monthly_savings': ri_rec.estimated_savings_monthly,
-              'annual_savings': ri_rec.estimated_savings_monthly * 12,
-          })
-
-          # Report
-          print('Provisioning Recommendation Report')
-          print('==================================')
-          total_savings = sum(r['monthly_savings'] for r in recs)
-          print(f'Total Monthly Savings: \${total_savings:.2f}')
-          print(f'Annual Savings: \${total_savings*12:.2f}')
-          for rec in recs:
-              print(f'  {rec[\"type\"]}: {rec[\"resource\"]} (+\${rec[\"monthly_savings\"]:.2f}/month)')
-
-          metrics_dict = {
-              'total_recommendations': len(recs),
-              'monthly_savings': total_savings,
-              'annual_savings': total_savings * 12,
-              'recommendations': recs,
-          }
-
-          with open('recommendation-report.json', 'w') as f:
-              json.dump(metrics_dict, f, indent=2, default=str)
-          "
-
-      - name: Upload recommendation report
-        uses: actions/upload-artifact@v5
-        with:
-          name: recommendation-report
-          path: recommendation-report.json
-
+        "
+    - name: Generate recommendation report
+      run: "python -c \"\nimport json\nfrom src.codex.forecasting import ProvisioningRecommender\n\
+        \nrecommender = ProvisioningRecommender()\n\n# Generate sample recommendations\n\
+        recs = []\n\ncpu_rec = recommender.recommend_cpu_scaling(80, 4, 10, 0.92)\n\
+        recs.append({\n    "type": cpu_rec.recommendation_type,\n    "resource": cpu_rec.resource,\n\
+        \    "current": cpu_rec.current_capacity,\n    "recommended": cpu_rec.recommended_capacity,\n\
+        \    "monthly_savings": cpu_rec.estimated_savings_monthly,\n    "roi_months":\
+        \ cpu_rec.roi_months,\n})\n\nmemory_rec = recommender.recommend_memory_scaling(75,\
+        \ 16, 12, 0.85)\nrecs.append({\n    "type": memory_rec.recommendation_type,\n\
+        \    "resource": memory_rec.resource,\n    "current": memory_rec.current_capacity,\n\
+        \    "recommended": memory_rec.recommended_capacity,\n    "monthly_savings":\
+        \ memory_rec.estimated_savings_monthly,\n    "roi_months": memory_rec.roi_months,\n\
+        })\n\nri_rec = recommender.recommend_reserved_instances(1000.0)\nrecs.append({\n\
+        \    "type": ri_rec.recommendation_type,\n    "resource": ri_rec.resource,\n\
+        \    "monthly_savings": ri_rec.estimated_savings_monthly,\n    "annual_savings":\
+        \ ri_rec.estimated_savings_monthly * 12,\n})\n\n# Report\nprint("Provisioning\
+        \ Recommendation Report")\nprint("==================================")\ntotal_savings\
+        \ = sum(r["monthly_savings"] for r in recs)\nprint(f"Total Monthly Savings:\
+        \ \\${total_savings:.2f}")\nprint(f"Annual Savings: \\${total_savings*12:.2f}")\n\
+        for rec in recs:\n    print(f"  {rec[\\\"type\\\"]}: {rec[\\\"resource\\\"\
+        ]} (+\\${rec[\\\"monthly_savings\\\"]:.2f}/month)")\n\nmetrics_dict = {\n\
+        \    "total_recommendations": len(recs),\n    "monthly_savings": total_savings,\n\
+        \    "annual_savings": total_savings * 12,\n    "recommendations": recs,\n\
+        }\n\nwith open("recommendation-report.json", "w") as f:\n    json.dump(metrics_dict,\
+        \ f, indent=2, default=str)\n\"\n"
+    - name: Upload recommendation report
+      uses: actions/upload-artifact@v5
+      with:
+        name: recommendation-report
+        path: recommendation-report.json
+    timeout-minutes: 30
   dashboard_performance:
     name: Dashboard Performance Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install -q scikit-learn scipy pandas numpy pytest
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+        "
+    - name: Run dashboard tests
+      run: "pytest tests/forecasting/test_capacity_planner.py::TestDashboardGenerator
+        -v
 
-      - name: Install dependencies
-        run: |
-          python -m pip install -q scikit-learn scipy pandas numpy pytest
-
-      - name: Run dashboard tests
-        run: |
-          pytest tests/forecasting/test_capacity_planner.py::TestDashboardGenerator -v
-
-      - name: Test dashboard performance
-        run: |
-          python -c "
-          import time
-          import json
-          import numpy as np
-          from src.codex.forecasting import DashboardGenerator
-
-          generator = DashboardGenerator()
-
-          # Generate sample data
-          metrics_data = {
-              f'metric_{i}': {
-                  'historical': np.linspace(20, 70, 100),
-                  'current': 70,
-                  'forecast_30day': np.linspace(70, 80, 30),
-                  'confidence_upper': np.linspace(75, 85, 30),
-                  'confidence_lower': np.linspace(65, 75, 30),
-              }
-              for i in range(5)
-          }
-
-          # Measure generation time
-          start = time.time()
-          dashboard = generator.generate_dashboard(metrics_data, [], [])
-          gen_time = time.time() - start
-
-          print('Dashboard Performance Report')
-          print('============================')
-          print(f'Generation Time: {gen_time:.3f}s')
-          print(f'Status: {\"✅ PASS\" if gen_time < 5.0 else \"⚠️  WARN\"}')
-          print(f'Panels Generated: {len(dashboard[\"panels\"])}')
-
-          metrics_dict = {
-              'generation_time_seconds': gen_time,
-              'target_time_seconds': 5.0,
-              'panels_count': len(dashboard['panels']),
-              'status': 'pass' if gen_time < 5.0 else 'warn',
-          }
-
-          with open('dashboard-performance.json', 'w') as f:
-              json.dump(metrics_dict, f, indent=2)
-          "
-
-      - name: Upload performance report
-        uses: actions/upload-artifact@v5
-        with:
-          name: dashboard-performance
-          path: dashboard-performance.json
-
+        "
+    - name: Test dashboard performance
+      run: "python -c \"\nimport time\nimport json\nimport numpy as np\nfrom src.codex.forecasting\
+        \ import DashboardGenerator\n\ngenerator = DashboardGenerator()\n\n# Generate\
+        \ sample data\nmetrics_data = {\n    f"metric_{i}": {\n        "historical":\
+        \ np.linspace(20, 70, 100),\n        "current": 70,\n        "forecast_30day":\
+        \ np.linspace(70, 80, 30),\n        "confidence_upper": np.linspace(75, 85,\
+        \ 30),\n        "confidence_lower": np.linspace(65, 75, 30),\n    }\n    for\
+        \ i in range(5)\n}\n\n# Measure generation time\nstart = time.time()\ndashboard\
+        \ = generator.generate_dashboard(metrics_data, [], [])\ngen_time = time.time()\
+        \ - start\n\nprint("Dashboard Performance Report")\nprint("============================")\n\
+        print(f"Generation Time: {gen_time:.3f}s")\nprint(f"Status: {\\\"✅ PASS\\\"\
+        \ if gen_time < 5.0 else \\\"⚠️  WARN\\\"}")\nprint(f"Panels Generated: {len(dashboard[\\\
+        \"panels\\\"])}")\n\nmetrics_dict = {\n    "generation_time_seconds": gen_time,\n\
+        \    "target_time_seconds": 5.0,\n    "panels_count": len(dashboard["panels"]),\n\
+        \    "status": "pass" if gen_time < 5.0 else "warn",\n}\n\nwith open("dashboard-performance.json",\
+        \ "w") as f:\n    json.dump(metrics_dict, f, indent=2)\n\"\n"
+    - name: Upload performance report
+      uses: actions/upload-artifact@v5
+      with:
+        name: dashboard-performance
+        path: dashboard-performance.json
+    timeout-minutes: 30
   summary:
     name: Generate Summary Report
     runs-on: ubuntu-latest
-    needs: [forecast_accuracy, bottleneck_validation, recommendation_validation, dashboard_performance]
+    needs:
+    - forecast_accuracy
+    - bottleneck_validation
+    - recommendation_validation
+    - dashboard_performance
     if: always()
     steps:
-      - name: Download all reports
-        uses: actions/download-artifact@v5
-
-      - name: Generate summary
-        run: |
-          echo "# Capacity Planner Weekly Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "## Validation Status" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Forecast Accuracy: PASS" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Bottleneck Detection: PASS" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Recommendations: PASS" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Dashboard Performance: PASS" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "## Metrics" >> $GITHUB_STEP_SUMMARY
-          if [ -f forecast-accuracy/forecast-accuracy.json ]; then
-              echo "### Forecast Accuracy (MAPE %)" >> $GITHUB_STEP_SUMMARY
-              cat forecast-accuracy/forecast-accuracy.json >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          if [ -f bottleneck-report/bottleneck-report.json ]; then
-              echo "### Bottleneck Detection" >> $GITHUB_STEP_SUMMARY
-              cat bottleneck-report/bottleneck-report.json >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          if [ -f dashboard-performance/dashboard-performance.json ]; then
-              echo "### Dashboard Performance" >> $GITHUB_STEP_SUMMARY
-              cat dashboard-performance/dashboard-performance.json >> $GITHUB_STEP_SUMMARY
-          fi
-
+    - name: Download all reports
+      uses: actions/download-artifact@v5
+    - name: Generate summary
+      run: "echo \"# Capacity Planner Weekly Report\" >> $GITHUB_STEP_SUMMARY\necho\
+        \ \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Date**: $(date -u +"%Y-%m-%d %H:%M:%S\
+        \ UTC")\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\n\necho\
+        \ \"## Validation Status\" >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Forecast Accuracy:\
+        \ PASS\" >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Bottleneck Detection: PASS\"\
+        \ >> $GITHUB_STEP_SUMMARY\necho \"- ✅ Recommendations: PASS\" >> $GITHUB_STEP_SUMMARY\n\
+        echo \"- ✅ Dashboard Performance: PASS\" >> $GITHUB_STEP_SUMMARY\necho \"\"\
+        \ >> $GITHUB_STEP_SUMMARY\n\necho \"## Metrics\" >> $GITHUB_STEP_SUMMARY\n\
+        if [ -f forecast-accuracy/forecast-accuracy.json ]; then\n    echo \"### Forecast\
+        \ Accuracy (MAPE %)\" >> $GITHUB_STEP_SUMMARY\n    cat forecast-accuracy/forecast-accuracy.json\
+        \ >> $GITHUB_STEP_SUMMARY\n    echo \"\" >> $GITHUB_STEP_SUMMARY\nfi\n\nif\
+        \ [ -f bottleneck-report/bottleneck-report.json ]; then\n    echo \"### Bottleneck\
+        \ Detection\" >> $GITHUB_STEP_SUMMARY\n    cat bottleneck-report/bottleneck-report.json\
+        \ >> $GITHUB_STEP_SUMMARY\n    echo \"\" >> $GITHUB_STEP_SUMMARY\nfi\n\nif\
+        \ [ -f dashboard-performance/dashboard-performance.json ]; then\n    echo\
+        \ \"### Dashboard Performance\" >> $GITHUB_STEP_SUMMARY\n    cat dashboard-performance/dashboard-performance.json\
+        \ >> $GITHUB_STEP_SUMMARY\nfi\n"
+    timeout-minutes: 30
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
