@@ -96,6 +96,11 @@ DUPLICATE_DIGEST_LENGTH = 16
 # Note: UTC_TIMESTAMP_FORMAT is also defined in rescue_comment_batch_queue.py.
 # We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+# Cascade error marker constants (must match consolidate_cascade_errors.py)
+CONSOLIDATION_MARKER_PREFIX = "<!-- cascade-consolidated-error:"
+CASCADE_ERROR_ID_MARKER_PREFIX = "<!-- cascade-error-id:"
+# Helper for substring checks
+CASCADE_CONSOLIDATED_CHECK = "cascade-consolidated-error"
 
 
 def _gh(
@@ -354,7 +359,7 @@ def _detect_cascading_copilot_errors(
         for c in comments:
             body = c.get("body") or ""
             # Detect both rescue-comment cascade markers and Copilot error markers
-            if ("comment-generic-error" in body or "cascade-consolidated-error" in body):
+            if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
 
@@ -371,7 +376,7 @@ def _detect_cascading_copilot_errors(
         }
 
     # If already consolidated, skip further action
-    if any("cascade-consolidated-error" in (c.get("body") or "") for c in error_comments):
+    if any(CASCADE_CONSOLIDATED_CHECK in (c.get("body") or "") for c in error_comments):
         return {
             "is_cascading": False,
             "error_count": len(error_comments),

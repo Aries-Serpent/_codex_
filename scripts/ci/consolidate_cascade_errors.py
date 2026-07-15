@@ -38,6 +38,7 @@ MAX_COMMENT_LEN = 65_536
 DUPLICATE_DIGEST_LENGTH = 16
 CASCADE_THRESHOLD = 5
 CONSOLIDATION_MARKER_PREFIX = "<!-- cascade-consolidated-error:"
+CASCADE_ERROR_ID_MARKER_PREFIX = "<!-- cascade-error-id:"
 
 
 def _gh(
@@ -134,7 +135,7 @@ def _build_consolidation_comment(
         error_list += f"{i}. [Error #{error_id}]({error_url}) — {created_at} (UUID: `{uuid}`)\n"
 
     consolidation_body = (
-        f"<!-- cascade-consolidated-error:{pr_number}:{error_count} -->\n"
+        f"{CONSOLIDATION_MARKER_PREFIX}{pr_number}:{error_count} -->\n"
         f"## 🚨 Copilot Cascade Consolidation — {error_count} Errors\n\n"
         f"@mbaetiong Copilot encountered **{error_count} sequential errors** while processing your PR. "
         f"Instead of leaving {error_count} separate error comments, we've consolidated them into this single thread.\n\n"
@@ -195,7 +196,7 @@ def _consolidate_cascade(
         if marker not in canonical_body:
             canonical_body = (
                 canonical_body
-                + f"\n<!-- cascade-error-id:{duplicate_id}:uuid:{uuid}:{duplicate_digest} -->"
+                + f"\n{CASCADE_ERROR_ID_MARKER_PREFIX}{duplicate_id}:uuid:{uuid}:{duplicate_digest} -->"
             )
 
     # Update canonical comment with consolidated markers
