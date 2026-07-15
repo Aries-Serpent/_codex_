@@ -53,7 +53,7 @@ jobs:
         if: github.event_name == "pull_request"
         uses: actions/github-script@v8
         with:
-        script: "const fs = require("fs");\nconst metrics = JSON.parse(fs.readFileSync("correlation-metrics.json",\
+      script: "const fs = require("fs");\nconst metrics = JSON.parse(fs.readFileSync("correlation-metrics.json",\
           \ "utf8"));\n\nconst comment = `## \U0001F4CA Correlation Engine Metrics\n\
           \n**Date**: ${metrics.timestamp}\n\n### Accuracy Metrics\n| Metric | Value\
           \ | Target | Status |\n|--------|-------|--------|--------|\n| Temporal\
