@@ -20,7 +20,17 @@ from typing import Optional
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
 """Directory where batched rescue comment items are stored as JSON files."""
-BATCH_WAIT_DEFAULT = int(os.environ.get("BATCH_WAIT_SECONDS", "3"))
+
+# Initialize batch wait time with error handling
+try:
+    BATCH_WAIT_DEFAULT = int(os.environ.get("BATCH_WAIT_SECONDS", "3"))
+except ValueError:
+    print(
+        "⚠️  Invalid BATCH_WAIT_SECONDS value (must be integer). Using default 3 seconds.",
+        file=sys.stderr,
+    )
+    BATCH_WAIT_DEFAULT = 3
+
 """Batch wait time in seconds, configurable via BATCH_WAIT_SECONDS env var (default: 3).
 Can be tuned based on workflow patterns; higher values reduce API calls but delay posting."""
 # Note: UTC_TIMESTAMP_FORMAT is also defined in post_rescue_comment.py.
@@ -114,7 +124,7 @@ def queue_item(
     with open(queue_file, "w") as f:
         json.dump([asdict(item) for item in items], f, indent=2)
     
-    print(f"✅ Queued `{workflow_name}` failure for batch posting (PR #{pr_number}, {commit_sha[:12]})")
+    print(f"✅ Queued `{workflow_name}` failure for batch posting (PR #{pr_number}, {commit_sha[:12]})", file=sys.stderr)
 
 
 def get_queued_items(pr_number: int, commit_sha: str) -> list[BatchQueueItem]:

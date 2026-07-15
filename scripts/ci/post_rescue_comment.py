@@ -241,7 +241,8 @@ def _handle_cascade_append(
                     section_content=section_content,
                 )
                 return True
-            except (ImportError, AttributeError, OSError) as exc:
+            except (ImportError, AttributeError) as exc:
+                # ImportError if batch_queue failed to import, AttributeError if queue_item doesn't exist
                 print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
         return False
 
@@ -783,7 +784,7 @@ def main() -> None:
                         "Queued for batch posting on next workflow run."
                     )
                     sys.exit(0)
-                except Exception as exc:
+                except (ImportError, AttributeError) as exc:
                     print(
                         f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
                         f"Batch queue also failed: {exc}. "
