@@ -84,6 +84,7 @@ jobs:
         name: Parse delegation recommendations
         env:
           MANIFEST: ${{ steps.load.outputs.manifest }}
+          MAX_AGENTS_INPUT: ${{ inputs.max_agents || '5' }}
         run: |
           AGENTS=$(echo "$MANIFEST" | jq -r '.delegation_recommendations[0].recommended_agents[]?' 2>/dev/null | tr '\n' ',' | sed 's/,$//')
 
@@ -92,7 +93,7 @@ jobs:
           fi
 
           AGENT_COUNT=$(echo "$AGENTS" | tr ',' '\n' | wc -l)
-          MAX_AGENTS="${{ inputs.max_agents || 5 }}"
+          MAX_AGENTS="$MAX_AGENTS_INPUT"
 
           if [ "$AGENT_COUNT" -gt "$MAX_AGENTS" ]; then
             AGENTS=$(echo "$AGENTS" | tr ',' '\n' | head -n "$MAX_AGENTS" | tr '\n' ',')

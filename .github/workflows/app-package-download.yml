@@ -497,8 +497,10 @@ jobs:
           retention-days: 90
 
       - name: Final summary
+        env:
+          APP_NAME_INPUT: ${{ github.event.inputs.app_name }}
         run: |
-          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_NAME="$APP_NAME_INPUT"
           APP_ENTRY="zd_voice_lines.py"
           if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
             APP_ENTRY="audio_transcriber_ui.py"

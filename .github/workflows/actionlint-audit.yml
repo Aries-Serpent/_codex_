@@ -36,8 +36,12 @@ jobs:
           LATEST=$(curl -fsSL --max-time 10 https://api.github.com/repos/rhysd/actionlint/releases/latest             | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null             || echo "${PINNED}")
           TARGET="${LATEST:-${PINNED}}"
           VERSION="${TARGET#v}"
-          curl -fsSL "https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz" | tar xz actionlint
-          sudo mv actionlint /usr/local/bin/
+           
+          # Download file first, then extract (safer than curl | tar)
+          TARBALL="/tmp/actionlint_${VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "$TARBALL" "https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz"
+          tar xz -f "$TARBALL" -C /tmp actionlint
+          sudo mv /tmp/actionlint /usr/local/bin/
           actionlint --version
 
       - name: Run actionlint on all workflows
