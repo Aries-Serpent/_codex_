@@ -85,9 +85,9 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
-      steps:
+    steps:
       - name: Checkout integration branch
-    uses: actions/checkout@v5
+        uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: ${{ needs.check-trigger.outputs.integration_branch }}
@@ -95,8 +95,8 @@ jobs:
           }}
         fetch-depth: 1
       - name: "Deduplication check \u2014 skip if open session PR exists"
-    id: dedup_check
-    run: "set -euo pipefail\n# gh pr list --head does not support wildcards; query\
+        id: dedup_check
+        run: "set -euo pipefail\n# gh pr list --head does not support wildcards; query\
         \ all open PRs\n# targeting the integration branch and filter by branch prefix\
         \ in jq.\nOPEN_SESSION_PR=$(gh pr list \\\n  --repo Aries-Serpent/_codex_\
         \ \\\n  --base \"${INTEGRATION_BRANCH}\" \\\n  --state open \\\n  --json number,headRefName\
@@ -111,14 +111,14 @@ jobs:
         \ \"skip=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"existing_pr=\" >> \"$GITHUB_OUTPUT\"\
         \nfi\n"
       - name: Re-trigger agent on existing session PR (dedup path)
-    id: retrigger_existing
-    if: steps.dedup_check.outputs.skip == 'true' && inputs.auto_start != 'false'
+        id: retrigger_existing
+        if: steps.dedup_check.outputs.skip == 'true' && inputs.auto_start != 'false'
       env:
         EXISTING_PR: ${{ steps.dedup_check.outputs.existing_pr }}
         MERGED_PR: ${{ github.event.pull_request.number || '' }}
         INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
         CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
-    run: "set -euo pipefail\n\nEXISTING_BRANCH=$(gh pr view \"${EXISTING_PR}\" \\\
+        run: "set -euo pipefail\n\nEXISTING_BRANCH=$(gh pr view \"${EXISTING_PR}\" \\\
         \n  --repo Aries-Serpent/_codex_ \\\n  --json headRefName --jq '.headRefName'\
         \ 2>/dev/null || true)\n\nif [ -z \"${EXISTING_BRANCH}\" ]; then\n  echo \"\
         retrigger_posted=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"::warning::Could\
@@ -171,14 +171,14 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"::warning::Failed to post re-trigger comment\
         \ on PR  #${EXISTING_PR} \u2014 agent must be started manually\"\nfi\n"
       - name: Create session branch and open PR
-    id: create_pr
-    if: steps.dedup_check.outputs.skip != 'true'
+        id: create_pr
+        if: steps.dedup_check.outputs.skip != 'true'
       env:
         SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
         CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
         AUTO_START: ${{ inputs.auto_start || 'true' }}
         RUN_ID: ${{ github.run_id }}
-    run: "set -euo pipefail\n\nTIMESTAMP=$(date -u +\"%Y%m%d-%H%M%S\")\nNEW_BRANCH=\"\
+        run: "set -euo pipefail\n\nTIMESTAMP=$(date -u +\"%Y%m%d-%H%M%S\")\nNEW_BRANCH=\"\
         copilot/session-${TIMESTAMP}-${RUN_ID}\"\nINTEGRATION=\"${INTEGRATION_BRANCH}\"\
         \n\ngit config user.name  \"github-actions[bot]\"\ngit config user.email \"\
         41898282+github-actions[bot]@users.noreply.github.com\"\n\n# Create the new\
@@ -196,13 +196,13 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\necho \"marker_file=${MARKER_FILE}\" >> \"$GITHUB_OUTPUT\"\
         \necho \"timestamp=${TIMESTAMP}\" >> \"$GITHUB_OUTPUT\"\n"
       - name: Open PR targeting integration branch
-    id: open_pr
-    if: steps.dedup_check.outputs.skip != 'true'
+        id: open_pr
+        if: steps.dedup_check.outputs.skip != 'true'
       env:
         SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
         NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
         TIMESTAMP: ${{ steps.create_pr.outputs.timestamp }}
-    run: "set -euo pipefail\n\nPR_TITLE=\"\U0001F916 [Agent Session] ${SESSION_TITLE}\
+        run: "set -euo pipefail\n\nPR_TITLE=\"\U0001F916 [Agent Session] ${SESSION_TITLE}\
         \ (${TIMESTAMP})\"\nPR_BODY=$(printf '%s\\n' \\\n  '## \U0001F517 Auto-chained\
         \ Copilot Agent Session' \\\n  '' \\\n  \"**Integration branch:** \\`${INTEGRATION_BRANCH}\\\
         `\" \\\n  \"**Session branch:** \\`${NEW_BRANCH}\\`\" \\\n  \"**Opened by:**\
@@ -229,14 +229,14 @@ jobs:
         \necho \"pr_url=${PR_URL}\"       >> \"$GITHUB_OUTPUT\"\necho \"\u2705 Opened\
         \ PR  #${PR_NUMBER}: ${PR_URL}\"\n"
       - name: Post Copilot trigger comment
-    if: steps.dedup_check.outputs.skip != 'true' && inputs.auto_start != 'false'
+        if: steps.dedup_check.outputs.skip != 'true' && inputs.auto_start != 'false'
       env:
         PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
         CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
         MERGED_PR: ${{ github.event.pull_request.number || '' }}
         INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
         NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
-    run: "set -euo pipefail\n\n# Build the trigger comment\nif [ -n \"${CONTINUATION_PROMPT}\"\
+        run: "set -euo pipefail\n\n# Build the trigger comment\nif [ -n \"${CONTINUATION_PROMPT}\"\
         \ ]; then\n  TRIGGER_COMMENT=\"${CONTINUATION_PROMPT}\"\nelif [ -n \"${MERGED_PR}\"\
         \ ]; then\n  TRIGGER_COMMENT=$(printf '%s\\n' \\\n    '@copilot+claude-haiku-4.5\
         \ /plan' \\\n    '' \\\n    \"Previous sub-PR  #${MERGED_PR} has been merged\
@@ -275,7 +275,7 @@ jobs:
         \ngh pr comment \"${PR_NUMBER}\" --body \"${TRIGGER_COMMENT}\"\necho \"\u2705\
         \ Posted trigger comment on PR  #${PR_NUMBER}\"\n"
       - name: Post summary
-    if: always()
+        if: always()
       env:
         PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
         PR_URL: ${{ steps.open_pr.outputs.pr_url }}
@@ -284,7 +284,7 @@ jobs:
         EXISTING_PR: ${{ steps.dedup_check.outputs.existing_pr }}
         RETRIGGER_POSTED: ${{ steps.retrigger_existing.outputs.retrigger_posted ||
           '' }}
-    run: "{\n  echo \"## \U0001F517 Session Chain Result\"\n  echo \"\"\n  if [\
+        run: "{\n  echo \"## \U0001F517 Session Chain Result\"\n  echo \"\"\n  if [\
         \ \"${SKIP}\" = \"true\" ]; then\n    echo \"\u23ED\uFE0F **Skipped** \u2014\
         \ open session PR  #${EXISTING_PR} already exists targeting \\`${INTEGRATION_BRANCH}\\\
         `.\"\n    echo \"\"\n    if [ \"${RETRIGGER_POSTED}\" = \"true\" ]; then\n\
@@ -299,7 +299,7 @@ jobs:
         \ opened and Copilot trigger comment posted.\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\
         \n"
   rescue-comment:
-    name: Post rescue comment on failure
+        name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: open-session-pr
     if: 'failure() &&
