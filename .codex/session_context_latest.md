@@ -1,10 +1,10 @@
-# Session Context — 2026-07-15T02:40:21Z
+# Session Context — 2026-07-15T02:54:59Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4635` (✅)
-- GraphQL remaining: `4997` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **RAG Freshness Scheduler** — `failure` on `main` (2026-07-15)
-- **.github/workflows/detect-duplicates.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/copilot-evolution-suite.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/model-drift-retrain.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/copilot-agent-vars-bootstrap.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/reference-integrity.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/qa-walkthrough.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/dependency-submission.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/deferral-language-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
+- `95640fe8` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
 - `eaf05ef0` chore: Phase 4 GA Deployment — Execute all pending timeline tasks, bypass time c — copilot-swe-agent[bot] (2026-07-15)
 - `a7cad303` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
 - `60395e35` docs(phase-4-ga): Final status log - Complete session record, all gates PASS, GA — copilot-swe-agent[bot] (2026-07-15)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `m
 - `1f37d4e1` docs(phase-4-ga): Session completion summary - All gates PASS, GA deployment aut — copilot-swe-agent[bot] (2026-07-15)
 - `c656b4f8` docs(phase-4-ga): Comprehensive Deployment Authorization - All prerequisites com — copilot-swe-agent[bot] (2026-07-15)
 - `085fcfdd` docs(phase-4-ga): Complete deployment authorization summary - All gates PASS, GA — copilot-swe-agent[bot] (2026-07-15)
-- `8dc15b40` feat(phase-4-ga): Gate 2 PASS - GA Deployment Approved, 170+ minute buffer to GA — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
