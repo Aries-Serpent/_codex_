@@ -764,7 +764,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-python-cached
@@ -1356,7 +1356,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 

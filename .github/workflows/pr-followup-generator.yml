@@ -39,22 +39,22 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref || github.ref }}
         fetch-depth: 0
 
-      - name: CacheManager health check
+    - name: CacheManager health check
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow pr-followup-generator 2>/dev/null || echo "Cache health: check skipped"
-      - name: Setup Python
+    - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: 'common'
 
-      - name: Install dependencies
+    - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[github]"
 
-      - name: Extract PR number
+    - name: Extract PR number
         id: pr_number
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then

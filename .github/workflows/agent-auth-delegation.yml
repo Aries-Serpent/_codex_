@@ -135,7 +135,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          run: |
+        run: |
           gh workflow run auto-approve-workflows.yml \
           -f approval_source=agent-auth-delegation \
           -f approval_intent=auto_approve_action_required \
@@ -154,9 +154,8 @@ jobs:
       - name: Download pending session requirements (if any)
         id: session_reqs
         continue-on-error: true
-      env:
+        env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
         run: "PR_NUMBER=\"${{ github.event.pull_request.number || github.event.issue.number\ \ }}\"\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"has_requirements=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n# Try to download the latest session-requirements\
         \ artifact for this PR\ngh run download \\\n  --repo \"${{ github.repository\ \ }}\" \\\n  --name \"session-requirements-${PR_NUMBER}\" \\\n  --dir /tmp/session-req-download\
@@ -451,7 +450,7 @@ jobs:
       - name: Detect empty commits in PR
         id: empty_commit_check
         continue-on-error: true
-      env:
+        env:
           BASE_REF: ${{ github.base_ref }}
         run: |
           echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
@@ -1149,7 +1148,7 @@ jobs:
       - name: D-00 Session Bootstrap (write context digest)
         id: session_bootstrap
         continue-on-error: true
-      env:
+        env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
@@ -1191,7 +1190,7 @@ jobs:
       - name: Retrieve CB patterns for session context
         id: cb_patterns
         continue-on-error: true
-      env:
+        env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 2>/dev/null || true)\n# Escape for multiline GitHub output\n{\n  echo\
