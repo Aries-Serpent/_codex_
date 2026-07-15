@@ -1,32 +1,39 @@
-# Session Context — 2026-07-15T15:20:45Z
-**Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-15T15:29:09Z
+**Branch:** `0D_base_`  **PR:** #5324  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4920` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4997` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5323 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery
-State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `0D_base_`
+## 📋 PR #5324 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery (#5323)
+State: `open`  Draft: `True`  Branch: `0D_base_` → `main`
+
+### ❌ 5 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `⚡ Auto-Approve if Compliance Passed` (failure)
+- `Summary` (failure)
+- `Run compliance check` (failure)
+- `Validate Python Examples` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Scaling Framework Monitor** — `failure` on `main` (2026-07-15)
-- **.github/workflows/qa-walkthrough.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/deferral-language-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/copilot-review-responder.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **Tiered Approval Gate** — `failure` on `0D_base_` (2026-07-15)
+- **Unified Governance Check** — `failure` on `0D_base_` (2026-07-15)
+- **Code Example Validation** — `failure` on `0D_base_` (2026-07-15)
+- **Workflow Compliance Audit (actionlint)** — `failure` on `0D_base_` (2026-07-15)
+- **🩹 Secrets False-Positive Healer** — `failure` on `0D_base_` (2026-07-15)
 
 ## 📝 Recent Commits
-- `ed575929` docs: Phase 4 CI Rescue — Final Compliance Update after YAML remediation — copilot-swe-agent[bot] (2026-07-15)
-- `0ab744b5` fix(yaml): Correct indentation in release-to-pypi and security-scan workflows — copilot-swe-agent[bot] (2026-07-15)
-- `f2093b85` docs: Phase 4 CI Rescue — Compliance Remediation (REQ-4 & REQ-5 update) — copilot-swe-agent[bot] (2026-07-15)
-- `81432084` docs: Phase 4 CI Rescue — Compliance Remediation (REQ-4 & REQ-5 update) — copilot-swe-agent[bot] (2026-07-15)
-- `d3d1686a` docs: Create comprehensive handoff and next-session prompt for Phase 4 Phase 2 f — copilot-swe-agent[bot] (2026-07-15)
-- `cbe70f9d` fix(yaml): Complete Phase 4 Phase 2 YAML remediation — 3 of 4 remaining files fi — copilot-swe-agent[bot] (2026-07-15)
-- `cd238fc4` Phase 4 Phase 2: Begin YAML remediation for 4 remaining files — copilot-swe-agent[bot] (2026-07-15)
-- `69614c99` fix: Phase 4 Phase 2 YAML remediation - 12/16 files now valid (75%) — copilot-swe-agent[bot] (2026-07-15)
+- `b5da178e` Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Res — Copilot (2026-07-15)
+- `84d0ceb2` chore: Update workflow health dashboard [skip ci] — GitHub Copilot (2026-07-15)
+- `7bdd8aeb` Phase 2 Deployment Campaign: Monitoring & Beta Prep - All 7 Gates Passed, Phase  — Copilot (2026-07-14)
+- `806bfc06` chore: Update workflow health dashboard [skip ci] — GitHub Copilot (2026-07-14)
+- `d7196be7` fix: correct YAML syntax errors in workflow files (#5320) — Copilot (2026-07-14)
+- `449f3c96` fix(v0.2.3-validation): Complete post-merge validation and import migration for  — Copilot (2026-07-14)
+- `3e45977b` chore(release): v0.2.3 — Fix dependency leak and multi-profile isolation (#5318) — Copilot (2026-07-13)
+- `1556e943` v0.2.3 Pre-Release: Fix dependency leak and circular imports in core profile (#5 — Copilot (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
