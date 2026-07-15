@@ -991,7 +991,7 @@ jobs:
         \necho \"_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
         env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   activate-delegation:
     name: Activate token delegation
     needs:
@@ -1390,7 +1390,7 @@ jobs:
           \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
         \ module not installed in CI env)\")\nPYEOF\n"
           env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
     runs-on: ubuntu-latest
@@ -1447,7 +1447,7 @@ jobs:
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   session-release:
     name: "\U0001F513 Release session lock"
     runs-on: ubuntu-latest
@@ -1543,7 +1543,7 @@ jobs:
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -1580,7 +1580,7 @@ jobs:
           BRANCH: ${{ github.head_ref }}
           run: python scripts/ci/post_rescue_comment.py
           env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
 
 

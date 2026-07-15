@@ -39,13 +39,13 @@ jobs:
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
-        uses: actions/checkout@v5
+      uses: actions/checkout@v5
         with:
             persist-credentials: false
           fetch-depth: 0
 
     - name: Set version from tag or input
-        id: version
+      id: version
         env:
           GITHUB_REF: ${{ github.ref }}
           INPUT_VERSION: ${{ inputs.version }}

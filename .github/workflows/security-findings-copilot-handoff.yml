@@ -25,18 +25,18 @@ jobs:
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
-        uses: actions/checkout@v5
+      uses: actions/checkout@v5
         with:
             persist-credentials: false
           fetch-depth: 1
     - name: Download security findings artifacts
-        uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v5
         with:
           name: security-suite-comprehensive-findings
           path: ./security-findings/
         continue-on-error: true
     - name: Load and parse findings
-        id: findings
+      id: findings
         shell: bash
         run: |
           set -euo pipefail

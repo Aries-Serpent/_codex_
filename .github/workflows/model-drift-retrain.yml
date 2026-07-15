@@ -64,21 +64,21 @@ jobs:
         persist-credentials: false
 
     - name: Setup Python (cached)
-        uses: ./.github/actions/setup-python-cached
+      uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
     - name: Install ML dependencies
-        run: |
+      run: |
           pip install --quiet -e ".[ml]" || {
             echo "⚠️  ML extras unavailable — falling back to base install"
             pip install --quiet -e "."
           }
 
     - name: Run drift detection
-        id: drift
+      id: drift
         env:
           DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score || '' }}
           SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
@@ -157,8 +157,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5  # v6.0.3
-        with:
-        persist-credentials: false
+      with:
+      persist-credentials: false
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
