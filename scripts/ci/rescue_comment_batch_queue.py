@@ -19,7 +19,7 @@ from typing import Optional
 
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
-"""Directory where batched rescue comment items are stored as JSON files."""
+# Directory where batched rescue comment items are stored as JSON files.
 
 # Initialize batch wait time with error handling
 try:
@@ -31,8 +31,8 @@ except ValueError:
     )
     BATCH_WAIT_DEFAULT = 3
 
-"""Batch wait time in seconds, configurable via BATCH_WAIT_SECONDS env var (default: 3).
-Can be tuned based on workflow patterns; higher values reduce API calls but delay posting."""
+# Batch wait time in seconds, configurable via BATCH_WAIT_SECONDS env var (default: 3).
+# Can be tuned based on workflow patterns; higher values reduce API calls but delay posting.
 # Note: UTC_TIMESTAMP_FORMAT is also defined in post_rescue_comment.py.
 # We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -104,10 +104,10 @@ def queue_item(
         section_content=section_content,
         timestamp=now,
     )
-    
+
     queue_file = get_queue_file(pr_number, commit_sha)
     items = []
-    
+
     # Load existing items if queue file exists
     if queue_file.exists():
         try:
@@ -116,39 +116,40 @@ def queue_item(
                 items = [BatchQueueItem(**item) for item in data]
         except (json.JSONDecodeError, ValueError) as e:
             print(f"⚠️  Queue file corrupted ({queue_file}): {e}. Starting fresh.", file=sys.stderr)
-    
+
     # Add new item
     items.append(item)
-    
+
     # Save updated queue
     with open(queue_file, "w") as f:
         json.dump([asdict(item) for item in items], f, indent=2)
-    
+
     print(f"✅ Queued `{workflow_name}` failure for batch posting (PR #{pr_number}, {commit_sha[:12]})", file=sys.stderr)
 
 
 def get_queued_items(pr_number: int, commit_sha: str) -> list[BatchQueueItem]:
     """Get all queued items for a specific PR and commit."""
     queue_file = get_queue_file(pr_number, commit_sha)
-    
+
     if not queue_file.exists():
         return []
-    
+
     try:
         with open(queue_file, "r") as f:
             data = json.load(f)
             return [BatchQueueItem(**item) for item in data]
-    except (json.JSONDecodeError, ValueError):
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"⚠️  Queue file corrupted ({queue_file}): {e}. Returning empty queue.", file=sys.stderr)
         return []
 
 
 def should_flush_queue(pr_number: int, commit_sha: str, batch_wait_seconds: int = BATCH_WAIT_DEFAULT) -> bool:
     """Check if batch queue should be flushed (all items ready or timeout expired)."""
     queue_file = get_queue_file(pr_number, commit_sha)
-    
+
     if not queue_file.exists():
         return False
-    
+
     # Check file age — if older than batch_wait_seconds, flush
     file_age = time.time() - queue_file.stat().st_mtime
     return file_age >= batch_wait_seconds
@@ -158,10 +159,10 @@ def flush_queue(pr_number: int, commit_sha: str) -> list[BatchQueueItem]:
     """Get and clear all queued items for a specific PR and commit."""
     items = get_queued_items(pr_number, commit_sha)
     queue_file = get_queue_file(pr_number, commit_sha)
-    
+
     if queue_file.exists():
         queue_file.unlink()
-    
+
     return items
 
 

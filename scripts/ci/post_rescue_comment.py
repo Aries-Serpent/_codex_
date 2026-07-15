@@ -138,8 +138,8 @@ def _get_batch_queue_module() -> Any:
         return batch_queue
     except ImportError:
         return None
- 
- 
+
+
 def _build_append_section(
     workflow_name: str,
     run_id: str,
@@ -167,8 +167,8 @@ def _build_append_section(
             f"Check [run #{run_id}]({run_url}) for details.\n\n"
             f"</details>"
         )
- 
- 
+
+
 def _handle_cascade_append(
     token: str,
     repo: str,
@@ -182,10 +182,10 @@ def _handle_cascade_append(
     section_content: str | None,
 ) -> bool:
     """Handle append-first behavior when cascade detected.
-    
+
     If existing comment found, append to it immediately.
     Otherwise, queue for batch posting.
-    
+
     Returns True if handled, False otherwise.
     """
     if existing_id:
@@ -209,10 +209,10 @@ def _handle_cascade_append(
         )
         if status != 200:
             return False
-        
+
         existing_body = (comments.get("body") or "").rstrip()
         updated_body = (existing_body + append_section)[:MAX_COMMENT_LEN]
-        
+
         status, _ = _gh(
             "PATCH",
             f"/repos/{repo}/issues/comments/{existing_id}",
@@ -241,8 +241,8 @@ def _handle_cascade_append(
                     section_content=section_content,
                 )
                 return True
-            except (ImportError, AttributeError) as exc:
-                # ImportError if batch_queue failed to import, AttributeError if queue_item doesn't exist
+            except Exception as exc:
+                # Batch queue operation failed (file I/O, etc.); continue with other approaches
                 print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
         return False
 
@@ -322,12 +322,12 @@ def _detect_cascading_copilot_errors(
     threshold: int = 10,
 ) -> dict:
     """Detect cascading Copilot error comments (PR #5324 pattern).
-    
+
     Cascades are identified by:
     - Multiple comments with "comment-generic-error" marker
     - Created by Copilot user within short timespan
     - Repeating UUID patterns
-    
+
     Returns:
         {
             "is_cascading": bool,
@@ -338,7 +338,7 @@ def _detect_cascading_copilot_errors(
     """
     page = 1
     error_comments = []
-    
+
     while True:
         status, comments = _gh(
             "GET",
@@ -349,16 +349,16 @@ def _detect_cascading_copilot_errors(
             break
         if not isinstance(comments, list) or not comments:
             break
-        
+
         for c in comments:
             if "comment-generic-error" in (c.get("body") or ""):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
-        
+
         if len(comments) < 100:
             break
         page += 1
-    
+
     if not error_comments:
         return {
             "is_cascading": False,
@@ -376,7 +376,7 @@ def _detect_cascading_copilot_errors(
             "last_error_id": last_error.get("id"),
             "action": "APPEND_TO_EXISTING",
         }
-    
+
     # If exactly 5-9 errors, skip consolidation to prevent growth
     if len(error_comments) >= 5:
         return {
@@ -385,7 +385,7 @@ def _detect_cascading_copilot_errors(
             "last_error_id": error_comments[-1].get("id"),
             "action": "SKIP_CONSOLIDATION",
         }
-    
+
     return {
         "is_cascading": False,
         "error_count": len(error_comments),
@@ -405,7 +405,7 @@ def _consolidate_duplicate_rescue_comments(
     """Collapse same-SHA rescue-comment races into one appended thread."""
     # CRITICAL: Check for cascading Copilot errors before consolidating (PR #5324)
     cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number, threshold=5)
-    
+
     if cascade_info["is_cascading"]:
         import sys
         action = cascade_info["action"]
@@ -416,12 +416,12 @@ def _consolidate_duplicate_rescue_comments(
             file=sys.stderr,
         )
         return
-    
+
     time.sleep(CONSOLIDATION_DELAY_SECONDS)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
         return
-    
+
     # CIRCUIT BREAKER: Prevent cascading consolidation (Issue: PR #5324)
     # If more than 5 rescue comments exist for this SHA, skip consolidation
     # to avoid exponential growth and circular reference loops
@@ -546,7 +546,7 @@ def main() -> None:
             print(f"ℹ️  No open PR found for branch '{branch}' — skipping rescue comment.")
             return
         pr_number = looked_up
-    
+
     # CRITICAL CASCADE CHECK: Handle cascading Copilot errors (PR #5324 pattern)
     # NEW BEHAVIOR: Instead of aborting, append to existing comment or queue for batch
     # This ensures no comments are lost and prevents multiple sprawling comments
@@ -622,7 +622,7 @@ def main() -> None:
     if cascade_info and cascade_info.get("is_cascading"):
         action = cascade_info.get("action")
         count = cascade_info.get("error_count", 0)
-        
+
         if action == "APPEND_TO_EXISTING":
             print(
                 f"🔄 CASCADE APPEND: {count} Copilot error comments detected. "
@@ -644,7 +644,7 @@ def main() -> None:
             ):
                 return  # Successfully appended or queued
             # If append failed and no existing comment, fall through to normal create
-            
+
         elif action == "SKIP_CONSOLIDATION":
             print(
                 f"⚠️  CASCADE SKIP: {count} Copilot error comments detected. "
@@ -784,7 +784,7 @@ def main() -> None:
                         "Queued for batch posting on next workflow run."
                     )
                     sys.exit(0)
-                except (ImportError, AttributeError) as exc:
+                except Exception as exc:
                     print(
                         f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
                         f"Batch queue also failed: {exc}. "
