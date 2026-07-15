@@ -64,7 +64,7 @@ jobs:
 
       - uses: actions/checkout@v5
       - name: Hadolint — Dockerfile linter
-        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf
+        uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf # v3.1.0
         with:
           dockerfile: .config/Dockerfile.preview
           failure-threshold: error
@@ -95,11 +95,11 @@ jobs:
             ${{ runner.os }}-pytest-
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3
+        uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
         with:
           platforms: arm64
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb
+        uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
         with:
           driver-opts: image=moby/buildkit:latest
       - name: Compute image tags
@@ -131,13 +131,13 @@ jobs:
         \ }}\" >> \"$GITHUB_OUTPUT\"\n"
       - name: Log in to GHCR
         if: steps.tags.outputs.should_push == 'true'
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ github.token }}
       - name: Build (and push on main)
-        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318 # v6.0.0
         with:
           context: .
           file: .config/Dockerfile.preview
