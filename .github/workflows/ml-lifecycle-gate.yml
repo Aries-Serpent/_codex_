@@ -24,15 +24,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Run reproducibility validator
-      run: python scripts/ml/validate_ml_lifecycle.py --check reproducibility
-      env:
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run reproducibility validator
+        run: python scripts/ml/validate_ml_lifecycle.py --check reproducibility
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   serving-smoke:
@@ -40,15 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Run serving smoke test
-      run: python scripts/ml/validate_ml_lifecycle.py --check serving
-      env:
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run serving smoke test
+        run: python scripts/ml/validate_ml_lifecycle.py --check serving
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   model-registry-audit:
@@ -56,15 +56,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Run model registry audit
-      run: python scripts/ml/validate_ml_lifecycle.py --check registry
-      env:
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run model registry audit
+        run: python scripts/ml/validate_ml_lifecycle.py --check registry
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   e2e-gate:
@@ -76,15 +76,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Run E2E gate validation
-      run: python scripts/ml/validate_ml_lifecycle.py --check e2e
-      env:
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run E2E gate validation
+        run: python scripts/ml/validate_ml_lifecycle.py --check e2e
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   gate-summary:
@@ -98,8 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: Evaluate D2 exit criteria
-      run: "python3 - <<'PYEOF'\nimport json, sys\nfrom datetime import datetime,\
+      - name: Evaluate D2 exit criteria
+        run: "python3 - <<'PYEOF'\nimport json, sys\nfrom datetime import datetime,\
         \ timezone\n\nresults = {\n    \"reproducibility\": \"${{ needs.reproducibility-check.result\
         \ }}\",\n    \"serving_smoke\":   \"${{ needs.serving-smoke.result }}\",\n\
         \    \"model_registry\":  \"${{ needs.model-registry-audit.result }}\",\n\
