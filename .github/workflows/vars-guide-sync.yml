@@ -39,7 +39,7 @@ jobs:
         run: echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout
         uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -48,7 +48,7 @@ jobs:
         uses: ./.github/actions/resolve-push-target
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
-      with:
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -113,7 +113,7 @@ jobs:
       - name: Upload audit report artifact
         if: steps.detect.outputs.changed == 'true'
         uses: actions/upload-artifact@v5
-      with:
+        with:
         name: variable-audit-report-${{ github.run_number }}
         path: docs/admin/variable_audit_latest.md
         retention-days: 30
@@ -156,7 +156,7 @@ jobs:
       - name: Open blocker issue if absent required variables
         if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const absent = parseInt('${{ steps.audit.outputs.absent_required\
