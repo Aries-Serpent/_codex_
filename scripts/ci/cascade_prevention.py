@@ -174,13 +174,11 @@ def guard_comment_posting(
         ),
         "cascade_detected": has_cascade,
         "cascade_wave": cascade_alert["cascade_wave"] if has_cascade else None,
-        "metrics": asdict(
-            {
-                k: v
-                for k, v in asdict(monitor.emit_metrics(pr_number)).items()
-                if k != "recent_cascade_events"
-            }
-        ),
+        "metrics": {
+            k: v
+            for k, v in asdict(monitor.emit_metrics(pr_number)).items()
+            if k != "recent_cascade_events"
+        },
     }
 
 
@@ -209,6 +207,23 @@ def record_error_comment(
     )
 
 
+def update_error_comment_id(
+    pr_number: int,
+    old_comment_id: int,
+    new_comment_id: int,
+) -> None:
+    """
+    Update placeholder comment_id with actual comment ID after posting.
+
+    Args:
+        pr_number: GitHub PR number
+        old_comment_id: Placeholder comment ID (usually 0)
+        new_comment_id: Actual GitHub comment ID
+    """
+    detector, _, _ = _init_systems()
+    detector.update_error_comment_id(pr_number, old_comment_id, new_comment_id)
+
+
 def record_success(pr_number: int) -> None:
     """
     Record successful comment generation (non-error).
@@ -235,7 +250,7 @@ def get_breaker_status(pr_number: int) -> dict[str, Any]:
     """Get circuit breaker status for a PR."""
     _, breaker, _ = _init_systems()
     status = breaker.get_status(pr_number)
-    return asdict(status) if status else {}
+    return asdict(status)
 
 
 def check_cascade_alert(pr_number: int) -> Optional[dict[str, Any]]:
