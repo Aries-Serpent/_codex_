@@ -27,7 +27,7 @@ jobs:
           echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Resolve PR context
         id: ctx
-      env:
+        env:
         PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         REVIEWER_LOGIN: ${{ github.event.review.user.login }}
         run: "PR_SHA=\"${{ github.event.pull_request.head.sha }}\"\nPR_NUM=\"${{ github.event.pull_request.number\
