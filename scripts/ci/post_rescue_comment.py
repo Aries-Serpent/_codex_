@@ -91,6 +91,7 @@ import pathlib as _pathlib
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
 CONSOLIDATION_DELAY_SECONDS = 3
 DUPLICATE_DIGEST_LENGTH = 16
+UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 def _gh(
@@ -157,7 +158,7 @@ def _handle_cascade_append(
     """
     if existing_id:
         # Cascade detected but existing comment found — append to it
-        now = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
         if section_title and section_content:
             append_section = (
                 f"\n\n---\n\n"
@@ -175,7 +176,7 @@ def _handle_cascade_append(
                 f"Check [run #{run_id}]({run_url}) for details.\n\n"
                 f"</details>"
             )
-        
+
         # Fetch existing comment
         status, comments = _gh(
             "GET",
@@ -219,7 +220,6 @@ def _handle_cascade_append(
             except Exception as exc:
                 print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
         return False
-
 
 
 def _find_rescue_comment(
@@ -341,9 +341,8 @@ def _detect_cascading_copilot_errors(
             "last_error_id": None,
             "action": "PROCEED",
         }
-    
+
     # If more than threshold error comments, it's a cascade
-    # ACTION: APPEND_TO_EXISTING (or QUEUE_FOR_BATCH if no existing found)
     if len(error_comments) >= threshold:
         last_error = max(error_comments, key=lambda c: c.get("created_at", ""))
         return {

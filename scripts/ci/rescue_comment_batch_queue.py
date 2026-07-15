@@ -33,7 +33,7 @@ class BatchQueueItem:
     section_title: Optional[str]
     section_content: Optional[str]
     timestamp: str
-    
+
     def to_section_markdown(self) -> str:
         """Convert queue item to markdown section for appending."""
         now = self.timestamp
@@ -77,7 +77,7 @@ def queue_item(
 ) -> None:
     """Queue a rescue comment section for batch posting."""
     now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
-    
+
     item = BatchQueueItem(
         pr_number=pr_number,
         commit_sha=commit_sha,
