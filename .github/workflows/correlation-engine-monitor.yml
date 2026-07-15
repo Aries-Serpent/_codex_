@@ -19,21 +19,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install pytest pytest-cov numpy scipy
-
-        pip install -e .
-
-        "
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov numpy scipy
+          pip install -e .
       - name: Run correlation engine tests
-        run: "pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation
-        --cov-report=term-missing
-
-        "
+        run: |
+          pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation --cov-report=term-missing
         continue-on-error: false
       - name: Generate correlation metrics
         run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.correlation\
@@ -51,9 +46,9 @@ jobs:
       - name: Upload metrics artifact
         uses: actions/upload-artifact@v5
         with:
-        name: correlation-metrics
-        path: correlation-metrics.json
-        retention-days: 90
+          name: correlation-metrics
+          path: correlation-metrics.json
+          retention-days: 90
       - name: Comment results on PR
         if: github.event_name == "pull_request"
         uses: actions/github-script@v8
