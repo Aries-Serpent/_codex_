@@ -97,10 +97,10 @@ DUPLICATE_DIGEST_LENGTH = 16
 # We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 # Cascade error marker constant for detecting already-consolidated cascades
-# Note: CONSOLIDATION_MARKER_PREFIX and CASCADE_ERROR_ID_MARKER_PREFIX are defined 
-# and used in consolidate_cascade_errors.py to create markers. CASCADE_CONSOLIDATED_CHECK
-# is a substring that appears in those markers and is used here for detection.
-CASCADE_CONSOLIDATED_CHECK = "cascade-consolidated-error"
+# Note: The consolidation script creates markers with CASCADE_ERROR_ID_MARKER_PREFIX
+# ('<!-- cascade-error-id:...') to indicate which errors were consolidated.
+# We detect consolidation by looking for this 'cascade-error-id' substring.
+CASCADE_CONSOLIDATED_CHECK = "cascade-error-id"
 
 
 def _gh(
