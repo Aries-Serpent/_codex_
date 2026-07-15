@@ -131,7 +131,7 @@ jobs:
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
-      env:
+        env:
           IN_SCAN_TYPE: ${{ github.event.inputs.scan-type || inputs.scan-type || 'all' }}
           IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-security' }}
           IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}

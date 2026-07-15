@@ -176,15 +176,12 @@ jobs:
 
       - name: Trigger embedding index refresh
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
         ✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh\" \\\n\
         \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
-        env:
-          GH_TOKEN: ${{ github.token }}
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

@@ -76,6 +76,8 @@ jobs:
 
       - name: ✅ Confirm branch is up-to-date
         if: steps.check.outputs.rebase_required == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: 'STATUS="${{ steps.check.outputs.rebase_status }}"
 
         BASE="${{ steps.check.outputs.base_branch }}"
@@ -86,9 +88,6 @@ jobs:
         — no rebase needed."
 
         '
-        env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -112,8 +111,7 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -122,10 +120,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
           BRANCH: ${{ github.head_ref }}
-          run: python scripts/ci/post_rescue_comment.py
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+        run: python scripts/ci/post_rescue_comment.py
 
 
 

@@ -142,7 +142,7 @@ jobs:
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
-      env:
+        env:
           IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-self-healing' }}
           IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}
           IN_LANE_MODE: ${{ github.event.inputs.lane-mode || inputs.lane-mode || 'enabled' }}

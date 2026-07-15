@@ -53,11 +53,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUM: ${{ github.event.pull_request.number }}
-          run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
+        run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
         \ \\\n  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  Scorecard\
         \ refresh non-zero (non-fatal \u2014 workflow continues)\"\n"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
@@ -74,40 +72,36 @@ jobs:
         id: check
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
-
-          run: "echo \"pr_number=${PR_NUM}\" >> \"$GITHUB_OUTPUT\"\n\n# On workflow_dispatch,\
+        run: "echo \"pr_number=${PR_NUM}\" >> \"$GITHUB_OUTPUT\"\n\n# On workflow_dispatch,\
         \ github.event.pull_request.body is empty.\n# Fetch the PR body via gh CLI\
         \ so checkbox detection works for\n# manually triggered delegation runs.\n\
         RESOLVED_BODY=\"${PR_BODY}\"\nif [ -z \"${RESOLVED_BODY}\" ] && [ -n \"${PR_NUM}\"\
         \ ]; then\n  RESOLVED_BODY=$(gh pr view \"${PR_NUM}\" \\\n    --repo Aries-Serpent/_codex_\
         \ \\\n    --json body --jq '.body' 2>/dev/null || true)\n  echo \"\u2139\uFE0F\
         \  PR body fetched via gh pr view (workflow_dispatch path)\"\nfi\n\n# \u2500\
-          \u2500 PRIMARY: repo variable already true \u2192 always pre-authorized \u2500\
+        \u2500 PRIMARY: repo variable already true \u2192 always pre-authorized \u2500\
         \u2500\u2500\u2500\u2500\u2500\n# If COPILOT_AGENT_AUTH_ENABLED is already\
         \ set as a repo variable,\n# the owner's approval is permanently recorded.\
         \  No checkbox needed.\nREPO_VAR_ACTIVE=\"${{ vars.COPILOT_AGENT_AUTH_ENABLED\ \ }}\"\nif [ \"${REPO_VAR_ACTIVE}\" = \"true\" ]; then\n  echo \"auth_requested=true\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705 COPILOT_AGENT_AUTH_ENABLED=true (repo\
         \ variable) \u2014 permanently pre-authorized, no checkbox required\"\n# \u2500\
-          \u2500 FALLBACK: check PR body checkbox (first-time activation path) \u2500\
-          \u2500\nelif printf '%s' \"${RESOLVED_BODY}\" | grep -qiE '\\-[[:space:]]*\\\
+        \u2500 FALLBACK: check PR body checkbox (first-time activation path) \u2500\
+        \u2500\nelif printf '%s' \"${RESOLVED_BODY}\" | grep -qiE '\\-[[:space:]]*\\\
         [x\\].*COPILOT_AGENT_AUTH_ENABLED'; then\n  echo \"auth_requested=true\" \
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705 COPILOT_AGENT_AUTH_ENABLED checkbox\
         \ is checked \u2014 requesting approval\"\nelse\n  echo \"auth_requested=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\uFE0F  COPILOT_AGENT_AUTH_ENABLED\
         \ repo var not true and checkbox not checked \u2014 nothing to do\"\nfi\n\n\
-          # Detect \"Multiple Copilot Coding Agent Sessions\" checkbox (S182)\n# Default:\
+        # Detect \"Multiple Copilot Coding Agent Sessions\" checkbox (S182)\n# Default:\
         \ disabled (single-session mode). When checked, allows parallel sessions.\n\
-          if printf '%s' \"${RESOLVED_BODY}\" | grep -qiE '\\-[[:space:]]*\\[x\\].*COPILOT_MULTI_SESSION';\
+        if printf '%s' \"${RESOLVED_BODY}\" | grep -qiE '\\-[[:space:]]*\\[x\\].*COPILOT_MULTI_SESSION';\
         \ then\n  echo \"multi_session=true\"  >> \"$GITHUB_OUTPUT\"\n  echo \"\u2705\
         \ COPILOT_MULTI_SESSION checkbox is checked \u2014 parallel sessions allowed\"\
         \nelse\n  echo \"multi_session=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\
         \uFE0F  COPILOT_MULTI_SESSION not checked \u2014 single-session mode (default)\"\
         \nfi\n"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   await-approval:
     name: "\u23F3 Auto-approved \u2014 agent is pre-authorized"
     needs: detect-checkbox
@@ -117,10 +111,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Auto-approved
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "echo \"\u2705 Agent token delegation auto-approved for PR  #${{ needs.detect-checkbox.outputs.pr_number\ \ }}\"\necho \"Copilot is permanently pre-authorized \u2014 no human approval\
         \ required.\"\n"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   trigger-auto-approval:
     name: "⚡ Dispatch Auto-Approve (if auth authorized)"
     needs: [detect-checkbox, await-approval]

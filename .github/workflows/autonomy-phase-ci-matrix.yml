@@ -118,12 +118,11 @@ jobs:
           AGENT_RUNNER_BUDGET_SECONDS: '30'
           AGENT_RUNNER_ITERATIONS: '1'
           UNCERTAINTY_BUDGET_SECONDS: '10'
-          run: 'python -m pytest ${{ matrix.test_module }} -v --tb=short --timeout=60
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: 'python -m pytest ${{ matrix.test_module }} -v --tb=short --timeout=60
         -q
 
         '
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   autonomy-gate:
     name: Autonomy CI Gate (all 7 phases)
     needs: autonomy-matrix
@@ -161,8 +160,7 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -171,9 +169,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
           BRANCH: ${{ github.head_ref }}
-          run: python scripts/ci/post_rescue_comment.py
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: python scripts/ci/post_rescue_comment.py
 
 
 

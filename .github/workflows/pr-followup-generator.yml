@@ -33,11 +33,11 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - uses: actions/checkout@v5  # v6.0.3
-        with:
+    - uses: actions/checkout@v5  # v6.0.3
+      with:
         persist-credentials: false
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
-          fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref || github.ref }}
+        fetch-depth: 0
 
       - name: CacheManager health check
         continue-on-error: true

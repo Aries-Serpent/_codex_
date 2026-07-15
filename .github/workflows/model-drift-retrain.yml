@@ -59,8 +59,8 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - uses: actions/checkout@v5  # v6.0.3
-        with:
+    - uses: actions/checkout@v5  # v6.0.3
+      with:
         persist-credentials: false
 
       - name: Setup Python (cached)

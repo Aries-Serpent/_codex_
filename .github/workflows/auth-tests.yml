@@ -104,28 +104,28 @@ jobs:
           name: auth-coverage
           fail_ci_if_error: false
       - name: Validate CODEX_MASTER_KEY Scopes
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
           python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
       - name: Run comprehensive CODEX_MASTER_KEY tests
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
           pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
           pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
           pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
           pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
           pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
       - name: Generate CODEX_MASTER_KEY coverage report
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
           pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
       - name: Upload scope report
@@ -216,14 +216,13 @@ jobs:
       - name: Upload security report
         uses: actions/upload-artifact@v5
         if: always()
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         with:
           name: auth-security-report-${{ matrix.python-version }}
           path: auth-security-report.json
           retention-days: 30
           if-no-files-found: error
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -319,13 +318,12 @@ jobs:
       - name: Cache health report
         if: always()
         continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow auth-tests
         --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
         '
-        env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -349,8 +347,7 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -359,10 +356,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
           BRANCH: ${{ github.head_ref }}
-          run: python scripts/ci/post_rescue_comment.py
-          env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+        run: python scripts/ci/post_rescue_comment.py
 
 
 
