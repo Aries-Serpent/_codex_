@@ -14,29 +14,29 @@ jobs:
     runs-on: ubuntu-latest
     name: Daily Correlation Engine Health Check
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install pytest pytest-cov numpy scipy
 
         pip install -e .
 
         "
-    - name: Run correlation engine tests
-      run: "pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation
+      - name: Run correlation engine tests
+        run: "pytest tests/correlation/test_anomaly_correlator.py -v --tb=short --cov=src/codex/correlation
         --cov-report=term-missing
 
         "
-      continue-on-error: false
-    - name: Generate correlation metrics
-      run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.correlation\
+        continue-on-error: false
+      - name: Generate correlation metrics
+        run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.correlation\
         \ import (\n    AnomalyCollector, TemporalCorrelator, SpatialCorrelator,\n\
         \    MagnitudeCorrelator, RootCauseEngine, HistoricalTracker\n)\n\n# Initialize\
         \ engines\ncollector = AnomalyCollector()\ntemporal = TemporalCorrelator()\n\
@@ -48,16 +48,16 @@ jobs:
         \ 0.90,\n        "root_cause_success_rate": 0.83,\n        "alert_reduction_rate":\
         \ 0.67,\n        "false_positive_rate": 0.032,\n    }\n}\n\nwith open("correlation-metrics.json",\
         \ "w") as f:\n    json.dump(metrics, f, indent=2)\n\" 2>&1\n"
-    - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
-      with:
-      name: correlation-metrics
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v5
+        with:
+        name: correlation-metrics
         path: correlation-metrics.json
         retention-days: 90
-    - name: Comment results on PR
-      if: github.event_name == "pull_request"
-      uses: actions/github-script@v8
-      with:
+      - name: Comment results on PR
+        if: github.event_name == "pull_request"
+        uses: actions/github-script@v8
+        with:
         script: "const fs = require("fs");\nconst metrics = JSON.parse(fs.readFileSync("correlation-metrics.json",\
           \ "utf8"));\n\nconst comment = `## \U0001F4CA Correlation Engine Metrics\n\
           \n**Date**: ${metrics.timestamp}\n\n### Accuracy Metrics\n| Metric | Value\
@@ -75,8 +75,8 @@ jobs:
           \ [Full Report](.codex/PHASE_4E_PLANSET_011_CORRELATION.md)`;\n\ngithub.rest.issues.createComment({\n\
           \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
           \ repo: context.repo.repo,\n  body: comment\n});\n"
-    - name: Check gate criteria
-      run: "python -c \"\nimport json\n\n# Load metrics\nwith open("correlation-metrics.json")\
+      - name: Check gate criteria
+        run: "python -c \"\nimport json\n\n# Load metrics\nwith open("correlation-metrics.json")\
         \ as f:\n    metrics = json.load(f)\n\ngates = {\n    "temporal_accuracy":\
         \ (metrics["test_run"]["temporal_accuracy"], 0.85),\n    "spatial_accuracy":\
         \ (metrics["test_run"]["spatial_accuracy"], 0.85),\n    "magnitude_accuracy":\
@@ -91,9 +91,9 @@ jobs:
         \ if passed else "❌"\n    print(f"{gate_name}: {value:.1%} {status} (target:\
         \ {threshold:.1%})")\n    all_pass = all_pass and passed\n\nif not all_pass:\n\
         \    exit(1)\n\" 2>&1\n"
-    - name: Report results to CODEX
-      if: always()
-      run: "echo "## Phase 4E Planset 011 - Correlation Engine Monitor"
+      - name: Report results to CODEX
+        if: always()
+        run: "echo "## Phase 4E Planset 011 - Correlation Engine Monitor"
 
         echo ""
 
@@ -126,46 +126,46 @@ jobs:
     runs-on: ubuntu-latest
     name: Validate Full Correlation Pipeline
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install pytest numpy scipy
 
         pip install -e .
 
         "
-    - name: Run end-to-end integration tests
-      run: "pytest tests/correlation/test_anomaly_correlator.py::TestIntegration -v
+      - name: Run end-to-end integration tests
+        run: "pytest tests/correlation/test_anomaly_correlator.py::TestIntegration -v
         --tb=short
 
         "
-    - name: Validate correlation accuracy
-      run: "pytest tests/correlation/test_anomaly_correlator.py::TestTemporalCorrelator::test_temporal_correlation_accuracy
+      - name: Validate correlation accuracy
+        run: "pytest tests/correlation/test_anomaly_correlator.py::TestTemporalCorrelator::test_temporal_correlation_accuracy
         -v
 
         pytest tests/correlation/test_anomaly_correlator.py::TestGateCriteria -v
 
         "
-    - name: Test root cause inference
-      run: "pytest tests/correlation/test_anomaly_correlator.py::TestBackwardChainer
+      - name: Test root cause inference
+        run: "pytest tests/correlation/test_anomaly_correlator.py::TestBackwardChainer
         -v
 
         pytest tests/correlation/test_anomaly_correlator.py::TestRootCauseEngine -v
 
         "
-    - name: Verify alert aggregation
-      run: "pytest tests/correlation/test_anomaly_correlator.py::TestAlertAggregator
+      - name: Verify alert aggregation
+        run: "pytest tests/correlation/test_anomaly_correlator.py::TestAlertAggregator
         -v
 
         "
-    - name: Check false positive suppression
-      run: "pytest tests/correlation/test_anomaly_correlator.py::TestFalsePositiveClassifier
+      - name: Check false positive suppression
+        run: "pytest tests/correlation/test_anomaly_correlator.py::TestFalsePositiveClassifier
         -v
 
         pytest tests/correlation/test_anomaly_correlator.py::TestSuppressionPolicy
@@ -181,12 +181,12 @@ jobs:
     - validate-correlation-pipeline
     if: always()
     steps:
-    - name: Download metrics
-      uses: actions/download-artifact@v5
-      with:
-      name: correlation-metrics
-    - name: Generate final report
-      run: "cat > correlation-report.md << ""EOF""
+      - name: Download metrics
+        uses: actions/download-artifact@v5
+        with:
+        name: correlation-metrics
+      - name: Generate final report
+        run: "cat > correlation-report.md << ""EOF""
 
         # Phase 4E Planset 011 - Correlation Engine Report
 
@@ -283,10 +283,10 @@ jobs:
         cat correlation-report.md
 
         "
-    - name: Upload report
-      uses: actions/upload-artifact@v5
-      with:
-      name: correlation-report
+      - name: Upload report
+        uses: actions/upload-artifact@v5
+        with:
+        name: correlation-report
         path: correlation-report.md
     timeout-minutes: 30
 concurrency:
