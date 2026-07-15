@@ -1,9 +1,9 @@
-# Session Context — 2026-07-15T23:38:28Z
+# Session Context — 2026-07-15T23:48:28Z
 **Branch:** `0D_base_`  **PR:** #5324  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4601` (✅)
+- REST remaining: `4888` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
@@ -11,17 +11,15 @@
 ## 📋 PR #5324 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery (#5323)
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `🔀 REQ-10: Branch Rebase Check` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/coverage-with-timeout.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/doc-refresh-gate.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/workflow-health-update.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/nox_gates.yml** — `failure` on `0D_base_` (2026-07-15)
 - **.github/workflows/dependabot-sheriff.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/proactive-ci-monitor.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/pages-pre-merge-validation.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/session-context-capture.yml** — `failure` on `0D_base_` (2026-07-15)
 
 ## 📝 Recent Commits
+- `c3b6df96` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
 - `1cffac27` Improve documentation and comments for regex patterns and cascade detection logi — copilot-swe-agent[bot] (2026-07-15)
 - `29637702` Fix final regex and marker detection issues: correct cascade-error-id detection, — copilot-swe-agent[bot] (2026-07-15)
 - `91d9ccf0` Fix final code review issues: UUID regex case-sensitivity, docstring whitespace, — copilot-swe-agent[bot] (2026-07-15)
@@ -29,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 - `207d1725` Fix code review issues: remove dead function, fix auth header, update docstring, — copilot-swe-agent[bot] (2026-07-15)
 - `0e1b4a62` Fix marker consistency and use constants instead of hardcoded strings — copilot-swe-agent[bot] (2026-07-15)
 - `f0d5ec8e` Fix authorization header and blank line formatting in consolidate_cascade_errors — copilot-swe-agent[bot] (2026-07-15)
-- `4c144c0c` Add consolidate_cascade_errors script and improve cascade detection in post_resc — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
