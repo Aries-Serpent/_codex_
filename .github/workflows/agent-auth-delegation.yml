@@ -506,7 +506,7 @@ jobs:
         id: accountability_check
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          run: |
+        run: |
           REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
 
           echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
