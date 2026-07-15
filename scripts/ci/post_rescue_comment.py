@@ -327,10 +327,11 @@ def _detect_cascading_copilot_errors(
     pr_number: int,
     threshold: int = 5,
 ) -> dict:
-    """Detect cascading Copilot error comments (PR #5324 pattern).
+    """Detect cascading Copilot error comments and already-consolidated cascades.
 
     Cascades are identified by:
-    - Multiple comments with "comment-generic-error" marker
+    - Multiple comments with "comment-generic-error" marker (fresh errors)
+    - Multiple comments with cascade-consolidated-error marker (already consolidated)
     - Created by Copilot user within short timespan
     - Repeating UUID patterns
 
@@ -344,6 +345,7 @@ def _detect_cascading_copilot_errors(
     """
     page = 1
     error_comments = []
+    has_consolidated_error = False
 
     while True:
         status, comments = _gh(
@@ -362,6 +364,8 @@ def _detect_cascading_copilot_errors(
             if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
                 if c.get("user", {}).get("login") == "Copilot":
                     error_comments.append(c)
+                    if CASCADE_CONSOLIDATED_CHECK in body:
+                        has_consolidated_error = True
 
         if len(comments) < 100:
             break
@@ -376,7 +380,7 @@ def _detect_cascading_copilot_errors(
         }
 
     # If already consolidated, skip further action
-    if any(CASCADE_CONSOLIDATED_CHECK in (c.get("body") or "") for c in error_comments):
+    if has_consolidated_error:
         return {
             "is_cascading": False,
             "error_count": len(error_comments),

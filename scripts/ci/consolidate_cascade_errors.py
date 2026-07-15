@@ -50,7 +50,7 @@ def _gh(
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"token {token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
@@ -102,57 +102,6 @@ def _find_copilot_error_comments(
         page += 1
 
     return sorted(error_comments, key=lambda c: c.get("created_at", ""))
-
-
-def _build_consolidation_comment(
-    error_comments: list[dict],
-    repo: str,
-    pr_number: int,
-) -> str:
-    """Build a consolidation comment documenting all error IDs."""
-    now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
-    error_count = len(error_comments)
-
-    # Extract UUIDs from error comments
-    uuids = []
-    for c in error_comments:
-        body = c.get("body", "")
-        # Extract identifier from format: "identifier so they can better serve you: `UUID`"
-        if "identifier so they can better serve you:" in body:
-            parts = body.split("identifier so they can better serve you:")
-            if len(parts) > 1:
-                uuid_part = parts[1].strip().strip("`")
-                if uuid_part:
-                    uuids.append(uuid_part)
-
-    # Build error list with links
-    error_list = ""
-    for i, c in enumerate(error_comments, 1):
-        error_id = c.get("id")
-        created_at = c.get("created_at", "unknown")
-        error_url = c.get("html_url", "#")
-        uuid = uuids[i - 1] if i - 1 < len(uuids) else "unknown"
-        error_list += f"{i}. [Error #{error_id}]({error_url}) — {created_at} (UUID: `{uuid}`)\n"
-
-    consolidation_body = (
-        f"{CONSOLIDATION_MARKER_PREFIX}{pr_number}:{error_count} -->\n"
-        f"## 🚨 Copilot Cascade Consolidation — {error_count} Errors\n\n"
-        f"@mbaetiong Copilot encountered **{error_count} sequential errors** while processing your PR. "
-        f"Instead of leaving {error_count} separate error comments, we've consolidated them into this single thread.\n\n"
-        f"**Error Timeline:**\n\n"
-        f"{error_list}\n\n"
-        f"**What This Means:**\n"
-        f"- Copilot attempted to process your comments/requests {error_count} times\n"
-        f"- Each attempt encountered an internal error and crashed\n"
-        f"- All error IDs have been consolidated here for debugging\n\n"
-        f"**Recommended Action:**\n"
-        f"1. Please reach out to GitHub support with the error UUIDs listed above\n"
-        f"2. Try mentioning @copilot again in a fresh comment to retry\n"
-        f"3. The rescue CI system will continue to post workflow failure updates as needed\n\n"
-        f"_Auto-consolidated by cascade-error consolidation system · {now}_"
-    )
-
-    return consolidation_body
 
 
 def _consolidate_cascade(
