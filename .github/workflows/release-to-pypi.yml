@@ -156,12 +156,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-      with:
+        with:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
@@ -169,17 +169,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel build
 
-    - name: Build wheels (deterministic, single platform)
-      run: |
+      - name: Build wheels (deterministic, single platform)
+        run: |
           # Build universal wheel once on Linux for reproducible hashes
           # Universal wheels (py3-none-any) are platform-independent
           python -m build --wheel
           echo "✓ Built universal wheel on Ubuntu for deterministic hashes"
 
-    - name: Verify wheel artifacts
-      env:
+      - name: Verify wheel artifacts
+        env:
          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
-      run: |
+        run: |
          ls -lah dist/
          # Extract base version without 'v' prefix for filename
          BASE_VERSION="${RELEASE_VERSION#v}"
@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
-      with:
+        with:
           name: wheels
           path: dist/
           retention-days: 5
@@ -208,18 +208,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-      with:
+        with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: wheels
           path: dist/
 
@@ -250,9 +250,9 @@ jobs:
         run: |
           pip install pydantic pyyaml
 
-    - name: Generate manifest
-      id: manifest
-      run: |
+      - name: Generate manifest
+        id: manifest
+        run: |
           mkdir -p .codex/manifests/
           python scripts/ci/generate_wheel_manifest.py \
             --wheelhouse dist/ \
@@ -282,7 +282,7 @@ jobs:
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
-      with:
+        with:
           name: release-manifest
           path: .codex/manifests/
           retention-days: 5
@@ -296,12 +296,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-      with:
+        with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
@@ -309,31 +309,31 @@ jobs:
         run: |
           pip install cyclonedx-bom
 
-    - name: Generate SBOM for core profile
-      run: |
+      - name: Generate SBOM for core profile
+        run: |
           cyclonedx-py -o sbom-core.json \
             -c '.[core]' || true
 
-    - name: Generate SBOM for runtime profile
-      run: |
+      - name: Generate SBOM for runtime profile
+        run: |
           cyclonedx-py -o sbom-runtime.json \
             -c '.[runtime]' || true
 
-    - name: Generate SBOM for full profile
-      run: |
+      - name: Generate SBOM for full profile
+        run: |
           cyclonedx-py -o sbom-full.json \
             -c '.[full]' || true
 
-    - name: Verify SBOM files exist
-      run: |
+      - name: Verify SBOM files exist
+        run: |
           ls -lah sbom*.json
           if [ $(ls -1 sbom*.json 2>/dev/null | wc -l) -eq 0 ]; then
             echo "⚠️  Warning: No SBOM files generated (non-blocking)"
           fi
 
-    - name: Upload SBOM artifact
-      uses: actions/upload-artifact@v5
-      with:
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v5
+        with:
           name: sbom
           path: sbom*.json
           retention-days: 5
@@ -347,24 +347,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-      with:
+        with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels (no merge needed - single artifact)
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: wheels
           path: dist/
 
       - name: Download manifest
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: release-manifest
           path: .codex/manifests/
 
@@ -377,8 +377,8 @@ jobs:
           echo "=== Manifest files ==="
           ls -lah .codex/manifests/
 
-    - name: Verify manifest integrity
-      run: |
+      - name: Verify manifest integrity
+        run: |
           # Find the manifest file (generated in generate-manifest job)
           MANIFEST_FILE=$(ls -t .codex/manifests/*.json 2>/dev/null | head -1)
           if [ -z "$MANIFEST_FILE" ]; then
@@ -406,18 +406,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-      with:
+        with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels (from single build)
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: wheels
           path: dist/
 
@@ -431,23 +431,23 @@ jobs:
             exit 1
           fi
 
-    - name: Install publishing tools
-      run: |
+      - name: Install publishing tools
+        run: |
           python -m pip install twine
 
-    - name: Publish to PyPI
-      env:
+      - name: Publish to PyPI
+        env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
+        run: |
           python -m twine upload \
             --non-interactive \
             --skip-existing \
             --verbose \
             dist/*.whl
 
-    - name: Verify PyPI upload
-      run: |
+      - name: Verify PyPI upload
+        run: |
           pip install --upgrade pip
           # Give PyPI a moment to index
           sleep 10
@@ -478,8 +478,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set version from pre-release-checks output
@@ -495,21 +495,21 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Using release version: ${VERSION}"
 
-    - name: Download wheels
-      uses: actions/download-artifact@v5
-      with:
+      - name: Download wheels
+        uses: actions/download-artifact@v5
+        with:
           name: wheels
           path: dist/
 
       - name: Download manifest
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: release-manifest
           path: release-artifacts/
 
       - name: Download SBOM
         uses: actions/download-artifact@v5
-      with:
+        with:
           name: sbom
           path: release-artifacts/
 
@@ -522,9 +522,9 @@ jobs:
           echo "=== Wheels ==="
           ls -lah dist/
 
-    - name: Generate release notes
-      id: release-notes
-      run: |
+      - name: Generate release notes
+        id: release-notes
+        run: |
           CLEAN_VERSION="${{ steps.version.outputs.version }}"
           CLEAN_VERSION="${CLEAN_VERSION#v}"
 
@@ -569,7 +569,7 @@ jobs:
         uses: actions/create-release@v1
         env:
          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-      with:
+        with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
           body_path: release-notes.md
@@ -578,7 +578,7 @@ jobs:
 
       - name: Upload release artifacts and publish
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
-      with:
+        with:
           files: |
             dist/*.whl
             release-artifacts/*
@@ -596,15 +596,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Create deployment summary comment
         uses: actions/github-script@v8
         env:
           RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
           GITHUB_REPO: ${{ github.repository }}
-      with:
+        with:
           script: |
             let version = process.env.RELEASE_VERSION;
             // Remove refs/ prefixes if any
@@ -680,7 +680,7 @@ jobs:
 
       - name: Upload deployment metrics
         uses: actions/upload-artifact@v5
-      with:
+        with:
           name: deployment-metrics
           path: .codex/metrics/
           retention-days: 30
