@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Mask secrets
         run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout Repository
         uses: actions/checkout@v5
       with:
