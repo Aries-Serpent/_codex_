@@ -46,18 +46,18 @@ jobs:
 
     - name: Set version from tag or input
       id: version
-        env:
-          GITHUB_REF: ${{ github.ref }}
-          INPUT_VERSION: ${{ inputs.version }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          # Priority 1: If dispatched with explicit version input, use it
-          if [ -n "$INPUT_VERSION" ] && [ "$INPUT_VERSION" != "null" ]; then
-            VERSION="$INPUT_VERSION"
-            echo "Using INPUT_VERSION: $VERSION"
-          # Priority 2: If triggered on a tag, use it
-          elif [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
-            VERSION="$GITHUB_REF"
+      env:
+        GITHUB_REF: ${{ github.ref }}
+        INPUT_VERSION: ${{ inputs.version }}
+        COMMIT_SHA: ${{ github.sha }}
+      run: |
+        # Priority 1: If dispatched with explicit version input, use it
+        if [ -n "$INPUT_VERSION" ] && [ "$INPUT_VERSION" != "null" ]; then
+          VERSION="$INPUT_VERSION"
+          echo "Using INPUT_VERSION: $VERSION"
+        # Priority 2: If triggered on a tag, use it
+        elif [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
+          VERSION="$GITHUB_REF"
             VERSION="${VERSION#refs/tags/}"
             echo "Using GITHUB_REF tag: $VERSION"
           # Priority 3: Try to find latest v*.*.* tag in repository

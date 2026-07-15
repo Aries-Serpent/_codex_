@@ -79,17 +79,17 @@ jobs:
 
     - name: Run drift detection
       id: drift
-        env:
-          DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score || '' }}
-          SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
-          FORCE_RETRAIN: ${{ github.event.inputs.force_retrain || 'false' }}
-          DRIFT_THRESHOLD: ${{ vars.MODEL_DRIFT_THRESHOLD || '0.15' }}
-        run: |
-          set -euo pipefail
+      env:
+        DRIFT_SCORE_OVERRIDE: ${{ github.event.inputs.drift_score || github.event.client_payload.drift_score || '' }}
+        SAMPLES_OVERRIDE: ${{ github.event.inputs.samples_count || github.event.client_payload.samples_count || '0' }}
+        FORCE_RETRAIN: ${{ github.event.inputs.force_retrain || 'false' }}
+        DRIFT_THRESHOLD: ${{ vars.MODEL_DRIFT_THRESHOLD || '0.15' }}
+      run: |
+        set -euo pipefail
 
-          python - <<'PYEOF'
-          import os, json, sys
-          from pathlib import Path
+        python - <<'PYEOF'
+        import os, json, sys
+        from pathlib import Path
 
           # ── Load ContinuousLearningPipeline ──────────────────────────────────
           try:

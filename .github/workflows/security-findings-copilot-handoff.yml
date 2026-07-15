@@ -32,16 +32,16 @@ jobs:
     - name: Download security findings artifacts
       uses: actions/download-artifact@v5
       with:
-          name: security-suite-comprehensive-findings
-          path: ./security-findings/
-        continue-on-error: true
+        name: security-suite-comprehensive-findings
+        path: ./security-findings/
+      continue-on-error: true
     - name: Load and parse findings
       id: findings
-        shell: bash
-        run: |
-          set -euo pipefail
+      shell: bash
+      run: |
+        set -euo pipefail
 
-          if [ ! -f ./security-findings/.codex/security-findings-comprehensive.json ]; then
+        if [ ! -f ./security-findings/.codex/security-findings-comprehensive.json ]; then
             echo "No comprehensive findings available - skipping issue creation"
             echo "issue_title=No Security Findings Available" >> "$GITHUB_OUTPUT"
             exit 0
