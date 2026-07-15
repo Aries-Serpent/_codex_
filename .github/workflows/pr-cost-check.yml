@@ -201,6 +201,6 @@ jobs:
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
 

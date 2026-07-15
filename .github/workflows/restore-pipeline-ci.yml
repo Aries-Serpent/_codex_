@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5  # v6.0.3
         with:
-        persist-credentials: false
+          persist-credentials: false
 
       - uses: actions/setup-python@v6  # v6
         with:

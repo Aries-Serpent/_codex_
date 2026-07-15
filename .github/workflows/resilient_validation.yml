@@ -181,7 +181,7 @@ jobs:
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   sharded-quick:
     name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
     needs: wec-gate
@@ -276,5 +276,5 @@ jobs:
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 

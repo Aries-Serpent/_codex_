@@ -42,10 +42,10 @@ jobs:
       timeout_minutes: 30
       matrix_count: 2
       pushes_to_ghcr: true
-    permissions:
+      permissions:
       contents: read
       pull-requests: write
-    secrets:
+      secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
     timeout-minutes: 30
@@ -221,7 +221,7 @@ jobs:
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      fetch-depth: 1
+        fetch-depth: 1
     - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

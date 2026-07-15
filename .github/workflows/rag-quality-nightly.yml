@@ -27,7 +27,7 @@ jobs:
     - name: Verify freshness SLA
       run: python scripts/rag/rag_rebuild_audit.py --check freshness
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   quality-gate:
     name: Retrieval quality gate recall>=0.70 MRR>=0.60 (D4
@@ -45,7 +45,7 @@ jobs:
     - name: Run retrieval benchmark against thresholds
       run: python scripts/rag/rag_rebuild_audit.py --check quality
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rebuild-audit:
     name: Index rebuild audit log (D4

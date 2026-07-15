@@ -123,5 +123,5 @@ jobs:
       if: steps.pr.outputs.number != '' && steps.cleanup.outputs.exit_code != '0'
       run: exit 1
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 

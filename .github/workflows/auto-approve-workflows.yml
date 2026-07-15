@@ -533,15 +533,15 @@ jobs:
     env:
       GH_TRICKLE_POLITE_SLEEP: '1.0'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    steps:
-    - name: Generate Cognitive Brain App token
+      steps:
+      - name: Generate Cognitive Brain App token
       id: app-token
       uses: actions/create-github-app-token@v1
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-    - name: Configure auto-approve mode
+      - name: Configure auto-approve mode
       if: github.event_name == 'workflow_dispatch'
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
@@ -585,7 +585,7 @@ jobs:
         \    -f 'labels[]=wec:auto-approve-once' 2>/dev/null || true\n  echo \"\u2705\
         \ Label 'wec:auto-approve-once' added \u2014 will auto-disable after next\
         \ Copilot session.\"\nfi\n"
-    - name: Resolve target PR(s)
+      - name: Resolve target PR(s)
       id: resolve
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
@@ -638,7 +638,7 @@ jobs:
         \   >> \"$GITHUB_OUTPUT\"\necho \"head_sha=${HEAD_SHA}\"  >> \"$GITHUB_OUTPUT\"\
         \necho \"skip=false\"            >> \"$GITHUB_OUTPUT\"\necho \"Resolved: PR\
         \  #${PR_NUM}, SHA=${HEAD_SHA:0:12}\"\n"
-    - name: Approve pending (action_required) workflow runs
+      - name: Approve pending (action_required) workflow runs
       id: approve
       if: steps.resolve.outputs.skip != 'true'
       continue-on-error: true
@@ -765,7 +765,7 @@ jobs:
           core.summary.addRaw('\\n' + lines.join('\\n') + '\\n');\nawait core.summary.write();\n\
           \nif (totalErrors > 0) {\n  core.setFailed(`${totalErrors} run(s) failed\
           \ to be approved \u2014 check the logs above`);\n}\n"
-    - name: Monitor active Copilot session (60m)
+      - name: Monitor active Copilot session (60m)
       if: github.event_name == 'workflow_run' && github.event.workflow_run.name ==
         'Copilot coding agent' && github.event.workflow_run.status == 'in_progress'
       env:

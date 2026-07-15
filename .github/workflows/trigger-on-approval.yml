@@ -21,11 +21,11 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       REPO: ${{ github.repository }}
-    steps:
-    - name: Mask secrets
+      steps:
+      - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - name: Resolve PR context
+      - name: Resolve PR context
       id: ctx
       env:
         PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
@@ -40,7 +40,7 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"token_tier=master\"  >> \"$GITHUB_OUTPUT\"\
         \nfi\necho \"Approval by ${REVIEWER} on PR  #${PR_NUM} @ ${PR_SHA} (${PR_REF})\"\
         \n"
-    - name: Checkout
+      - name: Checkout
       uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -48,12 +48,12 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ref: ${{ github.event.pull_request.head.ref }}
-    - name: Set up Python (for approve_pending_runs.py)
+      - name: Set up Python (for approve_pending_runs.py)
       uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
-    - name: Dispatch unified approval hub
+      - name: Dispatch unified approval hub
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -71,7 +71,7 @@ jobs:
           \ auto-approve-workflows.yml dispatched');\n} catch (err) {\n  core.warning(`Hub\
         \ dispatch failed: ${err.message}`);\n}\n"
       continue-on-error: true
-    - name: Dispatch Validation Pipeline (validate.yml)
+      - name: Dispatch Validation Pipeline (validate.yml)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -84,7 +84,7 @@ jobs:
         } catch (err) {\n  core.warning(`validate.yml dispatch failed: ${err.message}`);\n\
           }\n"
       continue-on-error: true
-    - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
+      - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -97,7 +97,7 @@ jobs:
         } catch (err) {\n  core.warning(`pre-merge-validation.yml dispatch failed:\
           \ ${err.message}`);\n}\n"
       continue-on-error: true
-    - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
+      - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -112,7 +112,7 @@ jobs:
           \ fork contexts\n  core.warning(`codeql-alert-fetcher.yml dispatch failed\
         \ (needs CODEX_MASTER_KEY/security_events): ${err.message}`);\n}\n"
       continue-on-error: true
-    - name: Post @copilot continue (resume agent session)
+      - name: Post @copilot continue (resume agent session)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -133,7 +133,7 @@ jobs:
         \ (err) {\n  core.warning(`Could not post @copilot continue comment: ${err.message}`);\n\
           }\n"
       continue-on-error: true
-    - name: Summary
+      - name: Summary
       if: always()
       run: 'echo "================================================================"
         | tee -a "$GITHUB_STEP_SUMMARY"

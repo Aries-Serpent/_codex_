@@ -127,7 +127,7 @@ jobs:
       GITHUB_REPOSITORY: ${{ github.repository }}
       GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
 
-    steps:
+      steps:
       - name: Validate token availability
         id: token_check
         shell: bash

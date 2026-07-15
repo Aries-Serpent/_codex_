@@ -50,10 +50,10 @@ jobs:
       timeout_minutes: 45
       matrix_count: 1
       pushes_to_ghcr: true
-    permissions:
+      permissions:
       contents: read
       pull-requests: write
-    secrets:
+      secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     timeout-minutes: 30
   approval-check:

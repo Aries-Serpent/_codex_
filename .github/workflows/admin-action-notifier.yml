@@ -109,8 +109,8 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       REPO: ${{ github.repository }}
 
-    steps:
-    - name: Mask secrets
+      steps:
+      - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 

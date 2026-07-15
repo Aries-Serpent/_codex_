@@ -27,7 +27,7 @@ jobs:
       PYTHON_VERSION: "3.12"
       SBOM_HMAC_KEY: ${{ secrets.SBOM_HMAC_KEY || 'dev-key' }}
 
-    steps:
+      steps:
       # ─────────────────────────────────────────────────────────────
       # Phase 1: Setup & Dependency Analysis
       # ─────────────────────────────────────────────────────────────

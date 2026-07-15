@@ -161,7 +161,7 @@ jobs:
         id: issue
         uses: actions/github-script@v8
         env:
-        FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
+          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: "const run          = context.payload.workflow_run;\nconst wfName\
@@ -232,7 +232,7 @@ jobs:
       - name: Create fix branch + tracking stub
         id: branch
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         run: "WF_SLUG=\"${{ needs.triage.outputs.wf_slug }}\"\nSHORT_SLUG=\"${WF_SLUG:0:30}\"\
         \nBRANCH=\"fix/ci-${SHORT_SLUG}-$(date +%Y%m%d%H%M%S)\"\necho \"fix_branch=${BRANCH}\"\
         \ >> \"$GITHUB_OUTPUT\"\n\ngit config user.name  \"github-actions[bot]\"\n\
@@ -251,7 +251,7 @@ jobs:
         id: pr
         uses: actions/github-script@v8
         env:
-        FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
+          FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: "const run         = context.payload.workflow_run;\nconst wfName \
@@ -314,7 +314,7 @@ jobs:
           src/codex/monitoring/
 
           '
-        sparse-checkout-cone-mode: false
+          sparse-checkout-cone-mode: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -338,17 +338,17 @@ jobs:
       - name: Build dashboard section
         id: section
         env:
-        CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-        WF_NAME: ${{ github.event.workflow_run.name }}
-        WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
-        ACTION: ${{ needs.triage.outputs.action }}
-        SEVERITY: ${{ needs.triage.outputs.severity }}
-        ISSUE_URL: ${{ needs.create-issue.outputs.issue_url }}
-        ISSUE_NUM: ${{ needs.create-issue.outputs.issue_number }}
-        FIX_BRANCH: ${{ needs.create-fix-pr.outputs.fix_branch }}
-        FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
-        ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
-        ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WF_NAME: ${{ github.event.workflow_run.name }}
+          WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
+          ACTION: ${{ needs.triage.outputs.action }}
+          SEVERITY: ${{ needs.triage.outputs.severity }}
+          ISSUE_URL: ${{ needs.create-issue.outputs.issue_url }}
+          ISSUE_NUM: ${{ needs.create-issue.outputs.issue_number }}
+          FIX_BRANCH: ${{ needs.create-fix-pr.outputs.fix_branch }}
+          FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
+          ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
+          ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
         run: "python3 - <<'PYEOF'\nimport os\n\nconclusion   = os.environ.get(\"CONCLUSION\"\
         , \"\")\nwf_name      = os.environ[\"WF_NAME\"]\nwf_run_url   = os.environ[\"\
         WF_RUN_URL\"]\naction       = os.environ.get(\"ACTION\", \"\")\nseverity \
@@ -397,8 +397,8 @@ jobs:
       - name: Post to PR Status Dashboard
         if: steps.find-pr.outputs.pr_number != ''
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: "python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${{\
         \ steps.find-pr.outputs.pr_number }}\" \\\n  --workflow   \"CI Monitor: ${{\
         \ github.event.workflow_run.name }}\" \\\n  --status     \"${{ steps.section.outputs.status\

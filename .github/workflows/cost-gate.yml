@@ -61,7 +61,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-      persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -164,7 +164,7 @@ jobs:
           \ 4 s, 6 s).\n    await new Promise(r => setTimeout(r, Math.random() * Math.pow(2,\
           \ attempt) * 1000 + 500));\n  }\n}\n"
       env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
   gate:
     name: "\U0001F6A6 Cost gate (${{ needs.estimate.outputs.tier }})"
     runs-on: ubuntu-latest

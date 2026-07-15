@@ -116,6 +116,6 @@ jobs:
       if: steps.check.outputs.exit_code != '0'
       run: exit 1
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
 

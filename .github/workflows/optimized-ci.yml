@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5  # v6.0.3
         with:
-        persist-credentials: false
+          persist-credentials: false
 
       - name: Setup Python
         id: cache

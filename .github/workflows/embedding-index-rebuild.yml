@@ -18,10 +18,10 @@ jobs:
       timeout_minutes: 15
       matrix_count: 1
       pushes_to_ghcr: false
-    permissions:
+      permissions:
       contents: read
       pull-requests: write
-    secrets:
+      secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
     timeout-minutes: 30

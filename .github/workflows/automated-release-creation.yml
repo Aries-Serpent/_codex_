@@ -96,7 +96,7 @@ jobs:
         id: create-release-draft
         uses: actions/create-release@v1.1.1
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.event.inputs.version }}
           release_name: Release ${{ github.event.inputs.version }}
@@ -108,7 +108,7 @@ jobs:
         id: create-release
         uses: actions/create-release@v1.1.1
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.event.inputs.version }}
           release_name: Release ${{ github.event.inputs.version }}
@@ -119,7 +119,7 @@ jobs:
         if: github.event.inputs.dry_run == 'false'
         uses: actions/upload-release-asset@v1.0.2
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ steps.generate-sbom.outputs.sbom_path }}
@@ -129,7 +129,7 @@ jobs:
         if: github.event.inputs.dry_run == 'false'
         uses: actions/upload-release-asset@v1.0.2
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ steps.generate-attestations.outputs.attestations_path }}
@@ -139,7 +139,7 @@ jobs:
         if: github.event.inputs.dry_run == 'false'
         uses: actions/upload-release-asset@v1.0.2
         env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ steps.generate-provenance.outputs.provenance_path }}
@@ -154,7 +154,7 @@ jobs:
         \ is now available\" \\\n  --body \"$discussion_content\" \\\n  || echo \"\
         ⚠️ Failed to create discussion (may require additional permissions)\"\n"
         env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate summary report
         id: summary
         run: 'cat > release-summary.md << ''EOF''
@@ -240,7 +240,7 @@ jobs:
           release-summary.md
 
           '
-        retention-days: 90
+          retention-days: 90
       - name: Print workflow summary
         run: "echo \"## ✅ Release Creation Workflow Complete\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Version**: ${{ github.event.inputs.version\

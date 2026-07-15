@@ -95,9 +95,9 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\n"
       - name: Fetch rescue engine
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: "REFS=\"${HEAD_SHA} HEAD\"\nfor REF in $REFS; do\n  curl -sS -L \\\n  \
         \  -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n    -H \"Accept: application/vnd.github.raw+json\"\
         \ \\\n    \"https://api.github.com/repos/${{ github.repository }}/contents/scripts/ci/ci_rescue.py?ref=${REF}\"\
@@ -112,7 +112,7 @@ jobs:
       - name: Lookup CI Failure Triage Report issue URL
         id: triage-url
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created\
         \ by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link\
@@ -132,12 +132,12 @@ jobs:
       - name: Run CI rescue engine
         id: rescue
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-        TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
-        GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
+          TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
+          GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
           }}
-        GH_REPOSITORY: ${{ github.repository }}
+          GH_REPOSITORY: ${{ github.repository }}
         run: "RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"\nCOMMIT_SHA=\"\
         ${{ github.event.workflow_run.head_sha || github.sha }}\"\nPR_NUMBER=\"${{\
         \ inputs.pr_number }}\"\nWORKFLOW_NAME=\"${{ github.event.workflow_run.name\

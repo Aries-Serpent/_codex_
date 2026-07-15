@@ -80,8 +80,8 @@ jobs:
       LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode
         == 'full' }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    steps:
-    - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
+      steps:
+      - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
       uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -89,7 +89,7 @@ jobs:
         lfs: false
         clean: true
         show-progress: true
-    - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
       # DO NOT REFACTOR THIS STEP — it is canonically guarded by validate_setup_steps_yaml.sh
       continue-on-error: true
       run: |
@@ -147,7 +147,7 @@ jobs:
         fi
 
         echo "::endgroup::"
-    - name: "\U0001F50C Session Access Probe (token inventory + rate limits)"
+      - name: "\U0001F50C Session Access Probe (token inventory + rate limits)"
       id: access_probe
       continue-on-error: true
       env:
@@ -161,7 +161,7 @@ jobs:
         \n  echo \"ACCESS_GH_CLI=unknown\"        >> \"$GITHUB_ENV\"\n  echo \"ACCESS_CODEQL_CLI=unknown\"\
         \    >> \"$GITHUB_ENV\"\n  echo \"ACCESS_RECOMMENDED_METHOD=local_fs\" >>\
         \ \"$GITHUB_ENV\"\nfi\necho \"::endgroup::\"\n"
-    - name: "\U0001F9E0 Autonomous RAG Context Build (PR context + RAG query + incremental\
+      - name: "\U0001F9E0 Autonomous RAG Context Build (PR context + RAG query + incremental\
         \ index)"
       id: rag_context
       continue-on-error: true
@@ -178,7 +178,7 @@ jobs:
         \ agent will use cached context\"\nfi\nif [ -f .codex/session_access_strategy.json\
         \ ]; then\n  echo \"--- Access Strategy ---\"\n  cat .codex/session_access_strategy.json\n\
         fi\necho \"::endgroup::\"\n"
-    - name: "🧠 Phase 10.3: Context Scorer Invocation (pattern relevance scoring)"
+      - name: "🧠 Phase 10.3: Context Scorer Invocation (pattern relevance scoring)"
       id: context_scorer
       continue-on-error: true
       env:
@@ -240,7 +240,7 @@ jobs:
 
         echo "::endgroup::"
 
-    - name: "💉 Phase 10.3: Pattern Injection (inject context into system prompt)"
+      - name: "💉 Phase 10.3: Pattern Injection (inject context into system prompt)"
       id: pattern_injection
       continue-on-error: true
       env:
@@ -325,7 +325,7 @@ jobs:
 
         echo "::endgroup::"
 
-    - name: "📈 Phase 10.3: Performance Instrumentation (measure OODA improvement)"
+      - name: "📈 Phase 10.3: Performance Instrumentation (measure OODA improvement)"
       id: performance_instrumentation
       continue-on-error: true
       env:
@@ -413,7 +413,7 @@ jobs:
         echo "📈 Metrics written to $PERF_REPORT"
         echo "::endgroup::"
 
-    - name: "🔀 Phase 10.3: A/B Test Tracking (record injection impact)"
+      - name: "🔀 Phase 10.3: A/B Test Tracking (record injection impact)"
       id: ab_test_tracking
       continue-on-error: true
       env:
@@ -475,11 +475,11 @@ jobs:
         echo "✅ A/B test record appended to $AB_TEST_LOG"
         echo "::endgroup::"
 
-    - name: "\u2699\uFE0F Configure git for non-interactive CI operation"
+      - name: "\u2699\uFE0F Configure git for non-interactive CI operation"
       run: "git config --global core.editor \"true\"\ngit config --global advice.mergeConflict\
         \ false\necho \"\u2705 git configured: core.editor=true, advice.mergeConflict=false\"\
         \n"
-    - name: "\U0001F500 Fetch remote branch refs for PR diff support"
+      - name: "\U0001F500 Fetch remote branch refs for PR diff support"
       run: "git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null\
         \ \\\n  && echo \"\u2705 Remote branch refs fetched (as origin/*)\" \\\n \
         \ || echo \"\u26A0\uFE0F Remote ref fetch failed (non-blocking)\"\ngit branch\
@@ -490,7 +490,7 @@ jobs:
         \ 2>/dev/null \\\n    && echo \"\u2705 $BASE available as local branch ref\"\
         \ \\\n    || echo \"\u26A0\uFE0F Could not create local $BASE ref (non-blocking)\"\
         \nfi\n"
-    - name: "\U0001F500 Merge Conflict Pre-Check (session start)"
+      - name: "\U0001F500 Merge Conflict Pre-Check (session start)"
       continue-on-error: true
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -529,7 +529,7 @@ jobs:
         \n    else\n      echo \"\u2705 merge-tree: no file-level conflicts detected\"\
         \n    fi\n  fi\nfi\n\necho \"\u2500\u2500 \xA70.4 merge conflict pre-check\
         \ complete \u2500\u2500\"\n"
-    - name: "\U0001F6A8 CI Failure Issue Check (session start)"
+      - name: "\U0001F6A8 CI Failure Issue Check (session start)"
       continue-on-error: true
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -554,7 +554,7 @@ jobs:
         ' 2>/dev/null || true\nelse\n  echo \"\u2705 No open CI failure report issues\"\
         \nfi\n\necho \"\u2500\u2500 \xA70.2 CI failure issue check complete \u2500\
         \u2500\"\n"
-    - name: "\U0001F50D Validate repo JSON files (non-blocking)"
+      - name: "\U0001F50D Validate repo JSON files (non-blocking)"
       continue-on-error: true
       run: "echo \"\u2500\u2500 Validating JSON files in .codex/ and docs/ \u2500\u2500\
         \"\nFAIL=0\nINVALID_FILES=\"\"\n\nwhile IFS= read -r -d '' f; do\n  if ! python3\
@@ -567,13 +567,13 @@ jobs:
         \ JSON Files ---\"\n  printf '%s' \"$INVALID_FILES\"\n  echo \"--- Agent will\
         \ remediate these errors ---\"\nelse\n  echo \"\u2705 All JSON files valid\"\
         \nfi\n"
-    - name: "\U0001F511 Inject repo variable context for agent"
+      - name: "\U0001F511 Inject repo variable context for agent"
       continue-on-error: true
       run: "if [ ! -f .github/scripts/inject_context_vars.py ]; then\n  echo \"::warning::inject_context_vars.py\
         \ not found (non-blocking)\"\nelse\n  python3 .github/scripts/inject_context_vars.py\
         \ || {\n    echo \"::warning::Failed to inject context vars (non-blocking)\
         \ \u2014 agent will proceed with defaults\"\n  }\nfi\n"
-    - name: "\u2699\uFE0F Inject cascade-control & tuning variables (live vars fallback)"
+      - name: "\u2699\uFE0F Inject cascade-control & tuning variables (live vars fallback)"
       continue-on-error: true
       env:
         CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
@@ -589,7 +589,7 @@ jobs:
         \n  if [ -n \"$val\" ]; then\n    echo \"${var}=${val}\" >> \"$GITHUB_ENV\"\
         \n    echo \"  \u2705 ${var}=${val}\"\n  fi\ndone\necho \"\u2500\u2500 Cascade-control\
         \ var injection complete \u2500\u2500\"\n"
-    - name: "\U0001F6E1\uFE0F Install safe-git-show guard on PATH"
+      - name: "\U0001F6E1\uFE0F Install safe-git-show guard on PATH"
       continue-on-error: true
       run: "if [ ! -f scripts/ci/safe_git_show.sh ]; then\n  echo \"::warning::scripts/ci/safe_git_show.sh\
         \ not found (non-blocking) \u2014 agent will proceed without guard\"\nelse\n\
@@ -599,7 +599,7 @@ jobs:
         \ /usr/local/bin/safe_git_show 2>/dev/null || true\n  echo \"\u2705 safe_git_show\
         \ installed at $(command -v safe_git_show 2>/dev/null || echo 'UNKNOWN')\"\
         \nfi\n"
-    - name: "\U0001F52D LFS diagnostics"
+      - name: "\U0001F52D LFS diagnostics"
       if: ${{ env.LFS_DIAGNOSTICS_ENABLED == 'true' }}
       continue-on-error: true
       run: 'echo "Git version: $(git --version)"
@@ -611,14 +611,14 @@ jobs:
         git lfs ls-files || true
 
         '
-    - name: "\U0001F4E5 Install git-lfs (if needed)"
+      - name: "\U0001F4E5 Install git-lfs (if needed)"
       if: ${{ env.LFS_FETCH_ENABLED == 'true' }}
       continue-on-error: true
       run: "if ! command -v git-lfs >/dev/null 2>&1; then\n  if command -v apt-get\
         \ >/dev/null 2>&1; then\n    sudo apt-get update && sudo apt-get install -y\
         \ git-lfs || {\n      echo \"::warning::Failed to install git-lfs (non-blocking)\"\
         \n    }\n  fi\nfi\ngit lfs install --local || true\n"
-    - name: "\U0001F3AF Targeted LFS fetch & checkout (guarded)"
+      - name: "\U0001F3AF Targeted LFS fetch & checkout (guarded)"
       if: ${{ env.LFS_TARGETED_ENABLED == 'true' }}
       continue-on-error: true
       run: "INCLUDES=\"${{ inputs.lfs_include_paths }}\"\nINCLUDES_CLEAN=$(echo \"\
@@ -629,14 +629,14 @@ jobs:
         \    echo \"git lfs fetch failed on attempt $i (non-blocking)\"\n    sleep\
         \ $((i * 5))\n  fi\ndone\n\ngit lfs checkout --include=\"$INCLUDES_CLEAN\"\
         \ || true\n"
-    - name: "\U0001F310 Full LFS fetch & checkout (guarded)"
+      - name: "\U0001F310 Full LFS fetch & checkout (guarded)"
       if: ${{ env.LFS_FULL_ENABLED == 'true' }}
       continue-on-error: true
       run: "for i in 1 2 3; do\n  echo \"Attempt $i: git lfs fetch --all origin\"\n\
         \  if git lfs fetch --all origin; then\n    echo \"git lfs fetch --all succeeded\"\
         \n    break\n  else\n    echo \"git lfs fetch --all failed on attempt $i (non-blocking)\"\
         \n    sleep $((i * 5))\n  fi\ndone\n\ngit lfs checkout || true\n"
-    - name: "\U0001F50D Detect Environment Type"
+      - name: "\U0001F50D Detect Environment Type"
       id: detect_env
       continue-on-error: true
       env:
@@ -650,7 +650,7 @@ jobs:
         \ == *\"documentation\"* ]]; then\n    ENV_TYPE=\"documentation\"\n  fi\n\
         fi\necho \"environment_type=$ENV_TYPE\" >> \"$GITHUB_OUTPUT\"\necho \"\u2705\
         \ Detected environment type: $ENV_TYPE\"\n"
-    - name: "\u2705 Validate Environment Setup"
+      - name: "\u2705 Validate Environment Setup"
       continue-on-error: true
       run: "trap '' PIPE\nset +o pipefail\n\necho \"==================== Environment\
         \ Validation ====================\"\necho \"Python Version: $(python --version\
@@ -664,7 +664,7 @@ jobs:
         \ndf -h | grep -E \"^/dev\" || true\necho \"\"\necho \"\u2705 Environment\
         \ setup complete for type: ${{ steps.detect_env.outputs.environment_type }}\"\
         \n"
-    - name: "\U0001F3E5 Run Health Check"
+      - name: "\U0001F3E5 Run Health Check"
       continue-on-error: true
       run: "echo \"Checking critical paths...\"\ntest -d src/codex && echo \"\u2705\
         \ src/codex exists\" || echo \"\u26A0\uFE0F src/codex missing (non-blocking)\"\
@@ -679,7 +679,7 @@ jobs:
         \ && echo \"\u2705 black available\" || echo \"\u26A0\uFE0F black not available\
         \ (non-blocking)\"\nwhich pytest && echo \"\u2705 pytest available\" || echo\
         \ \"\u26A0\uFE0F pytest not available (non-blocking)\"\n"
-    - name: "\U0001F4CA Session Lifecycle Metrics"
+      - name: "\U0001F4CA Session Lifecycle Metrics"
       continue-on-error: true
       run: "if [ -f scripts/session_tracker.py ]; then\n  echo \"\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500 Session Lifecycle Metrics \u2500\u2500\u2500\
@@ -691,10 +691,10 @@ jobs:
         \ \"$GITHUB_STEP_SUMMARY\"\n  echo '```' >> \"$GITHUB_STEP_SUMMARY\"\nelse\n\
         \  echo \"\u26A0\uFE0F  session_tracker.py not found \u2014 skipping metrics\"\
         \nfi\n"
-    - name: "\U0001F4BE Prepare Cache Artifacts"
+      - name: "\U0001F4BE Prepare Cache Artifacts"
       run: "mkdir -p .codex/cache\nmkdir -p .codex/sessions\necho \"\u2705 Cache directories\
         \ prepared\"\n"
-    - name: "\U0001F4CA Accountability Auto-Update (session close hook)"
+      - name: "\U0001F4CA Accountability Auto-Update (session close hook)"
       continue-on-error: true
       env:
         CODEX_SESSION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
@@ -707,18 +707,18 @@ jobs:
         \  \u26A0\uFE0F dry-run validation skipped (non-blocking)\"\nelse\n  echo\
         \ \"\u26A0\uFE0F accountability_autoupdate.py not found \u2014 skipping\"\n\
         fi\n"
-    - name: "\U0001F504 Rotate Cognitive Brain Status Files"
+      - name: "\U0001F504 Rotate Cognitive Brain Status Files"
       continue-on-error: true
       run: "if [ -f scripts/ci/rotate_cognitive_brain_status.py ]; then\n  python\
         \ scripts/ci/rotate_cognitive_brain_status.py --keep 50 --threshold 60 ||\
         \ true\nfi\n"
-    - name: "\U0001F916 Initialize Cognitive Brain Context"
+      - name: "\U0001F916 Initialize Cognitive Brain Context"
       continue-on-error: true
       run: "if [ -f .github/agents/AGENT_REGISTRY.yaml ]; then\n  echo \"\u2705 Loading\
         \ specialized agents from registry...\"\n  head -20 .github/agents/AGENT_REGISTRY.yaml\
         \ || true\nfi\nif [ -d cognitive/ ]; then\n  echo \"\u2705 Cognitive brain\
         \ components available\"\n  ls -la cognitive/ | head -10\nfi\n"
-    - name: "\U0001F4BB Start CLI API Server (background)"
+      - name: "\U0001F4BB Start CLI API Server (background)"
       continue-on-error: true
       run: "if [ ! -f cognitive_app/src/server/cli_api_server.py ]; then\n  echo \"\
         \u26A0\uFE0F cli_api_server.py not found \u2014 skipping (non-blocking)\"\n\
@@ -754,7 +754,7 @@ jobs:
         \  fi\nelse\n  echo \"\u26A0\uFE0F CLI API Server did not respond after 5\
         \ s \u2014 see RUNNER_TEMP/cli_api_server.log\"\n  cat \"${RUNNER_TEMP}/cli_api_server.log\"\
         \ 2>/dev/null | tail -20 || true\nfi\n"
-    - name: "\U0001F4CA Generate Environment Report (temp path)"
+      - name: "\U0001F4CA Generate Environment Report (temp path)"
       id: gen_report
       if: always()
       shell: bash
@@ -770,7 +770,7 @@ jobs:
         \"\n  echo \"Status: \u2705 Environment ready for Copilot agent operations\"\
         \n} > \"$REPORT\"\necho \"Report written to $REPORT\"\nhead -20 \"$REPORT\"\
         \ || true\necho \"REPORT_PATH=$REPORT\" >> \"$GITHUB_OUTPUT\"\n"
-    - name: "\U0001F4E4 Upload Environment Report"
+      - name: "\U0001F4E4 Upload Environment Report"
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -814,5 +814,5 @@ jobs:
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
       env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 

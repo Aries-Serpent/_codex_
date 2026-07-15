@@ -88,8 +88,8 @@ jobs:
         '
       - name: Run Autonomous Agent
         env:
-        MODE: ${{ github.event.inputs.mode || 'monitor' }}
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          MODE: ${{ github.event.inputs.mode || 'monitor' }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "echo \"Running in mode: $MODE\"\ncase \"$MODE\" in\n  monitor)\n    echo\
         \ \"\U0001F4CA Monitoring mode - collecting metrics only\"\n    python -c\
         \ \"print('Monitoring complete')\"\n    ;;\n  execute)\n    echo \"⚡ Execute\

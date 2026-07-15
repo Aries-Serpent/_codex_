@@ -61,19 +61,19 @@ jobs:
       REPO: ${{ github.repository }}
       ORG: ${{ github.repository_owner }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    steps:
-    - name: Checkout scripts
+      steps:
+      - name: Checkout scripts
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
-    - name: Set up Python 3.12
+      - name: Set up Python 3.12
       uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
-    - name: Run repo variable tests
+      - name: Run repo variable tests
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
@@ -85,7 +85,7 @@ jobs:
         \necho \"\"\n\nif [ \"$DRY_RUN\" = \"true\" ]; then\n  echo \"DRY RUN \u2014\
         \ skipping variable CRUD tests\"\n  python scripts/ci/test_variables_api.py\
         \ 2>&1 | head -30\n  exit 0\nfi\n\npython scripts/ci/test_variables_api.py\n"
-    - name: Post result to PR Status Dashboard
+      - name: Post result to PR Status Dashboard
       if: always() && github.event.pull_request.number != ''
       uses: ./.github/actions/post-pr-summary
       with:

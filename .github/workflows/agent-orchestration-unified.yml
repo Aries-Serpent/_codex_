@@ -164,8 +164,8 @@ jobs:
         '
       - name: Execute handoff sequence
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        TARGET_AGENT: ${{ inputs.handoff_target }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          TARGET_AGENT: ${{ inputs.handoff_target }}
         run: "if [ -f \"scripts/agents/agent_handoff.py\" ]; then\n  if [ -f \".codex/agents/chain_plan.json\"\
         \ ]; then\n  # Execute based on chain plan\n    python scripts/agents/agent_handoff.py\
         \ \\\n      --chain-plan \".codex/agents/chain_plan.json\"\n  elif [ -n \"\
@@ -183,8 +183,8 @@ jobs:
           .codex/agents/execution_*.log
 
           '
-        if-no-files-found: ignore
-        retention-days: 30
+          if-no-files-found: ignore
+          retention-days: 30
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
