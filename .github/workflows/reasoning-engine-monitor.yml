@@ -17,167 +17,160 @@ jobs:
       actions: read
       checks: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: "python -m pip install --upgrade pip
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip\npip install numpy pytest pytest-asyncio\n"
+    - name: Run reasoning engine tests
+      id: tests
+      run: |-
+        python -m pytest tests/cognitive_brain/test_reasoning_engine.py \\
+         \ -v --tb=short --json-report --json-report-file=test_report.json
 
-        pip install numpy pytest pytest-asyncio
+      continue-on-error: true
+    - name: Generate synthetic workload
+      id: workload
+      run: |-
+        python3 << "EOF"
+        import asyncio
+        import json
+        import time
+        from pathlib\ import Path
+        from src.codex.cognitive_brain.reasoning_engine import ReasoningEngine
+        from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
 
-        "
-      - name: Run reasoning engine tests
-        id: tests
-        run: |-
-          python -m pytest tests/cognitive_brain/test_reasoning_engine.py \\
-           \ -v --tb=short --json-report --json-report-file=test_report.json
-          
-        continue-on-error: true
-      - name: Generate synthetic workload
-        id: workload
-        run: |-
-          python3 << "EOF"
-          import asyncio
-          import json
-          import time
-          from pathlib\ import Path
-          from src.codex.cognitive_brain.reasoning_engine import ReasoningEngine
-          from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
-          
-          async\ def run_workload():
-              # Initialize
-              kb = KnowledgeBase()
-              engine\ = ReasoningEngine(knowledge_base=kb)
-          
-              # Run 1000+ decisions
-              print(\"Running 1000+ decisions...\")
-              latencies = []
-              accuracies = []
-          
-          \    for i in range(1000):
-                  decision = engine.make_decision(
-             \         goal=f\"Decision {i}\",
-                      constraints=[\"safety\", \"performance\"],
-                      decision_history=[
-                          {\"option\": \"choice_a\", \"success\": True},
-                          {\"option\": \"choice_b\", \"success\": False},
-                      ],
-                      current_state={\"metric\": i % 100},
-                      category=[\"coverage\", \"performance\", \"security\"][i % 3],
-                  )
-                  latencies.append(decision.latency_ms)
-          
-            \      # Simulate outcomes
-                  if i % 2 == 0:
-                      await engine.record_outcome(
-          \                decision.id,
-                          success=decision.confidence\ > 0.75,
-                          actual_result=f\"result_{i}\",
-                      )
-          
-              # Run improvement cycle
-              print(\"Running improvement cycle...\")
-              improvement = engine.improve()
-          
-              # Get metrics
-              metrics =\ engine.get_metrics()
-          
-              # Generate report
-              report = {
-                  \"timestamp\": time.strftime(\"%Y-%m-%dT%H:%M:%SZ\"),
-                  \"decisions_run\": 1000,
-                  \"latency_ms\": {
-                      \"mean\": float(sum(latencies)\ / len(latencies)),
-                      \"p99\": float(sorted(latencies)[990]),
-          \            \"max\": float(max(latencies)),
-                  },
-                  \"brier_score\": metrics[\"calibration\"][\"overall_brier_score\"],
-                  \"strategy_weights\": metrics[\"strategy_weights\"],
-                  \"total_decisions\": metrics[\"total_decisions\"],
-              }
-          
-              # Save report
-              Path(\".codex/reasoning\").mkdir(parents=True, exist_ok=True)
-              with open(\".codex/reasoning/daily_monitor_report.json\", \"w\") as f:
-                  json.dump(report, f, indent=2)
-          
-              print(json.dumps(report,\ indent=2))
-              return report
-          
-          report = asyncio.run(run_workload())
-          
-          # Output for next step
-          print(f\"::set-output name=brier_score::{report["brier_score"]}\")
-          print(f\"::set-output name=p99_latency::{report["latency_ms"]["p99"]}\")
-          
-          EOF
-          
-      - name: Check calibration drift
-        id: calibration
-        if: always()
-        run: |-
-          python3 << "EOF"
-          import json
-          from pathlib import Path
-          
-          report_file\ = Path(\".codex/reasoning/daily_monitor_report.json\")
-          if not report_file.exists():
-          \    print(\"No report generated\")
-              exit(0)
-          
-          with open(report_file)\ as f:
-              report = json.load(f)
-          
-          brier = report.get(\"brier_score\",\ 0.0)
-          p99 = report.get(\"latency_ms\", {}).get(\"p99\", 0.0)
-          
-          print(f\"Brier Score: {brier:.4f}\")
-          print(f\"p99 Latency: {p99:.1f}ms\")
-          
-          # Check\ thresholds
-          if brier > 0.20:
-              print(\"::warning::Brier score exceeded\ threshold (0.20)\")
-          if p99 > 500:
-              print(\"::warning::p99 latency exceeded\ threshold (500ms)\")
-          
-          if brier < 0.15 and p99 < 500:
-              print(\"✅ All\ metrics within target\")
-          
-          EOF
-          
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: reasoning-engine-reports
-          path: ".codex/reasoning/daily_monitor_report.json
+        async\ def run_workload():
+            # Initialize
+            kb = KnowledgeBase()
+            engine\ = ReasoningEngine(knowledge_base=kb)
 
-          test_report.json
+            # Run 1000+ decisions
+            print(\"Running 1000+ decisions...\")
+            latencies = []
+            accuracies = []
 
-          "
-      - name: Publish test results
-        if: always()
-        uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
-        with:
-          name: Reasoning Engine Tests
-          path: test_report.json
-          reporter: java-junit
-          fail-on-error: false
-      - name: Slack notification (on failure)
-        if: failure()
-        uses: slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
-          payload: "{\n  \"text\": \"❌ Reasoning Engine Monitor Failed\",\n  \"blocks\"\
+        \    for i in range(1000):
+                decision = engine.make_decision(
+           \         goal=f\"Decision {i}\",
+                    constraints=[\"safety\", \"performance\"],
+                    decision_history=[
+                        {\"option\": \"choice_a\", \"success\": True},
+                        {\"option\": \"choice_b\", \"success\": False},
+                    ],
+                    current_state={\"metric\": i % 100},
+                    category=[\"coverage\", \"performance\", \"security\"][i % 3],
+                )
+                latencies.append(decision.latency_ms)
+
+          \      # Simulate outcomes
+                if i % 2 == 0:
+                    await engine.record_outcome(
+        \                decision.id,
+                        success=decision.confidence\ > 0.75,
+                        actual_result=f\"result_{i}\",
+                    )
+
+            # Run improvement cycle
+            print(\"Running improvement cycle...\")
+            improvement = engine.improve()
+
+            # Get metrics
+            metrics =\ engine.get_metrics()
+
+            # Generate report
+            report = {
+                \"timestamp\": time.strftime(\"%Y-%m-%dT%H:%M:%SZ\"),
+                \"decisions_run\": 1000,
+                \"latency_ms\": {
+                    \"mean\": float(sum(latencies)\ / len(latencies)),
+                    \"p99\": float(sorted(latencies)[990]),
+        \            \"max\": float(max(latencies)),
+                },
+                \"brier_score\": metrics[\"calibration\"][\"overall_brier_score\"],
+                \"strategy_weights\": metrics[\"strategy_weights\"],
+                \"total_decisions\": metrics[\"total_decisions\"],
+            }
+
+            # Save report
+            Path(\".codex/reasoning\").mkdir(parents=True, exist_ok=True)
+            with open(\".codex/reasoning/daily_monitor_report.json\", \"w\") as f:
+                json.dump(report, f, indent=2)
+
+            print(json.dumps(report,\ indent=2))
+            return report
+
+        report = asyncio.run(run_workload())
+
+        # Output for next step
+        print(f\"::set-output name=brier_score::{report["brier_score"]}\")
+        print(f\"::set-output name=p99_latency::{report["latency_ms"]["p99"]}\")
+
+        EOF
+
+    - name: Check calibration drift
+      id: calibration
+      if: always()
+      run: |-
+        python3 << "EOF"
+        import json
+        from pathlib import Path
+
+        report_file\ = Path(\".codex/reasoning/daily_monitor_report.json\")
+        if not report_file.exists():
+        \    print(\"No report generated\")
+            exit(0)
+
+        with open(report_file)\ as f:
+            report = json.load(f)
+
+        brier = report.get(\"brier_score\",\ 0.0)
+        p99 = report.get(\"latency_ms\", {}).get(\"p99\", 0.0)
+
+        print(f\"Brier Score: {brier:.4f}\")
+        print(f\"p99 Latency: {p99:.1f}ms\")
+
+        # Check\ thresholds
+        if brier > 0.20:
+            print(\"::warning::Brier score exceeded\ threshold (0.20)\")
+        if p99 > 500:
+            print(\"::warning::p99 latency exceeded\ threshold (500ms)\")
+
+        if brier < 0.15 and p99 < 500:
+            print(\"✅ All\ metrics within target\")
+
+        EOF
+
+    - name: Upload artifacts
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: reasoning-engine-reports
+        path: ".codex/reasoning/daily_monitor_report.json\ntest_report.json\n"
+    - name: Publish test results
+      if: always()
+      uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
+      with:
+        name: Reasoning Engine Tests
+        path: test_report.json
+        reporter: java-junit
+        fail-on-error: false
+    - name: Slack notification (on failure)
+      if: failure()
+      uses: 
+        slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
+      with:
+        webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+        payload: "{\n  \"text\": \"❌ Reasoning Engine Monitor Failed\",\n  \"blocks\"\
           : [\n    {\n      \"type\": \"section\",\n      \"text\": {\n        \"\
-          type\": \"mrkdwn\",\n        \"text\": \"**Reasoning Engine Monitor** failed\\\
-          n*Repository*: ${{ github.repository }}\\n*Run*: <${{ github.server_url\
-          \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"\
+          type\": \"mrkdwn\",\n        \"text\": \"**Reasoning Engine Monitor** failed\\
+          n*Repository*: ${{ github.repository }}\\n*Run*: <${{ github.server_url
+          }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"\
           \n      }\n    }\n  ]\n}\n"
-          continue-on-error: true
+        continue-on-error: true
     timeout-minutes: 30
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
