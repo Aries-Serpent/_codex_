@@ -96,10 +96,10 @@ DUPLICATE_DIGEST_LENGTH = 16
 # Note: UTC_TIMESTAMP_FORMAT is also defined in rescue_comment_batch_queue.py.
 # We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-# Cascade error marker constants (must match consolidate_cascade_errors.py)
-CONSOLIDATION_MARKER_PREFIX = "<!-- cascade-consolidated-error:"
-CASCADE_ERROR_ID_MARKER_PREFIX = "<!-- cascade-error-id:"
-# Helper for substring checks
+# Cascade error marker constant for detecting already-consolidated cascades
+# Note: CONSOLIDATION_MARKER_PREFIX and CASCADE_ERROR_ID_MARKER_PREFIX are defined 
+# and used in consolidate_cascade_errors.py to create markers. CASCADE_CONSOLIDATED_CHECK
+# is a substring that appears in those markers and is used here for detection.
 CASCADE_CONSOLIDATED_CHECK = "cascade-consolidated-error"
 
 

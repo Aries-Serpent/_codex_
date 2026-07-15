@@ -44,21 +44,26 @@ CASCADE_ERROR_ID_MARKER_PREFIX = "<!-- cascade-error-id:"
 
 def _extract_uuid_from_error(comment_body: str) -> str:
     """Extract UUID from Copilot error comment.
-    
+
     Copilot error comments contain a UUID after "identifier so they can better serve you:"
     This function uses regex to extract UUID-like patterns (hex strings or standard UUID format).
     Falls back to "unknown" if no UUID found.
     """
     # Try standard format first: "identifier so they can better serve you: `UUID`"
-    match = re.search(r"identifier so they can better serve you:\s*[`'\"]?([a-f0-9\-]+)[`'\"]?", comment_body)
+    # Matches hex digits (both cases) and hyphens in UUID format
+    match = re.search(r"identifier so they can better serve you:\s*[`'\"]?([a-fA-F0-9-]+)[`'\"]?", comment_body)
     if match:
         uuid = match.group(1).strip()
-        if uuid:
+        if uuid and any(c in uuid for c in "0123456789abcdefABCDEF"):
             return uuid
     
     # Fall back to looking for any hex string that might be a UUID
-    # UUID format: 8-4-4-4-12 hex digits or continuous hex string
-    hex_match = re.search(r"([a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}|[a-f0-9]{32})", comment_body)
+    # UUID format: 8-4-4-4-12 hex digits (standard format) or 32 continuous hex digits
+    hex_match = re.search(
+        r"([a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[a-fA-F0-9]{32})",
+        comment_body,
+        re.IGNORECASE
+    )
     if hex_match:
         return hex_match.group(1)
     
