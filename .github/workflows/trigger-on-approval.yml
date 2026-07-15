@@ -42,7 +42,7 @@ jobs:
         \n"
       - name: Checkout
         uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -50,12 +50,12 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
       - name: Set up Python (for approve_pending_runs.py)
         uses: actions/setup-python@v6
-      with:
+        with:
         cache: pip
         python-version: 3.12.13
       - name: Dispatch unified approval hub
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
@@ -73,7 +73,7 @@ jobs:
         continue-on-error: true
       - name: Dispatch Validation Pipeline (validate.yml)
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
@@ -86,7 +86,7 @@ jobs:
         continue-on-error: true
       - name: Dispatch Pre-Merge Validation (pre-merge-validation.yml)
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
@@ -99,7 +99,7 @@ jobs:
         continue-on-error: true
       - name: Dispatch CodeQL Alert Fetcher (codeql-alert-fetcher.yml)
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const owner = context.repo.owner;\nconst repo  = context.repo.repo;\n\
           const ref   = '${{ steps.ctx.outputs.pr_sha }}';\ncore.info(`Dispatching\
@@ -114,7 +114,7 @@ jobs:
         continue-on-error: true
       - name: Post @copilot continue (resume agent session)
         uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const owner    = context.repo.owner;\nconst repo     = context.repo.repo;\n\
