@@ -19,6 +19,7 @@ from typing import Optional
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
 BATCH_WAIT_DEFAULT = 3  # seconds
+UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 @dataclass
@@ -75,7 +76,7 @@ def queue_item(
     section_content: Optional[str] = None,
 ) -> None:
     """Queue a rescue comment section for batch posting."""
-    now = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
     
     item = BatchQueueItem(
         pr_number=pr_number,

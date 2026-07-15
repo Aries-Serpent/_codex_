@@ -308,7 +308,7 @@ def _detect_cascading_copilot_errors(
             "is_cascading": bool,
             "error_count": int,
             "last_error_id": int or None,
-            "action": "APPEND_TO_EXISTING" | "QUEUE_FOR_BATCH" | "SKIP_CONSOLIDATION" | "PROCEED",
+            "action": "APPEND_TO_EXISTING" | "SKIP_CONSOLIDATION" | "PROCEED",
         }
     """
     page = 1
@@ -627,13 +627,9 @@ def main() -> None:
                 f"Skipping consolidation to prevent growth.",
                 file=sys.stderr,
             )
-            # Skip consolidation but continue with normal append/create
-            if existing_id:
-                # Still append to existing comment even though consolidation is skipped
-                pass  # Fall through to normal append logic below
+            # Skip consolidation but continue with normal append to existing comment if found
 
     if existing_id:
-
         # Append this workflow's section to the existing comment (collapsed).
         if section_title and section_content:
             append_section = (
