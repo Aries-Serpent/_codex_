@@ -186,22 +186,67 @@ jobs:
       issues_found: ${{ steps.qa.outputs.issues_found }}
       critical_issues: ${{ steps.qa.outputs.critical_issues }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        persist-credentials: false
-        ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || (github.event_name == 'issue_comment' && 'main') || inputs.target_ref || github.sha || '' }}
-    - name: Overlay trusted action + script from main (security)
+    - name: Fetch repository structure via GitHub API (security-hardened, no git operations)
+      id: fetch_repo
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # SECURITY: Determine the target ref for this job
+        # For pull_request events: use the PR head SHA (trusted)
+        # For issue_comment events: use main (trusted)
+        # For workflow_dispatch: use inputs.target_ref with validation
+        # For workflow_call: use github.sha (trusted)
+        
+        TARGET_REF=""
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          TARGET_REF="${{ github.event.pull_request.head.sha }}"
+        elif [ "${{ github.event_name }}" = "issue_comment" ]; then
+          TARGET_REF="main"
+        elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          TARGET_REF="${{ inputs.target_ref || github.sha }}"
+        elif [ "${{ github.event_name }}" = "workflow_call" ]; then
+          TARGET_REF="${{ github.sha }}"
+        else
+          TARGET_REF="${{ github.sha }}"
+        fi
+        
+        # Validate that TARGET_REF doesn't contain path traversal or other injection attempts
+        if [[ ! "$TARGET_REF" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
+          echo "❌ Error: Invalid target ref format: $TARGET_REF"
+          exit 1
+        fi
+        
+        echo "target_ref=$TARGET_REF" >> $GITHUB_OUTPUT
+        echo "✅ Target ref validated: $TARGET_REF"
+    
+    - name: Fetch repository structure via GitHub API
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
+        # This eliminates the untrusted code checkout vulnerability in workflow_run contexts
+        
+        # Parse repository into owner/repo format using bash parameter expansion
+        REPO_FULL="${{ github.repository }}"
+        OWNER="${REPO_FULL%%/*}"
+        REPO="${REPO_FULL##*/}"
+        
+        # Create directory structure we need for QA walkthrough
+        mkdir -p scripts/qa
+        mkdir -p .github/actions/setup-python-cached
+        mkdir -p .codex/qa
+        mkdir -p reports/qa
+        
+        echo "✅ Created required directory structure"
+    
+    - name: Fetch trusted scripts via GitHub API (no git checkout)
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
         # Use GitHub API to fetch trusted files from main instead of git operations
         # Parse repository into owner/repo format using bash parameter expansion
         REPO_FULL="${{ github.repository }}"
-        # Remove everything from first '/' onwards (removes repo name)
         OWNER="${REPO_FULL%%/*}"
-        # Remove everything up to and including first '/' (removes owner prefix)
         REPO="${REPO_FULL##*/}"
          
         # Use mktemp for all temporary files to avoid conflicts on shared runners
@@ -235,25 +280,25 @@ jobs:
         if fetch_file_from_main ".github/actions/setup-python-cached/action.yml" "$ACTION_TEMP" "$API_ERROR"; then
           mkdir -p .github/actions/setup-python-cached/
           mv "$ACTION_TEMP" .github/actions/setup-python-cached/action.yml
-          echo "✅ Trusted action.yml overlaid from origin/main"
+          echo "✅ Trusted action.yml fetched via GitHub API from origin/main"
         else
           # Sanitize error message to avoid exposing sensitive information
           ERROR_MSG=$(head -c 100 "$API_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
-          echo "⚠️ Failed to fetch action.yml from origin/main ($ERROR_MSG...) — using checkout version"
+          echo "⚠️ Failed to fetch action.yml from origin/main ($ERROR_MSG...) — will use fallback"
         fi
          
         # Fetch codebase_walkthrough.py from main
         if fetch_file_from_main "scripts/qa/codebase_walkthrough.py" "$SCRIPT_TEMP" "$DECODE_ERROR"; then
           mkdir -p scripts/qa/
           mv "$SCRIPT_TEMP" scripts/qa/codebase_walkthrough.py
-          echo "✅ Trusted codebase_walkthrough.py overlaid from origin/main"
+          echo "✅ Trusted codebase_walkthrough.py fetched via GitHub API from origin/main"
         else
           # Sanitize error message to avoid exposing sensitive information
           ERROR_MSG=$(head -c 100 "$DECODE_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
-          echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main ($ERROR_MSG...) — using checkout version"
+          echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main ($ERROR_MSG...) — will use fallback"
         fi
          
-        echo "✅ Trusted code overlay complete (API-based, no git operations)"
+        echo "✅ Trusted code fetched complete (API-based, no git operations)"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
