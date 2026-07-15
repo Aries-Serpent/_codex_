@@ -40,12 +40,12 @@ jobs:
           echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout Repository
         uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         fetch-depth: 1
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
-      with:
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -56,7 +56,7 @@ jobs:
       - name: Fetch recent failed workflow runs
         id: fetch-failures
         uses: actions/github-script@v8
-      with:
+        with:
         script: "const maxRuns = Number('${{ inputs.max_runs || 5 }}') || 5;\nconst\
           \ lookbackHours = 25;  // slightly more than 1h schedule to avoid gaps\n\
           const cutoff = new Date(Date.now() - lookbackHours * 60 * 60 * 1000);\n\
@@ -284,7 +284,7 @@ jobs:
       env:
         REPORT_BODY: ${{ steps.build-report.outputs.report_body }}
       uses: actions/github-script@v8
-      with:
+        with:
         script: 'require(''fs'').writeFileSync(''ci-triage-report.md'', process.env.REPORT_BODY
           || ''*(no report)*'');
 
@@ -292,7 +292,7 @@ jobs:
     - name: Upload triage report artifact
       if: always()
       uses: actions/upload-artifact@v5
-      with:
+        with:
       name: ci-triage-report-${{ github.run_id }}
         path: 'ci-triage-report.md
 
