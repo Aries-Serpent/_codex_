@@ -364,3 +364,4 @@
 {"timestamp": "2026-07-15T15:32:32.009881", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
 {"timestamp": "2026-07-15T15:47:37.675401", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
 {"timestamp": "2026-07-15T16:05:36.058436", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
+{"timestamp": "2026-07-15T16:27:21.489413", "github_ref": "refs/heads/0D_base_", "pr_number": "", "test_group": "A", "context_scorer_status": "failed", "patterns_injected": 0, "avg_relevance_score": 0.0, "injection_overhead_ms": 0}
