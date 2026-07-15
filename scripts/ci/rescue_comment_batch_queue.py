@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import datetime
 import json
-import logging
 import os
+import sys
 import pathlib
 import time
 from dataclasses import dataclass, asdict
@@ -20,14 +20,12 @@ from typing import Optional
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
 """Directory where batched rescue comment items are stored as JSON files."""
-BATCH_WAIT_DEFAULT = 3  # seconds
-"""Default time in seconds to wait before flushing batched items.
+BATCH_WAIT_DEFAULT = int(os.environ.get("BATCH_WAIT_SECONDS", "3"))
+"""Batch wait time in seconds, configurable via BATCH_WAIT_SECONDS env var (default: 3).
 Can be tuned based on workflow patterns; higher values reduce API calls but delay posting."""
 # Note: UTC_TIMESTAMP_FORMAT is also defined in post_rescue_comment.py.
 # We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -107,7 +105,7 @@ def queue_item(
                 data = json.load(f)
                 items = [BatchQueueItem(**item) for item in data]
         except (json.JSONDecodeError, ValueError) as e:
-            logger.warning(f"Queue file corrupted ({queue_file}): {e}. Starting fresh.")
+            print(f"⚠️  Queue file corrupted ({queue_file}): {e}. Starting fresh.", file=sys.stderr)
     
     # Add new item
     items.append(item)

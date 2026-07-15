@@ -86,7 +86,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
-import pathlib as _pathlib
+import pathlib
 from typing import Any
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
@@ -131,15 +131,44 @@ def _gh(
 def _get_batch_queue_module() -> Any:
     """Lazily import batch queue module, gracefully degrading if unavailable."""
     try:
-        script_dir = str(_pathlib.Path(__file__).parent)
+        script_dir = str(pathlib.Path(__file__).parent)
         if script_dir not in sys.path:
             sys.path.insert(0, script_dir)
         import rescue_comment_batch_queue as batch_queue
         return batch_queue
     except ImportError:
         return None
-
-
+ 
+ 
+def _build_append_section(
+    workflow_name: str,
+    run_id: str,
+    run_url: str,
+    section_title: str | None,
+    section_content: str | None,
+    timestamp: str,
+    commit_sha: str,
+ ) -> str:
+    """Build markdown section for appending to rescue comment."""
+    if section_title and section_content:
+        return (
+            f"\n\n---\n\n"
+            f"<details><summary>📋 <code>{section_title}</code> — {timestamp} · "
+            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+            f"{section_content}\n\n"
+            f"</details>"
+        )
+    else:
+        return (
+            f"\n\n---\n\n"
+            f"<details><summary>🔴 <code>{workflow_name}</code> — {timestamp} · "
+            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+            f"@copilot **{workflow_name}** failed on commit `{commit_sha[:12]}`. "
+            f"Check [run #{run_id}]({run_url}) for details.\n\n"
+            f"</details>"
+        )
+ 
+ 
 def _handle_cascade_append(
     token: str,
     repo: str,
@@ -162,23 +191,15 @@ def _handle_cascade_append(
     if existing_id:
         # Cascade detected but existing comment found — append to it
         now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
-        if section_title and section_content:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>📋 <code>{section_title}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"{section_content}\n\n"
-                f"</details>"
-            )
-        else:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>🔴 <code>{workflow_name}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"@copilot **{workflow_name}** failed on commit `{commit_sha[:12]}`. "
-                f"Check [run #{run_id}]({run_url}) for details.\n\n"
-                f"</details>"
-            )
+        append_section = _build_append_section(
+            workflow_name=workflow_name,
+            run_id=run_id,
+            run_url=run_url,
+            section_title=section_title,
+            section_content=section_content,
+            timestamp=now,
+            commit_sha=commit_sha,
+        )
 
         # Fetch existing comment
         status, comments = _gh(
@@ -220,7 +241,7 @@ def _handle_cascade_append(
                     section_content=section_content,
                 )
                 return True
-            except (ImportError, AttributeError, IOError, OSError) as exc:
+            except (ImportError, AttributeError, OSError) as exc:
                 print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
         return False
 
@@ -633,23 +654,15 @@ def main() -> None:
 
     if existing_id:
         # Append this workflow's section to the existing comment (collapsed).
-        if section_title and section_content:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>📋 <code>{section_title}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"{section_content}\n\n"
-                f"</details>"
-            )
-        else:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"@copilot **{workflow}** failed on commit `{sha_short}`. "
-                f"Check [run #{run_id}]({run_url}) for details.\n\n"
-                f"</details>"
-            )
+        append_section = _build_append_section(
+            workflow_name=workflow,
+            run_id=run_id,
+            run_url=run_url,
+            section_title=section_title,
+            section_content=section_content,
+            timestamp=now,
+            commit_sha=commit_sha,
+        )
         updated_body = (existing_body.rstrip() + append_section)[:MAX_COMMENT_LEN]
         status, _ = _gh(
             "PATCH",
@@ -672,9 +685,9 @@ def main() -> None:
     # immediately sees the action queue without needing a separate API call.
     inline_ctx = ""
     try:
-        import pathlib as _pathlib
+        # pathlib already imported
         import sys as _sys
-        _scripts_ci = str(_pathlib.Path(__file__).parent)
+        _scripts_ci = str(pathlib.Path(__file__).parent)
         if _scripts_ci not in _sys.path:
             _sys.path.insert(0, _scripts_ci)
         from discussion_context_store import build_comment_context  # noqa: PLC0415
