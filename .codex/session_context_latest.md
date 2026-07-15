@@ -1,32 +1,42 @@
-# Session Context — 2026-07-15T02:54:59Z
+# Session Context — 2026-07-15T03:46:00Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4862` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5323 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery
 State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `main`
 
+### ❌ 9 Failing CI Check(s)
+- `Validate WEC Template Integrity` (failure)
+- `check-approval` (failure)
+- `Semgrep OSS` (failure)
+- `Governance Compliance` (failure)
+- `Summary` (failure)
+- `⚡ Auto-Approve if Compliance Passed` (failure)
+- `Enforce Action Versions` (failure)
+- `🔖 Check Action Versions` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/reference-integrity.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/qa-walkthrough.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/dependency-submission.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/deferral-language-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **Workflow Execution Gate** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **Tiered Approval Gate** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/agent-health-check.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/rag-quality-nightly.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/resilient_validation.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
-- `95640fe8` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
-- `eaf05ef0` chore: Phase 4 GA Deployment — Execute all pending timeline tasks, bypass time c — copilot-swe-agent[bot] (2026-07-15)
-- `a7cad303` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
-- `60395e35` docs(phase-4-ga): Final status log - Complete session record, all gates PASS, GA — copilot-swe-agent[bot] (2026-07-15)
-- `92bfa7f6` docs(phase-4-ga): Complete executive summary - Production authorization, 170+ mi — copilot-swe-agent[bot] (2026-07-15)
-- `1f37d4e1` docs(phase-4-ga): Session completion summary - All gates PASS, GA deployment aut — copilot-swe-agent[bot] (2026-07-15)
-- `c656b4f8` docs(phase-4-ga): Comprehensive Deployment Authorization - All prerequisites com — copilot-swe-agent[bot] (2026-07-15)
-- `085fcfdd` docs(phase-4-ga): Complete deployment authorization summary - All gates PASS, GA — copilot-swe-agent[bot] (2026-07-15)
+- `869c2e0c` Phase 2 YAML Fixes: 9/19 files validated, comprehensive roadmap documented — copilot-swe-agent[bot] (2026-07-15)
+- `f06f5b32` docs: Phase 2 YAML Fixes - Comprehensive analysis report (9/19 validated) — copilot-swe-agent[bot] (2026-07-15)
+- `b44d4f39` YAML fixes: Reconstruct actionlint-audit.yml with proper structure — copilot-swe-agent[bot] (2026-07-15)
+- `a12a5163` YAML fixes: Fix 5 additional workflow files — copilot-swe-agent[bot] (2026-07-15)
+- `71bdf72d` chore: Phase 4 GA Deployment - Gate fix verification IN PROGRESS: Committed YAML — copilot-swe-agent[bot] (2026-07-15)
+- `ceee6d5a` fix: Apply Phase 4 YAML careful review fixes (16 files) - completing Lane 2 vali — copilot-swe-agent[bot] (2026-07-15)
+- `82681517` ESCALATION: Gate fixes did not resolve cascade - 23+ gates still action_required — copilot-swe-agent[bot] (2026-07-15)
+- `b5f5766f` Session foundation complete: YAML validation audit & documentation — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
