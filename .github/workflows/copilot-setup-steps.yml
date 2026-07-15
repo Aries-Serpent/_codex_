@@ -77,10 +77,9 @@ jobs:
         == 'full' || inputs.lfs_mode == 'targeted') }}
       LFS_TARGETED_ENABLED: "${{ github.event_name == 'workflow_dispatch' &&\n   \
         \ inputs.lfs_mode == 'targeted' &&\n    inputs.lfs_include_paths != '' }}"
-      LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode
-        == 'full' }}
+      LFS_FULL_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.lfs_mode == 'full' }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      steps:
+    steps:
       - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
     uses: actions/checkout@v5
       with:

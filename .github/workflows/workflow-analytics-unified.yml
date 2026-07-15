@@ -134,7 +134,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-        name: workflow-health-${{ github.run_number }}
+          name: workflow-health-${{ github.run_number }}
           path: |
             .codex/reports/workflow-health-*.json
             .codex/reports/quantum-analysis-*.json
@@ -202,7 +202,7 @@ jobs:
       - name: Upload analytics reports
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-        name: workflow-analytics-${{ github.run_number }}
+          name: workflow-analytics-${{ github.run_number }}
           path: |
             .codex/reports/workflow-*.json
             .codex/reports/workflow-*.md
@@ -272,7 +272,7 @@ jobs:
       - name: Upload manual analytics
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
-        name: manual-analytics-${{ github.run_number }}
+          name: manual-analytics-${{ github.run_number }}
           path: |
             .codex/reports/manual-analytics.json
             .codex/reports/analytics-report.md

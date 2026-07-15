@@ -61,7 +61,7 @@ jobs:
     - name: Upload metrics artifact
       uses: actions/upload-artifact@v5
       with:
-      name: performance-metrics
+        name: performance-metrics
         path: metrics-current.json
         retention-days: 30
     env:
@@ -87,7 +87,7 @@ jobs:
     - name: Download current metrics
       uses: actions/download-artifact@v5
       with:
-      name: performance-metrics
+        name: performance-metrics
         path: .
     - name: Run performance analysis
       id: analyze
@@ -97,7 +97,7 @@ jobs:
     - name: Upload analysis results
       uses: actions/upload-artifact@v5
       with:
-      name: performance-analysis
+        name: performance-analysis
         path: analysis-results.json
         retention-days: 30
     env:
@@ -124,7 +124,7 @@ jobs:
     - name: Download metrics
       uses: actions/download-artifact@v5
       with:
-      name: performance-metrics
+        name: performance-metrics
         path: .
     - name: Check SLA violations
       id: sla
@@ -143,7 +143,7 @@ jobs:
     - name: Upload SLA results
       uses: actions/upload-artifact@v5
       with:
-      name: sla-violations
+        name: sla-violations
         path: sla-violations.json
         retention-days: 30
     env:
@@ -239,7 +239,7 @@ jobs:
         \        \"type\": \"mrkdwn\",\n        \"text\": \"*Performance Monitoring\
         \ Alert*\\nWorkflow: ${{ github.workflow }}\\nStatus: ❌ Failed\"\n     \
           \ }\n    }\n  ]\n}\n"
-      env:
+        env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
     env:

@@ -98,7 +98,7 @@ jobs:
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
       uses: actions/upload-artifact@v5
       with:
-      name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
+        name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
         path: ./wheelhouse
         retention-days: 30
     env:
@@ -159,7 +159,7 @@ jobs:
     - name: Upload SBOM artifacts
       uses: actions/upload-artifact@v5
       with:
-      name: sbom-${{ matrix.variant }}
+        name: sbom-${{ matrix.variant }}
         path: 'sbom-${{ matrix.variant }}.*.json
 
           grype-${{ matrix.variant }}.sarif
@@ -205,7 +205,7 @@ jobs:
         build-args: 'PYTHON_VERSION=${{ matrix.python_version }}
 
           '
-      continue-on-error: ${{ matrix.python_version != '3.11' }}
+        continue-on-error: ${{ matrix.python_version != '3.11' }}
     - name: Report compatibility
       if: always()
       env:
@@ -231,7 +231,7 @@ jobs:
     - name: Download current baseline (amd64)
       uses: actions/download-artifact@v5
       with:
-      name: baseline-wheelhouse-linux-amd64
+        name: baseline-wheelhouse-linux-amd64
         path: ./current-baseline
     - name: Download previous baseline (if exists)
       continue-on-error: true
@@ -324,7 +324,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: dependency-audit-${{ github.run_id }}
+        name: dependency-audit-${{ github.run_id }}
         path: 'workbench/security/ci_pip_audit.json
 
           workbench/security/ci_pip_audit_cyclonedx.json

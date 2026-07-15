@@ -321,7 +321,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         flags: rag-modules
-      name: rag-coverage-${{ matrix.python-version }}
+        name: rag-coverage-${{ matrix.python-version }}
         fail_ci_if_error: false
     - name: Upload HTML coverage report
       uses: actions/upload-artifact@v5
