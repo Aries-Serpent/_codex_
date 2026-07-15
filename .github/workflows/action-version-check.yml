@@ -17,29 +17,30 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-        with:
+      with:
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
-        with:
+      with:
         python-version: "3.11"
     - name: Check action versions
       id: check
       env:
         GITHUB_REPOSITORY: ${{ github.repository }}
-      run: "python scripts/ci/enforce_actions_versions.py
-
+      run: |
+        python scripts/ci/enforce_actions_versions.py
         echo "check_status=success" >> $GITHUB_OUTPUT
-
-        "
     - name: Comment on PR with results
       if: github.event_name == "pull_request" && failure()
       uses: actions/github-script@v8
-        with:
-        script: "github.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: "❌ Action\
-          \ version violations detected. Please run:\\n\\n```bash\\npython scripts/ci/enforce_actions_versions.py\
-          \ --fix\\n```"\n})\n"
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: "❌ Action version violations detected. Please run:\n\n```bash\npython scripts/ci/enforce_actions_versions.py --fix\n```"
+          })
     - name: Fail if violations found
       if: failure()
       continue-on-error: true
