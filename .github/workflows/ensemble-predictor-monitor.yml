@@ -10,25 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     name: Model Accuracy Tracking
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - name: Install dependencies
+        run: "python -m pip install --no-cache-dir -r requirements.txt
 
         python -m pip install --no-cache-dir -r requirements-test.txt
 
         "
-    - name: Run accuracy tracking
-      run: "python -m pytest tests/ensemble/ -v --tb=short
+      - name: Run accuracy tracking
+        run: "python -m pytest tests/ensemble/ -v --tb=short
 
         echo "✓ All ensemble tests passed"
 
         "
-    - name: Collect performance metrics
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
+      - name: Collect performance metrics
+        run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
         \ json\nfrom pathlib import Path\n\n# Initialize predictor\npredictor = EnsemblePredictor()\n\
         \n# Simulate some predictions for metrics\ntest_features = [\n    {\"confidence\"\
         : 0.8, \"frequency\": 50, \"days_old\": 5},\n    {\"confidence\": 0.3, \"\
@@ -47,10 +47,10 @@ jobs:
         )\nmetrics_file.parent.mkdir(parents=True, exist_ok=True)\nwith open(metrics_file,\
         \ \"w\") as f:\n    json.dump({\n        \"performance\": metrics,\n     \
         \   \"accuracies\": accuracies,\n    }, f, indent=2)\nEOF\n"
-    - name: Upload metrics artifact
-      uses: actions/upload-artifact@v5
-      with:
-      name: ensemble-metrics
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v5
+        with:
+        name: ensemble-metrics
         path: .codex/ensemble_metrics.json
         retention-days: 30
     timeout-minutes: 30
@@ -58,17 +58,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Model Drift Detection
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - name: Install dependencies
+        run: "python -m pip install --no-cache-dir -r requirements.txt
 
         "
-    - name: Check for model drift
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nfrom\
+      - name: Check for model drift
+        run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nfrom\
         \ src.codex.ensemble.types import ModelType\n\npredictor = EnsemblePredictor()\n\
         \n# Get baseline accuracies (from last week if available)\nbaseline = {\n\
         \    ModelType.HEURISTIC.value: 0.77,\n    ModelType.MACHINE_LEARNING.value:\
@@ -85,10 +85,10 @@ jobs:
         \ > 0.05:\n        drift_detected = True\n\nprint(\"=\"*60)\n\nif drift_detected:\n\
         \    print(\"\\n⚠️ DRIFT DETECTED - Consider retraining\")\n    exit(1)\n\
         else:\n    print(\"\\n✓ No significant drift detected\")\nEOF\n"
-    - name: Comment on drift detection
-      if: failure()
-      uses: actions/github-script@v8
-      with:
+      - name: Comment on drift detection
+        if: failure()
+        uses: actions/github-script@v8
+        with:
         script: "github.rest.issues.createComment({\n  issue_number: github.context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: "⚠️ **Model\
           \ Drift Detected** in ensemble predictor. Consider running retraining workflow."\n\
@@ -98,17 +98,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Latency SLA Monitoring
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - name: Install dependencies
+        run: "python -m pip install --no-cache-dir -r requirements.txt
 
         "
-    - name: Monitor latency
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
+      - name: Monitor latency
+        run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\nimport\
         \ numpy as np\n\npredictor = EnsemblePredictor()\n\nprint(\"\\n\" + \"=\"\
         *60)\nprint(\"LATENCY SLA MONITORING\")\nprint(\"=\"*60)\n\n# Test multiple\
         \ predictions\nlatencies = []\nfor i in range(20):\n    features = {\"confidence\"\
@@ -127,17 +127,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Escalation Rate Monitoring
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - name: Install dependencies
+        run: "python -m pip install --no-cache-dir -r requirements.txt
 
         "
-    - name: Check escalation rate
-      run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\n\n\
+      - name: Check escalation rate
+        run: "python << "EOF"\nfrom src.codex.ensemble import EnsemblePredictor\n\n\
         predictor = EnsemblePredictor()\n\nprint(\"\\n\" + \"=\"*60)\nprint(\"ESCALATION\
         \ RATE MONITORING\")\nprint(\"=\"*60)\n\n# Simulate predictions with varying\
         \ confidence\ntest_cases = [\n    {\"confidence\": 0.9, \"frequency\": 100},\
@@ -157,30 +157,30 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Coverage Report
     steps:
-    - uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --no-cache-dir -r requirements.txt
+      - name: Install dependencies
+        run: "python -m pip install --no-cache-dir -r requirements.txt
 
         python -m pip install --no-cache-dir -r requirements-test.txt
 
         "
-    - name: Run tests with coverage
-      run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-report=term-missing
+      - name: Run tests with coverage
+        run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-report=term-missing
         --cov-report=html
 
         "
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v5
-      with:
-      name: coverage-report
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v5
+        with:
+        name: coverage-report
         path: htmlcov/
         retention-days: 30
-    - name: Check coverage threshold
-      run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
+      - name: Check coverage threshold
+        run: "python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
 
         "
     timeout-minutes: 30
@@ -194,12 +194,12 @@ jobs:
     - escalation-rate-check
     if: always()
     steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v5
-      with:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+        with:
         path: monitoring-artifacts
-    - name: Publish job summary
-      run: "cat >> $GITHUB_STEP_SUMMARY << ""EOF""
+      - name: Publish job summary
+        run: "cat >> $GITHUB_STEP_SUMMARY << ""EOF""
 
         # 📊 Ensemble Predictor Daily Monitoring Report
 
