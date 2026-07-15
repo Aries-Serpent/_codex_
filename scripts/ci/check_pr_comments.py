@@ -78,6 +78,8 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- comment-review-gate-checklist -->",
     "<!-- comment-review-gate:",          # PR-scoped gate failure comment (new format)
     "<!-- ci-rescue:",
+    "<!-- rescue-duplicate:",             # Legacy consolidation marker (Issue: PR #5324)
+    "<!-- rescue-dup-digest:",            # New consolidation marker (safe format)
     "<!-- pre-merge-validation-summary -->",
     "<!-- auto-fix-ci-issues -->",
     "<!-- copilot-escalation:",

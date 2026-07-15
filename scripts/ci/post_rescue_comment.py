@@ -195,6 +195,15 @@ def _consolidate_duplicate_rescue_comments(
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
         return
+    
+    # CIRCUIT BREAKER: Prevent cascading consolidation (Issue: PR #5324)
+    # If more than 5 rescue comments exist for this SHA, skip consolidation
+    # to avoid exponential growth and circular reference loops
+    if len(matches) > 5:
+        import sys
+        print(f"⚠️  CIRCUIT BREAKER: {len(matches)} rescue comments detected for SHA {signature}.", file=sys.stderr)
+        print("    Skipping consolidation to prevent cascading loop.", file=sys.stderr)
+        return
 
     canonical = matches[0]
     canonical_id = canonical.get("id")
@@ -216,7 +225,8 @@ def _consolidate_duplicate_rescue_comments(
         duplicate_digest = hashlib.sha256(duplicate_body.encode()).hexdigest()[
             :DUPLICATE_DIGEST_LENGTH
         ]
-        duplicate_marker = f"<!-- rescue-duplicate:{duplicate_digest} -->"
+        # Use safe marker format to prevent circular reference in HTML-encoded PR body
+        duplicate_marker = f"<!-- rescue-dup-digest:{duplicate_digest} -->"
         if duplicate_body and duplicate_marker not in canonical_body:
             canonical_body = (
                 canonical_body
