@@ -61,15 +61,15 @@ jobs:
       REPO: ${{ github.repository }}
       ORG: ${{ github.repository_owner }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      steps:
+    steps:
       - name: Checkout scripts
-    uses: actions/checkout@v5
+        uses: actions/checkout@v5
       with:
         persist-credentials: false
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
       - name: Set up Python 3.12
-    uses: actions/setup-python@v6
+        uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
@@ -80,14 +80,14 @@ jobs:
         REPO: ${{ github.repository }}
         ORG: ${{ github.repository_owner }}
         DRY_RUN: ${{ inputs.dry_run }}
-    run: "echo \"Token source: ${{ needs.validate-token.outputs.token_source }}\"\
+        run: "echo \"Token source: ${{ needs.validate-token.outputs.token_source }}\"\
         \necho \"Has repo scope: ${{ needs.validate-token.outputs.has_repo_scope }}\"\
         \necho \"\"\n\nif [ \"$DRY_RUN\" = \"true\" ]; then\n  echo \"DRY RUN \u2014\
         \ skipping variable CRUD tests\"\n  python scripts/ci/test_variables_api.py\
         \ 2>&1 | head -30\n  exit 0\nfi\n\npython scripts/ci/test_variables_api.py\n"
       - name: Post result to PR Status Dashboard
-    if: always() && github.event.pull_request.number != ''
-    uses: ./.github/actions/post-pr-summary
+        if: always() && github.event.pull_request.number != ''
+        uses: ./.github/actions/post-pr-summary
       with:
         workflow-name: "Test Variables API \u2014 Repo Scope"
         status: ${{ job.status }}
@@ -95,7 +95,7 @@ jobs:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
   test-org-variables:
-    name: Test Org Variables (CREATE/GET/UPDATE/DELETE)
+        name: Test Org Variables (CREATE/GET/UPDATE/DELETE)
     needs: validate-token
     if: inputs.run_org_tests == true
     runs-on: ubuntu-latest
