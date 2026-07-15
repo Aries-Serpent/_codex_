@@ -281,8 +281,8 @@ SLA Compliance: ✅ P2 SLA (<2h) met with 30 min margin
 ### Action Items for Future Deployments
 
 **Immediate (Before GA Completion)**:
-1. [x] Add query-level caching to hardening specification verification
-2. [x] Include CIF-002 pattern in production runbook
+1. [ ] Add query-level caching to hardening specification verification
+2. [ ] Include CIF-002 pattern in production runbook
 3. [ ] Document multi-tenant performance expectations in SLI/SLO
 4. [ ] Schedule post-deployment incident review with team
 

@@ -336,9 +336,9 @@ Gate Validation
 | Stage 2 Checkpoint 3 | 2026-07-15T04:02Z | Evaluate 75% health |
 | Stage 2 Checkpoint 4 | 2026-07-15T04:02Z | GA 100% Live |
 | Stage 3 Start | 2026-07-15T06:02Z | Intensive monitoring (24h) |
-| Stage 3 Complete | 2026-07-15T30:02Z | Stabilization check |
-| Stage 4 Start | 2026-07-15T30:02Z | Final stabilization (24h) |
-| Stage 4 Complete | 2026-07-16T30:02Z | Gate decision (APPROVED/CONDITIONAL/FAIL) |
+| Stage 3 Complete | 2026-07-16T06:02Z | Stabilization check |
+| Stage 4 Start | 2026-07-16T06:02Z | Final stabilization (24h) |
+| Stage 4 Complete | 2026-07-17T06:02Z | Gate decision (APPROVED/CONDITIONAL/FAIL) |
 | SLA Validation Start | 2026-07-15 | Day 1 metrics collection |
 | SLA Validation End | 2026-08-14 | Day 30 final decision |
 

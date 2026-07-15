@@ -70,7 +70,7 @@
 ### Hypothesis 4: Infrastructure/Runner Issue
 **Likelihood:** LOW (10%)
 - Evidence: Would show queued/in_progress, not immediate failure
-- Status: INVESTIGATING
+- Status: RULED OUT
 
 ---
 
