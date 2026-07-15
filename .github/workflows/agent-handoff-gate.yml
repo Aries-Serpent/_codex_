@@ -43,8 +43,16 @@ jobs:
         PR_NUMBER: ${{ github.event.issue.number }}
         AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS || '120'
           }}
-      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport re\nimport sys\n\n\
-        comment = os.environ[\"COMMENT_BODY\"]\npr_number = os.environ[\"PR_NUMBER\"\
+      run: |
+        python3 - << 'PYEOF'
+        import json
+        import os
+        import re
+        import sys
+
+
+                comment = os.environ[\"COMMENT_BODY\"]
+        pr_number = os.environ[\"PR_NUMBER
         ]\n# P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.\n\
         try:\n    _timeout_val = os.environ.get(\"AGENT_HANDOFF_TIMEOUT_SECONDS\"\
         , \"120\")\n    HANDOFF_TIMEOUT = int(float(_timeout_val))\nexcept (ValueError,\
