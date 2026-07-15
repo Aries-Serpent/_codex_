@@ -1,29 +1,32 @@
-# Session Context — 2026-07-15T01:08:14Z
-**Branch:** `copilot/phase4-codeql-deployment`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-15T01:46:36Z
+**Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4931` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #5323 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery
+State: `open`  Draft: `True`  Branch: `copilot/phase4-codeql-deployment` → `main`
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/dependency-scan.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/smoke-tests-deployment.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/scan-secrets-variables.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/copilot-setup-steps.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/copilot-session-chain.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/agent-handoff-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/mcp-health.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
-- `ed312f6c` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
-- `c5646189` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
-- `7d9c1793` Phase 4 GA Deployment: ALL AGENTS COMPLETE - Complete Mission Summary and Final  — Artifact Monitor Agent (2026-07-15)
-- `e6ea6495` Phase 4 GA Deployment: Final Orchestration Dashboard - All Infrastructure Active — Artifact Monitor Agent (2026-07-15)
-- `9f6a8109` governance(phase-4-ga): GOVERNANCE GATE ENFORCEMENT DIRECTIVE EXECUTION COMPLETE — Artifact Monitor Agent (2026-07-15)
-- `348cd247` Phase 4 GA Deployment: Anomaly Detection & Incident Response Framework — Artifact Monitor Agent (2026-07-15)
-- `2030677a` docs(phase-4-ga): Add comprehensive monitoring coordinator framework — copilot-swe-agent[bot] (2026-07-15)
-- `f22fbaf5` governance(phase-4-ga): Complete unified governance gate enforcement activation — copilot-swe-agent[bot] (2026-07-14)
+- `4143ef6c` ✅ Phase 4 GA PHASE 3 MISSION COMPLETE - Cascade Detection + Infrastructure Recov — copilot-swe-agent[bot] (2026-07-15)
+- `804ea6d9` 🚀 Phase 4 GA: INFRASTRUCTURE RECOVERY DETECTED + Cascade Auto-Restart Activated — copilot-swe-agent[bot] (2026-07-15)
+- `78eed90d` Phase 4 GA: Cascade Detection Complete (99.2% confidence) + Infrastructure Recov — copilot-swe-agent[bot] (2026-07-15)
+- `ec344431` Phase 4 GA: Complete telemetry pattern classification (442 patterns, 95.7% cover — copilot-swe-agent[bot] (2026-07-15)
+- `6e17bc60` Add Phase 4 GA YAML Corruption Fix Remediation Report — copilot-swe-agent[bot] (2026-07-15)
+- `bd2a84d6` PHASE 4 GA YAML CORRUPTION FIX: Repair 224/246 workflow files (91% success) — copilot-swe-agent[bot] (2026-07-15)
+- `ecb952d9` Phase 4 GA: Workflow Monitoring Complete - Infrastructure Issue Escalated to sel — copilot-swe-agent[bot] (2026-07-15)
+- `8050a559` Phase 4 GA: Complete workflow health monitoring and escalation summary — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
