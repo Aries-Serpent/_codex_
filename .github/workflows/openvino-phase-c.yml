@@ -32,8 +32,9 @@ jobs:
         python-version: 3.12.13
         extras: dev
     - name: Run Phase B smoke tests (no GPU required)
-      run: "python -m pytest tests/smoke/test_openvino_backend_smoke.py \\\n  -v --tb=short\
-        \ \\\n  -k \"not TestOpenVINOPhaseC\"\necho \"Phase B: $? (expected 0)\"\n"
+      run: |
+        python -m pytest tests/smoke/test_openvino_backend_smoke.py \\
+        -v --tb=short\
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -66,9 +67,6 @@ jobs:
         \ is_available, DEVICES\n    print(f'OpenVINO devices: {DEVICES}')\n    print(f'GPU\
         \ available: {is_available(\\\"GPU\\\")}')\nexcept Exception as e:\n    print(f'OpenVINO\
         \ unavailable: {e}')\n\"\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -104,7 +102,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-

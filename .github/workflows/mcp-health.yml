@@ -48,57 +48,27 @@ jobs:
         install-editable: 'true'
         verify: 'false'
     - name: Verify MCP metrics module importable
-      run: "python - << 'PYEOF'\nimport sys\nsys.path.insert(0, \"src\")\ntry:\n \
-        \   from mcp.metrics.mcp_metrics import MetricCollector, MetricSummary, MCPMetrics\n\
-        \    print(\"✅ MCP metrics module imports OK\")\nexcept ImportError as exc:\n\
-        \    print(f\"❌ Import failed: {exc}\", file=sys.stderr)\n    sys.exit(1)\n\
-        PYEOF\n"
+      run: |
+        python - << 'PYEOF'
+        import sys
+        sys.path.insert(0, \"src\")
+        try:
+        \
     - name: Seed synthetic metrics and validate thresholds (IMP-015)
       env:
         LATENCY_THRESHOLD: ${{ env.MCP_LATENCY_THRESHOLD_MS }}
         ERROR_RATE_THRESHOLD: ${{ env.MCP_ERROR_RATE_THRESHOLD }}
-      run: "python - << 'PYEOF'\nimport sys, os\nsys.path.insert(0, \"src\")\nfrom\
-        \ mcp.metrics.mcp_metrics import MetricCollector\n\nlatency_threshold = float(os.environ.get(\"\
-        LATENCY_THRESHOLD\", \"500\"))\nerror_rate_threshold = float(os.environ.get(\"\
-        ERROR_RATE_THRESHOLD\", \"0.05\"))\n\nmc = MetricCollector()\n\n# Seed synthetic\
-        \ metrics that represent a healthy MCP server.\n# In production these would\
-        \ be populated from a running server's\n# metric export endpoint; in CI we\
-        \ validate the threshold logic.\nfor latency_ms in [120, 150, 95, 200, 180,\
-        \ 110, 140, 160, 130, 170]:\n    mc.observe(\"mcp.request.latency_ms\", latency_ms)\n\
-        mc.increment(\"mcp.request.count\", 10)\nmc.increment(\"mcp.request.error_count\"\
-        , 0)  # no errors\n\nsummary = mc.get_histogram_summary(\"mcp.request.latency_ms\"\
-        )\ntotal = mc.get_counter(\"mcp.request.count\")\nerrors = mc.get_counter(\"\
-        mcp.request.error_count\")\nerror_rate = errors / total if total > 0 else\
-        \ 0.0\n\nprint(f\"Latency summary: count={summary.count} avg={summary.avg_value:.1f}ms\
-        \ \"\n      f\"min={summary.min_value:.1f}ms max={summary.max_value:.1f}ms\"\
-        )\nprint(f\"Request count={total}, error count={errors}, error rate={error_rate:.2%}\"\
-        )\n\nfailed = []\nif summary and summary.avg_value > latency_threshold:\n\
-        \    failed.append(\n        f\"mcp.request.latency_ms avg {summary.avg_value:.0f}ms\
-        \ \"\n        f\"> threshold {latency_threshold:.0f}ms\"\n    )\nif error_rate\
-        \ > error_rate_threshold:\n    failed.append(\n        f\"mcp error_rate {error_rate:.2%}\
-        \ \"\n        f\"> threshold {error_rate_threshold:.2%}\"\n    )\n\nif failed:\n\
-        \    print(\"❌ MCP metric threshold violations:\", file=sys.stderr)\n    for\
-        \ f in failed:\n        print(f\"  • {f}\", file=sys.stderr)\n    sys.exit(1)\n\
-        \nprint(f\"✅ All MCP metric thresholds passed \"\n      f\"(latency ≤ {latency_threshold:.0f}ms,\
-        \ error rate ≤ {error_rate_threshold:.0%})\")\nPYEOF\n"
+      run: |
+        python - << 'PYEOF'
+        import sys, os
+        sys.path.insert(0, \"src\")
+        from\
     - name: Validate multi-target MCP config (IMP-014)
-      run: "python - << 'PYEOF'\nimport json, sys\nfrom pathlib import Path\n\nconfig_path\
-        \ = Path(\".copilot-space/mcp.example.json\")\nif not config_path.exists():\n\
-        \    print(\"⚠️  .copilot-space/mcp.example.json not found — skipping\")\n\
-        \    sys.exit(0)\n\nconfig = json.loads(config_path.read_text())\nservers\
-        \ = config.get(\"mcpServers\", {})\nrouting = config.get(\"routing\", {})\n\
-        \nprint(f\"MCP servers configured: {list(servers.keys())}\")\nprint(f\"Routing\
-        \ strategy: {routing.get('strategy', 'none')}\")\n\nissues = []\nif len(servers)\
-        \ < 2:\n    issues.append(f\"Expected ≥2 MCP servers for primary+fallback;\
-        \ got {len(servers)}\")\nif not routing.get(\"strategy\"):\n    issues.append(\"\
-        routing.strategy is missing (IMP-014 requires primary-with-fallback)\")\n\n\
-        for name, srv in servers.items():\n    metadata = srv.get(\"metadata\", {})\n\
-        \    if \"health_check_url\" not in metadata:\n        issues.append(f\"Server\
-        \ '{name}' missing metadata.health_check_url\")\n\nif issues:\n    for i in\
-        \ issues:\n        print(f\"⚠️  {i}\")\n  # Config completeness issues are\
-        \ warnings — the server can still start.\n  # Only metric threshold violations\
-        \ (in the previous step) block CI.\nelse:\n    print(\"✅ Multi-target MCP\
-        \ config validation passed\")\nPYEOF\n"
+      run: |
+        python - << 'PYEOF'
+        import json, sys
+        from pathlib import Path
+        config_path\
     - name: Post gate summary
       if: always()
       run: 'echo "## 📊 MCP Health & Metrics Gate" >> "$GITHUB_STEP_SUMMARY"
@@ -148,19 +118,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: MCP Health
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-

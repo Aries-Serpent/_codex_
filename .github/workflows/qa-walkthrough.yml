@@ -85,32 +85,18 @@ jobs:
           \ 10)));\n"
     - name: Run code quality scan (Batch ${{ github.event.inputs.batch || 'all' }})
       id: qa_scan
-      run: "python3 - <<'EOF'\nimport ast, os, json, pathlib, sys\n\nsrc_root = pathlib.Path(\"\
-        src\")\nissues = []\n\nfor py_file in sorted(src_root.rglob(\"*.py\")):\n\
-        \    try:\n        source = py_file.read_text(encoding=\"utf-8\")\n      \
-        \  tree = ast.parse(source, filename=str(py_file))\n        for node in ast.walk(tree):\n\
-        \  # Detect bare except\n            if isinstance(node, ast.ExceptHandler)\
-        \ and node.type is None:\n                issues.append({\n              \
-        \      \"file\": str(py_file),\n                    \"line\": node.lineno,\n\
-        \                    \"severity\": \"warning\",\n                    \"category\"\
-        : \"exception_handling\",\n                    \"description\": \"Bare except\
-        \ clause\"\n                })\n    except SyntaxError as e:\n        issues.append({\n\
-        \            \"file\": str(py_file),\n            \"line\": e.lineno or 0,\n\
-        \            \"severity\": \"error\",\n            \"category\": \"syntax\"\
-        ,\n            \"description\": f\"SyntaxError: {e.msg}\"\n        })\n\n\
-        report = {\"total_files\": len(list(src_root.rglob(\"*.py\"))), \"issues\"\
-        : issues}\npathlib.Path(\"qa-report.json\").write_text(json.dumps(report,\
-        \ indent=2))\nprint(f\"Scanned {report['total_files']} files, found {len(issues)}\
-        \ issues\")\nEOF\n"
+      run: |
+        python3 - <<'EOF'
+        import ast, os, json, pathlib, sys
+        src_root = pathlib.Path(\"\
     - name: Run ruff lint
-      run: "python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \\\n\
-        \  --output-format=json \\\n  --output-file=ruff-report.json 2>ruff-stderr.log\
-        \ || true\nif [ -s ruff-stderr.log ]; then\n  echo \"Ruff stderr output:\"\
-        ; cat ruff-stderr.log\nfi\necho \"Ruff scan complete\"\n"
+      run: |
+        python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \\
+        \
     - name: Run bandit security scan
-      run: "python3 -m bandit -r src/ -f json -o bandit-report.json \\\n  --configfile\
-        \ .bandit --severity-level medium -q 2>/dev/null || true\necho \"Bandit scan\
-        \ complete\"\n"
+      run: |
+        python3 -m bandit -r src/ -f json -o bandit-report.json \\
+        --configfile\
     - name: Generate QA summary
       id: summary
       uses: actions/github-script@v8
@@ -146,7 +132,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-      name: qa-walkthrough-reports-${{ github.run_id }}
+        name: qa-walkthrough-reports-${{ github.run_id }}
         path: 'qa-report.json
 
           ruff-report.json
@@ -204,7 +190,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-

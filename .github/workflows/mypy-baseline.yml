@@ -68,13 +68,11 @@ jobs:
         '
     - name: Post mypy summary
       if: always()
-      run: "{\n  echo \"## \U0001F50E mypy Anti-Regression Gate\"\n  echo \"\"\n \
-        \ if [ -f /tmp/mypy_output.txt ]; then\n    echo '```'\n    cat /tmp/mypy_output.txt\n\
-        \    echo '```'\n  fi\n  BASELINE=$(cat .mypy_baseline 2>/dev/null || echo\
-        \ \"unknown\")\n  echo \"\"\n  echo \"**Baseline:** \\`${BASELINE}\\` errors\
-        \ (stored in \\`.mypy_baseline\\`)\"\n  echo \"\"\n  echo \"_To lower the\
-        \ baseline after fixing errors: \\`python scripts/ci/mypy_baseline.py --update\\\
-        `_\"\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+      run: |
+        {
+        echo \"## \U0001F50E mypy Anti-Regression Gate\"
+        echo \"\"
+        \
     - name: Fail if regression detected
       if: steps.mypy_gate.outputs.exit_code != '0'
       run: 'echo "::error::mypy type-error count exceeds baseline. See summary for
@@ -121,7 +119,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-

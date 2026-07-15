@@ -82,14 +82,10 @@ jobs:
     - name: Run coverage with timeout (Shard ${{ matrix.shard }})
       id: coverage
       continue-on-error: true
-      run: "# Calculate shard parameters\nSHARD_INDEX=${{ matrix.shard }}\nTOTAL_SHARDS=${{\
-        \ strategy.job-total }}\n\necho \"Running shard $SHARD_INDEX of $TOTAL_SHARDS\"\
-        \n\n# Run pytest with timeout plugin and coverage\npytest \\\n  -c pytest_timeout.ini\
-        \ \\\n  --timeout=420 \\\n  --cov=src \\\n  --cov-report=xml:coverage_shard_${SHARD_INDEX}.xml\
-        \ \\\n  --cov-report=term-missing \\\n  --cov-report=html:htmlcov_shard_${SHARD_INDEX}\
-        \ \\\n  --dist=loadfile \\\n  -n auto \\\n  --durations=10 \\\n  --shard-id=$((SHARD_INDEX\
-        \ - 1)) \\\n  --num-shards=${TOTAL_SHARDS} \\\n  tests/ || echo \"coverage_failed=true\"\
-        \ >> $GITHUB_OUTPUT\n"
+      run: |
+        # Calculate shard parameters
+        SHARD_INDEX=${{ matrix.shard }}
+        TOTAL_SHARDS=${{\
     - name: Check for timeouts
       if: steps.coverage.outputs.coverage_failed == 'true'
       run: 'echo "::warning::Coverage collection encountered issues (timeout or test
@@ -104,7 +100,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: coverage-shard-${{ matrix.shard }}
+        name: coverage-shard-${{ matrix.shard }}
         path: 'coverage_shard_${{ matrix.shard }}.xml
 
           htmlcov_shard_${{ matrix.shard }}/
@@ -117,7 +113,7 @@ jobs:
       if: steps.coverage.outputs.coverage_failed == 'true'
       uses: actions/upload-artifact@v5
       with:
-      name: timeout-logs-shard-${{ matrix.shard }}
+        name: timeout-logs-shard-${{ matrix.shard }}
         path: 'pytest_timeout.ini
 
           *.log
@@ -160,22 +156,14 @@ jobs:
     - name: Merge coverage reports
       id: merge
       continue-on-error: true
-      run: "# Find all coverage XML files\nCOVERAGE_FILES=$(find coverage-shards -name\
-        \ \"coverage_shard_*.xml\" | wc -l)\necho \"Found $COVERAGE_FILES coverage\
-        \ files\"\n\nif [ \"$COVERAGE_FILES\" -eq 0 ]; then\n  echo \"::error::No\
-        \ coverage files found to merge\"\n  echo \"merge_failed=true\" >> $GITHUB_OUTPUT\n\
-        \  exit 0\nfi\n\n# Combine coverage data\ncd coverage-shards\ncoverage combine\
-        \ coverage-shard-*/.coverage || true\ncoverage xml -o ../coverage_combined.xml\
-        \ || true\ncoverage html -d ../htmlcov_combined || true\ncoverage report ||\
-        \ true\n\ncd ..\n\nif [ -f coverage_combined.xml ]; then\n  echo \"merge_succeeded=true\"\
-        \ >> $GITHUB_OUTPUT\n  echo \"✓ Coverage merge succeeded\"\nelse\n  echo \"\
-        merge_failed=true\" >> $GITHUB_OUTPUT\n  echo \"::warning::Coverage merge\
-        \ produced no output\"\nfi\n"
+      run: |
+        # Find all coverage XML files
+        COVERAGE_FILES=$(find coverage-shards -name\
     - name: Upload combined coverage
       if: steps.merge.outputs.merge_succeeded == 'true'
       uses: actions/upload-artifact@v5
       with:
-      name: coverage-combined
+        name: coverage-combined
         path: 'coverage_combined.xml
 
           htmlcov_combined/
@@ -222,9 +210,6 @@ jobs:
         echo "::warning::Coverage collection in degraded mode - partial data available"
 
         '
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on coverage failure
     runs-on: ubuntu-latest
@@ -260,7 +245,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-

@@ -202,8 +202,6 @@ jobs:
     - name: Pre-download embedding models
       id: model-cache
       continue-on-error: true
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
       run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\nCACHE_DIR=\"$HOME/.cache/torch/sentence_transformers\"\
         \n \necho \"[MODEL-CACHE] Starting sentence-transformers model pre-download...\"\
         \necho \"[MODEL-CACHE] Cache directory: $CACHE_DIR\"\necho \"\"\n \nmkdir\
@@ -243,10 +241,6 @@ jobs:
         \n"
     - name: Run RAG tests with coverage
       id: run-tests
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_TOKEN }}
-        RAG_OPENAI_KEY: ${{ secrets.RAG_OPENAI_KEY }}
       run: "PYTHON_BIN=\"${VENV_PYTHON:-python3}\"\necho \"[TEST-RUN] Using Python:\
         \ $PYTHON_BIN\"\n\"$PYTHON_BIN\" --version\necho \"[TEST-RUN] pytest version:\"\
         \n\"$PYTHON_BIN\" -m pytest --version\n \n# Ensure plugins are loaded before\
@@ -327,7 +321,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-      name: coverage-report-${{ matrix.python-version }}
+        name: coverage-report-${{ matrix.python-version }}
         path: htmlcov/
         retention-days: 30
         if-no-files-found: warn
@@ -425,7 +419,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-      name: security-report-${{ matrix.python-version }}
+        name: security-report-${{ matrix.python-version }}
         path: bandit-report.txt
         retention-days: 30
         if-no-files-found: warn
@@ -454,15 +448,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Test RAG
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py

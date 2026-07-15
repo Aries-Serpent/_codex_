@@ -41,65 +41,12 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_BODY: ${{ github.event.pull_request.body }}
-      run: "set -euo pipefail\n\n# Run the cost estimator in summary mode (all gated\
-        \ workflows)\npython - <<'PYEOF'\nimport json, os, sys\nsys.path.insert(0,\
-        \ \"scripts/ci\")\nfrom cost_estimator import CostEstimate\n\nGATED = [\n\
-        \  (\"Build & Push Preview Image\",  \"ubuntu-latest-m\", 30,  2, True),\n\
-        \  (\"Data Quality Suite\",           \"ubuntu-latest\",   60,  3, False),\n\
-        \  # Exclude schedule/workflow_dispatch-only workflows (not PR-triggered).\n\
-        \  (\"Rust Swarm CI\",                \"ubuntu-latest\",   60,  3, False),\n\
-        \  (\"Docker Build & Push\",          \"ubuntu-latest-m\", 30,  2, True),\n\
-        \  (\"Embedding Index Rebuild\",      \"ubuntu-latest\",   15,  1, False),\n\
-        ]\n\nresults = []\nfor name, runner, timeout, matrix, ghcr in GATED:\n   \
-        \ est = CostEstimate(\n        workflow_name=name,\n        runner=runner,\n\
-        \        timeout_minutes=timeout,\n        matrix_count=matrix,\n        pushes_to_ghcr=ghcr,\n\
-        \    )\n    results.append({\n        \"name\": name, \"tier\": est.tier,\
-        \ \"emoji\": est.tier_emoji,\n        \"eff_min\": round(est.effective_minutes,\
-        \ 1),\n        \"reason\": est.reason,\n    })\n\nred_workflows   = [r for\
-        \ r in results if r[\"tier\"] == \"RED\"]\nyellow_workflows = [r for r in\
-        \ results if r[\"tier\"] == \"YELLOW\"]\n\n# Check for stakeholder approval\
-        \ in PR body\n# Normalize: strip bold/italic markdown markers before matching\
-        \ so that\n# \"- [x] **\U0001F4B0 Cost Proposal Approved**\" and \"- [x] \U0001F4B0\
-        \ Cost Proposal Approved\"\n# both match reliably.\npr_body = os.environ.get(\"\
-        PR_BODY\", \"\")\npr_body_normalized = pr_body.replace(\"**\", \"\").replace(\"\
-        __\", \"\")\napproved = (\n    \"- [x] \U0001F4B0 Cost Proposal Approved\"\
-        \ in pr_body_normalized or\n    \"- [X] \U0001F4B0 Cost Proposal Approved\"\
-        \ in pr_body_normalized or\n    \"- [x] \\U0001f4b0 Cost Proposal Approved\"\
-        \ in pr_body_normalized or\n    \"[x] Cost Proposal Approved\" in pr_body_normalized\
-        \ or\n    \"[X] Cost Proposal Approved\" in pr_body_normalized\n)\n\n# Build\
-        \ markdown summary for PR comment\nlines = [\"## \U0001F4B0 PR Cost Check\
-        \ Summary\\n\"]\nlines.append(f\"| Workflow | Tier | Eff. min | Notes |\"\
-        )\nlines.append(\"|----------|------|----------|-------|\")\nfor r in results:\n\
-        \    lines.append(f\"| {r['name']} | {r['emoji']} {r['tier']} | {r['eff_min']}\
-        \ | {r['reason']} |\")\n\nlines.append(\"\")\nif red_workflows and not approved:\n\
-        \    lines.append(\"### ❌ Action Required\")\n    lines.append(f\"**{len(red_workflows)}\
-        \ RED-tier workflow(s) require approval** before running on this PR.\")\n\
-        \    lines.append(\"\")\n    lines.append(\"Tick the checkbox in the PR description\
-        \ to unblock:\")\n    lines.append(\"`- [x] \U0001F4B0 Cost Proposal Approved`\"\
-        )\n    lines.append(\"\")\n    lines.append(\"**Budget reference:** 3,000\
-        \ min/month · [Cost Governance Policy](docs/ops/COST_GOVERNANCE.md)\")\n \
-        \   status = \"blocked\"\nelif red_workflows and approved:\n    lines.append(\"\
-        ### ✅ Red-tier Jobs Approved\")\n    lines.append(f\"Stakeholder has approved\
-        \ {len(red_workflows)} RED-tier workflow(s). Jobs may proceed.\")\n    status\
-        \ = \"approved\"\nelse:\n    lines.append(\"### ✅ No High-Cost Jobs Triggered\"\
-        )\n    lines.append(\"All workflows for this PR are GREEN or YELLOW tier —\
-        \ auto-approved.\")\n    status = \"green\"\n\ntotal_eff_min = sum(r[\"eff_min\"\
-        ] for r in results)\nbudget_pct = round(total_eff_min / 3000 * 100, 1)\nlines.append(f\"\
-        \\n**Aggregate (if all gated jobs run):** {total_eff_min:.0f} eff-min = {budget_pct}%\
-        \ of monthly budget\")\n\nsummary = \"\\n\".join(lines)\n\n# Write outputs\n\
-        with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n    f.write(f\"status={status}\\\
-        n\")\n  # multiline output\n    delim = \"COST_SUMMARY_EOF\"\n    f.write(f\"\
-        summary<<{delim}\\n{summary}\\n{delim}\\n\")\n    f.write(f\"red_count={len(red_workflows)}\\\
-        n\")\n    f.write(f\"approved={'true' if approved else 'false'}\\n\")\n\n\
-        print(f\"✅ Cost check complete: status={status}, red={len(red_workflows)},\
-        \ approved={approved}\")\nprint(summary)\nPYEOF\n"
+      run: |
+        set -euo pipefail
+        # Run the cost estimator in summary mode (all gated\
     - name: Post cost summary comment
       if: always()
       uses: actions/github-script@v8
-      env:
-        COST_SUMMARY: ${{ steps.estimate.outputs.summary }}
-        COST_STATUS: ${{ steps.estimate.outputs.status }}
-        COST_RED_COUNT: ${{ steps.estimate.outputs.red_count }}
       with:
         github-token: ${{ github.token }}
         script: "const summary  = process.env.COST_SUMMARY  || '';\nconst status \
@@ -188,19 +135,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: PR Cost Check
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-
