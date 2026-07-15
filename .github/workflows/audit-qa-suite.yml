@@ -211,7 +211,8 @@ jobs:
         fi
         
         # Validate that TARGET_REF doesn't contain path traversal or other injection attempts
-        if [[ ! "$TARGET_REF" =~ ^[a-zA-Z0-9/_.-]+$ ]]; then
+        # Use strict pattern: only alphanumerics, hyphens, dots, underscores (no slashes or special chars)
+        if [[ ! "$TARGET_REF" =~ ^[a-zA-Z0-9._-]+$ ]]; then
           echo "❌ Error: Invalid target ref format: $TARGET_REF"
           exit 1
         fi
