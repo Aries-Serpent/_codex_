@@ -99,6 +99,7 @@ jobs:
         uses: actions/checkout@v5  # v6.0.3
         with:
             persist-credentials: false
+
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -109,22 +110,26 @@ jobs:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml numpy scipy
+
       - name: Run quantum health analysis
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if [ -f "scripts/quantum_workflow_health.py" ]; then
             python scripts/quantum_workflow_health.py \
-              --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \ ${{ inputs.full_analysis && '--full-analysis' || '' }}
+              --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \
+              ${{ inputs.full_analysis && '--full-analysis' || '' }}
           else
             echo "Quantum health script not found, running basic health check"
             # Fallback health check
             echo "Health check passed"
           fi
+
       - name: Upload health report
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
@@ -149,16 +154,19 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml
+
       - name: Run Weekly Analytics
         id: analytics
         env:
@@ -166,12 +174,22 @@ jobs:
         run: |
           if [ -f ".github/scripts/workflow_analytics_runner.py" ]; then
             python .github/scripts/workflow_analytics_runner.py \
-              --analysis-period ${{ inputs.analysis_period || '100' }} \ --status-filter ${{ inputs.status_filter || 'all' }} \ --output-dir ".codex/reports" \ --create-report ${{ inputs.create_report || 'true' }}
+              --analysis-period ${{ inputs.analysis_period || '100' }} \
+              --status-filter ${{ inputs.status_filter || 'all' }} \
+              --output-dir ".codex/reports" \
+              --create-report ${{ inputs.create_report || 'true' }}
           else
             echo "Analytics script not found, running basic analysis"
             mkdir -p .codex/reports
             # Basic workflow analysis using gh CLI
-            gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json echo "Analytics complete" fi - name: Create issue if patterns detected if: inputs.create_issue == true env: GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+            gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json
+            echo "Analytics complete"
+          fi
+
+      - name: Create issue if patterns detected
+        if: inputs.create_issue == true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Create issue with findings
           if [ -f ".codex/reports/findings.md" ]; then
@@ -180,6 +198,7 @@ jobs:
               --body-file .codex/reports/findings.md \
               --label "automated,analytics"
           fi
+
       - name: Upload analytics reports
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
@@ -204,16 +223,19 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml pandas matplotlib
+
       - name: Run Manual Analytics
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -221,10 +243,42 @@ jobs:
           mkdir -p .codex/reports
 
           # Gather workflow data
-          gh run list --limit ${{ inputs.analysis_period }} \ ${{ inputs.workflow_filter && format('--workflow {0}', inputs.workflow_filter) || '' }} \ ${{ inputs.status_filter != 'all' && format('--status {0}', inputs.status_filter) || '' }} \ --json name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json  # Generate report if [ "${{ inputs.create_report }}" == "true" ]; then echo "# Workflow Analytics Report" > .codex/reports/analytics-report.md echo "" >> .codex/reports/analytics-report.md echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .codex/reports/analytics-report.md echo "Period: Last ${{ inputs.analysis_period }} runs" >> .codex/reports/analytics-report.md echo "" >> .codex/reports/analytics-report.md  # Calculate basic metrics total=$(jq 'length' .codex/reports/manual-analytics.json) success=$(jq '[.[] | select(.conclusion == "success")] | length' .codex/reports/manual-analytics.json) failure=$(jq '[.[] | select(.conclusion == "failure")] | length' .codex/reports/manual-analytics.json) success_rate=$(echo "scale=2; $success * 100 / $total" | bc)  echo "## Summary" >> .codex/reports/analytics-report.md echo "- Total runs: $total" >> .codex/reports/analytics-report.md echo "- Success: $success" >> .codex/reports/analytics-report.md echo "- Failure: $failure" >> .codex/reports/analytics-report.md echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md fi - name: Upload manual analytics uses: actions/upload-artifact@v5  # v7.0.1 with: name: manual-analytics-${{ github.run_number }}
+          gh run list --limit ${{ inputs.analysis_period }} \
+            ${{ inputs.workflow_filter && format('--workflow {0}', inputs.workflow_filter) || '' }} \
+            ${{ inputs.status_filter != 'all' && format('--status {0}', inputs.status_filter) || '' }} \
+            --json name,conclusion,startedAt,durationMs,workflowName > .codex/reports/manual-analytics.json
+
+          # Generate report
+          if [ "${{ inputs.create_report }}" == "true" ]; then
+            echo "# Workflow Analytics Report" > .codex/reports/analytics-report.md
+            echo "" >> .codex/reports/analytics-report.md
+            echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .codex/reports/analytics-report.md
+            echo "Period: Last ${{ inputs.analysis_period }} runs" >> .codex/reports/analytics-report.md
+            echo "" >> .codex/reports/analytics-report.md
+
+            # Calculate basic metrics
+            total=$(jq 'length' .codex/reports/manual-analytics.json)
+            success=$(jq '[.[] | select(.conclusion == "success")] | length' .codex/reports/manual-analytics.json)
+            failure=$(jq '[.[] | select(.conclusion == "failure")] | length' .codex/reports/manual-analytics.json)
+            success_rate=$(echo "scale=2; $success * 100 / $total" | bc)
+
+            echo "## Summary" >> .codex/reports/analytics-report.md
+            echo "- Total runs: $total" >> .codex/reports/analytics-report.md
+            echo "- Success: $success" >> .codex/reports/analytics-report.md
+            echo "- Failure: $failure" >> .codex/reports/analytics-report.md
+            echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md
+          fi
+
+      - name: Upload manual analytics
+        uses: actions/upload-artifact@v5  # v7.0.1
+        with:
+          name: manual-analytics-${{ github.run_number }}
           path: |
             .codex/reports/manual-analytics.json
             .codex/reports/analytics-report.md
           if-no-files-found: ignore
           retention-days: 90
+
+
+
 

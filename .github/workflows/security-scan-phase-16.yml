@@ -30,7 +30,7 @@ env:
       pull-requests: write
 
     steps:
-      - name: Mask secrets
+    - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout code
@@ -38,16 +38,19 @@ env:
         with:
             persist-credentials: false
           fetch-depth: 0
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
+
       - name: Install security tools
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install bandit[toml] semgrep gitleaks safety pip-audit
           pip install -e .
+
       - name: Run Bandit Security Scan
         id: bandit
         continue-on-error: true
@@ -58,6 +61,7 @@ env:
           if [ -f bandit-report.json ]; then
             python -m json.tool bandit-report.json
           fi
+
       - name: Run Semgrep Security Scan
         id: semgrep
         continue-on-error: true
@@ -69,6 +73,7 @@ env:
           if [ -f semgrep-report.json ]; then
             python -m json.tool semgrep-report.json
           fi
+
       - name: Run Gitleaks Secret Scan
         id: gitleaks
         continue-on-error: true
@@ -80,6 +85,7 @@ env:
           if [ -f gitleaks-report.json ]; then
             python -m json.tool gitleaks-report.json
           fi
+
       - name: Run pip-audit Dependency Scan
         id: pip-audit
         continue-on-error: true
@@ -90,6 +96,7 @@ env:
           if [ -f pip-audit-report.json ]; then
             python -m json.tool pip-audit-report.json
           fi
+
       - name: Run Safety Dependency Scan
         id: safety
         continue-on-error: true
@@ -100,6 +107,7 @@ env:
           if [ -f safety-report.json ]; then
             python -m json.tool safety-report.json || echo "Safety report generated"
           fi
+
       - name: Run Vulnerability Scanning Tests
         id: vuln-tests
         continue-on-error: true
@@ -108,6 +116,7 @@ env:
           python -m pytest tests/security/test_vulnerability_scanning.py -v \
             --tb=short --color=yes 2>&1 | head -100
           echo "::endgroup::"
+
       - name: Run Dependency Audit Tests
         id: dep-audit-tests
         continue-on-error: true
@@ -116,6 +125,7 @@ env:
           python -m pytest tests/security/test_dependency_audit.py -v \
             --tb=short --color=yes 2>&1 | head -100
           echo "::endgroup::"
+
       - name: Upload SARIF Reports
         if: always()
         uses: github/codeql-action/upload-sarif@v2
@@ -123,6 +133,7 @@ env:
           sarif_file: semgrep-report.json
           category: security-scan-phase-16
           continue-on-error: true
+
       - name: Create Security Report Summary
         if: always()
         run: |
@@ -153,6 +164,7 @@ env:
 
           echo "" >> security-report.md
           echo "**Status**: All security scans completed successfully" >> security-report.md
+
       - name: Comment on PR
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v8
@@ -167,6 +179,7 @@ env:
               repo: context.repo.repo,
               body: report
             });
+
       - name: Archive Security Reports
         if: always()
         uses: actions/upload-artifact@v5
@@ -194,16 +207,19 @@ env:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install -e .
           pip install pytest pytest-cov pytest-xdist
+
       - name: Run tests with coverage
         id: coverage
         continue-on-error: true
@@ -216,6 +232,7 @@ env:
             --cov-report=html \
             -v --tb=short
           echo "::endgroup::"
+
       - name: Check coverage threshold
         continue-on-error: true
         run: |
@@ -230,6 +247,7 @@ env:
           else:
               print('✓ Coverage acceptable')
           "
+
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
@@ -238,6 +256,7 @@ env:
           flags: security-tests
           name: phase-16-security-coverage
           fail_ci_if_error: false
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v5
@@ -264,12 +283,15 @@ env:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
@@ -288,28 +310,33 @@ env:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install -e .
           pip install pytest pytest-xdist pytest-timeout
+
       - name: Run Phase 16.3 Security Tests
         run: |
           echo "::group::Phase 16.3: Vulnerability Scanning Tests"
           python -m pytest tests/security/test_vulnerability_scanning.py \
             -v --tb=short -x 2>&1 | tee phase-16-3-results.txt
           echo "::endgroup::"
+
       - name: Run Phase 16.3 Dependency Audit Tests
         run: |
           echo "::group::Phase 16.3: Dependency Audit Tests"
           python -m pytest tests/security/test_dependency_audit.py \
             -v --tb=short -x 2>&1 | tee phase-16-3-dep-results.txt
           echo "::endgroup::"
+
       - name: Generate Test Report
         if: always()
         run: |
@@ -326,6 +353,7 @@ env:
           echo "\`\`\`" >> test-report.md
           tail -30 phase-16-3-dep-results.txt >> test-report.md
           echo "\`\`\`" >> test-report.md
+
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v5
@@ -350,10 +378,12 @@ env:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Check SECURITY.md
         run: |
           if [ ! -f SECURITY.md ]; then
@@ -364,6 +394,7 @@ env:
           grep -E "email|report|contact" SECURITY.md > /dev/null && \
             echo "✓ Security contact documented" || \
             echo "⚠️ Security contact not clearly documented"
+
       - name: Verify security baseline
         run: |
           if [ ! -f .secrets.baseline ]; then
@@ -371,6 +402,7 @@ env:
             echo '{}' > .secrets.baseline
           fi
           echo "✓ Security baseline configured"
+
       - name: Check for hardcoded secrets (gitleaks)
         continue-on-error: true
         run: |
@@ -384,6 +416,7 @@ env:
           else:
               print('⚠️ Potential secrets detected')
           " || echo "✓ Gitleaks check completed"
+
       - name: Validate dependencies
         run: |
           python -m pip install --upgrade pip
@@ -391,6 +424,7 @@ env:
           echo "## Dependency Tree" > deps.txt
           pipdeptree >> deps.txt 2>&1 || true
           echo "✓ Dependency validation completed"
+
       - name: Summary
         run: |
           echo "## Phase 16 Security Gates Summary"
@@ -417,6 +451,7 @@ env:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Create Summary
         run: |
           echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
@@ -440,11 +475,13 @@ env:
           echo "- ✅ Cryptography best practices" >> PHASE_16_RESULTS.md
           echo "- ✅ Dependency security" >> PHASE_16_RESULTS.md
           echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
+
       - name: Upload Summary
         uses: actions/upload-artifact@v5
         with:
           name: phase-16-complete
           path: PHASE_16_RESULTS.md
+
       - name: Status
         run: |
           echo "## 🎯 Phase 16 Execution Complete"
@@ -456,4 +493,8 @@ env:
           echo "Total tests created: 1000+"
           echo "Security coverage: 100%"
           echo "CodeQL status: Validated"
+
+
+
+
 

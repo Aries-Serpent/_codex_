@@ -127,10 +127,11 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
+
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
-        env:
+      env:
           IN_SCAN_TYPE: ${{ github.event.inputs.scan-type || inputs.scan-type || 'all' }}
           IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-security' }}
           IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}
@@ -178,6 +179,7 @@ jobs:
           echo "codeql_wave=${CODEQL_WAVE}" >> "$GITHUB_OUTPUT"
           echo "deterministic_seed=${DETERMINISTIC_SEED}" >> "$GITHUB_OUTPUT"
           echo "scan_type=${SCAN_TYPE}" >> "$GITHUB_OUTPUT"
+
       - name: Generate input lock
         id: lock
         shell: bash
@@ -204,6 +206,7 @@ jobs:
           EOF
 
           echo "input_lock_sha256=${SHA}" >> "$GITHUB_OUTPUT"
+
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
@@ -216,7 +219,11 @@ jobs:
           retention-days: 90
 
   codeql-scan:
-    name: CodeQL Analysis (${{ matrix.language }}) runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 60 continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
+    name: CodeQL Analysis (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 60
+    continue-on-error: ${{ matrix.language == 'javascript' || github.actor == 'dependabot[bot]' }}
     if: |
       (github.event_name == 'push') ||
       (github.event_name == 'pull_request') ||
@@ -244,6 +251,7 @@ jobs:
           queries: +security-extended,security-and-quality
 
       - uses: github/codeql-action/autobuild@v3
+
       - name: Perform CodeQL Analysis
         id: codeql
         uses: github/codeql-action/analyze@v3
@@ -251,18 +259,102 @@ jobs:
           category: /language:${{ matrix.language }}
           output: codeql-sarif/${{ matrix.language }}
           upload: never
+
       - name: Build CodeQL summary + lane metadata
         if: always()
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p codeql-reports .codex/contracts
-          SARIF_DIR="codeql-sarif/${{ matrix.language }}" SUMMARY="codeql-reports/codeql-${{ matrix.language }}-summary.md"  { echo "# CodeQL Report — ${{ matrix.language }}" echo "" echo "- **Repository:** \`${{ github.repository }}\`" echo "- **Commit:** \`${{ github.sha }}\`" echo "- **Run:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" echo "- **Job status:** ${{ job.status }}" echo "- **Analyze outcome:** ${{ steps.codeql.outcome }}" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`" echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" echo "" if compgen -G "$SARIF_DIR/*.sarif" > /dev/null; then echo "## SARIF files produced" echo "" for f in "$SARIF_DIR"/*.sarif; do size=$(wc -c < "$f") counts=$(python -c "import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[])) for r in runs);results=sum(len(r.get('results',[])) for r in runs);print(f'rules={rules}, results={results}')" "$f" 2>/dev/null || echo "rules=?, results=?") echo "- \`$(basename "$f")\` (${size} bytes, ${counts})" done else echo "_No SARIF files were produced for this language._" fi } > "$SUMMARY"  cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"  cat > ".codex/contracts/output-contract-codeql-${{ matrix.language }}.json" <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "codeql-scan", "language": "${{ matrix.language }}", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ "codeql-sarif/${{ matrix.language }}", "codeql-reports/codeql-${{ matrix.language }}-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload CodeQL artifacts if: always() uses: actions/upload-artifact@v5 with: name: security-suite-codeql-${{ matrix.language }}
+          SARIF_DIR="codeql-sarif/${{ matrix.language }}"
+          SUMMARY="codeql-reports/codeql-${{ matrix.language }}-summary.md"
+
+          {
+            echo "# CodeQL Report — ${{ matrix.language }}"
+            echo ""
+            echo "- **Repository:** \`${{ github.repository }}\`"
+            echo "- **Commit:** \`${{ github.sha }}\`"
+            echo "- **Run:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "- **Job status:** ${{ job.status }}"
+            echo "- **Analyze outcome:** ${{ steps.codeql.outcome }}"
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+            echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+            echo ""
+            if compgen -G "$SARIF_DIR/*.sarif" > /dev/null; then
+              echo "## SARIF files produced"
+              echo ""
+              for f in "$SARIF_DIR"/*.sarif; do
+                size=$(wc -c < "$f")
+                counts=$(python -c "import json,sys;d=json.load(open(sys.argv[1]));runs=d.get('runs',[]);rules=sum(len(r.get('tool',{}).get('driver',{}).get('rules',[])) for r in runs);results=sum(len(r.get('results',[])) for r in runs);print(f'rules={rules}, results={results}')" "$f" 2>/dev/null || echo "rules=?, results=?")
+                echo "- \`$(basename "$f")\` (${size} bytes, ${counts})"
+              done
+            else
+              echo "_No SARIF files were produced for this language._"
+            fi
+          } > "$SUMMARY"
+
+          cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+
+          cat > ".codex/contracts/output-contract-codeql-${{ matrix.language }}.json" <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "codeql-scan",
+            "language": "${{ matrix.language }}",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "codeql-sarif/${{ matrix.language }}",
+              "codeql-reports/codeql-${{ matrix.language }}-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload CodeQL artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-codeql-${{ matrix.language }}
           path: |
-            codeql-sarif/${{ matrix.language }}/ codeql-reports/codeql-${{ matrix.language }}-summary.md .codex/contracts/output-contract-codeql-${{ matrix.language }}.json if-no-files-found: warn retention-days: 30  semgrep: name: Semgrep SAST (SARIF Upload) runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 30 if: | (github.event_name == 'push') || (github.event_name == 'pull_request') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'semgrep')) || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'semgrep')) permissions: contents: read security-events: write pull-requests: write issues: write steps: - uses: actions/checkout@v5 with: persist-credentials: false - name: Set up Python uses: ./.github/actions/setup-python-cached with: python-version: ${{ env.PYTHON_VERSION }}
+            codeql-sarif/${{ matrix.language }}/
+            codeql-reports/codeql-${{ matrix.language }}-summary.md
+            .codex/contracts/output-contract-codeql-${{ matrix.language }}.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  semgrep:
+    name: Semgrep SAST (SARIF Upload)
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'semgrep')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'semgrep'))
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+        persist-credentials: false
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: live
+
       - name: Install Semgrep
         run: pip install semgrep
+
       - name: Run Semgrep scan (SARIF)
         id: semgrep
         continue-on-error: true
@@ -278,6 +370,7 @@ jobs:
               echo "Primary configs failed, falling back to auto..."
               semgrep scan --config=auto --sarif --output=semgrep-results.sarif 2>&1 | tee semgrep-scan-fallback.log
             }
+
       - name: Run Semgrep scan (JSON)
         continue-on-error: true
         run: |
@@ -292,10 +385,12 @@ jobs:
               echo "Primary configs failed for JSON output, falling back to auto..."
               semgrep scan --config=auto --json --output=semgrep-results.json 2>&1 | tee semgrep-scan-json-fallback.log
             }
+
       - name: Chunk SARIF results
         if: always() && hashFiles('semgrep-results.sarif') != ''
         run: |
           python scripts/chunk_sarif.py semgrep-results.sarif sarif-chunks/ --chunk-size 4999 --base-name semgrep --verbose
+
       - name: Upload chunked SARIF to GitHub Security
         if: always() && hashFiles('sarif-chunks/*.sarif') != ''
         env:
@@ -309,20 +404,286 @@ jobs:
               --method POST \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              "/repos/${{ github.repository }}/code-scanning/sarifs" \ -F "sarif=@$sarif_file" \ -F "commit_sha=${{ github.sha }}" \ -F "ref=${{ github.ref }}" \ -F "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \ -F "tool_name=Semgrep" \ -F "category=semgrep-chunk-$chunk_suffix" \ || true done - name: Generate Semgrep summary + contract if: always() shell: bash run: | set -euo pipefail RESULTS=0 ERRORS=0 CHUNK_COUNT=0  if [ -f semgrep-results.json ]; then RESULTS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[]) or []))" 2>/dev/null || echo 0) ERRORS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[]) or []))" 2>/dev/null || echo 0) fi if [ -d sarif-chunks ]; then CHUNK_COUNT=$(find sarif-chunks -name '*.sarif' 2>/dev/null | wc -l | tr -d ' ') fi  { echo "# Semgrep SAST Report" echo "" echo "- **Findings (results):** ${RESULTS}" echo "- **Scanner errors:** ${ERRORS}" echo "- **SARIF chunks uploaded to GHAS:** ${CHUNK_COUNT}" echo "- **Scan outcome:** ${{ steps.semgrep.outcome }}" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" } > semgrep-summary.md cat semgrep-summary.md >> "$GITHUB_STEP_SUMMARY"  mkdir -p .codex/contracts cat > .codex/contracts/output-contract-semgrep.json <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "semgrep", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ "semgrep-results.sarif", "semgrep-results.json", "semgrep-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload Semgrep results artifact if: always() uses: actions/upload-artifact@v5 with: name: security-suite-semgrep path: | semgrep-results.sarif semgrep-results.json sarif-chunks/ semgrep-scan.log semgrep-scan-fallback.log semgrep-scan-json.log semgrep-scan-json-fallback.log semgrep-summary.md .codex/contracts/output-contract-semgrep.json if-no-files-found: warn retention-days: 30  container-scan: name: Container Security Scan (Trivy) runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 30 if: | (github.event_name == 'push') || (github.event_name == 'pull_request') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'containers')) || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'containers')) permissions: contents: read security-events: write strategy: fail-fast: false matrix: dockerfile: - .config/Dockerfile - docker/Dockerfile.cpu - docker/Dockerfile.gpu steps: - uses: actions/checkout@v5 with: persist-credentials: false - name: Build Docker image for scanning continue-on-error: true run: | docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true - name: Run Trivy filesystem scan uses: aquasecurity/trivy-action@0.35.0 with: scan-type: fs scan-ref: . format: sarif output: trivy-results-${{ strategy.job-index }}.sarif severity: CRITICAL,HIGH exit-code: '0' - name: Upload SARIF to GitHub Security tab if: always() uses: github/codeql-action/upload-sarif@v3 with: sarif_file: trivy-results-${{ strategy.job-index }}.sarif - name: Generate container scan summary + contract if: always() shell: bash run: | set -euo pipefail mkdir -p .codex/contracts  { echo "# Container Security Scan Report" echo "- **Dockerfile:** ${{ matrix.dockerfile }}" echo "- **Scan outcome:** ${{ job.status }}" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`" } > container-scan-summary-${{ strategy.job-index }}.md  cat > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json <<'EOFJ' { "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}", "job": "container-scan", "matrix_index": "${{ strategy.job-index }}", "dockerfile": "${{ matrix.dockerfile }}", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "status": "${{ job.status }}" } EOFJ - name: Upload container scan artifacts if: always() uses: actions/upload-artifact@v5 with: name: security-suite-container-${{ strategy.job-index }}
+              "/repos/${{ github.repository }}/code-scanning/sarifs" \
+              -F "sarif=@$sarif_file" \
+              -F "commit_sha=${{ github.sha }}" \
+              -F "ref=${{ github.ref }}" \
+              -F "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              -F "tool_name=Semgrep" \
+              -F "category=semgrep-chunk-$chunk_suffix" \
+              || true
+          done
+
+      - name: Generate Semgrep summary + contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESULTS=0
+          ERRORS=0
+          CHUNK_COUNT=0
+
+          if [ -f semgrep-results.json ]; then
+            RESULTS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('results',[]) or []))" 2>/dev/null || echo 0)
+            ERRORS=$(python -c "import json;d=json.load(open('semgrep-results.json'));print(len(d.get('errors',[]) or []))" 2>/dev/null || echo 0)
+          fi
+          if [ -d sarif-chunks ]; then
+            CHUNK_COUNT=$(find sarif-chunks -name '*.sarif' 2>/dev/null | wc -l | tr -d ' ')
+          fi
+
+          {
+            echo "# Semgrep SAST Report"
+            echo ""
+            echo "- **Findings (results):** ${RESULTS}"
+            echo "- **Scanner errors:** ${ERRORS}"
+            echo "- **SARIF chunks uploaded to GHAS:** ${CHUNK_COUNT}"
+            echo "- **Scan outcome:** ${{ steps.semgrep.outcome }}"
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          } > semgrep-summary.md
+          cat semgrep-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          mkdir -p .codex/contracts
+          cat > .codex/contracts/output-contract-semgrep.json <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "semgrep",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "semgrep-results.sarif",
+              "semgrep-results.json",
+              "semgrep-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload Semgrep results artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-semgrep
           path: |
-           trivy-results-${{ strategy.job-index }}.sarif container-scan-summary-${{ strategy.job-index }}.md .codex/contracts/output-contract-container-${{ strategy.job-index }}.json if-no-files-found: warn retention-days: 30  cve-scan: name: CVE & Dependency Audit runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 30 if: | (github.event_name == 'pull_request') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'cve')) || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'cve')) permissions: contents: read security-events: write pull-requests: write strategy: fail-fast: false matrix: ecosystem: - python - javascript - rust steps: - uses: actions/checkout@v5 with: persist-credentials: false - name: Cache Python dependencies (Layer 1) uses: actions/cache@v5 with: path: ~/.cache/pip key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+            semgrep-results.sarif
+            semgrep-results.json
+            sarif-chunks/
+            semgrep-scan.log
+            semgrep-scan-fallback.log
+            semgrep-scan-json.log
+            semgrep-scan-json-fallback.log
+            semgrep-summary.md
+            .codex/contracts/output-contract-semgrep.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  container-scan:
+    name: Container Security Scan (Trivy)
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'containers')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'containers'))
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - .config/Dockerfile
+          - docker/Dockerfile.cpu
+          - docker/Dockerfile.gpu
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Build Docker image for scanning
+        continue-on-error: true
+        run: |
+          docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results-${{ strategy.job-index }}.sarif
+          severity: CRITICAL,HIGH
+          exit-code: '0'
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ strategy.job-index }}.sarif
+
+      - name: Generate container scan summary + contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          {
+           echo "# Container Security Scan Report"
+           echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
+           echo "- **Scan outcome:** ${{ job.status }}"
+           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+           echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          } > container-scan-summary-${{ strategy.job-index }}.md
+
+          cat > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json <<'EOFJ'
+          {
+           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
+           "job": "container-scan",
+           "matrix_index": "${{ strategy.job-index }}",
+           "dockerfile": "${{ matrix.dockerfile }}",
+           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+           "status": "${{ job.status }}"
+          }
+          EOFJ
+
+      - name: Upload container scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-container-${{ strategy.job-index }}
+          path: |
+           trivy-results-${{ strategy.job-index }}.sarif
+           container-scan-summary-${{ strategy.job-index }}.md
+           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  cve-scan:
+    name: CVE & Dependency Audit
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'cve')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'cve'))
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        ecosystem:
+          - python
+          - javascript
+          - rust
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
-           ${{ runner.os }}-pip-  - if: matrix.ecosystem == 'python' name: Scan Python dependencies (pip-audit) continue-on-error: true run: | pip install pip-audit pip-audit --json --output python-cve-audit.json || true pip-audit --desc || true  - if: matrix.ecosystem == 'javascript' && hashFiles('package.json') != '' name: Scan JavaScript dependencies (npm audit) continue-on-error: true run: | npm audit --json > javascript-cve-audit.json || true npm audit || true  - if: matrix.ecosystem == 'rust' && hashFiles('Cargo.toml') != '' name: Scan Rust dependencies (cargo-audit) continue-on-error: true run: | cargo install cargo-audit cargo audit --json > rust-cve-audit.json || true cargo audit || true - name: Generate CVE summary + contract if: always() shell: bash run: | set -euo pipefail mkdir -p .codex/contracts  { echo "# CVE & Dependency Audit Report" echo "- **Ecosystem:** ${{ matrix.ecosystem }}" echo "- **Scan outcome:** ${{ job.status }}" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" } > cve-scan-summary-${{ matrix.ecosystem }}.md  cat > .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json <<'EOFJ' { "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}", "job": "cve-scan", "ecosystem": "${{ matrix.ecosystem }}", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "status": "${{ job.status }}" } EOFJ - name: Upload CVE scan artifacts if: always() uses: actions/upload-artifact@v5 with: name: security-suite-cve-${{ matrix.ecosystem }}
+           ${{ runner.os }}-pip-
+
+      - if: matrix.ecosystem == 'python'
+        name: Scan Python dependencies (pip-audit)
+        continue-on-error: true
+        run: |
+          pip install pip-audit
+          pip-audit --json --output python-cve-audit.json || true
+          pip-audit --desc || true
+
+      - if: matrix.ecosystem == 'javascript' && hashFiles('package.json') != ''
+        name: Scan JavaScript dependencies (npm audit)
+        continue-on-error: true
+        run: |
+          npm audit --json > javascript-cve-audit.json || true
+          npm audit || true
+
+      - if: matrix.ecosystem == 'rust' && hashFiles('Cargo.toml') != ''
+        name: Scan Rust dependencies (cargo-audit)
+        continue-on-error: true
+        run: |
+          cargo install cargo-audit
+          cargo audit --json > rust-cve-audit.json || true
+          cargo audit || true
+
+      - name: Generate CVE summary + contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          {
+           echo "# CVE & Dependency Audit Report"
+           echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
+           echo "- **Scan outcome:** ${{ job.status }}"
+           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          } > cve-scan-summary-${{ matrix.ecosystem }}.md
+
+          cat > .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json <<'EOFJ'
+          {
+           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
+           "job": "cve-scan",
+           "ecosystem": "${{ matrix.ecosystem }}",
+           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+           "status": "${{ job.status }}"
+          }
+          EOFJ
+
+      - name: Upload CVE scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-cve-${{ matrix.ecosystem }}
           path: |
            *-cve-audit.json
-           cve-scan-summary-${{ matrix.ecosystem }}.md .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json if-no-files-found: warn retention-days: 30  dependency-scan: name: Dependency Security Scan runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 60 if: | (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'dependency')) || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'dependency')) steps: - uses: actions/checkout@v5 with: persist-credentials: false  - uses: ./.github/actions/setup-python-cached with: python-version: ${{ env.PYTHON_VERSION }}
+           cve-scan-summary-${{ matrix.ecosystem }}.md
+           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 60
+    if: |
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'dependency')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
+    steps:
+      - uses: actions/checkout@v5
+        with:
+        persist-credentials: false
+
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
+
       - name: Install security tools
         run: |
           pip install --upgrade pip
           pip install safety pip-audit
           pip freeze > installed-packages.txt
+
       - name: Run pip-audit and Safety
         continue-on-error: true
         run: |
@@ -331,6 +692,7 @@ jobs:
           pip-audit --format cyclonedx-json --output pip-audit-cyclonedx.json 2>&1 | tee pip-audit-cyclonedx.log || true
           safety check --json --output safety.json 2>&1 | tee safety-json.log || true
           safety check 2>&1 | tee safety-report.txt || true
+
       - name: Generate dependency summary + contract
         if: always()
         shell: bash
@@ -350,12 +712,71 @@ jobs:
             echo "# Dependency Scan Report"
             echo "- **pip-audit vulnerabilities:** ${PIP_AUDIT_COUNT}"
             echo "- **Safety vulnerabilities:** ${SAFETY_COUNT}"
-            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" } > dependency-scan-summary.md cat dependency-scan-summary.md >> "$GITHUB_STEP_SUMMARY"  mkdir -p .codex/contracts cat > .codex/contracts/output-contract-dependency.json <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "dependency-scan", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ "pip-audit.json", "safety.json", "dependency-scan-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload dependency artifacts if: always() uses: actions/upload-artifact@v5 with: name: security-suite-dependency path: | pip-audit.json pip-audit-cyclonedx.json pip-audit-report.txt safety.json safety-report.txt installed-packages.txt dependency-scan-summary.md pip-audit-json.log pip-audit-cyclonedx.log safety-json.log .codex/contracts/output-contract-dependency.json if-no-files-found: warn retention-days: 30  secret-scan: name: Secret Scanning runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 60 if: | (github.event_name == 'workflow_dispatch' && github.event.inputs.scan-type == 'all') || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all')) steps: - uses: actions/checkout@v5 with: persist-credentials: false fetch-depth: 0  - uses: ./.github/actions/setup-python-cached with: python-version: ${{ env.PYTHON_VERSION }}
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          } > dependency-scan-summary.md
+          cat dependency-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          mkdir -p .codex/contracts
+          cat > .codex/contracts/output-contract-dependency.json <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "dependency-scan",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "pip-audit.json",
+              "safety.json",
+              "dependency-scan-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload dependency artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-dependency
+          path: |
+            pip-audit.json
+            pip-audit-cyclonedx.json
+            pip-audit-report.txt
+            safety.json
+            safety-report.txt
+            installed-packages.txt
+            dependency-scan-summary.md
+            pip-audit-json.log
+            pip-audit-cyclonedx.log
+            safety-json.log
+            .codex/contracts/output-contract-dependency.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 60
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.scan-type == 'all') ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all'))
+    steps:
+      - uses: actions/checkout@v5
+        with:
+        persist-credentials: false
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral
+
       - name: Install detect-secrets
         run: |
           pip install --upgrade pip
           pip install detect-secrets
+
       - name: Run detect-secrets
         id: detect-secrets
         continue-on-error: true
@@ -367,6 +788,7 @@ jobs:
             > .secrets.baseline 2> detect-secrets.log
           SECRETS_COUNT=$(python -c "import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results') or {}).values())))" 2>/dev/null || echo "0")
           echo "secrets_found=$SECRETS_COUNT" >> "$GITHUB_OUTPUT"
+
       - name: Generate secret summary + contract
         if: always()
         shell: bash
@@ -391,8 +813,61 @@ jobs:
 
           {
             echo "# Secret Scan Report"
-            echo "- **Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found || 0 }}" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" } > secret-scan-summary.md cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"  mkdir -p .codex/contracts cat > .codex/contracts/output-contract-secrets.json <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "secret-scan", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ ".secrets.baseline", "detect-secrets-summary.json", "secret-scan-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload secret scan artifacts if: always() uses: actions/upload-artifact@v5 with: name: security-suite-secrets path: | .secrets.baseline detect-secrets-summary.json detect-secrets.log secret-scan-summary.md .codex/contracts/output-contract-secrets.json if-no-files-found: warn retention-days: 30  sbom-generation: name: SBOM Generation runs-on: ubuntu-latest needs: lane-metadata-contract timeout-minutes: 60 if: | (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') || (github.event_name == 'workflow_dispatch' && github.event.inputs.scan-type == 'all') || (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all')) steps: - uses: actions/checkout@v5 with: persist-credentials: false  - uses: ./.github/actions/setup-python-cached with: python-version: ${{ env.PYTHON_VERSION }}
+            echo "- **Secrets found:** ${{ steps.detect-secrets.outputs.secrets_found || 0 }}"
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          } > secret-scan-summary.md
+          cat secret-scan-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          mkdir -p .codex/contracts
+          cat > .codex/contracts/output-contract-secrets.json <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "secret-scan",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              ".secrets.baseline",
+              "detect-secrets-summary.json",
+              "secret-scan-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload secret scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-secrets
+          path: |
+            .secrets.baseline
+            detect-secrets-summary.json
+            detect-secrets.log
+            secret-scan-summary.md
+            .codex/contracts/output-contract-secrets.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  sbom-generation:
+    name: SBOM Generation
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 60
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.scan-type == 'all') ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all'))
+    steps:
+      - uses: actions/checkout@v5
+        with:
+        persist-credentials: false
+
+      - uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
+
       - name: Install SBOM tools
         run: |
           pip install --upgrade pip
@@ -400,11 +875,13 @@ jobs:
           cyclonedx-py --version > sbom-tool-versions.txt 2>&1 || true
           python --version >> sbom-tool-versions.txt
           pip --version >> sbom-tool-versions.txt
+
       - name: Generate SBOM
         run: |
           set -euo pipefail
           cyclonedx-py environment --of JSON -o sbom.json 2>&1 | tee sbom-json.log
           cyclonedx-py environment --of XML -o sbom.xml 2>&1 | tee sbom-xml.log
+
       - name: Generate SBOM summary + contract
         if: always()
         shell: bash
@@ -417,7 +894,164 @@ jobs:
           {
             echo "# SBOM Report"
             echo "- **Components:** ${COMPONENT_COUNT}"
-            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" } > sbom-summary.md cat sbom-summary.md >> "$GITHUB_STEP_SUMMARY"  mkdir -p .codex/contracts cat > .codex/contracts/output-contract-sbom.json <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "sbom-generation", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ "sbom.json", "sbom.xml", "sbom-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload SBOM artifact if: always() uses: actions/upload-artifact@v5 with: name: security-suite-sbom path: | sbom.json sbom.xml sbom-tool-versions.txt sbom-summary.md sbom-json.log sbom-xml.log .codex/contracts/output-contract-sbom.json if-no-files-found: warn retention-days: 90  security-suite-summary: name: Security Suite Summary runs-on: ubuntu-latest needs: - lane-metadata-contract - codeql-scan - container-scan - cve-scan - dependency-scan - secret-scan - sbom-generation - semgrep if: always() timeout-minutes: 60 steps: - name: Download all security-suite artifacts uses: actions/download-artifact@v5 with: path: security-suite-artifacts/ pattern: security-suite-* merge-multiple: false continue-on-error: true - name: Build consolidated security summary if: always() shell: bash run: | set -euo pipefail RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" ARTIFACTS_URL="${RUN_URL}#artifacts" SECURITY_URL="${{ github.server_url }}/${{ github.repository }}/security/code-scanning" mkdir -p security-suite-summary .codex/contracts OUT="security-suite-summary/security-suite-summary.md"  { echo "# 🔐 Security Scanning Suite Summary" echo "" echo "- **Repository:** \`${{ github.repository }}\`" echo "- **Commit:** \`${{ github.sha }}\`" echo "- **Workflow run:** [#${{ github.run_number }}](${RUN_URL})" echo "- **Artifacts:** [open dropdown](${ARTIFACTS_URL})" echo "- **GHAS code-scanning alerts:** [open](${SECURITY_URL})" echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`" echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`" echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`" echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`" echo "" echo "## Job Results" echo "" echo "| Job | Result |" echo "|---|---|" echo "| codeql-scan | ${{ needs.codeql-scan.result }} |" echo "| container-scan | ${{ needs.container-scan.result }} |" echo "| cve-scan | ${{ needs.cve-scan.result }} |" echo "| semgrep | ${{ needs.semgrep.result }} |" echo "| dependency-scan | ${{ needs.dependency-scan.result }} |" echo "| secret-scan | ${{ needs.secret-scan.result }} |" echo "| sbom-generation | ${{ needs.sbom-generation.result }} |" echo "" } > "$OUT"  cat "$OUT" >> "$GITHUB_STEP_SUMMARY"  cat > .codex/contracts/output-contract-summary.json <<EOF { "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}", "job": "security-suite-summary", "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}", "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "required_outputs": [ "security-suite-summary/security-suite-summary.md" ], "status": "${{ job.status }}" } EOF - name: Upload consolidated summary if: always() uses: actions/upload-artifact@v5 with: name: security-suite-summary path: | security-suite-summary/ .codex/contracts/output-contract-summary.json if-no-files-found: warn retention-days: 30  aggregate-all-findings: name: Aggregate All Security Findings runs-on: ubuntu-latest needs: - lane-metadata-contract - security-suite-summary if: always() timeout-minutes: 40 permissions: contents: read steps: - name: Checkout repository uses: actions/checkout@v5 with: persist-credentials: false - name: Download all security-suite artifacts uses: actions/download-artifact@v5 with: path: security-suite-artifacts/ pattern: security-suite-* merge-multiple: false continue-on-error: true - name: Set up Python uses: actions/setup-python@v6 with: python-version: '3.12' cache: pip - name: Run findings aggregator + normalized exports id: aggregate env: GITHUB_REPOSITORY: ${{ github.repository }}
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+          } > sbom-summary.md
+          cat sbom-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          mkdir -p .codex/contracts
+          cat > .codex/contracts/output-contract-sbom.json <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "sbom-generation",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "sbom.json",
+              "sbom.xml",
+              "sbom-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload SBOM artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-sbom
+          path: |
+            sbom.json
+            sbom.xml
+            sbom-tool-versions.txt
+            sbom-summary.md
+            sbom-json.log
+            sbom-xml.log
+            .codex/contracts/output-contract-sbom.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  security-suite-summary:
+    name: Security Suite Summary
+    runs-on: ubuntu-latest
+    needs:
+      - lane-metadata-contract
+      - codeql-scan
+      - container-scan
+      - cve-scan
+      - dependency-scan
+      - secret-scan
+      - sbom-generation
+      - semgrep
+    if: always()
+    timeout-minutes: 60
+    steps:
+      - name: Download all security-suite artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: security-suite-artifacts/
+          pattern: security-suite-*
+          merge-multiple: false
+        continue-on-error: true
+
+      - name: Build consolidated security summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ARTIFACTS_URL="${RUN_URL}#artifacts"
+          SECURITY_URL="${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+          mkdir -p security-suite-summary .codex/contracts
+          OUT="security-suite-summary/security-suite-summary.md"
+
+          {
+            echo "# 🔐 Security Scanning Suite Summary"
+            echo ""
+            echo "- **Repository:** \`${{ github.repository }}\`"
+            echo "- **Commit:** \`${{ github.sha }}\`"
+            echo "- **Workflow run:** [#${{ github.run_number }}](${RUN_URL})"
+            echo "- **Artifacts:** [open dropdown](${ARTIFACTS_URL})"
+            echo "- **GHAS code-scanning alerts:** [open](${SECURITY_URL})"
+            echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+            echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+            echo "- **CodeQL Wave:** \`${{ needs.lane-metadata-contract.outputs.codeql_wave }}\`"
+            echo "- **Input Lock SHA:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
+            echo ""
+            echo "## Job Results"
+            echo ""
+            echo "| Job | Result |"
+            echo "|---|---|"
+            echo "| codeql-scan | ${{ needs.codeql-scan.result }} |"
+            echo "| container-scan | ${{ needs.container-scan.result }} |"
+            echo "| cve-scan | ${{ needs.cve-scan.result }} |"
+            echo "| semgrep | ${{ needs.semgrep.result }} |"
+            echo "| dependency-scan | ${{ needs.dependency-scan.result }} |"
+            echo "| secret-scan | ${{ needs.secret-scan.result }} |"
+            echo "| sbom-generation | ${{ needs.sbom-generation.result }} |"
+            echo ""
+          } > "$OUT"
+
+          cat "$OUT" >> "$GITHUB_STEP_SUMMARY"
+
+          cat > .codex/contracts/output-contract-summary.json <<EOF
+          {
+            "schema_version": "${SECURITY_ARTIFACT_SCHEMA_VERSION}",
+            "job": "security-suite-summary",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "security-suite-summary/security-suite-summary.md"
+            ],
+            "status": "${{ job.status }}"
+          }
+          EOF
+
+      - name: Upload consolidated summary
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-summary
+          path: |
+            security-suite-summary/
+            .codex/contracts/output-contract-summary.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  aggregate-all-findings:
+    name: Aggregate All Security Findings
+    runs-on: ubuntu-latest
+    needs:
+      - lane-metadata-contract
+      - security-suite-summary
+    if: always()
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+            persist-credentials: false
+
+      - name: Download all security-suite artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: security-suite-artifacts/
+          pattern: security-suite-*
+          merge-multiple: false
+        continue-on-error: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Run findings aggregator + normalized exports
+        id: aggregate
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_SERVER_URL: ${{ github.server_url }}
@@ -484,7 +1118,171 @@ jobs:
           schema={
             "schema_version":"1.0.0",
             "generated_at":datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "repository":"${{ github.repository }}", "run_id":"${{ github.run_id }}", "sha":"${{ github.sha }}", "lane_id":"${{ needs.lane-metadata-contract.outputs.lane_id }}", "shard_id":"${{ needs.lane-metadata-contract.outputs.shard_id }}", "codeql_wave":"${{ needs.lane-metadata-contract.outputs.codeql_wave }}" } json.dump(schema, open("security/codeql-schema-version.json","w"), indent=2)  prov={ "schema_version":"1.0.0", "input_lock_sha256":"${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}", "source_run_id":"${{ github.run_id }}", "source_sha":"${{ github.sha }}", "source_repository":"${{ github.repository }}", "artifacts_pattern":"security-suite-*" } json.dump(prov, open("security/artifact-provenance.json","w"), indent=2)  lock_material = "\n".join([ "${{ github.repository }}", "${{ github.sha }}", "${{ github.run_id }}", "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}" ]) lock_hash = hashlib.sha256(lock_material.encode()).hexdigest() json.dump({ "schema_version":"1.0.0", "remediation_input_lock_sha256": lock_hash }, open("security/remediation-input-lock.json","w"), indent=2) PY  python -c " import json with open('.codex/security-findings-comprehensive.json') as f: data = json.load(f) summary = data.get('summary',{}) print(f\"CRITICAL={summary.get('critical_count',0)}\") print(f\"HIGH={summary.get('high_count',0)}\") print(f\"MEDIUM={summary.get('medium_count',0)}\") print(f\"LOW={summary.get('low_count',0)}\") print(f\"TOTAL={summary.get('total_findings',0)}\") " >> "$GITHUB_OUTPUT" - name: Upload comprehensive findings artifact if: always() uses: actions/upload-artifact@v5 with: name: security-suite-comprehensive-findings path: | .codex/security-findings-comprehensive.json security-findings-comprehensive.md security/codeql-alert-inventory.csv security/codeql-family-index.csv security/codeql-priority-queue.csv security/codeql-schema-version.json security/artifact-provenance.json security/remediation-input-lock.json if-no-files-found: warn retention-days: 90 - name: Summary if: always() run: | echo "## Security Findings Aggregation" >> "$GITHUB_STEP_SUMMARY" echo "" >> "$GITHUB_STEP_SUMMARY" echo "**Total Findings:** ${{ steps.aggregate.outputs.TOTAL || 'N/A' }}" >> "$GITHUB_STEP_SUMMARY" echo "**Critical:** ${{ steps.aggregate.outputs.CRITICAL || '0' }}" >> "$GITHUB_STEP_SUMMARY" echo "**High:** ${{ steps.aggregate.outputs.HIGH || '0' }}" >> "$GITHUB_STEP_SUMMARY" echo "**Medium:** ${{ steps.aggregate.outputs.MEDIUM || '0' }}" >> "$GITHUB_STEP_SUMMARY" echo "**Low:** ${{ steps.aggregate.outputs.LOW || '0' }}" >> "$GITHUB_STEP_SUMMARY" echo "**Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}" >> "$GITHUB_STEP_SUMMARY" echo "**Input Lock SHA:** ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}" >> "$GITHUB_STEP_SUMMARY"  validate-security-artifact-contract: name: Validate Security Artifact Contract runs-on: ubuntu-latest needs: - lane-metadata-contract - aggregate-all-findings if: always() timeout-minutes: 20 steps: - name: Download comprehensive findings artifact uses: actions/download-artifact@v5 with: name: security-suite-comprehensive-findings path: contract-input/ continue-on-error: false - name: Debug contract input file listing if: always() run: | echo "## Contract input files" find contract-input -maxdepth 5 -type f | sort - name: Validate required files and schema shell: bash run: | set -euo pipefail REQUIRED=( "contract-input/.codex/security-findings-comprehensive.json" "contract-input/security-findings-comprehensive.md" "contract-input/security/codeql-alert-inventory.csv" "contract-input/security/codeql-family-index.csv" "contract-input/security/codeql-priority-queue.csv" "contract-input/security/codeql-schema-version.json" "contract-input/security/artifact-provenance.json" "contract-input/security/remediation-input-lock.json" )  FAIL=0 for f in "${REQUIRED[@]}"; do if [ ! -f "$f" ]; then echo "::error::Missing required artifact contract file: $f" FAIL=1 fi done  python - <<'PY' import json,sys try: s=json.load(open("contract-input/security/codeql-schema-version.json")) p=json.load(open("contract-input/security/artifact-provenance.json")) l=json.load(open("contract-input/security/remediation-input-lock.json")) assert "schema_version" in s assert "input_lock_sha256" in p assert "remediation_input_lock_sha256" in l print("Schema contract validation passed") except Exception as e: print(f"Schema validation failed: {e}") sys.exit(1) PY  if [ "$FAIL" -ne 0 ]; then exit 1 fi - name: Build contract report if: always() run: | { echo "# Security Artifact Contract Report" echo "" echo "- **Status:** ${{ job.status }}" echo "- **Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}" echo "- **Input Lock SHA:** ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}" } > security-artifact-contract-report.md cat security-artifact-contract-report.md >> "$GITHUB_STEP_SUMMARY" - name: Upload contract report if: always() uses: actions/upload-artifact@v5 with: name: security-suite-artifact-contract-report path: security-artifact-contract-report.md if-no-files-found: warn retention-days: 30  cache-findings: name: Cache Security Findings runs-on: ubuntu-latest needs: - validate-security-artifact-contract if: ${{ needs.validate-security-artifact-contract.result == 'success' }}
+            "repository":"${{ github.repository }}",
+            "run_id":"${{ github.run_id }}",
+            "sha":"${{ github.sha }}",
+            "lane_id":"${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id":"${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "codeql_wave":"${{ needs.lane-metadata-contract.outputs.codeql_wave }}"
+          }
+          json.dump(schema, open("security/codeql-schema-version.json","w"), indent=2)
+
+          prov={
+            "schema_version":"1.0.0",
+            "input_lock_sha256":"${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "source_run_id":"${{ github.run_id }}",
+            "source_sha":"${{ github.sha }}",
+            "source_repository":"${{ github.repository }}",
+            "artifacts_pattern":"security-suite-*"
+          }
+          json.dump(prov, open("security/artifact-provenance.json","w"), indent=2)
+
+          lock_material = "\n".join([
+            "${{ github.repository }}",
+            "${{ github.sha }}",
+            "${{ github.run_id }}",
+            "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}"
+          ])
+          lock_hash = hashlib.sha256(lock_material.encode()).hexdigest()
+          json.dump({
+            "schema_version":"1.0.0",
+            "remediation_input_lock_sha256": lock_hash
+          }, open("security/remediation-input-lock.json","w"), indent=2)
+          PY
+
+          python -c "
+          import json
+          with open('.codex/security-findings-comprehensive.json') as f:
+            data = json.load(f)
+          summary = data.get('summary',{})
+          print(f\"CRITICAL={summary.get('critical_count',0)}\")
+          print(f\"HIGH={summary.get('high_count',0)}\")
+          print(f\"MEDIUM={summary.get('medium_count',0)}\")
+          print(f\"LOW={summary.get('low_count',0)}\")
+          print(f\"TOTAL={summary.get('total_findings',0)}\")
+          " >> "$GITHUB_OUTPUT"
+
+      - name: Upload comprehensive findings artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-comprehensive-findings
+          path: |
+            .codex/security-findings-comprehensive.json
+            security-findings-comprehensive.md
+            security/codeql-alert-inventory.csv
+            security/codeql-family-index.csv
+            security/codeql-priority-queue.csv
+            security/codeql-schema-version.json
+            security/artifact-provenance.json
+            security/remediation-input-lock.json
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Security Findings Aggregation" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Total Findings:** ${{ steps.aggregate.outputs.TOTAL || 'N/A' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Critical:** ${{ steps.aggregate.outputs.CRITICAL || '0' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**High:** ${{ steps.aggregate.outputs.HIGH || '0' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Medium:** ${{ steps.aggregate.outputs.MEDIUM || '0' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Low:** ${{ steps.aggregate.outputs.LOW || '0' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Input Lock SHA:** ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}" >> "$GITHUB_STEP_SUMMARY"
+
+  validate-security-artifact-contract:
+    name: Validate Security Artifact Contract
+    runs-on: ubuntu-latest
+    needs:
+      - lane-metadata-contract
+      - aggregate-all-findings
+    if: always()
+    timeout-minutes: 20
+    steps:
+      - name: Download comprehensive findings artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: security-suite-comprehensive-findings
+          path: contract-input/
+        continue-on-error: false
+
+      - name: Debug contract input file listing
+        if: always()
+        run: |
+          echo "## Contract input files"
+          find contract-input -maxdepth 5 -type f | sort
+
+      - name: Validate required files and schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUIRED=(
+            "contract-input/.codex/security-findings-comprehensive.json"
+            "contract-input/security-findings-comprehensive.md"
+            "contract-input/security/codeql-alert-inventory.csv"
+            "contract-input/security/codeql-family-index.csv"
+            "contract-input/security/codeql-priority-queue.csv"
+            "contract-input/security/codeql-schema-version.json"
+            "contract-input/security/artifact-provenance.json"
+            "contract-input/security/remediation-input-lock.json"
+          )
+
+          FAIL=0
+          for f in "${REQUIRED[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing required artifact contract file: $f"
+              FAIL=1
+            fi
+          done
+
+          python - <<'PY'
+          import json,sys
+          try:
+            s=json.load(open("contract-input/security/codeql-schema-version.json"))
+            p=json.load(open("contract-input/security/artifact-provenance.json"))
+            l=json.load(open("contract-input/security/remediation-input-lock.json"))
+            assert "schema_version" in s
+            assert "input_lock_sha256" in p
+            assert "remediation_input_lock_sha256" in l
+            print("Schema contract validation passed")
+          except Exception as e:
+            print(f"Schema validation failed: {e}")
+            sys.exit(1)
+          PY
+
+          if [ "$FAIL" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Build contract report
+        if: always()
+        run: |
+          {
+            echo "# Security Artifact Contract Report"
+            echo ""
+            echo "- **Status:** ${{ job.status }}"
+            echo "- **Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}"
+            echo "- **Input Lock SHA:** ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}"
+          } > security-artifact-contract-report.md
+          cat security-artifact-contract-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload contract report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-artifact-contract-report
+          path: security-artifact-contract-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+  cache-findings:
+    name: Cache Security Findings
+    runs-on: ubuntu-latest
+    needs:
+      - validate-security-artifact-contract
+    if: ${{ needs.validate-security-artifact-contract.result == 'success' }}
     timeout-minutes: 10
     permissions:
       contents: read
@@ -497,18 +1295,71 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+
       - name: Download comprehensive findings
         uses: actions/download-artifact@v5
         with:
           name: security-suite-comprehensive-findings
           path: .
         continue-on-error: true
+
       - name: Cache Findings
         run: |
           set -euo pipefail
           python scripts/ci/security_cache_manager.py cache-findings \
-            --run-id "${{ github.run_number }}" \ --commit-sha "${{ github.sha }}" \ --findings-path ".codex/security-findings-comprehensive.json" - name: Generate Trend Analysis run: | set -euo pipefail python scripts/ci/security_findings_trend_analyzer.py analyze \ --cache-dir ".codex/security-cache" \ --output ".codex/security-findings-trend-report.md" - name: Upload Cache Artifacts if: success() uses: actions/upload-artifact@v5 with: name: security-cache path: .codex/security-cache/ if-no-files-found: warn retention-days: 90 - name: Upload Trend Report if: success() uses: actions/upload-artifact@v5 with: name: security-findings-trend-report path: .codex/security-findings-trend-report.md if-no-files-found: warn retention-days: 30  rescue-comment: name: Post rescue comment on failure runs-on: ubuntu-latest needs: - security-suite-summary - aggregate-all-findings - validate-security-artifact-contract - cache-findings if: | always() && contains(join(needs.*.result, ','), 'failure') && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository permissions: pull-requests: write issues: write timeout-minutes: 5 steps: - uses: actions/checkout@v5 with: persist-credentials: false token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+            --run-id "${{ github.run_number }}" \
+            --commit-sha "${{ github.sha }}" \
+            --findings-path ".codex/security-findings-comprehensive.json"
+
+      - name: Generate Trend Analysis
+        run: |
+          set -euo pipefail
+          python scripts/ci/security_findings_trend_analyzer.py analyze \
+            --cache-dir ".codex/security-cache" \
+            --output ".codex/security-findings-trend-report.md"
+
+      - name: Upload Cache Artifacts
+        if: success()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-cache
+          path: .codex/security-cache/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Upload Trend Report
+        if: success()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-findings-trend-report
+          path: .codex/security-findings-trend-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+  rescue-comment:
+    name: Post rescue comment on failure
+    runs-on: ubuntu-latest
+    needs:
+      - security-suite-summary
+      - aggregate-all-findings
+      - validate-security-artifact-contract
+      - cache-findings
+    if: |
+      always() &&
+      contains(join(needs.*.result, ','), 'failure') &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+        persist-credentials: false
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
+
       - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -520,4 +1371,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+
+
+
 

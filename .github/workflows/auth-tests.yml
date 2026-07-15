@@ -34,6 +34,7 @@ jobs:
         python-version:
         - 3.12.13
     steps:
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -41,10 +42,16 @@ jobs:
           path: .pytest_cache/
           key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-pytest- - name: Checkout code uses: actions/checkout@v5 - name: Initialize with repository variables env: CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+            ${{ runner.os }}-pytest-
+
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Initialize with repository variables
+        env:
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
           CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-        run: 'echo "Auth test variables initialized:"
+          run: 'echo "Auth test variables initialized:"
 
         echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 
@@ -53,7 +60,10 @@ jobs:
         echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
 
         '
-      - name: Set up Python ${{ matrix.python-version }} with tiered cache uses: ./.github/actions/setup-python-cached with: python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }} with tiered cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: ${{ matrix.python-version }}
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
@@ -69,13 +79,26 @@ jobs:
         \ {pytest_asyncio.__version__}')\"\n\npip install -e \".[dev]\"\npip install\
         \ httpx  # Additional dependency for auth tests\npip install bandit>=1.7.5\
         \  # Pre-install bandit for security scan\n"
+
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
           path: coverage/
           key: ${{ runner.os }}-coverage-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-coverage- - name: Run authentication tests run: "# Run pytest with verbose output and proper error reporting\npytest tests/auth/\ \ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300\ \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\ \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\ \  exit $TEST_EXIT_CODE\nfi\n\necho \"✓ Authentication tests passed\"\n" - name: Upload coverage reports uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4 if: always() with: token: ${{ secrets.CODECOV_TOKEN }}
+            ${{ runner.os }}-coverage-
+
+      - name: Run authentication tests
+        run: "# Run pytest with verbose output and proper error reporting\npytest tests/auth/\
+        \ -v --cov=src/codex/auth --cov-report=xml --cov-report=term --timeout=300\
+        \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\
+        \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\
+        \  exit $TEST_EXIT_CODE\nfi\n\necho \"✓ Authentication tests passed\"\n"
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           flags: authentication
           name: auth-coverage
@@ -83,23 +106,28 @@ jobs:
       - name: Validate CODEX_MASTER_KEY Scopes
         run: |
           python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
+      env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
+
       - name: Run comprehensive CODEX_MASTER_KEY tests
-        env:
-         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
-         pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
-         pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-         pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-         pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
-         pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+          pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
+          pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+          pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+          pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
+          pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+      env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
+
       - name: Generate CODEX_MASTER_KEY coverage report
-        env:
-         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
-         pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
+          pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
+      env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
+
       - name: Upload scope report
         uses: actions/upload-artifact@v5
         if: always()
@@ -108,6 +136,7 @@ jobs:
           path: .codex/scope_report.json
           retention-days: 30
           if-no-files-found: warn
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v5
         if: always()
@@ -116,6 +145,7 @@ jobs:
           path: coverage.json
           retention-days: 30
           if-no-files-found: warn
+
       - name: Test examples
         run: '# Test that examples run without errors (in demo mode)
 
@@ -191,7 +221,9 @@ jobs:
           path: auth-security-report.json
           retention-days: 30
           if-no-files-found: error
-        env:
+          env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -227,6 +259,7 @@ jobs:
 
         from src.codex.auth import OAuthManager, MFAProvider, TokenManager
 
+
         # Verify all components initialize correctly
 
         oauth = OAuthManager()
@@ -234,6 +267,7 @@ jobs:
         mfa = MFAProvider()
 
         tokens = TokenManager()
+
 
         print(''✓ All authentication components initialized successfully'')
 
@@ -245,6 +279,7 @@ jobs:
 
         from src.codex.auth.mfa_provider import MFAProvider
 
+
         mfa = MFAProvider()
 
         secret = mfa.generate_totp_secret(''test_user'')
@@ -252,6 +287,7 @@ jobs:
         code = mfa.generate_totp(secret.secret)
 
         valid = mfa.verify_totp(secret.secret, code, ''test_user'')
+
 
         assert valid, ''MFA verification failed''
 
@@ -265,11 +301,13 @@ jobs:
 
         from src.codex.auth.token_manager import TokenManager, TokenType
 
+
         tokens = TokenManager()
 
         access_token = tokens.generate_access_token(''test_user'')
 
         claims = tokens.validate_token(access_token, TokenType.ACCESS)
+
 
         assert claims.sub == ''test_user'', ''Token validation failed''
 
@@ -286,6 +324,8 @@ jobs:
 
         '
         env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -309,14 +349,22 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_NAME: Auth Tests
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
           BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
-        env:
+          run: python scripts/ci/post_rescue_comment.py
+          env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+
+
+
+
 
