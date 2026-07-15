@@ -140,10 +140,10 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v8
         env:
-        REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
-        MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
-        ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
-        with:
+          REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
+          MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
+          ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
+          with:
           github-token: ${{ github.token }}
           script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
           \ = process.env.MANIFEST_VALID;\nconst errorCount = process.env.ERROR_COUNT\
@@ -181,8 +181,8 @@ jobs:
         \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
         env:
-        GH_TOKEN: ${{ github.token }}
-        env:
+          GH_TOKEN: ${{ github.token }}
+          env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
@@ -205,23 +205,24 @@ jobs:
         uses: actions/checkout@v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        fetch-depth: 1
+          fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Agent Registry Validation
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: Agent Registry Validation
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
-        BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
-        env:
+          BRANCH: ${{ github.head_ref }}
+          run: python scripts/ci/post_rescue_comment.py
+          env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
 
 
 

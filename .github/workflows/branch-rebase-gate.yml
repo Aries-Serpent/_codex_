@@ -45,9 +45,9 @@ jobs:
       - name: 🔍 Check rebase status
         id: check
         env:
-        GITHUB_TOKEN: ${{ github.token }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
         \ }}\" \\\n  --pr  \"${{ github.event.pull_request.number }}\" \\\n  --post-comment\
         \ \\\n  --auto-merge-skip-ci \\\n  --upsert-dashboard \\\n  --github-output\
         \ \\\n  --github-summary\n# Script exits 0 always in non-hard-fail mode —\
@@ -112,20 +112,21 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Branch Rebase Gate
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: Branch Rebase Gate
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
-        BRANCH: ${{ github.head_ref }}
-        run: python scripts/ci/post_rescue_comment.py
-        env:
+          BRANCH: ${{ github.head_ref }}
+          run: python scripts/ci/post_rescue_comment.py
+          env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
 
 
 

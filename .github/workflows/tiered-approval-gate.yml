@@ -18,11 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    timeout-minutes: 10
-    steps:
+      timeout-minutes: 10
+      steps:
       - uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -31,9 +31,10 @@ jobs:
       - name: Run Tiered Approval Check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+          run: |
           PR_NUMBER="${{ github.event.pull_request.number || github.event.number }}"
           python scripts/ci/tiered_approval_gate.py "$PR_NUMBER"
+
 
 
 
