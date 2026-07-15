@@ -46,11 +46,10 @@ def _gh(
     token: str,
     body: dict | None = None,
 ) -> tuple[int, object]:
-    """Make a GitHub API call."""
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     headers = {
-        "Authorization": f"******",
+        "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json",
@@ -61,6 +60,8 @@ def _gh(
             raw = resp.read()
             if raw:
                 return resp.status, json.loads(raw)
+            # Successful GitHub GET requests used by this script return JSON.
+            # Empty bodies are expected for 204-style mutation responses.
             return resp.status, {}
     except urllib.error.HTTPError as exc:
         try:
@@ -78,7 +79,7 @@ def _find_copilot_error_comments(
     """Find all Copilot error comments on the PR."""
     error_comments = []
     page = 1
-    
+
     while True:
         status, comments = _gh(
             "GET",
@@ -89,16 +90,16 @@ def _find_copilot_error_comments(
             break
         if not isinstance(comments, list) or not comments:
             break
-        
+
         for c in comments:
             body = c.get("body") or ""
             if "comment-generic-error" in body and c.get("user", {}).get("login") == "Copilot":
                 error_comments.append(c)
-        
+
         if len(comments) < 100:
             break
         page += 1
-    
+
     return sorted(error_comments, key=lambda c: c.get("created_at", ""))
 
 
@@ -110,7 +111,7 @@ def _build_consolidation_comment(
     """Build a consolidation comment documenting all error IDs."""
     now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
     error_count = len(error_comments)
-    
+
     # Extract UUIDs from error comments
     uuids = []
     for c in error_comments:
@@ -122,16 +123,16 @@ def _build_consolidation_comment(
                 uuid_part = parts[1].strip().strip("`")
                 if uuid_part:
                     uuids.append(uuid_part)
-    
+
     # Build error list with links
     error_list = ""
     for i, c in enumerate(error_comments, 1):
         error_id = c.get("id")
         created_at = c.get("created_at", "unknown")
         error_url = c.get("html_url", "#")
-        uuid = uuids[i-1] if i-1 < len(uuids) else "unknown"
+        uuid = uuids[i - 1] if i - 1 < len(uuids) else "unknown"
         error_list += f"{i}. [Error #{error_id}]({error_url}) — {created_at} (UUID: `{uuid}`)\n"
-    
+
     consolidation_body = (
         f"<!-- cascade-consolidated-error:{pr_number}:{error_count} -->\n"
         f"## 🚨 Copilot Cascade Consolidation — {error_count} Errors\n\n"
@@ -149,7 +150,7 @@ def _build_consolidation_comment(
         f"3. The rescue CI system will continue to post workflow failure updates as needed\n\n"
         f"_Auto-consolidated by cascade-error consolidation system · {now}_"
     )
-    
+
     return consolidation_body
 
 
@@ -162,33 +163,33 @@ def _consolidate_cascade(
     """Consolidate error comments: keep first, append digest markers, delete rest."""
     if len(error_comments) < CASCADE_THRESHOLD:
         return False
-    
+
     print(
         f"🔄 CASCADE CONSOLIDATION: Found {len(error_comments)} Copilot error comments. "
         f"Consolidating into first comment..."
     )
-    
+
     first_comment = error_comments[0]
     canonical_id = first_comment.get("id")
     canonical_body = (first_comment.get("body") or "").rstrip()
-    
+
     # Add digest markers for all subsequent comments
     for duplicate in error_comments[1:]:
         duplicate_id = duplicate.get("id")
         duplicate_body = duplicate.get("body", "")
-        
+
         # Create unique digest for this error
         duplicate_digest = hashlib.sha256(
             f"{duplicate_id}:{duplicate.get('created_at')}".encode()
         ).hexdigest()[:DUPLICATE_DIGEST_LENGTH]
-        
+
         # Extract UUID from duplicate comment
         uuid = "unknown"
         if "identifier so they can better serve you:" in duplicate_body:
             parts = duplicate_body.split("identifier so they can better serve you:")
             if len(parts) > 1:
                 uuid = parts[1].strip().strip("`")
-        
+
         # Add marker to canonical comment
         marker = f"{CONSOLIDATION_MARKER_PREFIX}{duplicate_digest} -->"
         if marker not in canonical_body:
@@ -196,7 +197,7 @@ def _consolidate_cascade(
                 canonical_body
                 + f"\n<!-- cascade-error-id:{duplicate_id}:uuid:{uuid}:{duplicate_digest} -->"
             )
-    
+
     # Update canonical comment with consolidated markers
     status, _ = _gh(
         "PATCH",
@@ -204,13 +205,13 @@ def _consolidate_cascade(
         token,
         {"body": canonical_body[:MAX_COMMENT_LEN]},
     )
-    
+
     if status not in (200, 201):
         print(f"⚠️  Failed to update canonical comment: HTTP {status}")
         return False
-    
+
     print(f"✅ Updated canonical comment #{canonical_id} with error markers")
-    
+
     # Delete all duplicate error comments
     deleted_count = 0
     for duplicate in error_comments[1:]:
@@ -220,13 +221,13 @@ def _consolidate_cascade(
             f"/repos/{repo}/issues/comments/{duplicate_id}",
             token,
         )
-        
+
         if delete_status in (200, 204):
             deleted_count += 1
             print(f"✅ Deleted duplicate error comment #{duplicate_id}")
         else:
             print(f"⚠️  Failed to delete comment #{duplicate_id}: HTTP {delete_status}")
-    
+
     print(f"✅ CASCADE CONSOLIDATION COMPLETE: Kept 1 comment, deleted {deleted_count} duplicates")
     return True
 
@@ -236,31 +237,31 @@ def main() -> None:
     token = os.environ.get("GH_TOKEN", "").strip()
     repo = os.environ.get("REPO", "").strip()
     pr_number_raw = os.environ.get("PR_NUMBER", "").strip()
-    
+
     if not token or not repo or not pr_number_raw:
         print(
             "❌ Missing required env vars: GH_TOKEN, REPO, PR_NUMBER",
             file=sys.stderr,
         )
         sys.exit(1)
-    
+
     try:
         pr_number = int(pr_number_raw)
     except ValueError:
         print(f"❌ Invalid PR_NUMBER: {pr_number_raw}", file=sys.stderr)
         sys.exit(1)
-    
+
     print(f"🔍 Scanning PR #{pr_number} for cascading Copilot error comments...")
-    
+
     # Find all error comments
     error_comments = _find_copilot_error_comments(token, repo, pr_number)
-    
+
     if not error_comments:
         print("✅ No Copilot error comments found on PR")
         return
-    
+
     print(f"Found {len(error_comments)} Copilot error comments")
-    
+
     if len(error_comments) >= CASCADE_THRESHOLD:
         # Consolidate the cascade
         if _consolidate_cascade(token, repo, pr_number, error_comments):
