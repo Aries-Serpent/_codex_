@@ -256,16 +256,15 @@ class CascadeDetector:
 
         # Check for Wave 2: 10+ errors in 60 seconds (sliding window O(n) using two pointers)
         if len(sorted_comments) >= config["wave_2_threshold"]:
-            right = 0  # Right pointer for window end
+            right = 0  # Right pointer starts at beginning
             for i in range(len(sorted_comments)):
                 window_start = sorted_comments[i].created_at
                 window_end = window_start + timedelta(
                     seconds=config["wave_2_window"]
                 )
                 
-                # Ensure right >= i (right never goes backward due to sorted comments)
-                if right < i:
-                    right = i
+                # Ensure right >= i (comments sorted by time, so right never needs to go backward)
+                right = max(right, i)
                 
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
@@ -280,16 +279,15 @@ class CascadeDetector:
 
         # Check for Wave 3: 26+ errors in 60 seconds (sliding window O(n) using two pointers)
         if len(sorted_comments) >= config["wave_3_threshold"]:
-            right = 0  # Right pointer for window end
+            right = 0  # Right pointer starts at beginning
             for i in range(len(sorted_comments)):
                 window_start = sorted_comments[i].created_at
                 window_end = window_start + timedelta(
                     seconds=config["wave_3_window"]
                 )
                 
-                # Ensure right >= i (right never goes backward due to sorted comments)
-                if right < i:
-                    right = i
+                # Ensure right >= i (comments sorted by time, so right never needs to go backward)
+                right = max(right, i)
                 
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
@@ -311,40 +309,44 @@ class CascadeDetector:
         error_type: str,
         created_at: datetime,
         is_self_referential: bool = False,
+        wave: Optional[CascadeWave] = None,
     ) -> None:
-        """Record an error comment for cascade analysis."""
+        """Record an error comment for cascade analysis.
+        
+        Args:
+            comment_id: GitHub comment ID
+            pr_number: GitHub PR number
+            error_type: Classification of error
+            created_at: When the error occurred
+            is_self_referential: Whether comment references previous errors
+            wave: Cascade wave if detection occurred (optional for optimization)
+        """
         with sqlite3.connect(self.db_path) as conn:
+            # If wave not provided, detect cascade to determine it
+            if wave is None:
+                error_count = self.get_error_count(pr_number, time_window_seconds=60)
+                wave = self.detect_cascade(pr_number, error_count)
+            
+            # Insert with wave value (eliminates need for separate UPDATE)
             conn.execute(
                 """
                 INSERT OR IGNORE INTO error_comments
-                (comment_id, pr_number, error_type, created_at, is_self_referential)
-                VALUES (?, ?, ?, ?, ?)
+                (comment_id, pr_number, error_type, created_at, wave, is_self_referential)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (
                     comment_id,
                     pr_number,
                     error_type,
                     created_at.isoformat(),
+                    wave.value if wave else None,
                     is_self_referential,
                 ),
             )
             
-            # Check if cascade threshold reached and update wave field
-            error_count = self.get_error_count(pr_number, time_window_seconds=60)
-            cascade_wave = self.detect_cascade(pr_number, error_count)
-            
-            if cascade_wave:
-                # Update wave field for this error comment
-                conn.execute(
-                    """
-                    UPDATE error_comments
-                    SET wave = ?
-                    WHERE comment_id = ? AND pr_number = ?
-                    """,
-                    (cascade_wave.value, comment_id, pr_number),
-                )
-                
-                # Record cascade event
+            # Record cascade event if wave detected
+            if wave:
+                error_count = self.get_error_count(pr_number, time_window_seconds=60)
                 event_id = f"cascade_{pr_number}_{int(created_at.timestamp())}"
                 conn.execute(
                     """
@@ -357,7 +359,7 @@ class CascadeDetector:
                         pr_number,
                         created_at.isoformat(),
                         error_count,
-                        cascade_wave.value,
+                        wave.value,
                         "detected",
                         json.dumps({
                             "comment_id": comment_id,

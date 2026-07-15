@@ -153,14 +153,14 @@ def guard_comment_posting(
         )
 
         # Update cascade tracking
-        if wave:
-            detector.record_error_comment(
-                comment_id=0,  # Will be set by caller after posting
-                pr_number=pr_number,
-                error_type=error_type,
-                created_at=datetime.now(timezone.utc),
-                is_self_referential=False,
-            )
+        detector.record_error_comment(
+            comment_id=0,  # Will be set by caller after posting
+            pr_number=pr_number,
+            error_type=error_type,
+            created_at=datetime.now(timezone.utc),
+            is_self_referential=False,
+            wave=wave,  # Pass wave to avoid redundant detection
+        )
 
     return {
         "allowed": allowed,
