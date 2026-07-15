@@ -178,12 +178,12 @@ jobs:
             pip install --quiet -e "."
           }
 
-      - name: Execute retrain via ContinuousLearningPipeline
-        id: retrain
-        env:
+    - name: Execute retrain via ContinuousLearningPipeline
+      id: retrain
+      env:
           DRIFT_SCORE: ${{ needs.detect-drift.outputs.drift_score }}
           SAMPLES: ${{ needs.detect-drift.outputs.samples_count }}
-        run: |
+      run: |
           set -euo pipefail
 
           python - <<'PYEOF'

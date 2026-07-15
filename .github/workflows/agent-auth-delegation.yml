@@ -581,7 +581,7 @@ jobs:
         id: changelog_check
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          run: |
+        run: |
           CHANGELOG="CHANGELOG.md"
 
           echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"

@@ -63,10 +63,10 @@ jobs:
             echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Generate follow-up prompt
-        env:
+    - name: Generate follow-up prompt
+      env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-        run: |
+      run: |
           PR_NUMBER="${{ steps.pr_number.outputs.pr_number }}"
           echo "🔍 Checking if PR-${PR_NUMBER}-followup.md already has real agent/human content..."
 
