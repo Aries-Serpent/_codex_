@@ -1,10 +1,10 @@
-# Session Context — 2026-07-15T13:25:47Z
+# Session Context — 2026-07-15T13:35:46Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Scaling Framework Monitor** — `failure` on `main` (2026-07-15)
-- **.github/workflows/branch-divergence-monitor.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/comment-review-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 - **.github/workflows/optimized-ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/post-ci-status-to-discussion.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/pre-release-validation.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/workflow-compliance-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/agent-orchestration-unified.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
+- `e58dceb9` docs: add version tag comments for pinned GitHub Actions SHAs — copilot-swe-agent[bot] (2026-07-15)
+- `da0dc5c9` fix: pin all unpinned GitHub Actions to commit SHAs — copilot-swe-agent[bot] (2026-07-15)
+- `dbd55952` fix(workflows): pin unpinned GitHub Actions to commit SHAs — copilot-swe-agent[bot] (2026-07-15)
 - `10fd68f6` docs: Phase 4 Compliance Restoration - REQ-4 & REQ-5 (AGENT_ACCOUNTABILITY_REPOR — copilot-swe-agent[bot] (2026-07-15)
 - `49dc361a` docs: Phase 4 Compliance Restoration - REQ-4 & REQ-5 (AGENT_ACCOUNTABILITY_REPOR — copilot-swe-agent[bot] (2026-07-15)
 - `8d2632f4` fix(security): stricter regex validation for git ref - reject dots to prevent pa — copilot-swe-agent[bot] (2026-07-15)
 - `45ebe16c` fix(review): address code review comments - step naming and grammar — copilot-swe-agent[bot] (2026-07-15)
 - `41a81295` fix(security): eliminate untrusted code checkout in workflow_run contexts via Gi — copilot-swe-agent[bot] (2026-07-15)
-- `348f0d5c` fix(workflows): pin all action versions to exact tags — copilot-swe-agent[bot] (2026-07-15)
-- `ef6f5952` workflow(security): plan multi-agent remediation for 8 CodeQL/actionlint alerts — copilot-swe-agent[bot] (2026-07-15)
-- `d8d83475` fix(security): final hardening of audit-qa-suite.yml implementation — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
