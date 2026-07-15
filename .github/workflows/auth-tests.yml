@@ -106,8 +106,6 @@ jobs:
       - name: Validate CODEX_MASTER_KEY Scopes
         run: |
           python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
       - name: Run comprehensive CODEX_MASTER_KEY tests

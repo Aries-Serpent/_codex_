@@ -86,9 +86,6 @@ jobs:
         — no rebase needed."
 
         '
-        env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
