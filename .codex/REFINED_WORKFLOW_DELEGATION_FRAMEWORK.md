@@ -313,3 +313,138 @@ This framework ensures that future delegations are:
 - ✅ Clearly scoped (specific targets, success criteria)
 - ✅ Security-aware (accept appropriate refusals)
 - ✅ Contingency-ready (fallback plans for any refusals)
+
+---
+
+## MODE D AUTHORIZATION UPDATE (2026-07-15)
+
+**Authorization Status:** Mode D (Autonomous Capable) ✅ ACTIVE
+
+@mbaetiong has transitioned this session to **Mode D**, which means:
+
+### What Mode D Changes
+
+| Aspect | Mode E (Advisory) | Mode D (Autonomous) |
+|--------|-------------------|---------------------|
+| **Agent Execution** | Information only | Can execute autonomously |
+| **Token Usage** | Per-action approval | Pre-authorized via delegation |
+| **Required Gates** | All operations need approval | Security boundaries only |
+| **CODEX_MASTER_KEY** | Must request per use | Pre-approved for use |
+| **Response Speed** | Slower (wait for approval) | Fast (autonomous) |
+| **Security** | Strict gates | Strategic boundaries |
+
+### Mode D Delegation Protocol
+
+When delegating in Mode D:
+
+**Step 1: Clear Objective**
+```
+What we ARE doing: [Specific, measurable action]
+What we are NOT doing: [Explicit refusal list]
+Success criteria: [How to verify completion]
+```
+
+**Step 2: Specific Targets**
+```
+PR #: [Exact number, e.g., #5324]
+Workflows: [Named, e.g., build-preview-image.yml]
+Files: [Specific paths if code changes]
+```
+
+**Step 3: Authorization Reference**
+```
+Token: CODEX_MASTER_KEY (pre-authorized in Mode D)
+Scopes: [List required scopes]
+Verification: Agent will test token validity
+```
+
+**Step 4: Refusal Handling**
+```
+If agent refuses because [specific reason]:
+Then [alternative approach]
+Fallback: [backup plan]
+```
+
+### Mode D Execution Example
+
+```
+User (Mode D Active):
+"Check PR #5324 workflow status and post summary"
+
+Agent verifies:
+✓ Mode D is active
+✓ PR #5324 is identified
+✓ Objective is specific
+✓ CODEX_MASTER_KEY is available
+✓ No security boundaries violated
+
+Agent executes autonomously:
+1. Uses CODEX_MASTER_KEY to access API
+2. Lists workflow runs on PR #5324
+3. Classifies each workflow (required/expected/optional)
+4. Posts summary comment to PR
+5. Returns to listening state (Mode D remains active)
+
+Outcome: Autonomous completion, no per-action gates needed
+```
+
+### Mode D Still Enforces Security Boundaries
+
+Even in Mode D, agents MUST refuse:
+- ❌ Bypass security reviews or branch protections
+- ❌ Override required status checks
+- ❌ Delete critical infrastructure
+- ❌ Escalate permissions beyond granted scope
+- ❌ Modify authentication or authorization systems
+
+### For More Details
+
+See `.codex/MODE_D_AUTONOMOUS_AUTHORIZATION.md` for:
+- Complete Mode D authorization specification
+- Detailed refusal scenarios in Mode D
+- Per-agent authorization status
+- Best practices for delegating in Mode D
+- Verification checklists
+
+---
+
+## Updated Recommendation: Delegating in Mode D
+
+**Using this framework in Mode D context:**
+
+1. **Write clear objectives** — specificity enables autonomous execution
+2. **Identify exact targets** — no vague "70 workflows", use lists
+3. **Reference pre-authorized tokens** — CODEX_MASTER_KEY is pre-approved
+4. **Accept agent refusals** — if agent refuses, respect the security boundary
+5. **Monitor autonomous execution** — check PR comments for updates
+6. **Document what worked** — builds institutional knowledge
+
+**Example PR #5324 Delegation (Mode D):**
+
+```
+@unified-governance-gate
+
+Mode D is active. Please execute the following:
+
+Objective: Document current workflow status on PR #5324
+
+Targets:
+- PR: #5324
+- Workflows to check: build-preview-image.yml, validate-pr-content.yml, 
+                      test-suite.yml, security-audit.yml, code-coverage.yml
+
+Authorization:
+- Token: CODEX_MASTER_KEY (pre-authorized in Mode D)
+- Scope: Workflow reading, status checks, comment posting
+- Verification: Test token with GET /user before proceeding
+
+Operations:
+- [ ] List all workflow runs on PR #5324
+- [ ] Classify as required/expected/optional
+- [ ] Post workflow summary comment
+- [ ] Monitor for pending → running transitions
+
+If you refuse because [security reason], I'll provide alternative approach.
+```
+
+This clear delegation enables autonomous execution in Mode D while maintaining security boundaries.
