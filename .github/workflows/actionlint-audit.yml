@@ -33,24 +33,28 @@ jobs:
         run: |
           # Pinned version with fallback to latest
           PINNED="v1.7.7"
-           
+
           # Download JSON file first, then parse (safer than curl | python3)
           RELEASES_JSON="/tmp/releases.json"
-          curl -fsSL -o "$RELEASES_JSON" --max-time 10 "https://api.github.com/repos/rhysd/actionlint/releases/latest" 2>/dev/null || true
-           
+          curl -fsSL -o "$RELEASES_JSON" --max-time 10 \
+            "https://api.github.com/repos/rhysd/actionlint/releases/latest" 2>/dev/null || true
+
           # Parse safely with python3 (file, not pipe)
           if [ -f "$RELEASES_JSON" ]; then
-            LATEST=$(python3 -c "import sys,json; print(json.load(open('$RELEASES_JSON'))['tag_name'])" 2>/dev/null || echo "${PINNED}")
+            LATEST=$(python3 -c \
+              "import sys,json; print(json.load(open('$RELEASES_JSON'))['tag_name'])" \
+              2>/dev/null || echo "${PINNED}")
           else
             LATEST="${PINNED}"
           fi
-           
+
           TARGET="${LATEST:-${PINNED}}"
           VERSION="${TARGET#v}"
-            
+
           # Download file first, then extract (safer than curl | tar)
           TARBALL="/tmp/actionlint_${VERSION}_linux_amd64.tar.gz"
-          curl -fsSL -o "$TARBALL" "https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "$TARBALL" \
+            "https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz"
           tar xz -f "$TARBALL" -C /tmp actionlint
           sudo mv /tmp/actionlint /usr/local/bin/
           actionlint --version
