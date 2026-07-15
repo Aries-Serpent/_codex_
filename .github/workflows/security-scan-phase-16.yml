@@ -30,82 +30,82 @@ jobs:
       security-events: write
       pull-requests: write
     steps:
-    - name: Mask secrets
-      run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Mask secrets
+        run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
         "
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Install security tools
-      run: "python -m pip install --upgrade pip setuptools wheel
+      - name: Install security tools
+        run: "python -m pip install --upgrade pip setuptools wheel
 
         pip install bandit[toml] semgrep gitleaks safety pip-audit
 
         pip install -e .
 
         "
-    - name: Run Bandit Security Scan
-      id: bandit
-      continue-on-error: true
-      run: "echo \"::group::Bandit SAST Scan\"\nbandit -r src/ -f json -o bandit-report.json\
+      - name: Run Bandit Security Scan
+        id: bandit
+        continue-on-error: true
+        run: "echo \"::group::Bandit SAST Scan\"\nbandit -r src/ -f json -o bandit-report.json\
         \ || true\necho \"::endgroup::\"\nif [ -f bandit-report.json ]; then\n  python\
         \ -m json.tool bandit-report.json\nfi\n"
-    - name: Run Semgrep Security Scan
-      id: semgrep
-      continue-on-error: true
-      run: "echo \"::group::Semgrep SAST Scan\"\nsemgrep --config=p/python --config=p/security-audit\
+      - name: Run Semgrep Security Scan
+        id: semgrep
+        continue-on-error: true
+        run: "echo \"::group::Semgrep SAST Scan\"\nsemgrep --config=p/python --config=p/security-audit\
         \ \\\n  --json -o semgrep-report.json src/ || true\necho \"::endgroup::\"\n\
         if [ -f semgrep-report.json ]; then\n  python -m json.tool semgrep-report.json\n\
         fi\n"
-    - name: Run Gitleaks Secret Scan
-      id: gitleaks
-      continue-on-error: true
-      run: "echo \"::group::Gitleaks Secret Detection\"\ngitleaks detect --source\
+      - name: Run Gitleaks Secret Scan
+        id: gitleaks
+        continue-on-error: true
+        run: "echo \"::group::Gitleaks Secret Detection\"\ngitleaks detect --source\
         \ . --report-format json \\\n  --report-path gitleaks-report.json || true\n\
         echo \"::endgroup::\"\nif [ -f gitleaks-report.json ]; then\n  python -m json.tool\
         \ gitleaks-report.json\nfi\n"
-    - name: Run pip-audit Dependency Scan
-      id: pip-audit
-      continue-on-error: true
-      run: "echo \"::group::pip-audit Dependency Scan\"\npip-audit --desc --format\
+      - name: Run pip-audit Dependency Scan
+        id: pip-audit
+        continue-on-error: true
+        run: "echo \"::group::pip-audit Dependency Scan\"\npip-audit --desc --format\
         \ json > pip-audit-report.json || true\necho \"::endgroup::\"\nif [ -f pip-audit-report.json\
         \ ]; then\n  python -m json.tool pip-audit-report.json\nfi\n"
-    - name: Run Safety Dependency Scan
-      id: safety
-      continue-on-error: true
-      run: "echo \"::group::Safety Dependency Scan\"\nsafety check --json > safety-report.json\
+      - name: Run Safety Dependency Scan
+        id: safety
+        continue-on-error: true
+        run: "echo \"::group::Safety Dependency Scan\"\nsafety check --json > safety-report.json\
         \ || true\necho \"::endgroup::\"\nif [ -f safety-report.json ]; then\n  python\
         \ -m json.tool safety-report.json || echo \"Safety report generated\"\nfi\n"
-    - name: Run Vulnerability Scanning Tests
-      id: vuln-tests
-      continue-on-error: true
-      run: "echo \"::group::Phase 16.3 Vulnerability Scanning Tests\"\npython -m pytest\
+      - name: Run Vulnerability Scanning Tests
+        id: vuln-tests
+        continue-on-error: true
+        run: "echo \"::group::Phase 16.3 Vulnerability Scanning Tests\"\npython -m pytest\
         \ tests/security/test_vulnerability_scanning.py -v \\\n  --tb=short --color=yes\
         \ 2>&1 | head -100\necho \"::endgroup::\"\n"
-    - name: Run Dependency Audit Tests
-      id: dep-audit-tests
-      continue-on-error: true
-      run: "echo \"::group::Phase 16.3 Dependency Audit Tests\"\npython -m pytest\
+      - name: Run Dependency Audit Tests
+        id: dep-audit-tests
+        continue-on-error: true
+        run: "echo \"::group::Phase 16.3 Dependency Audit Tests\"\npython -m pytest\
         \ tests/security/test_dependency_audit.py -v \\\n  --tb=short --color=yes\
         \ 2>&1 | head -100\necho \"::endgroup::\"\n"
-    - name: Upload SARIF Reports
-      if: always()
-      uses: github/codeql-action/upload-sarif@v2
-      with:
+      - name: Upload SARIF Reports
+        if: always()
+        uses: github/codeql-action/upload-sarif@v2
+        with:
         sarif_file: semgrep-report.json
         category: security-scan-phase-16
-      continue-on-error: true
-    - name: Create Security Report Summary
-      if: always()
-      run: "echo \"# Phase 16.3 Security Scanning Report\" > security-report.md\n\
+        continue-on-error: true
+      - name: Create Security Report Summary
+        if: always()
+        run: "echo \"# Phase 16.3 Security Scanning Report\" > security-report.md\n\
         echo \"\" >> security-report.md\necho \"## Scan Results\" >> security-report.md\n\
         echo \"\" >> security-report.md\n\nif [ -f bandit-report.json ]; then\n  echo\
         \ \"### Bandit SAST Scan\" >> security-report.md\n  echo \"✓ Completed\" >>\
@@ -117,19 +117,19 @@ jobs:
         \ Scan\" >> security-report.md\n  echo \"✓ Completed\" >> security-report.md\n\
         fi\n\necho \"\" >> security-report.md\necho \"**Status**: All security scans\
         \ completed successfully\" >> security-report.md\n"
-    - name: Comment on PR
-      if: github.event_name == "pull_request" && always()
-      uses: actions/github-script@v8
-      with:
+      - name: Comment on PR
+        if: github.event_name == "pull_request" && always()
+        uses: actions/github-script@v8
+        with:
         script: "const fs = require("fs");\nconst report = fs.readFileSync("security-report.md",\
           \ "utf8");\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: report\n\
           });\n"
-    - name: Archive Security Reports
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: security-reports
+      - name: Archive Security Reports
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: security-reports
         path: "bandit-report.json
 
           semgrep-report.json
@@ -152,48 +152,48 @@ jobs:
       contents: read
       checks: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip setuptools wheel
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip setuptools wheel
 
         pip install -e .
 
         pip install pytest pytest-cov pytest-xdist
 
         "
-    - name: Run tests with coverage
-      id: coverage
-      continue-on-error: true
-      run: "echo \"::group::Collecting Coverage\"\npython -m pytest tests/security/\
+      - name: Run tests with coverage
+        id: coverage
+        continue-on-error: true
+        run: "echo \"::group::Collecting Coverage\"\npython -m pytest tests/security/\
         \ \\\n  --cov=src \\\n  --cov-report=term-missing \\\n  --cov-report=json\
         \ \\\n  --cov-report=html \\\n  -v --tb=short\necho \"::endgroup::\"\n"
-    - name: Check coverage threshold
-      continue-on-error: true
-      run: "python -c \"\nimport json\nwith open("coverage.json") as f:\n    data\
+      - name: Check coverage threshold
+        continue-on-error: true
+        run: "python -c \"\nimport json\nwith open("coverage.json") as f:\n    data\
         \ = json.load(f)\ncoverage = data["totals"]["percent_covered"]\nprint(f"Coverage:\
         \ {coverage}%")\nif coverage < 70:\n    print("⚠️ Coverage below 70%")\nelse:\n\
         \    print("✓ Coverage acceptable")\n\"\n"
-    - name: Upload coverage to Codecov
-      if: always()
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
-      with:
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+        with:
         files: ./coverage.xml
         flags: security-tests
-      name: phase-16-security-coverage
+        name: phase-16-security-coverage
         fail_ci_if_error: false
-    - name: Upload coverage report
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: coverage-report
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: coverage-report
         path: htmlcov/
         retention-days: 30
   codeql-analysis:
@@ -209,19 +209,19 @@ jobs:
         language:
         - python
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
         languages: ${{ matrix.language }}
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
         category: /language:${{ matrix.language }}
   test-phase-16:
     name: Phase 16 Comprehensive Tests
@@ -231,34 +231,34 @@ jobs:
       contents: read
       checks: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip setuptools wheel
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip setuptools wheel
 
         pip install -e .
 
         pip install pytest pytest-xdist pytest-timeout
 
         "
-    - name: Run Phase 16.3 Security Tests
-      run: "echo \"::group::Phase 16.3: Vulnerability Scanning Tests\"\npython -m\
+      - name: Run Phase 16.3 Security Tests
+        run: "echo \"::group::Phase 16.3: Vulnerability Scanning Tests\"\npython -m\
         \ pytest tests/security/test_vulnerability_scanning.py \\\n  -v --tb=short\
         \ -x 2>&1 | tee phase-16-3-results.txt\necho \"::endgroup::\"\n"
-    - name: Run Phase 16.3 Dependency Audit Tests
-      run: "echo \"::group::Phase 16.3: Dependency Audit Tests\"\npython -m pytest\
+      - name: Run Phase 16.3 Dependency Audit Tests
+        run: "echo \"::group::Phase 16.3: Dependency Audit Tests\"\npython -m pytest\
         \ tests/security/test_dependency_audit.py \\\n  -v --tb=short -x 2>&1 | tee\
         \ phase-16-3-dep-results.txt\necho \"::endgroup::\"\n"
-    - name: Generate Test Report
-      if: always()
-      run: "echo "# Phase 16 Test Results" > test-report.md
+      - name: Generate Test Report
+        if: always()
+        run: "echo "# Phase 16 Test Results" > test-report.md
 
         echo "" >> test-report.md
 
@@ -285,11 +285,11 @@ jobs:
         echo "\`\`\`" >> test-report.md
 
         "
-    - name: Upload Test Results
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: phase-16-test-results
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: phase-16-test-results
         path: "phase-16-3-results.txt
 
           phase-16-3-dep-results.txt
@@ -306,33 +306,33 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: ${{ env.PYTHON_VERSION }}
-    - name: Check SECURITY.md
-      run: "if [ ! -f SECURITY.md ]; then\n  echo \"❌ SECURITY.md not found\"\n  exit\
+      - name: Check SECURITY.md
+        run: "if [ ! -f SECURITY.md ]; then\n  echo \"❌ SECURITY.md not found\"\n  exit\
         \ 1\nfi\necho \"✓ SECURITY.md exists\"\ngrep -E \"email|report|contact\" SECURITY.md\
         \ > /dev/null && \\\n  echo \"✓ Security contact documented\" || \\\n  echo\
         \ \"⚠️ Security contact not clearly documented\"\n"
-    - name: Verify security baseline
-      run: "if [ ! -f .secrets.baseline ]; then\n  echo \"⚠️ .secrets.baseline not\
+      - name: Verify security baseline
+        run: "if [ ! -f .secrets.baseline ]; then\n  echo \"⚠️ .secrets.baseline not\
         \ found (creating...)\"\n  echo "{}" > .secrets.baseline\nfi\necho \"✓ Security\
         \ baseline configured\"\n"
-    - name: Check for hardcoded secrets (gitleaks)
-      continue-on-error: true
-      run: "pip install gitleaks-py || pip install gitpython\npython -c \"\nimport\
+      - name: Check for hardcoded secrets (gitleaks)
+        continue-on-error: true
+        run: "pip install gitleaks-py || pip install gitpython\npython -c \"\nimport\
         \ subprocess\nresult = subprocess.run(["gitleaks", "detect", "--verbose",\
         \ "--exit-code", "0"],\n                        capture_output=True, text=True)\n\
         if "No secrets found" in result.stdout or result.returncode == 0:\n    print("✓\
         \ No hardcoded secrets detected")\nelse:\n    print("⚠️ Potential secrets\
         \ detected")\n\" || echo \"✓ Gitleaks check completed\"\n"
-    - name: Validate dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Validate dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install pipdeptree
 
@@ -343,8 +343,8 @@ jobs:
         echo "✓ Dependency validation completed"
 
         "
-    - name: Summary
-      run: "echo "## Phase 16 Security Gates Summary"
+      - name: Summary
+        run: "echo "## Phase 16 Security Gates Summary"
 
         echo ""
 
@@ -377,12 +377,12 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Create Summary
-      run: "echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
+      - name: Create Summary
+        run: "echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
 
         echo "" >> PHASE_16_RESULTS.md
 
@@ -425,13 +425,13 @@ jobs:
         echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
 
         "
-    - name: Upload Summary
-      uses: actions/upload-artifact@v5
-      with:
-      name: phase-16-complete
+      - name: Upload Summary
+        uses: actions/upload-artifact@v5
+        with:
+        name: phase-16-complete
         path: PHASE_16_RESULTS.md
-    - name: Status
-      run: "echo "## 🎯 Phase 16 Execution Complete"
+      - name: Status
+        run: "echo "## 🎯 Phase 16 Execution Complete"
 
         echo ""
 
