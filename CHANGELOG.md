@@ -1,3 +1,9 @@
+## [Unreleased] — 2026-07-15 (PR #5324 continuation)
+
+### Security
+- Pin mutable GitHub Actions version tags to full commit SHAs in actionlint-audit.yml, agent-registry-validation.yml, app-package-download.yml (Semgrep supply-chain findings)
+- Fix misplaced `with:` block in agent-registry-validation.yml Post validation summary step
+
 ## [Unreleased]
 
 ### Fixed (auto-update — PR #5324)

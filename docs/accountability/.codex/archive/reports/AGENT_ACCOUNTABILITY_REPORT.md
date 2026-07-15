@@ -18044,3 +18044,19 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session Entry — PR #5324 (2026-07-15T16:17:54Z) [auto-generated]
+
+### Summary
+Addressed Semgrep security findings (mutable action tags) in 3 workflow files:
+- .github/workflows/actionlint-audit.yml — pinned actions/checkout@v5 to SHA
+- .github/workflows/agent-registry-validation.yml — pinned actions/checkout@v5, actions/github-script@v8, actions/cache@v5 to SHAs; fixed misplaced with: block
+- .github/workflows/app-package-download.yml — pinned actions/setup-python@v6, actions/upload-artifact@v5 to SHAs
+
+### Agents Used
+- copilot-swe-agent[bot]
+
+### Commit
+- ad060438
+
+---
