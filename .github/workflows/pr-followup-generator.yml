@@ -41,7 +41,7 @@ jobs:
 
     - name: CacheManager health check
       continue-on-error: true
-        run: |
+      run: |
           python scripts/ci/generate_cache_keys.py --health --workflow pr-followup-generator 2>/dev/null || echo "Cache health: check skipped"
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
@@ -56,7 +56,7 @@ jobs:
 
     - name: Extract PR number
       id: pr_number
-        run: |
+      run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "pr_number=${{ github.event.inputs.pr_number }}" >> $GITHUB_OUTPUT
           else
@@ -96,7 +96,7 @@ jobs:
         id: push_prompt
         env:
           TARGET_REF: ${{ github.head_ref || github.ref_name }}
-        run: |
+      run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 

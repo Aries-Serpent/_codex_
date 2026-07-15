@@ -46,7 +46,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUM: ${{ github.event.pull_request.number }}
-          run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --fix-pr-body \\\n\
+        run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --fix-pr-body \\\n\
         \  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  WEC preservation\
         \ script exited non-zero (non-fatal \u2014 workflow continues)\"\n"
       - name: "Mandatory scorecard refresh — merge-readiness + follow-up prompt"
@@ -803,7 +803,7 @@ jobs:
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          run: "# Fetch base branch so we can count commits precisely\ngit fetch origin\
+        run: "# Fetch base branch so we can count commits precisely\ngit fetch origin\
         \ \"${BASE_REF}\" --depth=50 2>/dev/null || true\n\n# Count commits on this\
         \ PR (HEAD not in base)\nCOMMIT_COUNT=$(git rev-list --count \"origin/${BASE_REF}..HEAD\"\
           \ 2>/dev/null || echo \"0\")\n\necho \"### \U0001F522 REQ-7: Commit Count\
@@ -1363,7 +1363,7 @@ jobs:
         if: steps.session_gate.outputs.acquired == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-          run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
+        run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
         \ ]; then\n  echo \"\u26A0\uFE0F CODEX_MASTER_KEY not available \u2014 session\
         \ number increment skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif gh api\
           \ \\\n  --method PATCH \\\n  -H \"Accept: application/vnd.github+json\" \\\
@@ -1378,7 +1378,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number || '' }}
           SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
-          run: "python3 - <<'PYEOF'\nimport os, sys\nsys.path.insert(0, os.path.join(os.getcwd(),\
+        run: "python3 - <<'PYEOF'\nimport os, sys\nsys.path.insert(0, os.path.join(os.getcwd(),\
         \ 'src'))\npr = os.environ.get('PR_NUMBER', 'unknown')\nsession = os.environ.get('SESSION_NUMBER',\
           \ 'unknown')\ntry:\n    from codex.cognitive.agent_brain_api import AgentBrainAPI,\
         \ ImprovementArea\n    api = AgentBrainAPI(agent_id=f\"agent-auth-delegation-s{session}\"\
@@ -1389,9 +1389,6 @@ jobs:
           )\nexcept Exception as exc:\n    print(f\"\u26A0\uFE0F  AgentBrainAPI.report_completion()\
           \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
         \ module not installed in CI env)\")\nPYEOF\n"
-          env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -1443,12 +1440,9 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           MAX_WAIT_SEC: '30'
-          run: "python scripts/ci/approve_pending_runs.py || {\n  echo \"::warning::approve_pending_runs.py\
+        run: "python scripts/ci/approve_pending_runs.py || {\n  echo \"::warning::approve_pending_runs.py\
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  session-release:
     name: "\U0001F513 Release session lock"
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -1542,9 +1536,6 @@ jobs:
           \ to post @copilot continue on PR  #${nextPR}: ${err.message}`);\n    //\
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: activate-delegation

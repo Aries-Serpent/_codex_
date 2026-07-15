@@ -40,8 +40,8 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
           fetch-depth: 0
 
     - name: Set version from tag or input
@@ -156,12 +156,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with:
+      with:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
-        with:
+      with:
           name: wheels
           path: dist/
           retention-days: 5
@@ -208,18 +208,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with:
+      with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: wheels
           path: dist/
 
@@ -282,7 +282,7 @@ jobs:
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
-        with:
+      with:
           name: release-manifest
           path: .codex/manifests/
           retention-days: 5
@@ -296,12 +296,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with:
+      with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
@@ -347,24 +347,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with:
+      with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels (no merge needed - single artifact)
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: wheels
           path: dist/
 
       - name: Download manifest
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: release-manifest
           path: .codex/manifests/
 
@@ -406,18 +406,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with:
+      with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
       - name: Download wheels (from single build)
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: wheels
           path: dist/
 
@@ -478,8 +478,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
           fetch-depth: 0
 
       - name: Set version from pre-release-checks output
@@ -503,13 +503,13 @@ jobs:
 
       - name: Download manifest
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: release-manifest
           path: release-artifacts/
 
       - name: Download SBOM
         uses: actions/download-artifact@v5
-        with:
+      with:
           name: sbom
           path: release-artifacts/
 
@@ -569,7 +569,7 @@ jobs:
         uses: actions/create-release@v1
         env:
          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        with:
+      with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
           body_path: release-notes.md
@@ -578,7 +578,7 @@ jobs:
 
       - name: Upload release artifacts and publish
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
-        with:
+      with:
           files: |
             dist/*.whl
             release-artifacts/*
@@ -596,15 +596,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+      with:
+        persist-credentials: false
 
       - name: Create deployment summary comment
         uses: actions/github-script@v8
         env:
           RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
           GITHUB_REPO: ${{ github.repository }}
-        with:
+      with:
           script: |
             let version = process.env.RELEASE_VERSION;
             // Remove refs/ prefixes if any
@@ -680,7 +680,7 @@ jobs:
 
       - name: Upload deployment metrics
         uses: actions/upload-artifact@v5
-        with:
+      with:
           name: deployment-metrics
           path: .codex/metrics/
           retention-days: 30
