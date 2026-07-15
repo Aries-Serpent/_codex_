@@ -85,9 +85,9 @@ jobs:
           echo "Release tag: ${VERSION}"
           echo "PyPI version: ${CLEAN_VERSION}"
 
-      - name: Verify P0 gates complete
-        id: p0-gate
-        run: |
+    - name: Verify P0 gates complete
+      id: p0-gate
+      run: |
           # Check for .codex/PROFILE_DRIFT_AUDIT.json (P0.1.1)
           if [ ! -f ".codex/PROFILE_DRIFT_AUDIT.json" ]; then
             echo "❌ P0.1.1 gate failed: Profile drift audit missing"
@@ -102,9 +102,9 @@ jobs:
 
           echo "✅ P0 gates verified"
 
-      - name: Verify P1 gates complete
-        id: p1-gate
-        run: |
+    - name: Verify P1 gates complete
+      id: p1-gate
+      run: |
           # Check for SBOM file (P1.3.2)
           if [ ! -f "sbom.json" ] && [ ! -f ".codex/sbom.json" ]; then
             echo "❌ P1.3.2 gate failed: SBOM not found"
@@ -116,28 +116,28 @@ jobs:
     - name: Verify changelog updated
       id: changelog
       run: |
-          # Check that CHANGELOG.md has entry for this version
-          VERSION="${{ steps.version.outputs.version }}"
-          CLEAN_VERSION="${VERSION#v}"
+        # Check that CHANGELOG.md has entry for this version
+        VERSION="${{ steps.version.outputs.version }}"
+        CLEAN_VERSION="${VERSION#v}"
 
-          if ! grep -q "$CLEAN_VERSION" CHANGELOG.md; then
-            echo "⚠️  Warning: CHANGELOG.md not updated for $CLEAN_VERSION"
-            # This is a warning, not a blocker for now
-          else
-            echo "✅ CHANGELOG.md updated"
-          fi
+        if ! grep -q "$CLEAN_VERSION" CHANGELOG.md; then
+          echo "⚠️  Warning: CHANGELOG.md not updated for $CLEAN_VERSION"
+          # This is a warning, not a blocker for now
+        else
+          echo "✅ CHANGELOG.md updated"
+        fi
 
-      - name: Verify version bumped in pyproject.toml
-        id: version-check
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          # Remove any commit suffix for comparison with pyproject.toml
-          CLEAN_VERSION="${VERSION%%-*}"
-          CLEAN_VERSION="${CLEAN_VERSION#v}"
+    - name: Verify version bumped in pyproject.toml
+      id: version-check
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        # Remove any commit suffix for comparison with pyproject.toml
+        CLEAN_VERSION="${VERSION%%-*}"
+        CLEAN_VERSION="${CLEAN_VERSION#v}"
 
-          if ! grep -q "version = \"${CLEAN_VERSION}\"" pyproject.toml; then
-            echo "❌ Version mismatch: pyproject.toml not updated to $CLEAN_VERSION"
-            exit 1
+        if ! grep -q "version = \"${CLEAN_VERSION}\"" pyproject.toml; then
+          echo "❌ Version mismatch: pyproject.toml not updated to $CLEAN_VERSION"
+          exit 1
           fi
 
           echo "✅ Version verified in pyproject.toml"
