@@ -109,9 +109,9 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       REPO: ${{ github.repository }}
 
-      steps:
+    steps:
       - name: Mask secrets
-    run: |
+        run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
     # ── 1. Probe the API endpoint ─────────────────────────────────────────
