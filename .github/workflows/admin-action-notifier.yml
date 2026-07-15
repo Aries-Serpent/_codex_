@@ -106,19 +106,19 @@ jobs:
       issue_number: ${{ steps.notify.outputs.issue_number }}
 
     env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       REPO: ${{ github.repository }}
 
     steps:
-      - name: Mask secrets
-        run: |
-          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
     # ── 1. Probe the API endpoint ─────────────────────────────────────────
     - name: Probe ${{ inputs.gap_id }} endpoint
       id: probe
       env:
-          PROBE_URL:    ${{ inputs.probe_url }}
+        PROBE_URL:    ${{ inputs.probe_url }}
         EXPECTED_OK:  ${{ inputs.expected_ok_status }}
       run: |
           HTTP_STATUS=$(curl -s -o "${RUNNER_TEMP}/admin_probe_response.json" -w "%{http_code}" \
@@ -155,7 +155,7 @@ jobs:
       if: steps.probe.outputs.scope_ok == 'false'
       uses: actions/github-script@v8  # v9
       env:
-          GAP_ID:       ${{ inputs.gap_id }}
+        GAP_ID:       ${{ inputs.gap_id }}
         ISSUE_TITLE:  ${{ inputs.issue_title }}
         ISSUE_BODY:   ${{ inputs.issue_body_md }}
         ISSUE_LABEL:  ${{ inputs.issue_label }}
@@ -215,11 +215,11 @@ jobs:
       if: steps.probe.outputs.scope_ok == 'true'
       uses: actions/github-script@v8  # v9
       env:
-          ISSUE_TITLE: ${{ inputs.issue_title }}
+        ISSUE_TITLE: ${{ inputs.issue_title }}
         ISSUE_LABEL: ${{ inputs.issue_label }}
         GAP_ID:      ${{ inputs.gap_id }}
       with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         script: |
             const { owner, repo } = context.repo;
             const open = await github.rest.issues.listForRepo({
@@ -250,7 +250,7 @@ jobs:
     - name: Step summary
       if: always()
       env:
-          GAP_ID:         ${{ inputs.gap_id }}
+        GAP_ID:         ${{ inputs.gap_id }}
         SCOPE_OK:       ${{ steps.probe.outputs.scope_ok }}
         ISSUE_NUM:      ${{ steps.notify.outputs.issue_number }}
         HTTP_STATUS:    ${{ steps.probe.outputs.http_status }}
@@ -282,4 +282,3 @@ jobs:
                        ;;
             esac
           } >> "$GITHUB_STEP_SUMMARY"
-
