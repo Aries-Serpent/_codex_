@@ -17,27 +17,27 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != "schedule" || github.event.schedule == "0 0 * * *"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy scipy pandas pytest pytest-cov
 
         "
-    - name: Run SLA compliance tests
-      run: "pytest tests/optimization/test_sla_optimizer.py::TestConstraintSolver\
+      - name: Run SLA compliance tests
+        run: "pytest tests/optimization/test_sla_optimizer.py::TestConstraintSolver\
         \ -v \\\n  --tb=short --junit-xml=artifacts/sla-compliance-results.xml\n"
-    - name: Upload compliance report
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: sla-compliance-report
+      - name: Upload compliance report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: sla-compliance-report
         path: artifacts/sla-compliance-results.xml
         retention-days: 30
     timeout-minutes: 30
@@ -46,21 +46,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != "schedule" || github.event.schedule == "0 2 * * 1"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy scipy pandas pytest
 
         "
-    - name: Generate Pareto frontier
-      run: "python -c \"\nimport json\nimport time\nfrom src.codex.optimization import\
+      - name: Generate Pareto frontier
+        run: "python -c \"\nimport json\nimport time\nfrom src.codex.optimization import\
         \ SLAOptimizer, SLASpec\n\n# Create sample SLAs\nslas = [\n    SLASpec(\n\
         \        tenant_id=f"tenant-{i}",\n        target_uptime_percent=99.9,\n \
         \       max_response_time_ms=100,\n        max_error_rate_percent=0.1,\n \
@@ -76,18 +76,18 @@ jobs:
         \ in frontier\n    ],\n}\n\nwith open("artifacts/pareto-frontier.json", "w")\
         \ as f:\n    json.dump(results, f, indent=2)\n\nprint(f"Pareto frontier: {len(frontier)}\
         \ points generated in {elapsed:.2f}s")\n\"\n"
-    - name: Verify frontier performance
-      run: "python -c \"\nimport json\nwith open("artifacts/pareto-frontier.json")\
+      - name: Verify frontier performance
+        run: "python -c \"\nimport json\nwith open("artifacts/pareto-frontier.json")\
         \ as f:\n    data = json.load(f)\n\nelapsed = data["computation_time_seconds"]\n\
         num_points = data["num_points"]\n\nassert elapsed < 10.0, f"Frontier generation\
         \ took {elapsed:.2f}s, expected <10s"\nassert num_points >= 4, f"Only {num_points}\
         \ points generated, expected ≥4"\n\nprint(f"✓ Frontier meets performance criteria:\
         \ {num_points} points in {elapsed:.2f}s")\n\"\n"
-    - name: Upload frontier report
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: pareto-frontier-report
+      - name: Upload frontier report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: pareto-frontier-report
         path: artifacts/pareto-frontier.json
         retention-days: 30
     timeout-minutes: 30
@@ -96,21 +96,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != "schedule" || github.event.schedule == "0 3 1 * *"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy scipy pandas pytest
 
         "
-    - name: Generate billing report
-      run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.optimization\
+      - name: Generate billing report
+        run: "python -c \"\nimport json\nfrom datetime import datetime\nfrom src.codex.optimization\
         \ import SLAOptimizer, SLASpec\n\n# Create sample SLAs\nslas = [\n    SLASpec(\n\
         \        tenant_id=f"tenant-{i}",\n        target_uptime_percent=99.9 - i\
         \ * 0.02,\n        max_response_time_ms=100,\n        max_error_rate_percent=0.1,\n\
@@ -127,8 +127,8 @@ jobs:
         \ report generated for {current_month}")\nprint(f"  Tenants: {len(reports)}")\n\
         print(f"  Total cost: \\${summary[\\\"estimated_monthly_cost\\\"]:,.2f}")\n\
         \"\n"
-    - name: Verify billing completeness
-      run: "python -c \"\nimport json\nimport csv\n\n# Verify CSV\nwith open("artifacts/billing_report.csv")\
+      - name: Verify billing completeness
+        run: "python -c \"\nimport json\nimport csv\n\n# Verify CSV\nwith open("artifacts/billing_report.csv")\
         \ as f:\n    reader = csv.DictReader(f)\n    rows = list(reader)\n    assert\
         \ len(rows) > 0, "No billing records in CSV"\n\n    # Verify all required\
         \ fields\n    required = ["tenant_id", "cpu_cost", "memory_cost", "disk_cost",\
@@ -137,11 +137,11 @@ jobs:
         # Verify JSON\nwith open("artifacts/billing_report.json") as f:\n    data\
         \ = json.load(f)\n    assert len(data) > 0, "No billing records in JSON"\n\
         \nprint("✓ Billing report meets completeness criteria")\n\"\n"
-    - name: Upload billing reports
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: monthly-billing-reports
+      - name: Upload billing reports
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: monthly-billing-reports
         path: artifacts/billing_*.{csv,json}
         retention-days: 90
     timeout-minutes: 30
@@ -150,24 +150,24 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != "schedule" || github.event.schedule == "0 0 * * 0"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy scipy pandas pytest
 
         "
-    - name: Run tier transition tests
-      run: "pytest tests/optimization/test_sla_optimizer.py::TestTierManager -v \\\
+      - name: Run tier transition tests
+        run: "pytest tests/optimization/test_sla_optimizer.py::TestTierManager -v \\\
         \n  --tb=short --junit-xml=artifacts/tier-transition-audit.xml\n"
-    - name: Test churn reduction
-      run: "python -c \"\nimport json\nfrom src.codex.optimization import SLAOptimizer,\
+      - name: Test churn reduction
+        run: "python -c \"\nimport json\nfrom src.codex.optimization import SLAOptimizer,\
         \ TierManager, Tier\n\nmanager = TierManager(cooldown_days=0)\n\n# Simulate\
         \ multiple promotions/demotions\nfor i in range(5):\n    manager.promote_tier(f"tenant-{i}",\
         \ Tier.BRONZE)\n\nfor i in range(3):\n    manager.demote_tier(f"tenant-{i}",\
@@ -177,11 +177,11 @@ jobs:
         \ > 0 else "PASS",\n}\n\nwith open("artifacts/tier-transition-audit.json",\
         \ "w") as f:\n    json.dump(results, f, indent=2)\n\nprint(f"✓ Tier transition\
         \ audit: {churn:.2f} changes per tenant")\n\"\n"
-    - name: Upload tier audit
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: tier-transition-audit
+      - name: Upload tier audit
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: tier-transition-audit
         path: artifacts/tier-transition-audit.*
         retention-days: 30
     timeout-minutes: 45
@@ -189,21 +189,21 @@ jobs:
     name: Cost Anomaly Detection
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.11"
         cache: pip
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy scipy pandas pytest
 
         "
-    - name: Detect cost anomalies
-      run: "python -c \"\nimport json\nimport numpy as np\nfrom src.codex.optimization\
+      - name: Detect cost anomalies
+        run: "python -c \"\nimport json\nimport numpy as np\nfrom src.codex.optimization\
         \ import CostPredictor, ResourceAllocation, Tier\n\npredictor = CostPredictor()\n\
         \n# Simulate predictions and actuals\nresults = {"anomalies": [], "healthy":\
         \ []}\n\nfor i in range(10):\n    allocation = ResourceAllocation(\n     \
@@ -222,11 +222,11 @@ jobs:
         \ f, indent=2)\n\nprint(f"✓ Cost anomaly detection: {len(results[\\\"anomalies\\\
         \"])} anomalies, {len(results[\\\"healthy\\\"])} healthy")\nprint(f"  Mean\
         \ error: {accuracy[\\\"mean_error_percent\\\"]:.2f}%, target ±10%")\n\"\n"
-    - name: Upload anomaly report
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: cost-anomaly-report
+      - name: Upload anomaly report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: cost-anomaly-report
         path: artifacts/cost-anomaly-report.json
         retention-days: 30
     timeout-minutes: 30
@@ -241,12 +241,12 @@ jobs:
     - cost-anomaly-detection
     if: always()
     steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v5
-      with:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+        with:
         path: artifacts
-    - name: Generate summary report
-      run: "python -c \"\nimport json\nimport os\nfrom pathlib import Path\n\nsummary\
+      - name: Generate summary report
+        run: "python -c \"\nimport json\nimport os\nfrom pathlib import Path\n\nsummary\
         \ = {\n    "checks": {\n        "sla_compliance": False,\n        "pareto_frontier":\
         \ False,\n        "monthly_billing": False,\n        "tier_transitions": False,\n\
         \        "cost_anomalies": False,\n    },\n    "timestamp": os.popen("date\
@@ -269,16 +269,16 @@ jobs:
         \ Monitoring")\nfor check, passed in summary["checks"].items():\n    print(f"\
         \  {\\\"✓\\\" if passed else \\\"✗\\\"} {check}")\n\nwith open("summary.json",\
         \ "w") as f:\n    json.dump(summary, f, indent=2)\n\"\n"
-    - name: Upload summary
-      uses: actions/upload-artifact@v5
-      with:
-      name: optimization-summary
+      - name: Upload summary
+        uses: actions/upload-artifact@v5
+        with:
+        name: optimization-summary
         path: summary.json
         retention-days: 30
-    - name: Comment on PR (if exists)
-      if: github.event_name == "pull_request"
-      uses: actions/github-script@v8
-      with:
+      - name: Comment on PR (if exists)
+        if: github.event_name == "pull_request"
+        uses: actions/github-script@v8
+        with:
         script: "const fs = require("fs");\nconst summary = JSON.parse(fs.readFileSync("summary.json",\
           \ "utf8"));\n\nconst checks = Object.entries(summary.checks)\n  .map(([name,\
           \ passed]) => `- ${passed ? "✓" : "✗"} ${name}`)\n  .join("\\n");\n\nconst\
