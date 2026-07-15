@@ -19,6 +19,8 @@ from typing import Optional
 
 QUEUE_DIR = pathlib.Path(".codex/rescue-comment-queue")
 BATCH_WAIT_DEFAULT = 3  # seconds
+# Note: UTC_TIMESTAMP_FORMAT is also defined in post_rescue_comment.py.
+# We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 

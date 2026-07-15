@@ -91,6 +91,8 @@ import pathlib as _pathlib
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
 CONSOLIDATION_DELAY_SECONDS = 3
 DUPLICATE_DIGEST_LENGTH = 16
+# Note: UTC_TIMESTAMP_FORMAT is also defined in rescue_comment_batch_queue.py.
+# We keep both to maintain module independence and avoid circular imports.
 UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
@@ -614,8 +616,8 @@ def main() -> None:
                 workflow,
                 run_id,
                 run_url,
-                section_title if section_title else None,
-                section_content if section_content else None,
+                section_title,
+                section_content,
             ):
                 return  # Successfully appended or queued
             # If append failed and no existing comment, fall through to normal create
@@ -759,8 +761,8 @@ def main() -> None:
                         workflow_name=workflow,
                         run_id=run_id,
                         run_url=run_url,
-                        section_title=section_title if section_title else None,
-                        section_content=section_content if section_content else None,
+                        section_title=section_title,
+                        section_content=section_content,
                     )
                     print(
                         f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
