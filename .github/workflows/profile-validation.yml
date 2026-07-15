@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -74,7 +74,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Validate SHA256 hashes in uv.lock
@@ -104,7 +104,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -180,3 +180,4 @@ jobs:
             echo "- Offline Install: ${{ needs.offline-install-test.result }}" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+

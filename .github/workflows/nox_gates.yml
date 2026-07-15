@@ -27,7 +27,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+      persist-credentials: false
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -57,7 +57,7 @@ jobs:
         --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
         '
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
@@ -79,7 +79,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
@@ -95,7 +95,7 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   conditional-approval:
@@ -123,3 +123,7 @@ jobs:
                 approval_reason: 'nox-gates-passed'
               }
             });
+
+
+
+

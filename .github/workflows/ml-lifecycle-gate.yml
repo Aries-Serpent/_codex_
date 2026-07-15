@@ -32,7 +32,7 @@ jobs:
     - run: pip install -q -r requirements-dev.txt
     - name: Run reproducibility validator
       run: python scripts/ml/validate_ml_lifecycle.py --check reproducibility
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   serving-smoke:
@@ -48,7 +48,7 @@ jobs:
     - run: pip install -q -r requirements-dev.txt
     - name: Run serving smoke test
       run: python scripts/ml/validate_ml_lifecycle.py --check serving
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   model-registry-audit:
@@ -64,7 +64,7 @@ jobs:
     - run: pip install -q -r requirements-dev.txt
     - name: Run model registry audit
       run: python scripts/ml/validate_ml_lifecycle.py --check registry
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   e2e-gate:
@@ -84,7 +84,7 @@ jobs:
     - run: pip install -q -r requirements-dev.txt
     - name: Run E2E gate validation
       run: python scripts/ml/validate_ml_lifecycle.py --check e2e
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   gate-summary:
@@ -116,3 +116,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

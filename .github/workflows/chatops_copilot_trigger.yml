@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 60
     if: startsWith(github.event.comment.body, '/copilot')
     steps:
-    
+
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
@@ -224,7 +224,7 @@ jobs:
           \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d @/tmp/tier_body.json \\\n  > /dev/null\necho \"\u2705 Posted tier\
         \ report on PR  #${PR_NUMBER}\"\n"
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -234,7 +234,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pytest-
 
-      
+
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
@@ -362,3 +362,4 @@ jobs:
         \ ${CURRENT} \u2192 ${NEXT}\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+

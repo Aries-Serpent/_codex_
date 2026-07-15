@@ -18,31 +18,31 @@ jobs:
     name: Forecast Accuracy Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v5
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install -q statsmodels prophet scikit-learn scipy pandas numpy pytest
-      
+
       - name: Run forecasting tests
         run: |
           pytest tests/forecasting/test_capacity_planner.py::TestARIMAModel -v
           pytest tests/forecasting/test_capacity_planner.py::TestProphetModel -v
           pytest tests/forecasting/test_capacity_planner.py::TestEnsembleForecaster -v
-      
+
       - name: Generate accuracy report
         run: |
           python -c "
           import json
           import numpy as np
           from src.codex.forecasting import TimeSeriesForecaster
-          
+
           # Generate synthetic metrics
           np.random.seed(42)
           metrics = {
@@ -50,60 +50,60 @@ jobs:
               'memory': np.linspace(40, 80, 100) + np.random.normal(0, 3, 100),
               'disk': np.linspace(50, 75, 100) + np.random.normal(0, 3, 100),
           }
-          
+
           # Fit and forecast
           forecaster = TimeSeriesForecaster()
           forecaster.fit(metrics)
-          
+
           accuracy = forecaster.get_forecast_accuracy()
-          
+
           # Report results
           print('Forecast Accuracy Report')
           print('========================')
           for metric, mape in accuracy.items():
               status = '✅ PASS' if mape < 10 else '⚠️  WARN'
               print(f'{metric}: {mape:.2f}% MAPE {status}')
-          
+
           # Save to file for artifact
           with open('forecast-accuracy.json', 'w') as f:
               json.dump(accuracy, f, indent=2)
           "
-      
+
       - name: Upload accuracy report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: forecast-accuracy
           path: forecast-accuracy.json
-  
+
   bottleneck_validation:
     name: Bottleneck Detection Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v5
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install -q statsmodels prophet scikit-learn scipy pandas numpy pytest
-      
+
       - name: Run bottleneck tests
         run: |
           pytest tests/forecasting/test_capacity_planner.py::TestBottleneckPredictor -v
-      
+
       - name: Generate bottleneck report
         run: |
           python -c "
           import json
           import numpy as np
           from src.codex.forecasting import BottleneckPredictor
-          
+
           predictor = BottleneckPredictor()
-          
+
           # Test scenarios
           test_metrics = {
               'cpu': {
@@ -119,11 +119,11 @@ jobs:
                   'forecast': np.linspace(70, 82, 30),
               },
           }
-          
+
           trend_strength = {'cpu': 0.90, 'memory': 0.85, 'disk': 0.60}
-          
+
           alerts = predictor.predict_bottlenecks(test_metrics, trend_strength)
-          
+
           # Report
           print('Bottleneck Detection Report')
           print('===========================')
@@ -134,55 +134,55 @@ jobs:
               print(f'    Saturation: {alert.days_until_saturation} days')
               print(f'    Severity: {alert.severity}')
               print(f'    Confidence: {alert.confidence*100:.0f}%')
-          
+
           # Save metrics
           metrics_dict = {
               'total_bottlenecks': len(alerts),
               'first_bottleneck': alerts[0].resource if alerts else None,
               'earliest_saturation_days': alerts[0].days_until_saturation if alerts else None,
           }
-          
+
           with open('bottleneck-report.json', 'w') as f:
               json.dump(metrics_dict, f, indent=2)
           "
-      
+
       - name: Upload bottleneck report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bottleneck-report
           path: bottleneck-report.json
-  
+
   recommendation_validation:
     name: Provisioning Recommendation Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v5
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install -q scikit-learn scipy pandas numpy pytest
-      
+
       - name: Run recommendation tests
         run: |
           pytest tests/forecasting/test_capacity_planner.py::TestProvisioningRecommender -v
-      
+
       - name: Generate recommendation report
         run: |
           python -c "
           import json
           from src.codex.forecasting import ProvisioningRecommender
-          
+
           recommender = ProvisioningRecommender()
-          
+
           # Generate sample recommendations
           recs = []
-          
+
           cpu_rec = recommender.recommend_cpu_scaling(80, 4, 10, 0.92)
           recs.append({
               'type': cpu_rec.recommendation_type,
@@ -192,7 +192,7 @@ jobs:
               'monthly_savings': cpu_rec.estimated_savings_monthly,
               'roi_months': cpu_rec.roi_months,
           })
-          
+
           memory_rec = recommender.recommend_memory_scaling(75, 16, 12, 0.85)
           recs.append({
               'type': memory_rec.recommendation_type,
@@ -202,7 +202,7 @@ jobs:
               'monthly_savings': memory_rec.estimated_savings_monthly,
               'roi_months': memory_rec.roi_months,
           })
-          
+
           ri_rec = recommender.recommend_reserved_instances(1000.0)
           recs.append({
               'type': ri_rec.recommendation_type,
@@ -210,7 +210,7 @@ jobs:
               'monthly_savings': ri_rec.estimated_savings_monthly,
               'annual_savings': ri_rec.estimated_savings_monthly * 12,
           })
-          
+
           # Report
           print('Provisioning Recommendation Report')
           print('==================================')
@@ -219,44 +219,44 @@ jobs:
           print(f'Annual Savings: \${total_savings*12:.2f}')
           for rec in recs:
               print(f'  {rec[\"type\"]}: {rec[\"resource\"]} (+\${rec[\"monthly_savings\"]:.2f}/month)')
-          
+
           metrics_dict = {
               'total_recommendations': len(recs),
               'monthly_savings': total_savings,
               'annual_savings': total_savings * 12,
               'recommendations': recs,
           }
-          
+
           with open('recommendation-report.json', 'w') as f:
               json.dump(metrics_dict, f, indent=2, default=str)
           "
-      
+
       - name: Upload recommendation report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: recommendation-report
           path: recommendation-report.json
-  
+
   dashboard_performance:
     name: Dashboard Performance Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v5
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install -q scikit-learn scipy pandas numpy pytest
-      
+
       - name: Run dashboard tests
         run: |
           pytest tests/forecasting/test_capacity_planner.py::TestDashboardGenerator -v
-      
+
       - name: Test dashboard performance
         run: |
           python -c "
@@ -264,9 +264,9 @@ jobs:
           import json
           import numpy as np
           from src.codex.forecasting import DashboardGenerator
-          
+
           generator = DashboardGenerator()
-          
+
           # Generate sample data
           metrics_data = {
               f'metric_{i}': {
@@ -278,35 +278,35 @@ jobs:
               }
               for i in range(5)
           }
-          
+
           # Measure generation time
           start = time.time()
           dashboard = generator.generate_dashboard(metrics_data, [], [])
           gen_time = time.time() - start
-          
+
           print('Dashboard Performance Report')
           print('============================')
           print(f'Generation Time: {gen_time:.3f}s')
           print(f'Status: {\"✅ PASS\" if gen_time < 5.0 else \"⚠️  WARN\"}')
           print(f'Panels Generated: {len(dashboard[\"panels\"])}')
-          
+
           metrics_dict = {
               'generation_time_seconds': gen_time,
               'target_time_seconds': 5.0,
               'panels_count': len(dashboard['panels']),
               'status': 'pass' if gen_time < 5.0 else 'warn',
           }
-          
+
           with open('dashboard-performance.json', 'w') as f:
               json.dump(metrics_dict, f, indent=2)
           "
-      
+
       - name: Upload performance report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dashboard-performance
           path: dashboard-performance.json
-  
+
   summary:
     name: Generate Summary Report
     runs-on: ubuntu-latest
@@ -314,36 +314,37 @@ jobs:
     if: always()
     steps:
       - name: Download all reports
-        uses: actions/download-artifact@v4
-      
+        uses: actions/download-artifact@v5
+
       - name: Generate summary
         run: |
           echo "# Capacity Planner Weekly Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "## Validation Status" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Forecast Accuracy: PASS" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Bottleneck Detection: PASS" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Recommendations: PASS" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Dashboard Performance: PASS" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "## Metrics" >> $GITHUB_STEP_SUMMARY
           if [ -f forecast-accuracy/forecast-accuracy.json ]; then
               echo "### Forecast Accuracy (MAPE %)" >> $GITHUB_STEP_SUMMARY
               cat forecast-accuracy/forecast-accuracy.json >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ -f bottleneck-report/bottleneck-report.json ]; then
               echo "### Bottleneck Detection" >> $GITHUB_STEP_SUMMARY
               cat bottleneck-report/bottleneck-report.json >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ -f dashboard-performance/dashboard-performance.json ]; then
               echo "### Dashboard Performance" >> $GITHUB_STEP_SUMMARY
               cat dashboard-performance/dashboard-performance.json >> $GITHUB_STEP_SUMMARY
           fi
+

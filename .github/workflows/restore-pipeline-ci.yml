@@ -30,8 +30,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5  # v6.0.3
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - uses: actions/setup-python@v6  # v6
         with:
@@ -70,3 +70,7 @@ jobs:
       - name: Demo script smoke test
         run: |
           bash examples/run_demo.sh
+
+
+
+

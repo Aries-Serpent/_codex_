@@ -1,35 +1,32 @@
-# Session Context — 2026-07-14T21:44:19Z
-**Branch:** `copilot/add-cache-to-python-workflows`  **PR:** #5321  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-15T15:20:45Z
+**Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4996` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4920` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5321 — Phase 2 Deployment Campaign: Monitoring & Beta Prep - All 7 Gates Passed, Phase 3 Authorized
-State: `open`  Draft: `False`  Branch: `copilot/add-cache-to-python-workflows` → `main`
-
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
+## 📋 PR #5323 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery
+State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `0D_base_`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/smoke-tests-deployment.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/cost-gate.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/model-drift-retrain.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/flush-queued-runs.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **Scaling Framework Monitor** — `failure` on `main` (2026-07-15)
+- **.github/workflows/qa-walkthrough.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/deferral-language-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/copilot-review-responder.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
-- `e85073ff` fix: refactor workflows to eliminate untrusted checkout patterns — copilot-swe-agent[bot] (2026-07-14)
-- `a47f1e6d` fix: resolve CodeQL alerts for untrusted checkout in workflow_run contexts — copilot-swe-agent[bot] (2026-07-14)
-- `3eaa5019` CodeQL Alert Fix Plan: Secure workflow_run checkout operations — copilot-swe-agent[bot] (2026-07-14)
-- `f6d777ea` Apply remaining changes — copilot-swe-agent[bot] (2026-07-14)
-- `852c8235` docs: add synchronization note for branch allowlist maintenance — copilot-swe-agent[bot] (2026-07-14)
-- `fca79ac2` docs: clarify branch validation comments to avoid contradiction — copilot-swe-agent[bot] (2026-07-14)
-- `d088c45e` fix(maintenance): remove temporary feature branch from app-package-download allo — copilot-swe-agent[bot] (2026-07-14)
-- `438b4ca6` fix(security): remove debug log exception exposure to prevent information leakag — copilot-swe-agent[bot] (2026-07-14)
+- `ed575929` docs: Phase 4 CI Rescue — Final Compliance Update after YAML remediation — copilot-swe-agent[bot] (2026-07-15)
+- `0ab744b5` fix(yaml): Correct indentation in release-to-pypi and security-scan workflows — copilot-swe-agent[bot] (2026-07-15)
+- `f2093b85` docs: Phase 4 CI Rescue — Compliance Remediation (REQ-4 & REQ-5 update) — copilot-swe-agent[bot] (2026-07-15)
+- `81432084` docs: Phase 4 CI Rescue — Compliance Remediation (REQ-4 & REQ-5 update) — copilot-swe-agent[bot] (2026-07-15)
+- `d3d1686a` docs: Create comprehensive handoff and next-session prompt for Phase 4 Phase 2 f — copilot-swe-agent[bot] (2026-07-15)
+- `cbe70f9d` fix(yaml): Complete Phase 4 Phase 2 YAML remediation — 3 of 4 remaining files fi — copilot-swe-agent[bot] (2026-07-15)
+- `cd238fc4` Phase 4 Phase 2: Begin YAML remediation for 4 remaining files — copilot-swe-agent[bot] (2026-07-15)
+- `69614c99` fix: Phase 4 Phase 2 YAML remediation - 12/16 files now valid (75%) — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

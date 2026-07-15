@@ -51,25 +51,25 @@ jobs:
       if: steps.check-target.outputs.skip != 'true'
       run: |
         BRANCH="${{ steps.resolve-target.outputs.branch }}"
-         
+
         # Validate branch name contains only safe characters (no .. directory traversal)
         if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9/_-]+$ ]]; then
           printf '❌ Error: Branch name contains unsafe characters: %s\n' "$BRANCH" >&2
           exit 1
         fi
-        
+
         # Explicitly reject .. sequences that could enable traversal
         if [[ "$BRANCH" == *".."* ]]; then
           printf '❌ Error: Branch name contains directory traversal sequence: %s\n' "$BRANCH" >&2
           exit 1
         fi
-         
+
         # Verify the branch exists in origin using git ls-remote
         if ! git ls-remote --exit-code origin "$BRANCH" >/dev/null 2>&1; then
           printf '❌ Error: Branch %s does not exist in origin\n' "$BRANCH" >&2
           exit 1
         fi
-         
+
         # Fetch the branch
         git fetch origin "$BRANCH" --depth=1 || exit 1
         # Checkout the branch
@@ -143,3 +143,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

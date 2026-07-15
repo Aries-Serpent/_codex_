@@ -58,7 +58,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -401,3 +401,4 @@ jobs:
             });
 
             console.log(`Created rollback issue  #${issue.data.number}`);
+

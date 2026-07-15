@@ -1,0 +1,103 @@
+name: Workflow Compliance Audit (actionlint)
+on:
+  pull_request:
+    paths:
+    - .github/workflows/**
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/**
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  lint-workflows:
+    name: actionlint — Workflow Compliance
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+
+${{ runner.os }}-pytest-
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      - name: Install actionlint
+        run: "# Pinned version with fallback to latest on API failure\nPINNED=\"v1.7.7\"\
+        \nLATEST=$(curl -fsSL --max-time 10 https://api.github.com/repos/rhysd/actionlint/releases/latest\
+        \ \\\n  | python3 -c \"import sys,json; print(json.load(sys.stdin)['tag_name'])\"\
+        \ 2>/dev/null \\\n  || echo \"${PINNED}\")\nTARGET=\"${LATEST:-${PINNED}}\"\
+        \nVERSION=\"${TARGET#v}\"\ncurl -fsSL \\\n  \"https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz\"\
+        \ \\\n  | tar xz actionlint\nsudo mv actionlint /usr/local/bin/\nactionlint\
+        \ --version\n"
+      - name: Run actionlint on all workflows
+        id: actionlint
+        run: "# Run and capture output; save to file for summary\n# shellcheck disable=SC2016\
+        \  # Go template syntax, not shell variables\nmapfile -t WORKFLOW_FILES <\
+        \ <(find .github/workflows -maxdepth 1 -name '*.yml' | sort)\nactionlint \\\
+        \n  -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}'\
+        \ \\\n  \"${WORKFLOW_FILES[@]}\" 2>&1 | tee /tmp/actionlint_results.txt ||\
+        \ true\n\nERROR_COUNT=$(grep -c \"::error\" /tmp/actionlint_results.txt 2>/dev/null;\
+        \ true)\necho \"error_count=${ERROR_COUNT}\" >> \"$GITHUB_OUTPUT\"\n\nif [\
+        \ \"${ERROR_COUNT}\" -gt 0 ]; then\n  echo \"::error::actionlint found ${ERROR_COUNT}\
+        \ workflow compliance issue(s) — see annotations above\"\n  exit 1\nfi\necho\
+        \ \"✅ actionlint: 0 errors across $(find .github/workflows -maxdepth 1 -name\
+        \ '*.yml' | wc -l) workflow files\"\n"
+      - name: Post summary
+        if: always()
+        run: "{\n  echo \"## Workflow Compliance Audit (actionlint)\"\n  echo \"\"\n\
+        \  if [ -f /tmp/actionlint_results.txt ] && [ -s /tmp/actionlint_results.txt\
+        \ ]; then\n    echo \"\\`\\`\\`\"\n    cat /tmp/actionlint_results.txt\n \
+        \   echo \"\\`\\`\\`\"\n  else\n    TOTAL=$(find .github/workflows -maxdepth\
+        \ 1 -name '*.yml' | wc -l)\n    echo \"✅ No issues found across ${TOTAL} workflow\
+        \ files.\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+        env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+  rescue-comment:
+    name: Post rescue comment on failure
+    runs-on: ubuntu-latest
+    needs: lint-workflows
+    if: 'failure() &&
+
+      github.event_name == ''pull_request'' &&
+
+      github.event.pull_request.head.repo.full_name == github.repository
+
+      '
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          fetch-depth: 1
+      - name: Post or update rescue comment
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: Actionlint Workflow Audit
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+          run: python scripts/ci/post_rescue_comment.py
+          env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+
+
+
+
+

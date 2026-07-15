@@ -46,12 +46,12 @@ jobs:
         run: |
           git config --local user.email "copilot@github.com"
           git config --local user.name "GitHub Copilot"
-          
+
           if git diff --quiet .codex/; then
             echo "ℹ️ No changes to commit"
             exit 0
           fi
-          
+
           git add .codex/workflow_health_snapshot.json .codex/WORKFLOW_HEALTH_DASHBOARD.md
           git commit -m "chore: Update workflow health dashboard [skip ci]"
           git push
@@ -63,3 +63,4 @@ jobs:
         run: |
           # Post to GitHub Discussion (implementation depends on discussion setup)
           echo "📊 Weekly workflow health summary posted"
+

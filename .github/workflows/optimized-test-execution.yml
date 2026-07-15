@@ -340,10 +340,10 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@1e59727e330d5a2a26e2b99f9dae8ff30d75a8cb
         with:
           toolchain: stable
-          override: true
+          components: rustfmt, clippy
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
@@ -452,7 +452,7 @@ jobs:
             - Fast Unit Tests (parallel via xdist)
             - Integration Tests (2-worker parallel)
             - Slow Tests (sequential)
-          
+
           Specialized (conditional):
             - Auth: Triggered on auth path changes
             - ML: 2 Python versions × 3 test suites
@@ -473,3 +473,4 @@ jobs:
             echo "::error::Core test suite failed"
             exit 1
           fi
+

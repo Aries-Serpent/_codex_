@@ -26,27 +26,23 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - name: Mask secrets
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: "pip"
-
       - name: Install dependencies
         run: pip install -q requests
-
       - name: Test classifier
         run: |
           cd scripts/ci
           python3 phase_8_2_issue_classifier.py --test
-
       - name: Add severity and category labels
         uses: actions/github-script@v8
         with:
@@ -107,20 +103,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
-
+        with:
+        persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-
       - name: Generate dashboard
         run: |
           cd scripts/ci
           python3 phase_8_2_triage_dashboard.py ../../.codex/PHASE_8_2_TRIAGE_DASHBOARD.md
           echo "Dashboard updated at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
       - name: Commit dashboard
         run: |
           if [ -n "$(git status --porcelain .codex/PHASE_8_2_TRIAGE_DASHBOARD.md)" ]; then
@@ -134,3 +127,7 @@ jobs:
           else
             echo "No changes to dashboard"
           fi
+
+
+
+

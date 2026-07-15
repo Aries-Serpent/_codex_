@@ -114,3 +114,4 @@ jobs:
           \ '❌ Failed to generate security scan summary. Please check the workflow\
           \ logs.'\n});\n"
     timeout-minutes: 30
+

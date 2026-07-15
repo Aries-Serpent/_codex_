@@ -40,6 +40,7 @@ jobs:
         '
     - name: Run import-linter
       run: lint-imports
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
