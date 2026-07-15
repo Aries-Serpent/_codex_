@@ -128,7 +128,7 @@ Replace ALL git operations with authenticated GitHub API calls:
 | Commit | Message | Files |
 |--------|---------|-------|
 | 4a961ac5 | docs: Add CodeQL resolution completion entry | AGENT_ACCOUNTABILITY_REPORT.md |
-| ceaf92fb | style: Consolidate multi-line token expressions | 3 workflows |
+| ceaf92fb | style: Consolidate multi-line token expressions | 3 workflows | <!-- pragma: allowlist secret -->
 | d9f08f0a | fix: Correct GitHub API URL syntax | iterative-self-healing-ci.yml |
 | cca81fd0 | style: Fix YAML formatting | 3 workflows |
 | eace49e2 | docs: Clarify script source branch | iterative-self-healing-ci.yml |

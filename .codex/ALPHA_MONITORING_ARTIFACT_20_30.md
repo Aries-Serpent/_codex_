@@ -294,7 +294,7 @@ Pod Security Standards: ✅ Restricted profile active
 **Cryptography & Secrets**:
 ```
 TLS/SSL: ✅ TLS 1.3 on all endpoints
-Secret Rotation: ✅ 2026-07-14T16:00:00Z (8h ago, within policy)
+Secret Rotation: ✅ 2026-07-14T16:00:00Z (8h ago, within policy)  # pragma: allowlist secret
 Encryption: ✅ AES-256 at-rest verified
 Key Management: ✅ HSM integration active
 ```
@@ -314,7 +314,7 @@ Runtime: seccomp profiles active ✅
 Semgrep SAST: 0 new findings ✅
 Dependency Vulnerability: 0 unpatched CVEs ✅
 Container Scan: 0 layer vulnerabilities ✅
-Secret Detection: 0 exposed secrets ✅
+Secret Detection: 0 exposed secrets ✅  # pragma: allowlist secret
 File Integrity: 0 unauthorized changes ✅
 Access Audit Logs: 100% captured ✅
 ```

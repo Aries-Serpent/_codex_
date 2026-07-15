@@ -192,7 +192,7 @@ Benefit: When Node-3 is added, only 1/N of keys remapped
 |---|---|---|
 | Pod breakout | Pod Security Policy | audit logs |
 | Namespace escape | Network policies | traffic blocking |
-| Secret theft | RBAC enforcement | access denial |
+| Secret theft | RBAC enforcement | access denial | <!-- pragma: allowlist secret -->
 | Resource exhaustion | Resource quotas | quota exceeded alerts |
 | Side-channel | Resource isolation | CPU cgroups |
 

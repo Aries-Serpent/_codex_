@@ -274,8 +274,8 @@ Pod Security Standards: ✅ Restricted (admission control active)
 
 **Secret Management**:
 ```
-Secrets Rotated: 2026-07-14T16:00:00Z (managed key rotation) ✅
-Secret Access Audit: 0 unauthorized access attempts ✅
+Secrets Rotated: 2026-07-14T16:00:00Z (managed key rotation) ✅  # pragma: allowlist secret
+Secret Access Audit: 0 unauthorized access attempts ✅  # pragma: allowlist secret
 Encryption Keys: Rotated weekly (managed rotation policy) ✅
 Key Derivation: PBKDF2 + 256-bit keys ✅
 ```
@@ -295,7 +295,7 @@ Supply Chain: SLSA Level 2 compliance ✅
 Semgrep SAST: 0 new findings ✅
 Dependency Scan: 0 unpatched CVEs ✅
 Container Scan: 0 layer vulnerabilities ✅
-Secret Detection: 0 exposed secrets ✅
+Secret Detection: 0 exposed secrets ✅  # pragma: allowlist secret
 SBOM Status: Generated & validated ✅
 Compliance: SOC 2 Type II maintained ✅
 ```

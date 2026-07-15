@@ -130,12 +130,12 @@ HIGH SEVERITY (Conditional - must resolve before Beta):
   - requests 2.31.0 (3 vulnerabilities) → Upgrade to 2.33.0
   - jinja2 3.1.2 (5 vulnerabilities) → Upgrade to 3.1.6
 
-Secret Detection Status:
-  - Commit history scan: ⚠️ Potential password references (no credentials leaked)
-  - .gitignore coverage: 1/6 patterns (missing: *.key, *.pem, secrets.*, token)
+Secret Detection Status:  # pragma: allowlist secret
+  - Commit history scan: ⚠️ Potential password references (no credentials leaked)  # pragma: allowlist secret
+  - .gitignore coverage: 1/6 patterns (missing: *.key, *.pem, secrets.*, token)  # pragma: allowlist secret
 
 CodeQL Status:
-  - API access: Requires elevated token (403 Forbidden)
+  - API access: Requires elevated token (403 Forbidden)  # pragma: allowlist secret
   - Manual verification: Recommended on main branch
 
 Status: FAIL - Cannot proceed to Phase 1 deployment

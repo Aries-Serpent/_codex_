@@ -53,7 +53,7 @@
 
 **Formula**:
 ```
-risk_score = (0.50 × cvss_score + 0.30 × entropy_score + 0.20 × context_score)
+risk_score = (0.50 × cvss_score + 0.30 × entropy_score + 0.20 × context_score)  # pragma: allowlist secret
 
 Thresholds:
 - CRITICAL: 8.0-10.0
@@ -247,7 +247,7 @@ Thresholds:
 | Component | File | Status | Tests | Output |
 |-----------|------|--------|-------|--------|
 | CodeQL Monitor | `codeql_reliability_monitor.py` | ✅ | Ready | `.codex/reports/codeql-reliability/` |
-| Risk Scorer | `vulnerability_risk_scorer.py` | ✅ | Ready | `.codex/reports/vulnerability-scoring/` |
+| Risk Scorer | `vulnerability_risk_scorer.py` | ✅ | Ready | `.codex/reports/vulnerability-scoring/` | <!-- pragma: allowlist secret -->
 | Aggregator | `vulnerability_aggregator.py` | ✅ | Ready | `.codex/reports/vulnerability-inventory/` |
 | Orchestrator | `remediation_orchestrator.py` | ✅ | Ready | `.codex/reports/remediation-plans/` |
 | Audit Report | `PHASE_4D_PLANSET_005_SECURITY_AUDIT.md` | ✅ | N/A | Documentation |

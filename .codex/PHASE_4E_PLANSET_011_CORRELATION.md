@@ -40,7 +40,7 @@ The correlation engine connects to 6 anomaly sources:
 │  1. AnomalyCollector (6+ systems)                           │
 │  ├─ CI/CD System (workflow failures, timeouts)              │
 │  ├─ RAG Module (retrieval failures, latency spikes)         │
-│  ├─ Auth System (token failures, rate limiting)             │
+│  ├─ Auth System (token failures, rate limiting)             │  # pragma: allowlist secret
 │  ├─ Performance Monitor (latency, throughput)               │
 │  ├─ Coverage System (regressions, gate failures)            │
 │  └─ Security Scanner (vulnerabilities, policy violations)   │

@@ -48,7 +48,7 @@ Verify that all 7 SLA types (latency, throughput, availability, durability, comp
 | **2. Throughput** | peak_qps (queries/sec) | CPU + Memory scaling | ✅ Mapped: CPU and memory both scale with QPS |
 | **3. Availability** | target_uptime_percent | Tier selection + redundancy | ✅ Mapped: Tier.target_uptime, redundancy = tier.required_redundancy |
 | **4. Durability** | max_error_rate_percent | Redundancy & disk replication | ✅ Mapped: error_rate drives tier selection |
-| **5. Compliance** | data_retention_days | Disk allocation | ✅ Mapped: disk_gb = peak_qps * 86400 * retention_days * 0.001 * 1.05 |
+| **5. Compliance** | data_retention_days | Disk allocation | ✅ Mapped: disk_gb = peak_qps * 86400 * retention_days * 0.001 * 1.05 | <!-- pragma: allowlist secret -->
 | **6. Cost** | cost_target | Tier selection determines cost multiplier | ✅ Mapped: Tier selection (1.0x to 3.5x cost) |
 | **7. Churn** | tier_change_frequency | 7-day cooldown prevents oscillation | ✅ Mapped: TierManager.should_promote/demote with cooldown |
 
@@ -72,7 +72,7 @@ Minimize: cost(allocation)
 Subject to:
   cpu_cores >= peak_qps / 1000 * 1.05              (latency constraint)
   memory_gb >= peak_qps / 500 * 1.05               (throughput constraint)
-  disk_gb >= peak_qps * 86400 * retention_days * 0.001 * 1.05   (durability constraint)
+  disk_gb >= peak_qps * 86400 * retention_days * 0.001 * 1.05   (durability constraint)  # pragma: allowlist secret
   network_mbps >= peak_qps * 0.1 * 1.05            (network constraint)
   redundancy = tier.required_redundancy             (availability constraint)
   tier = select_tier(target_uptime_percent)        (availability/compliance constraint)
@@ -178,7 +178,7 @@ Validate that the dynamic pricing model operates within ±10% of market rates (A
 # Base pricing
 cpu_base: $0.05/hr          # Within 8.7% of AWS ($0.046)
 memory_base: $0.01/hr       # Within 6.5% of AWS ($0.0107)
-disk_base: $0.10/month      # Matches AWS exactly
+disk_base: $0.10/month      # Matches AWS exactly  # pragma: allowlist secret
 network_base: $5.00/month   # Matches AWS exactly
 
 # Burst premium: 30% (market standard: 20-40%)

@@ -55,7 +55,7 @@ class AgentLoad:
 ```python
 router = EnhancedRouter()
 decision = router.select_best_agent(
-    task_description="fix failing tests",
+    task_description="fix failing tests",  # pragma: allowlist secret
     max_latency_ms=500,
     require_sla_compliance=True
 )
@@ -92,7 +92,7 @@ class MetricsCollector:
 **API**:
 ```python
 tracer = HandoffTracer()
-with tracer.trace_handoff("orch", "ci-testing", "task-123") as span:
+with tracer.trace_handoff("orch", "ci-testing", "task-123") as span:  # pragma: allowlist secret
     span.add_event("started")
     # ... work ...
     span.add_event("completed")
@@ -141,9 +141,9 @@ class FairShareScheduler:
 balancer = LoadBalancer()
 balancer.register_agent("agent-a", max_concurrent=5)
 
-entry = balancer.enqueue("task-1", "agent-a", TaskPriority.HIGH)
+entry = balancer.enqueue("task-1", "agent-a", TaskPriority.HIGH)  # pragma: allowlist secret
 recommended = balancer.recommend_agent(["agent-a", "agent-b"], {})
-balancer.complete("task-1", "agent-a", success=True, actual_duration_ms=250)
+balancer.complete("task-1", "agent-a", success=True, actual_duration_ms=250)  # pragma: allowlist secret
 ```
 
 ---
@@ -216,7 +216,7 @@ TestDistributedTracing (4 tests):
 
 TestLoadBalancing (4 tests):
   ✅ test_agent_registration
-  ✅ test_task_enqueue_dequeue
+  ✅ test_task_enqueue_dequeue  # pragma: allowlist secret
   ✅ test_load_balancing_recommendation
   ✅ test_circuit_breaker
 

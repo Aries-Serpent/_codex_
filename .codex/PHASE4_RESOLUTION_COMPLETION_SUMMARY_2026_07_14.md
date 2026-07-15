@@ -114,7 +114,7 @@
 ### GitHub API Validation
 ```
 ✅ 9 total API validation calls deployed
-✅ All authenticated via GH_TOKEN fallback chain
+✅ All authenticated via GH_TOKEN fallback chain  # pragma: allowlist secret
 ✅ All calls return early on success (no cascading operations)
 ```
 

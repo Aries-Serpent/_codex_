@@ -44,7 +44,7 @@
 | Security Suite | ✅ Active | ~93% | Scheduled + PR |
 | Dependency Scan | ✅ Configured | ~90% | Daily |
 | CVE Scanning | ✅ Enabled | ~88% | On-demand |
-| Secret Scanning | ✅ Enabled | ~99% | Real-time |
+| Secret Scanning | ✅ Enabled | ~99% | Real-time | <!-- pragma: allowlist secret -->
 
 ### 1.2 Security Scanning Infrastructure
 
@@ -130,10 +130,10 @@ go list -json -m all | nancy sleuth --json       # Go
 
 #### 2.2.2 CVSS Scoring & Classification
 ```python
-# scripts/ci/vulnerability_risk_scorer.py
+# scripts/ci/vulnerability_risk_scorer.py  # pragma: allowlist secret
 - Input: CVE, dependency chain, exposure
 - CVSS weight: 0.50
-- Entropy weight: 0.30 (E-09 signal for secrets)
+- Entropy weight: 0.30 (E-09 signal for secrets)  # pragma: allowlist secret
 - Context weight: 0.20 (criticality, exposure)
 - Output: Risk score (0-10), classification (CRITICAL/HIGH/MEDIUM/LOW)
 ```
@@ -156,18 +156,18 @@ jobs:
 
 #### 2.3.1 E-09 Pattern Implementation
 ```python
-# Entropy-based secret detection
+# Entropy-based secret detection  # pragma: allowlist secret
 patterns = {
-    'api_key': r'api[_-]?key["\']?\s*[:=]\s*["\']([a-zA-Z0-9_-]{20,})["\']',
-    'aws_key': r'(?i)aws[_-]?secret[_-]?access[_-]?key.*',
-    'token': r'token["\']?\s*[:=]\s*["\']([a-zA-Z0-9_-]{20,})["\']',
-    'db_password': r'(?i)(password|passwd)["\']?\s*[:=]\s*["\']([^"\']{8,})["\']',
+    'api_key': r'api[_-]?key["\']?\s*[:=]\s*["\']([a-zA-Z0-9_-]{20,})["\']',  # pragma: allowlist secret
+    'aws_key': r'(?i)aws[_-]?secret[_-]?access[_-]?key.*',  # pragma: allowlist secret
+    'token': r'token["\']?\s*[:=]\s*["\']([a-zA-Z0-9_-]{20,})["\']',  # pragma: allowlist secret
+    'db_password': r'(?i)(password|passwd)["\']?\s*[:=]\s*["\']([^"\']{8,})["\']',  # pragma: allowlist secret
 }
 
 # Entropy scoring
 entropy = shannon_entropy(value)
-if entropy > 4.5:  # Likely random/secret
-    flag_as_potential_secret(value, entropy_score=entropy)
+if entropy > 4.5:  # Likely random/secret  # pragma: allowlist secret
+    flag_as_potential_secret(value, entropy_score=entropy)  # pragma: allowlist secret
 ```
 
 #### 2.3.2 False-Positive Handling
@@ -223,7 +223,7 @@ jobs:
 │
 ├─ Real-Time Findings Feed
 │  ├─ CodeQL Alerts (language breakdown)
-│  ├─ GHAS Alerts (dependency, secret)
+│  ├─ GHAS Alerts (dependency, secret)  # pragma: allowlist secret
 │  ├─ Semgrep Findings (pattern match)
 │  └─ Container Vulnerabilities (Trivy)
 │
@@ -270,7 +270,7 @@ class SecurityDashboard:
             trivy_findings
         )
     
-    def compute_risk_score(self):
+    def compute_risk_score(self):  # pragma: allowlist secret
         # CVSS + entropy + context
         return (
             0.50 * self.cvss_score +

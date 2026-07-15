@@ -62,7 +62,7 @@ docs/
 ├── database/                         # Database & Storage (8 files)
 ├── evolution/                        # Evolution & History
 ├── phase-9/                          # Phase documentation
-├── tokens/                           # Token management
+├── tokens/                           # Token management  # pragma: allowlist secret
 ├── training/                         # Training guides
 ├── logging/                          # Logging & Troubleshooting
 ├── troubleshooting/                  # Error resolution

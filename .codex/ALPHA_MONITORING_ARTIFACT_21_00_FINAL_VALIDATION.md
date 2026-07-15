@@ -167,7 +167,7 @@ Anomalies Detected: 0
 SAST Scan: 0 findings ✅
 Dependency Scan: 0 unpatched CVEs ✅
 Container Scan: 0 vulnerabilities ✅
-Secret Scan: 0 exposed secrets ✅
+Secret Scan: 0 exposed secrets ✅  # pragma: allowlist secret
 Access Audit: 0 unauthorized access attempts ✅
 Network Policies: 100% enforced ✅
 RBAC: All policies active ✅
