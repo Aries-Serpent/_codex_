@@ -66,7 +66,6 @@ jobs:
           test_module: tests/autonomy/test_agent_runner.py
           description: Persistent orchestration daemon (all phases)
     steps:
-
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -75,7 +74,6 @@ jobs:
           key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
-
       - name: Checkout
         uses: actions/checkout@v5
       - name: Setup Python
@@ -159,8 +157,7 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}

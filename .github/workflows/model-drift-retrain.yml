@@ -62,21 +62,18 @@ jobs:
       - uses: actions/checkout@v5  # v6.0.3
         with:
           persist-credentials: false
-
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install ML dependencies
         run: |
           pip install --quiet -e ".[ml]" || {
             echo "⚠️  ML extras unavailable — falling back to base install"
             pip install --quiet -e "."
           }
-
       - name: Run drift detection
         id: drift
         env:
@@ -134,7 +131,6 @@ jobs:
           print(json.dumps(result, indent=2))
           sys.exit(0)
           PYEOF
-
       - name: Summary — drift detection result
         run: |
           SHOULD="${{ steps.drift.outputs.should_retrain }}"
@@ -159,25 +155,21 @@ jobs:
     steps:
         with:
         persist-credentials: false
-
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
         uses: ./.github/actions/resolve-push-target
-
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: training
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install ML dependencies
         run: |
           pip install --quiet -e ".[ml]" || {
             echo "⚠️  ML extras unavailable — falling back to base install"
             pip install --quiet -e "."
           }
-
       - name: Execute retrain via ContinuousLearningPipeline
         id: retrain
         env:
@@ -221,7 +213,6 @@ jobs:
               with open(gh_output, "a") as f:
                   f.write(f"new_version={new_version.version}\n")
           PYEOF
-
       - name: Active-PR guard — skip push when any open/draft PR targets the push target
         id: pr_guard
         env:
@@ -242,7 +233,6 @@ jobs:
           else
             echo "pr_skip=false" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Commit updated model registry
         if: steps.pr_guard.outputs.pr_skip != 'true'
         env:
@@ -269,7 +259,6 @@ jobs:
           else
             echo "No registry changes to commit"
           fi
-
       - name: Open tracking issue
         if: steps.retrain.outputs.new_version != ''
         uses: actions/github-script@v8  # v9

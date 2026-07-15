@@ -138,7 +138,6 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
@@ -206,7 +205,6 @@ jobs:
           echo "codeql_wave=${CODEQL_WAVE}" >> "$GITHUB_OUTPUT"
           echo "deterministic_seed=${DETERMINISTIC_SEED}" >> "$GITHUB_OUTPUT"
           echo "healing_policy_tier_max=${HEALING_POLICY_TIER}" >> "$GITHUB_OUTPUT"
-
       - name: Generate input lock
         id: lock
         shell: bash
@@ -242,7 +240,6 @@ jobs:
             }' > .codex/contracts/input-lock.json
 
           echo "input_lock_sha256=${SHA}" >> "$GITHUB_OUTPUT"
-
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
@@ -272,13 +269,11 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-
       - name: Detect recent workflow failures
         id: detect
         env:
@@ -312,7 +307,6 @@ jobs:
               f.write(f"failure_count={recent_failures['total']}\n")
 
           EOF
-
       - name: Classify failure patterns
         id: classify
         run: |
@@ -348,7 +342,6 @@ jobs:
               f.write(f"patterns_detected={patterns_json}\n")
 
           EOF
-
       - name: Generate output contract
         if: always()
         shell: bash
@@ -371,7 +364,6 @@ jobs:
             "policy_tier": "T0"
           }
           EOF
-
       - name: Upload detection artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -399,13 +391,11 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-
       - name: Analyze patterns and generate plan
         id: analyze
         shell: bash
@@ -437,7 +427,6 @@ jobs:
 
           echo "plan_generated=true" >> "$GITHUB_OUTPUT"
           echo "remediation_count=0" >> "$GITHUB_OUTPUT"
-
       - name: Generate output contract
         if: always()
         shell: bash
@@ -459,7 +448,6 @@ jobs:
             "policy_tier": "T1"
           }
           EOF
-
       - name: Upload analysis artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -490,13 +478,11 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-
       - name: Enforce policy tier ceiling
         id: policy-check
         shell: bash
@@ -520,7 +506,6 @@ jobs:
             T3) echo "mode=escalate" >> "$GITHUB_OUTPUT" ;;
             *)  echo "mode=propose-only" >> "$GITHUB_OUTPUT" ;;
           esac
-
       - name: Apply healing actions
         id: act
         shell: bash
@@ -548,7 +533,6 @@ jobs:
 
           echo "changes_applied=0" >> "$GITHUB_OUTPUT"
           echo "rollback_available=true" >> "$GITHUB_OUTPUT"
-
       - name: Generate artifact provenance
         if: always()
         shell: bash
@@ -581,7 +565,6 @@ jobs:
             "sha": "${GITHUB_SHA}"
           }
           EOF
-
       - name: Generate output contract
         if: always()
         shell: bash
@@ -605,7 +588,6 @@ jobs:
             "policy_tier": "${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }}"
           }
           EOF
-
       - name: Upload remediation artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -632,12 +614,10 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Download all contract artifacts
         uses: actions/download-artifact@v5
         with:
           path: artifacts/
-
       - name: Validate contract schema and consistency
         shell: bash
         run: |
@@ -669,7 +649,6 @@ jobs:
           fi
 
           echo "::endgroup::"
-
       - name: Validate JSON schema consistency
         shell: bash
         run: |
@@ -787,7 +766,6 @@ jobs:
           2. Manual restore from artifact \`security/remediation-input-lock.json\`
 
           EOF
-
       - name: Summary
         run: |
           echo "## ✅ Self-Healing CI Loop Summary"

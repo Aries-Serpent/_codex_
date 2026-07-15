@@ -53,13 +53,11 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -69,7 +67,6 @@ jobs:
             sentence-transformers \
             faiss-cpu \
             python-dotenv
-
       - name: Extract task information
         id: task-info
         run: |
@@ -97,7 +94,6 @@ jobs:
           print(f"  ID: {task_id}")
           print(f"  Category: {category}")
         shell: python
-
       - name: Determine routing method
         id: routing-method
         run: |
@@ -127,13 +123,11 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install semantic router dependencies
         run: |
           pip install -q \
@@ -142,7 +136,6 @@ jobs:
             faiss-cpu \
             numpy \
             python-dotenv
-
       - name: Query FAISS index for agent routing
         id: router-query
         run: |
@@ -189,20 +182,17 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install workload balancer dependencies
         run: |
           pip install -q \
             pyyaml \
             python-dotenv \
             requests
-
       - name: Check agent load and select optimal agents
         id: load-balance
         run: |
@@ -245,13 +235,11 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install concurrent executor dependencies
         run: |
           pip install -q \
@@ -259,7 +247,6 @@ jobs:
             pyyaml \
             python-dotenv \
             requests
-
       - name: Execute task concurrently across selected agents
         id: concurrent-exec
         run: |
@@ -300,12 +287,10 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-
       - name: Log routing decision to audit trail
         run: |
           python3 << 'EOF'
@@ -366,7 +351,6 @@ jobs:
           print("✅ Routing decision logged to audit trail")
           print(json.dumps(entry, indent=2))
           EOF
-
       - name: Update routing metrics
         run: |
           # Update success metrics
@@ -422,13 +406,11 @@ jobs:
           └─────────────────────────────────────────────────────────────┘
 
           EOF
-
       - name: Check success criteria
         if: needs.concurrent-execution.outputs.execution_result == 'COMPLETED'
         run: |
           echo "✅ Phase 9.3 routing completed successfully"
           exit 0
-
       - name: Check failure conditions
         if: needs.concurrent-execution.outputs.execution_result != 'COMPLETED'
         run: |

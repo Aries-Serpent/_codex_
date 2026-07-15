@@ -35,26 +35,23 @@ jobs:
       issues: write
 
     steps:
-        - name: Mask secrets
+      - name: Mask secrets
           run: |
             echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout code
         uses: actions/checkout@v5  # v6.0.3
         with:
             persist-credentials: false
-
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
-
       - name: Collect telemetry data
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -68,7 +65,6 @@ jobs:
             --branch "$BRANCH" \
             --days "$DAYS" \
             --output telemetry_report_$(date +%Y%m%d).json
-
       - name: Analyze patterns
         run: |
           REPORT_FILE=$(ls telemetry_report_*.json | head -1)
@@ -102,14 +98,12 @@ jobs:
               echo "| $pattern | $count | ${percentage}% |" >> $GITHUB_STEP_SUMMARY
             done
           fi
-
       - name: Upload telemetry report
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: telemetry-report-${{ github.run_id }}
           path: telemetry_report_*.json
           retention-days: 90
-
       - name: Check for critical patterns
         id: critical
         run: |
@@ -139,7 +133,6 @@ jobs:
               echo "::warning::High number of coverage timeouts detected: $COVERAGE_COUNT"
             fi
           fi
-
       - name: Create issue for critical patterns
         if: |
           steps.critical.outputs.critical_failure_rate == 'true' ||

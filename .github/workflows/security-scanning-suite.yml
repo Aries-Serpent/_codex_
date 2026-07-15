@@ -127,7 +127,6 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
@@ -179,7 +178,6 @@ jobs:
           echo "codeql_wave=${CODEQL_WAVE}" >> "$GITHUB_OUTPUT"
           echo "deterministic_seed=${DETERMINISTIC_SEED}" >> "$GITHUB_OUTPUT"
           echo "scan_type=${SCAN_TYPE}" >> "$GITHUB_OUTPUT"
-
       - name: Generate input lock
         id: lock
         shell: bash
@@ -206,7 +204,6 @@ jobs:
           EOF
 
           echo "input_lock_sha256=${SHA}" >> "$GITHUB_OUTPUT"
-
       - name: Upload lane contract artifact
         uses: actions/upload-artifact@v5
         with:
@@ -251,7 +248,6 @@ jobs:
           queries: +security-extended,security-and-quality
 
       - uses: github/codeql-action/autobuild@v3
-
       - name: Perform CodeQL Analysis
         id: codeql
         uses: github/codeql-action/analyze@v3
@@ -259,7 +255,6 @@ jobs:
           category: /language:${{ matrix.language }}
           output: codeql-sarif/${{ matrix.language }}
           upload: never
-
       - name: Build CodeQL summary + lane metadata
         if: always()
         shell: bash
@@ -312,7 +307,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload CodeQL artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -345,16 +339,13 @@ jobs:
       - uses: actions/checkout@v5
         with:
         persist-credentials: false
-
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: live
-
       - name: Install Semgrep
         run: pip install semgrep
-
       - name: Run Semgrep scan (SARIF)
         id: semgrep
         continue-on-error: true
@@ -370,7 +361,6 @@ jobs:
               echo "Primary configs failed, falling back to auto..."
               semgrep scan --config=auto --sarif --output=semgrep-results.sarif 2>&1 | tee semgrep-scan-fallback.log
             }
-
       - name: Run Semgrep scan (JSON)
         continue-on-error: true
         run: |
@@ -385,12 +375,10 @@ jobs:
               echo "Primary configs failed for JSON output, falling back to auto..."
               semgrep scan --config=auto --json --output=semgrep-results.json 2>&1 | tee semgrep-scan-json-fallback.log
             }
-
       - name: Chunk SARIF results
         if: always() && hashFiles('semgrep-results.sarif') != ''
         run: |
           python scripts/chunk_sarif.py semgrep-results.sarif sarif-chunks/ --chunk-size 4999 --base-name semgrep --verbose
-
       - name: Upload chunked SARIF to GitHub Security
         if: always() && hashFiles('sarif-chunks/*.sarif') != ''
         env:
@@ -413,7 +401,6 @@ jobs:
               -F "category=semgrep-chunk-$chunk_suffix" \
               || true
           done
-
       - name: Generate Semgrep summary + contract
         if: always()
         shell: bash
@@ -460,7 +447,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload Semgrep results artifact
         if: always()
         uses: actions/upload-artifact@v5
@@ -504,12 +490,10 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-
       - name: Build Docker image for scanning
         continue-on-error: true
         run: |
           docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
-
       - name: Run Trivy filesystem scan
         uses: aquasecurity/trivy-action@0.35.0
         with:
@@ -519,13 +503,11 @@ jobs:
           output: trivy-results-${{ strategy.job-index }}.sarif
           severity: CRITICAL,HIGH
           exit-code: '0'
-
       - name: Upload SARIF to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results-${{ strategy.job-index }}.sarif
-
       - name: Generate container scan summary + contract
         if: always()
         shell: bash
@@ -552,7 +534,6 @@ jobs:
            "status": "${{ job.status }}"
           }
           EOFJ
-
       - name: Upload container scan artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -590,7 +571,6 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
@@ -621,7 +601,6 @@ jobs:
           cargo install cargo-audit
           cargo audit --json > rust-cve-audit.json || true
           cargo audit || true
-
       - name: Generate CVE summary + contract
         if: always()
         shell: bash
@@ -646,7 +625,6 @@ jobs:
            "status": "${{ job.status }}"
           }
           EOFJ
-
       - name: Upload CVE scan artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -677,13 +655,11 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
-
       - name: Install security tools
         run: |
           pip install --upgrade pip
           pip install safety pip-audit
           pip freeze > installed-packages.txt
-
       - name: Run pip-audit and Safety
         continue-on-error: true
         run: |
@@ -692,7 +668,6 @@ jobs:
           pip-audit --format cyclonedx-json --output pip-audit-cyclonedx.json 2>&1 | tee pip-audit-cyclonedx.log || true
           safety check --json --output safety.json 2>&1 | tee safety-json.log || true
           safety check 2>&1 | tee safety-report.txt || true
-
       - name: Generate dependency summary + contract
         if: always()
         shell: bash
@@ -732,7 +707,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload dependency artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -771,12 +745,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral
-
       - name: Install detect-secrets
         run: |
           pip install --upgrade pip
           pip install detect-secrets
-
       - name: Run detect-secrets
         id: detect-secrets
         continue-on-error: true
@@ -788,7 +760,6 @@ jobs:
             > .secrets.baseline 2> detect-secrets.log
           SECRETS_COUNT=$(python -c "import json;print(sum(len(v or []) for v in ((json.load(open('.secrets.baseline')).get('results') or {}).values())))" 2>/dev/null || echo "0")
           echo "secrets_found=$SECRETS_COUNT" >> "$GITHUB_OUTPUT"
-
       - name: Generate secret summary + contract
         if: always()
         shell: bash
@@ -834,7 +805,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload secret scan artifacts
         if: always()
         uses: actions/upload-artifact@v5
@@ -867,7 +837,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: common
-
       - name: Install SBOM tools
         run: |
           pip install --upgrade pip
@@ -875,13 +844,11 @@ jobs:
           cyclonedx-py --version > sbom-tool-versions.txt 2>&1 || true
           python --version >> sbom-tool-versions.txt
           pip --version >> sbom-tool-versions.txt
-
       - name: Generate SBOM
         run: |
           set -euo pipefail
           cyclonedx-py environment --of JSON -o sbom.json 2>&1 | tee sbom-json.log
           cyclonedx-py environment --of XML -o sbom.xml 2>&1 | tee sbom-xml.log
-
       - name: Generate SBOM summary + contract
         if: always()
         shell: bash
@@ -914,7 +881,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload SBOM artifact
         if: always()
         uses: actions/upload-artifact@v5
@@ -953,7 +919,6 @@ jobs:
           pattern: security-suite-*
           merge-multiple: false
         continue-on-error: true
-
       - name: Build consolidated security summary
         if: always()
         shell: bash
@@ -1006,7 +971,6 @@ jobs:
             "status": "${{ job.status }}"
           }
           EOF
-
       - name: Upload consolidated summary
         if: always()
         uses: actions/upload-artifact@v5
@@ -1033,7 +997,6 @@ jobs:
         uses: actions/checkout@v5
         with:
             persist-credentials: false
-
       - name: Download all security-suite artifacts
         uses: actions/download-artifact@v5
         with:
@@ -1041,13 +1004,11 @@ jobs:
           pattern: security-suite-*
           merge-multiple: false
         continue-on-error: true
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
-
       - name: Run findings aggregator + normalized exports
         id: aggregate
         env:
@@ -1161,7 +1122,6 @@ jobs:
           print(f\"LOW={summary.get('low_count',0)}\")
           print(f\"TOTAL={summary.get('total_findings',0)}\")
           " >> "$GITHUB_OUTPUT"
-
       - name: Upload comprehensive findings artifact
         if: always()
         uses: actions/upload-artifact@v5
@@ -1178,7 +1138,6 @@ jobs:
             security/remediation-input-lock.json
           if-no-files-found: warn
           retention-days: 90
-
       - name: Summary
         if: always()
         run: |
@@ -1207,13 +1166,11 @@ jobs:
           name: security-suite-comprehensive-findings
           path: contract-input/
         continue-on-error: false
-
       - name: Debug contract input file listing
         if: always()
         run: |
           echo "## Contract input files"
           find contract-input -maxdepth 5 -type f | sort
-
       - name: Validate required files and schema
         shell: bash
         run: |
@@ -1255,7 +1212,6 @@ jobs:
           if [ "$FAIL" -ne 0 ]; then
             exit 1
           fi
-
       - name: Build contract report
         if: always()
         run: |
@@ -1267,7 +1223,6 @@ jobs:
             echo "- **Input Lock SHA:** ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}"
           } > security-artifact-contract-report.md
           cat security-artifact-contract-report.md >> "$GITHUB_STEP_SUMMARY"
-
       - name: Upload contract report
         if: always()
         uses: actions/upload-artifact@v5
@@ -1295,14 +1250,12 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-
       - name: Download comprehensive findings
         uses: actions/download-artifact@v5
         with:
           name: security-suite-comprehensive-findings
           path: .
         continue-on-error: true
-
       - name: Cache Findings
         run: |
           set -euo pipefail
@@ -1310,14 +1263,12 @@ jobs:
             --run-id "${{ github.run_number }}" \
             --commit-sha "${{ github.sha }}" \
             --findings-path ".codex/security-findings-comprehensive.json"
-
       - name: Generate Trend Analysis
         run: |
           set -euo pipefail
           python scripts/ci/security_findings_trend_analyzer.py analyze \
             --cache-dir ".codex/security-cache" \
             --output ".codex/security-findings-trend-report.md"
-
       - name: Upload Cache Artifacts
         if: success()
         uses: actions/upload-artifact@v5
@@ -1326,7 +1277,6 @@ jobs:
           path: .codex/security-cache/
           if-no-files-found: warn
           retention-days: 90
-
       - name: Upload Trend Report
         if: success()
         uses: actions/upload-artifact@v5
@@ -1359,7 +1309,6 @@ jobs:
         persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
-
       - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

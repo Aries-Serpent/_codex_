@@ -164,7 +164,6 @@ jobs:
           \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ body,\n});\n"
-
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -173,7 +172,6 @@ jobs:
           key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
-
       - name: Trigger embedding index refresh
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
         run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
@@ -205,8 +203,7 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
@@ -217,8 +214,7 @@ jobs:
           BRANCH: ${{ github.head_ref }}
           run: python scripts/ci/post_rescue_comment.py
           env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
 
 

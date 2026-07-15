@@ -67,7 +67,7 @@ jobs:
       with:
         python-version: 3.12.13
         cache: 'pip'
-    - name: Estimate cost
+      - name: Estimate cost
       id: estimate
       run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
         \  GHCR_FLAG=\"--pushes-to-ghcr\"\nfi\npython scripts/ci/cost_estimator.py\
@@ -76,7 +76,7 @@ jobs:
         \ }}\" \\\n  --workflow     \"${{ inputs.workflow_name }}\" \\\n  --github-output\
         \ \\\n  $GHCR_FLAG \\\n  2>/dev/null || true\n# cost_estimator exits 0/1/2\
         \ \u2014 we capture via GITHUB_OUTPUT, not exit code\n"
-    - name: Log usage (T-004)
+      - name: Log usage (T-004)
       id: usage_log
       continue-on-error: true
     env:
@@ -89,7 +89,7 @@ jobs:
         \         \"${{ steps.estimate.outputs.tier || 'GREEN' }}\" \\\n  --pr-number\
         \    \"${PR_NUMBER}\" \\\n  --branch       \"${GITHUB_REF_NAME}\" \\\n  --sha\
         \          \"${GITHUB_SHA}\" \\\n  2>/dev/null || true\n"
-    - name: Build proposal markdown
+      - name: Build proposal markdown
       id: proposal
       run: "GHCR_FLAG=\"\"\nif [ \"${{ inputs.pushes_to_ghcr }}\" = \"true\" ]; then\n\
         \  GHCR_FLAG=\"--pushes-to-ghcr\"\nfi\nPROPOSAL=$(python scripts/ci/cost_estimator.py\
@@ -100,7 +100,7 @@ jobs:
         \ rand -hex 8)\necho \"proposal_md<<${EOF_MARKER}\" >> \"$GITHUB_OUTPUT\"\n\
         echo \"${PROPOSAL}\" >> \"$GITHUB_OUTPUT\"\necho \"${EOF_MARKER}\" >> \"$GITHUB_OUTPUT\"\
         \n"
-    - name: Post cost proposal to PR (grouped)
+      - name: Post cost proposal to PR (grouped)
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8
       env:
@@ -173,35 +173,35 @@ jobs:
     outputs:
       approved: ${{ steps.decision.outputs.approved }}
     steps:
-    - name: Auto-approve GREEN tier
+      - name: Auto-approve GREEN tier
       id: green
       if: needs.estimate.outputs.tier == 'GREEN'
       run: "echo \"\u2705 GREEN tier \u2014 auto-approved (effective minutes: ${{\
         \ needs.estimate.outputs.effective_minutes }})\"\necho \"approved=true\" >>\
         \ \"$GITHUB_OUTPUT\"\n"
-    - name: Auto-approve on workflow_dispatch (owner override)
+      - name: Auto-approve on workflow_dispatch (owner override)
       id: dispatch
       if: github.event_name == 'workflow_dispatch'
       run: "echo \"\u2705 workflow_dispatch \u2014 owner-approved bypass\"\necho \"\
         approved=true\" >> \"$GITHUB_OUTPUT\"\n"
-    - name: Auto-approve on push to main (post-merge)
+      - name: Auto-approve on push to main (post-merge)
       id: main_push
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: "echo \"\u2705 push to main \u2014 post-merge auto-approved\"\necho \"\
         approved=true\" >> \"$GITHUB_OUTPUT\"\n"
-    - name: Auto-approve on feature branch push (non-main)
+      - name: Auto-approve on feature branch push (non-main)
       id: feature_push
       if: github.event_name == 'push' && github.ref != 'refs/heads/main'
       run: "echo \"\u2705 feature branch push \u2014 auto-approved (cost enforcement\
         \ is at PR merge time via pr-cost-check)\"\necho \"approved=true\" >> \"$GITHUB_OUTPUT\"\
         \n"
-    - name: "YELLOW \u2014 warn and proceed after window"
+      - name: "YELLOW \u2014 warn and proceed after window"
       id: yellow
       if: needs.estimate.outputs.tier == 'YELLOW' && github.event_name == 'pull_request'
       run: "echo \"\u26A0\uFE0F  YELLOW tier \u2014 warning posted. Auto-proceeding\
         \ in 60s.\"\necho \"Reason: ${{ needs.estimate.outputs.reason }}\"\nsleep\
         \ 60\necho \"approved=true\" >> \"$GITHUB_OUTPUT\"\n"
-    - name: "RED \u2014 poll PR for stakeholder checkbox approval"
+      - name: "RED \u2014 poll PR for stakeholder checkbox approval"
       id: red_poll
       if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
       uses: actions/github-script@v8
@@ -247,7 +247,7 @@ jobs:
           \ - [x] \U0001F4B0 Cost Proposal Approved\\n' +\n  '  2. A PR comment: \
           \  - [x] \U0001F4B0 Cost Proposal Approved\\n' +\n  'Or trigger via workflow_dispatch\
           \ to bypass.\\n' +\n  'Re-run this job after approving.'\n);\n"
-    - name: Resolve final approval
+      - name: Resolve final approval
       id: decision
       run: "APPROVED=\"${{ steps.green.outputs.approved || steps.dispatch.outputs.approved\
         \ || steps.main_push.outputs.approved || steps.feature_push.outputs.approved\
@@ -273,13 +273,13 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         token: ${{ secrets.GH_TOKEN || github.token }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
         PR_NUMBER: ${{ github.event.pull_request.number }}

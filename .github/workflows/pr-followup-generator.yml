@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-        - name: Mask secrets
+      - name: Mask secrets
           run: |
             echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5  # v6.0.3
@@ -38,7 +38,6 @@ jobs:
             persist-credentials: false
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
-
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -48,12 +47,10 @@ jobs:
         with:
           python-version: '3.12.13'
           cache-tier: 'common'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[github]"
-
       - name: Extract PR number
         id: pr_number
         run: |
@@ -62,7 +59,6 @@ jobs:
           else
             echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           fi
-
       - name: Generate follow-up prompt
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -91,7 +87,6 @@ jobs:
             --json-output
 
           echo "✅ Follow-up prompt generated successfully"
-
       - name: Commit and push prompt
         id: push_prompt
         env:
@@ -127,7 +122,6 @@ jobs:
             echo "ℹ️ No changes to commit"
             echo "pushed=false" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Comment on PR
         if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed == 'true'
         uses: actions/github-script@v8  # v9
@@ -199,7 +193,6 @@ jobs:
             persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
-
       - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

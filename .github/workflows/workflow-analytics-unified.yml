@@ -99,7 +99,6 @@ jobs:
         uses: actions/checkout@v5  # v6.0.3
         with:
             persist-credentials: false
-
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -110,12 +109,10 @@ jobs:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml numpy scipy
-
       - name: Run quantum health analysis
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -129,7 +126,6 @@ jobs:
             # Fallback health check
             echo "Health check passed"
           fi
-
       - name: Upload health report
         if: always()
         uses: actions/upload-artifact@v5  # v7.0.1
@@ -154,19 +150,16 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml
-
       - name: Run Weekly Analytics
         id: analytics
         env:
@@ -185,7 +178,6 @@ jobs:
             gh run list --limit ${{ inputs.analysis_period || '100' }} --json name,conclusion,startedAt,durationMs > .codex/reports/workflow-data.json
             echo "Analytics complete"
           fi
-
       - name: Create issue if patterns detected
         if: inputs.create_issue == true
         env:
@@ -198,7 +190,6 @@ jobs:
               --body-file .codex/reports/findings.md \
               --label "automated,analytics"
           fi
-
       - name: Upload analytics reports
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
@@ -223,19 +214,16 @@ jobs:
         with:
             persist-credentials: false
           fetch-depth: 0
-
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12.13'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install requests pyyaml pandas matplotlib
-
       - name: Run Manual Analytics
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -268,7 +256,6 @@ jobs:
             echo "- Failure: $failure" >> .codex/reports/analytics-report.md
             echo "- Success rate: ${success_rate}%" >> .codex/reports/analytics-report.md
           fi
-
       - name: Upload manual analytics
         uses: actions/upload-artifact@v5  # v7.0.1
         with:
