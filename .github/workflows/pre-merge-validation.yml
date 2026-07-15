@@ -119,7 +119,7 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v5
       with:
-      name: pre-merge-validation-reports-${{ github.run_id }}
+        name: pre-merge-validation-reports-${{ github.run_id }}
         path: '/tmp/autofix_report.json
 
           /tmp/pattern_pipeline_report.json

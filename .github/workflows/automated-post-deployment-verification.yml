@@ -126,7 +126,7 @@ jobs:
     - name: Upload Health Report
       uses: actions/upload-artifact@v5
       with:
-      name: health-check-report
+        name: health-check-report
         path: ${{ env.VERIFICATION_DIR }}/health-reports/
         retention-days: 30
     env:
@@ -166,7 +166,7 @@ jobs:
     - name: Upload Smoke Test Results
       uses: actions/upload-artifact@v5
       with:
-      name: smoke-test-results
+        name: smoke-test-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
     env:
@@ -202,7 +202,7 @@ jobs:
     - name: Upload Critical Path Results
       uses: actions/upload-artifact@v5
       with:
-      name: critical-path-results
+        name: critical-path-results
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
     env:
@@ -254,7 +254,7 @@ jobs:
     - name: Upload Verification Report
       uses: actions/upload-artifact@v5
       with:
-      name: verification-report
+        name: verification-report
         path: ${{ env.VERIFICATION_DIR }}/
         retention-days: 30
     - name: Comment on PR
@@ -301,7 +301,7 @@ jobs:
         \    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\"\
         : \"mrkdwn\",\n        \"text\": \"*Artifacts:*\\nCheck Actions tab for\
           \ detailed reports\"\n      }\n    }\n  ]\n}\n"
-      if: always()
+        if: always()
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

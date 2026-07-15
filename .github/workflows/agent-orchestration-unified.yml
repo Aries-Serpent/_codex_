@@ -109,7 +109,7 @@ jobs:
         if: steps.init.outputs.chain_generated == 'true'
         uses: actions/upload-artifact@v5
         with:
-        name: agent-chain-plan-${{ github.run_number }}
+          name: agent-chain-plan-${{ github.run_number }}
           path: .codex/agents/chain_plan.json
           retention-days: 30
       - name: Generate orchestration summary
@@ -156,7 +156,7 @@ jobs:
         if: needs.orchestrate_agent_chain.outputs.chain_generated == 'true'
         uses: actions/download-artifact@v5
         with:
-        name: agent-chain-plan-${{ github.run_number }}
+          name: agent-chain-plan-${{ github.run_number }}
           path: .codex/agents/
       - name: Install handoff dependencies
         run: 'pip install pyyaml requests
@@ -177,7 +177,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: agent-handoff-results-${{ github.run_number }}
+          name: agent-handoff-results-${{ github.run_number }}
           path: '.codex/agents/handoff_*.json
 
           .codex/agents/execution_*.log

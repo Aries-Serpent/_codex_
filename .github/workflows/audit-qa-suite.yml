@@ -155,7 +155,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: audit-results-${{ github.run_number }}
+        name: audit-results-${{ github.run_number }}
         path: '.codex/audit/*.json
 
           .codex/audit/*.md
@@ -367,7 +367,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: qa-walkthrough-${{ github.run_number }}
+        name: qa-walkthrough-${{ github.run_number }}
         path: '.codex/qa/*.json
 
           .codex/qa/*.md

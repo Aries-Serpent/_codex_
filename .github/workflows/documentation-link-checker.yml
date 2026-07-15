@@ -192,7 +192,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: link-check-report
+        name: link-check-report
         path: link-check-report.json
         retention-days: 30
     - name: Cache health report

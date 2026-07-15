@@ -74,7 +74,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: ci-patterns-detected-${{ github.run_id }}
+        name: ci-patterns-detected-${{ github.run_id }}
         path: .codex/ci-patterns-detected.json
         retention-days: 30
     env:
@@ -126,7 +126,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: ci-patterns-fixed-${{ github.run_id }}
+        name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/ci-patterns-fixed.json
         retention-days: 30
     env:
@@ -148,15 +148,15 @@ jobs:
     - name: Download detection report
       uses: actions/download-artifact@v5
       with:
-      name: ci-patterns-detected-${{ github.run_id }}
+        name: ci-patterns-detected-${{ github.run_id }}
         path: .codex/
     - name: Download fix report
       if: needs.heal-patterns.result == 'success'
       uses: actions/download-artifact@v5
       with:
-      name: ci-patterns-fixed-${{ github.run_id }}
+        name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/
-      continue-on-error: true
+        continue-on-error: true
     - name: Generate summary
       run: "echo \"## \U0001F527 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json\

@@ -81,7 +81,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: governance-report
+        name: governance-report
         path: '.codex/PHASE_12_2_COMPLIANCE_REPORT.md
 
           compliance-output.json
