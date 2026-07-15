@@ -32,7 +32,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
         fetch-depth: 0
       - name: Analyze PR Size
         id: analyze
@@ -87,7 +87,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: ./.github/actions/post-pr-summary
         with:
-        workflow-name: PR Size Analysis
+          workflow-name: PR Size Analysis
         status: info
         summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
         details: |
@@ -98,7 +98,7 @@ jobs:
 
           **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted validation · Large (100-499) → Smoke · Refactor (500+) → Import-only
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
@@ -109,11 +109,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-        python-version: 3.12.13
+          python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install minimal dependencies
@@ -159,7 +159,7 @@ jobs:
 
         '
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   unit-tests:
     needs:
@@ -182,11 +182,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-        python-version: 3.12.13
+          python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
@@ -210,7 +210,7 @@ jobs:
 
         '
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   integration-tests:
     needs:
@@ -226,11 +226,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-        python-version: 3.12.13
+          python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
@@ -252,7 +252,7 @@ jobs:
 
         '
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   slow-tests:
     needs:
@@ -268,11 +268,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
-        python-version: 3.12.13
+          python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
@@ -294,7 +294,7 @@ jobs:
 
         '
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   validation-summary:
     needs:
@@ -313,12 +313,12 @@ jobs:
       - name: Checkout (needed for post-pr-summary action)
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Generate summary
         id: gen-summary
         uses: actions/github-script@v8
         with:
-        script: "const prSize = '${{ needs.analyze.outputs.pr_size }}';\nconst validationStrategy\
+          script: "const prSize = '${{ needs.analyze.outputs.pr_size }}';\nconst validationStrategy\
           \ = '${{ needs.analyze.outputs.validation_strategy }}';\n\nconst layerResults\
           \ = {\n  smoke: '${{ needs.smoke-tests.result }}',\n  unit: '${{ needs.unit-tests.result\
           \ }}',\n  integration: '${{ needs.integration-tests.result }}',\n  slow:\
@@ -341,12 +341,12 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: ./.github/actions/post-pr-summary
         with:
-        workflow-name: Progressive Validation
+          workflow-name: Progressive Validation
         status: ${{ steps.gen-summary.outputs.status }}
         summary: ${{ steps.gen-summary.outputs.summary-line }}
         details: ${{ steps.gen-summary.outputs.details }}
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
     name: Post rescue comment on failure
@@ -367,12 +367,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
@@ -384,7 +384,7 @@ jobs:
         BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
 
 

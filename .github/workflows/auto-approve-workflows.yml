@@ -106,13 +106,13 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout code
       uses: actions/checkout@v5
-        with:
+      with:
         persist-credentials: false
         fetch-depth: 0
     - name: Resolve PR for current push
       id: resolve
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         REPO: ${{ github.repository }}
       run: "set -euo pipefail\n\n# Find the PR associated with this push branch\n\
@@ -126,7 +126,7 @@ jobs:
     - name: Approve pending runs (if PR found)
       if: steps.resolve.outputs.pr_number
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         REPO: ${{ github.repository }}
         HEAD_SHA: ${{ github.sha }}
@@ -136,7 +136,7 @@ jobs:
         ::warning::approval script exited with code $EXIT_CODE (non-fatal for push\
         \ event)\"\n  exit 0\n}\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   evaluate-approval:
     name: "\U0001F4CB Evaluate Approval Rules (5-tier priority)"
     runs-on: ubuntu-latest
@@ -155,13 +155,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
-        with:
+      with:
         persist-credentials: false
         fetch-depth: 0
     - name: Evaluate 5-tier priority rule system
       id: evaluate
       env:
-        APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
+          APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
         APPROVAL_INTENT: ${{ github.event.inputs.approval_intent }}
         TARGET_PR: ${{ github.event.inputs.target_pr }}
         OVERRIDE_LABEL: ${{ github.event.inputs.override_label }}
@@ -325,7 +325,7 @@ jobs:
         \ >> $GITHUB_OUTPUT\necho \"should_proceed=false\" >> $GITHUB_OUTPUT\necho\
         \ \"\u26D4 Fallback: No matching approval rule found\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   execute-approval:
     name: "\u26A1 Execute Approval Decision"
     needs: evaluate-approval
@@ -343,12 +343,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
-        with:
+      with:
         persist-credentials: false
     - name: Resolve token chain (Tier 1-4 with fallbacks)
       id: token
       env:
-        GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
       run: "set -euo pipefail\n\n# Tier 1: Cognitive Brain App token (not available\
         \ in this job context)\n# (available in approve-original job via step id \"\
         app-token\")\n\n# Tier 2: CODEX_MASTER_KEY (primary PAT)\nif [ -n \"${{ secrets.CODEX_MASTER_KEY\
@@ -365,7 +365,7 @@ jobs:
     - name: Approve workflow run(s)
       id: approve
       env:
-        GH_TOKEN: ${{ steps.token.outputs.token }}
+          GH_TOKEN: ${{ steps.token.outputs.token }}
         RUN_ID: ${{ github.event.inputs.target_run_id }}
         TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
@@ -405,7 +405,7 @@ jobs:
     - name: Log approval to audit trail
       if: always() && needs.evaluate-approval.outputs.should_proceed == 'true'
       env:
-        RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
+          RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
         CONFIDENCE: ${{ needs.evaluate-approval.outputs.confidence_score }}
         TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
         APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
@@ -446,7 +446,7 @@ jobs:
 
         '
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   cleanup-single-session:
     name: "\U0001F9F9 Cleanup Single-Session Label"
     needs:
@@ -462,7 +462,7 @@ jobs:
     steps:
     - name: Remove single-session label if present
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         TARGET_PR: ${{ needs.evaluate-approval.outputs.target_pr }}
         REPO: ${{ github.repository }}
@@ -474,7 +474,7 @@ jobs:
         \ 2>/dev/null && \\\n    echo \"\u2705 Removed single-session label 'wec:auto-approve-once'\"\
         \ || \\\n    echo \"\u26A0\uFE0F Could not remove label (non-fatal)\"\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   publish-metrics:
     name: "\U0001F4CA Publish Approval Metrics"
     needs:
@@ -488,11 +488,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
-        with:
+      with:
         persist-credentials: false
     - name: Publish metrics to artifact
       env:
-        APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
+          APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
         RULE_MATCHED: ${{ needs.evaluate-approval.outputs.rule_matched }}
         CONFIDENCE: ${{ needs.evaluate-approval.outputs.confidence_score }}
         DECISION: ${{ needs.evaluate-approval.outputs.approval_decision }}
@@ -531,7 +531,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     env:
-      GH_TRICKLE_POLITE_SLEEP: '1.0'
+        GH_TRICKLE_POLITE_SLEEP: '1.0'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
       - name: Generate Cognitive Brain App token
@@ -539,12 +539,12 @@ jobs:
         uses: actions/create-github-app-token@v1
         continue-on-error: true
       with:
-        app-id: ${{ secrets._GITHUB_APP_ID }}
+          app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
       - name: Configure auto-approve mode
         if: github.event_name == 'workflow_dispatch'
       env:
-        GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.inputs.target_pr }}
@@ -588,7 +588,7 @@ jobs:
       - name: Resolve target PR(s)
         id: resolve
       env:
-        GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
         WR_PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         WR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -644,7 +644,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v8
       env:
-        MODE: ${{ steps.resolve.outputs.mode }}
+          MODE: ${{ steps.resolve.outputs.mode }}
         PR_LIST: ${{ steps.resolve.outputs.pr_list || '' }}
         PR_NUMBER: ${{ steps.resolve.outputs.pr_number || '' }}
         HEAD_SHA: ${{ steps.resolve.outputs.head_sha || '' }}
@@ -656,7 +656,7 @@ jobs:
         ACTIVE_AGENT_HINT: ${{ github.event.workflow_run.status || '' }}
         REPO: ${{ github.repository }}
       with:
-        github-token: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY
+          github-token: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY
           || secrets.CODEX_BACKUP_KEY || github.token }}
         script: "const [owner, repo] = process.env.REPO.split('/');\nconst dryRun\
           \        = process.env.DRY_RUN === 'true';\nconst mode          = process.env.MODE;\n\
@@ -769,7 +769,7 @@ jobs:
         if: github.event_name == 'workflow_run' && github.event.workflow_run.name ==
         'Copilot coding agent' && github.event.workflow_run.status == 'in_progress'
       env:
-        GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}

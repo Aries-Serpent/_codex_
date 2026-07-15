@@ -30,18 +30,17 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - name: Mask secrets
-        run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-
-        "
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
         fetch-depth: 0
       - name: Set version from tag or input
         id: version
         env:
-        GITHUB_REF: ${{ github.ref }}
+          GITHUB_REF: ${{ github.ref }}
         INPUT_VERSION: ${{ inputs.version }}
         COMMIT_SHA: ${{ github.sha }}
         run: "# Priority 1: If dispatched with explicit version input, use it\nif [\
@@ -103,11 +102,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}
         cache: pip
       - name: Install build dependencies
         run: "python -m pip install --upgrade pip setuptools wheel build
@@ -125,7 +124,7 @@ jobs:
         "
       - name: Verify wheel artifacts
         env:
-        RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: "ls -lah dist/\n# Extract base version without "v" prefix for filename\n\
         BASE_VERSION=\"${RELEASE_VERSION#v}\"\nEXPECTED_WHEEL=\"dist/codex_ml-${BASE_VERSION}-py3-none-any.whl\"\
         \nif [ ! -f \"$EXPECTED_WHEEL\" ]; then\n  echo \"❌ Expected universal wheel\
@@ -135,7 +134,7 @@ jobs:
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
         with:
-        name: wheels
+          name: wheels
         path: dist/
         retention-days: 5
   generate-manifest:
@@ -149,20 +148,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Download wheels
         uses: actions/download-artifact@v5
         with:
-        name: wheels
+          name: wheels
         path: dist/
       - name: Verify wheels exist and are consistent
         env:
-        RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: "ls -lah dist/\nif [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then\n\
         \  echo \"❌ No wheel files found\"\n  exit 1\nfi\n\n# Verify we have the expected\
         \ universal wheel\nBASE_VERSION=\"${RELEASE_VERSION#v}\"\nEXPECTED_WHEEL=\"\
@@ -193,7 +192,7 @@ jobs:
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
         with:
-        name: release-manifest
+          name: release-manifest
         path: .codex/manifests/
         retention-days: 5
   generate-sbom:
@@ -205,11 +204,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Install SBOM generation tools
         run: "pip install cyclonedx-bom
@@ -228,7 +227,7 @@ jobs:
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v5
         with:
-        name: sbom
+          name: sbom
         path: sbom*.json
         retention-days: 5
   verify-manifest:
@@ -242,21 +241,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Download wheels (no merge needed - single artifact)
         uses: actions/download-artifact@v5
         with:
-        name: wheels
+          name: wheels
         path: dist/
       - name: Download manifest
         uses: actions/download-artifact@v5
         with:
-        name: release-manifest
+          name: release-manifest
         path: .codex/manifests/
       - name: List artifacts before verification
         run: "echo "=== Wheels in dist/ ==="
@@ -293,16 +292,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
       - name: Download wheels (from single build)
         uses: actions/download-artifact@v5
         with:
-        name: wheels
+          name: wheels
         path: dist/
       - name: Verify wheels before publishing
         run: "echo \"Wheels to publish:\"\nls -lah dist/\n\nif [ $(ls -1 dist/*.whl\
@@ -314,7 +313,7 @@ jobs:
         "
       - name: Publish to PyPI
         env:
-        TWINE_USERNAME: __token__
+          TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: "python -m twine upload \\\n  --non-interactive \\\n  --skip-existing \\\
         \n  --verbose \\\n  dist/*.whl\n"
@@ -340,12 +339,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
         fetch-depth: 0
       - name: Set version from pre-release-checks output
         id: version
         env:
-        PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+          PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: "# Use the version from pre-release-checks which handles both tags and
         dispatches
 
@@ -365,17 +364,17 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v5
         with:
-        name: wheels
+          name: wheels
         path: dist/
       - name: Download manifest
         uses: actions/download-artifact@v5
         with:
-        name: release-manifest
+          name: release-manifest
         path: release-artifacts/
       - name: Download SBOM
         uses: actions/download-artifact@v5
         with:
-        name: sbom
+          name: sbom
         path: release-artifacts/
       - name: Verify release artifacts
         run: "echo "=== Release Artifacts ==="
@@ -414,7 +413,7 @@ jobs:
       - name: Create GitHub release (as draft)
         uses: actions/create-release@v1
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           secrets.GITHUB_TOKEN }}
         with:
         tag_name: ${{ steps.version.outputs.version }}
@@ -425,7 +424,7 @@ jobs:
       - name: Upload release artifacts and publish
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
         with:
-        files: "dist/*.whl
+          files: "dist/*.whl
 
           release-artifacts/*
 
@@ -445,14 +444,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Create deployment summary comment
         uses: actions/github-script@v8
         env:
-        RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         GITHUB_REPO: ${{ github.repository }}
         with:
-        script: "let version = process.env.RELEASE_VERSION;\n// Remove refs/ prefixes\
+          script: "let version = process.env.RELEASE_VERSION;\n// Remove refs/ prefixes\
           \ if any\nversion = version.replace("refs/tags/", "").replace("refs/heads/",\
           \ "");\nconst cleanVersion = version.replace(/^v/, "").replace(/-final.*/,\
           \ "");\n\nconst body = [\n  \"## \U0001F680 Release Deployment Summary\"\
@@ -473,7 +472,7 @@ jobs:
           \ (non-blocking)");\n});\n"
       - name: Record deployment metrics
         env:
-        REF_NAME: ${{ github.ref_name }}
+          REF_NAME: ${{ github.ref_name }}
         COMMIT_SHA: ${{ github.sha }}
         run: "mkdir -p .codex/metrics\n# Convert ref name to filename-safe format (replace\
         \ slashes with dashes)\nSAFE_REF_NAME=$(echo \"${REF_NAME}\" | tr "/" "-")\n\
@@ -488,7 +487,7 @@ jobs:
       - name: Upload deployment metrics
         uses: actions/upload-artifact@v5
         with:
-        name: deployment-metrics
+          name: deployment-metrics
         path: .codex/metrics/
         retention-days: 30
   report-status:

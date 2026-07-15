@@ -65,22 +65,22 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Raw checkout (git)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/raw_checkout.sh
       - name: Show owner approval context
-      shell: bash
+        shell: bash
         run: "echo \"OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}\"\necho \"OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}\"\
         \nif [ -f .github/OWNER_APPROVAL.yml ]; then\n  echo \".github/OWNER_APPROVAL.yml\
         \ present\"\nelse\n  echo \".github/OWNER_APPROVAL.yml missing\"\nfi\n"
       - name: Evaluate owner approval (guard)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_guard.sh
         env:
-        TOOL_KEY: docker-build-push
+          TOOL_KEY: docker-build-push
         OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
         OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
       - name: Write approval status to summary
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push
         env: null
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -97,25 +97,25 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Raw checkout (git)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/raw_checkout.sh
       - name: Show owner approval context (no-op)
-      shell: bash
+        shell: bash
         run: "echo \"OWNER_APPROVED_UNTIL=${OWNER_APPROVED_UNTIL}\"\necho \"OWNER_APPROVED_DURATION=${OWNER_APPROVED_DURATION}\"\
         \nif [ -f .github/OWNER_APPROVAL.yml ]; then\n  echo \".github/OWNER_APPROVAL.yml\
         \ present\"\nelse\n  echo \".github/OWNER_APPROVAL.yml missing\"\nfi\n"
       - name: Show owner approval status (helper)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
       - name: Check OWNER approval window
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_guard.sh
         env:
-        TOOL_KEY: docker-build-push
+          TOOL_KEY: docker-build-push
         OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
         OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
       - name: Ensure Buildx and builder
-      shell: bash
+        shell: bash
         run: "set -euo pipefail
 
         bash scripts/ci/buildx_setup.sh
@@ -130,14 +130,14 @@ jobs:
 
         "
       - name: Restore local buildx cache directory (best-effort)
-      shell: bash
+        shell: bash
         run: "set -euo pipefail
 
         mkdir -p "${BUILDX_CACHE_DIR}"
 
         "
       - name: Build image (local load for smoke test) with cache and OCI labels
-      shell: bash
+        shell: bash
         run: "set -euo pipefail\nSRC=\"${BUILDX_CACHE_DIR}\"\nDST=\"${BUILDX_CACHE_DIR}.new\"\
         \nrm -rf \"${DST}\"\ndocker buildx build \\\n  --file Dockerfile \\\n  --tag\
         \ codex:ci \\\n  --load \\\n  --label \"org.opencontainers.image.source=${{\
@@ -146,7 +146,7 @@ jobs:
         \ }}\" \\\n  --cache-from \"type=local,src=${SRC}\" \\\n  --cache-to \"type=local,dest=${DST},mode=max\"\
         \ \\\n  .\nrm -rf \"${SRC}\"\nmv \"${DST}\" \"${SRC}\"\n"
       - name: Smoke test container
-      shell: bash
+        shell: bash
         run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
         env: null
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -166,10 +166,10 @@ jobs:
       packages: write
     steps:
       - name: Raw checkout (git)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/raw_checkout.sh
       - name: Ensure Buildx and builder
-      shell: bash
+        shell: bash
         run: "set -euo pipefail
 
         bash scripts/ci/buildx_setup.sh
@@ -194,19 +194,19 @@ jobs:
         \n  BRANCH_TAG=\"${REPO_IMAGE_LC}:${SAFE_BRANCH_LC}\"\nfi\n{\n  echo \"image_sha=${SHA_TAG}\"\
         \n  echo \"image_branch=${BRANCH_TAG}\"\n} >> \"${GITHUB_OUTPUT}\"\n"
       - name: Check OWNER approval window (push)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_guard.sh
         env:
-        TOOL_KEY: docker-build-push
+          TOOL_KEY: docker-build-push
         OWNER_APPROVED_UNTIL: ${{ env.OWNER_APPROVED_UNTIL }}
         OWNER_APPROVED_DURATION: ${{ env.OWNER_APPROVED_DURATION }}
       - name: Show owner approval status (helper, push)
-      shell: bash
+        shell: bash
         run: bash scripts/ci/owner_approval_summary.sh docker-build-push || true
       - name: Login to GHCR with GITHUB_TOKEN
-      shell: bash
+        shell: bash
         env:
-        CR_PAT: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          CR_PAT: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "set -euo pipefail
 
         echo "${CR_PAT}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
@@ -231,9 +231,9 @@ jobs:
         \ }}\" \\\n  --tag \"${{ steps.vars.outputs.image_sha }}\" \\\n  --tag \"\
         ${{ steps.vars.outputs.image_branch }}\" \\\n  --push \\\n  .\n"
       - name: GHCR pull and smoke test (branch/latest tag)
-      shell: bash
+        shell: bash
         env:
-        PULLED_IMAGE: ${{ steps.vars.outputs.image_branch }}
+          PULLED_IMAGE: ${{ steps.vars.outputs.image_branch }}
         run: "set -euo pipefail
 
         echo "[post-push] docker pull ${PULLED_IMAGE} with retry logic"
@@ -265,7 +265,7 @@ jobs:
 
         "
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -285,7 +285,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
           }}
         fetch-depth: 1

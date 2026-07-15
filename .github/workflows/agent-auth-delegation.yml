@@ -36,15 +36,15 @@ jobs:
       - name: Checkout (needed for session_wrapup_autofix.py)
         uses: actions/checkout@v5
         with:
-        fetch-depth: 1
+          fetch-depth: 1
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        cache: pip
+          cache: pip
         python-version: 3.12.13
       - name: Hardened WEC preservation — re-apply all maintainer selections
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUM: ${{ github.event.pull_request.number }}
         run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --fix-pr-body \\\n\
@@ -52,14 +52,14 @@ jobs:
         \ non-zero (non-fatal — workflow continues)\"\n"
       - name: Mandatory scorecard refresh — merge-readiness + follow-up prompt
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUM: ${{ github.event.pull_request.number }}
         run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
         \ \\\n  --pr-number \"${PR_NUM}\" \\\n  || echo \"⚠️  Scorecard refresh non-zero\
         \ (non-fatal — workflow continues)\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
@@ -75,7 +75,7 @@ jobs:
       - name: Parse PR body for delegation checkbox
         id: check
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_BODY: ${{ github.event.pull_request.body || "" }}
         PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number
@@ -108,7 +108,7 @@ jobs:
         $GITHUB_OUTPUT\"\n  echo \"ℹ️  COPILOT_MULTI_SESSION not checked — single-session\
         \ mode (default)\"\nfi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   await-approval:
     name: ⏳ Auto-approved — agent is pre-authorized
     needs: detect-checkbox
@@ -124,7 +124,7 @@ jobs:
 
         "
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   trigger-auto-approval:
     name: ⚡ Dispatch Auto-Approve (if auth authorized)
     needs:
@@ -137,14 +137,14 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
+          path: .pytest_cache/
         key: ${{ runner.os }}-pytest-${{ github.sha }}
         restore-keys: "${{ runner.os }}-pytest-
 
           "
       - name: Dispatch auto-approve-workflows.yml
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         run: "gh workflow run auto-approve-workflows.yml \
 
@@ -167,12 +167,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        fetch-depth: 50
+          fetch-depth: 50
       - name: Download pending session requirements (if any)
         id: session_reqs
         continue-on-error: true
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         run: "PR_NUMBER=\"${{ github.event.pull_request.number || github.event.issue.number\
         \  }}\"\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"has_requirements=false\"\
@@ -192,7 +192,7 @@ jobs:
         "
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "// Branches that are staging gates — never the HEAD of an agent session.\n\
           const INTEGRATION_BRANCHES = ["0D_base_"];\nconst PROMOTION_TARGETS = ["main",\
@@ -261,7 +261,7 @@ jobs:
 
         "
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const fs = require("fs");\nconst sha = (context.sha || "unknown").slice(0,\
           \ 7);\nconst MARKER = "COGNITIVE PRE-FLIGHT CHECKLIST";\n\n// Upsert: find\
@@ -358,7 +358,7 @@ jobs:
 
         "
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const sha    = (context.sha || "unknown").slice(0, 7);\nconst MARKER\
           \ = "COGNITIVE SESSION-TYPE DIRECTIVE";\n\nconst { data: comments } = await\
@@ -467,7 +467,7 @@ jobs:
         id: empty_commit_check
         continue-on-error: true
         env:
-        BASE_REF: ${{ github.base_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: "echo \"### \U0001F50D Empty Commit Check (REQ-3b)\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n\n# Ensure the base ref is available locally so git log does not fail silently\n\
         if ! git fetch --no-tags origin \"$BASE_REF\" 2>/dev/null; then\necho \"⚠️\
@@ -508,7 +508,7 @@ jobs:
       - name: Verify Accountability Report updated in last commit
         id: accountability_check
         env:
-        GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: "REPORT=\"docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\"\n\necho\
         \ \"### \U0001F50D Accountability Report Check\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n# Dependabot bots don"t maintain\
@@ -553,7 +553,7 @@ jobs:
       - name: Verify CHANGELOG.md updated in last commit
         id: changelog_check
         env:
-        GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: "CHANGELOG=\"CHANGELOG.md\"\n\necho \"### \U0001F50D CHANGELOG.md Check\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n#\
         \ Dependabot bots don"t maintain the CHANGELOG — same exemption as REQ-4.\n\
@@ -593,7 +593,7 @@ jobs:
         if: "always() && (steps.accountability_check.outcome == "failure" ||\n steps.changelog_check.outcome\
         \ == "failure")\n"
         env:
-        TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref ||
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref ||
           "" }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number
           || "" }}
@@ -638,7 +638,7 @@ jobs:
 
         "
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         run: "BODY=$(gh pr view \"${PR_NUMBER}\" --repo \"${{ github.repository }}\"\
@@ -713,7 +713,7 @@ jobs:
         "
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const EXPIRED_MARKER  = "SESSION_TIMEBOX_EXPIRED";\nconst SUMMARY_MARKER\
           \  = "## \U0001F9E0 Session Summary";\n\nconst { data: comments } = await\
@@ -748,7 +748,7 @@ jobs:
 
         "
         env:
-        BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: "# Fetch base branch so we can count commits precisely\ngit fetch origin\
         \ \"${BASE_REF}\" --depth=50 2>/dev/null || true\n\n# Count commits on this\
@@ -834,7 +834,7 @@ jobs:
 
         "
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         uses: actions/github-script@v8
         with: null
@@ -939,7 +939,7 @@ jobs:
         \necho \"_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   activate-delegation:
     name: Activate token delegation
     needs:
@@ -971,7 +971,7 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-        path: ~/.cache/pip
+          path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles("**/requirements*.txt", "**/pyproject.toml")
           }}
         restore-keys: "${{ runner.os }}-pip-
@@ -979,7 +979,7 @@ jobs:
           "
       - uses: actions/checkout@v5
         with:
-        fetch-depth: 1
+          fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
@@ -987,7 +987,7 @@ jobs:
       - name: Validate/Refresh Session ID (CAPI Readiness Check)
         id: session_validation
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         run: "if [ -n \"${COPILOT_AGENT_SESSION_ID:-}\" ]; then\n  echo \"Checking session\
         \ validity...\"\n  HTTP_CODE=$(curl -s -o /dev/null -w \"%{http_code}\" \\\
@@ -1005,7 +1005,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "// Helper: upsert a repo variable (create if 404, patch if exists)\n\
           async function upsertVar(name, value) {\n  try {\n    await github.request("PATCH\
@@ -1036,7 +1036,7 @@ jobs:
       - name: Dispatch hub for token delegation approval (agent-auth-delegation)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const owner = context.repo.owner;\nconst repo = context.repo.repo;\n\
           const prNumber = parseInt("${{ needs.detect-checkbox.outputs.pr_number }}",\
@@ -1064,7 +1064,7 @@ jobs:
       shell: bash
       - name: Commit session token to branch
         env:
-        TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref ||
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref ||
           "" }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number
           || "" }}
@@ -1090,7 +1090,7 @@ jobs:
       - name: Dispatch GitHub Guru (maintainer verification)
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "try {\n  await github.rest.actions.createWorkflowDispatch({\n   \
           \ owner:       context.repo.owner,\n    repo:        context.repo.repo,\n\
           \    workflow_id: "github-guru.yml",\n    ref:         context.ref || "main",\n\
@@ -1101,7 +1101,7 @@ jobs:
         id: session_bootstrap
         continue-on-error: true
         env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         PR_BODY: ${{ github.event.pull_request.body || "" }}
         PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
@@ -1143,7 +1143,7 @@ jobs:
         id: cb_patterns
         continue-on-error: true
         env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
           }}
         run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 2>/dev/null || true)\n# Escape for multiline GitHub output\n{\n  echo\
@@ -1153,7 +1153,7 @@ jobs:
         id: session_gate
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const prNumber = parseInt("${{ needs.detect-checkbox.outputs.pr_number\
           \  }}", 10);\nif (isNaN(prNumber) || prNumber <= 0) {\n  core.warning("Invalid\
           \ PR number for session gate — skipping lock");\n  core.setOutput("acquired",\
@@ -1278,7 +1278,7 @@ jobs:
         if: steps.session_gate.outputs.acquired == "true"
         uses: actions/github-script@v8
         env:
-        CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || "" }}
+          CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || "" }}
         with: null
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -1314,7 +1314,7 @@ jobs:
       - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
         if: steps.session_gate.outputs.acquired == "true"
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "CURRENT=\"${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}\"\nif [ -z \"${GH_TOKEN}\"\
         \ ]; then\n  echo \"⚠️ CODEX_MASTER_KEY not available — session number increment\
         \ skipped\"\n  exit 0\nfi\nNEXT=$((CURRENT + 1))\nif gh api \\\n  --method\
@@ -1328,7 +1328,7 @@ jobs:
       - name: Report completion to AgentBrainAPI (ACE L6)
         if: success() && steps.session_gate.outputs.acquired == "true"
         env:
-        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number
           || "" }}
         SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
         run: "python3 - <<"PYEOF"\nimport os, sys\nsys.path.insert(0, os.path.join(os.getcwd(),\
@@ -1343,7 +1343,7 @@ jobs:
         \ unavailable: {exc}\")\n    print(\"    (non-fatal — cognitive brain module\
         \ not installed in CI env)\")\nPYEOF\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   self-approve-after-delegation:
     name: ⚡ Approve action_required runs (post-delegation)
     runs-on: ubuntu-latest
@@ -1368,7 +1368,7 @@ jobs:
       - name: Checkout (for approve_pending_runs.py)
         uses: actions/checkout@v5
         with:
-        fetch-depth: 1
+          fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
@@ -1378,17 +1378,17 @@ jobs:
         uses: actions/create-github-app-token@v1
         continue-on-error: true
         with:
-        app-id: ${{ secrets._GITHUB_APP_ID }}
+          app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        cache: pip
+          cache: pip
         python-version: 3.12.13
       - name: Approve all action_required runs for this PR
         continue-on-error: true
         env:
-        GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
           secrets.CODEX_BACKUP_KEY || github.token }}
         GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
         GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
@@ -1401,7 +1401,7 @@ jobs:
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   session-release:
     name: 🔓 Release session lock
     runs-on: ubuntu-latest
@@ -1411,12 +1411,12 @@ jobs:
       - name: Checkout repository for shared helpers
         uses: actions/checkout@v5
         with:
-        fetch-depth: 1
+          fetch-depth: 1
         persist-credentials: false
       - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
         uses: actions/github-script@v8
         with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const closedPR = context.payload.pull_request?.number;\nif (!closedPR)\
           \ {\n  core.info("No PR context — skipping session release");\n  return;\n\
@@ -1497,7 +1497,7 @@ jobs:
           \ queue — will retry on next release\n  }\n} else {\n  await clearVar("COPILOT_SESSION_QUEUE");\n\
           }\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -1518,12 +1518,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
@@ -1535,4 +1535,4 @@ jobs:
         BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

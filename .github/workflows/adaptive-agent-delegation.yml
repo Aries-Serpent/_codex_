@@ -46,7 +46,7 @@ jobs:
     name: Load Aggregated Context
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     outputs:
       manifest_content: ${{ steps.load.outputs.manifest }}
       agents_to_delegate: ${{ steps.parse.outputs.agents }}
@@ -54,19 +54,16 @@ jobs:
       has_critical: ${{ steps.parse.outputs.has_critical }}
     steps:
       - name: Configure secret masking
-        run: "echo ""::add-mask::"" "${{ secrets.CODEX_MASTER_KEY }}"
-
-        echo ""::add-mask::"" "${{ secrets.CODEX_BACKUP_KEY }}"
-
-        "
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - id: load
         name: Load context manifest
         env:
-        MANIFEST_PATH: ${{ inputs.context_manifest || ".codex/session_context_manifest.json"
+          MANIFEST_PATH: ${{ inputs.context_manifest || ".codex/session_context_manifest.json"
           }}
         run: "if [ -f \"$MANIFEST_PATH\" ]; then\n  echo \"manifest=$(cat \"$MANIFEST_PATH\"\
         \ | jq -c .)\" >> $GITHUB_OUTPUT\n  echo \"✅ Loaded context from $MANIFEST_PATH\"\
@@ -75,7 +72,7 @@ jobs:
       - id: parse
         name: Parse delegation recommendations
         env:
-        MANIFEST: ${{ steps.load.outputs.manifest }}
+          MANIFEST: ${{ steps.load.outputs.manifest }}
         MAX_AGENTS_INPUT: ${{ inputs.max_agents || "5" }}
         run: "AGENTS=$(echo \"$MANIFEST\" | jq -r ".delegation_recommendations[0].recommended_agents[]?"\
         \ 2>/dev/null | tr "\\n" "," | sed "s/,$//")\n\nif [ -z \"$AGENTS\" ]; then\n\
@@ -113,11 +110,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - id: init
         name: Initialize delegation context
         env:
-        AGENT: ${{ matrix.agent }}
+          AGENT: ${{ matrix.agent }}
         DRY_RUN: ${{ inputs.dry_run || false }}
         DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
         run: "echo "🚀 Delegating to agent: $AGENT"
@@ -132,7 +129,7 @@ jobs:
       - id: task_manifest
         name: Generate agent task manifest
         env:
-        AGENT_ID: ${{ matrix.agent }}
+          AGENT_ID: ${{ matrix.agent }}
         DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
         DRY_RUN: ${{ inputs.dry_run || false }}
         MANIFEST_CONTENT: ${{ needs.load_context.outputs.manifest_content }}
@@ -151,7 +148,7 @@ jobs:
         if: ${{ inputs.dry_run != "true" }}
         name: Execute agent delegation (non-blocking)
         env:
-        AGENT_NAME: ${{ steps.init.outputs.agent_name }}
+          AGENT_NAME: ${{ steps.init.outputs.agent_name }}
         run: "TASK_ID=$(uuidgen | cut -c1-8)\necho \"\U0001F4EC Queuing agent: $AGENT_NAME\
         \ (task_id: $TASK_ID)\"\n\necho \"task_id=$TASK_ID\" >> $GITHUB_OUTPUT\necho\
         \ \"status=queued\" >> $GITHUB_OUTPUT\n\nmkdir -p .codex/delegation_tasks\n\
@@ -166,7 +163,7 @@ jobs:
         name: Cache test results (Layer 3)
         uses: actions/cache@v5
         with:
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
         path: .pytest_cache/
         restore-keys: "${{ runner.os }}-pytest-
 
@@ -174,7 +171,7 @@ jobs:
       - if: ${{ inputs.dry_run == "true" }}
         name: Dry-run output
         env:
-        AGENT_NAME: ${{ steps.init.outputs.agent_name }}
+          AGENT_NAME: ${{ steps.init.outputs.agent_name }}
         TASK_MANIFEST: ${{ steps.task_manifest.outputs.task_manifest }}
         run: "echo "🧪 DRY RUN: Would delegate to $AGENT_NAME"
 
@@ -206,11 +203,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.12"
+          python-version: "3.12"
         cache: pip
       - id: collect
         name: Collect parallel outputs
@@ -230,7 +227,7 @@ jobs:
         \ agents\")\nprint(f\"   Output saved to: {output_file}\")\nPYTHON_EOF\n"
       - name: Generate delegation summary
         env:
-        DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
+          DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
         DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
         run: "{\n  echo \"## \U0001F3AF Agent Delegation Summary\"\n  echo \"\"\n  echo\
         \ \"**Timestamp:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")\"\n  echo \"**Mode:**\
@@ -266,10 +263,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
+          persist-credentials: false
       - name: Report delegation status
         env:
-        DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
+          DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
         DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
         DRY_RUN: ${{ inputs.dry_run || false }}
         MAX_PARALLEL: ${{ inputs.max_agents || 5 }}
@@ -306,7 +303,7 @@ jobs:
         "
       - name: Summary
         env:
-        DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
+          DELEGATION_MODE: ${{ inputs.delegation_mode || "parallel" }}
         DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
         run: "echo "## Adaptive Agent Delegation Complete" >> $GITHUB_STEP_SUMMARY
 

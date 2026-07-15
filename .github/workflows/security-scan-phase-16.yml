@@ -31,9 +31,8 @@ jobs:
       pull-requests: write
     steps:
       - name: Mask secrets
-        run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-
-        "
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout code
         uses: actions/checkout@v5
         with:
@@ -121,7 +120,7 @@ jobs:
         if: github.event_name == "pull_request" && always()
         uses: actions/github-script@v8
         with:
-        script: "const fs = require("fs");\nconst report = fs.readFileSync("security-report.md",\
+          script: "const fs = require("fs");\nconst report = fs.readFileSync("security-report.md",\
           \ "utf8");\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: report\n\
           });\n"
