@@ -506,26 +506,46 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Build Docker image for scanning
-        continue-on-error: true
+      - name: Validate Dockerfile exists
         run: |
-          docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
+          if [ ! -f "${{ matrix.dockerfile }}" ]; then
+            echo "❌ Dockerfile not found: ${{ matrix.dockerfile }}"
+            exit 1
+          fi
+          echo "✅ Dockerfile found: ${{ matrix.dockerfile }}"
 
-      - name: Run Trivy filesystem scan
+      - name: Run Trivy filesystem scan (pre-build)
         uses: aquasecurity/trivy-action@ed142fd341e2811a1b3a3d15dc3e3c1e5df2b2f7  # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
           format: sarif
-          output: trivy-results-${{ strategy.job-index }}.sarif
+          output: trivy-fs-results-${{ strategy.job-index }}.sarif
           severity: CRITICAL,HIGH
           exit-code: '0'
+
+      - name: Build Docker image for scanning
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . 2>&1 | tee docker-build-${{ strategy.job-index }}.log || true
+
+      - name: Run Trivy image scan (if build succeeded)
+        continue-on-error: true
+        run: |
+          if docker inspect codex-scan:${{ strategy.job-index }} &>/dev/null; then
+            echo "Image found, scanning..."
+            trivy image --severity CRITICAL,HIGH --format sarif --output trivy-image-results-${{ strategy.job-index }}.sarif codex-scan:${{ strategy.job-index }} || true
+          else
+            echo "⚠️ Docker image not found, skipping image scan"
+          fi
 
       - name: Upload SARIF to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: trivy-results-${{ strategy.job-index }}.sarif
+          sarif_file: trivy-fs-results-${{ strategy.job-index }}.sarif
+          wait-for-processing: false
 
       - name: Generate container scan summary + contract
         if: always()
@@ -540,6 +560,13 @@ jobs:
             echo "- **Scan outcome:** ${{ job.status }}"
             echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
             echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+            echo ""
+            if [ -f "docker-build-${{ strategy.job-index }}.log" ]; then
+              echo "## Docker Build Log"
+              echo "\`\`\`"
+              tail -20 "docker-build-${{ strategy.job-index }}.log"
+              echo "\`\`\`"
+            fi
           } > container-scan-summary-${{ strategy.job-index }}.md
 
           cat > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json <<'EOFJ'
@@ -560,8 +587,10 @@ jobs:
         with:
           name: security-suite-container-${{ strategy.job-index }}
           path: |
-            trivy-results-${{ strategy.job-index }}.sarif
+            trivy-fs-results-${{ strategy.job-index }}.sarif
+            trivy-image-results-${{ strategy.job-index }}.sarif
             container-scan-summary-${{ strategy.job-index }}.md
+            docker-build-${{ strategy.job-index }}.log
             .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
           if-no-files-found: warn
           retention-days: 30
@@ -600,9 +629,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - name: Cache Rust cargo-audit (Layer 2 - CVE Tools)
+        if: matrix.ecosystem == 'rust'
+        uses: actions/cache@v5
+        with:
+          path: ~/.cargo/bin/cargo-audit
+          key: ${{ runner.os }}-cargo-audit-${{ env.CARGO_AUDIT_VERSION | default('0.20') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-audit-
+
       - if: matrix.ecosystem == 'python'
         name: Scan Python dependencies (pip-audit)
         continue-on-error: true
+        timeout-minutes: 10
         run: |
           pip install pip-audit
           pip-audit --json --output python-cve-audit.json || true
@@ -611,6 +650,7 @@ jobs:
       - if: matrix.ecosystem == 'javascript' && hashFiles('package.json') != ''
         name: Scan JavaScript dependencies (npm audit)
         continue-on-error: true
+        timeout-minutes: 10
         run: |
           npm audit --json > javascript-cve-audit.json || true
           npm audit || true
@@ -618,8 +658,12 @@ jobs:
       - if: matrix.ecosystem == 'rust' && hashFiles('Cargo.toml') != ''
         name: Scan Rust dependencies (cargo-audit)
         continue-on-error: true
+        timeout-minutes: 15
         run: |
-          cargo install cargo-audit
+          # Use cached binary if available, otherwise install
+          if [ ! -f ~/.cargo/bin/cargo-audit ]; then
+            cargo install cargo-audit --force --locked
+          fi
           cargo audit --json > rust-cve-audit.json || true
           cargo audit || true
 
