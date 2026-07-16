@@ -48,3 +48,12 @@ class InputType:
         self.name = name
 
 __all__.append("InputType")
+
+class TriggerType:
+    """Trigger type for workflow execution."""
+    def __init__(self, name: str = "push"):
+        self.name = name
+
+# Update __all__ if needed
+if "TriggerType" not in __all__:
+    __all__.append("TriggerType")
