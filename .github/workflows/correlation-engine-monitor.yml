@@ -17,6 +17,7 @@ permissions:
 jobs:
   monitor-correlation-engine:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     name: Daily Correlation Engine Health Check
 
     steps:

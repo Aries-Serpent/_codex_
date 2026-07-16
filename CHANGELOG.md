@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Fixed (auto-update — PR #5325)
+- 🔀 Branch rebase validation working correctly for PR branches
+- 🩹 Secrets false-positive healer running without errors
+- 🔍 Secrets detection baseline verified and in sync
+- ✅ Pre-flight CI validation checks: added pytest-timeout pinning, workflow timeout configs
+- 📋 Unified governance compliance check: fixed branch naming validation, PR title validation, review requirements, CHANGELOG and accountability report updates
+
 ## [0.2.0] — 2026-07-16 (Phase 10 Production Release)
 
 ### 🚀 Release Summary

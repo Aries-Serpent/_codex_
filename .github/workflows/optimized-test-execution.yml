@@ -126,7 +126,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run fast unit tests in parallel
         run: |
           python -m pytest tests/ \
@@ -163,7 +163,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run integration tests
         run: |
           python -m pytest tests/ \
@@ -200,7 +200,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run slow tests
         run: |
           python -m pytest tests/ \
@@ -234,7 +234,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run authentication tests
         run: |
           python -m pytest tests/auth/ \
@@ -278,7 +278,7 @@ jobs:
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -e ".[dev]"
-          pip install pytest-cov pytest-mock pytest-timeout
+          pip install pytest-cov pytest-mock pytest-timeout==2.4.0
       - name: Run ML tests for ${{ matrix.test-suite }}
         run: |
           python -m pytest tests/ml_${{ matrix.test-suite }}* \
@@ -314,7 +314,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run RAG module tests
         run: |
           python -m pytest tests/test_rag_* \
@@ -400,7 +400,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install coverage pytest-xdist pytest-timeout
+          pip install coverage pytest-xdist pytest-timeout==2.4.0
 
       # Optimized coverage collection with selective test discovery
       - name: Run coverage collection (optimized)
