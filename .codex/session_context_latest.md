@@ -1,37 +1,22 @@
-# Session Context — 2026-07-16T21:37:40Z
-**Branch:** `copilot/explore-codebase-create-campaign-plan`  **PR:** #5329  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-16T22:27:33Z
+**Branch:** `0D_base_`  **PR:** none  **Access:** `rest, graphql`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4979` (✅)
-- GraphQL remaining: `4992` (✅)
-- gh CLI: ✅
+- Recommended method chain: `rest → graphql`
+- REST remaining: `4893` (✅)
+- GraphQL remaining: `4993` (✅)
+- gh CLI: ❌
 - CodeQL CLI: ❌
 
-## 📋 PR #5329 — Phase 14 Pre-Kickoff Validation & User Input Templates
-State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-create-campaign-plan` → `0D_base_`
-
-### ❌ 3 Failing CI Check(s)
-- `Governance Compliance` (failure)
-- `⚡ Auto-Approve if Compliance Passed` (failure)
-- `🚦 Comment review gate` (failure)
-
-## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-07-16)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/release-to-pypi.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/ml-tests.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/pr-size-analyzer.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-
 ## 📝 Recent Commits
-- `2b4b9f3c` docs(phase14): complete pre-kickoff validation and infrastructure/security templ — copilot-swe-agent[bot] (2026-07-16)
-- `dcb6219b` docs(phase14): initialize pre-kickoff validation report and infrastructure/secur — copilot-swe-agent[bot] (2026-07-16)
-- `6d994638` Apply remaining changes — copilot-swe-agent[bot] (2026-07-16)
-- `7eb708bd` ✅ PHASE 14 WS4 ORCHESTRATION FRAMEWORK COMPLETE. Agent-orchestrator delivered 6  — copilot-swe-agent[bot] (2026-07-16)
-- `acdf0c08` Add PHASE_14_WS4 Implementation Summary — Framework fully operational — copilot-swe-agent[bot] (2026-07-16)
-- `3edda2f5` PHASE_14_WS4: Multi-workstream orchestration framework activated — copilot-swe-agent[bot] (2026-07-16)
-- `2eaef0b0` Phase 14 Full Authorization Confirmed - Session Complete — copilot-swe-agent[bot] (2026-07-16)
-- `e06f7a0e` ✅ SESSION COMPLETION: @mbaetiong D-tier autonomous, GO CONTINUE CONFIRMED. Phase — copilot-swe-agent[bot] (2026-07-16)
+- `ba86638c` Phase 14 Pre-Kickoff Validation & User Input Templates (#5329) — Copilot (2026-07-16)
+- `7cae43de` fix(ci): universal baseline sweep — sync+auto_fix [skip ci] — github-actions[bot] (2026-07-16)
+- `54bef087` Merge branch 'main' into 0D_base_ — Statix (2026-07-16)
+- `c92a6e7c` 0 d base  (#5325) — Statix (2026-07-16)
+- `ff0bba15` Apply remaining changes — copilot-swe-agent[bot] (2026-07-16)
+- `27acb5a6` docs(monitoring): Final post-approval workflow execution status report — copilot-swe-agent[bot] (2026-07-16)
+- `a1092a19` Governance compliance fixes: CHANGELOG and accountability report updated with post-approval session entry — copilot-swe-agent[bot] (2026-07-16)
+- `4fa44d55` fix(governance): Add post-approval monitoring session entries to CHANGELOG and accountability report — copilot-swe-agent[bot] (2026-07-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -1,20 +1,17 @@
 {
-  "generated_at": "2026-07-16T21:37:40.699922+00:00",
+  "generated_at": "2026-07-16T22:27:33.193795+00:00",
   "methods": [
     "rest",
-    "graphql",
-    "gh_cli"
+    "graphql"
   ],
   "rest_available": true,
-  "rest_remaining": 4979,
+  "rest_remaining": 4893,
   "graphql_available": true,
-  "graphql_remaining": 4992,
-  "gh_cli_available": true,
+  "graphql_remaining": 4993,
+  "gh_cli_available": false,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5329
-  ],
-  "branch": "copilot/explore-codebase-create-campaign-plan",
+  "open_prs": [],
+  "branch": "0D_base_",
   "recommendation": "Use REST for data fetches. "
 }
