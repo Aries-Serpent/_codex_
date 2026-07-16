@@ -24,7 +24,6 @@ permissions:
   contents: write
   pull-requests: write
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   generate:
     runs-on: ubuntu-latest

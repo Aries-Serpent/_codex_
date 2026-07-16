@@ -75,7 +75,6 @@ jobs:
         name: Release ${{ steps.tag.outputs.tag }}
         body: '## Release ${{ steps.tag.outputs.tag }}
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           ### SBOM
 
           Software Bill of Materials generated via `sbom.yml` workflow.

@@ -137,7 +137,6 @@ jobs:
 
         python -c "import sys; print(f''Python: {sys.version}'')"
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Test core module imports
 
         python -c "import pathlib; import json; import subprocess" || exit 1

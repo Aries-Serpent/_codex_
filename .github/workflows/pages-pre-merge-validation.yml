@@ -61,7 +61,6 @@ jobs:
 
         echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Extract issue count
 
         ISSUE_COUNT=$(grep -oP "(?<=Summary: )\d+" table_report.txt | head -1 || echo

@@ -50,7 +50,6 @@ jobs:
         UV_CACHE_DIR: /tmp/uv-cache
       run: 'pip install pytest-timeout==2.4.0
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         export PATH="$HOME/.cargo/bin:$PATH"
 
         # Install package with dev dependencies (includes all test requirements)

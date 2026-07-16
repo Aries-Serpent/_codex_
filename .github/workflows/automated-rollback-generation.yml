@@ -208,7 +208,6 @@ jobs:
 
         Automated Rollback Generation Workflow Complete
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         Generated Artifacts:
 
       - Rollback playbook with procedures

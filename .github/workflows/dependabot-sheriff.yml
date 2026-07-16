@@ -68,7 +68,6 @@ jobs:
 
         gh --version
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Authenticate with GitHub token
 
         echo "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" | gh auth

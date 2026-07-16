@@ -63,7 +63,6 @@ jobs:
     - name: Generate monitoring configuration
       run: 'echo "🔧 Generating monitoring configuration..."
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate ServiceMonitor resources
 
         python scripts/deployment/generate_servicemonitor.py

@@ -51,7 +51,6 @@ jobs:
         import re
         import sys
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
                 comment = os.environ[\"COMMENT_BODY\"]
         pr_number = os.environ[\"PR_NUMBER
         ]\n# P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.\n\

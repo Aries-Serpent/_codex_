@@ -96,7 +96,6 @@ jobs:
       name: Build results summary
       run: 'echo "## ✅ Pre-Release Validation Results
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ### Version Check
 
         - Version: ${{ needs.validate-version.outputs.version }}

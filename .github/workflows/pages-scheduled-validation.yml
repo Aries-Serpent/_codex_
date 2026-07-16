@@ -95,7 +95,6 @@ jobs:
 
         echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Extract warning count
 
         WARNING_COUNT=$(grep -c "WARNING" build_report.txt || echo "0")

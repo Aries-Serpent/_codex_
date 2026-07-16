@@ -162,7 +162,6 @@ jobs:
 
         # Release ${{ github.event.inputs.version }} Summary
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Release Status
 
       - **Version**: ${{ github.event.inputs.version }}

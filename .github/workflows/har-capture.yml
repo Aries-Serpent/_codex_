@@ -51,7 +51,6 @@ concurrency:
 permissions:
   contents: read
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   capture-har:
     name: '🎬 Record HAR — Cognitive App walkthrough'

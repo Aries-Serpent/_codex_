@@ -34,7 +34,6 @@ permissions:
 env:
   PYTHON_VERSION: '3.12'
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   alert-triage:
     name: CodeQL Alert Triage Pipeline

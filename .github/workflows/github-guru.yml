@@ -30,7 +30,6 @@ env:
   SAFE_MODE: "true"
   OFFLINE_MODE: "false"
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   github-guru:
     name: GitHub Guru Agent

@@ -45,7 +45,6 @@ permissions:
   actions: write
   contents: read
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   flush:
     name: "🚿 Cancel ${{ github.event.inputs.status_filter }} runs (max ${{ github.event.inputs.max_cancellations }})"

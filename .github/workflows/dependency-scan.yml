@@ -6,7 +6,6 @@ on:
     - cron: '0 3 * * *'  # daily at 03:00 UTC
   workflow_dispatch:
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

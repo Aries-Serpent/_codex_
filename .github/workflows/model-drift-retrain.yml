@@ -36,7 +36,6 @@ on:
     types:
       - drift-detected  # fired by monitoring agents or post-deploy hooks
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

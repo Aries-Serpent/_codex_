@@ -428,7 +428,6 @@ jobs:
 
         echo "- QA issues: ${QA_ISSUES_FOUND}" >> improvement_pr_body.md
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Note: Actual PR creation would be done via gh CLI or GitHub API
 
         '

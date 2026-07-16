@@ -416,7 +416,6 @@ jobs:
         TIMESTAMP: ${{ github.event.repository.updated_at }}
       run: 'set -euo pipefail
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate UUID for approval record
 
         APPROVAL_ID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")

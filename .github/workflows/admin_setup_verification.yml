@@ -37,7 +37,6 @@ permissions:
   pull-requests: write
   issues: write
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   verify-setup:
     name: Verify Admin Setup
