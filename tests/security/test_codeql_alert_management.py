@@ -208,6 +208,8 @@
 #         assert "abc123" in comment, "Condition must be true"
 #         assert "Closed:" in comment, "Condition must be true"
 
+import pytest
+
 
 class TestIntegration:
     """Integration tests for the full workflow."""

@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from codex.logging.structured_logger import logger
 
 # Define HAS_TYPER for skipif conditions

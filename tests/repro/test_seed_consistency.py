@@ -2,6 +2,8 @@
 #             assert ", "Condition must be true"
 #             assert ", "Condition must be true"
 
+import pytest
+
 
 class TestCreateReproducibilityManifest:
     """Test reproducibility manifest creation"""
