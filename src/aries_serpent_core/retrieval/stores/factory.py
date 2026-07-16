@@ -139,7 +139,7 @@ class VectorStoreFactory:
 
 # Auto-register FAISS store
 try:
-            from aries_serpent_core.retrieval.stores.faiss_store import FAISSStore
+    from aries_serpent_core.retrieval.stores.faiss_store import FAISSStore
 
     VectorStoreRegistry.register("faiss", FAISSStore)
 except ImportError as e:
@@ -150,7 +150,7 @@ except ImportError as e:
 
 # Auto-register Pinecone store
 try:
-            from aries_serpent_core.retrieval.stores.pinecone_store import PineconeStore
+    from aries_serpent_core.retrieval.stores.pinecone_store import PineconeStore
 
     VectorStoreRegistry.register("pinecone", PineconeStore)
 except ImportError as e:
@@ -161,7 +161,9 @@ except ImportError as e:
 
 # Auto-register Weaviate store
 try:
-            from aries_serpent_core.retrieval.stores.weaviate_store import WeaviateStore
+    from aries_serpent_core.retrieval.stores.weaviate_store import WeaviateStore
+
+    VectorStoreRegistry.register("weaviate", WeaviateStore)
 
     VectorStoreRegistry.register("weaviate", WeaviateStore)
 except ImportError as e:
@@ -172,7 +174,7 @@ except ImportError as e:
 
 # Auto-register PGVector store
 try:
-            from aries_serpent_core.retrieval.stores.pgvector_store import PGVectorStore
+    from aries_serpent_core.retrieval.stores.pgvector_store import PGVectorStore
 
     VectorStoreRegistry.register("pgvector", PGVectorStore)
 except ImportError as e:
