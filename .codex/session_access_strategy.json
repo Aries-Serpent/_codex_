@@ -1,18 +1,19 @@
 {
-  "generated_at": "2026-07-16T16:01:53.222006+00:00",
+  "generated_at": "2026-07-16T16:22:46.429924+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4988,
   "graphql_available": true,
-  "graphql_remaining": 4997,
+  "graphql_remaining": 4995,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
+    5327,
     5325
   ],
   "branch": "copilot/explore-codebase-implement-plan",
