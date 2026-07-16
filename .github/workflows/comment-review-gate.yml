@@ -33,7 +33,7 @@ jobs:
       warning_count: ${{ steps.scan.outputs.warning_count }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         persist-credentials: false
         sparse-checkout: 'scripts/__init__.py
@@ -130,6 +130,9 @@ jobs:
       env:
         BLOCKING: ${{ needs.scan-and-post.outputs.blocking_count }}
         EXIT_CODE: ${{ needs.scan-and-post.outputs.exit_code }}
+        SERVER_URL: ${{ github.server_url }}
+        REPOSITORY: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
       run: "echo \"Blocking unaddressed comments: ${BLOCKING}\"\necho \"Exit code\
         \ from scan: ${EXIT_CODE}\"\n\nif [ \"${BLOCKING:-0}\" -gt 0 ]; then\n  echo\
         \ \"::error::${BLOCKING} blocking comment(s) from mbaetiong or CI bots are\
@@ -144,10 +147,10 @@ jobs:
         \n  echo \"2. Reply to each comment with your resolution\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"3. Push a new commit — this gate will re-scan automatically\" >>\
         \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
-        \ \"_[\U0001F517 Workflow run](${{ github.server_url }}/${{ github.repository\
-        \ }}/actions/runs/${{ github.run_id }})_\" >> \"$GITHUB_STEP_SUMMARY\"\n \
-        \ exit 1\nfi\n\necho \"### ✅ Comment Review Gate: PASSED\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"All blocking comments are\
+        \ \"_[\U0001F517 Workflow run](${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID})_\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n  exit 1\nfi\n\necho \"### ✅ Comment Review Gate: PASSED\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"All blocking comments are"\
         \ addressed.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"_[\U0001F517 Workflow run](${{ github.server_url }}/${{ github.repository\
         \ }}/actions/runs/${{ github.run_id }})_\" >> \"$GITHUB_STEP_SUMMARY\"\n"
@@ -164,7 +167,7 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN

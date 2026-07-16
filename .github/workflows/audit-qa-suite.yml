@@ -153,7 +153,7 @@ jobs:
         \  echo \"gap_count=0\" >> $GITHUB_OUTPUT\nfi\n"
     - name: Upload audit results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
         name: audit-results-${{ github.run_number }}
         path: '.codex/audit/*.json
@@ -223,12 +223,13 @@ jobs:
     - name: Create required directory structure
       env:
         GH_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
         # This eliminates the untrusted code checkout vulnerability in workflow_run contexts
         
         # Parse repository into owner/repo format using bash parameter expansion
-        REPO_FULL="${{ github.repository }}"
+        REPO_FULL="${GITHUB_REPOSITORY}"
         OWNER="${REPO_FULL%%/*}"
         REPO="${REPO_FULL##*/}"
         
@@ -365,7 +366,7 @@ jobs:
         \  --run-url    \"${RUN_URL}\"\n"
     - name: Upload QA results
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@c7d193f32eddeaaf6b7b5b3e08f025a8aa6e2f2e
       with:
         name: qa-walkthrough-${{ github.run_number }}
         path: '.codex/qa/*.json
@@ -499,7 +500,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1

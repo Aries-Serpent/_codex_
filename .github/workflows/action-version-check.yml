@@ -16,11 +16,11 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         fetch-depth: 1
     - name: Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@f677139bbe7f9c59b41e7e0d6abc2d16a56436bc
       with:
         python-version: "3.11"
     - name: Check action versions
@@ -32,7 +32,7 @@ jobs:
         echo "check_status=success" >> $GITHUB_OUTPUT
     - name: Comment on PR with results
       if: github.event_name == "pull_request" && failure()
-      uses: actions/github-script@v8
+      uses: actions/github-script@6c3040512d6973cc7f06f5b60e02d16cbf276051
       with:
         script: |
           github.rest.issues.createComment({
