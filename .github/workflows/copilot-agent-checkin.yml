@@ -185,7 +185,7 @@ jobs:
         n\")\nprint(f\"Generated Q1\u2013{min(3, len(solutions))} from PDA pattern\
         \ library ({len(solutions)} patterns).\")\nPYEOF\n"
     - name: 'Post research topics and open check-in to Discussion  #3756'
-      if: true  # RE-ENABLED with concurrency lock (ba8af81 cascade fixed)
+      if: false  # DISABLED until cascading errors fully stop (ba8af81 + SCAN_TABLE truncation verified)
       uses: actions/github-script@v8
       env:
         SHA: ${{ github.sha }}
