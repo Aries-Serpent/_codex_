@@ -38,7 +38,7 @@ jobs:
       warning_count: ${{ steps.scan.outputs.warning_count }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload scan report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
           path: /tmp/comment_review_report.json

@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     name: CI Health Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check workflow health
         run: |
           echo "Monitoring CI pipeline health..."
@@ -44,7 +44,7 @@ jobs:
     name: Dashboard Update
     needs: [ci-health-check]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update health dashboard
         run: |
           echo "Updating health dashboard..."
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Repository Health
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Monitor repository health
         run: |
           echo "Checking repository health metrics..."
@@ -69,7 +69,7 @@ jobs:
     name: Workflow Health
     needs: [repository-health]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update workflow health metrics
         run: |
           echo "Updating workflow health status..."

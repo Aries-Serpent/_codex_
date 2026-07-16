@@ -23,7 +23,7 @@ jobs:
     if: github.event.inputs.operation == 'accountability' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post accountability report
         run: echo "Posting accountability report to discussion..."
 
@@ -32,7 +32,7 @@ jobs:
     if: github.event.inputs.operation == 'ci-status' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post CI status
         run: echo "Posting CI status to discussion..."
 
@@ -41,7 +41,7 @@ jobs:
     if: github.event.inputs.operation == 'validation' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run post-merge validation
         run: echo "Running post-merge validation checks..."
 
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [accountability-report, ci-status-report, merge-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Post phase updates
         run: echo "Posting phase updates to discussion..."
 

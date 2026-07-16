@@ -28,7 +28,7 @@ jobs:
     if: github.event.inputs.operation == 'capture-context' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Capture session context
         run: echo "Capturing session context..."
 
@@ -37,7 +37,7 @@ jobs:
     if: github.event.inputs.operation == 'increment-summary' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Generate incremental summary
         run: echo "Generating incremental summary..."
 
@@ -46,7 +46,7 @@ jobs:
     if: github.event.inputs.operation == 'recovery-monitor' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Monitor session recovery
         run: echo "Monitoring session recovery status..."
 
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [recovery-monitor]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Handle recovery operations
         run: echo "Executing recovery handler..."
 
@@ -65,7 +65,7 @@ jobs:
     if: github.event.inputs.operation == 'watchdog' || github.event.inputs.operation == 'all'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Session watchdog
         run: echo "Running session watchdog checks..."
 
