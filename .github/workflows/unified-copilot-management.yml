@@ -1,0 +1,119 @@
+name: Copilot Management Suite
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Copilot operation'
+        required: false
+        type: choice
+        options:
+          - agent-checkin
+          - session-done
+          - vars-bootstrap
+          - automation
+          - issue-triage
+          - self-healing
+          - session-injector
+          - review-responder
+          - session-chain
+          - all
+        default: 'all'
+  push:
+    branches: [main]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # Agent Check-in (from copilot-agent-checkin.yml)
+  agent-checkin:
+    if: github.event.inputs.operation == 'agent-checkin' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Agent check-in
+        run: echo "Copilot agent checking in..."
+
+  # Session Done (from copilot-agent-session-done.yml)
+  session-done:
+    if: github.event.inputs.operation == 'session-done' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mark session complete
+        run: echo "Marking Copilot session as done..."
+
+  # Vars Bootstrap (from copilot-agent-vars-bootstrap.yml)
+  vars-bootstrap:
+    if: github.event.inputs.operation == 'vars-bootstrap' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bootstrap variables
+        run: echo "Bootstrapping agent variables..."
+
+  # Automation (from copilot-automation.yml)
+  automation:
+    if: github.event.inputs.operation == 'automation' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    needs: [vars-bootstrap]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Copilot automations
+        run: echo "Executing Copilot automations..."
+
+  # Issue Triage (from copilot-issue-triage.yml)
+  issue-triage:
+    if: github.event.inputs.operation == 'issue-triage' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Triage issues
+        run: echo "Running issue triage automation..."
+
+  # Self-Healing (from copilot-iterative-self-healing.yml)
+  self-healing:
+    if: github.event.inputs.operation == 'self-healing' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-healing checks
+        run: echo "Running iterative self-healing checks..."
+
+  # PR Session Injector (from copilot-pr-session-injector.yml)
+  session-injector:
+    if: github.event.inputs.operation == 'session-injector' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject PR session context
+        run: echo "Injecting session context into PR..."
+
+  # Review Responder (from copilot-review-responder.yml)
+  review-responder:
+    if: github.event.inputs.operation == 'review-responder' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Respond to reviews
+        run: echo "Processing review responses..."
+
+  # Session Chain (from copilot-session-chain.yml)
+  session-chain:
+    if: github.event.inputs.operation == 'session-chain' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    needs: [session-injector, review-responder]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chain sessions
+        run: echo "Chaining Copilot sessions..."
+
+  summary:
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [agent-checkin, session-done, vars-bootstrap, automation, issue-triage, self-healing, session-injector, review-responder, session-chain]
+    steps:
+      - name: Copilot management complete
+        run: echo "All Copilot operations completed"

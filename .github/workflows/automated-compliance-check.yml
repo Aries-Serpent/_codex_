@@ -1,3 +1,4 @@
+---
 name: Automated Compliance Check
 
 on:
@@ -42,4 +43,3 @@ jobs:
         \ and perms == 'write-all':\n            print(f\"\u274C {wf.name}: Uses write-all\
         \ permissions\")\n            exit(1)\n\nprint(\"\u2713 All workflows comply\
         \ with standards\")\nCOMPLIANCE_EOF\n                    "
-

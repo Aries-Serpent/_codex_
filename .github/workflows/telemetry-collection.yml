@@ -1,3 +1,4 @@
+---
 name: CI Telemetry Collection
 
 on:
@@ -16,7 +17,6 @@ on:
         required: false
         default: 'main'
         type: string
-
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

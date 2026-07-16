@@ -1,3 +1,4 @@
+---
 name: CODEX Manifest Auto-Refresh
 on:
   pull_request:

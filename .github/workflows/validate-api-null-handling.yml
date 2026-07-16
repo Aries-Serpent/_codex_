@@ -1,3 +1,4 @@
+---
 name: Validate API Null-Handling
 on:
   pull_request:
@@ -118,7 +119,6 @@ jobs:
         violations="${{ steps.safety-check.outputs.found-violations }}"
 
         violation_count="${{ steps.safety-check.outputs.violation-count }}"
-
 
         echo ""
 

@@ -1,0 +1,224 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: "\U0001F4CB Post Accountability Report to Discussion"
+on:
+  push:
+    branches:
+    - copilot/**
+    - 0D_base_
+    paths:
+    - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to include in the report (optional)
+        required: false
+        default: ''
+      force_post:
+        description: 'Deprecated: reruns now upsert the authoritative branch/PR/session/turn
+          comment'
+        required: false
+        default: false
+        type: boolean
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  discussions: write
+  pull-requests: read
+jobs:
+  post-to-discussion:
+    name: "\U0001F4CB Post to Discussion  #3673"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Extract latest session entry
+      id: extract
+      shell: python3 {0}
+      run: "import os\nimport re\nfrom pathlib import Path\n\nreport_path = Path(\"\
+        docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\")\noutput_file = Path(os.environ[\"\
+        GITHUB_OUTPUT\"])\n\ndef write_output(name: str, value: str) -> None:\n  \
+        \  with output_file.open(\"a\", encoding=\"utf-8\") as handle:\n        handle.write(f\"\
+        {name}={value}\\n\")\n\ndef write_multiline_output(name: str, value: str)\
+        \ -> None:\n    delimiter = \"__ACCOUNTABILITY_ENTRY__\"\n    with output_file.open(\"\
+        a\", encoding=\"utf-8\") as handle:\n        handle.write(f\"{name}<<{delimiter}\\\
+        n{value}\\n{delimiter}\\n\")\n\nif not report_path.exists():\n    print(\"\
+        ::warning::AGENT_ACCOUNTABILITY_REPORT.md not found \u2014 skipping\")\n \
+        \   write_output(\"should_post\", \"false\")\n    write_output(\"skip_reason\"\
+        , \"missing-report\")\n    raise SystemExit(0)\n\ncontent = report_path.read_text(encoding=\"\
+        utf-8\")\n\n# Split on ALL recognised H2 session heading formats:\n#   - \"\
+        ## SESSION SUMMARY \u2014 ...\" (legacy/auto-generated format)\n#   - \"##\
+        \ Session S\\d+ \u2014 ...\"    (current per-session format S205+)\n# Both\
+        \ patterns are anchored to line-start after a newline.\nSESSION_HEADING =\
+        \ re.compile(\n    r'\\n(?=## (?:SESSION SUMMARY|Session S\\d+) \u2014 )'\n\
+        )\nparts = SESSION_HEADING.split(content)\n\n# Find the most recent real session\
+        \ entry\nlatest = None\nfor part in reversed(parts):\n    stripped = part.strip()\n\
+        \    if re.match(r'^## (?:SESSION SUMMARY|Session S\\d+) \u2014 ', stripped):\n\
+        \        latest = stripped\n        break\n\nif not latest:\n    print(\"\
+        ::warning::No recognized session entry found in report \u2014 skipping\")\n\
+        \    write_output(\"should_post\", \"false\")\n    write_output(\"skip_reason\"\
+        , \"missing-session-entry\")\n    raise SystemExit(0)\n\nheading_line = latest.splitlines()[0].strip()\n\
+        \nsession_id = \"unknown\"\nexplicit_session = re.search(r\"SessionID:\\s*([A-Za-z0-9._:-]+)\"\
+        , latest)\nif explicit_session:\n    session_id = explicit_session.group(1)\n\
+        else:\n    heading_session = re.match(r\"^## Session (S\\d+) \u2014\", heading_line)\n\
+        \    if heading_session:\n        session_id = heading_session.group(1)\n\
+        \    else:\n        heading_turn = re.match(r\"^## SESSION SUMMARY \u2014\
+        \ ([^\xB7\\n]+?)(?:\\s+\xB7.*)?$\", heading_line)\n        if heading_turn:\n\
+        \            session_id = heading_turn.group(1).strip()\n\nturn_id = session_id\n\
+        heading_ts = re.search(r\"\\b\\d{4}-\\d{2}-\\d{2}(?:T\\d{2}:\\d{2}Z)?\\b\"\
+        , heading_line)\nif heading_ts:\n    turn_id = heading_ts.group(0)\n\npr_number\
+        \ = \"\"\npr_match = re.search(r\"\\bPR  #(\\d+)\\b\", latest)\nif pr_match:\n\
+        \    pr_number = pr_match.group(1)\n\nwrite_output(\"should_post\", \"true\"\
+        )\nwrite_output(\"session_id\", session_id[:120])\nwrite_output(\"turn_id\"\
+        , turn_id[:120])\nwrite_output(\"pr_number\", pr_number)\nwrite_multiline_output(\"\
+        entry_md\", latest.rstrip())\n\nprint(\n    \"\u2705 Extracted accountability\
+        \ entry \"\n    f\"(session={session_id[:80]}, turn={turn_id[:80]}, pr={pr_number\
+        \ or 'n/a'})\"\n)\n"
+    - name: "\U0001F511 Resolve auth token for discussions:write"
+      id: auth
+      env:
+        GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+        GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
+        GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+      run: "pip install \"PyJWT==2.8.0\" \"cryptography==44.0.2\" --quiet\nRESOLVED_TOKEN=\"\
+        \"\nif [[ -n \"${GITHUB_APP_PRIVATE_KEY}\" && -n \"${GITHUB_APP_ID}\" && -n\
+        \ \"${GITHUB_APP_INSTALLATION_ID}\" ]]; then\n  echo \"\u2139\uFE0F Attempting\
+        \ GitHub App installation token mint...\"\n  INSTALL_TOKEN=$(python3 - <<'PYEOF'\n\
+        import os, time, json, sys\ntry:\n    import jwt\n    key = os.environ[\"\
+        GITHUB_APP_PRIVATE_KEY\"]\n    app_id = os.environ[\"GITHUB_APP_ID\"]\n  \
+        \  inst_id = os.environ[\"GITHUB_APP_INSTALLATION_ID\"]\n    now = int(time.time())\n\
+        \    payload = {\"iat\": now - 60, \"exp\": now + 540, \"iss\": str(app_id)}\n\
+        \    app_jwt = jwt.encode(payload, key, algorithm=\"RS256\")\n    import urllib.request,\
+        \ urllib.error\n    req = urllib.request.Request(\n        f\"https://api.github.com/app/installations/{inst_id}/access_tokens\"\
+        ,\n        method=\"POST\",\n        data=json.dumps({}).encode(),\n     \
+        \   headers={\n            \"Authorization\": f\"Bearer {app_jwt}\",\n   \
+        \         \"Accept\": \"application/vnd.github+json\",\n            \"X-GitHub-Api-Version\"\
+        : \"2022-11-28\",\n            \"User-Agent\": \"codex-accountability/1.0\"\
+        ,\n        },\n    )\n    try:\n        with urllib.request.urlopen(req, timeout=15)\
+        \ as resp:\n            data = json.loads(resp.read())\n        print(data[\"\
+        token\"])\n    except urllib.error.HTTPError as http_err:\n        body =\
+        \ http_err.read().decode(\"utf-8\", errors=\"replace\")\n        print(f\"\
+        APP_TOKEN_FAILED: HTTP {http_err.code} \u2014 {body}\", file=sys.stderr)\n\
+        \        print(\"\")\nexcept Exception as e:\n    print(f\"APP_TOKEN_FAILED:\
+        \ {e}\", file=sys.stderr)\n    print(\"\")\nPYEOF\n)\n  if [[ -n \"${INSTALL_TOKEN}\"\
+        \ && \"${INSTALL_TOKEN}\" != \"APP_TOKEN_FAILED\"* ]]; then\n    RESOLVED_TOKEN=\"\
+        ${INSTALL_TOKEN}\"\n    echo \"\u2705 GitHub App installation token acquired\"\
+        \n    echo \"auth_source=github_app\" >> \"$GITHUB_OUTPUT\"\n  else\n    echo\
+        \ \"\u26A0\uFE0F App token mint failed \u2014 falling back to PAT\"\n  fi\n\
+        fi\nif [[ -z \"${RESOLVED_TOKEN}\" ]]; then\n  if [[ -n \"${CODEX_MASTER_KEY}\"\
+        \ ]]; then\n    RESOLVED_TOKEN=\"${CODEX_MASTER_KEY}\"\n    echo \"auth_source=codex_master_key\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  elif [[ -n \"${CODEX_BACKUP_KEY}\" ]]; then\n \
+        \   RESOLVED_TOKEN=\"${CODEX_BACKUP_KEY}\"\n    echo \"auth_source=codex_backup_key\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  else\n    RESOLVED_TOKEN=\"${GITHUB_TOKEN_FALLBACK}\"\
+        \n    echo \"auth_source=github_token\" >> \"$GITHUB_OUTPUT\"\n    echo \"\
+        \u26A0\uFE0F Using github.token \u2014 discussion write may fail without discussions:write\"\
+        \n  fi\nfi\necho \"resolved_token=${RESOLVED_TOKEN}\" >> \"$GITHUB_OUTPUT\"\
+        \n"
+    - name: 'Post to GitHub Discussion  #3673'
+      if: steps.extract.outputs.should_post == 'true'
+      uses: actions/github-script@v8
+      env:
+        SESSION_ID: ${{ steps.extract.outputs.session_id }}
+        TURN_ID: ${{ steps.extract.outputs.turn_id }}
+        ENTRY_MD: ${{ steps.extract.outputs.entry_md }}
+        PR_NUMBER: ${{ inputs.pr_number || steps.extract.outputs.pr_number || '' }}
+        FORCE_POST: ${{ inputs.force_post || 'false' }}
+        SHA: ${{ github.sha }}
+        REF: ${{ github.ref_name }}
+      with:
+        github-token: ${{ steps.auth.outputs.resolved_token }}
+        script: "const encode = encodeURIComponent;\nconst discussionNumber = 3673;\n\
+          const entryContent = (process.env.ENTRY_MD || '').trim();\nif (!entryContent)\
+          \ {\n  core.warning('Empty entry content \u2014 skipping discussion post');\n\
+          \  return;\n}\n\nconst sessionId = process.env.SESSION_ID || 'unknown';\n\
+          const turnId = process.env.TURN_ID || sessionId;\nconst prNumber = process.env.PR_NUMBER\
+          \ || '';\nconst branch = process.env.REF || '';\nconst sha = (process.env.SHA\
+        \ || '').slice(0, 7);\nconst contractMarker = [\n  '<!-- codex-accountability-turn:v1',\n\
+          \  `branch=${encode(branch)}`,\n  `pr=${encode(prNumber || 'none')}`,\n\
+          \  `session=${encode(sessionId)}`,\n  `turn=${encode(turnId)}`,\n  '-->',\n\
+          ].join(' ');\nconst metadataLine = prNumber\n  ? `> branch \\`${branch}\\\
+          ` \xB7 PR  #${prNumber} \xB7 session \\`${sessionId}\\` \xB7 turn \\`${turnId}\\\
+        ` \xB7 sha \\`${sha}\\``\n  : `> branch \\`${branch}\\` \xB7 PR n/a \xB7\
+          \ session \\`${sessionId}\\` \xB7 turn \\`${turnId}\\` \xB7 sha \\`${sha}\\\
+          ``;\nconst body = `${contractMarker}\\n${metadataLine}\\n\\n${entryContent}`;\n\
+          \nif (process.env.FORCE_POST === 'true') {\n  core.info('force_post input\
+          \ is deprecated; authoritative turn comments are always upserted.');\n}\n\
+          \nlet discussionId = '';\ntry {\n  const discussion = await github.graphql(`\n\
+        \    query($owner: String!, $name: String!, $number: Int!) {\n      repository(owner:\
+        \ $owner, name: $name) {\n        discussion(number: $number) { id }\n \
+        \     }\n    }\n  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
+        \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
+        } catch (e) {\n  core.warning(`Could not fetch discussion  #${discussionNumber}:\
+        \ ${e.message}`);\n  core.warning('Ensure the token has discussions:write\
+          \ permission');\n  return;\n}\n\nlet existingComment = null;\nlet cursor\
+          \ = null;\nwhile (discussionId) {\n  const page = await github.graphql(`\n\
+        \    query($id: ID!, $cursor: String) {\n      node(id: $id) {\n       \
+        \ ... on Discussion {\n          comments(last: 100, before: $cursor) {\n\
+          \            nodes { id body url }\n            pageInfo { hasPreviousPage\
+        \ startCursor }\n          }\n        }\n      }\n    }\n  `, { id: discussionId,\
+          \ cursor });\n  const comments = page.node.comments.nodes || [];\n  for\
+          \ (const comment of [...comments].reverse()) {\n    if ((comment.body ||\
+          \ '').includes(contractMarker)) {\n      existingComment = comment;\n  \
+          \    break;\n    }\n  }\n  if (existingComment || !page.node.comments.pageInfo.hasPreviousPage)\
+          \ {\n    break;\n  }\n  cursor = page.node.comments.pageInfo.startCursor;\n\
+          }\n\ntry {\n  if (existingComment) {\n    const result = await github.graphql(`\n\
+        \      mutation($commentId: ID!, $body: String!) {\n        updateDiscussionComment(input:\
+        \ { commentId: $commentId, body: $body }) {\n          comment { id url\
+        \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
+          \      body,\n    });\n    core.info(\n      `\u2705 Updated authoritative\
+        \ accountability entry in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
+          \    );\n    return;\n  }\n\n  const result = await github.graphql(`\n \
+        \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
+        \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
+          \ url }\n      }\n    }\n  `, {\n    discussionId,\n    body,\n  });\n \
+          \ core.info(\n    `\u2705 Posted authoritative accountability entry to discussion\
+        \  #${discussionNumber}: ` +\n    `${result.addDiscussionComment.comment.url}`\n\
+        \  );\n} catch (e) {\n  core.warning(`Failed to post discussion comment:\
+        \ ${e.message}`);\n  core.info('Body preview (first 200 chars): ' + body.slice(0,\
+          \ 200));\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  rescue-comment-push:
+    name: Post rescue comment on push failure
+    runs-on: ubuntu-latest
+    needs: post-to-discussion
+    if: failure() && github.event_name == 'push'
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Post Accountability to Discussion
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.ref_name }}
+      run: python scripts/ci/post_rescue_comment.py

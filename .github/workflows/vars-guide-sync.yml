@@ -1,3 +1,4 @@
+---
 name: Auto-Sync Variables Master Guide
 on:
   schedule:
@@ -59,10 +60,10 @@ jobs:
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         run: |
           set -euo pipefail
-           
+
           REPORT_PATH="docs/admin/variable_audit_latest.md"
           JSON_PATH=".codex/variable_audit_latest.json"
-           
+
           # Generate Markdown report
           .venv_ci/bin/python scripts/tools/variable_audit_cli.py report \
             --out "$REPORT_PATH" 2>&1 || {
@@ -70,11 +71,11 @@ jobs:
               CODEX_MASTER_KEY="" .venv_ci/bin/python scripts/tools/variable_audit_cli.py report \
                 --out "$REPORT_PATH"
           }
-           
+
           # Generate JSON snapshot for machine-readable diff
           .venv_ci/bin/python scripts/tools/variable_audit_cli.py check \
             --format json --out "$JSON_PATH" 2>&1 || true
-           
+
           # Emit absent-required count as output
           ABSENT=$(python3 -c "
           import json, sys
@@ -115,30 +116,30 @@ jobs:
           # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
           _TARGET="${{ steps.resolve-target.outputs.branch || 'main' }}"
           echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
-           
+
           # SECURITY: Validate target branch exists via API (no git fetch/checkout)
           if gh api repos/${{ github.repository }}/branches/"${_TARGET}" --silent 2>/dev/null; then
             echo "✅ Target branch validated via API: $_TARGET"
           else
             echo "⚠️ Warning: Target branch not found via API; continuing with git push"
           fi
-           
+
           # Files are already in working directory from checkout step
           # No need for git fetch/checkout; stage files directly
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-           
+
           # Only commit the human reference guide — variable_audit_latest.json is a
           # derivative snapshot with no downstream git consumers; it is uploaded
           # as a workflow artifact below instead to avoid daily merge conflicts.
           git add docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md         .codex/variable_audit_latest.json 2>/dev/null || true
-           
+
           git commit -m "chore(vars): auto-sync variable audit report [skip ci]
-           
+
           Absent required variables: ${{ steps.audit.outputs.absent_required }}
           Triggered by: ${{ github.event_name }}
           " || echo "Nothing to commit"
-           
+
           git push origin HEAD:"$_TARGET"
           echo "📮 Pushed to $_TARGET"
       - name: Upload audit report artifact
@@ -152,23 +153,23 @@ jobs:
         run: |
           ABSENT="${{ steps.audit.outputs.absent_required }}"
           CHANGED="${{ steps.detect.outputs.changed }}"
-           
+
           cat >> "$GITHUB_STEP_SUMMARY" << EOF
           ## 🔄 Variable Audit Auto-Sync
-           
+
           | Metric | Value |
           |--------|-------|
           | Absent required variables | $ABSENT |
           | Report updated | $CHANGED |
           | Dry run | ${{ inputs.dry_run || 'false' }} |
           | Trigger | ${{ github.event_name }} |
-           
+
           $( [ "$ABSENT" -gt 0 ] 2>/dev/null && echo "### ⚠️ Action Required" && echo "" && echo "$ABSENT required variables are absent. See [GITHUB_VARIABLES_MASTER_GUIDE.md §13](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing)." || echo "### ✅ All required variables present" )
-           
+
           **Report:** `docs/admin/variable_audit_latest.md`
-           
+
           **JSON snapshot:** `.codex/variable_audit_latest.json`
-           
+
           EOF
       - name: Open blocker issue if absent required variables
         if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
@@ -178,7 +179,7 @@ jobs:
           script: |
             const absent = parseInt('${{ steps.audit.outputs.absent_required }}', 10);
             if (isNaN(absent) || absent === 0) return;
-             
+
             // Check for existing open blocker issue
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -186,12 +187,12 @@ jobs:
               labels: 'variable-blocker',
               state: 'open',
             });
-             
+
             if (issues.length > 0) {
               console.log(`Existing blocker issue  #${issues[0].number} already open`);
               return;
             }
-             
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -206,4 +207,3 @@ jobs:
           echo "Run: python scripts/tools/variable_audit_cli.py check --fail-on-absent"
           echo "See docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §13 for the set-secret CLI commands."
           exit 1
-

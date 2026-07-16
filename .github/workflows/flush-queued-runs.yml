@@ -1,3 +1,4 @@
+---
 name: "🚿 Flush Queued Workflow Runs"
 
 # Emergency bulk-cancel for queued/waiting workflow runs.
@@ -43,7 +44,6 @@ concurrency:
 permissions:
   actions: write
   contents: read
-
 
 jobs:
   flush:

@@ -1,3 +1,4 @@
+---
 name: Smoke Tests - Deployment Verification
 
 on:
@@ -401,4 +402,3 @@ jobs:
             });
 
             console.log(`Created rollback issue  #${issue.data.number}`);
-

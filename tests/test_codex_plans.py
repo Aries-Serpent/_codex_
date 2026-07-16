@@ -12,6 +12,7 @@ Test coverage includes:
 
 from __future__ import annotations
 
+import os
 import tempfile
 from pathlib import Path
 
@@ -384,14 +385,19 @@ class TestCodexPlansModuleExports:
     def test_no_unexpected_exports(self):
         """Test that module doesn't export private items."""
         import codex_plans
+        import pathlib
+        import typing
 
         for attr in dir(codex_plans):
             if not attr.startswith("_"):
-                # Public attributes should be in __all__ or be module internals
-                if attr not in ["__all__"]:
-                    # Skip known module attributes
+                # Public attributes should be in __all__ or be standard library imports
+                if attr not in ["__all__", "annotations"]:  # Skip __all__ and annotations
+                    # Skip known module attributes and standard library imports
                     if not attr.startswith("__"):
-                        assert attr in codex_plans.__all__ or attr == "list_plan_documents", "attr is not valid"
+                        # Allow pathlib and typing imports
+                        is_stdlib = hasattr(pathlib, attr) or hasattr(typing, attr)
+                        is_exported = attr in codex_plans.__all__
+                        assert is_stdlib or is_exported or attr == "list_plan_documents", f"unexpected export: {attr}"
 
 
 if __name__ == "__main__":

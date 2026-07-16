@@ -1,3 +1,4 @@
+---
 name: Generate SBOM
 on:
   workflow_call:
@@ -137,4 +138,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-

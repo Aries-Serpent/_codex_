@@ -14,6 +14,8 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import pytest
+from freezegun import freeze_time
+
 
 
 def _get(url: str, timeout: int = 5, max_retries: int = 5):
@@ -52,6 +54,7 @@ def _get(url: str, timeout: int = 5, max_retries: int = 5):
 
 
 @pytest.mark.timeout(30)
+@freeze_time("2026-07-16 03:00:00")
 def test_server_health_and_branches_smoke(tmp_path):
     """Test server health and branches endpoints with timeout protection."""
     env = os.environ.copy()

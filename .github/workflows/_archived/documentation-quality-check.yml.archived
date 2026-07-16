@@ -1,0 +1,21 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: Documentation Quality Check
+on:
+  workflow_dispatch: null
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions: {}
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+    - run: "echo \"disabled \u2014 stub only\""
+    timeout-minutes: 30
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

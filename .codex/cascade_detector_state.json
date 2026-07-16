@@ -79,7 +79,8 @@
     "34:Fixed missing newline in artifacts/20260710-082727-6774fcb3/source/\u6d4b\u8bd5.py": 1,
     "34:Fixed missing newline in artifacts/20260710-082728-e5fc567c/source/test.py": 1,
     "35:.codex/ALPHA_DEPLOYMENT_MANIFEST.md": 4,
-    "35:.codex/ALPHA_MONITORING_ARTIFACT_18_30.md": 1
+    "35:.codex/ALPHA_MONITORING_ARTIFACT_18_30.md": 1,
+    "35:docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md": 2
   },
   "circuit_state": {
     "6": "BROKEN",

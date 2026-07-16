@@ -12,11 +12,11 @@ The Codex RAG system provides semantic search over your codebase and documentati
 
 ### Key Features
 
--  **Fast Semantic Search**: Query code and docs using natural language
-- 🏢 **Multi-Tenant**: Isolated workspaces for different projects/customers
--  **Smart Caching**: 100x faster repeated queries with LRU cache
--  **Full Provenance**: Track every result back to source with line numbers
--  **No API Keys**: Uses local sentence-transformers (offline-capable)
+- **Fast Semantic Search**: Query code and docs using natural language
+- **Multi-Tenant**: Isolated workspaces for different projects/customers
+- **Smart Caching**: 100x faster repeated queries with LRU cache
+- **Full Provenance**: Track every result back to source with line numbers
+- **No API Keys**: Uses local sentence-transformers (offline-capable)
 
 ---
 
@@ -56,15 +56,15 @@ from codex.rag import build_index_from_files
 
 # Index your documentation
 index_path = build_index_from_files(
-    files=[
-        Path("README.md"),
-        Path("docs/guide.md"),
-        Path("docs/api.md")
-    ],
-    index_name="my_docs",
-    tenant_id="quickstart",
-    chunk_size=1000,
-    overlap=128
+ files=[
+ Path("README.md"),
+ Path("docs/guide.md"),
+ Path("docs/api.md")
+ ],
+ index_name="my_docs",
+ tenant_id="quickstart",
+ chunk_size=1000,
+ overlap=128
 )
 
 print(f" Index created at: {index_path}")
@@ -85,8 +85,8 @@ from codex.rag import Retriever
 
 # Create retriever
 retriever = Retriever(
-    index_name="my_docs",
-    tenant_id="quickstart"
+ index_name="my_docs",
+ tenant_id="quickstart"
 )
 
 # Search with natural language
@@ -94,25 +94,25 @@ results = retriever.query("how to install", top_k=3)
 
 # Display results
 for i, result in enumerate(results, 1):
-    print(f"\n{i}. {result['file']} (lines {result['start_line']}-{result['end_line']})")
-    print(f"   Score: {result['score']:.3f}")
-    print(f"   {result['text'][:100]}...")
+ print(f"\n{i}. {result['file']} (lines {result['start_line']}-{result['end_line']})")
+ print(f" Score: {result['score']:.3f}")
+ print(f" {result['text'][:100]}...")
 ```
 
 **Output**:
 ```
 1. README.md (lines 15-18)
-   Score: 0.423
-   ## Installation
+ Score: 0.423
+ ## Installation
 
-   Install Codex RAG with pip:
-   ```bash
-   pip install -e .
-   ```...
+ Install Codex RAG with pip:
+ ```bash
+ pip install -e .
+ ```...
 
 2. docs/guide.md (lines 8-12)
-   Score: 0.512
-   Getting started is easy. First, install the required dependencies...
+ Score: 0.512
+ Getting started is easy. First, install the required dependencies...
 ```
 
 ## Step 3: Use Caching for Speed
@@ -122,10 +122,10 @@ from codex.rag import CachedRetriever
 
 # Create cached retriever (100x faster for repeated queries!)
 cached = CachedRetriever(
-    index_name="my_docs",
-    tenant_id="quickstart",
-    cache_ttl=3600,       # 1 hour cache
-    cache_maxsize=1000    # Up to 1000 queries
+ index_name="my_docs",
+ tenant_id="quickstart",
+ cache_ttl=3600, # 1 hour cache
+ cache_maxsize=1000 # Up to 1000 queries
 )
 
 # First query - cache miss (~100-200ms)
@@ -154,9 +154,9 @@ import glob
 python_files = [Path(f) for f in glob.glob("src/**/*.py", recursive=True)]
 
 build_index_from_files(
-    files=python_files,
-    index_name="codebase",
-    tenant_id="myproject"
+ files=python_files,
+ index_name="codebase",
+ tenant_id="myproject"
 )
 
 # Search for async functions
@@ -164,7 +164,7 @@ retriever = Retriever(index_name="codebase", tenant_id="myproject")
 results = retriever.query("async database operations", top_k=5)
 
 for r in results:
-    print(f"{r['file']}: {r['text'][:80]}...")
+ print(f"{r['file']}: {r['text'][:80]}...")
 ```
 
 ## Use Case 2: Multi-Tenant Documentation
@@ -175,13 +175,13 @@ from pathlib import Path
 
 # Create separate indices for different customers
 for customer in ["acme", "globex", "initech"]:
-    result = manage_tenant_indices(
-        tenant_id=customer,
-        operation="create",
-        index_names=["docs"],
-        files=[Path(f"docs/{customer}/")],
-    )
-    print(f" Created index for {customer}")
+ result = manage_tenant_indices(
+ tenant_id=customer,
+ operation="create",
+ index_names=["docs"],
+ files=[Path(f"docs/{customer}/")],
+ )
+ print(f" Created index for {customer}")
 
 # Query customer-specific docs
 retriever_acme = Retriever(index_name="docs", tenant_id="acme")
@@ -199,25 +199,25 @@ from codex.rag import manage_tenant_indices
 
 # Create separate indices
 manage_tenant_indices(
-    tenant_id="project",
-    operation="create",
-    index_names=["api_docs"],
-    files=[Path("docs/api/")]
+ tenant_id="project",
+ operation="create",
+ index_names=["api_docs"],
+ files=[Path("docs/api/")]
 )
 
 manage_tenant_indices(
-    tenant_id="project",
-    operation="create",
-    index_names=["tutorials"],
-    files=[Path("docs/tutorials/")]
+ tenant_id="project",
+ operation="create",
+ index_names=["tutorials"],
+ files=[Path("docs/tutorials/")]
 )
 
 # Merge for comprehensive search
 result = manage_tenant_indices(
-    tenant_id="project",
-    operation="merge",
-    index_names=["api_docs", "tutorials"],
-    merge_name="all_docs"
+ tenant_id="project",
+ operation="merge",
+ index_names=["api_docs", "tutorials"],
+ merge_name="all_docs"
 )
 
 print(f"Merged {len(result.index_names)} indices into 'all_docs'")
@@ -232,17 +232,17 @@ print(f"Merged {len(result.index_names)} indices into 'all_docs'")
 ```python
 # Custom chunk sizes for different content types
 build_index_from_files(
-    files=docs,
-    index_name="large_docs",
-    chunk_size=2000,      # Larger chunks for context
-    overlap=256           # More overlap for continuity
+ files=docs,
+ index_name="large_docs",
+ chunk_size=2000, # Larger chunks for context
+ overlap=256 # More overlap for continuity
 )
 
 build_index_from_files(
-    files=code,
-    index_name="code_snippets",
-    chunk_size=500,       # Smaller chunks for precision
-    overlap=50
+ files=code,
+ index_name="code_snippets",
+ chunk_size=500, # Smaller chunks for precision
+ overlap=50
 )
 ```
 
@@ -251,9 +251,9 @@ build_index_from_files(
 ```python
 # Adjust search parameters
 results = retriever.query(
-    "error handling patterns",
-    top_k=10,              # More results
-    min_score=0.7          # Higher similarity threshold
+ "error handling patterns",
+ top_k=10, # More results
+ min_score=0.7 # Higher similarity threshold
 )
 ```
 
@@ -261,10 +261,10 @@ results = retriever.query(
 
 ```python
 cached = CachedRetriever(
-    index_name="docs",
-    cache_ttl=7200,        # 2 hours
-    cache_maxsize=5000,    # 5000 queries
-    normalize_queries=True # Better cache hits
+ index_name="docs",
+ cache_ttl=7200, # 2 hours
+ cache_maxsize=5000, # 5000 queries
+ normalize_queries=True # Better cache hits
 )
 ```
 
@@ -311,8 +311,8 @@ cw_metrics = metrics.export_cloudwatch()
 from pathlib import Path
 index_path = Path(".codex/tenants/mytenant/myindex")
 if not index_path.exists():
-    print("Index doesn't exist. Build it first!")
-    build_index_from_files(...)
+ print("Index doesn't exist. Build it first!")
+ build_index_from_files(...)
 ```
 
 ## Issue: Slow queries
@@ -322,7 +322,7 @@ if not index_path.exists():
 cached = CachedRetriever(...)
 
 # Or reduce top_k
-results = retriever.query("query", top_k=3)  # Faster than top_k=50
+results = retriever.query("query", top_k=3) # Faster than top_k=50
 ```
 
 ## Issue: Out of memory
@@ -330,17 +330,17 @@ results = retriever.query("query", top_k=3)  # Faster than top_k=50
 ```python
 # Reduce chunk size or process files in batches
 for batch in file_batches:
-    build_index_from_files(
-        files=batch,
-        index_name=f"batch_{i}",
-        chunk_size=500  # Smaller chunks = less memory
-    )
+ build_index_from_files(
+ files=batch,
+ index_name=f"batch_{i}",
+ chunk_size=500 # Smaller chunks = less memory
+ )
 
 # Then merge
 manage_tenant_indices(
-    operation="merge",
-    index_names=[f"batch_{i}" for i in range(num_batches)],
-    merge_name="final_index"
+ operation="merge",
+ index_names=[f"batch_{i}" for i in range(num_batches)],
+ merge_name="final_index"
 )
 ```
 
@@ -348,9 +348,9 @@ manage_tenant_indices(
 
 ## Next Steps
 
--  **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
--  **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
--  **Monitoring**: Set up Prometheus and Grafana dashboards
+- **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
+- **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
+- **Monitoring**: Set up Prometheus and Grafana dashboards
 - 🧪 **Examples**: Check `examples/rag_workflow.py` for complete workflows
 
 ---
@@ -383,9 +383,9 @@ metrics.export_cloudwatch()
 
 ## Support
 
--  Documentation: `docs/`
-- 🐛 Issues: GitHub Issues
-- 💬 Discussions: GitHub Discussions
-- 📧 Email: rag-team@example.com
+- Documentation: `docs/`
+- Issues: GitHub Issues
+- Discussions: GitHub Discussions
+- Email: rag-team@example.com
 
 Happy searching! 

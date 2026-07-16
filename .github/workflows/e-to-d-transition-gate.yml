@@ -1,3 +1,4 @@
+---
 name: E→D Transition Readiness Gate
 on:
   pull_request: null
@@ -133,10 +134,8 @@ jobs:
         details: '**Score:** ${{ steps.check.outputs.score }}/5 | **D_CAPABLE:** ${{
           steps.check.outputs.capable }}
 
-
           Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition
           breakdown.
-
 
           _Phase 4 FSM | [e-to-d-transition-gate.yml]_
 

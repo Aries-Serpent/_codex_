@@ -1,3 +1,4 @@
+---
 name: Workflow Execution Gate
 on:
   workflow_dispatch:

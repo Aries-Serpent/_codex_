@@ -1,3 +1,4 @@
+---
 name: CI Rescue — Auto-Fix & @copilot RCA
 on:
   workflow_run:
@@ -86,7 +87,7 @@ jobs:
         run: |
           REFS=\"${HEAD_SHA} HEAD\"
           for REF in $REFS; do
-          curl -sS -L 
+          curl -sS -L
       - name: Lookup CI Failure Triage Report issue URL
         id: triage-url
         run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created \ by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link \ to it in RCA comments.\n# Response is stored to a temp file so the JSON \ parser receives clean input.\ncurl -sS \\\n  -H \"Authorization: Bearer \ ${GITHUB_TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\" \\\n \  \"https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1\" \ \\\n  -o /tmp/triage_issues.json 2>/dev/null || echo \"[]\" > /tmp/triage_issues.json\n TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'\nimport \ json, sys\ntry:\n    with open(sys.argv[1]) as fh:\n        issues = json.load(fh)\n \    print(issues[0]['html_url'] if isinstance(issues, list) and issues else \ '', end='')\nexcept Exception:\n    print('', end='')\nPYEOF\n)\nif [ -n \ \"${TRIAGE_URL}\" ]; then\n  echo \"✅ Found CI Failure Triage Report: ${TRIAGE_URL}\" \n  echo \"url=${TRIAGE_URL}\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"⚠️  No \ open ci-triage issue found — triage URL will be omitted from RCA\"\n  echo \ \"url=\" >> \"$GITHUB_OUTPUT\"\nfi\n"
@@ -103,4 +104,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

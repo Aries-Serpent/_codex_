@@ -1,3 +1,4 @@
+---
 name: Consistency Checks
 on:
   push:
@@ -174,7 +175,6 @@ jobs:
 
         # 📊 Consistency Checks Summary
 
-
         | Check | Status |
 
         |-------|--------|
@@ -188,13 +188,11 @@ jobs:
         | Heading Hierarchy | ${{ needs.heading-hierarchy.result == ''success'' &&
         ''✅'' || ''⚠️'' }} |
 
-
         **Overall Status**: ${{ (needs.markdownlint.result == ''success'' && needs.cross-references.result
         == ''success'' && needs.heading-hierarchy.result == ''success'') && ''✅ PASSED''
         || ''⚠️ REVIEW NEEDED'' }}
 
         EOF
-
 
         cat /tmp/consistency-summary.md >> $GITHUB_STEP_SUMMARY
 

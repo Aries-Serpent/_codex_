@@ -1,3 +1,4 @@
+---
 name: RAG Module Tests
 'on':
   push:

@@ -1,3 +1,4 @@
+---
 name: Security Copilot Commands
 on:
   issue_comment:
@@ -41,7 +42,6 @@ jobs:
 
           const path = require(''path'');
 
-
           // Safely write comment body to file using environment variable
 
           const commentBody = process.env.COMMENT_BODY;
@@ -51,7 +51,6 @@ jobs:
           fs.writeFileSync(tempFile, commentBody, ''utf8'');
 
           console.log(`✓ Comment body written to ${tempFile}`);
-
 
           // Output temp file path for next steps
 

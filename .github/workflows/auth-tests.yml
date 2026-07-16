@@ -1,3 +1,4 @@
+---
 name: Authentication Tests
 
 on:
@@ -258,7 +259,6 @@ jobs:
 
         from src.codex.auth import OAuthManager, MFAProvider, TokenManager
 
-
         # Verify all components initialize correctly
 
         oauth = OAuthManager()
@@ -266,7 +266,6 @@ jobs:
         mfa = MFAProvider()
 
         tokens = TokenManager()
-
 
         print(''✓ All authentication components initialized successfully'')
 
@@ -278,7 +277,6 @@ jobs:
 
         from src.codex.auth.mfa_provider import MFAProvider
 
-
         mfa = MFAProvider()
 
         secret = mfa.generate_totp_secret(''test_user'')
@@ -286,7 +284,6 @@ jobs:
         code = mfa.generate_totp(secret.secret)
 
         valid = mfa.verify_totp(secret.secret, code, ''test_user'')
-
 
         assert valid, ''MFA verification failed''
 
@@ -300,13 +297,11 @@ jobs:
 
         from src.codex.auth.token_manager import TokenManager, TokenType
 
-
         tokens = TokenManager()
 
         access_token = tokens.generate_access_token(''test_user'')
 
         claims = tokens.validate_token(access_token, TokenType.ACCESS)
-
 
         assert claims.sub == ''test_user'', ''Token validation failed''
 

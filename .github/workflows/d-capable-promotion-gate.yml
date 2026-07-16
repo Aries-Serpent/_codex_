@@ -1,3 +1,4 @@
+---
 name: D_CAPABLE Agent Promotion Gate
 on:
   schedule:

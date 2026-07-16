@@ -1,3 +1,4 @@
+---
 name: "\U0001F6A8 CI Failure Issue Creator"
 on:
   workflow_run:
@@ -439,4 +440,3 @@ jobs:
           \ issue.number,\n    state: 'closed', state_reason: 'completed',\n  });\n\
           \  core.info(`Closed issue  #${issue.number}`);\n}\nif (!matching.length)\
           \ core.info(`No open issues found for \"${wfName}\"`);\n"
-

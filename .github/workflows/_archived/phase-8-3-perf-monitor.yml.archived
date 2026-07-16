@@ -1,0 +1,298 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: 'Phase 8.3: Performance Monitoring'
+on:
+  schedule:
+  - cron: 0 * * * *
+  workflow_dispatch: null
+  push:
+    branches:
+    - main
+    paths:
+    - .codex/PHASE_8_3_*
+    - scripts/ci/phase_8_3_*
+    - .github/workflows/phase-8-3-perf-monitor.yml
+permissions:
+  contents: read
+  actions: read
+  issues: write
+  pull-requests: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+jobs:
+  collect-metrics:
+    name: Collect Performance Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      metrics-file: ${{ steps.collect.outputs.metrics-file }}
+      metrics-summary: ${{ steps.collect.outputs.summary }}
+    steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+        cache: pip
+    - name: Install dependencies
+      run: 'pip install --quiet requests pyyaml
+
+        '
+    - name: Collect GitHub Actions metrics
+      id: collect
+      run: "python scripts/ci/phase_8_3_benchmark_collector.py \\\n  --owner Aries-Serpent\
+        \ \\\n  --repo _codex_ \\\n  --hours 24 \\\n  --export-json metrics-current.json\n\
+        \n# Set outputs\necho \"metrics-file=metrics-current.json\" >> $GITHUB_OUTPUT\n\
+        \n# Extract summary\npython -c \"\nimport json\nwith open('metrics-current.json')\
+        \ as f:\n    data = json.load(f)\n    print(f\\\"Total runs: {data.get('total_runs_analyzed',\
+        \ 0)}\\\")\n\" | tee summary.txt\n\necho \"summary=$(cat summary.txt | tr\
+        \ '\\n' ' ')\" >> $GITHUB_OUTPUT\n"
+    - name: Upload metrics artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: performance-metrics
+        path: metrics-current.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  analyze-metrics:
+    name: Analyze Metrics Against Baseline
+    needs: collect-metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download current metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: performance-metrics
+        path: .
+    - name: Run performance analysis
+      id: analyze
+      run: "python scripts/ci/phase_8_3_perf_analyzer.py \\\n  --current metrics-current.json\
+        \ \\\n  --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \\\n  --generate-report\
+        \ \\\n  --export-json analysis-results.json || true\n\ncat analysis-results.json\n"
+    - name: Upload analysis results
+      uses: actions/upload-artifact@v5
+      with:
+        name: performance-analysis
+        path: analysis-results.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  enforce-sla:
+    name: Enforce SLA Thresholds
+    needs: analyze-metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - name: Download metrics
+      uses: actions/download-artifact@v5
+      with:
+        name: performance-metrics
+        path: .
+    - name: Check SLA violations
+      id: sla
+      run: "python scripts/ci/phase_8_3_sla_enforcer.py \\\n  --metrics metrics-current.json\
+        \ \\\n  --sla-config .codex/PHASE_8_3_SLA_THRESHOLDS.json \\\n  --check-sla\
+        \ \\\n  --export-json sla-violations.json || true\n\ncat sla-violations.json\n"
+    - name: Comment on PR if regressions detected
+      if: failure()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst violations = JSON.parse(fs.readFileSync('sla-violations.json',\
+          \ 'utf8'));\n\nif (violations.violations_count > 0) {\n  github.rest.issues.createComment({\n\
+        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    body: `⚠️ Performance regression detected!\\\
+          n\\nFound ${violations.violations_count} SLA violation(s).`\n  });\n}\n"
+    - name: Upload SLA results
+      uses: actions/upload-artifact@v5
+      with:
+        name: sla-violations
+        path: sla-violations.json
+        retention-days: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  update-dashboard:
+    name: Update Performance Dashboard
+    needs:
+    - collect-metrics
+    - analyze-metrics
+    - enforce-sla
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Download all artifacts
+      uses: actions/download-artifact@v5
+    - name: Generate dashboard
+      run: 'cat > .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md << ''EOF''
+
+        # Performance Monitoring Dashboard
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        **Last Updated:** $(date -u ''+%Y-%m-%d %H:%M:%S UTC'')
+
+        **Status:** 🟢 Monitoring Active
+
+<<<<<<< HEAD
+
+        ## Recent Metrics
+
+
+=======
+        ## Recent Metrics
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        - Performance metrics collected hourly
+
+        - Analysis results available in artifacts
+
+        - SLA enforcement active
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        For detailed metrics, see:
+
+        - `performance-metrics/` — Raw metrics
+
+        - `performance-analysis/` — Analysis results
+
+        - `sla-violations/` — SLA violation reports
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        [View Full Reports](./)
+
+        EOF
+
+        '
+    - name: Commit dashboard updates
+      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403  # v5  # v5.1.0
+      with:
+        commit_message: 'chore: update performance dashboard [skip ci]'
+        file_pattern: .codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md
+        commit_options: --no-verify
+        skip_fetch: false
+        skip_checkout: false
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  notify:
+    name: Send Notifications
+    needs:
+    - collect-metrics
+    - analyze-metrics
+    - enforce-sla
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    permissions:
+      contents: read
+    steps:
+    - name: Check job statuses
+      run: 'echo "Collect Metrics: ${{ needs.collect-metrics.result }}"
+
+        echo "Analyze Metrics: ${{ needs.analyze-metrics.result }}"
+
+        echo "Enforce SLA: ${{ needs.enforce-sla.result }}"
+
+        '
+    - name: Send Slack notification on failure
+      if: failure()
+      uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2  # v1.24.0
+      with:
+        payload: "{\n  \"text\": \"⚠️ Performance monitoring workflow failed\",\n\
+        \  \"blocks\": [\n    {\n      \"type\": \"section\",\n      \"text\": {\n\
+        \        \"type\": \"mrkdwn\",\n        \"text\": \"*Performance Monitoring\
+        \ Alert*\\nWorkflow: ${{ github.workflow }}\\nStatus: ❌ Failed\"\n     \
+          \ }\n    }\n  ]\n}\n"
+        env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  summary:
+    name: Summary Report
+    needs:
+    - collect-metrics
+    - analyze-metrics
+    - enforce-sla
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    permissions:
+      actions: read
+    steps:
+    - name: Generate summary
+      run: 'echo "## Performance Monitoring Summary"
+
+        echo ""
+
+        echo "- Collect Metrics: ${{ needs.collect-metrics.result }}"
+
+        echo "- Analyze Metrics: ${{ needs.analyze-metrics.result }}"
+
+        echo "- Enforce SLA: ${{ needs.enforce-sla.result }}"
+
+        echo ""
+
+        echo "✅ Monitoring cycle complete"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

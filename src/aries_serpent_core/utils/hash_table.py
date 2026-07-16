@@ -515,3 +515,7 @@ if __name__ == "__main__":
     logger.info(
         f"AAIS Contribution: +{aais['runtime_introspection']:.1f} points (Runtime Introspection)"
     )
+
+
+# Backward compatibility alias
+HashTable = RobinHoodHashTable

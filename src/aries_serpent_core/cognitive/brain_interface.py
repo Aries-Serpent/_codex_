@@ -942,3 +942,7 @@ class AgentBrainInterface:
             f"patterns_loaded={len(self._patterns)}, "
             f"objectives_loaded={len(self._objectives)})"
         )
+
+
+# Backward compatibility alias
+BrainInterface = AgentBrainInterface

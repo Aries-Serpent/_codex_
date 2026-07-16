@@ -15,6 +15,18 @@ from .content_diff import (
 # For backwards compatibility, alias ContentDiffResult as DiffResult
 DiffResult = ContentDiffResult
 
+
+class MultiLocaleSyncManager:
+    """Manager for multi-locale content synchronization."""
+    def __init__(self):
+        self.locales = {}
+    
+    def sync_locale(self, locale, content):
+        """Synchronize content for a specific locale."""
+        self.locales[locale] = content
+        return True
+
+
 __all__ = [
     "SemanticDiffer",
     "ContentDiffResult",
@@ -23,4 +35,5 @@ __all__ = [
     "ContentDiffer",
     "IncrementalSyncDecider",
     "DiffSegment",
+    "MultiLocaleSyncManager",
 ]

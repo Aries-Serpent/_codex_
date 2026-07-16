@@ -1,3 +1,4 @@
+---
 name: CodeQL Security Analysis
 on:
   pull_request:
@@ -116,4 +117,3 @@ jobs:
         with:
           sarif_file: semgrep-report.json
     timeout-minutes: 30
-

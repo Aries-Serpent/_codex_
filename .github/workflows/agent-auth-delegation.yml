@@ -1,3 +1,4 @@
+---
 name: Agent Token Delegation
 on:
   pull_request:
@@ -127,7 +128,7 @@ jobs:
     if: needs.detect-checkbox.outputs.auth_requested == 'true'
     runs-on: ubuntu-latest
     steps:
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v4
         if: always()
@@ -1027,7 +1028,7 @@ jobs:
 
       '
     steps:
-    
+
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v4
         with:

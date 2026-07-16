@@ -1,3 +1,4 @@
+---
 name: Consolidated PR Status
 on:
   workflow_call:
@@ -86,4 +87,3 @@ jobs:
         summary: ${{ inputs.summary }}
         details: ${{ steps.build-details.outputs.details }}
         github-token: ${{ secrets.github-token || github.token }}
-

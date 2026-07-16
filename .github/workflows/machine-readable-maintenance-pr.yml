@@ -1,3 +1,4 @@
+---
 name: Machine Readable Maintenance PR
 
 on:
@@ -42,4 +43,3 @@ jobs:
       - name: Drift summary
         run: |
           echo "Maintenance workflow ran in read-only mode."
-

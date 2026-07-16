@@ -1,3 +1,4 @@
+---
 name: OpenVINO Phase C — Intel Arc iGPU Smoke Tests
 on:
   workflow_dispatch: null

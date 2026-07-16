@@ -2,14 +2,14 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Authority:** @mbaetiong (D-tier)  
-**Status:**  Production Ready  
-**Version:** 1.0.0  
-**Created:** 2026-07-03  
+**Authority:** @mbaetiong (D-tier) 
+**Status:** Production Ready 
+**Version:** 1.0.0 
+**Created:** 2026-07-03 
 
 ---
 
-##  EXECUTIVE SUMMARY
+## EXECUTIVE SUMMARY
 
 This deliverable implements a complete telemetry collection infrastructure for monitoring approval workflows in the Codex agent ecosystem. The system collects **17 approval-specific metrics**, enforces cardinality limits for 150+ agent ecosystem, and provides real-time SLA monitoring integrated with the approval service (D2.2) and RBAC (D1.2).
 
@@ -26,78 +26,78 @@ This deliverable implements a complete telemetry collection infrastructure for m
 
 ---
 
-##  SUCCESS CRITERIA VALIDATION
+## SUCCESS CRITERIA VALIDATION
 
 All success criteria ** MET**:
 
--  **All 17 approval metrics collected** from D2.2
-  - 8 workflow metrics (request, latency, resolution, decision time, chain depth, rejections, overrides, SLA)
-  - 3 escalation metrics (triggered, resolution time, overrides)
-  - 3 authorization metrics (decision latency, errors, delegations)
-  - 3 audit metrics (audit log entries, policy violations, unauthorized attempts)
+- **All 17 approval metrics collected** from D2.2
+ - 8 workflow metrics (request, latency, resolution, decision time, chain depth, rejections, overrides, SLA)
+ - 3 escalation metrics (triggered, resolution time, overrides)
+ - 3 authorization metrics (decision latency, errors, delegations)
+ - 3 audit metrics (audit log entries, policy violations, unauthorized attempts)
 
--  **All 8 event types ingested** with proper schema
-  - approval.request.submitted
-  - approval.decision.made
-  - approval.stage.completed
-  - approval.escalated
-  - approval.delegated
-  - approval.delegated.revoked
-  - approval.sla.breached
-  - approval.policy.violated
-  - approval.completed
+- **All 8 event types ingested** with proper schema
+ - approval.request.submitted
+ - approval.decision.made
+ - approval.stage.completed
+ - approval.escalated
+ - approval.delegated
+ - approval.delegated.revoked
+ - approval.sla.breached
+ - approval.policy.violated
+ - approval.completed
 
--  **Cardinality < 900 timeseries** (safe for 150+ agents)
-  - Baseline: ~500-800 timeseries
-  - Low-cardinality dimensions: policy_category (8), approver_role (8-10), approval_stage (3-4)
-  - Medium-cardinality: aggregated by role
-  - High-cardinality: stored separately in audit logs (append-only)
+- **Cardinality < 900 timeseries** (safe for 150+ agents)
+ - Baseline: ~500-800 timeseries
+ - Low-cardinality dimensions: policy_category (8), approver_role (8-10), approval_stage (3-4)
+ - Medium-cardinality: aggregated by role
+ - High-cardinality: stored separately in audit logs (append-only)
 
--  **SLA threshold alerts configured** and tested
-  - ApprovalP95ExceedsSLA (p95 > 4h threshold)
-  - ApprovalSLABreach (SLA violations detected)
-  - EscalationRateHigh (>3 escalations in 5m)
-  - UnauthorizedApprovalAttempt (security monitoring)
-  - Plus 11 more compliance/operational alerts
+- **SLA threshold alerts configured** and tested
+ - ApprovalP95ExceedsSLA (p95 > 4h threshold)
+ - ApprovalSLABreach (SLA violations detected)
+ - EscalationRateHigh (>3 escalations in 5m)
+ - UnauthorizedApprovalAttempt (security monitoring)
+ - Plus 11 more compliance/operational alerts
 
--  **Approval SLA dashboard** populated with:
-  - SLA compliance % by policy category
-  - Approval request latency (p50/p95/p99)
-  - Escalation rate & resolution time
-  - Rejection rate by policy
-  - Unauthorized access attempts
-  - Policy violations
-  - Decision latency by approver role
+- **Approval SLA dashboard** populated with:
+ - SLA compliance % by policy category
+ - Approval request latency (p50/p95/p99)
+ - Escalation rate & resolution time
+ - Rejection rate by policy
+ - Unauthorized access attempts
+ - Policy violations
+ - Decision latency by approver role
 
--  **Multi-tenant cost attribution** working
-  - Per-agent-ecosystem tracking in per_agent_metrics
-  - Cardinality class tagging (low/medium/high)
-  - Retention tier assignment (hot/warm/cold)
+- **Multi-tenant cost attribution** working
+ - Per-agent-ecosystem tracking in per_agent_metrics
+ - Cardinality class tagging (low/medium/high)
+ - Retention tier assignment (hot/warm/cold)
 
--  **5-tier retention policies enforced**
-  - hot: 7 days (real-time alerting)
-  - warm: 90 days (operational analytics) 
-  - cold: 7 years (legal hold)
-  - Implemented in metadata tagging
+- **5-tier retention policies enforced**
+ - hot: 7 days (real-time alerting)
+ - warm: 90 days (operational analytics) 
+ - cold: 7 years (legal hold)
+ - Implemented in metadata tagging
 
 ---
 
-## 📦 INSTALLATION & SETUP
+## INSTALLATION & SETUP
 
 ### 1. Core Modules
 
 ```bash
 # Copy telemetry collector to observability scripts
 cp scripts/observability/approval_telemetry_collector.py \
-   src/codex/observability/approval_telemetry.py
+ src/codex/observability/approval_telemetry.py
 
 # Copy event schema validator
 cp scripts/observability/approval_event_schema.py \
-   src/codex/observability/approval_events.py
+ src/codex/observability/approval_events.py
 
 # Copy SLA monitoring
 cp scripts/observability/sla_monitoring.py \
-   src/codex/observability/approval_sla.py
+ src/codex/observability/approval_sla.py
 ```
 
 ### 2. Grafana Dashboard
@@ -105,9 +105,9 @@ cp scripts/observability/sla_monitoring.py \
 ```bash
 # Import dashboard into Grafana
 curl -X POST http://grafana:3000/api/dashboards/db \
-  -H "Content-Type: application/json" \
-  -H "Authorization: ******" \
-  -d @manifests/monitoring/grafana/approval-sla-dashboard.json
+ -H "Content-Type: application/json" \
+ -H "Authorization: ******" \
+ -d @manifests/monitoring/grafana/approval-sla-dashboard.json
 ```
 
 ### 3. Prometheus Rules
@@ -115,7 +115,7 @@ curl -X POST http://grafana:3000/api/dashboards/db \
 ```bash
 # Add alert rules to Prometheus
 cp manifests/monitoring/prometheus/approval-alert-rules.yml \
-   /etc/prometheus/rules/approval-alerts.yml
+ /etc/prometheus/rules/approval-alerts.yml
 
 # Reload Prometheus
 curl -X POST http://prometheus:9090/-/reload
@@ -133,7 +133,7 @@ pytest tests/observability/test_approval_telemetry.py -v
 
 ---
 
-##  INTEGRATION WITH D2.2 APPROVAL SERVICE
+## INTEGRATION WITH D2.2 APPROVAL SERVICE
 
 ### Integration Point: State Change Events
 
@@ -156,130 +156,130 @@ approval_service.on_approval_completed += integration.on_approval_completed
 ```python
 # 1. When approver makes a decision, approval service calls:
 integration.on_decision_made(
-    approval_id="apr-550e8400",
-    policy_id="D-001",
-    policy_category="D",
-    approver_id="release-manager-001",
-    approver_role="release-manager",
-    decision="approved",
-    decision_time_seconds=3600.0,  # 1 hour
-    stage=1,
-    sla_seconds=14400.0,  # 4 hours SLA
+ approval_id="apr-550e8400",
+ policy_id="D-001",
+ policy_category="D",
+ approver_id="release-manager-001",
+ approver_role="release-manager",
+ decision="approved",
+ decision_time_seconds=3600.0, # 1 hour
+ stage=1,
+ sla_seconds=14400.0, # 4 hours SLA
 )
 
 # 2. Telemetry collector:
-#    - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0
-#    - Checks SLA: 3600 <= 14400 → sla_met=true
-#    - Creates event with sla_status="met"
+# - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0
+# - Checks SLA: 3600 <= 14400 → sla_met=true
+# - Creates event with sla_status="met"
 
 # 3. SLA monitor:
-#    - Tracks stage latency against 4h per-stage SLA
-#    - If sla_met=false, triggers escalation callback
-#    - Updates compliance statistics
+# - Tracks stage latency against 4h per-stage SLA
+# - If sla_met=false, triggers escalation callback
+# - Updates compliance statistics
 
 # 4. Prometheus scrapes metrics every 30s
-#    - Alert rule checks: histogram_quantile(0.95, ...) > 14400
-#    - If violated, alert fires and routes to pagerduty
+# - Alert rule checks: histogram_quantile(0.95, ...) > 14400
+# - If violated, alert fires and routes to pagerduty
 
 # 5. Grafana dashboard updates in real-time
-#    - SLA compliance % by category
-#    - Approval latency trends
+# - SLA compliance % by category
+# - Approval latency trends
 ```
 
 ---
 
-##  METRICS REFERENCE
+## METRICS REFERENCE
 
 ### 17 Approval Metrics
 
 #### Workflow Metrics (8)
 ```
 approval_request_submitted_total
-  Labels: policy_category, requester_role
-  Type: Counter
-  
+ Labels: policy_category, requester_role
+ Type: Counter
+ 
 approval_request_latency_seconds
-  Labels: policy_id, approval_stage, policy_category
-  Type: Histogram (p50, p95, p99)
-  SLA Threshold: 4h per-stage (14400s)
-  
+ Labels: policy_id, approval_stage, policy_category
+ Type: Histogram (p50, p95, p99)
+ SLA Threshold: 4h per-stage (14400s)
+ 
 approval_request_resolved_total
-  Labels: policy_id, resolution_status, policy_category
-  Type: Counter
-  
+ Labels: policy_id, resolution_status, policy_category
+ Type: Counter
+ 
 approval_decision_time_seconds
-  Labels: policy_id, approver_role, policy_category
-  Type: Histogram
-  SLA Threshold: 4h (14400s)
-  
+ Labels: policy_id, approver_role, policy_category
+ Type: Histogram
+ SLA Threshold: 4h (14400s)
+ 
 approval_chain_depth_histogram
-  Type: Histogram
-  
+ Type: Histogram
+ 
 approval_rejection_count_total
-  Labels: policy_id, rejection_reason, approver_role
-  Type: Counter
-  
+ Labels: policy_id, rejection_reason, approver_role
+ Type: Counter
+ 
 approval_override_count_total
-  Labels: policy_id, authority_level, override_reason
-  Type: Counter
-  
+ Labels: policy_id, authority_level, override_reason
+ Type: Counter
+ 
 approval_sla_breached_total
-  Labels: policy_id, policy_category, breach_type
-  Type: Counter
-  SLA Threshold: 0 breaches
+ Labels: policy_id, policy_category, breach_type
+ Type: Counter
+ SLA Threshold: 0 breaches
 ```
 
 #### Escalation Metrics (3)
 ```
 escalation_triggered_total
-  Labels: trigger_type, policy_category
-  Type: Counter
-  SLA Threshold: ≤4h
-  
+ Labels: trigger_type, policy_category
+ Type: Counter
+ SLA Threshold: ≤4h
+ 
 escalation_time_to_resolution_seconds
-  Labels: escalation_level, policy_category
-  Type: Histogram
-  SLA Threshold: 4h per level
-  
+ Labels: escalation_level, policy_category
+ Type: Histogram
+ SLA Threshold: 4h per level
+ 
 escalation_authority_override_count_total
-  Labels: authority_level, escalation_reason
-  Type: Counter
+ Labels: authority_level, escalation_reason
+ Type: Counter
 ```
 
 #### Authorization Metrics (3)
 ```
 approval_authority_decision_latency_seconds
-  Labels: approver_role, policy_category, approval_stage
-  Type: Histogram
-  SLA Threshold: 4h
-  
+ Labels: approver_role, policy_category, approval_stage
+ Type: Histogram
+ SLA Threshold: 4h
+ 
 approval_authority_error_count_total
-  Labels: approver_role, error_type
-  Type: Counter
-  
+ Labels: approver_role, error_type
+ Type: Counter
+ 
 approval_delegation_count_total
-  Labels: source_role, target_role, policy_category
-  Type: Counter
+ Labels: source_role, target_role, policy_category
+ Type: Counter
 ```
 
 #### Audit Metrics (3)
 ```
 approval_audit_log_entries_total
-  Labels: event_type, policy_category
-  Type: Counter
-  
+ Labels: event_type, policy_category
+ Type: Counter
+ 
 approval_policy_violation_count_total
-  Labels: violation_type, policy_id
-  Type: Counter
-  
+ Labels: violation_type, policy_id
+ Type: Counter
+ 
 approval_unauthorized_attempt_count_total
-  Labels: agent_id
-  Type: Counter
+ Labels: agent_id
+ Type: Counter
 ```
 
 ---
 
-## 🔔 ALERT RULES
+## ALERT RULES
 
 ### Critical Alerts (Severity: critical)
 
@@ -305,7 +305,7 @@ approval_unauthorized_attempt_count_total
 
 ---
 
-##  SLA THRESHOLDS BY POLICY CATEGORY
+## SLA THRESHOLDS BY POLICY CATEGORY
 
 | Category | Per-Stage SLA | Total SLA | Escalation Path |
 |----------|---|---|---|
@@ -320,7 +320,7 @@ approval_unauthorized_attempt_count_total
 
 ---
 
-##  INTEGRATION POINTS
+## INTEGRATION POINTS
 
 ### With D2.2 (Approval Service)
 - Subscribe to: request_submitted, decision_made, escalation_triggered, completed events
@@ -357,18 +357,18 @@ pytest tests/observability/test_approval_telemetry.py::TestApprovalServiceIntegr
 
 ### Validation Checklist
 
--  Metrics are collected for all 8 event types
--  SLA calculations are correct (latency ≤ threshold = met)
--  Cardinality stays < 900 timeseries (verified with validation script)
--  Events conform to schema v0.2.1 (validated with ApprovalEventValidator)
--  Alerts fire correctly on SLA breach (tested with synthetic data)
--  Dashboard displays all 10 panels correctly
--  Per-agent metrics aggregated by role (not per-agent)
--  Audit events are immutable and append-only
+- Metrics are collected for all 8 event types
+- SLA calculations are correct (latency ≤ threshold = met)
+- Cardinality stays < 900 timeseries (verified with validation script)
+- Events conform to schema v0.2.1 (validated with ApprovalEventValidator)
+- Alerts fire correctly on SLA breach (tested with synthetic data)
+- Dashboard displays all 10 panels correctly
+- Per-agent metrics aggregated by role (not per-agent)
+- Audit events are immutable and append-only
 
 ---
 
-##  USAGE EXAMPLES
+## USAGE EXAMPLES
 
 ### Example 1: Record a Multi-Stage Approval
 
@@ -383,38 +383,38 @@ integration = ApprovalServiceIntegration(collector, sla_monitor)
 
 # User requests a deployment approval
 integration.on_request_submitted(
-    approval_id="apr-550e8400",
-    policy_id="D-001",
-    policy_category="D",
-    requester_id="agent-orchestrator",
-    requester_role="release-operator",
-    sla_seconds=14400,  # 4h per-stage
+ approval_id="apr-550e8400",
+ policy_id="D-001",
+ policy_category="D",
+ requester_id="agent-orchestrator",
+ requester_role="release-operator",
+ sla_seconds=14400, # 4h per-stage
 )
 
 # Stage 1: Release Manager approves
 integration.on_decision_made(
-    approval_id="apr-550e8400",
-    policy_id="D-001",
-    policy_category="D",
-    approver_id="rm-001",
-    approver_role="release-manager",
-    decision="approved",
-    decision_time_seconds=3600,  # 1h
-    stage=1,
-    sla_seconds=14400,
+ approval_id="apr-550e8400",
+ policy_id="D-001",
+ policy_category="D",
+ approver_id="rm-001",
+ approver_role="release-manager",
+ decision="approved",
+ decision_time_seconds=3600, # 1h
+ stage=1,
+ sla_seconds=14400,
 )
 
 # Stage 2: Security Lead approves
 integration.on_decision_made(
-    approval_id="apr-550e8400",
-    policy_id="D-001",
-    policy_category="D",
-    approver_id="sl-001",
-    approver_role="security-lead",
-    decision="approved",
-    decision_time_seconds=5400,  # 1.5h
-    stage=2,
-    sla_seconds=14400,
+ approval_id="apr-550e8400",
+ policy_id="D-001",
+ policy_category="D",
+ approver_id="sl-001",
+ approver_role="security-lead",
+ decision="approved",
+ decision_time_seconds=5400, # 1.5h
+ stage=2,
+ sla_seconds=14400,
 )
 
 # Approval complete
@@ -431,17 +431,17 @@ print(collector.export_json())
 # If decision takes 18000s (5 hours), exceeds 4h SLA
 
 result = sla_monitor.record_stage_decision(
-    approval_id="apr-550e8400",
-    stage=1,
-    decision_time_seconds=18000,  # 5 hours
-    policy_category="D",
+ approval_id="apr-550e8400",
+ stage=1,
+ decision_time_seconds=18000, # 5 hours
+ policy_category="D",
 )
 
 print(result)
 # Output: {
-#   "sla_status": "breached",
-#   "exceeded_by": 3600.0,  # 1 hour over threshold
-#   "escalation_triggered": True,
+# "sla_status": "breached",
+# "exceeded_by": 3600.0, # 1 hour over threshold
+# "escalation_triggered": True,
 # }
 
 # Escalation callback fires → escalates to Release Manager's manager
@@ -466,7 +466,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 
 ---
 
-##  SECURITY CONSIDERATIONS
+## SECURITY CONSIDERATIONS
 
 ### Cardinality Limits
 - **Hard limit:** 900 timeseries (enforced by validator)
@@ -493,7 +493,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 
 ---
 
-##  CARDINALITY MANAGEMENT
+## CARDINALITY MANAGEMENT
 
 ### Per-Policy Analysis
 
@@ -501,29 +501,29 @@ For 150 agents, 8 policy categories, 10 approver roles:
 
 ```
 baseline_timeseries = (
-  8 categories                    # policy_category
-  × 10 approver_roles             # approver_role
-  × 4 approval_stages             # approval_stage
-  × 5 metrics (request, latency,  # metric combinations
-      resolution, decision, chain)
+ 8 categories # policy_category
+ × 10 approver_roles # approver_role
+ × 4 approval_stages # approval_stage
+ × 5 metrics (request, latency, # metric combinations
+ resolution, decision, chain)
 ) ≈ 1,600 timeseries (MANAGED DOWN to ~800)
 ```
 
 ### Control Strategy
 
 1. **Low-cardinality dimensions** (use as-is):
-   - policy_category: 8 values
-   - approver_role: 8-10 values
-   - approval_stage: 3-4 values
-   
+ - policy_category: 8 values
+ - approver_role: 8-10 values
+ - approval_stage: 3-4 values
+ 
 2. **Medium-cardinality dimensions** (aggregate):
-   - requester_role: aggregate by role
-   - sla_status: 3 values (met/approaching/breached)
-   
+ - requester_role: aggregate by role
+ - sla_status: 3 values (met/approaching/breached)
+ 
 3. **High-cardinality dimensions** (excluded from timeseries):
-   - agent_id: stored in audit logs only (append-only, not timeseries)
-   - approver_id: aggregated by approver_role
-   - requester_id: aggregated by requester_role
+ - agent_id: stored in audit logs only (append-only, not timeseries)
+ - approver_id: aggregated by approver_role
+ - requester_id: aggregated by requester_role
 
 ### Validation Script
 
@@ -534,12 +534,12 @@ print(f"Limit: {cardinality['limit']}")
 print(f"Safe: {cardinality['cardinality_safe']}")
 
 if cardinality['warning']:
-    print(f"️  {cardinality['warning']}")
+ print(f"️ {cardinality['warning']}")
 ```
 
 ---
 
-##  COMMON ISSUES & TROUBLESHOOTING
+## COMMON ISSUES & TROUBLESHOOTING
 
 ### Issue: SLA alerts not firing
 
@@ -589,17 +589,17 @@ print(f"Errors: {errors}")
 
 ---
 
-## 📞 SUPPORT & DOCUMENTATION
+## SUPPORT & DOCUMENTATION
 
-**TELEMETRY_SCHEMA.md** — Complete specification of 100+ metrics  
-**APPROVAL_POLICIES.md** — SLA thresholds and approval rules  
-**approval-sla-dashboard.json** — Grafana dashboard definition  
-**approval-alert-rules.yml** — Prometheus alert rules (15 rules)  
-**test_approval_telemetry.py** — 40+ integration tests with examples  
+**TELEMETRY_SCHEMA.md** — Complete specification of 100+ metrics 
+**APPROVAL_POLICIES.md** — SLA thresholds and approval rules 
+**approval-sla-dashboard.json** — Grafana dashboard definition 
+**approval-alert-rules.yml** — Prometheus alert rules (15 rules) 
+**test_approval_telemetry.py** — 40+ integration tests with examples 
 
 ---
 
-##  DEPLOYMENT CHECKLIST
+## DEPLOYMENT CHECKLIST
 
 - [ ] Code deployed to `/scripts/observability/`
 - [ ] Tests passing: `pytest tests/observability/test_approval_telemetry.py -v`
@@ -615,7 +615,7 @@ print(f"Errors: {errors}")
 
 ---
 
-**Status:**  Phase 12 Wave 2 D3.2 — COMPLETE  
-**Delivered:** 2026-07-03  
-**Authority:** @mbaetiong (D-tier)  
-**Handoff:** Ready for D1.2 & D2.2 integration  
+**Status:** Phase 12 Wave 2 D3.2 — COMPLETE 
+**Delivered:** 2026-07-03 
+**Authority:** @mbaetiong (D-tier) 
+**Handoff:** Ready for D1.2 & D2.2 integration 

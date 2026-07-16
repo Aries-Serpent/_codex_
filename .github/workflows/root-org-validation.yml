@@ -1,3 +1,4 @@
+---
 name: Root Organization Validation
 on:
   pull_request:
@@ -61,7 +62,6 @@ jobs:
 
         pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
 
-
         python -m pip install --upgrade pip
 
         pip install -e ".[dev]"  # Includes pytest, ruff, mypy
@@ -111,7 +111,6 @@ jobs:
       run: 'echo "metrics={\"link_check\":\"${{ steps.link-check.outcome }}\",\"pytest\":\"${{
         steps.pytest-baseline.outcome }}\",\"ruff\":\"${{ steps.ruff-baseline.outcome
         }}\",\"mkdocs\":\"${{ steps.mkdocs-baseline.outcome }}\"}" >> $GITHUB_OUTPUT
-
 
         # Save baseline to artifact
 
@@ -190,7 +189,6 @@ jobs:
     - name: Generate reference report
       run: 'mkdir -p .codex/reports
 
-
         echo "# Reference Validation Report" > .codex/reports/reference_validation.md
 
         echo "**Date:** $(date)" >> .codex/reports/reference_validation.md
@@ -258,11 +256,9 @@ jobs:
     - name: Generate final report
       run: 'mkdir -p .codex/reports
 
-
         cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << EOF
 
         # Root Organization Validation Report
-
 
         **Run:** ${{ github.run_number }}
 
@@ -272,21 +268,17 @@ jobs:
 
         **Status:** ${{ job.status }}
 
-
         ## Pre-Validation Results
 
         ${{ needs.pre-validation.outputs.baseline_metrics }}
-
 
         ## Reference Check
 
         ✅ Completed
 
-
         ## Post-Validation
 
         ✅ No regressions detected
-
 
         ## Recommendations
 
@@ -295,7 +287,6 @@ jobs:
         - Monitor for any new issues
 
         - Review artifact reports for details
-
 
         ## Artifacts Generated
 

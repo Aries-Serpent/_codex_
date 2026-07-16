@@ -16,22 +16,22 @@ Codex ML uses Hydra for configuration management, enabling flexible, reproducibl
 ```
 configs/
 ├── training/
-│   ├── default.yaml
-│   ├── bert.yaml
-│   ├── gpt.yaml
-│   └── tokenizer/  # pragma: allowlist secret
-│       └── offline/
-│           └── tiny_vocab.yaml
+│ ├── default.yaml
+│ ├── bert.yaml
+│ ├── gpt.yaml
+│ └── tokenizer/ # pragma: allowlist secret
+│ └── offline/
+│ └── tiny_vocab.yaml
 ├── data/
-│   ├── default.yaml
-│   └── preprocessing.yaml
+│ ├── default.yaml
+│ └── preprocessing.yaml
 ├── hardware/
-│   ├── default.yaml
-│   ├── cuda.yaml
-│   └── cpu.yaml
+│ ├── default.yaml
+│ ├── cuda.yaml
+│ └── cpu.yaml
 └── experiment/
-    ├── base_experiment.yaml
-    └── hyperparameter_sweep.yaml
+ ├── base_experiment.yaml
+ └── hyperparameter_sweep.yaml
 ```
 
 ## Core Configuration Files
@@ -41,53 +41,53 @@ configs/
 ```yaml
 # Model configuration
 model:
-  name: bert-base-uncased
-  pretrained: true
-  num_labels: 2
-  max_length: 512
-  dropout: 0.1
+ name: bert-base-uncased
+ pretrained: true
+ num_labels: 2
+ max_length: 512
+ dropout: 0.1
 
 # Training hyperparameters
 training:
-  batch_size: 32
-  num_epochs: 3
-  learning_rate: 2e-5
-  warmup_steps: 500
-  warmup_ratio: 0.1
-  weight_decay: 0.01
-  gradient_accumulation_steps: 1
+ batch_size: 32
+ num_epochs: 3
+ learning_rate: 2e-5
+ warmup_steps: 500
+ warmup_ratio: 0.1
+ weight_decay: 0.01
+ gradient_accumulation_steps: 1
 
-  # Advanced options
-  gradient_checkpointing: false
-  mixed_precision: false  # or 'fp16', 'bf16'
-  max_grad_norm: 1.0
+ # Advanced options
+ gradient_checkpointing: false
+ mixed_precision: false # or 'fp16', 'bf16'
+ max_grad_norm: 1.0
 
 # Optimization
 optimizer:
-  type: adamw  # adamw, adam, sgd
-  betas: [0.9, 0.999]
-  eps: 1e-8
+ type: adamw # adamw, adam, sgd
+ betas: [0.9, 0.999]
+ eps: 1e-8
 
 # Learning rate scheduler
 scheduler:
-  type: linear  # linear, cosine, constant
-  num_cycles: 0.5
-  pct_start: 0.1
+ type: linear # linear, cosine, constant
+ num_cycles: 0.5
+ pct_start: 0.1
 
 # Logging
 logging:
-  level: INFO
-  log_dir: ./logs
-  log_interval: 100
+ level: INFO
+ log_dir: ./logs
+ log_interval: 100
 
 # Checkpointing
 checkpoint:
-  save_dir: ./checkpoints
-  save_interval: 500
-  keep_last_n: 3
-  save_best: true
-  metric: eval_loss
-  metric_mode: min  # min or max
+ save_dir: ./checkpoints
+ save_interval: 500
+ keep_last_n: 3
+ save_best: true
+ metric: eval_loss
+ metric_mode: min # min or max
 ```
 
 ## 2. Data Configuration (`configs/data/default.yaml`)
@@ -95,40 +95,40 @@ checkpoint:
 ```yaml
 # Dataset paths
 data:
-  train_path: data/train.jsonl
-  eval_path: data/eval.jsonl
-  test_path: data/test.jsonl
+ train_path: data/train.jsonl
+ eval_path: data/eval.jsonl
+ test_path: data/test.jsonl
 
-  # Data loading
-  num_workers: 4
-  prefetch_factor: 2
-  pin_memory: true
+ # Data loading
+ num_workers: 4
+ prefetch_factor: 2
+ pin_memory: true
 
 # Preprocessing
 preprocessing:
-  # Text processing
-  lowercase: false
-  remove_special_chars: false
-  remove_punctuation: false
+ # Text processing
+ lowercase: false
+ remove_special_chars: false
+ remove_punctuation: false
 
-  # Normalization
-  normalize_whitespace: true
-  remove_extra_spaces: true
+ # Normalization
+ normalize_whitespace: true
+ remove_extra_spaces: true
 
-  # Length filtering
-  min_length: 1
-  max_length: 512
+ # Length filtering
+ min_length: 1
+ max_length: 512
 
-  # Sampling
-  max_samples: null  # null = all samples
-  sample_ratio: 1.0  # Use fraction of data
+ # Sampling
+ max_samples: null # null = all samples
+ sample_ratio: 1.0 # Use fraction of data
 
 # Data splits
 splits:
-  train_ratio: 0.8
-  eval_ratio: 0.1
-  test_ratio: 0.1
-  random_seed: 42
+ train_ratio: 0.8
+ eval_ratio: 0.1
+ test_ratio: 0.1
+ random_seed: 42
 ```
 
 ## 3. Hardware Configuration (`configs/hardware/cuda.yaml`)
@@ -136,28 +136,28 @@ splits:
 ```yaml
 # Device configuration
 device:
-  type: cuda  # cuda, cpu, tpu
-  device_ids: [0, 1, 2, 3]  # For multi-GPU
+ type: cuda # cuda, cpu, tpu
+ device_ids: [0, 1, 2, 3] # For multi-GPU
 
 # Distributed training
 distributed:
-  enabled: true
-  backend: nccl  # nccl, gloo
-  num_processes: 4
+ enabled: true
+ backend: nccl # nccl, gloo
+ num_processes: 4
 
 # GPU optimization
 gpu:
-  enable_tf32: true  # for A100
-  cudnn_benchmark: true
-  memory_fraction: 0.9
+ enable_tf32: true # for A100
+ cudnn_benchmark: true
+ memory_fraction: 0.9
 
 # Ray configuration (for distributed training)
 ray:
-  num_workers: 4
-  use_gpu: true
-  resources_per_worker:
-    GPU: 1
-    CPU: 4
+ num_workers: 4
+ use_gpu: true
+ resources_per_worker:
+ GPU: 1
+ CPU: 4
 ```
 
 ## Using Configurations
@@ -173,7 +173,7 @@ python train.py --config-name bert
 
 # Use configuration from subdirectory
 python train.py --config-path configs/training/tokenizer/offline \
-                 --config-name tiny_vocab
+ --config-name tiny_vocab
 ```
 
 ## Command-Line Overrides
@@ -184,12 +184,12 @@ python train.py training.batch_size=64
 
 # Override nested parameters
 python train.py training.batch_size=64 \
-               training.learning_rate=1e-5 \
-               data.num_workers=8
+ training.learning_rate=1e-5 \
+ data.num_workers=8
 
 # Override with dot notation
 python train.py model.name=roberta-base \
-               model.max_length=1024
+ model.max_length=1024
 ```
 
 ## Multi-Run Sweeps
@@ -197,11 +197,11 @@ python train.py model.name=roberta-base \
 ```bash
 # Sweep over multiple values
 python train.py -m training.batch_size=32,64,128 \
-                  training.learning_rate=1e-5,2e-5
+ training.learning_rate=1e-5,2e-5
 
 # Cartesian product of parameters
 python train.py -m training.batch_size=32,64 \
-                  training.learning_rate=1e-5,2e-5
+ training.learning_rate=1e-5,2e-5
 # Runs: 4 experiments (2x2)
 ```
 
@@ -212,7 +212,7 @@ python train.py -m training.batch_size=32,64 \
 ```bash
 # Compose from multiple files
 python train.py --config-path configs \
-               -c training=bert,data=default,hardware=cuda
+ -c training=bert,data=default,hardware=cuda
 
 # Override specific sections
 python train.py +model.cache_dir=/tmp/cache
@@ -225,20 +225,20 @@ Create hierarchical configs with defaults:
 ```
 configs/
 ├── training/
-│   ├── default.yaml
-│   ├── bert.yaml
-│   └── gpt.yaml
+│ ├── default.yaml
+│ ├── bert.yaml
+│ └── gpt.yaml
 ├── data/
-│   ├── default.yaml
-│   └── large.yaml
+│ ├── default.yaml
+│ └── large.yaml
 └── config.yaml
 ```
 
 In `config.yaml`:
 ```yaml
 defaults:
-  - training: default
-  - data: default
+ - training: default
+ - data: default
 
 # Other config...
 experiment_name: exp_001
@@ -252,14 +252,14 @@ Reference other values in config:
 
 ```yaml
 model:
-  name: bert-base-uncased
-  cache_dir: ./cache/${model.name}
+ name: bert-base-uncased
+ cache_dir: ./cache/${model.name}
 
 training:
-  output_dir: ./output/${model.name}/${now:%Y-%m-%d_%H-%M-%S}
+ output_dir: ./output/${model.name}/${now:%Y-%m-%d_%H-%M-%S}
 
 data:
-  train_path: data/${data_type}/train.jsonl
+ train_path: data/${data_type}/train.jsonl
 ```
 
 ### Variable Resolution
@@ -277,9 +277,9 @@ from omegaconf import OmegaConf, MISSING
 
 @dataclass
 class TrainingConfig:
-    batch_size: int = 32
-    learning_rate: float = 2e-5
-    num_epochs: int = 3
+ batch_size: int = 32
+ learning_rate: float = 2e-5
+ num_epochs: int = 3
 
 # Create config from dataclass
 config = OmegaConf.structured(TrainingConfig)
@@ -293,8 +293,8 @@ config = OmegaConf.structured(TrainingConfig)
 from omegaconf import DictConfig
 
 def train(cfg: DictConfig):
-    print(f"Batch size: {cfg.training.batch_size}")
-    print(f"Learning rate: {cfg.training.learning_rate}")
+ print(f"Batch size: {cfg.training.batch_size}")
+ print(f"Learning rate: {cfg.training.learning_rate}")
 ```
 
 ### Type-Safe Access
@@ -303,11 +303,11 @@ def train(cfg: DictConfig):
 from omegaconf import DictConfig, OmegaConf
 
 def train(cfg: DictConfig):
-    # Type-safe conversion
-    train_cfg = OmegaConf.to_container(cfg.training)
+ # Type-safe conversion
+ train_cfg = OmegaConf.to_container(cfg.training)
 
-    batch_size = train_cfg['batch_size']
-    lr = train_cfg['learning_rate']
+ batch_size = train_cfg['batch_size']
+ lr = train_cfg['learning_rate']
 ```
 
 ### Config Validation
@@ -317,14 +317,14 @@ from omegaconf import DictConfig, OmegaConf
 from pydantic import BaseModel, validator
 
 class TrainingParams(BaseModel):
-    batch_size: int
-    learning_rate: float
+ batch_size: int
+ learning_rate: float
 
-    @validator('batch_size')
-    def batch_size_positive(cls, v):
-        if v <= 0:
-            raise ValueError('batch_size must be positive')
-        return v
+ @validator('batch_size')
+ def batch_size_positive(cls, v):
+ if v <= 0:
+ raise ValueError('batch_size must be positive')
+ return v
 
 # Validate
 cfg_dict = OmegaConf.to_container(cfg)
@@ -338,24 +338,24 @@ valid_cfg = TrainingParams(**cfg_dict.training)
 Create `configs/hardware/production.yaml`:
 ```yaml
 device:
-  type: cuda
-  device_ids: [0, 1, 2, 3]
+ type: cuda
+ device_ids: [0, 1, 2, 3]
 
 distributed:
-  enabled: true
-  num_processes: 4
-  backend: nccl
+ enabled: true
+ num_processes: 4
+ backend: nccl
 
 training:
-  batch_size: 256
-  mixed_precision: bf16
-  gradient_accumulation_steps: 2
+ batch_size: 256
+ mixed_precision: bf16
+ gradient_accumulation_steps: 2
 ```
 
 Run production:
 ```bash
 python train.py --config-path configs/hardware \
-               --config-name production
+ --config-name production
 ```
 
 ### Development Configuration
@@ -363,68 +363,68 @@ python train.py --config-path configs/hardware \
 Create `configs/hardware/dev.yaml`:
 ```yaml
 device:
-  type: cpu
+ type: cpu
 
 distributed:
-  enabled: false
+ enabled: false
 
 training:
-  batch_size: 8
-  num_epochs: 1
-  log_interval: 10
+ batch_size: 8
+ num_epochs: 1
+ log_interval: 10
 ```
 
 Run development:
 ```bash
 python train.py --config-path configs/hardware \
-               --config-name dev
+ --config-name dev
 ```
 
 ## Best Practices
 
 1. **Use Defaults**
-   ```yaml
-   # Bad: Hardcoded values everywhere
-   batch_size: 32
-   learning_rate: 2e-5
+ ```yaml
+ # Bad: Hardcoded values everywhere
+ batch_size: 32
+ learning_rate: 2e-5
 
-   # Good: Use clear defaults with documentation
-   defaults:
-     - _self_
-     - training: default
-   ```
+ # Good: Use clear defaults with documentation
+ defaults:
+ - _self_
+ - training: default
+ ```
 
 2. **Version Configurations**
-   ```bash
-   git commit -m "Update training config: reduce LR to 1e-5"
-   ```
+ ```bash
+ git commit -m "Update training config: reduce LR to 1e-5"
+ ```
 
 3. **Document All Parameters**
-   ```yaml
-   # Document purpose and recommended values
-   training:
-     batch_size: 32  # Tune based on GPU memory (32-256)
-     learning_rate: 2e-5  # Lower for fine-tuning (1e-6 to 5e-5)
-   ```
+ ```yaml
+ # Document purpose and recommended values
+ training:
+ batch_size: 32 # Tune based on GPU memory (32-256)
+ learning_rate: 2e-5 # Lower for fine-tuning (1e-6 to 5e-5)
+ ```
 
 4. **Use Environment Variables**
-   ```bash
-   export DATA_PATH=/path/to/data
-   python train.py data.train_path=${DATA_PATH}/train.jsonl
-   ```
+ ```bash
+ export DATA_PATH=/path/to/data
+ python train.py data.train_path=${DATA_PATH}/train.jsonl
+ ```
 
 5. **Create Experiment Presets**
-   ```yaml
-   # configs/experiment/quick_test.yaml
-   defaults:
-     - /training: bert
-     - /data: default
-     - /hardware: cpu
+ ```yaml
+ # configs/experiment/quick_test.yaml
+ defaults:
+ - /training: bert
+ - /data: default
+ - /hardware: cpu
 
-   training:
-     num_epochs: 1
-     log_interval: 10
-   ```
+ training:
+ num_epochs: 1
+ log_interval: 10
+ ```
 
 ## See Also
 
@@ -435,7 +435,7 @@ python train.py --config-path configs/hardware \
 
 
 ---
-## 📎 Consolidated from: docs/configuration/CONFIG_USAGE.md
+## Consolidated from: docs/configuration/CONFIG_USAGE.md
 
 # Configuration Usage Guide
 
@@ -459,7 +459,7 @@ from codex.utils.config_loader import load_config
 cfg = load_config("base", config_dir="conf/model")
 
 # Access config values
-print(cfg.model.name)  # or cfg["model"]["name"]
+print(cfg.model.name) # or cfg["model"]["name"]
 ```
 
 ## With Overrides
@@ -467,13 +467,13 @@ print(cfg.model.name)  # or cfg["model"]["name"]
 ```python
 # Override specific values
 cfg = load_config(
-    "base",
-    config_dir="conf/training",
-    overrides=[
-        "training.epochs=10",
-        "training.device=cuda",
-        "training.batch_size=16"
-    ]
+ "base",
+ config_dir="conf/training",
+ overrides=[
+ "training.epochs=10",
+ "training.device=cuda",
+ "training.batch_size=16"
+ ]
 )
 ```
 
@@ -485,23 +485,23 @@ cfg = load_config(
 
 ```
 conf/
-├── errors/           # Error definitions
-│   └── defaults.yaml
-├── model/            # Model configurations
-│   ├── base.yaml
-│   ├── toy.yaml
-│   └── offline/
-├── training/         # Training configurations
-│   ├── base.yaml
-│   ├── continual/
-│   └── offline/
-├── evaluation/       # Evaluation configurations
-│   ├── base.yaml
-│   └── reasoning/
-└── data/             # Data configurations
-    ├── base.yaml
-    ├── tiny.yaml
-    └── offline/
+├── errors/ # Error definitions
+│ └── defaults.yaml
+├── model/ # Model configurations
+│ ├── base.yaml
+│ ├── toy.yaml
+│ └── offline/
+├── training/ # Training configurations
+│ ├── base.yaml
+│ ├── continual/
+│ └── offline/
+├── evaluation/ # Evaluation configurations
+│ ├── base.yaml
+│ └── reasoning/
+└── data/ # Data configurations
+ ├── base.yaml
+ ├── tiny.yaml
+ └── offline/
 ```
 
 ---
@@ -524,8 +524,8 @@ cfg = load_config("legacy_config", config_dir="conf/model", allow_fallback=True)
 ```yaml
 # conf/training/base.yaml
 training:
-  epochs: 10
-  max_epochs: ${training.epochs}  # Reference same value
+ epochs: 10
+ max_epochs: ${training.epochs} # Reference same value
 
 # Backward compatibility
 epochs: ${training.epochs}
@@ -538,13 +538,13 @@ epochs: ${training.epochs}
 ```yaml
 # conf/experiment/my_experiment.yaml
 defaults:
-  - /model: base
-  - /training: base
-  - /data: tiny
+ - /model: base
+ - /training: base
+ - /data: tiny
 
 # Override specific values
 training:
-  epochs: 20
+ epochs: 20
 ```
 
 **Use Case:** Compose experiments from reusable components
@@ -557,11 +557,11 @@ from codex.utils.config_loader import get_loader, MissingConfigException
 loader = get_loader()
 
 try:
-    cfg = loader.load_config("nonexistent", allow_fallback=False)
+ cfg = loader.load_config("nonexistent", allow_fallback=False)
 except MissingConfigException as e:
-    # Get structured error
-    error = loader.get_error("config_errors", "missing_config")
-    print(error.format(file=e.missing_cfg_file))
+ # Get structured error
+ error = loader.get_error("config_errors", "missing_config")
+ print(error.format(file=e.missing_cfg_file))
 ```
 
 **Use Case:** Graceful error handling with structured messages
@@ -586,13 +586,13 @@ data_cfg = load_config("tiny", config_dir="conf/data")
 
 # Override for specific run
 train_cfg = load_config(
-    "base",
-    config_dir="conf/training",
-    overrides=[
-        f"training.output_dir=runs/experiment_{run_id}",
-        "training.epochs=50",
-        "training.device=cuda"
-    ]
+ "base",
+ config_dir="conf/training",
+ overrides=[
+ f"training.output_dir=runs/experiment_{run_id}",
+ "training.epochs=50",
+ "training.device=cuda"
+ ]
 )
 ```
 
@@ -609,9 +609,9 @@ reasoning_cfg = load_config("base", config_dir="conf/evaluation/reasoning")
 
 # Override metrics
 eval_cfg = load_config(
-    "base",
-    config_dir="conf/evaluation",
-    overrides=["metrics.use_weighted_accuracy=true"]
+ "base",
+ config_dir="conf/evaluation",
+ overrides=["metrics.use_weighted_accuracy=true"]
 )
 ```
 
@@ -637,9 +637,9 @@ print(exp_cfg.data.train_path)
 
 ```python
 overrides = [
-    "key=value",
-    "nested.key=value",
-    "training.epochs=10"
+ "key=value",
+ "nested.key=value",
+ "training.epochs=10"
 ]
 ```
 
@@ -647,10 +647,10 @@ overrides = [
 
 ```python
 overrides = [
-    "list_key=[1,2,3]",
-    "dict_key={a: 1, b: 2}",
-    "bool_key=true",
-    "float_key=0.001"
+ "list_key=[1,2,3]",
+ "dict_key={a: 1, b: 2}",
+ "bool_key=true",
+ "float_key=0.001"
 ]
 ```
 
@@ -658,8 +658,8 @@ overrides = [
 
 ```python
 overrides = [
-    "training.output_dir=runs/${model.name}",
-    "training.checkpoint_dir=${training.output_dir}/checkpoints"
+ "training.output_dir=runs/${model.name}",
+ "training.checkpoint_dir=${training.output_dir}/checkpoints"
 ]
 ```
 
@@ -676,18 +676,18 @@ cfg = load_config("base", config_dir="conf/model")
 ```
 
 2. **Leverage Hydra interpolation for DRY**
-   ```yaml
-   training:
-     epochs: 10
-     max_epochs: ${training.epochs}
-   ```
+ ```yaml
+ training:
+ epochs: 10
+ max_epochs: ${training.epochs}
+ ```
 
 3. **Organize configs by logical groups**
-   ```
-   conf/model/     # Model-specific
-   conf/training/  # Training-specific
-   conf/data/      # Data-specific
-   ```
+ ```
+ conf/model/ # Model-specific
+ conf/training/ # Training-specific
+ conf/data/ # Data-specific
+ ```
 
 4. **Use overrides for run-specific changes**
 ```python
@@ -697,9 +697,9 @@ cfg = load_config("base", overrides=["training.seed=42"])
 5. **Handle errors gracefully**
 ```text
 try:
-    cfg = load_config("config", allow_fallback=False)
+ cfg = load_config("config", allow_fallback=False)
 except MissingConfigException:
-    # Handle missing config
+ # Handle missing config
 ```
 
 ### DON'T 
@@ -708,35 +708,35 @@ except MissingConfigException:
 ```python
 # Bad
 with open("configs/training/base.yaml") as f:
-    cfg = yaml.safe_load(f)
+ cfg = yaml.safe_load(f)
 
 # Good
 cfg = load_config("base", config_dir="conf/training")
 ```
 
 2. **Don't duplicate config values**
-   ```yaml
-   # Bad
-   training:
-     epochs: 10
-   max_epochs: 10  # Duplication!
+ ```yaml
+ # Bad
+ training:
+ epochs: 10
+ max_epochs: 10 # Duplication!
 
-   # Good
-   training:
-     epochs: 10
-   max_epochs: ${training.epochs}
-   ```
+ # Good
+ training:
+ epochs: 10
+ max_epochs: ${training.epochs}
+ ```
 
 3. **Don't skip error handling**
 ```python
 # Bad
-cfg = load_config("config")  # May fail silently
+cfg = load_config("config") # May fail silently
 
 # Good
 try:
-    cfg = load_config("config", allow_fallback=False)
+ cfg = load_config("config", allow_fallback=False)
 except MissingConfigException as e:
-    logger.error(f"Config not found: {e.missing_cfg_file}")
+ logger.error(f"Config not found: {e.missing_cfg_file}")
 ```
 
 ---
@@ -749,7 +749,7 @@ except MissingConfigException as e:
 import yaml
 
 with open("configs/training/base.yaml") as f:
-    config = yaml.safe_load(f)
+ config = yaml.safe_load(f)
 
 epochs = config["training"]["epochs"]
 ```
@@ -793,9 +793,9 @@ loader = ConfigLoader()
 # Build overrides dynamically
 overrides = []
 if use_gpu:
-    overrides.append("training.device=cuda")
+ overrides.append("training.device=cuda")
 if debug_mode:
-    overrides.append("training.epochs=1")
+ overrides.append("training.epochs=1")
 
 cfg = loader.load_config("base", config_dir="conf/training", overrides=overrides)
 ```
@@ -810,9 +810,9 @@ loader = get_loader()
 # Get specific error definition
 error = loader.get_error("config_errors", "missing_config")
 if error:
-    print(f"Code: {error.code}")
-    print(f"Message: {error.message}")
-    print(f"Resolution: {error.resolution}")
+ print(f"Code: {error.code}")
+ print(f"Message: {error.message}")
+ print(f"Resolution: {error.resolution}")
 ```
 
 ---
@@ -826,33 +826,33 @@ import pytest
 from codex.utils.config_loader import load_config
 
 def test_training_config():
-    cfg = load_config("base", config_dir="conf/training")
+ cfg = load_config("base", config_dir="conf/training")
 
-    assert cfg is not None
-    assert "training" in cfg
-    assert cfg.training.epochs > 0
+ assert cfg is not None
+ assert "training" in cfg
+ assert cfg.training.epochs > 0
 
 def test_config_overrides():
-    cfg = load_config(
-        "base",
-        config_dir="conf/training",
-        overrides=["training.epochs=5"]
-    )
+ cfg = load_config(
+ "base",
+ config_dir="conf/training",
+ overrides=["training.epochs=5"]
+ )
 
-    assert cfg.training.epochs == 5
+ assert cfg.training.epochs == 5
 ```
 
 ### In Integration Tests
 
 ```python
 def test_training_pipeline_with_config():
-    cfg = load_config("base", config_dir="conf/training")
+ cfg = load_config("base", config_dir="conf/training")
 
-    # Use config in training
-    trainer = Trainer(config=cfg)
-    results = trainer.train()
+ # Use config in training
+ trainer = Trainer(config=cfg)
+ results = trainer.train()
 
-    assert results.epochs_completed == cfg.training.epochs
+ assert results.epochs_completed == cfg.training.epochs
 ```
 
 ---
@@ -872,5 +872,5 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 ---
 
-**Maintained By:** PS-01 Configuration Consolidation  
+**Maintained By:** PS-01 Configuration Consolidation 
 **Questions:** File an issue with "configuration" label

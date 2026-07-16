@@ -1,3 +1,4 @@
+---
 name: Automated Monitoring Setup
 on:
   workflow_dispatch:
@@ -62,21 +63,17 @@ jobs:
     - name: Generate monitoring configuration
       run: 'echo "🔧 Generating monitoring configuration..."
 
-
         # Generate ServiceMonitor resources
 
         python scripts/deployment/generate_servicemonitor.py
-
 
         # Generate alert rules
 
         python scripts/deployment/generate_alert_rules.py
 
-
         # Generate dashboards
 
         python scripts/deployment/create_monitoring_dashboard.py
-
 
         echo "✅ Configuration generation complete"
 
@@ -89,7 +86,6 @@ jobs:
         echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
 
         chmod 600 ~/.kube/config
-
 
         # Verify connection
 
@@ -152,7 +148,6 @@ jobs:
     - name: Wait for stack readiness
       run: 'echo "⏳ Waiting for monitoring stack to be ready..."
 
-
         # Wait for all deployments
 
         kubectl rollout status deployment/prometheus -n monitoring --timeout=300s
@@ -164,13 +159,11 @@ jobs:
         kubectl rollout status deployment/alertmanager -n monitoring --timeout=300s
         || true
 
-
         echo "✅ Stack readiness check complete"
 
         '
     - name: Verify monitoring health
       run: 'echo "🔍 Verifying monitoring health..."
-
 
         # Check component health
 
@@ -179,12 +172,10 @@ jobs:
         kubectl exec -n monitoring -it deployment/prometheus -- curl -s http://localhost:9090/-/healthy
         || true
 
-
         printf "\nGrafana health:\n"
 
         kubectl exec -n monitoring -it deployment/grafana -- curl -s http://localhost:3000/api/health
         || true
-
 
         printf "\nAlertManager health:\n"
 
@@ -195,11 +186,9 @@ jobs:
     - name: Generate setup report
       run: 'echo "📝 Generating setup report..."
 
-
         cat > setup-report.md <<EOF
 
         # Monitoring Stack Setup Report
-
 
         **Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
@@ -211,9 +200,7 @@ jobs:
 
         **Status:** ✅ SUCCESS
 
-
         ## Deployed Components
-
 
         - ✅ Prometheus (Metrics collection & storage)
 
@@ -221,9 +208,7 @@ jobs:
 
         - ✅ AlertManager (Alert routing & notifications)
 
-
         ## Configuration
-
 
         - ✅ ServiceMonitor resources (5 services)
 
@@ -233,9 +218,7 @@ jobs:
 
         - ✅ Grafana dashboards (3 dashboards, 13 panels)
 
-
         ## Access Information
-
 
         - Prometheus: http://prometheus.local:9090
 
@@ -243,9 +226,7 @@ jobs:
 
         - AlertManager: http://alertmanager.local:9093
 
-
         ## Next Steps
-
 
         1. Configure notification channels (Slack, PagerDuty, email)
 
@@ -257,9 +238,7 @@ jobs:
 
         5. Set up backup for persistent volumes
 
-
         ## Troubleshooting
-
 
         If issues occur, check:
 
@@ -269,11 +248,9 @@ jobs:
 
         - Events: \`kubectl describe pod -n monitoring [pod-name]\`
 
-
         For more details, see documentation in .codex/MONITORING_MANIFESTS_GUIDE.md
 
         EOF
-
 
         cat setup-report.md
 
@@ -288,9 +265,7 @@ jobs:
       if: always()
       run: 'echo "📋 Collecting deployment logs..."
 
-
         mkdir -p logs
-
 
         # Collect pod logs
 
@@ -302,11 +277,9 @@ jobs:
         kubectl logs -n monitoring deployment/alertmanager > logs/alertmanager.log
         2>&1 || true
 
-
         # Collect events
 
         kubectl get events -n monitoring > logs/events.log 2>&1 || true
-
 
         # Collect resource status
 

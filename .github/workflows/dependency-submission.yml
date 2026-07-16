@@ -1,3 +1,4 @@
+---
 name: Resilient Dependency Submission
 on:
   push:

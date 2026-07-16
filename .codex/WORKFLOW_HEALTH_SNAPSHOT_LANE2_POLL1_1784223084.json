@@ -1,0 +1,62 @@
+{
+  "snapshot_id": "LANE2-POLL1-20260716-173124",
+  "poll_number": 1,
+  "snapshot_timestamp": "2026-07-16T17:31:24Z",
+  "polling_interval_seconds": 45,
+  "next_poll_scheduled": "2026-07-16T17:32:12Z",
+  
+  "real_time_status": {
+    "active_in_progress": 1,
+    "completed": 99,
+    "cancelled": 49,
+    "success": 8,
+    "status_update_time": "2026-07-16T17:31:24Z"
+  },
+
+  "health_status": {
+    "success_rate_percent": 7.47,
+    "failure_rate_percent": 57.06,
+    "cancellation_rate_percent": 49.49,
+    "alert_threshold_status": "EXCEEDED",
+    "alert_level": "CRITICAL"
+  },
+
+  "trend_analysis": {
+    "from_previous_snapshot": {
+      "previous_timestamp": "2026-07-16T17:29:43Z",
+      "previous_in_progress": 1,
+      "previous_completed": 29,
+      "delta_new_completions": 70,
+      "new_workflows_per_second": 1.55,
+      "conclusion": "Workflow completion acceleration detected"
+    }
+  },
+
+  "active_workflow_tracking": {
+    "id": 29519937637,
+    "name": "Self-Healing CI Loop",
+    "status": "in_progress",
+    "started": "2026-07-16T17:28:56Z",
+    "elapsed_seconds": 148,
+    "timeout_risk": "LOW"
+  },
+
+  "alerts": [
+    {
+      "level": "P0-CRITICAL",
+      "message": "High cancellation rate sustained: 49% of completed workflows",
+      "recommendation": "Queue starvation pattern persists - escalate to GitHub support"
+    },
+    {
+      "level": "P1-HIGH",
+      "message": "Success rate improving: 7.47% (was 6.67%) - weak positive trend",
+      "recommendation": "Monitor for improvement continuation"
+    }
+  ],
+
+  "monitoring_recommendation": {
+    "continue_monitoring": true,
+    "reason": "Pipeline stabilizing but still critical",
+    "next_action": "Continue polling at 45s intervals"
+  }
+}

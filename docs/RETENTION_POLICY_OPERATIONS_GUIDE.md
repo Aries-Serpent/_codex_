@@ -2,15 +2,15 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0  
-**Last Updated**: 2026-07-15  
-**Audience**: DevOps, Infrastructure, Maintenance Teams  
-**Authority**: Phase D Tier 2 Documentation  
-**Status**:  Active
+**Version**: 1.0 
+**Last Updated**: 2026-07-15 
+**Audience**: DevOps, Infrastructure, Maintenance Teams 
+**Authority**: Phase D Tier 2 Documentation 
+**Status**: Active
 
 ---
 
-##  Overview
+## Overview
 
 This guide provides operational procedures for managing the artifact retention lifecycle in the Codex repository. It covers manual cleanup, emergency procedures, monitoring, and troubleshooting.
 
@@ -48,22 +48,22 @@ Push `.github/workflows/retention-cleanup.yml`:
 ```yaml
 name: Artifact Lifecycle Cleanup
 on:
-  schedule:
-    - cron: '0 2 * * *'
+ schedule:
+ - cron: '0 2 * * *'
 jobs:
-  cleanup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - run: pip install pyyaml && python scripts/maintenance/archive_old_sessions.py
+ cleanup:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ - uses: actions/setup-python@v4
+ with:
+ python-version: '3.11'
+ - run: pip install pyyaml && python scripts/maintenance/archive_old_sessions.py
 ```
 
 ---
 
-##  Common Operations
+## Common Operations
 
 ### View Cleanup Status
 
@@ -102,13 +102,13 @@ To prevent deletion of specific artifacts:
 
 ```json
 {
-  "preserved_paths": [
-    "reports/phase_12_final_report.md",
-    "memory/sessions/critical_session.ndjson"
-  ],
-  "preserved_until": {
-    "reports/phase_12_final_report.md": "2026-12-31"
-  }
+ "preserved_paths": [
+ "reports/phase_12_final_report.md",
+ "memory/sessions/critical_session.ndjson"
+ ],
+ "preserved_until": {
+ "reports/phase_12_final_report.md": "2026-12-31"
+ }
 }
 ```
 
@@ -117,9 +117,9 @@ To prevent deletion of specific artifacts:
 ```bash
 cat > .codex/preserved_artifacts.json << 'EOF'
 {
-  "preserved_paths": [
-    "reports/phase_12_final_report.md"
-  ]
+ "preserved_paths": [
+ "reports/phase_12_final_report.md"
+ ]
 }
 EOF
 ```
@@ -139,12 +139,12 @@ python scripts/maintenance/archive_old_sessions.py
 # Create temporary config with extended windows
 cat > /tmp/extended_retention.yaml << 'EOF'
 retention:
-  sessions:
-    window_days: 180  # Extended from 90
-  database:
-    window_days: 180
-  checkpoints:
-    window_days: 365  # Extended from 180
+ sessions:
+ window_days: 180 # Extended from 90
+ database:
+ window_days: 180
+ checkpoints:
+ window_days: 365 # Extended from 180
 EOF
 
 # Run with extended config
@@ -157,13 +157,13 @@ Edit `.codex/retention_config.yaml`:
 
 ```yaml
 retention:
-  sessions:
-    window_days: 180  # Changed from 90
+ sessions:
+ window_days: 180 # Changed from 90
 ```
 
 ---
 
-##  Monitoring & Alerting
+## Monitoring & Alerting
 
 ### Setup Log Monitoring
 
@@ -200,22 +200,22 @@ jq '[.[] | select(.status == "failed")] | length' .codex/cleanup_audit.json
 
 ```yaml
 groups:
-  - name: codex_retention
-    rules:
-      - alert: CleanupScriptFailure
-        expr: increase(codex_cleanup_errors_total[1h]) > 0
-        annotations:
-          summary: "Codex cleanup script failed"
-      
-      - alert: CleanupTimeout
-        expr: codex_cleanup_duration_seconds > 3600
-        annotations:
-          summary: "Codex cleanup took too long"
-      
-      - alert: ArchiveChecksum Mismatch
-        expr: increase(codex_archive_checksum_failures_total[1h]) > 0
-        annotations:
-          summary: "Archive integrity check failed"
+ - name: codex_retention
+ rules:
+ - alert: CleanupScriptFailure
+ expr: increase(codex_cleanup_errors_total[1h]) > 0
+ annotations:
+ summary: "Codex cleanup script failed"
+ 
+ - alert: CleanupTimeout
+ expr: codex_cleanup_duration_seconds > 3600
+ annotations:
+ summary: "Codex cleanup took too long"
+ 
+ - alert: ArchiveChecksum Mismatch
+ expr: increase(codex_archive_checksum_failures_total[1h]) > 0
+ annotations:
+ summary: "Archive integrity check failed"
 ```
 
 ### Manual Health Check
@@ -247,7 +247,7 @@ echo "\nDone!"
 
 ---
 
-##  Emergency Procedures
+## Emergency Procedures
 
 ### Cleanup Script Hanging
 
@@ -301,8 +301,8 @@ jq '[.[] | select(.action == "archive" and .details.checksum == null)]' .codex/c
 
 # Validate existing archives
 for f in .codex/archives/*.tar.gz; do
-  echo "Checking $f..."
-  tar -tzf "$f" > /dev/null && echo "  OK" || echo "  CORRUPTED"
+ echo "Checking $f..."
+ tar -tzf "$f" > /dev/null && echo " OK" || echo " CORRUPTED"
 done
 
 # Remove corrupted archives
@@ -336,7 +336,7 @@ echo "Data recovered from archive: $(date)" >> .codex/cleanup_audit.log
 
 ---
 
-##  Backup & Recovery
+## Backup & Recovery
 
 ### Pre-Cleanup Backup
 
@@ -375,7 +375,7 @@ aws s3 ls s3://backup-bucket/codex/ --recursive
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Problem: Cleanup Deletes Wrong Files
 
@@ -458,44 +458,44 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-##  Operational Checklists
+## Operational Checklists
 
 ### Daily
 
 - [ ] Check cleanup completed successfully (if scheduled)
-  ```bash
-  tail -1 .codex/cleanup_audit.log | grep "complete"
-  ```
+ ```bash
+ tail -1 .codex/cleanup_audit.log | grep "complete"
+ ```
 - [ ] Verify disk space adequate
-  ```bash
-  df -h / | tail -1
-  ```
+ ```bash
+ df -h / | tail -1
+ ```
 - [ ] Check for any errors in audit log
-  ```bash
-  grep -c "ERROR\|FAILED" .codex/cleanup_audit.log
-  ```
+ ```bash
+ grep -c "ERROR\|FAILED" .codex/cleanup_audit.log
+ ```
 
 ### Weekly
 
 - [ ] Review artifact storage trends
-  ```bash
-  du -sh memory/sessions/ reports/ artifacts/
-  ```
+ ```bash
+ du -sh memory/sessions/ reports/ artifacts/
+ ```
 - [ ] Verify archive integrity
-  ```bash
-  find .codex/archives/ -name "*.tar.gz" -exec tar -tzf {} \; > /dev/null
-  ```
+ ```bash
+ find .codex/archives/ -name "*.tar.gz" -exec tar -tzf {} \; > /dev/null
+ ```
 - [ ] Check audit log size (rotate if > 100 MB)
-  ```bash
-  ls -lh .codex/cleanup_audit.log
-  ```
+ ```bash
+ ls -lh .codex/cleanup_audit.log
+ ```
 
 ### Monthly
 
 - [ ] Generate cleanup summary report
-  ```bash
-  jq 'group_by(.action) | map({action: .[0].action, count: length})' .codex/cleanup_audit.json
-  ```
+ ```bash
+ jq 'group_by(.action) | map({action: .[0].action, count: length})' .codex/cleanup_audit.json
+ ```
 - [ ] Review and adjust retention windows if needed
 - [ ] Backup archives to external storage
 - [ ] Test data recovery procedure
@@ -509,7 +509,7 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-##  Related Resources
+## Related Resources
 
 - [Retention Policy](../.codex/RETENTION_POLICY.md)
 - [Artifact Lifecycle Automation](../.codex/ARTIFACT_LIFECYCLE_AUTOMATION.md)
@@ -517,7 +517,7 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-## 📞 Support & Escalation
+## Support & Escalation
 
 ### Common Support Issues
 
@@ -537,20 +537,20 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-##  Sign-Off
+## Sign-Off
 
-**Document Authority**: Phase D Tier 2  
-**Approved By**: @mbaetiong (D-mode autonomous)  
-**Date**: 2026-07-15  
+**Document Authority**: Phase D Tier 2 
+**Approved By**: @mbaetiong (D-mode autonomous) 
+**Date**: 2026-07-15 
 **Team Acknowledgment**: _______________ (Date: _________)
 
 ---
 
 **Version History**:
 - v1.0 (2026-07-15): Initial operations guide
-  - Quick start procedures
-  - Common operations
-  - Monitoring and alerting setup
-  - Emergency procedures
-  - Troubleshooting guide
-  - Operational checklists
+ - Quick start procedures
+ - Common operations
+ - Monitoring and alerting setup
+ - Emergency procedures
+ - Troubleshooting guide
+ - Operational checklists

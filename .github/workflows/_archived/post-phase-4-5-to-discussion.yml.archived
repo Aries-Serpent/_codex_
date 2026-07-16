@@ -1,0 +1,160 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: "\U0001F4CA Post Phase 4-5 Summary to Discussion  #4872"
+on:
+  workflow_dispatch:
+    inputs:
+      force_post:
+        description: Force create new comment (skips upsert check)
+        required: false
+        default: false
+        type: boolean
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  discussions: write
+  pull-requests: read
+jobs:
+  post-to-discussion:
+    name: "\U0001F4CA Post to Discussion  #4872"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 5
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Extract Phase 4-5 summary
+      id: extract
+      shell: python3 {0}
+      run: "import os\nfrom pathlib import Path\n\npost_file = Path(\".codex/PHASE_4_5_DISCUSSION_POST.md\"\
+        )\noutput_file = Path(os.environ[\"GITHUB_OUTPUT\"])\n\ndef write_output(name:\
+        \ str, value: str) -> None:\n    with output_file.open(\"a\", encoding=\"\
+        utf-8\") as handle:\n        handle.write(f\"{name}={value}\\n\")\n\ndef write_multiline_output(name:\
+        \ str, value: str) -> None:\n    delimiter = \"__PHASE_4_5_ENTRY__\"\n   \
+        \ with output_file.open(\"a\", encoding=\"utf-8\") as handle:\n        handle.write(f\"\
+        {name}<<{delimiter}\\n{value}\\n{delimiter}\\n\")\n\nif not post_file.exists():\n\
+        \    print(f\"::error::PHASE_4_5_DISCUSSION_POST.md not found at {post_file}\"\
+        )\n    write_output(\"should_post\", \"false\")\n    raise SystemExit(1)\n\
+        \ncontent = post_file.read_text(encoding=\"utf-8\").strip()\n\nif not content:\n\
+        \    print(\"::error::PHASE_4_5_DISCUSSION_POST.md is empty\")\n    write_output(\"\
+        should_post\", \"false\")\n    raise SystemExit(1)\n\nwrite_output(\"should_post\"\
+        , \"true\")\nwrite_multiline_output(\"post_content\", content)\n\nprint(f\"\
+        \u2705 Extracted Phase 4-5 post content ({len(content)} bytes)\")\n"
+    - name: "\U0001F511 Resolve auth token for discussions:write"
+      id: auth
+      env:
+        GITHUB_APP_PRIVATE_KEY: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+        GITHUB_APP_ID: ${{ secrets._GITHUB_APP_ID }}
+        GITHUB_APP_INSTALLATION_ID: ${{ secrets._GITHUB_APP_INSTALLATION_ID }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+      run: "pip install \"PyJWT==2.8.0\" \"cryptography==44.0.2\" --quiet\nRESOLVED_TOKEN=\"\
+        \"\nif [[ -n \"${GITHUB_APP_PRIVATE_KEY}\" && -n \"${GITHUB_APP_ID}\" && -n\
+        \ \"${GITHUB_APP_INSTALLATION_ID}\" ]]; then\n  echo \"\u2139\uFE0F Attempting\
+        \ GitHub App installation token mint...\"\n  INSTALL_TOKEN=$(python3 - <<'PYEOF'\n\
+        import os, time, json, sys\ntry:\n    import jwt\n    key = os.environ[\"\
+        GITHUB_APP_PRIVATE_KEY\"]\n    app_id = os.environ[\"GITHUB_APP_ID\"]\n  \
+        \  inst_id = os.environ[\"GITHUB_APP_INSTALLATION_ID\"]\n    now = int(time.time())\n\
+        \    payload = {\"iat\": now - 60, \"exp\": now + 540, \"iss\": str(app_id)}\n\
+        \    app_jwt = jwt.encode(payload, key, algorithm=\"RS256\")\n    import urllib.request,\
+        \ urllib.error\n    req = urllib.request.Request(\n        f\"https://api.github.com/app/installations/{inst_id}/access_tokens\"\
+        ,\n        method=\"POST\",\n        data=json.dumps({}).encode(),\n     \
+        \   headers={\n             \"Authorization\": f\"{app_jwt}\",\n         \
+        \   \"Accept\": \"application/vnd.github+json\",\n            \"X-GitHub-Api-Version\"\
+        : \"2022-11-28\",\n            \"User-Agent\": \"codex-phase-4-5/1.0\",\n\
+        \        },\n    )\n    try:\n        with urllib.request.urlopen(req, timeout=15)\
+        \ as resp:\n            data = json.loads(resp.read())\n        print(data[\"\
+        token\"])\n    except urllib.error.HTTPError as http_err:\n        body =\
+        \ http_err.read().decode(\"utf-8\", errors=\"replace\")\n        print(f\"\
+        APP_TOKEN_FAILED: HTTP {http_err.code} \u2014 {body}\", file=sys.stderr)\n\
+        \        print(\"\")\nexcept Exception as e:\n    print(f\"APP_TOKEN_FAILED:\
+        \ {e}\", file=sys.stderr)\n    print(\"\")\nPYEOF\n)\n  if [[ -n \"${INSTALL_TOKEN}\"\
+        \ && \"${INSTALL_TOKEN}\" != \"APP_TOKEN_FAILED\"* ]]; then\n    RESOLVED_TOKEN=\"\
+        ${INSTALL_TOKEN}\"\n    echo \"\u2705 GitHub App installation token acquired\"\
+        \n    echo \"auth_source=github_app\" >> \"$GITHUB_OUTPUT\"\n  else\n    echo\
+        \ \"\u26A0\uFE0F App token mint failed \u2014 falling back to PAT\"\n  fi\n\
+        fi\nif [[ -z \"${RESOLVED_TOKEN}\" ]]; then\n  if [[ -n \"${CODEX_MASTER_KEY}\"\
+        \ ]]; then\n    RESOLVED_TOKEN=\"${CODEX_MASTER_KEY}\"\n    echo \"auth_source=codex_master_key\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  elif [[ -n \"${CODEX_BACKUP_KEY}\" ]]; then\n \
+        \   RESOLVED_TOKEN=\"${CODEX_BACKUP_KEY}\"\n    echo \"auth_source=codex_backup_key\"\
+        \ >> \"$GITHUB_OUTPUT\"\n  else\n    RESOLVED_TOKEN=\"${GITHUB_TOKEN_FALLBACK}\"\
+        \n    echo \"auth_source=github_token\" >> \"$GITHUB_OUTPUT\"\n    echo \"\
+        \u26A0\uFE0F Using github.token \u2014 discussion write may fail without discussions:write\"\
+        \n  fi\nfi\necho \"::add-mask::${RESOLVED_TOKEN}\"\necho \"resolved_token=${RESOLVED_TOKEN}\"\
+        \ >> \"$GITHUB_OUTPUT\"\n"
+    - name: 'Post to GitHub Discussion  #4872'
+      if: steps.extract.outputs.should_post == 'true'
+      uses: actions/github-script@v8
+      env:
+        POST_CONTENT: ${{ steps.extract.outputs.post_content }}
+        FORCE_POST: ${{ inputs.force_post || 'false' }}
+        SHA: ${{ github.sha }}
+        REF: ${{ github.ref_name }}
+      with:
+        github-token: ${{ steps.auth.outputs.resolved_token }}
+        script: "const encode = encodeURIComponent;\nconst discussionNumber = 4872;\n\
+          const postContent = (process.env.POST_CONTENT || '').trim();\nif (!postContent)\
+          \ {\n  core.error('Empty post content \u2014 cannot proceed');\n  throw\
+          \ new Error('Empty phase 4-5 content');\n}\n\nconst branch = process.env.REF\
+          \ || '';\nconst sha = (process.env.SHA || '').slice(0, 7);\nconst timestamp\
+        \ = new Date().toISOString();\nconst contractMarker = `<!-- codex-phase-4-5:v1\
+        \ -->`;\nconst metadataLine = `> **Posted:** ${timestamp} \xB7 branch \\\
+          `${branch}\\` \xB7 sha \\`${sha}\\``;\nconst body = `${contractMarker}\\\
+          n${metadataLine}\\n\\n${postContent}`;\n\nlet discussionId = '';\ntry {\n\
+        \  const discussion = await github.graphql(`\n    query($owner: String!,\
+        \ $name: String!, $number: Int!) {\n      repository(owner: $owner, name:\
+        \ $name) {\n        discussion(number: $number) { id }\n      }\n    }\n\
+        \  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
+        \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
+        } catch (e) {\n  core.error(`Could not fetch discussion  #${discussionNumber}:\
+          \ ${e.message}`);\n  throw new Error(`Failed to fetch discussion  #${discussionNumber}`);\n\
+          }\n\nlet existingComment = null;\nlet cursor = null;\nwhile (discussionId)\
+        \ {\n  const page = await github.graphql(`\n    query($id: ID!, $cursor:\
+        \ String) {\n      node(id: $id) {\n        ... on Discussion {\n      \
+        \    comments(last: 100, before: $cursor) {\n            nodes { id body\
+          \ url }\n            pageInfo { hasPreviousPage startCursor }\n        \
+        \  }\n        }\n      }\n    }\n  `, { id: discussionId, cursor });\n \
+          \ const comments = page.node.comments.nodes || [];\n  for (const comment\
+          \ of [...comments].reverse()) {\n    if ((comment.body || '').includes(contractMarker))\
+          \ {\n      existingComment = comment;\n      break;\n    }\n  }\n  if (existingComment\
+          \ || !page.node.comments.pageInfo.hasPreviousPage) {\n    break;\n  }\n\
+          \  cursor = page.node.comments.pageInfo.startCursor;\n}\n\ntry {\n  if (existingComment\
+          \ && process.env.FORCE_POST !== 'true') {\n    const result = await github.graphql(`\n\
+        \      mutation($commentId: ID!, $body: String!) {\n        updateDiscussionComment(input:\
+        \ { commentId: $commentId, body: $body }) {\n          comment { id url\
+        \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
+          \      body,\n    });\n    core.info(\n      `\u2705 Updated Phase 4-5 summary\
+        \ in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
+          \    );\n    return;\n  }\n\n  const result = await github.graphql(`\n \
+        \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
+        \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
+          \ url }\n      }\n    }\n  `, {\n    discussionId,\n    body,\n  });\n \
+        \ core.info(\n    `\u2705 Posted Phase 4-5 summary to discussion  #${discussionNumber}:\
+          \ ` +\n    `${result.addDiscussionComment.comment.url}`\n  );\n} catch (e)\
+        \ {\n  core.error(`Failed to post discussion comment: ${e.message}`);\n\
+        \  core.info('Body preview (first 200 chars): ' + body.slice(0, 200));\n\
+          \  throw e;\n}\n"
+    - name: Log success
+      if: success()
+      run: "echo \"\u2705 Phase 4-5 summary posted to discussion  #4872\"\necho \"\U0001F4CA\
+        \ Status: Phase 1-3 complete, Phase 4-5 executing\"\necho \"\U0001F517 Discussion:\
+        \ https://github.com/Aries-Serpent/_codex_/discussions/4872\"\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

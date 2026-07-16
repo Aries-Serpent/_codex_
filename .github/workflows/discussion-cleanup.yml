@@ -1,3 +1,4 @@
+---
 name: "\U0001F9F9 Discussion Cleanup \u2014 Deduplicate Comments"
 on:
   workflow_dispatch:
@@ -245,4 +246,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

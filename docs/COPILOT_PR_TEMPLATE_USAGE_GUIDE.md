@@ -2,19 +2,19 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0  
-> **Generated:** 2025-11-17  
+> **Version:** 1.0.0 
+> **Generated:** 2025-11-17 
 > **Purpose:** Guide for Copilot agents on using PR_TEMPLATE_COMPREHENSIVE.md when creating/updating PR descriptions
 
 ---
 
-##  OVERVIEW
+## OVERVIEW
 
 This document provides **explicit directions for Copilot to follow** when creating or updating Pull Request descriptions. The goal is to leverage `PR_TEMPLATE_COMPREHENSIVE.md` to create structured, checkbox-based PR bodies that enable quick interpretation and processing of iterative requests.
 
 ---
 
-##  CORE PRINCIPLES
+## CORE PRINCIPLES
 
 ### 1. Template-Based PR Bodies
 - **ALWAYS** use `PR_TEMPLATE_COMPREHENSIVE.md` as the foundation for PR descriptions
@@ -33,7 +33,7 @@ This document provides **explicit directions for Copilot to follow** when creati
 
 ---
 
-##  WHEN TO UPDATE PR DESCRIPTIONS
+## WHEN TO UPDATE PR DESCRIPTIONS
 
 Update the PR description using the template in these scenarios:
 
@@ -45,7 +45,7 @@ Update the PR description using the template in these scenarios:
 
 ---
 
-##  HOW TO USE THE TEMPLATE
+## HOW TO USE THE TEMPLATE
 
 ### Step 1: Load Template Structure
 ```bash
@@ -82,21 +82,21 @@ Based on the work performed, identify which capability sections apply:
 For each section included:
 
 1. **Mark Completed Items** with `[x]`:
-   ```markdown
-   - [x] ModelConfig class with env var support
-   - [x] Multi-backend support (stub, HuggingFace, ONNX)
-   ```
+ ```markdown
+ - [x] ModelConfig class with env var support
+ - [x] Multi-backend support (stub, HuggingFace, ONNX)
+ ```
 
 2. **Mark Pending Items** with `[ ]`:
-   ```markdown
-   - [ ] GPU acceleration (planned for Phase D2)
-   - [ ] Distributed inference (future work)
-   ```
+ ```markdown
+ - [ ] GPU acceleration (planned for Phase D2)
+ - [ ] Distributed inference (future work)
+ ```
 
 3. **Omit Irrelevant Items** entirely:
-   ```markdown
-   # Don't include unrelated items - just remove them
-   ```
+ ```markdown
+ # Don't include unrelated items - just remove them
+ ```
 
 ### Step 4: Provide Summary Statistics
 At the top or bottom of the PR description, include:
@@ -108,7 +108,7 @@ At the top or bottom of the PR description, include:
 
 ---
 
-## 🎬 EXAMPLE: UPDATING PR DESCRIPTION
+## EXAMPLE: UPDATING PR DESCRIPTION
 
 ### Scenario: Phase Completion
 After completing "Phase D1: Request Batching", update the PR description:
@@ -116,7 +116,7 @@ After completing "Phase D1: Request Batching", update the PR description:
 ```markdown
 ## Phase D: Performance Optimizations
 
-###  D1: Request Batching (COMPLETE)
+### D1: Request Batching (COMPLETE)
 
 **Capability Section D) Performance Optimizations - Request Batching:**
 - [x] BatchingMiddleware class implemented
@@ -147,7 +147,7 @@ After completing "Phase D1: Request Batching", update the PR description:
 - **Files Created:** src/codex_ml/serving/batching.py, tests/codex_ml/test_batching.py
 - **Code:** 544 lines
 
-### 🔜 D2: Response Caching (NEXT)
+### D2: Response Caching (NEXT)
 
 **Capability Section D) Performance Optimizations - Response Caching:**
 - [ ] LRU cache with TTL support
@@ -159,22 +159,22 @@ After completing "Phase D1: Request Batching", update the PR description:
 
 ---
 
-##  CRITICAL RULES
+## CRITICAL RULES
 
 ### Before Finishing a Session
 
 **MUST DO:**
-1.  **Review PR_TEMPLATE_COMPREHENSIVE.md** - Understand which checkboxes apply
-2.  **Update PR Description** - Fill out relevant template sections with current state
-3.  **Verify Checkboxes Match Implementation** - Ensure accuracy
-4.  **Include Summary Statistics** - Provide commit count, test count, file counts
-5.  **Document Remaining Work** - mark unchecked items that are planned
+1. **Review PR_TEMPLATE_COMPREHENSIVE.md** - Understand which checkboxes apply
+2. **Update PR Description** - Fill out relevant template sections with current state
+3. **Verify Checkboxes Match Implementation** - Ensure accuracy
+4. **Include Summary Statistics** - Provide commit count, test count, file counts
+5. **Document Remaining Work** - mark unchecked items that are planned
 
 **MUST NOT DO:**
-1.  **Leave PR description with generic/freeform text** - Always use template structure
-2.  **Mark items as complete when they're not** - Be accurate
-3.  **Include ALL checkboxes** - Only include relevant capability sections
-4.  **Forget to update after each phase** - Keep PR description current
+1. **Leave PR description with generic/freeform text** - Always use template structure
+2. **Mark items as complete when they're not** - Be accurate
+3. **Include ALL checkboxes** - Only include relevant capability sections
+4. **Forget to update after each phase** - Keep PR description current
 
 ### When Another Copilot Resumes
 
@@ -187,7 +187,7 @@ The next Copilot agent can quickly:
 
 ---
 
-##  TEMPLATE SECTION MAPPING
+## TEMPLATE SECTION MAPPING
 
 ### Map Implementation to Template Sections
 
@@ -207,7 +207,7 @@ The next Copilot agent can quickly:
 
 ---
 
-##  VERIFICATION CHECKLIST
+## VERIFICATION CHECKLIST
 
 Before finishing a session, verify:
 
@@ -224,38 +224,38 @@ Before finishing a session, verify:
 
 ---
 
-##  QUICK REFERENCE: PR UPDATE WORKFLOW
+## QUICK REFERENCE: PR UPDATE WORKFLOW
 
 ```text
 1. START SESSION
-   ↓
+ ↓
 2. LOAD PR_TEMPLATE_COMPREHENSIVE.md
-   ↓
+ ↓
 3. IDENTIFY RELEVANT SECTIONS (A-K)
-   ↓
+ ↓
 4. MAKE CODE CHANGES
-   ↓
+ ↓
 5. UPDATE PR DESCRIPTION
-   - Check completed items [x]
-   - Leave pending items [ ]
-   - Omit irrelevant sections
-   - Update statistics
-   ↓
+ - Check completed items [x]
+ - Leave pending items [ ]
+ - Omit irrelevant sections
+ - Update statistics
+ ↓
 6. COMMIT CHANGES with report_progress
-   ↓
+ ↓
 7. REPEAT STEPS 4-6 FOR EACH PHASE
-   ↓
+ ↓
 8. BEFORE FINISHING SESSION
-   - Verify all checkboxes accurate
-   - Document remaining work
-   - Update summary statistics
-   ↓
+ - Verify all checkboxes accurate
+ - Document remaining work
+ - Update summary statistics
+ ↓
 9. END SESSION
 ```text
 
 ---
 
-## 🎓 EXAMPLE: COMPLETE PR DESCRIPTION STRUCTURE
+## EXAMPLE: COMPLETE PR DESCRIPTION STRUCTURE
 
 ```markdown
 # Comprehensive ML Platform Enhancement: [Feature Names]
@@ -264,12 +264,12 @@ Before finishing a session, verify:
 
 ---
 
-##  PR OVERVIEW
+## PR OVERVIEW
 
 ### Basic Information
 - [x] **PR Title**: Comprehensive ML Platform Enhancement
 - [x] **Linked Issue(s)**: Relates to #2264
-- [x] **PR Type**:  New Feature,  Performance Improvement
+- [x] **PR Type**: New Feature, Performance Improvement
 
 ### Scope Summary
 - [x] **S-IDs Listed**: Retrieval, Inference Serving, Metrics, Performance
@@ -321,7 +321,7 @@ Before finishing a session, verify:
 
 ---
 
-##  CAPABILITY IMPLEMENTATIONS
+## CAPABILITY IMPLEMENTATIONS
 
 ### A) Inference Serving (Phase 2) 
 
@@ -425,7 +425,7 @@ Before finishing a session, verify:
 
 ---
 
-##  SUMMARY STATISTICS
+## SUMMARY STATISTICS
 
 **Total Impact:**
 - **Commits:** 20
@@ -437,15 +437,15 @@ Before finishing a session, verify:
 - **Acceptance Criteria:** 26/26 (100%)
 
 **Quality Metrics:**
-- **Security Scan:**  0 vulnerabilities (CodeQL)
-- **Test Pass Rate:**  100%
-- **Code Coverage:**  >90%
-- **Breaking Changes:**  None
-- **Documentation:**  Complete
+- **Security Scan:** 0 vulnerabilities (CodeQL)
+- **Test Pass Rate:** 100%
+- **Code Coverage:** >90%
+- **Breaking Changes:** None
+- **Documentation:** Complete
 
 ---
 
-##  ACCEPTANCE CRITERIA
+## ACCEPTANCE CRITERIA
 
 All acceptance criteria met across all phases:
 - Phase 1: Code Review Fixes (implicit) 
@@ -459,13 +459,13 @@ All acceptance criteria met across all phases:
 
 ---
 
-##  READY FOR REVIEW
+## READY FOR REVIEW
 
- All planned work complete  
- All tests passing  
- All documentation complete  
- Zero security issues  
- Zero breaking changes  
+ All planned work complete 
+ All tests passing 
+ All documentation complete 
+ Zero security issues 
+ Zero breaking changes 
  Template-based PR description complete
 
 **Status:** READY FOR FINAL REVIEW AND MERGE
@@ -473,7 +473,7 @@ All acceptance criteria met across all phases:
 
 ---
 
-##  TIPS FOR COPILOT AGENTS
+## TIPS FOR COPILOT AGENTS
 
 1. **Start Each Session** by checking if `PR_TEMPLATE_COMPREHENSIVE.md` exists
 2. **Bookmark Common Sections** that apply to most PRs (Testing, Docs, Safety)
@@ -486,7 +486,7 @@ All acceptance criteria met across all phases:
 
 ---
 
-## 📞 QUESTIONS?
+## QUESTIONS?
 
 If unsure about:
 - **Which sections to include** → Include sections for work you actually did
@@ -496,7 +496,7 @@ If unsure about:
 
 ---
 
-##  VERSION HISTORY
+## VERSION HISTORY
 
 - **v0.2.1** (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage
 

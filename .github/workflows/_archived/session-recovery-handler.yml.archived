@@ -1,0 +1,183 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: Session Recovery Handler
+on:
+  workflow_run:
+    workflows:
+    - Running Copilot cloud agent
+    types:
+    - completed
+permissions:
+  contents: write
+  actions: read
+  checks: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  detect-session-failure:
+    name: Detect and Recover Failed Sessions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: 'github.event.workflow_run.status == ''cancelled'' ||
+
+      github.event.workflow_run.conclusion == ''cancelled'' ||
+
+      github.event.workflow_run.conclusion == ''failure'' ||
+
+      (github.event.workflow_run.conclusion == ''timed_out'')
+
+      '
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Extract failed workflow context
+      id: extract_context
+      run: "# \u26A0\uFE0F SECURITY: Validate all workflow_run inputs to prevent code\
+        \ injection (CodeQL)\n# Only extract immutable numeric IDs; sanitize all string\
+        \ inputs\n\n# Extract numeric ID (immutable, safe for code context)\nWORKFLOW_RUN_ID=\"\
+        ${{ github.event.workflow_run.id }}\"\n\n# Extract safely: use gh CLI to validate\
+        \ and escape\nWORKFLOW_NAME=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID\
+        \ --jq .name 2>/dev/null | sed 's/[^a-zA-Z0-9 _.-]/_/g')\nBRANCH=$(gh api\
+        \ repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .head_branch\
+        \ 2>/dev/null | sed 's/[^a-zA-Z0-9/_.-]/_/g')\nSHA=$(gh api repos/${{ github.repository\
+        \ }}/actions/runs/$WORKFLOW_RUN_ID --jq .head_sha 2>/dev/null | grep -oE '^[a-f0-9]{40}$'\
+        \ || echo \"unknown\")\nCREATED_AT=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID\
+        \ --jq .created_at 2>/dev/null)\nUPDATED_AT=$(gh api repos/${{ github.repository\
+        \ }}/actions/runs/$WORKFLOW_RUN_ID --jq .updated_at 2>/dev/null)\nSTATUS=$(gh\
+        \ api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .status\
+        \ 2>/dev/null | grep -E '^(queued|in_progress|completed)$' || echo \"unknown\"\
+        )\nCONCLUSION=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID\
+        \ --jq .conclusion 2>/dev/null | grep -E '^(success|failure|neutral|cancelled|timed_out|action_required|stale|skipped)$'\
+        \ || echo \"unknown\")\n\n# Calculate duration safely\nif [ -n \"$CREATED_AT\"\
+        \ ] && [ -n \"$UPDATED_AT\" ]; then\n  CREATED_TS=$(date -d \"$CREATED_AT\"\
+        \ +%s 2>/dev/null || echo \"0\")\n  UPDATED_TS=$(date -d \"$UPDATED_AT\" +%s\
+        \ 2>/dev/null || echo \"0\")\n  DURATION=$((UPDATED_TS - CREATED_TS))\n  [\
+        \ $DURATION -lt 0 ] && DURATION=0\nelse\n  DURATION=0\nfi\n\n# Output values\
+        \ (sanitized)\necho \"workflow_run_id=$WORKFLOW_RUN_ID\" >> $GITHUB_OUTPUT\n\
+        echo \"workflow_name=$WORKFLOW_NAME\" >> $GITHUB_OUTPUT\necho \"branch=$BRANCH\"\
+        \ >> $GITHUB_OUTPUT\necho \"sha=$SHA\" >> $GITHUB_OUTPUT\necho \"created_at=$CREATED_AT\"\
+        \ >> $GITHUB_OUTPUT\necho \"updated_at=$UPDATED_AT\" >> $GITHUB_OUTPUT\necho\
+        \ \"status=$STATUS\" >> $GITHUB_OUTPUT\necho \"conclusion=$CONCLUSION\" >>\
+        \ $GITHUB_OUTPUT\necho \"duration_seconds=$DURATION\" >> $GITHUB_OUTPUT\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create session recovery log
+      id: create_recovery_log
+      run: "RECOVERY_FILE=\".codex/session_recovery_$(date +%Y%m%d_%H%M%S).md\"\n\n\
+        cat > \"$RECOVERY_FILE\" << 'EOF'\n# Session Recovery \u2014 ${{ steps.extract_context.outputs.updated_at\
+        \ }}\n\n**Failed Workflow Run:** ${{ steps.extract_context.outputs.workflow_run_id\
+        \ }}\n**Workflow Name:** ${{ steps.extract_context.outputs.workflow_name }}\n\
+        **Branch:** ${{ steps.extract_context.outputs.branch }}\n**Commit SHA:** ${{\
+        \ steps.extract_context.outputs.sha }}\n**Status:** ${{ steps.extract_context.outputs.status\
+        \ }}\n**Conclusion:** ${{ steps.extract_context.outputs.conclusion }}\n**Duration:**\
+        \ ${{ steps.extract_context.outputs.duration_seconds }} seconds\n\n---\n\n\
+        ## Recovery Actions\n\n- \u2705 Session failure detected: `${{ steps.extract_context.outputs.conclusion\
+        \ }}`\n- \u2705 Context extracted and logged\n- \u23F3 Recovery workflow triggered\n\
+        - \u23F3 Pending: Session state recovery + continuation\n\n**GitHub Run:**\
+        \ https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id\
+        \ }}\nEOF\n\necho \"recovery_file=$RECOVERY_FILE\" >> $GITHUB_OUTPUT\n"
+    - name: Log recovery event to session tracking
+      run: '# Extract session ID from branch or environment if available
+
+        BRANCH="${{ steps.extract_context.outputs.branch }}"
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        # Create JSONL entry for session tracking
+
+        cat >> .codex/session_recovery_log.jsonl << ''EOF''
+
+        {"timestamp":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")","type":"session_failure_detected","workflow_run_id":"${{
+        steps.extract_context.outputs.workflow_run_id }}","branch":"$BRANCH","status":"${{
+        steps.extract_context.outputs.conclusion }}","recovery_triggered":true}
+
+        EOF
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+        cat .codex/session_recovery_log.jsonl
+
+        '
+    - name: Check if auto-recovery should be triggered
+      id: check_recovery
+      run: "# Check for recent failures on this branch to prevent infinite loops\n\
+        BRANCH=\"${{ steps.extract_context.outputs.branch }}\"\n\n# Count recent failures\
+        \ (last 24 hours) on this branch\nRECENT_FAILURES=$(gh run list \\\n  -L 100\
+        \ \\\n  --json conclusion,createdAt,headBranch \\\n  --jq \"map(select(.headBranch==\\\
+        \"$BRANCH\\\" and (.createdAt | fromdateiso8601 | . > now - 86400))) | length\"\
+        \ \\\n  2>/dev/null || echo \"0\")\n\necho \"recent_failures=$RECENT_FAILURES\"\
+        \ >> $GITHUB_OUTPUT\n\n# Auto-recovery enabled if less than 2 consecutive\
+        \ failures\nif [ \"$RECENT_FAILURES\" -lt \"2\" ]; then\n  echo \"should_auto_recover=true\"\
+        \ >> $GITHUB_OUTPUT\nelse\n  echo \"should_auto_recover=false\" >> $GITHUB_OUTPUT\n\
+        fi\n"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Auto-recover failed session (up to 2 attempts)
+      if: steps.check_recovery.outputs.should_auto_recover == 'true'
+      run: "BRANCH=\"${{ steps.extract_context.outputs.branch }}\"\n\necho \"\U0001F504\
+        \ Attempting automatic session recovery for branch: $BRANCH\"\necho \"  -\
+        \ Recovery attempt on branch: $BRANCH\"\necho \"  - Failure conclusion: ${{\
+        \ steps.extract_context.outputs.conclusion }}\"\necho \"  - Duration: ${{\
+        \ steps.extract_context.outputs.duration_seconds }}s\"\necho \"\"\necho \"\
+        \u2139\uFE0F Note: Manual recovery or re-trigger may be needed if this is\
+        \ a persistent issue.\"\necho \"   Session logs available at: .codex/session_recovery_$(date\
+        \ +%Y%m%d_%H%M%S).md\"\n\n# Log recovery attempt\necho \"\u2705 Recovery logged\
+        \ to .codex/session_recovery_log.jsonl\"\n"
+    - name: Escalate to human review (2+ consecutive failures)
+      if: steps.check_recovery.outputs.should_auto_recover == 'false'
+      run: "echo \"\U0001F6A8 ESCALATION: Multiple consecutive failures detected\"\
+        \necho \"\"\necho \"Branch: ${{ steps.extract_context.outputs.branch }}\"\n\
+        echo \"Failed Workflow Run: https://github.com/${{ github.repository }}/actions/runs/${{\
+        \ steps.extract_context.outputs.workflow_run_id }}\"\necho \"Recent Failures:\
+        \ ${{ steps.check_recovery.outputs.recent_failures }}\"\necho \"\"\necho \"\
+        Action Required: Please review the failed session and take manual recovery\
+        \ action.\"\necho \"Contact: @mbaetiong\"\n"
+    - name: Commit recovery artifacts
+      if: always()
+      run: "cd /home/runner/work/_codex_/_codex_\n\ngit config user.name \"copilot-swe-agent[bot]\"\
+        \ngit config user.email \"198982749+Copilot@users.noreply.github.com\"\n\n\
+        # Add recovery files\ngit add .codex/session_recovery_*.md .codex/session_recovery_log.jsonl\
+        \ 2>/dev/null || true\n\n# Commit if there are changes\nif ! git diff --cached\
+        \ --quiet; then\n  git commit -m \"chore: log session recovery for workflow\
+        \ run ${{ steps.extract_context.outputs.workflow_run_id }} [skip ci]\" ||\
+        \ true\nfi\n"
+      continue-on-error: true
+    - name: Push recovery artifacts
+      if: always()
+      run: 'cd /home/runner/work/_codex_/_codex_
+
+        git push origin HEAD:${{ steps.extract_context.outputs.branch }} || true
+
+        '
+      continue-on-error: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  notify-recovery:
+    name: Notify Recovery Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: detect-session-failure
+    if: always()
+    steps:
+    - name: Log recovery completion
+      run: "echo \"\u2705 Session recovery workflow completed\"\necho \"\"\necho \"\
+        Failed Workflow Run: ${{ github.event.workflow_run.id }}\"\necho \"Recovery\
+        \ Workflow Run: ${{ github.run_id }}\"\necho \"\"\necho \"Status: Recovery\
+        \ logged and artifacts created\"\necho \"Next Steps: Manual intervention may\
+        \ be required if auto-recovery was not triggered\"\n"
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

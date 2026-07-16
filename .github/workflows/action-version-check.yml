@@ -1,3 +1,4 @@
+---
 name: Action Version Enforcement Check
 on:
   push:

@@ -2,19 +2,19 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Generated**: Comprehensive audit of all 207 GitHub Actions workflows  
-**Objective**: Identify root-level file references and assess cleanup impact  
-**Status**:  Complete - Ready for remediation planning
+**Generated**: Comprehensive audit of all 207 GitHub Actions workflows 
+**Objective**: Identify root-level file references and assess cleanup impact 
+**Status**: Complete - Ready for remediation planning
 
 ---
 
 ## Executive Summary
 
-###  Critical Findings
+### Critical Findings
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Total Workflows Analyzed** | 207 |  |
+| **Total Workflows Analyzed** | 207 | |
 | **With Root File References** | 133 | 64.2% |
 | ** CRITICAL (will break)** | **4** | **1.9%** |
 | ** HIGH-RISK (likely to break)** | **129** | **62.3%** |
@@ -24,9 +24,9 @@
 
 ```
 Total Workflows: 207
-├─ CRITICAL: 4 workflows (1.9%)          
-├─ HIGH-RISK: 129 workflows (62.3%)      
-└─ SAFE: 74 workflows (35.7%)            
+├─ CRITICAL: 4 workflows (1.9%) 
+├─ HIGH-RISK: 129 workflows (62.3%) 
+└─ SAFE: 74 workflows (35.7%) 
 ```
 
 ### Root File Reference Distribution
@@ -45,7 +45,7 @@ Total Workflows: 207
 
 ---
 
-##  CRITICAL WORKFLOWS (Must Fix Before Cleanup)
+## CRITICAL WORKFLOWS (Must Fix Before Cleanup)
 
 These 4 workflows will **completely break** if root files are moved:
 
@@ -53,40 +53,40 @@ These 4 workflows will **completely break** if root files are moved:
 - **Issue**: Multiple trigger filters on root files
 - **References**: `pyproject.toml`, `.github/workflows/`, `.codex/`
 - **Impact**: Workflow won't trigger when setup configuration changes
-- **Severity**:  CRITICAL
+- **Severity**: CRITICAL
 - **Action Required**: 
-  - Remove or update `on.push.paths` filter
-  - Update environment setup references
+ - Remove or update `on.push.paths` filter
+ - Update environment setup references
 
 ### 2. required-actions-enforcer.yml
 - **Issue**: Trigger filter on `.github/workflows/` changes
 - **References**: `.github/workflows/`
 - **Impact**: Won't enforce workflow requirements on changes
-- **Severity**:  CRITICAL
+- **Severity**: CRITICAL
 - **Action Required**:
-  - Update trigger filter to new workflow location
+ - Update trigger filter to new workflow location
 
 ### 3. resilient_validation.yml
 - **Issue**: Multiple trigger filters on core directories
 - **References**: `tests/`, `.codex/`, `coverage.json`
 - **Impact**: Validation won't run on test/infrastructure changes
-- **Severity**:  CRITICAL
+- **Severity**: CRITICAL
 - **Action Required**:
-  - Update all trigger filters
-  - Verify artifact paths for coverage reports
+ - Update all trigger filters
+ - Verify artifact paths for coverage reports
 
 ### 4. test-rag.yml
 - **Issue**: Trigger filters on source configuration
 - **References**: `pyproject.toml`, `.github/workflows/`, `tests/`
 - **Impact**: RAG tests won't trigger on changes
-- **Severity**:  CRITICAL
+- **Severity**: CRITICAL
 - **Action Required**:
-  - Update trigger filters for new locations
-  - Update environment setup references
+ - Update trigger filters for new locations
+ - Update environment setup references
 
 ---
 
-##  HIGH-RISK WORKFLOWS (129 total)
+## HIGH-RISK WORKFLOWS (129 total)
 
 These workflows reference root files in ways that may break during cleanup.
 
@@ -96,10 +96,10 @@ These workflows reference root files in ways that may break during cleanup.
 ```yaml
 # Problem: Hard-coded path to workflows directory
 on:
-  push:
-    paths:
-      - '.github/workflows/**'
-      - '.github/actions/**'
+ push:
+ paths:
+ - '.github/workflows/**'
+ - '.github/actions/**'
 ```
 **Fix**: Update paths if moving workflow files
 
@@ -107,8 +107,8 @@ on:
 ```yaml
 # Problem: Environment variables or cache keys reference root configs
 - name: Setup Python
-  with:
-    cache-dependency-path: 'pyproject.toml'
+ with:
+ cache-dependency-path: 'pyproject.toml'
 ```
 **Fix**: Update to new config file location
 
@@ -116,8 +116,8 @@ on:
 ```yaml
 # Problem: Hard-coded paths to test files or coverage outputs
 - uses: actions/upload-artifact
-  with:
-    path: coverage.json
+ with:
+ path: coverage.json
 ```
 **Fix**: Ensure artifact output paths match
 
@@ -152,7 +152,7 @@ docs-code-alignment, documentation-link-checker, pages-mkdocs, validate-code-exa
 
 ---
 
-##  SAFE WORKFLOWS (74 total - Can Survive Cleanup)
+## SAFE WORKFLOWS (74 total - Can Survive Cleanup)
 
 These 74 workflows (35.7%) do NOT reference root-level files and will continue working:
 
@@ -180,38 +180,38 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ---
 
-##  Detailed Impact Analysis
+## Detailed Impact Analysis
 
 ### File Reference Breakdown
 
 ```
 ┌─ Configuration Files (96 references)
-│  ├─ pyproject.toml: 41 workflows
-│  ├─ setup.py: 14 workflows
-│  ├─ noxfile.py: 7 workflows
-│  ├─ mkdocs.yml: 12 workflows
-│  ├─ Makefile: 8 workflows
-│  └─ Other: 14 workflows
+│ ├─ pyproject.toml: 41 workflows
+│ ├─ setup.py: 14 workflows
+│ ├─ noxfile.py: 7 workflows
+│ ├─ mkdocs.yml: 12 workflows
+│ ├─ Makefile: 8 workflows
+│ └─ Other: 14 workflows
 │
 ├─ Infrastructure (215 references)
-│  ├─ .codex/: 126 workflows
-│  ├─ .github/workflows/: 89 workflows
-│  └─ tests/: 68 workflows
+│ ├─ .codex/: 126 workflows
+│ ├─ .github/workflows/: 89 workflows
+│ └─ tests/: 68 workflows
 │
 ├─ Dependencies (35 references)
-│  ├─ requirements-*.txt: 35 workflows
-│  └─ Other: 12 workflows
+│ ├─ requirements-*.txt: 35 workflows
+│ └─ Other: 12 workflows
 │
 └─ Documentation (18 references)
-   ├─ README.md: 18 workflows
-   └─ .github/docs/: 3 workflows
+ ├─ README.md: 18 workflows
+ └─ .github/docs/: 3 workflows
 ```
 
 ### Trigger Filter Analysis
 
-**Workflows using on.push.paths filter:** 87  
-**Workflows using on.pull_request.paths filter:** 56  
-**Workflows using on.pull_request_target.paths filter:** 12  
+**Workflows using on.push.paths filter:** 87 
+**Workflows using on.pull_request.paths filter:** 56 
+**Workflows using on.pull_request_target.paths filter:** 12 
 
 **Most Common Path Filters:**
 - `.github/workflows/` - 89 workflows
@@ -222,46 +222,46 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ---
 
-## 🛠️ Remediation Strategy
+## ️ Remediation Strategy
 
 ### Phase 1: Critical Fix (Immediate - 4 workflows)
 
-**Effort**: 30-45 minutes  
+**Effort**: 30-45 minutes 
 **Complexity**: Low
 
 1. **copilot-setup-steps.yml**
-   ```yaml
-   # BEFORE: on.push.paths references root files
-   on:
-     push:
-       paths:
-         - 'pyproject.toml'
-         - '.github/workflows/**'
-         - '.codex/**'
-   
-   # AFTER: Update to new locations
-   on:
-     push:
-       paths:
-         - 'build/pyproject.toml'
-         - '.github/workflows/**'
-         - '.codex/**'
-   ```
+ ```yaml
+ # BEFORE: on.push.paths references root files
+ on:
+ push:
+ paths:
+ - 'pyproject.toml'
+ - '.github/workflows/**'
+ - '.codex/**'
+ 
+ # AFTER: Update to new locations
+ on:
+ push:
+ paths:
+ - 'build/pyproject.toml'
+ - '.github/workflows/**'
+ - '.codex/**'
+ ```
 
 2. **required-actions-enforcer.yml**
-   ```yaml
-   # Update trigger filter for workflow directory
-   ```
+ ```yaml
+ # Update trigger filter for workflow directory
+ ```
 
 3. **resilient_validation.yml**
-   ```yaml
-   # Update trigger filters for test and artifact paths
-   ```
+ ```yaml
+ # Update trigger filters for test and artifact paths
+ ```
 
 4. **test-rag.yml**
-   ```yaml
-   # Update trigger filters and configuration references
-   ```
+ ```yaml
+ # Update trigger filters and configuration references
+ ```
 
 ### Phase 2: High-Risk Cleanup (6-8 hours - 129 workflows)
 
@@ -296,39 +296,39 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ---
 
-##  Cleanup Plan
+## Cleanup Plan
 
 ### Recommended Directory Structure
 
 ```
 repository/
 ├─ .github/
-│  ├─ workflows/        (keep as-is)
-│  ├─ actions/          (keep as-is)
-│  └─ docs/             (keep as-is)
-├─ config/              (NEW: Move config files here)
-│  ├─ pyproject.toml
-│  ├─ setup.py
-│  ├─ setup.cfg
-│  ├─ pytest.ini
-│  ├─ mypy.ini
-│  ├─ .mypy_baseline
-│  ├─ bandit.yaml
-│  ├─ mkdocs.yml
-│  └─ commitlint.config.mjs
-├─ build/               (NEW: Move build files here)
-│  ├─ Makefile
-│  ├─ noxfile.py
-│  ├─ Dockerfile
-│  └─ docker-compose.yml
-├─ requirements/        (NEW: Move requirements here)
-│  ├─ requirements.txt
-│  ├─ requirements-dev.txt
-│  ├─ requirements-test.txt
-│  └─ ... (other requirements files)
-├─ docs/                (Keep as-is, update references)
-├─ tests/               (Keep as-is)
-├─ src/                 (Keep as-is)
+│ ├─ workflows/ (keep as-is)
+│ ├─ actions/ (keep as-is)
+│ └─ docs/ (keep as-is)
+├─ config/ (NEW: Move config files here)
+│ ├─ pyproject.toml
+│ ├─ setup.py
+│ ├─ setup.cfg
+│ ├─ pytest.ini
+│ ├─ mypy.ini
+│ ├─ .mypy_baseline
+│ ├─ bandit.yaml
+│ ├─ mkdocs.yml
+│ └─ commitlint.config.mjs
+├─ build/ (NEW: Move build files here)
+│ ├─ Makefile
+│ ├─ noxfile.py
+│ ├─ Dockerfile
+│ └─ docker-compose.yml
+├─ requirements/ (NEW: Move requirements here)
+│ ├─ requirements.txt
+│ ├─ requirements-dev.txt
+│ ├─ requirements-test.txt
+│ └─ ... (other requirements files)
+├─ docs/ (Keep as-is, update references)
+├─ tests/ (Keep as-is)
+├─ src/ (Keep as-is)
 └─ ... (other directories)
 ```
 
@@ -346,30 +346,30 @@ repository/
 ```yaml
 # BEFORE
 on:
-  push:
-    paths:
-      - 'pyproject.toml'
-      - 'requirements-dev.txt'
-      - 'tests/**'
+ push:
+ paths:
+ - 'pyproject.toml'
+ - 'requirements-dev.txt'
+ - 'tests/**'
 with:
-  cache-dependency-path: 'requirements.txt'
+ cache-dependency-path: 'requirements.txt'
 run: pytest --cov=src --cov-report=xml
 
 # AFTER
 on:
-  push:
-    paths:
-      - 'config/pyproject.toml'
-      - 'requirements/requirements-dev.txt'
-      - 'tests/**'
+ push:
+ paths:
+ - 'config/pyproject.toml'
+ - 'requirements/requirements-dev.txt'
+ - 'tests/**'
 with:
-  cache-dependency-path: 'requirements/requirements.txt'
-run: pytest --cov=src --cov-report=xml  # (no change needed - finds cwd automatically)
+ cache-dependency-path: 'requirements/requirements.txt'
+run: pytest --cov=src --cov-report=xml # (no change needed - finds cwd automatically)
 ```
 
 ---
 
-##  Validation Checklist
+## Validation Checklist
 
 - [ ] All 4 CRITICAL workflows updated and tested
 - [ ] All 129 HIGH-RISK workflows updated and tested
@@ -383,67 +383,67 @@ run: pytest --cov=src --cov-report=xml  # (no change needed - finds cwd automati
 
 ---
 
-##  Success Metrics
+## Success Metrics
 
 | Metric | Before | After | Status |
 |--------|--------|-------|--------|
-| Workflows referencing root | 133 | <10 |  |
-| CRITICAL workflows | 4 | 0 |  |
+| Workflows referencing root | 133 | <10 | |
+| CRITICAL workflows | 4 | 0 | |
 | HIGH-RISK workflows | 129 | 0 | �� |
-| Workflow success rate | ? | 100% |  |
+| Workflow success rate | ? | 100% | |
 
 ---
 
-## 📌 Recommendations
+## Recommendations
 
 ### Before Starting Cleanup
 
-1.  **All 4 CRITICAL workflows must be fixed first**
-   - These completely break workflow triggering
-   - Estimated effort: 30 minutes
+1. **All 4 CRITICAL workflows must be fixed first**
+ - These completely break workflow triggering
+ - Estimated effort: 30 minutes
 
-2.  **Create migration branch**
-   - Test all changes on non-main branch first
-   - Use workflow_dispatch for manual testing
+2. **Create migration branch**
+ - Test all changes on non-main branch first
+ - Use workflow_dispatch for manual testing
 
-3.  **Update documentation**
-   - Update CONTRIBUTING.md with new structure
-   - Document any special environment setup
+3. **Update documentation**
+ - Update CONTRIBUTING.md with new structure
+ - Document any special environment setup
 
 ### During Cleanup
 
-1.  **Batch similar changes together**
-   - Use scripting for repetitive updates
-   - Group by workflow category
+1. **Batch similar changes together**
+ - Use scripting for repetitive updates
+ - Group by workflow category
 
-2.  **Test incrementally**
-   - Fix critical → test
-   - Fix high-risk batch → test
-   - Verify no regressions
+2. **Test incrementally**
+ - Fix critical → test
+ - Fix high-risk batch → test
+ - Verify no regressions
 
-3.  **Monitor workflow runs**
-   - Watch for trigger failures
-   - Check for cache invalidation issues
-   - Verify artifact paths
+3. **Monitor workflow runs**
+ - Watch for trigger failures
+ - Check for cache invalidation issues
+ - Verify artifact paths
 
 ### After Cleanup
 
-1.  **Run full test suite**
-   - Verify all workflows execute
-   - Check trigger filters work
-   - Validate artifact uploads/downloads
+1. **Run full test suite**
+ - Verify all workflows execute
+ - Check trigger filters work
+ - Validate artifact uploads/downloads
 
-2.  **Document changes**
-   - Update WORKFLOW_AUDIT_SUMMARY.md
-   - Record any special migration steps
+2. **Document changes**
+ - Update WORKFLOW_AUDIT_SUMMARY.md
+ - Record any special migration steps
 
-3.  **Monitor for issues**
-   - Watch for workflow failures
-   - Address any edge cases
+3. **Monitor for issues**
+ - Watch for workflow failures
+ - Address any edge cases
 
 ---
 
-##  Summary Statistics
+## Summary Statistics
 
 **Workflow Risk Profile:**
 - Safe: 74 (35.7%)
@@ -472,7 +472,7 @@ run: pytest --cov=src --cov-report=xml  # (no change needed - finds cwd automati
 
 ---
 
-##  Conclusion
+## Conclusion
 
 The GitHub Actions workflow audit reveals:
 
@@ -482,7 +482,7 @@ The GitHub Actions workflow audit reveals:
 4. **Estimated 9-11.5 hours** of effort to fix all issues
 5. **Zero fundamental blockers** - cleanup is recommended to proceed
 
-**Recommendation**:  **Proceed with cleanup**
+**Recommendation**: **Proceed with cleanup**
 - Fix critical workflows first
 - Update high-risk workflows in batches
 - Verify with comprehensive testing
@@ -490,6 +490,6 @@ The GitHub Actions workflow audit reveals:
 
 ---
 
-**Report Generated**: 2025-01-23  
-**Repository**: Aries-Serpent/_codex_  
+**Report Generated**: 2025-01-23 
+**Repository**: Aries-Serpent/_codex_ 
 **Next Steps**: Review critical workflows and schedule remediation

@@ -1,3 +1,4 @@
+---
 name: premerge-triage-gate
 
 on:
@@ -38,4 +39,3 @@ jobs:
           fi
 
           echo "No unresolved triage markers detected."
-

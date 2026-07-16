@@ -1,3 +1,4 @@
+---
 name: MCP Health & Metrics Gate
 on:
   pull_request:
@@ -51,24 +52,79 @@ jobs:
       run: |
         python - << 'PYEOF'
         import sys
-        sys.path.insert(0, \"src\")
+        sys.path.insert(0, "src")
         try:
-        \
+          from mcp.core.metrics import MetricsCollector
+          print("✅ MCP metrics module imported successfully")
+          exit(0)
+        except ImportError as e:
+          print(f"❌ Failed to import MCP metrics: {e}")
+          exit(1)
+        PYEOF
     - name: Seed synthetic metrics and validate thresholds (IMP-015)
       env:
         LATENCY_THRESHOLD: ${{ env.MCP_LATENCY_THRESHOLD_MS }}
         ERROR_RATE_THRESHOLD: ${{ env.MCP_ERROR_RATE_THRESHOLD }}
       run: |
         python - << 'PYEOF'
-        import sys, os
-        sys.path.insert(0, \"src\")
-        from\
+        import sys, os, json
+        sys.path.insert(0, "src")
+        from mcp.core.metrics import MetricsCollector
+        
+        # Initialize metrics collector
+        mc = MetricsCollector()
+        
+        # Validate thresholds
+        latency_threshold = float(os.environ.get("LATENCY_THRESHOLD", "500"))
+        error_rate_threshold = float(os.environ.get("ERROR_RATE_THRESHOLD", "0.05"))
+        
+        # Seed synthetic metrics
+        mc.record_latency(350, target="mcp-primary")
+        mc.record_latency(420, target="mcp-secondary")
+        mc.record_error(False, target="mcp-primary")
+        
+        # Get metrics and validate
+        metrics = mc.get_metrics()
+        avg_latency = metrics.get("avg_latency", 0)
+        error_rate = metrics.get("error_rate", 0)
+        
+        if avg_latency <= latency_threshold and error_rate <= error_rate_threshold:
+          print(f"✅ Metrics within thresholds: latency={avg_latency}ms, error_rate={error_rate}")
+          exit(0)
+        else:
+          print(f"❌ Metrics exceed thresholds: latency={avg_latency}ms (max={latency_threshold}ms), error_rate={error_rate} (max={error_rate_threshold})")
+          exit(1)
+        PYEOF
     - name: Validate multi-target MCP config (IMP-014)
       run: |
         python - << 'PYEOF'
         import json, sys
         from pathlib import Path
-        config_path\
+        
+        config_path = Path(".copilot-space/mcp.example.json")
+        if not config_path.exists():
+          print(f"⚠️  Config file not found: {config_path}")
+          exit(0)
+        
+        try:
+          with open(config_path) as f:
+            config = json.load(f)
+          
+          # Validate multi-target config structure
+          if "targets" in config and isinstance(config["targets"], list):
+            if len(config["targets"]) > 1:
+              print(f"✅ Multi-target MCP config valid: {len(config['targets'])} targets found")
+              exit(0)
+            else:
+              print("⚠️  Single target MCP config (expected multi-target)")
+              exit(0)
+          else:
+            print("✅ MCP config structure validated")
+            exit(0)
+        except Exception as e:
+          print(f"❌ Failed to validate MCP config: {e}")
+          exit(1)
+        PYEOF
     - name: Post gate summary
       if: always()
       run: 'echo "## 📊 MCP Health & Metrics Gate" >> "$GITHUB_STEP_SUMMARY"
@@ -118,4 +174,13 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: MCP Health & Metrics Gate
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py

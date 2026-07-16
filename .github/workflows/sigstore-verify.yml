@@ -1,3 +1,4 @@
+---
 name: Sigstore Dependency Verification
 
 on:
@@ -25,7 +26,6 @@ concurrency:
 
 permissions:
   contents: read
-
 
 jobs:
   sigstore-verify:

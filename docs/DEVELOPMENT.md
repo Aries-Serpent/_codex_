@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
+**Last Updated**: 2026-07-08 
 **Version**: 1.0.0
 
 This guide walks you through setting up your development environment to contribute to Codex ML.
@@ -109,11 +109,11 @@ cd _codex_
 python -m venv venv
 
 # Activate it
-source venv/bin/activate          # Linux/macOS
+source venv/bin/activate # Linux/macOS
 # OR
-venv\Scripts\activate.bat         # Windows (cmd.exe)
+venv\Scripts\activate.bat # Windows (cmd.exe)
 # OR
-venv\Scripts\Activate.ps1         # Windows (PowerShell)
+venv\Scripts\Activate.ps1 # Windows (PowerShell)
 ```
 
 **Using uv** (Faster):
@@ -123,9 +123,9 @@ pip install uv
 
 # Create and activate virtual environment
 uv venv
-source .venv/bin/activate        # Linux/macOS
+source .venv/bin/activate # Linux/macOS
 # OR
-.venv\Scripts\activate.bat       # Windows
+.venv\Scripts\activate.bat # Windows
 ```
 
 ### Install Development Dependencies
@@ -136,9 +136,9 @@ source .venv/bin/activate        # Linux/macOS
 pip install -e ".[dev,test,docs]"
 
 # Or install just what you need
-pip install -e ".[dev]"      # Core development tools
-pip install -e ".[test]"     # Testing framework
-pip install -e ".[docs]"     # Documentation building
+pip install -e ".[dev]" # Core development tools
+pip install -e ".[test]" # Testing framework
+pip install -e ".[docs]" # Documentation building
 ```
 
 **Using uv**:
@@ -208,51 +208,51 @@ python -c "from codex_ml import __version__; print(__version__)"
 **Settings** (`.vscode/settings.json`):
 ```json
 {
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit",
-      "source.fixAll": "explicit"
-    },
-    "editor.rulers": [100]
-  },
-  "python.linting.enabled": true,
-  "python.linting.ruffEnabled": true,
-  "python.linting.ruffArgs": ["--line-length=100"],
-  "python.linting.mypyEnabled": true,
-  "python.linting.mypyArgs": [
-    "--strict",
-    "--ignore-missing-imports"
-  ],
-  "python.testing.pytestEnabled": true,
-  "python.testing.pytestArgs": [
-    "tests"
-  ]
+ "[python]": {
+ "editor.defaultFormatter": "ms-python.black-formatter",
+ "editor.formatOnSave": true,
+ "editor.codeActionsOnSave": {
+ "source.organizeImports": "explicit",
+ "source.fixAll": "explicit"
+ },
+ "editor.rulers": [100]
+ },
+ "python.linting.enabled": true,
+ "python.linting.ruffEnabled": true,
+ "python.linting.ruffArgs": ["--line-length=100"],
+ "python.linting.mypyEnabled": true,
+ "python.linting.mypyArgs": [
+ "--strict",
+ "--ignore-missing-imports"
+ ],
+ "python.testing.pytestEnabled": true,
+ "python.testing.pytestArgs": [
+ "tests"
+ ]
 }
 ```
 
 **Launch configurations** (`.vscode/launch.json`):
 ```json
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Python: Current File",
-      "type": "python",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Python: pytest",
-      "type": "python",
-      "request": "launch",
-      "module": "pytest",
-      "args": ["tests/", "-v"],
-      "console": "integratedTerminal"
-    }
-  ]
+ "version": "0.2.0",
+ "configurations": [
+ {
+ "name": "Python: Current File",
+ "type": "python",
+ "request": "launch",
+ "program": "${file}",
+ "console": "integratedTerminal"
+ },
+ {
+ "name": "Python: pytest",
+ "type": "python",
+ "request": "launch",
+ "module": "pytest",
+ "args": ["tests/", "-v"],
+ "console": "integratedTerminal"
+ }
+ ]
 }
 ```
 
@@ -260,22 +260,22 @@ python -c "from codex_ml import __version__; print(__version__)"
 
 **Configuration**:
 1. **File → Settings → Project → Python Interpreter**
-   - Select your virtual environment created above
-   
+ - Select your virtual environment created above
+ 
 2. **File → Settings → Editor → Code Style → Python**
-   - Set line length to 100
-   - Enable optimized imports
+ - Set line length to 100
+ - Enable optimized imports
 
 3. **File → Settings → Tools → Python Integrated Tools**
-   - Test runner: pytest
-   - Package management: pip
+ - Test runner: pytest
+ - Package management: pip
 
 4. **File → Settings → Tools → Black**
-   - Enable Black formatter
-   - Set line length to 100
+ - Enable Black formatter
+ - Set line length to 100
 
 5. **File → Settings → Tools → Ruff**
-   - Enable Ruff linter
+ - Enable Ruff linter
 
 ### Vim / Neovim
 
@@ -293,11 +293,11 @@ Plug 'vim-python/python-lsp'
 
 " Settings
 let g:ale_fixers = {
-    \ 'python': ['black', 'isort'],
-    \ }
+ \ 'python': ['black', 'isort'],
+ \ }
 let g:ale_linters = {
-    \ 'python': ['pylsp', 'mypy'],
-    \ }
+ \ 'python': ['pylsp', 'mypy'],
+ \ }
 let g:black_linelength = 100
 ```
 
@@ -331,9 +331,9 @@ pytest -k "test_model"
 pytest --cov=src --cov-report=html --cov-report=term
 
 # View coverage report in browser
-open htmlcov/index.html          # macOS
-xdg-open htmlcov/index.html      # Linux
-start htmlcov\index.html         # Windows
+open htmlcov/index.html # macOS
+xdg-open htmlcov/index.html # Linux
+start htmlcov\index.html # Windows
 
 # Check coverage threshold
 pytest --cov=src --cov-fail-under=90
@@ -519,7 +519,7 @@ pyenv local 3.12.0
 **Solution**:
 ```bash
 # Check if venv is activated
-which python  # Should show path in venv/
+which python # Should show path in venv/
 
 # Reinstall venv
 rm -rf venv/
@@ -558,7 +558,7 @@ git commit --no-verify
 **Solution**:
 ```bash
 # Check virtual environment is activated
-which python  # Should show venv path
+which python # Should show venv path
 
 # Reinstall package in editable mode
 pip install -e "."
@@ -658,4 +658,4 @@ git clone https://github.com/Aries-Serpent/_codex_.git
 - **[Testing Guide](dev/testing.md)** - Writing tests
 - **[Documentation Index](MASTER_INDEX.md)** - All documentation
 
-Happy coding! 🎉
+Happy coding! 

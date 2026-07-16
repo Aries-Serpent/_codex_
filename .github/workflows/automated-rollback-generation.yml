@@ -1,3 +1,4 @@
+---
 name: Automated Rollback Generation
 on:
   workflow_dispatch:
@@ -207,7 +208,6 @@ jobs:
 
         Automated Rollback Generation Workflow Complete
 
-
         Generated Artifacts:
 
       - Rollback playbook with procedures
@@ -218,11 +218,9 @@ jobs:
 
       - Validation checklist
 
-
         Location: .codex/
 
         Status: DRAFT - Requires Review
-
 
         Next Steps:
 
@@ -233,7 +231,6 @@ jobs:
         3. Get L2+ approval for production use
 
         EOF
-
 
         cat notification.txt
 

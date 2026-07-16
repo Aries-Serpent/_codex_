@@ -1,3 +1,4 @@
+---
 name: PR Auto-Fix Check
 on:
   pull_request:

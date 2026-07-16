@@ -1,3 +1,4 @@
+---
 name: Auto-Fix Common CI Issues
 on:
   workflow_dispatch:

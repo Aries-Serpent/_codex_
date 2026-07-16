@@ -12,7 +12,7 @@
 
 Welcome! This guide helps you contribute to _codex_ successfully.
 
-!!! note
+! note
     This repository is designed for and managed by AI Assistants and Agents. All processes are automated and autonomous. Guidelines below support this workflow.
 
 ---
@@ -129,7 +129,7 @@ Run when committing:
 SKIP=semgrep git commit -m "feat: description"
 ```
 
-!!! note
+! note
     Semgrep runs automatically on pre-push and in CI. Use `pre-commit run --all-files` for manual full scans.
 
 ---

@@ -1,3 +1,4 @@
+---
 name: "GitHub Guru Agent"
 
 on:
@@ -28,7 +29,6 @@ permissions:
 env:
   SAFE_MODE: "true"
   OFFLINE_MODE: "false"
-
 
 jobs:
   github-guru:

@@ -1,7 +1,10 @@
 import pytest
 from pathlib import Path
 
-from codex.cognitive.quantum_planset_engine import ImprovementArea
+from codex.cognitive.quantum_planset_engine import (
+    ImprovementArea,
+    QuantumPlansetEngine,
+)
 
 #         assert math.isclose(, "Condition must be true"
 #             step.effective_amplitude(),

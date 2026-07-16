@@ -1,0 +1,29 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+# ARCHIVED: Phase 8.1 - Enhanced Health Monitor
+# Status: Disabled due to YAML syntax constraints
+# Note: This workflow has been archived as Phase 8 functionality is now integrated
+# into Phase 10+ monitoring systems. See .github/workflow-archive/disabled/ for original.
+name: Phase 8.1 - Enhanced Health Monitor (ARCHIVED)
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  archived:
+    runs-on: ubuntu-latest
+    permissions: {}
+    timeout-minutes: 10
+    steps:
+      - run: echo "This workflow has been archived. See Phase 10+ for current monitoring."
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

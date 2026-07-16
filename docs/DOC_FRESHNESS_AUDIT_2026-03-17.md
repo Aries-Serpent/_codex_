@@ -1,12 +1,12 @@
-#  Documentation Freshness Audit & Remediation Plan
+# Documentation Freshness Audit & Remediation Plan
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Audit Date:2026-07-13
-> **Auditor:** Copilot Agent S142  
-> **Repository:** Aries-Serpent/_codex_  
-> **Total docs audited:** 1,381 markdown files  
-> **Stale docs found:** 533 (38.6%) — contain date 2026-07-13
+> **Audit Date:2026-07-16
+> **Auditor:** Copilot Agent S142 
+> **Repository:** Aries-Serpent/_codex_ 
+> **Total docs audited:** 1,381 markdown files 
+> **Stale docs found:** 533 (38.6%) — contain date 2026-07-16
 
 ---
 
@@ -14,16 +14,16 @@
 
 | Priority | Count | Status | Action |
 |----------|-------|--------|--------|
-| **P0** — CI/Admin-critical | 15 |  Updated 2026-07-13
+| **P0** — CI/Admin-critical | 15 | Updated 2026-07-16
 | **P1** — Developer how-to & ops | 46 | ️ Partial (9 updated) | Remainder: systematic script |
-| **P2** — Plans & specs | 62 |  Planned | Content review required |
-| **P3** — Archive | 410 | 🗄️ Low priority | Add archive notice headers |
+| **P2** — Plans & specs | 62 | Planned | Content review required |
+| **P3** — Archive | 410 | ️ Low priority | Add archive notice headers |
 
 ---
 
 ## P0 — Updated in S142 
 
-These docs were updated 2026-07-13
+These docs were updated 2026-07-16
 
 | File | Original Date | Action Taken |
 |------|--------------|--------------|
@@ -62,10 +62,10 @@ They require a content review in addition to date stamp updates.
 ```bash
 # Run from repo root — updates date headers only, does NOT change content
 python3 scripts/ci/update_doc_freshness.py \
-  --dirs docs/ops docs/mcp docs/ci \
-  --cutoff 2026-02-17 \
-  --new-date 2026-07-13
-  --dry-run   # remove --dry-run to apply
+ --dirs docs/ops docs/mcp docs/ci \
+ --cutoff 2026-02-17 \
+ --new-date 2026-07-16
+ --dry-run # remove --dry-run to apply
 ```
 
 ## Files Requiring Content Review (P1)
@@ -108,10 +108,10 @@ but SHOULD receive an "archived" notice header.
 
 ```bash
 python3 scripts/ci/update_doc_freshness.py \
-  --dirs docs/plans \
-  --cutoff 2026-02-17 \
-  --mode archive-notice \
-  --dry-run
+ --dirs docs/plans \
+ --cutoff 2026-02-17 \
+ --mode archive-notice \
+ --dry-run
 ```
 
 ### Archive Notice Template
@@ -125,7 +125,7 @@ python3 scripts/ci/update_doc_freshness.py \
 ### Content Review Items (P2)
 
 **`docs/plans/DEAD_CODE_IMPROVEMENT_PLAN.md`** — Phase 4 items are marked pending but S133 completed them
-- [ ] Mark Phase 4 as COMPLETE  
+- [ ] Mark Phase 4 as COMPLETE 
 - [ ] Update Phase 5/6 status from S140–S142
 
 ---
@@ -138,9 +138,9 @@ content-updated, but should receive a one-line archive notice in their first lin
 **Automated action** (low risk, no content change):
 ```bash
 python3 scripts/ci/update_doc_freshness.py \
-  --dirs docs/archive \
-  --mode archive-header-only \
-  --dry-run
+ --dirs docs/archive \
+ --mode archive-header-only \
+ --dry-run
 ```
 
 ---
@@ -155,9 +155,9 @@ Create `scripts/ci/update_doc_freshness.py` to automate bulk header updates:
 update_doc_freshness.py — Bulk-update date headers in stale docs.
 
 Usage:
-  python3 scripts/ci/update_doc_freshness.py --dirs docs/ops docs/mcp --cutoff 2026-02-17 --new-date 2026-07-13
-  python3 scripts/ci/update_doc_freshness.py --dirs docs/plans --mode archive-notice
-  python3 scripts/ci/update_doc_freshness.py --dirs docs/archive --mode archive-header-only
+ python3 scripts/ci/update_doc_freshness.py --dirs docs/ops docs/mcp --cutoff 2026-02-17 --new-date 2026-07-16
+ python3 scripts/ci/update_doc_freshness.py --dirs docs/plans --mode archive-notice
+ python3 scripts/ci/update_doc_freshness.py --dirs docs/archive --mode archive-header-only
 """
 # See scripts/ci/ for implementation
 ```
@@ -171,14 +171,14 @@ To prevent future staleness, add a documentation freshness check to CI:
 ```yaml
 # In .github/workflows/doc-freshness-check.yml
 - name: Check for stale docs
-  run: |
-    STALE=$(python3 scripts/ci/update_doc_freshness.py \
-      --dirs docs/admin docs/agent docs/how-to \
-      --cutoff $(date -d '-90 days' +%Y-%m-%d) \
-      --check-only 2>&1)
-    if [ -n "$STALE" ]; then
-      echo "::warning::$STALE"
-    fi
+ run: |
+ STALE=$(python3 scripts/ci/update_doc_freshness.py \
+ --dirs docs/admin docs/agent docs/how-to \
+ --cutoff $(date -d '-90 days' +%Y-%m-%d) \
+ --check-only 2>&1)
+ if [ -n "$STALE" ]; then
+ echo "::warning::$STALE"
+ fi
 ```
 
 This runs as a **warning** (non-blocking) so it doesn't break CI on old docs,
@@ -190,7 +190,7 @@ but alerts maintainers to docs older than 90 days.
 
 | Phase | Scope | Owner | Deadline |
 |-------|-------|-------|---------|
-| **S142 (now)** | P0 admin/agent/how-to (21 files) | Copilot |  Done |
+| **S142 (now)** | P0 admin/agent/how-to (21 files) | Copilot | Done |
 | **S143** | P1 ops/mcp/ci (37 files) | Copilot | Next PR |
 | **S143** | Create `scripts/ci/update_doc_freshness.py` | Copilot | Next PR |
 | **S143** | Create `.github/workflows/doc-freshness-check.yml` | Copilot | Next PR |

@@ -1,3 +1,4 @@
+---
 name: Code Example Validation
 "on":
   pull_request:
@@ -45,7 +46,6 @@ jobs:
 
         pattern = re.compile(r"```python\n(.*?)\n```", re.DOTALL)
 
-
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
@@ -71,7 +71,6 @@ jobs:
                     return files
 
             return sorted(Path("docs").rglob("*.md"))
-
 
         extracted = []
         for md_file in get_target_files():
@@ -135,7 +134,6 @@ jobs:
 
         pattern = re.compile(r"```bash\n(.*?)\n```", re.DOTALL)
 
-
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
@@ -161,7 +159,6 @@ jobs:
                     return files
 
             return sorted(Path("docs").rglob("*.md"))
-
 
         extracted = []
         for md_file in get_target_files():
@@ -223,7 +220,6 @@ jobs:
 
         pattern = re.compile(r"```ya?ml\n(.*?)\n```", re.DOTALL)
 
-
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
@@ -249,7 +245,6 @@ jobs:
                     return files
 
             return sorted(Path("docs").rglob("*.md"))
-
 
         errors = []
         total = 0

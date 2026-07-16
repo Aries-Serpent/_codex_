@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 Codex ML exposes a lightweight plugin surface that lets external packages add
 optional metrics and tokenizers without modifying the core repository.  Plugin

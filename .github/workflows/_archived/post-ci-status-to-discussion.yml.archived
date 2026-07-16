@@ -1,0 +1,184 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: "\U0001F9E0 Post CI Status to Discussions"
+on:
+  push:
+    branches:
+    - copilot/**
+    - 0D_base_
+    paths:
+    - scripts/ci/pattern_recorder.py
+    - scripts/cognitive/**
+    - CODEX_MANIFEST.json
+    - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+    - .codex/docs/COGNITIVE_BRAIN_STATUS_*.md
+  workflow_dispatch:
+    inputs:
+      discussion_number:
+        description: 'Discussion number to post to (default: 3673)'
+        required: false
+        default: '3673'
+      upsert:
+        description: Upsert existing comment instead of creating new one
+        required: false
+        default: 'true'
+        type: boolean
+      post_continuation:
+        description: Post continuation chain
+        required: false
+        default: 'true'
+        type: boolean
+      post_pattern_summary:
+        description: Post CI pattern summary
+        required: false
+        default: 'true'
+        type: boolean
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  discussions: write
+  pull-requests: read
+env:
+  DISCUSSION_NUMBER: ${{ github.event.inputs.discussion_number || '3673' }}
+  REPO: ${{ github.repository }}
+jobs:
+  post-ci-status:
+    name: "\U0001F9E0 Post CI Status to Discussion  #${{ github.event.inputs.discussion_number\
+      \ || '3673' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Install dependencies
+      run: 'python -m pip install --quiet --upgrade pip
+
+        # Install project in editable mode for mcp_poster imports
+
+        pip install --quiet -e ".[dev]" 2>/dev/null || pip install --quiet -e "."
+        2>/dev/null || true
+
+        '
+    - name: Build continuation chain
+      id: build_chain
+      if: ${{ github.event.inputs.post_continuation != 'false' }}
+      env:
+        GITHUB_SHA: ${{ github.sha }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        COPILOT_SESSION_ID: ${{ github.run_id }}
+      run: "python scripts/cognitive/continuation_chain.py \\\n  --manifest CODEX_MANIFEST.json\
+        \ \\\n  --sha \"$GITHUB_SHA\" \\\n  --session-id \"$GITHUB_RUN_ID\" \\\n \
+        \ --output /tmp/continuation_chain.md\necho \"chain_path=/tmp/continuation_chain.md\"\
+        \ >> \"$GITHUB_OUTPUT\"\necho \"\u2705 Continuation chain built ($(wc -l <\
+        \ /tmp/continuation_chain.md) lines)\"\n"
+    - name: Post continuation chain to Discussion
+      if: 'steps.build_chain.outcome == ''success'' && github.event.inputs.post_continuation
+        != ''false''
+
+        '
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+      run: "UPSERT=\"${{ github.event.inputs.upsert || 'true' }}\"\nUPSERT_FLAG=\"\
+        \"\nif [ \"$UPSERT\" = \"true\" ]; then\n  UPSERT_FLAG=\"--upsert\"\nfi\n\
+        python scripts/cognitive/continuation_chain.py \\\n  --manifest CODEX_MANIFEST.json\
+        \ \\\n  --sha \"${{ github.sha }}\" \\\n  --session-id \"${{ github.run_id\
+        \ }}\" \\\n  --post-to-discussion \\\n  --repo \"$REPO\" \\\n  --discussion-number\
+        \ \"$DISCUSSION_NUMBER\" \\\n  $UPSERT_FLAG \\\n&& echo \"\u2705 Continuation\
+        \ chain posted to discussion  #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
+        \ Continuation chain post failed (token permissions?)\"\n"
+    - name: Build CI pattern summary
+      id: build_summary
+      if: ${{ github.event.inputs.post_pattern_summary != 'false' }}
+      env:
+        CODEX_DB_PATH: ${{ runner.temp }}/codex_patterns.db
+      run: "# If there's no existing DB, skip gracefully\npython - <<'PYEOF'\nimport\
+        \ os, sys, importlib.util, json\nfrom pathlib import Path\n\ndb_path = os.environ.get(\"\
+        CODEX_DB_PATH\", \"\")\nif not db_path or not Path(db_path).exists():\n  \
+        \  print(\"\u2139\uFE0F  No pattern DB found at CODEX_DB_PATH \u2014 generating\
+        \ stub summary\")\n    summary = \"\"\"## CI Pattern Summary\\n\\n_No pattern\
+        \ DB available for this run._\\n\\n\"\"\"\n    summary += \"The pattern DB\
+        \ is populated by `pattern_recorder.py record` during CI.\\n\"\n    Path(\"\
+        /tmp/pattern_summary.md\").write_text(summary)\n    sys.exit(0)\n\n# Load\
+        \ recorder\nspec = importlib.util.spec_from_file_location(\n    \"pr\", Path(\"\
+        scripts/ci/pattern_recorder.py\")\n)\nmod = importlib.util.module_from_spec(spec)\n\
+        spec.loader.exec_module(mod)\n\nconn = mod._open_db(db_path)\ntry:\n    high_rec\
+        \ = mod.high_recurrence(conn)\n    cross_pr = mod.cross_pr_correlation(conn,\
+        \ min_prs=2)\n    trend = mod.pattern_trend(conn, days=7)\nfinally:\n    conn.close()\n\
+        \ntotal_7d = sum(r.get(\"count\", 0) for r in trend)\nlines = [\n    \"##\
+        \ \U0001F534 CI Pattern Summary\",\n    \"\",\n    f\"**7-day occurrences:**\
+        \ {total_7d}\",\n    \"\",\n]\n\nif high_rec:\n    lines += [\n        \"\
+        ### High-Recurrence Patterns\",\n        \"| Pattern | Total | Fix% |\",\n\
+        \        \"|---------|-------|------|\",\n    ]\n    for r in high_rec[:10]:\n\
+        \        lines.append(\n            f\"| {r['pattern_name']} | {r['total']}\
+        \ | {r['fix_rate']*100:.0f}% |\"\n        )\n\nif cross_pr:\n    lines +=\
+        \ [\n        \"\",\n        \"### Cross-PR Recurring Patterns\",\n       \
+        \ \"| Pattern | PRs | Total |\",\n        \"|---------|-----|-------|\",\n\
+        \    ]\n    for r in cross_pr[:10]:\n        lines.append(f\"| {r['pattern_name']}\
+        \ | {r['pr_count']} | {r['total']} |\")\n\nPath(\"/tmp/pattern_summary.md\"\
+        ).write_text(\"\\n\".join(lines))\nprint(f\"\u2705 Pattern summary built ({len(high_rec)}\
+        \ high-rec, {len(cross_pr)} cross-PR)\")\nPYEOF\n"
+    - name: Post CI pattern summary to Discussion
+      if: 'steps.build_summary.outcome == ''success'' && github.event.inputs.post_pattern_summary
+        != ''false''
+
+        '
+      env:
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+      run: "python -m codex.github.mcp_poster post-ci-pattern-summary \\\n  --repo\
+        \ \"$REPO\" \\\n  --number \"$DISCUSSION_NUMBER\" \\\n  --body-file /tmp/pattern_summary.md\
+        \ \\\n  --session-id \"run-${{ github.run_id }}\" \\\n&& echo \"\u2705 Pattern\
+        \ summary posted to discussion  #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
+        \ Pattern summary post failed (token permissions?)\"\n"
+    - name: Write job summary
+      if: always()
+      run: "cat >> \"$GITHUB_STEP_SUMMARY\" <<'SUMMARY'\n## \U0001F9E0 CI Status \u2192\
+        \ Discussions\n\n| Step | Status |\n|------|--------|\n| Build continuation\
+        \ chain | ${{ steps.build_chain.outcome || 'skipped' }} |\n| Build CI pattern\
+        \ summary | ${{ steps.build_summary.outcome || 'skipped' }} |\n\n**Discussion:**\
+        \ https://github.com/${{ github.repository }}/discussions/${{ env.DISCUSSION_NUMBER\
+        \ }}\n\n> Posts are idempotent \u2014 each run upserts by session marker to\
+        \ avoid thread spam.\nSUMMARY\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+  rescue-comment-push:
+    name: Post rescue comment on push failure
+    runs-on: ubuntu-latest
+    needs: post-ci-status
+    if: failure() && github.event_name == 'push'
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+    - name: Post or update rescue comment
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
+        RUN_ID: ${{ github.run_id }}
+        WORKFLOW_NAME: Post CI Status to Discussion
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+          github.run_id }}
+        BRANCH: ${{ github.ref_name }}
+      run: python scripts/ci/post_rescue_comment.py

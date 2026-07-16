@@ -44,3 +44,8 @@ __all__ = [
     "load_tokenizer",
     "pad_sequences",
 ]
+
+
+def legacy_tokenizer(text: str) -> list:
+    """Legacy tokenizer function for backward compatibility."""
+    return text.split()

@@ -2,43 +2,43 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Version:** 1.0.0  
-> **Status:**  Active  
+> **Version:** 1.0.0 
+> **Status:** Active 
 > **Last Updated: 2026-07-11
 > **Cognitive Brain Plan:** Plan 1 of Short-term Planset (CB-ST-2026-02-05)
 
 ---
 
-##  Overview
+## Overview
 
 The Pre-commit Verification Hook ensures that all files logged in `action_log.ndjson` as created or modified are properly staged before commit. This prevents accidental omission of files that were worked on during a session.
 
 ---
 
-##  Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                Pre-commit Verification Hook                  │
+│ Pre-commit Verification Hook │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │   Action     │    │    Git       │    │   Report     │  │
-│  │ Log Parser   │───▶│  Status      │───▶│  Generator   │  │
-│  └──────────────┘    └──────────────┘    └──────────────┘  │
-│         │                   │                    │          │
-│         ▼                   ▼                    ▼          │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │  Expected    │    │   Staged     │    │ Verification │  │
-│  │   Files      │    │   Files      │    │    Result    │  │
-│  └──────────────┘    └──────────────┘    └──────────────┘  │
-│                                                              │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Action │ │ Git │ │ Report │ │
+│ │ Log Parser │───▶│ Status │───▶│ Generator │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │ │ │ │
+│ ▼ ▼ ▼ │
+│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
+│ │ Expected │ │ Staged │ │ Verification │ │
+│ │ Files │ │ Files │ │ Result │ │
+│ └──────────────┘ └──────────────┘ └──────────────┘ │
+│ │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-##  Usage
+## Usage
 
 ### As Pre-commit Hook (Automatic)
 
@@ -73,7 +73,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ---
 
-##  CLI Options
+## CLI Options
 
 | Option | Description | Default |
 |--------|-------------|---------|
@@ -86,7 +86,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ---
 
-## 📄 Sample Output
+## Sample Output
 
 ### All Files Staged 
 
@@ -100,11 +100,11 @@ Correctly staged: 5
 Missing from staging: 0
 
  Staged Files (Correct):
-   - scripts/hooks/pre_commit_verify.py
-   - tests/hooks/test_pre_commit_verify.py
-   - .pre-commit-config.yaml
-   - docs/PRE_COMMIT_VERIFICATION.md
-   - .codex/action_log.ndjson
+ - scripts/hooks/pre_commit_verify.py
+ - tests/hooks/test_pre_commit_verify.py
+ - .pre-commit-config.yaml
+ - docs/PRE_COMMIT_VERIFICATION.md
+ - .codex/action_log.ndjson
 
 ============================================================
 INFO: All expected files are staged 
@@ -122,19 +122,19 @@ Correctly staged: 3
 Missing from staging: 2
 
  Staged Files (Correct):
-   - scripts/hooks/pre_commit_verify.py
-   - tests/hooks/test_pre_commit_verify.py
-   - .pre-commit-config.yaml
+ - scripts/hooks/pre_commit_verify.py
+ - tests/hooks/test_pre_commit_verify.py
+ - .pre-commit-config.yaml
 
-️  Modified but not staged (need `git add`):
-   - docs/PRE_COMMIT_VERIFICATION.md
+️ Modified but not staged (need `git add`):
+ - docs/PRE_COMMIT_VERIFICATION.md
 
-️  Untracked files (need `git add`):
-   - .codex/new_file.md
+️ Untracked files (need `git add`):
+ - .codex/new_file.md
 
 To stage missing files:
-   git add docs/PRE_COMMIT_VERIFICATION.md
-   git add .codex/new_file.md
+ git add docs/PRE_COMMIT_VERIFICATION.md
+ git add .codex/new_file.md
 
 ============================================================
 ERROR: Some expected files are not staged!
@@ -142,7 +142,7 @@ ERROR: Some expected files are not staged!
 
 ---
 
-##  How It Works
+## How It Works
 
 ### 1. Parse Action Log
 
@@ -191,20 +191,20 @@ A detailed report is generated showing:
 
 ---
 
-##  Pre-commit Configuration
+## Pre-commit Configuration
 
 The hook is configured in `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: local
-  hooks:
-    - id: verify-expected-files
-      name: Verify expected files from action log are staged
-      entry: python scripts/hooks/pre_commit_verify.py --check-only --quiet
-      language: system
-      pass_filenames: false
-      always_run: true
-      stages: [commit]
+ hooks:
+ - id: verify-expected-files
+ name: Verify expected files from action log are staged
+ entry: python scripts/hooks/pre_commit_verify.py --check-only --quiet
+ language: system
+ pass_filenames: false
+ always_run: true
+ stages: [commit]
 ```
 
 ### Configuration Options
@@ -234,7 +234,7 @@ pytest tests/hooks/test_pre_commit_verify.py --cov=scripts/hooks/pre_commit_veri
 
 ---
 
-##  Integration with Cognitive Brain
+## Integration with Cognitive Brain
 
 This hook is part of the cognitive brain improvement initiative:
 
@@ -246,7 +246,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-##  Related Documents
+## Related Documents
 
 - Short-term Planset: `.codex/plans/cognitive_brain_short_term_planset.md`
 - Session Analysis Report: `reports/COPILOT_SESSION_ANALYSIS_2026_02_05.md`
@@ -255,7 +255,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-## 🛡️ Safety Features
+## ️ Safety Features
 
 1. **Check-only Mode:** Won't block commits by default
 2. **Quiet Mode:** Minimal output for clean git experience
@@ -265,7 +265,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-## 📞 Support
+## Support
 
 For issues or enhancements:
 - Create an issue with `[pre-commit-verify]` tag
@@ -273,5 +273,5 @@ For issues or enhancements:
 
 ---
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0 
 **Last Updated: 2026-07-11

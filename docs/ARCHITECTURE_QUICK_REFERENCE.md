@@ -2,13 +2,13 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-06-22  
-**Status**:  Consolidated  
+**Last Updated**: 2026-06-22 
+**Status**: Consolidated 
 **Full Reference**: [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)
 
 ---
 
-##  System Overview
+## System Overview
 
 **Aries-Serpent/_codex_**: MLOps-certified ML framework with AI assistant integration
 
@@ -20,23 +20,23 @@
 
 ---
 
-## 🏗️ Core Architecture
+## ️ Core Architecture
 
 ### System Layers
 
 ```
 ┌─────────────────────────────────────────┐
-│         User Applications (API)         │
+│ User Applications (API) │
 ├─────────────────────────────────────────┤
-│     Framework Layer (Hydra, OmegaConf)  │
+│ Framework Layer (Hydra, OmegaConf) │
 ├─────────────────────────────────────────┤
-│    ML Training & Evaluation Pipeline    │
+│ ML Training & Evaluation Pipeline │
 ├─────────────────────────────────────────┤
-│      Plugin System & Extensibility      │
+│ Plugin System & Extensibility │
 ├─────────────────────────────────────────┤
-│    Data Processing & Infrastructure     │
+│ Data Processing & Infrastructure │
 ├─────────────────────────────────────────┤
-│          Storage & Persistence          │
+│ Storage & Persistence │
 └─────────────────────────────────────────┘
 ```
 
@@ -52,41 +52,41 @@
 
 ---
 
-##  Directory Structure (Simplified)
+## Directory Structure (Simplified)
 
 ```
 _codex_/
 ├── src/
-│   ├── codex_ml/           # Main ML framework
-│   ├── codex_utils/        # Utilities library
-│   ├── codex/              # Core package
-│   └── ...
-├── tests/                  # Test suite
-├── docs/                   # Documentation hub
-├── .github/                # GitHub Actions workflows
-├── pyproject.toml          # Package configuration
-└── README.md               # Main readme
+│ ├── codex_ml/ # Main ML framework
+│ ├── codex_utils/ # Utilities library
+│ ├── codex/ # Core package
+│ └── ...
+├── tests/ # Test suite
+├── docs/ # Documentation hub
+├── .github/ # GitHub Actions workflows
+├── pyproject.toml # Package configuration
+└── README.md # Main readme
 ```
 
 ---
 
-##  Data Flow
+## Data Flow
 
 ```
 Config (YAML) → Hydra → Framework
-                           ↓
-                    Plugin System
-                           ↓
-                    ML Pipeline
-                           ↓
-                  Data Processing
-                           ↓
-                      Storage
+ ↓
+ Plugin System
+ ↓
+ ML Pipeline
+ ↓
+ Data Processing
+ ↓
+ Storage
 ```
 
 ---
 
-## 🔌 Plugin Architecture
+## Plugin Architecture
 
 The system uses a plugin-driven design:
 
@@ -97,39 +97,39 @@ The system uses a plugin-driven design:
 
 ---
 
-##  Configuration System
+## Configuration System
 
 Uses **Hydra** for configuration management:
 
 ```yaml
 # config.yaml
 database:
-  driver: postgresql
-  host: localhost
-  port: 5432
+ driver: postgresql
+ host: localhost
+ port: 5432
 
 training:
-  epochs: 100
-  batch_size: 32
-  learning_rate: 0.001
+ epochs: 100
+ batch_size: 32
+ learning_rate: 0.001
 ```
 
 ---
 
-##  Deployment Architecture
+## Deployment Architecture
 
 ### Production Deployment
 
 ```
 Load Balancer
-     ↓
-  [API Servers]
-     ↓
-  [Workers]
-     ↓
-  [Database]
-  [Cache]
-  [Storage]
+ ↓
+ [API Servers]
+ ↓
+ [Workers]
+ ↓
+ [Database]
+ [Cache]
+ [Storage]
 ```
 
 ### Environments
@@ -142,7 +142,7 @@ Load Balancer
 
 ---
 
-##  Security Architecture
+## Security Architecture
 
 ### Security Layers
 
@@ -154,7 +154,7 @@ Load Balancer
 
 ---
 
-##  Scalability Design
+## Scalability Design
 
 ### Horizontal Scaling
 - Stateless API servers
@@ -170,7 +170,7 @@ Load Balancer
 
 ---
 
-##  Key Documentation
+## Key Documentation
 
 ### Architecture & Design
 - **[Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)** - Complete reference
@@ -192,7 +192,7 @@ Load Balancer
 
 ---
 
-##  Learning Path
+## Learning Path
 
 1. **Understand Architecture**: Read this quick reference
 2. **Explore System**: Review system overview and diagrams
@@ -202,7 +202,7 @@ Load Balancer
 
 ---
 
-## 🎓 Advanced Topics
+## Advanced Topics
 
 ### For Developers
 - Plugin development
@@ -224,7 +224,7 @@ Load Balancer
 
 ---
 
-##  Finding More Information
+## Finding More Information
 
 | Need | Resource |
 |------|----------|
@@ -246,6 +246,6 @@ Load Balancer
 
 ---
 
-**Status**:  Complete  
-**Consolidated Date**: 2026-06-22  
+**Status**: Complete 
+**Consolidated Date**: 2026-06-22 
 **For Updates**: See [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)

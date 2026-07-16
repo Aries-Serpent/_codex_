@@ -1,3 +1,4 @@
+---
 name: DependaBot Sheriff (Automated Consolidation)
 on:
   workflow_dispatch:
@@ -67,7 +68,6 @@ jobs:
 
         gh --version
 
-
         # Authenticate with GitHub token
 
         echo "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" | gh auth
@@ -85,18 +85,15 @@ jobs:
 
         chmod +x scripts/dependabot_sheriff.sh
 
-
         # Run the consolidation script
 
         ./scripts/dependabot_sheriff.sh
-
 
         # Capture exit code
 
         exit_code=$?
 
         echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
-
 
         exit $exit_code
 

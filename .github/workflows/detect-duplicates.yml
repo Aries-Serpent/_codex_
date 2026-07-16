@@ -1,3 +1,4 @@
+---
 name: Duplicate Detection on PR
 on:
   pull_request:

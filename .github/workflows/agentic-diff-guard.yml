@@ -1,3 +1,4 @@
+---
 name: agentic-diff-guard
 
 on:
@@ -37,4 +38,3 @@ jobs:
         run: |
           set -euo pipefail
           python .github/scripts/agentic_diff_guard.py
-

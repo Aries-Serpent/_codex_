@@ -1,3 +1,4 @@
+---
 name: Publish Status Dashboard Release
 on:
   workflow_dispatch: null
@@ -28,4 +29,3 @@ jobs:
       with:
         python-version: 3.12.13
         cache-tier: common
-

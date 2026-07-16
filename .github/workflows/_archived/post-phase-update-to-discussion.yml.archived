@@ -1,0 +1,94 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: Post Phase Update to Discussion
+on:
+  workflow_dispatch:
+    inputs:
+      discussion_number:
+        description: Discussion number (e.g., 4872)
+        required: true
+        default: '4872'
+      file_path:
+        description: Path to markdown file to post
+        required: true
+        default: .codex/PHASE_5A_CONSOLIDATION_UPDATE.md
+permissions:
+  contents: read
+  discussions: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  post-discussion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      discussions: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Read markdown file
+      id: read-file
+      run: 'FILE_CONTENT=$(cat "${{ github.event.inputs.file_path }}")
+
+        echo "content<<EOF" >> $GITHUB_OUTPUT
+
+        echo "$FILE_CONTENT" >> $GITHUB_OUTPUT
+
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        '
+    - name: Post to Discussion
+      id: post-discussion
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require('fs');\nconst filePath = '${{ github.event.inputs.file_path\
+          \ }}';\nconst discussionNumber = ${{ github.event.inputs.discussion_number\
+          \ }};\n\n// Read the file content\nconst content = fs.readFileSync(filePath,\
+          \ 'utf8');\n\n// Get repository info\nconst owner = context.repo.owner;\n\
+          const repo = context.repo.repo;\n\nconsole.log(`\U0001F4DD Posting to Discussion\
+        \  #${discussionNumber}...`);\nconsole.log(`Repository: ${owner}/${repo}`);\n\
+        console.log(`File: ${filePath}`);\nconsole.log(`Content length: ${content.length}\
+          \ characters`);\n\n// Use GraphQL to post the comment\nconst query = `\n\
+        \  mutation AddDiscussionComment($discussionId: ID!, $body: String!) {\n\
+        \    addDiscussionComment(input: {\n      discussionId: $discussionId\n\
+        \      body: $body\n    }) {\n      comment {\n        id\n        body\n\
+          \        createdAt\n      }\n    }\n  }\n`;\n\ntry {\n  // First, get the\
+        \ discussion node ID\n  const discussionQuery = `\n    query GetDiscussion($owner:\
+        \ String!, $repo: String!, $number: Int!) {\n      repository(owner: $owner,\
+        \ name: $repo) {\n        discussion(number: $number) {\n          id\n\
+          \        }\n      }\n    }\n  `;\n\n  const discussionResult = await github.graphql(discussionQuery,\
+        \ {\n    owner: owner,\n    repo: repo,\n    number: discussionNumber\n\
+          \  });\n\n  const discussionId = discussionResult.repository.discussion.id;\n\
+        \  console.log(`Discussion ID: ${discussionId}`);\n\n  // Post the comment\n\
+        \  const result = await github.graphql(query, {\n    discussionId: discussionId,\n\
+        \    body: content\n  });\n\n  const commentId = result.addDiscussionComment.comment.id;\n\
+          \  const createdAt = result.addDiscussionComment.comment.createdAt;\n\n\
+        \  console.log(`✅ SUCCESS: Comment posted to Discussion  #${discussionNumber}`);\n\
+        \  console.log(`Comment ID: ${commentId}`);\n  console.log(`Created at:\
+          \ ${createdAt}`);\n\n  core.setOutput('success', 'true');\n  core.setOutput('comment_id',\
+          \ commentId);\n  core.setOutput('created_at', createdAt);\n} catch (error)\
+        \ {\n  console.error(`❌ Error posting to discussion: ${error.message}`);\n\
+        \  if (error.errors) {\n    console.error('GraphQL Errors:');\n    error.errors.forEach(err\
+          \ => console.error(`  - ${err.message}`));\n  }\n  core.setFailed(`Failed\
+        \ to post to discussion: ${error.message}`);\n}\n"
+    - name: Report success
+      if: steps.post-discussion.outputs.success == 'true'
+      run: 'echo "✅ Discussion update posted successfully!"
+
+        echo "Comment ID: ${{ steps.post-discussion.outputs.comment_id }}"
+
+        echo "URL: https://github.com/${{ github.repository }}/discussions/${{ github.event.inputs.discussion_number
+        }}"
+
+        '
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

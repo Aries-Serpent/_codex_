@@ -1,3 +1,4 @@
+---
 name: Mutation Testing
 on:
   workflow_dispatch: null
@@ -70,4 +71,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

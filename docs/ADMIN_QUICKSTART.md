@@ -10,25 +10,25 @@ This is a condensed quick start guide. For complete documentation, see [ADMIN_IM
 
 ---
 
-##  Critical Items Only (5 Minutes)
+## Critical Items Only (5 Minutes)
 
 ### Step 1: Enable Workflow Permissions (2 min)
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/actions`
 2. Under **Workflow permissions**, select:
-   -  **Read and write permissions**
-   -  **Allow GitHub Actions to create and approve pull requests**
+ - **Read and write permissions**
+ - **Allow GitHub Actions to create and approve pull requests**
 3. Click **Save**
 
 ### Step 2: Enable Security Features (2 min)
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/security_analysis`
 2. Enable all of:
-   -  Dependency graph
-   -  Dependabot alerts
-   -  Dependabot security updates
-   -  Secret scanning
-   -  Push protection
+ - Dependency graph
+ - Dependabot alerts
+ - Dependabot security updates
+ - Secret scanning
+ - Push protection
 
 ### Step 3: Verify Actions Are Enabled (1 min)
 
@@ -38,7 +38,7 @@ This is a condensed quick start guide. For complete documentation, see [ADMIN_IM
 
 ---
 
-##  Quick Validation
+## Quick Validation
 
 After completing the above:
 
@@ -55,18 +55,18 @@ Or via GitHub UI:
 
 ---
 
-##  What This Enables
+## What This Enables
 
 With these minimal settings, you enable:
 
--  CI/CD pipeline execution
--  Automated security scanning
--  Dependabot updates
--  PR status checks
+- CI/CD pipeline execution
+- Automated security scanning
+- Dependabot updates
+- PR status checks
 
 ---
 
-## 🔜 Next Steps (When You Have More Time)
+## Next Steps (When You Have More Time)
 
 For full functionality including the PR Reviewer Bot:
 

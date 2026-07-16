@@ -1,3 +1,4 @@
+---
 name: Batch CI Failure Triage
 on:
   workflow_dispatch:

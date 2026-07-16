@@ -1,3 +1,4 @@
+---
 name: Iterative Self-Healing CI
 on:
   workflow_run:
@@ -40,13 +41,13 @@ jobs:
           # If trigger is self AND conclusion is not 'failure', skip
           TRIGGER_NAME="${{ github.event.workflow_run.name }}"
           CONCLUSION="${{ github.event.workflow_run.conclusion }}"
-          
+
           if [[ "$TRIGGER_NAME" == "Iterative Self-Healing CI" ]] && [[ "$CONCLUSION" != "failure" ]]; then
             echo "::notice::Cascade Guard: Skipping self-reference (action_required/skipped conclusion)"
             echo "should-continue=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          
+
           echo "should-continue=true" >> "$GITHUB_OUTPUT"
 
   triage:
@@ -1004,4 +1005,3 @@ jobs:
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-

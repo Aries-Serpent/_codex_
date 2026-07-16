@@ -1,129 +1,61 @@
-name: Agent Vars Bootstrap
+---
+name: Copilot Agent Variables Bootstrap
+
 on:
-  push:
-    branches:
-    - copilot/**
-    - main
-  pull_request:
-    types:
-    - opened
-    - synchronize
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: Dry run (print context without writing)
-        type: boolean
-        default: false
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+      environment:
+        description: Environment to bootstrap (dev|staging|prod)
+        required: true
+        default: dev
+
+  schedule:
+    # Bootstrap CCA variables weekly
+    - cron: "0 0 * * 0"
+
 permissions:
   contents: read
+  actions: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
-  bootstrap-agent-context:
-    name: Bootstrap agent variable context
+  bootstrap:
+    name: Bootstrap CCA Variables
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-        fetch-depth: 1
-    - name: Read repo variables and write agent context
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        DRY_RUN: ${{ inputs.dry_run || 'false' }}
-        COPILOT_AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
-        COPILOT_AGENT_SESSION_EXPIRES: ${{ vars.COPILOT_AGENT_SESSION_EXPIRES }}
-        COPILOT_AGENT_LAST_SESSION_ID: ${{ vars.COPILOT_AGENT_LAST_SESSION_ID }}
-        COPILOT_AGENT_STATE: ${{ vars.COPILOT_AGENT_STATE }}
-        COPILOT_RUNNER_PROFILE: ${{ vars.COPILOT_RUNNER_PROFILE }}
-        CODEX_CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
-        CODEX_CI_LAST_GREEN_SHA: ${{ vars.CODEX_CI_LAST_GREEN_SHA }}
-        CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD }}
-        CODEX_GROUNDED_TIER1_COUNT: ${{ vars.CODEX_GROUNDED_TIER1_COUNT }}
-        CODEX_GROUNDED_TIER2_COUNT: ${{ vars.CODEX_GROUNDED_TIER2_COUNT }}
-        CODEX_LAST_TELEMETRY_DATE: ${{ vars.CODEX_LAST_TELEMETRY_DATE }}
-        CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION }}
-        CODEX_MAX_HEALER_RUNS_PER_HOUR: ${{ vars.CODEX_MAX_HEALER_RUNS_PER_HOUR }}
-        CODEX_SWEEP_SKIP_MAIN: ${{ vars.CODEX_SWEEP_SKIP_MAIN }}
-        CODEX_HEALER_SKIP_SKIPCI: ${{ vars.CODEX_HEALER_SKIP_SKIPCI }}
-        DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
-      run: "python3 - << 'PYEOF'\nimport json, os, pathlib, datetime\n\n# Collect\
-        \ all env vars that are repo variable injections\nVAR_PREFIXES = (\"COPILOT_AGENT_\"\
-        , \"CODEX_\", \"DEPLOY_\")\ncontext = {}\nfor key, val in os.environ.items():\n\
-        \    if any(key.startswith(p) for p in VAR_PREFIXES) and val:\n        context[key]\
-        \ = val\n\n# Add mandatory CCA version-lock constants\ncontext[\"COPILOT_AGENT_CCA_VERSION_LOCK\"\
-        ] = \"stable\"\ncontext[\"COPILOT_AGENT_DEDUPLICATION_ENABLED\"] = \"true\"\
-        \ncontext[\"COPILOT_AGENT_TURN_ISOLATION_ENABLED\"] = \"true\"\n\n# Add workflow\
-        \ metadata\ncontext[\"_meta\"] = {\n    \"generated_at\":   datetime.datetime.now(datetime.timezone.utc).isoformat(),\n\
-        \    \"workflow\":       \"copilot-agent-vars-bootstrap\",\n    \"sha\": \
-        \           os.environ.get(\"GITHUB_SHA\", \"\")[:8],\n    \"ref\":      \
-        \      os.environ.get(\"GITHUB_REF\", \"\"),\n    \"actor\":          os.environ.get(\"\
-        GITHUB_ACTOR\", \"\"),\n    \"run_id\":         os.environ.get(\"GITHUB_RUN_ID\"\
-        , \"\"),\n    \"repo_variables_count\": len([k for k in context if not k.startswith(\"\
-        _\")]),\n}\n\noutput_path = pathlib.Path(\".codex/agent_context.json\")\n\
-        output_path.parent.mkdir(parents=True, exist_ok=True)\n\ndry_run = os.environ.get(\"\
-        DRY_RUN\", \"false\").lower() == \"true\"\nif dry_run:\n    print(\"\U0001F50D\
-        \ DRY RUN \u2014 agent context (not written):\")\n    print(json.dumps(context,\
-        \ indent=2))\nelse:\n    output_path.write_text(json.dumps(context, indent=2))\n\
-        \    print(f\"\u2705 Written {len(context)-1} variables to {output_path}\"\
-        )\n    print(json.dumps(context, indent=2))\nPYEOF\n"
-    - name: Write job summary
-      if: always()
-      run: "echo \"## \U0001F511 Agent Variable Context Bootstrap\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\nif [ -f .codex/agent_context.json\
-        \ ]; then\n  COUNT=$(python3 -c \"import json; d=json.load(open('.codex/agent_context.json'));\
-        \ print(len(d)-1)\")\n  echo \"\u2705 **${COUNT}** repo variables injected\
-        \ into \\`.codex/agent_context.json\\`\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
-        \ \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo '```json' >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  cat .codex/agent_context.json >> \"$GITHUB_STEP_SUMMARY\"\n  echo '```'\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"\u2139\uFE0F Dry run \u2014\
-        \ no file written\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"### How to Use in copilot-setup-steps.yml\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho '```yaml' >> \"$GITHUB_STEP_SUMMARY\"\necho '- name: Inject agent context'\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"  run: |\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho '    if [ -f .codex/agent_context.json ]; then' >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho '      python3 -c \"import json,os; [print(f'\"'\"'export {k}={v}'\"\
-        '\"') for k,v in json.load(open('\"'\"'.codex/agent_context.json'\"'\"')).items()\
-        \ if not k.startswith('\"'\"'_'\"'\"')]\" >> \"$GITHUB_ENV\"' >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho '    fi' >> \"$GITHUB_STEP_SUMMARY\"\necho '```' >> \"$GITHUB_STEP_SUMMARY\"\
-        \n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-  rescue-comment:
-    name: Post rescue comment on failure
-    runs-on: ubuntu-latest
-    needs: bootstrap-agent-context
-    if: 'failure() &&
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 1
 
-      github.event_name == ''pull_request'' &&
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
 
-      github.event.pull_request.head.repo.full_name == github.repository
+      - name: Validate CCA variable configuration
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Verify that all required CCA variables are configured
+          python scripts/ci/validate_copilot_setup_steps.py \
+            --json-output /tmp/bootstrap_validation.json \
+            --repo-root .
 
-      '
-    permissions:
-      pull-requests: write
-      issues: write
-    timeout-minutes: 5
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        fetch-depth: 1
-    - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Copilot Agent Vars Bootstrap
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
+      - name: Report bootstrap status
+        if: always()
+        run: |
+          echo "CCA Variables Bootstrap Check"
+          echo "=============================="
+          
+          if [ -f /tmp/bootstrap_validation.json ]; then
+            cat /tmp/bootstrap_validation.json | python -m json.tool 2>/dev/null || true
+          else
+            echo "No validation output found"
+          fi

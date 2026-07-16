@@ -1,3 +1,4 @@
+---
 name: CODEX_MASTER_KEY Scope Validation
 
 on:
@@ -78,4 +79,3 @@ jobs:
                 print('✓ Scope validation passed')
             " || true
           fi
-

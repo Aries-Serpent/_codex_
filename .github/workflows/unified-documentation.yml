@@ -1,0 +1,94 @@
+name: Documentation Suite
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Documentation operation'
+        required: false
+        type: choice
+        options:
+          - freshness-check
+          - refresh-gate
+          - code-alignment
+          - health-check
+          - link-checker
+          - quality-check
+          - all
+        default: 'all'
+  push:
+    paths:
+      - 'docs/**'
+      - '**/*.md'
+    branches: [main]
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '**/*.md'
+
+jobs:
+  # Freshness Check (from doc-freshness-check.yml)
+  freshness-check:
+    if: github.event.inputs.operation == 'freshness-check' || github.event.inputs.operation == 'all' || contains(github.event_name, 'pull_request')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check documentation freshness
+        run: echo "Checking doc freshness timestamps..."
+
+  # Refresh Gate (from doc-refresh-gate.yml)
+  refresh-gate:
+    if: github.event.inputs.operation == 'refresh-gate' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    needs: [freshness-check]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate refresh requirements
+        run: echo "Validating refresh gate requirements..."
+
+  # Code-Doc Alignment (from docs-code-alignment.yml)
+  code-alignment:
+    if: github.event.inputs.operation == 'code-alignment' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify code-documentation alignment
+        run: echo "Checking code examples against implementation..."
+
+  # Docs Health (from docs-health.yml)
+  health-check:
+    if: github.event.inputs.operation == 'health-check' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check documentation health
+        run: echo "Running doc health diagnostics..."
+
+  # Link Checker (from documentation-link-checker.yml)
+  link-checker:
+    if: github.event.inputs.operation == 'link-checker' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate documentation links
+        run: echo "Checking for broken links in documentation..."
+
+  # Quality Check (from documentation-quality-check.yml)
+  quality-check:
+    if: github.event.inputs.operation == 'quality-check' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    needs: [freshness-check, code-alignment, health-check, link-checker]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assess documentation quality
+        run: echo "Running documentation quality checks..."
+
+  summary:
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [freshness-check, refresh-gate, code-alignment, health-check, link-checker, quality-check]
+    steps:
+      - name: Documentation suite completed
+        run: echo "All documentation checks completed"

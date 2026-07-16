@@ -1,3 +1,4 @@
+---
 name: "Chat-Ops \u2014 @copilot Webhook Trigger"
 on:
   issue_comment:
@@ -233,7 +234,6 @@ jobs:
           key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
-
 
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5

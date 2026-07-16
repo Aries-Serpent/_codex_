@@ -1,3 +1,4 @@
+---
 name: 🔀 Branch Rebase Gate
 on:
   pull_request:
@@ -41,7 +42,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: 3.12.13
-          cache: 'pip'
+          cache: false  # Disable cache for sparse checkout (requirements.txt not available)
       - name: 🔍 Check rebase status
         id: check
         env:
@@ -120,8 +121,3 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-
-
-
-
-

@@ -1,3 +1,4 @@
+---
 name: Trigger validations on approval
 on:
   pull_request_review:
@@ -183,4 +184,3 @@ jobs:
         tee -a "$GITHUB_STEP_SUMMARY"
 
         '
-

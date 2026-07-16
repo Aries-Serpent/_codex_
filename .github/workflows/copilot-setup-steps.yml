@@ -1,3 +1,4 @@
+---
 name: Copilot Agent Environment Setup
 'on':
   workflow_dispatch:

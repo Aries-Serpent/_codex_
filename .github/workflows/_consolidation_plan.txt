@@ -1,0 +1,90 @@
+# PHASE 8 LANE 3 CONSOLIDATION PLAN
+
+## Priority Groups (Top 7) - Target: 20+ file reduction
+
+### Group 1: MONITORING-HEALTH (4→1)
+Files to consolidate:
+- ci-health-monitor.yml
+- health-dashboard-update.yml
+- repository-health-monitoring.yml
+- workflow-health-update.yml
+
+Action: Create unified-health-monitoring.yml
+
+### Group 2: SESSION-MANAGEMENT (5→1)
+Files to consolidate:
+- session-context-capture.yml
+- session-incremental-summary-reminder.yml
+- session-recovery-continuous-monitoring.yml
+- session-recovery-handler.yml
+- session-watchdog.yml
+
+Action: Create unified-session-management.yml
+
+### Group 3: POST-MERGE-MANAGEMENT (5→1)
+Files to consolidate:
+- post-accountability-to-discussion.yml
+- post-ci-status-to-discussion.yml
+- post-merge-validation-optimized.yml
+- post-phase-4-5-to-discussion.yml
+- post-phase-update-to-discussion.yml
+
+Action: Create unified-post-merge-management.yml
+
+### Group 4: DOCUMENTATION (6→1)
+Files to consolidate:
+- doc-freshness-check.yml
+- doc-refresh-gate.yml
+- docs-code-alignment.yml
+- docs-health.yml
+- documentation-link-checker.yml
+- documentation-quality-check.yml
+
+Action: Create unified-documentation.yml
+
+### Group 5: COPILOT-MANAGEMENT (9→1)
+Files to consolidate:
+- copilot-agent-checkin.yml
+- copilot-agent-session-done.yml
+- copilot-agent-vars-bootstrap.yml
+- copilot-automation.yml
+- copilot-issue-triage.yml
+- copilot-iterative-self-healing.yml
+- copilot-pr-session-injector.yml
+- copilot-review-responder.yml
+- copilot-session-chain.yml
+
+Action: Create unified-copilot-management.yml
+
+### Group 6: PHASE-GATES (6→1)
+Files to consolidate:
+- phase-8-1-enhanced-health-monitor.yml
+- phase-8-1-health-monitor.yml
+- phase-8-2-issue-triage.yml
+- phase-8-3-perf-monitor.yml
+- phase-9-2-cascade.yml
+- phase-9-3-router.yml
+
+Action: Create unified-phase-gates.yml
+
+### Group 7: SECURITY-SCANNING (4→1)
+Files to consolidate:
+- codeql-alert-fetcher.yml
+- codeql-alert-triage.yml
+- codeql-analysis.yml
+- codeql-fix-verification.yml
+
+Action: Create unified-security-scanning.yml
+
+## Summary
+Total files consolidated: 39 files
+Reduction: 39 → 7 unified workflows
+Net reduction: 32 files (exceeds 20+ target)
+
+## Implementation Strategy
+1. Create 7 unified consolidation workflows
+2. Each unified workflow uses workflow_dispatch inputs to route execution
+3. Preserve all original triggers in the unified workflow
+4. Keep original workflows for N+1 builds (backward compatibility)
+5. Track in .codex/PHASE_8_LANE_3_CONSOLIDATION_MAPPING.md
+6. Generate final report

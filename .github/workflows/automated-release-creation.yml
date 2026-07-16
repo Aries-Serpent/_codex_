@@ -1,3 +1,4 @@
+---
 name: Automated Release Creation
 on:
   workflow_dispatch:
@@ -161,7 +162,6 @@ jobs:
 
         # Release ${{ github.event.inputs.version }} Summary
 
-
         ## Release Status
 
       - **Version**: ${{ github.event.inputs.version }}
@@ -169,7 +169,6 @@ jobs:
       - **Dry Run**: ${{ github.event.inputs.dry_run }}
 
       - **Created At**: $(date -u +''%Y-%m-%dT%H:%M:%SZ'')
-
 
         ## Artifacts Generated
 
@@ -183,7 +182,6 @@ jobs:
       - ✅ Provenance: `${{ steps.generate-provenance.outputs.provenance_path }}`
 
       - ✅ Audit: `${{ steps.generate-audit.outputs.audit_path }}`
-
 
         ## Announcements
 
@@ -202,7 +200,6 @@ jobs:
       - ✅ Twitter: `.codex/release-announcements/twitter-${{ github.event.inputs.version
         }}.txt`
 
-
         ## Next Steps
 
         1. Review release notes: `.codex/release-notes.md`
@@ -216,7 +213,6 @@ jobs:
         5. Update announcement templates as needed
 
         EOF
-
 
         cat release-summary.md
 

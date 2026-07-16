@@ -1,3 +1,4 @@
+---
 name: WEC Enforcement Gate
 
 on:
@@ -30,8 +31,3 @@ jobs:
       - name: Check WEC compliance
         run: |
           echo "✓ WEC enforcement gate passed"
-
-
-
-
-

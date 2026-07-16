@@ -1,3 +1,4 @@
+---
 name: Workflow Expiry Enforcer — Auto-disable on expiry
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

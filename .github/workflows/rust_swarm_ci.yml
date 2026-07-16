@@ -1,3 +1,4 @@
+---
 name: Rust-Python Hybrid Swarm CI/CD
 on:
   push:

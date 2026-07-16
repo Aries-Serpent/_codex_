@@ -1,3 +1,4 @@
+---
 name: Reasoning Engine Monitor
 on:
   schedule:
@@ -29,7 +30,7 @@ jobs:
       id: tests
       run: |-
         python -m pytest tests/cognitive_brain/test_reasoning_engine.py \\
-         \ -v --tb=short --json-report --json-report-file=test_report.json
+          \ -v --tb=short --json-report --json-report-file=test_report.json
 
       continue-on-error: true
     - name: Generate synthetic workload
@@ -55,7 +56,7 @@ jobs:
 
         \    for i in range(1000):
                 decision = engine.make_decision(
-           \         goal=f\"Decision {i}\",
+            \         goal=f\"Decision {i}\",
                     constraints=[\"safety\", \"performance\"],
                     decision_history=[
                         {\"option\": \"choice_a\", \"success\": True},
@@ -160,7 +161,7 @@ jobs:
         fail-on-error: false
     - name: Slack notification (on failure)
       if: failure()
-      uses: 
+      uses:
         slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
       with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK }}

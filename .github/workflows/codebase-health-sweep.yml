@@ -1,3 +1,4 @@
+---
 name: "\U0001F9F9 Codebase Health Sweep"
 on:
   schedule:
@@ -318,4 +319,3 @@ jobs:
           \ issue');\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-

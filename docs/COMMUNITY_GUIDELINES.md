@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
+**Last Updated**: 2026-07-08 
 **Version**: 1.0.0
 
 Welcome to the Codex ML community! This guide outlines how to participate constructively, get help when you need it, and build relationships with fellow contributors.
@@ -81,7 +81,7 @@ We believe in:
 ### Support Channels
 
 #### GitHub Discussions
-**Best for**: Questions, ideas, general chat  
+**Best for**: Questions, ideas, general chat 
 **How to use**:
 1. Click "Discussions" tab on the repo
 2. Search existing discussions
@@ -90,7 +90,7 @@ We believe in:
 5. Write your question with details
 
 #### GitHub Issues
-**Best for**: Bugs, feature requests, confirmed problems  
+**Best for**: Bugs, feature requests, confirmed problems 
 **Use these labels**:
 - `bug` - Something doesn't work
 - `feature-request` - New capability wanted
@@ -99,7 +99,7 @@ We believe in:
 - `question` - Request for information
 
 #### Pull Request Comments
-**Best for**: Questions about specific code changes  
+**Best for**: Questions about specific code changes 
 **How it works**:
 1. Comment on the PR
 2. Mention relevant people: `@username`
@@ -153,8 +153,8 @@ model = load_model('path/to/config.yaml')
 <!-- Full error output here -->
 ```
 Traceback (most recent call last):
-  File "test.py", line 1, in <module>
-    model = load_model('path/to/config.yaml')
+ File "test.py", line 1, in <module>
+ model = load_model('path/to/config.yaml')
 ValueError: Config file not found: path/to/config.yaml
 ```
 
@@ -229,12 +229,12 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 ## Error Message
 ```
 Traceback (most recent call last):
-  File "test.py", line 2, in <module>
-    model = load_model('/tmp/my config/model.yaml')
-  File "src/codex_ml/loader.py", line 45, in load_model
-    validate_path(path)
-  File "src/codex_ml/loader.py", line 78, in validate_path
-    raise ValueError(f"Invalid path: {path}")
+ File "test.py", line 2, in <module>
+ model = load_model('/tmp/my config/model.yaml')
+ File "src/codex_ml/loader.py", line 45, in load_model
+ validate_path(path)
+ File "src/codex_ml/loader.py", line 78, in validate_path
+ raise ValueError(f"Invalid path: {path}")
 ValueError: Invalid path: /tmp/my config/model.yaml
 ```
 ```
@@ -284,20 +284,20 @@ HuggingFace Hub has 10k+ public models. This would enable:
 ### Healthy Discussions
 
 **Do**:
--  Ask clarifying questions
--  Share relevant experience
--  Provide concrete examples
--  Acknowledge good points
--  Link to relevant resources
--  Stay on topic
+- Ask clarifying questions
+- Share relevant experience
+- Provide concrete examples
+- Acknowledge good points
+- Link to relevant resources
+- Stay on topic
 
 **Don't**:
--  Go off-topic
--  Post the same question multiple times
--  Ignore answers and repeat questions
--  Use discussions for bugs/issues (use Issues instead)
--  Cross-post to many places (spam)
--  Post promotional/advertising content
+- Go off-topic
+- Post the same question multiple times
+- Ignore answers and repeat questions
+- Use discussions for bugs/issues (use Issues instead)
+- Cross-post to many places (spam)
+- Post promotional/advertising content
 
 ### Following Conversations
 
@@ -311,7 +311,7 @@ GitHub Discussions can be long. To follow along:
 ### Resolving Discussions
 
 If your question is answered:
-1. Mark the answer: Click  button (if discussion template allows)
+1. Mark the answer: Click button (if discussion template allows)
 2. Thank the responder
 3. If still unclear, follow up with specific remaining questions
 4. Close discussion when fully resolved
@@ -455,7 +455,7 @@ git config --global user.email "you@example.com"
 
 ## Anti-Patterns to Avoid
 
-###  Spamming
+### Spamming
 
 Don't:
 - Post the same question in multiple places
@@ -463,7 +463,7 @@ Don't:
 - Bump discussions without new information
 - Promote products/services
 
-###  Arguing About Preferences
+### Arguing About Preferences
 
 Don't:
 - Bikeshed on code style (we use Black, case closed)
@@ -473,7 +473,7 @@ Don't:
 
 **Instead**: Focus on functionality and correctness.
 
-###  Inactivity
+### Inactivity
 
 Don't:
 - Open issues/PRs and abandon them
@@ -482,7 +482,7 @@ Don't:
 
 **Instead**: If you can't work on something, let maintainers know.
 
-###  Demanding/Entitled Tone
+### Demanding/Entitled Tone
 
 Don't:
 - "You need to fix this NOW"
@@ -491,7 +491,7 @@ Don't:
 
 **Instead**: "Would it be possible to...?" or "I'd be happy to help with..."
 
-###  Hijacking Discussions
+### Hijacking Discussions
 
 Don't:
 - Take over someone else's issue/PR with different topic
@@ -500,7 +500,7 @@ Don't:
 
 **Instead**: Open a new discussion/issue for your topic.
 
-###  Passive Aggression
+### Passive Aggression
 
 Don't:
 - "As you might know..." (condescending)
@@ -540,7 +540,7 @@ Don't:
 
 ## Thank You!
 
-We appreciate every contribution, question, and piece of feedback. The community makes this project better! 🎉
+We appreciate every contribution, question, and piece of feedback. The community makes this project better! 
 
 **Questions about this guide?** Open a discussion or reach out to maintainers.
 

@@ -1,3 +1,4 @@
+---
 name: HAR Cache Capture
 # aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
@@ -49,7 +50,6 @@ concurrency:
 
 permissions:
   contents: read
-
 
 jobs:
   capture-har:

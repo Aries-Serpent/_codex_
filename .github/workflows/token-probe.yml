@@ -1,3 +1,4 @@
+---
 name: "Token Probe \u2014 CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation"
 on:
   workflow_dispatch:
@@ -202,4 +203,3 @@ jobs:
           \ Both keys must pass.');\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-

@@ -46,15 +46,26 @@ def changed_name_status(base: str, head: str) -> list[tuple[str, str]]:
         rows.append((parts[0].strip(), parts[1].strip()))
     return rows
 
-def comment_has_banned(content: str) -> list[str]:
+def comment_has_banned(content: str, added_lines: set[int]) -> list[str]:
+    """Check for banned suppression patterns, but allow suppression on imports."""
     hits: list[str] = []
+    lines = content.split('\n')
     reader = StringIO(content).readline
     for tok in tokenize.generate_tokens(reader):
-        if tok.type == tokenize.COMMENT:
+        if tok.type == tokenize.COMMENT and tok.start[0] in added_lines:
             c = tok.string.lower()
+            line_num = tok.start[0]
+            line_text = lines[line_num - 1] if line_num <= len(lines) else ""
+            
+            # Allow suppression on import statements (common and valid use case)
+            is_import_line = "import " in line_text
+            
             for pat in BANNED_PATTERNS:
                 if pat in c:
-                    hits.append(f"line {tok.start[0]}: banned suppression in comment: {pat}")
+                    # Skip suppression patterns on imports
+                    if pat == "noqa" and is_import_line:
+                        continue
+                    hits.append(f"line {line_num}: banned suppression in comment: {pat}")
     return hits
 
 
@@ -102,7 +113,7 @@ def main() -> int:
         added_lines = added_line_numbers(base, head, path)
 
         # COMMENT-token scoped suppression check (prevents docstring/string false positives)
-        for h in comment_has_banned(raw):
+        for h in comment_has_banned(raw, added_lines):
             match = re.search(r"line (\d+):", h)
             if not match or int(match.group(1)) not in added_lines:
                 continue

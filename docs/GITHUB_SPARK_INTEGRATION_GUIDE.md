@@ -63,35 +63,35 @@ Combining GitHub Spark's rapid prototyping with _Codex_'s cognitive brain create
 
 ```
 ┌─────────────────────┐
-│   GitHub Spark      │
-│  React + TypeScript │
-│    Web Interface    │
+│ GitHub Spark │
+│ React + TypeScript │
+│ Web Interface │
 └──────────┬──────────┘
-           │ HTTP/REST
-           ▼
+ │ HTTP/REST
+ ▼
 ┌─────────────────────┐
-│   FastAPI Backend   │
-│  services/api/main  │
-│   - /infer          │
-│   - /train          │
-│   - /evaluate       │
+│ FastAPI Backend │
+│ services/api/main │
+│ - /infer │
+│ - /train │
+│ - /evaluate │
 └──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐     ┌──────────────────┐
-│  Cognitive Brain    │────▶│  Code Generator  │
-│  - SuperpositionEng │     │  - Ingest        │
-│  - EntanglementMgr  │     │  - Analyze       │
-│  - MemoryManager    │     │  - Transform     │
-│  - AdaptiveScoring  │     │  - Verify        │
-└─────────────────────┘     └──────────────────┘
-           │
-           ▼
+ │
+ ▼
+┌─────────────────────┐ ┌──────────────────┐
+│ Cognitive Brain │────▶│ Code Generator │
+│ - SuperpositionEng │ │ - Ingest │
+│ - EntanglementMgr │ │ - Analyze │
+│ - MemoryManager │ │ - Transform │
+│ - AdaptiveScoring │ │ - Verify │
+└─────────────────────┘ └──────────────────┘
+ │
+ ▼
 ┌─────────────────────┐
-│   Agent System      │
-│  - WorkflowNav      │
-│  - QuantumGame      │
-│  - PhysicsOrch      │
+│ Agent System │
+│ - WorkflowNav │
+│ - QuantumGame │
+│ - PhysicsOrch │
 └─────────────────────┘
 ```
 
@@ -110,21 +110,21 @@ Combining GitHub Spark's rapid prototyping with _Codex_'s cognitive brain create
 
 ```
 User Prompt
-    ↓
+ ↓
 GitHub Spark UI (validate, enrich)
-    ↓
+ ↓
 FastAPI /infer (rate limit, auth)
-    ↓
+ ↓
 SuperpositionEngine (parallel evaluation)
-    ↓
+ ↓
 MemoryManager (check cache, retrieve patterns)
-    ↓
+ ↓
 Code Generator (ingest → analyze → transform)
-    ↓
+ ↓
 Verification (behavior check, security scan)
-    ↓
+ ↓
 Response (code + metrics + quantum data)
-    ↓
+ ↓
 GitHub Spark UI (display, visualize)
 ```
 
@@ -154,9 +154,9 @@ from src.cognitive_brain.quantum.superposition import SuperpositionEngine
 
 engine = SuperpositionEngine()
 result = engine.evaluate_parallel([
-    {"code": "option_a.py", "confidence": 0.8},
-    {"code": "option_b.py", "confidence": 0.7},
-    {"code": "option_c.py", "confidence": 0.9}
+ {"code": "option_a.py", "confidence": 0.8},
+ {"code": "option_b.py", "confidence": 0.7},
+ {"code": "option_c.py", "confidence": 0.9}
 ])
 # Returns: collapsed state with highest coherence
 ```
@@ -271,7 +271,7 @@ from agents.advanced_physics_calculators import ChaosAnalyzer
 
 analyzer = ChaosAnalyzer()
 lyapunov = analyzer.compute_lyapunov_exponent(time_series_data)
-is_chaotic = lyapunov > 0  # Positive = chaotic system
+is_chaotic = lyapunov > 0 # Positive = chaotic system
 ```
 
 ---
@@ -303,14 +303,14 @@ Create a web app called "Codex AI Assistant" with:
 Add backend integration to the Codex AI Assistant:
 - Connect to FastAPI endpoint at ${API_URL}/infer
 - POST request with JSON body containing:
-  - prompt: user's code generation request
-  - context: {language: 'python', tier: 'A', framework: null}
+ - prompt: user's code generation request
+ - context: {language: 'python', tier: 'A', framework: null}
 - Handle HTTP errors (400, 401, 429, 500)
 - Display loading spinner during API calls (minimum 500ms)
 - Show response with:
-  - Generated code in syntax-highlighted editor
-  - Metadata: k₁ factor, coherence score, processing time
-  - Copy-to-clipboard button
+ - Generated code in syntax-highlighted editor
+ - Metadata: k₁ factor, coherence score, processing time
+ - Copy-to-clipboard button
 ```
 
 **Expected Output**:
@@ -327,20 +327,20 @@ Add backend integration to the Codex AI Assistant:
 Add a quantum decision visualizer component:
 - Canvas-based visualization (600x300px)
 - Show superposition states as overlapping semi-transparent circles
-  - Circle size proportional to probability (min 30px, max 70px)
-  - Color: rgba(102, 126, 234, probability)
-  - Label each circle with state name
+ - Circle size proportional to probability (min 30px, max 70px)
+ - Color: rgba(102, 126, 234, probability)
+ - Label each circle with state name
 - Animate wave function collapse:
-  - Circles converge to selected state (300ms ease-out)
-  - Winning state grows to 100px and pulses
+ - Circles converge to selected state (300ms ease-out)
+ - Winning state grows to 100px and pulses
 - Display coherence bar:
-  - Horizontal bar (200px wide)
-  - Green if >0.65, yellow if 0.50-0.65, red if <0.50
-  - Label with exact coherence value
+ - Horizontal bar (200px wide)
+ - Green if >0.65, yellow if 0.50-0.65, red if <0.50
+ - Label with exact coherence value
 - Real-time metrics panel:
-  - k₁ factor (target ≤0.35, bold if achieved)
-  - Accuracy percentage
-  - Cache hit rate with icon ( or )
+ - k₁ factor (target ≤0.35, bold if achieved)
+ - Accuracy percentage
+ - Cache hit rate with icon ( or )
 ```
 
 **Expected Output**:
@@ -355,18 +355,18 @@ Create a memory management dashboard with two panels:
 LEFT PANEL - Short-Term Memory:
 - List of last 5 interactions
 - Each entry shows:
-  - Timestamp (relative: "2 mins ago")
-  - Prompt preview (truncated to 50 chars)
-  - Result status ( success,  error)
-  - Processing time
+ - Timestamp (relative: "2 mins ago")
+ - Prompt preview (truncated to 50 chars)
+ - Result status ( success, error)
+ - Processing time
 - Click to reload that interaction
 
 RIGHT PANEL - Long-Term Memory:
 - Pattern library table with columns:
-  - Pattern ID
-  - Usage count
-  - Compression ratio (original → compressed size)
-  - Last accessed time
+ - Pattern ID
+ - Usage count
+ - Compression ratio (original → compressed size)
+ - Last accessed time
 - Search/filter by pattern ID
 - "Clear Cache" button with confirmation dialog
 
@@ -387,29 +387,29 @@ Build an agent control panel with:
 
 TOP - Active Agents Grid (3 columns):
 - Each agent card shows:
-  - Icon ( workflow, ⚛️ quantum, 🔬 physics)
-  - Agent name
-  - Status badge ( idle,  active,  error)
-  - Last execution time
+ - Icon ( workflow, ⚛️ quantum, physics)
+ - Agent name
+ - Status badge ( idle, active, error)
+ - Last execution time
 - Hover effect: border glow + shadow
 
 MIDDLE - Workflow Token Buttons:
 - 6 buttons in 2 rows (3x2 grid):
-  - AUDIT_EXEC, DOC_GEN, HEAL
-  - DECIDE, ORGANIZE, REVIEW
+ - AUDIT_EXEC, DOC_GEN, HEAL
+ - DECIDE, ORGANIZE, REVIEW
 - Each button:
-  - Primary color when idle
-  - Disabled + spinner when executing
-  - Success green for 2 seconds after completion
+ - Primary color when idle
+ - Disabled + spinner when executing
+ - Success green for 2 seconds after completion
 - Click to execute workflow
 
 BOTTOM - Execution History:
 - Scrollable list (max 10 entries)
 - Each entry:
-  - Timestamp
-  - Workflow name
-  - Duration
-  - Status icon
+ - Timestamp
+ - Workflow name
+ - Duration
+ - Status icon
 - Filter by workflow type
 - "Clear History" button
 ```
@@ -435,23 +435,23 @@ FILE UPLOAD SECTION:
 
 PIPELINE VISUALIZATION:
 - 4-stage horizontal flow:
-  1. Ingest (📥)
-  2. Analyze ()
-  3. Transform ()
-  4. Verify ()
+ 1. Ingest ()
+ 2. Analyze ()
+ 3. Transform ()
+ 4. Verify ()
 - Each stage shows:
-  - Icon + name
-  - Progress bar (0-100%)
-  - ETA (e.g., "~30 sec")
-  - Status: queued → running → complete → error
+ - Icon + name
+ - Progress bar (0-100%)
+ - ETA (e.g., "~30 sec")
+ - Status: queued → running → complete → error
 - Connecting arrows with animation when active
 
 ERROR HANDLING:
 - Red error badge on failed stage
 - Expandable details section:
-  - Error message
-  - Stack trace (collapsible)
-  - Suggested fixes
+ - Error message
+ - Stack trace (collapsible)
+ - Suggested fixes
 - "Retry" button
 ```
 
@@ -466,19 +466,19 @@ Create transformation configuration panel:
 
 TIER SELECTION (Radio buttons):
 ○ Tier A - Complex transformations
-  • Architectural refactoring
-  • Design pattern application
-  • Advanced optimizations
+ • Architectural refactoring
+ • Design pattern application
+ • Advanced optimizations
 
 ○ Tier B - Moderate refactoring
-  • Function extraction
-  • Code simplification
-  • Performance tuning
+ • Function extraction
+ • Code simplification
+ • Performance tuning
 
 ○ Tier C - Simple fixes
-  • Formatting (Black)
-  • Naming conventions (PEP 8)
-  • Import sorting
+ • Formatting (Black)
+ • Naming conventions (PEP 8)
+ • Import sorting
 
 TOGGLES:
 ☑ Auto-transform (skip confirmation)
@@ -599,24 +599,24 @@ Create benchmark comparison dashboard:
 
 OVERVIEW CARDS (Top row, 4 cards):
 1. Quantum Advantage
-   - Large "2.86x" text
-   - "Faster than classical"
-   - Green checkmark icon
+ - Large "2.86x" text
+ - "Faster than classical"
+ - Green checkmark icon
 
 2. k₁ Factor
-   - Large "0.35" text
-   - Progress bar to target
-   - Status:  ACHIEVED
+ - Large "0.35" text
+ - Progress bar to target
+ - Status: ACHIEVED
 
 3. Accuracy
-   - Large "86.4%" text
-   - "+2.4% above target"
-   - Sparkline trend (last 10 runs)
+ - Large "86.4%" text
+ - "+2.4% above target"
+ - Sparkline trend (last 10 runs)
 
 4. Cache Hit Rate
-   - Large "32%" text
-   - "+2% above target"
-   - Pie chart (hits vs misses)
+ - Large "32%" text
+ - "+2% above target"
+ - Pie chart (hits vs misses)
 
 BAR CHART - Processing Time:
 - X-axis: Task types (Refactor, Analyze, Generate, etc.)
@@ -650,35 +650,35 @@ Add pre-built example scenarios section:
 
 GRID LAYOUT (2 columns, 3 rows):
 
-1.  Security Analysis
-   - Description: "Detect SQL injection and XSS vulnerabilities"
-   - Example code preview (collapsed)
-   - [Try it] button → pre-fills prompt
+1. Security Analysis
+ - Description: "Detect SQL injection and XSS vulnerabilities"
+ - Example code preview (collapsed)
+ - [Try it] button → pre-fills prompt
 
-2.  Performance Optimization
-   - Description: "Identify bottlenecks and optimize loops"
-   - Example code preview
-   - [Try it] button
+2. Performance Optimization
+ - Description: "Identify bottlenecks and optimize loops"
+ - Example code preview
+ - [Try it] button
 
-3.  Documentation Generation
-   - Description: "Auto-generate docstrings and README"
-   - Example code preview
-   - [Try it] button
+3. Documentation Generation
+ - Description: "Auto-generate docstrings and README"
+ - Example code preview
+ - [Try it] button
 
-4.  Code Refactoring
-   - Description: "Apply SOLID principles and design patterns"
-   - Example code preview
-   - [Try it] button
+4. Code Refactoring
+ - Description: "Apply SOLID principles and design patterns"
+ - Example code preview
+ - [Try it] button
 
 5. 🧪 Test Generation
-   - Description: "Create pytest fixtures with 90% coverage"
-   - Example code preview
-   - [Try it] button
+ - Description: "Create pytest fixtures with 90% coverage"
+ - Example code preview
+ - [Try it] button
 
-6. 🌐 API Wrapper Creation
-   - Description: "Generate FastAPI endpoints with OpenAPI spec"
-   - Example code preview
-   - [Try it] button
+6. API Wrapper Creation
+ - Description: "Generate FastAPI endpoints with OpenAPI spec"
+ - Example code preview
+ - [Try it] button
 
 INTERACTION:
 - Hover: Card lifts slightly + shadow increases
@@ -709,31 +709,31 @@ LOGIN MODAL:
 USER MENU (Top right):
 - Avatar + username
 - Dropdown menu:
-  - Profile
-  - API Keys
-  - Usage Stats
-  - Settings
-  - Logout
+ - Profile
+ - API Keys
+ - Usage Stats
+ - Settings
+ - Logout
 
 API KEY MANAGEMENT:
 - Generate new key button
 - List of active keys:
-  - Key name
-  - Created date
-  - Last used
-  - Usage count
-  - [Revoke] button
+ - Key name
+ - Created date
+ - Last used
+ - Usage count
+ - [Revoke] button
 - Copy key to clipboard (show once on creation)
 
 RATE LIMITING DISPLAY:
 - Banner at top when approaching limit
-  - "47 requests remaining today"
-  - Progress bar (used/total)
-  - Resets in: countdown timer
+ - "47 requests remaining today"
+ - Progress bar (used/total)
+ - Resets in: countdown timer
 - 429 error handling:
-  - Modal: "Rate limit exceeded"
-  - Upgrade to pro link
-  - Retry after: X seconds
+ - Modal: "Rate limit exceeded"
+ - Upgrade to pro link
+ - Retry after: X seconds
 
 USAGE ANALYTICS:
 - Line chart: Requests per-iteration (last 30 iterations)
@@ -753,8 +753,8 @@ Add collaboration tools:
 
 SHARE BUTTON (Top right):
 - Click to generate shareable URL
-  - Expiry: dropdown (1 hour, 1 iteration, 1 phase, never)
-  - Read-only or editable
+ - Expiry: dropdown (1 hour, 1 iteration, 1 phase, never)
+ - Read-only or editable
 - Copy link button
 - Share via: Twitter, LinkedIn, Email buttons
 
@@ -769,27 +769,27 @@ SHARED VIEW PAGE:
 COMMENTS SYSTEM:
 - Add comment button
 - Comment thread with:
-  - Avatar + username
-  - Timestamp (relative)
-  - Comment text (Markdown support)
-  - Reply button
-  - Like button (❤️ count)
-  - Edit/Delete (if owner)
+ - Avatar + username
+ - Timestamp (relative)
+ - Comment text (Markdown support)
+ - Reply button
+ - Like button (❤️ count)
+ - Edit/Delete (if owner)
 - Real-time updates (WebSocket)
 
 TEAM WORKSPACES:
 - Create/join workspace
 - Invite members by email/username
 - Role-based access:
-  - Owner: Full control
-  - Admin: Manage members + settings
-  - Editor: Create/edit projects
-  - Viewer: Read-only access
+ - Owner: Full control
+ - Admin: Manage members + settings
+ - Editor: Create/edit projects
+ - Viewer: Read-only access
 - Workspace dashboard:
-  - Recent activity feed
-  - Member list with roles
-  - Shared projects
-  - Usage statistics
+ - Recent activity feed
+ - Member list with roles
+ - Shared projects
+ - Usage statistics
 ```
 
 **Expected Output**:
@@ -814,21 +814,21 @@ TAB 1 - GitHub Repository:
 TAB 2 - Download Package:
 - Format dropdown: ZIP, TAR.GZ
 - Include options:
-  ☑ Source code
-  ☑ Tests
-  ☑ Documentation
-  ☑ Requirements.txt
-  ☑ Dockerfile
-  ☑ Manifest.json (MCP format)
+ ☑ Source code
+ ☑ Tests
+ ☑ Documentation
+ ☑ Requirements.txt
+ ☑ Dockerfile
+ ☑ Manifest.json (MCP format)
 - [Download] button
 - File size preview
 
 TAB 3 - CI/CD Workflow:
 - Platform dropdown: GitHub Actions, GitLab CI, CircleCI, Jenkins
 - Template selection:
-  - Python CI (lint, test, coverage)
-  - Docker build + push
-  - Deploy to cloud (AWS, GCP, Azure)
+ - Python CI (lint, test, coverage)
+ - Docker build + push
+ - Deploy to cloud (AWS, GCP, Azure)
 - Preview generated YAML
 - [Copy to Clipboard] button
 
@@ -865,26 +865,26 @@ import { z } from 'zod';
 
 // Schema definitions
 const CodexRequestSchema = z.object({
-  prompt: z.string().min(10).max(5000),
-  context: z.object({
-    language: z.enum(['python', 'javascript', 'typescript', 'rust', 'go']).optional(),
-    framework: z.string().optional(),
-    tier: z.enum(['A', 'B', 'C']).optional(),
-  }).optional(),
+ prompt: z.string().min(10).max(5000),
+ context: z.object({
+ language: z.enum(['python', 'javascript', 'typescript', 'rust', 'go']).optional(),
+ framework: z.string().optional(),
+ tier: z.enum(['A', 'B', 'C']).optional(),
+ }).optional(),
 });
 
 const CodexResponseSchema = z.object({
-  code: z.string(),
-  metadata: z.object({
-    k1_factor: z.number(),
-    coherence: z.number(),
-    cache_hit: z.boolean(),
-    processing_time_ms: z.number(),
-  }),
-  quantum_metrics: z.object({
-    superposition_states: z.number(),
-    entanglement_score: z.number(),
-  }),
+ code: z.string(),
+ metadata: z.object({
+ k1_factor: z.number(),
+ coherence: z.number(),
+ cache_hit: z.boolean(),
+ processing_time_ms: z.number(),
+ }),
+ quantum_metrics: z.object({
+ superposition_states: z.number(),
+ entanglement_score: z.number(),
+ }),
 });
 
 export type CodexRequest = z.infer<typeof CodexRequestSchema>;
@@ -892,50 +892,50 @@ export type CodexResponse = z.infer<typeof CodexResponseSchema>;
 
 // API Client
 export class CodexAPIClient {
-  private baseURL: string;
-  private apiKey: string;
+ private baseURL: string;
+ private apiKey: string;
 
-  constructor(baseURL: string, apiKey: string) {
-    this.baseURL = baseURL;
-    this.apiKey = apiKey;
-  }
+ constructor(baseURL: string, apiKey: string) {
+ this.baseURL = baseURL;
+ this.apiKey = apiKey;
+ }
 
-  async generateCode(request: CodexRequest): Promise<CodexResponse> {
-    // Validate request
-    const validated = CodexRequestSchema.parse(request);
+ async generateCode(request: CodexRequest): Promise<CodexResponse> {
+ // Validate request
+ const validated = CodexRequestSchema.parse(request);
 
-    const response = await fetch(`${this.baseURL}/infer`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-        'X-Client-Version': '1.0.0',
-      },
-      body: JSON.stringify(validated),
-    });
+ const response = await fetch(`${this.baseURL}/infer`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'Authorization': `Bearer ${this.apiKey}`,
+ 'X-Client-Version': '1.0.0',
+ },
+ body: JSON.stringify(validated),
+ });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new CodexAPIError(response.status, error.message || 'API request failed');
-    }
+ if (!response.ok) {
+ const error = await response.json();
+ throw new CodexAPIError(response.status, error.message || 'API request failed');
+ }
 
-    const data = await response.json();
-    return CodexResponseSchema.parse(data);
-  }
+ const data = await response.json();
+ return CodexResponseSchema.parse(data);
+ }
 
-  async getStatus(): Promise<{ healthy: boolean; metrics: Record<string, number> }> {
-    const response = await fetch(`${this.baseURL}/status`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-    });
-    return response.json();
-  }
+ async getStatus(): Promise<{ healthy: boolean; metrics: Record<string, number> }> {
+ const response = await fetch(`${this.baseURL}/status`, {
+ headers: { 'Authorization': `Bearer ${this.apiKey}` },
+ });
+ return response.json();
+ }
 }
 
 export class CodexAPIError extends Error {
-  constructor(public statusCode: number, message: string) {
-    super(message);
-    this.name = 'CodexAPIError';
-  }
+ constructor(public statusCode: number, message: string) {
+ super(message);
+ this.name = 'CodexAPIError';
+ }
 }
 ```
 
@@ -953,108 +953,108 @@ const API_KEY = process.env.REACT_APP_CODEX_KEY || 'demo-key';
 const client = new CodexAPIClient(API_URL, API_KEY);
 
 export const CodeGenerator: React.FC = () => {
-  const [prompt, setPrompt] = useState('');
-  const [result, setResult] = useState<CodexResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+ const [prompt, setPrompt] = useState('');
+ const [result, setResult] = useState<CodexResponse | null>(null);
+ const [loading, setLoading] = useState(false);
+ const [error, setError] = useState<string | null>(null);
 
-  const handleGenerate = useCallback(async () => {
-    if (prompt.trim().length < 10) {
-      setError('Prompt must be at least 10 characters');
-      return;
-    }
+ const handleGenerate = useCallback(async () => {
+ if (prompt.trim().length < 10) {
+ setError('Prompt must be at least 10 characters');
+ return;
+ }
 
-    setLoading(true);
-    setError(null);
+ setLoading(true);
+ setError(null);
 
-    try {
-      const response = await client.generateCode({
-        prompt,
-        context: { language: 'python', tier: 'A' },
-      });
-      setResult(response);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
-    }
-  }, [prompt]);
+ try {
+ const response = await client.generateCode({
+ prompt,
+ context: { language: 'python', tier: 'A' },
+ });
+ setResult(response);
+ } catch (err) {
+ setError(err instanceof Error ? err.message : 'Unknown error');
+ } finally {
+ setLoading(false);
+ }
+ }, [prompt]);
 
-  return (
-    <div className="code-generator">
-      <div className="prompt-section">
-        <h2>Code Generation Prompt</h2>
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Describe the code you want to generate..."
-          rows={8}
-          className="prompt-input"
-        />
-        <button
-          onClick={handleGenerate}
-          disabled={loading || prompt.trim().length < 10}
-          className="generate-btn"
-        >
-          {loading ? 'Generating...' : 'Generate Code'}
-        </button>
-      </div>
+ return (
+ <div className="code-generator">
+ <div className="prompt-section">
+ <h2>Code Generation Prompt</h2>
+ <textarea
+ value={prompt}
+ onChange={(e) => setPrompt(e.target.value)}
+ placeholder="Describe the code you want to generate..."
+ rows={8}
+ className="prompt-input"
+ />
+ <button
+ onClick={handleGenerate}
+ disabled={loading || prompt.trim().length < 10}
+ className="generate-btn"
+ >
+ {loading ? 'Generating...' : 'Generate Code'}
+ </button>
+ </div>
 
-      {error && (
-        <div className="error-banner">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
+ {error && (
+ <div className="error-banner">
+ <strong>Error:</strong> {error}
+ </div>
+ )}
 
-      {result && (
-        <div className="results-section">
-          <div className="metrics-bar">
-            <div className="metric">
-              <label>k₁ Factor</label>
-              <span className={result.metadata.k1_factor <= 0.35 ? 'success' : 'warning'}>
-                {result.metadata.k1_factor.toFixed(4)}
-              </span>
-            </div>
-            <div className="metric">
-              <label>Coherence</label>
-              <span>{(result.metadata.coherence * 100).toFixed(1)}%</span>
-            </div>
-            <div className="metric">
-              <label>Cache Hit</label>
-              <span>{result.metadata.cache_hit ? '' : ''}</span>
-            </div>
-            <div className="metric">
-              <label>Time</label>
-              <span>{result.metadata.processing_time_ms}ms</span>
-            </div>
-          </div>
+ {result && (
+ <div className="results-section">
+ <div className="metrics-bar">
+ <div className="metric">
+ <label>k₁ Factor</label>
+ <span className={result.metadata.k1_factor <= 0.35 ? 'success' : 'warning'}>
+ {result.metadata.k1_factor.toFixed(4)}
+ </span>
+ </div>
+ <div className="metric">
+ <label>Coherence</label>
+ <span>{(result.metadata.coherence * 100).toFixed(1)}%</span>
+ </div>
+ <div className="metric">
+ <label>Cache Hit</label>
+ <span>{result.metadata.cache_hit ? '' : ''}</span>
+ </div>
+ <div className="metric">
+ <label>Time</label>
+ <span>{result.metadata.processing_time_ms}ms</span>
+ </div>
+ </div>
 
-          <div className="code-editor">
-            <Editor
-              height="400px"
-              defaultLanguage="python"
-              value={result.code}
-              theme="vs-dark"
-              options={{
-                readOnly: true,
-                minimap: { enabled: false },
-                lineNumbers: 'on',
-              }}
-            />
-          </div>
+ <div className="code-editor">
+ <Editor
+ height="400px"
+ defaultLanguage="python"
+ value={result.code}
+ theme="vs-dark"
+ options={{
+ readOnly: true,
+ minimap: { enabled: false },
+ lineNumbers: 'on',
+ }}
+ />
+ </div>
 
-          <div className="action-buttons">
-            <button onClick={() => navigator.clipboard.writeText(result.code)}>
-              Copy Code
-            </button>
-            <button onClick={() => {/* Download logic */}}>
-              Download
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+ <div className="action-buttons">
+ <button onClick={() => navigator.clipboard.writeText(result.code)}>
+ Copy Code
+ </button>
+ <button onClick={() => {/* Download logic */}}>
+ Download
+ </button>
+ </div>
+ </div>
+ )}
+ </div>
+ );
 };
 {% endraw %}
 ```
@@ -1066,103 +1066,103 @@ export const CodeGenerator: React.FC = () => {
 import React, { useEffect, useRef } from 'react';
 
 interface QuantumState {
-  superposition: Array<{ probability: number; state: string }>;
-  coherence: number;
-  collapsed: boolean;
+ superposition: Array<{ probability: number; state: string }>;
+ coherence: number;
+ collapsed: boolean;
 }
 
 export const QuantumVisualizer: React.FC<{ state: QuantumState }> = ({ state }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+ const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+ useEffect(() => {
+ const canvas = canvasRef.current;
+ if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+ const ctx = canvas.getContext('2d');
+ if (!ctx) return;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+ // Clear canvas
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw superposition states
-    state.superposition.forEach((s, i) => {
-      const x = 100 + i * 80;
-      const y = 150;
-      const radius = 40 + s.probability * 30;
+ // Draw superposition states
+ state.superposition.forEach((s, i) => {
+ const x = 100 + i * 80;
+ const y = 150;
+ const radius = 40 + s.probability * 30;
 
-      // Draw circle
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(102, 126, 234, ${s.probability})`;
-      ctx.fill();
-      ctx.strokeStyle = '#667eea';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+ // Draw circle
+ ctx.beginPath();
+ ctx.arc(x, y, radius, 0, Math.PI * 2);
+ ctx.fillStyle = `rgba(102, 126, 234, ${s.probability})`;
+ ctx.fill();
+ ctx.strokeStyle = '#667eea';
+ ctx.lineWidth = 2;
+ ctx.stroke();
 
-      // Draw state label
-      ctx.font = 'bold 12px Arial';
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.state, x, y);
+ // Draw state label
+ ctx.font = 'bold 12px Arial';
+ ctx.fillStyle = '#fff';
+ ctx.textAlign = 'center';
+ ctx.textBaseline = 'middle';
+ ctx.fillText(s.state, x, y);
 
-      // Draw probability
-      ctx.font = '10px Arial';
-      ctx.fillStyle = '#667eea';
-      ctx.fillText(`${(s.probability * 100).toFixed(0)}%`, x, y + radius + 15);
-    });
+ // Draw probability
+ ctx.font = '10px Arial';
+ ctx.fillStyle = '#667eea';
+ ctx.fillText(`${(s.probability * 100).toFixed(0)}%`, x, y + radius + 15);
+ });
 
-    // Draw coherence bar
-    const barX = 20;
-    const barY = 20;
-    const barWidth = 200;
-    const barHeight = 20;
+ // Draw coherence bar
+ const barX = 20;
+ const barY = 20;
+ const barWidth = 200;
+ const barHeight = 20;
 
-    // Background
-    ctx.fillStyle = '#e1e4e8';
-    ctx.fillRect(barX, barY, barWidth, barHeight);
+ // Background
+ ctx.fillStyle = '#e1e4e8';
+ ctx.fillRect(barX, barY, barWidth, barHeight);
 
-    // Filled portion
-    const coherenceColor = state.coherence > 0.65 ? '#28a745' : state.coherence > 0.5 ? '#ffc107' : '#dc3545';
-    ctx.fillStyle = coherenceColor;
-    ctx.fillRect(barX, barY, barWidth * state.coherence, barHeight);
+ // Filled portion
+ const coherenceColor = state.coherence > 0.65 ? '#28a745' : state.coherence > 0.5 ? '#ffc107' : '#dc3545';
+ ctx.fillStyle = coherenceColor;
+ ctx.fillRect(barX, barY, barWidth * state.coherence, barHeight);
 
-    // Border
-    ctx.strokeStyle = '#24292e';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(barX, barY, barWidth, barHeight);
+ // Border
+ ctx.strokeStyle = '#24292e';
+ ctx.lineWidth = 1;
+ ctx.strokeRect(barX, barY, barWidth, barHeight);
 
-    // Label
-    ctx.font = '14px Arial';
-    ctx.fillStyle = '#24292e';
-    ctx.textAlign = 'left';
-    ctx.fillText(`Coherence: ${state.coherence.toFixed(3)}`, barX, barY + barHeight + 20);
+ // Label
+ ctx.font = '14px Arial';
+ ctx.fillStyle = '#24292e';
+ ctx.textAlign = 'left';
+ ctx.fillText(`Coherence: ${state.coherence.toFixed(3)}`, barX, barY + barHeight + 20);
 
-    // Collapse animation
-    if (state.collapsed) {
-      ctx.font = 'bold 20px Arial';
-      ctx.fillStyle = '#667eea';
-      ctx.textAlign = 'center';
-      ctx.fillText('⚛️ Wave Function Collapsed!', canvas.width / 2, 250);
-    }
-  }, [state]);
+ // Collapse animation
+ if (state.collapsed) {
+ ctx.font = 'bold 20px Arial';
+ ctx.fillStyle = '#667eea';
+ ctx.textAlign = 'center';
+ ctx.fillText('⚛️ Wave Function Collapsed!', canvas.width / 2, 250);
+ }
+ }, [state]);
 
-  return (
-    <div className="quantum-visualizer">
-      <canvas ref={canvasRef} width={600} height={300} />
-      <div className="quantum-metrics">
-        <div className="metric-item">
-          <strong>States:</strong> {state.superposition.length}
-        </div>
-        <div className="metric-item">
-          <strong>Coherence:</strong> {(state.coherence * 100).toFixed(1)}%
-        </div>
-        <div className="metric-item">
-          <strong>Status:</strong> {state.collapsed ? 'Collapsed' : 'Superposition'}
-        </div>
-      </div>
-    </div>
-  );
+ return (
+ <div className="quantum-visualizer">
+ <canvas ref={canvasRef} width={600} height={300} />
+ <div className="quantum-metrics">
+ <div className="metric-item">
+ <strong>States:</strong> {state.superposition.length}
+ </div>
+ <div className="metric-item">
+ <strong>Coherence:</strong> {(state.coherence * 100).toFixed(1)}%
+ </div>
+ <div className="metric-item">
+ <strong>Status:</strong> {state.collapsed ? 'Collapsed' : 'Superposition'}
+ </div>
+ </div>
+ </div>
+ );
 };
 ```
 
@@ -1188,29 +1188,29 @@ export const QuantumVisualizer: React.FC<{ state: QuantumState }> = ({ state }) 
 **Request**:
 ```json
 {
-  "prompt": "Create a FastAPI endpoint for user authentication with JWT tokens",
-  "context": {
-    "language": "python",
-    "framework": "fastapi",
-    "tier": "A"
-  }
+ "prompt": "Create a FastAPI endpoint for user authentication with JWT tokens",
+ "context": {
+ "language": "python",
+ "framework": "fastapi",
+ "tier": "A"
+ }
 }
 ```
 
 **Response**:
 ```json
 {
-  "code": "from fastapi import Depends, HTTPException, status\nfrom fastapi.security import OAuth2PasswordBearer\nimport jwt\n\n# ... (generated code)",
-  "metadata": {
-    "k1_factor": 0.3421,
-    "coherence": 0.692,
-    "cache_hit": false,
-    "processing_time_ms": 1234
-  },
-  "quantum_metrics": {
-    "superposition_states": 3,
-    "entanglement_score": 0.85
-  }
+ "code": "from fastapi import Depends, HTTPException, status\nfrom fastapi.security import OAuth2PasswordBearer\nimport jwt\n\n# ... (generated code)",
+ "metadata": {
+ "k1_factor": 0.3421,
+ "coherence": 0.692,
+ "cache_hit": false,
+ "processing_time_ms": 1234
+ },
+ "quantum_metrics": {
+ "superposition_states": 3,
+ "entanglement_score": 0.85
+ }
 }
 ```
 
@@ -1222,9 +1222,9 @@ cd /path/to/_codex_
 uvicorn services.api.main:app --reload --port 8000
 
 # Test with curl
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer demo-key" \
-  -d '{"prompt": "Create a function to parse CSV files", "context": {"tier": "B"}}'
+ -H "Content-Type: application/json" \
+ -H "Authorization: Bearer demo-key" \
+ -d '{"prompt": "Create a function to parse CSV files", "context": {"tier": "B"}}'
 
 # Check status
 
@@ -1260,11 +1260,11 @@ Analyze this Python script for security vulnerabilities:
 import sqlite3
 
 def get_user(username):
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    query = f"SELECT * FROM users WHERE username = '{username}'"
-    cursor.execute(query)
-    return cursor.fetchone()
+ conn = sqlite3.connect('users.db')
+ cursor = conn.cursor()
+ query = f"SELECT * FROM users WHERE username = '{username}'"
+ cursor.execute(query)
+ return cursor.fetchone()
 ```
 ```
 
@@ -1276,11 +1276,11 @@ def get_user(username):
 - **Code**:
 ```python
 def get_user(username):
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    query = "SELECT * FROM users WHERE username = ?"
-    cursor.execute(query, (username,))
-    return cursor.fetchone()
+ conn = sqlite3.connect('users.db')
+ cursor = conn.cursor()
+ query = "SELECT * FROM users WHERE username = ?"
+ cursor.execute(query, (username,))
+ return cursor.fetchone()
 ```
 
 **Cognitive Brain Metrics**:
@@ -1298,11 +1298,11 @@ Optimize this code for performance:
 
 ```python
 def process_large_list(items):
-    result = []
-    for item in items:
-        if item > 10:
-            result.append(item * 2)
-    return result
+ result = []
+ for item in items:
+ if item > 10:
+ result.append(item * 2)
+ return result
 ```
 ```
 
@@ -1312,7 +1312,7 @@ def process_large_list(items):
 - **Code**:
 ```python
 def process_large_list(items):
-    return [item * 2 for item in items if item > 10]
+ return [item * 2 for item in items if item > 10]
 ```
 
 **Quantum Metrics**:
@@ -1330,55 +1330,55 @@ Generate comprehensive documentation for this module:
 
 ```python
 def calculate_metrics(data, weights=None):
-    if weights is None:
-        weights = [1.0] * len(data)
-    return sum(d * w for d, w in zip(data, weights)) / sum(weights)
+ if weights is None:
+ weights = [1.0] * len(data)
+ return sum(d * w for d, w in zip(data, weights)) / sum(weights)
 ```
 ```
 
 **Expected Output**:
 ```python
 def calculate_metrics(data: list[float], weights: list[float] | None = None) -> float:
-    """
-    Calculate weighted average of data points.
+ """
+ Calculate weighted average of data points.
 
-    This function computes a weighted average by multiplying each data point
-    with its corresponding weight and dividing by the sum of weights.
-    If no weights are provided, all data points are weighted equally.
+ This function computes a weighted average by multiplying each data point
+ with its corresponding weight and dividing by the sum of weights.
+ If no weights are provided, all data points are weighted equally.
 
-    Args:
-        data: List of numerical data points to average.
-        weights: Optional list of weights for each data point. If None,
-                 equal weights (1.0) are assigned to all points.
+ Args:
+ data: List of numerical data points to average.
+ weights: Optional list of weights for each data point. If None,
+ equal weights (1.0) are assigned to all points.
 
-    Returns:
-        The weighted average as a float.
+ Returns:
+ The weighted average as a float.
 
-    Raises:
-        ValueError: If data and weights have different lengths.
-        ZeroDivisionError: If sum of weights is zero.
+ Raises:
+ ValueError: If data and weights have different lengths.
+ ZeroDivisionError: If sum of weights is zero.
 
-    Examples:
-        >>> calculate_metrics([1, 2, 3], [1, 2, 3])
-        2.333...
-        >>> calculate_metrics([10, 20, 30])
-        20.0
+ Examples:
+ >>> calculate_metrics([1, 2, 3], [1, 2, 3])
+ 2.333...
+ >>> calculate_metrics([10, 20, 30])
+ 20.0
 
-    Note:
-        This implementation uses generator expressions for memory efficiency
-        with large datasets.
-    """
-    if weights is None:
-        weights = [1.0] * len(data)
+ Note:
+ This implementation uses generator expressions for memory efficiency
+ with large datasets.
+ """
+ if weights is None:
+ weights = [1.0] * len(data)
 
-    if len(data) != len(weights):
-        raise ValueError("data and weights must have the same length")
+ if len(data) != len(weights):
+ raise ValueError("data and weights must have the same length")
 
-    total_weight = sum(weights)
-    if total_weight == 0:
-        raise ZeroDivisionError("Sum of weights cannot be zero")
+ total_weight = sum(weights)
+ if total_weight == 0:
+ raise ZeroDivisionError("Sum of weights cannot be zero")
 
-    return sum(d * w for d, w in zip(data, weights)) / total_weight
+ return sum(d * w for d, w in zip(data, weights)) / total_weight
 ```
 
 **LLM Intent Inference**:
@@ -1396,16 +1396,16 @@ Generate pytest unit tests with 90% coverage for:
 
 ```python
 class UserManager:
-    def __init__(self):
-        self.users = {}
+ def __init__(self):
+ self.users = {}
 
-    def add_user(self, user_id, name):
-        if user_id in self.users:
-            raise ValueError("User already exists")
-        self.users[user_id] = name
+ def add_user(self, user_id, name):
+ if user_id in self.users:
+ raise ValueError("User already exists")
+ self.users[user_id] = name
 
-    def get_user(self, user_id):
-        return self.users.get(user_id)
+ def get_user(self, user_id):
+ return self.users.get(user_id)
 ```
 ```
 
@@ -1415,46 +1415,46 @@ import pytest
 from your_module import UserManager
 
 class TestUserManager:
-    """Test suite for UserManager class."""
+ """Test suite for UserManager class."""
 
-    @pytest.fixture
-    def manager(self):
-        """Fixture providing a fresh UserManager instance."""
-        return UserManager()
+ @pytest.fixture
+ def manager(self):
+ """Fixture providing a fresh UserManager instance."""
+ return UserManager()
 
-    def test_init_empty(self, manager):
-        """Test UserManager initializes with empty user dict."""
-        assert manager.users == {}
+ def test_init_empty(self, manager):
+ """Test UserManager initializes with empty user dict."""
+ assert manager.users == {}
 
-    def test_add_user_success(self, manager):
-        """Test adding a new user successfully."""
-        manager.add_user(1, "Alice")
-        assert manager.users[1] == "Alice"
+ def test_add_user_success(self, manager):
+ """Test adding a new user successfully."""
+ manager.add_user(1, "Alice")
+ assert manager.users[1] == "Alice"
 
-    def test_add_user_duplicate_raises_error(self, manager):
-        """Test adding duplicate user raises ValueError."""
-        manager.add_user(1, "Alice")
-        with pytest.raises(ValueError, match="User already exists"):
-            manager.add_user(1, "Bob")
+ def test_add_user_duplicate_raises_error(self, manager):
+ """Test adding duplicate user raises ValueError."""
+ manager.add_user(1, "Alice")
+ with pytest.raises(ValueError, match="User already exists"):
+ manager.add_user(1, "Bob")
 
-    def test_get_user_exists(self, manager):
-        """Test retrieving existing user returns correct name."""
-        manager.add_user(1, "Alice")
-        assert manager.get_user(1) == "Alice"
+ def test_get_user_exists(self, manager):
+ """Test retrieving existing user returns correct name."""
+ manager.add_user(1, "Alice")
+ assert manager.get_user(1) == "Alice"
 
-    def test_get_user_not_exists(self, manager):
-        """Test retrieving non-existent user returns None."""
-        assert manager.get_user(999) is None
+ def test_get_user_not_exists(self, manager):
+ """Test retrieving non-existent user returns None."""
+ assert manager.get_user(999) is None
 
-    @pytest.mark.parametrize("user_id,name", [
-        (1, "Alice"),
-        (2, "Bob"),
-        (100, "Charlie"),
-    ])
-    def test_add_multiple_users(self, manager, user_id, name):
-        """Test adding multiple users with different IDs."""
-        manager.add_user(user_id, name)
-        assert manager.get_user(user_id) == name
+ @pytest.mark.parametrize("user_id,name", [
+ (1, "Alice"),
+ (2, "Bob"),
+ (100, "Charlie"),
+ ])
+ def test_add_multiple_users(self, manager, user_id, name):
+ """Test adding multiple users with different IDs."""
+ manager.add_user(user_id, name)
+ assert manager.get_user(user_id) == name
 ```
 
 **Coverage Report**:
@@ -1482,7 +1482,7 @@ cd _codex_
 
 # Create virtual environment
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -e .
@@ -1538,11 +1538,11 @@ Styling:
 uvicorn services.api.main:app --reload --port 8000
 
 # Terminal 2: Test with curl
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "Create a function to validate email addresses",
-    "context": {"language": "python", "tier": "B"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "prompt": "Create a function to validate email addresses",
+ "context": {"language": "python", "tier": "B"}
+ }'
 
 # Expected response:
 # {
@@ -1638,11 +1638,11 @@ pip install mangum
 ### Q: Is this production-ready?
 
 **A**: Yes! _Codex_ is Level 4 MLOps certified:
--  21,500+ tests (100% passing)
--  34.56% agents/ coverage (Phase 9.4 baseline), targeting 50% overall (Phase 10)
--  0 security vulnerabilities
--  CI/CD pipelines
--  Comprehensive documentation
+- 21,500+ tests (100% passing)
+- 34.56% agents/ coverage (Phase 9.4 baseline), targeting 50% overall (Phase 10)
+- 0 security vulnerabilities
+- CI/CD pipelines
+- Comprehensive documentation
 
 ### Q: What are the rate limits?
 

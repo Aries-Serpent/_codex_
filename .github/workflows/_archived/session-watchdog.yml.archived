@@ -1,0 +1,124 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: "Session Watchdog \u2014 Timebox & Continuity Enforcement"
+on:
+  issue_comment:
+    types:
+    - created
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+jobs:
+  watchdog:
+    name: "\u23F1 Session Watchdog"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: 'github.event.issue.pull_request != null && github.event.comment.user.login
+      != ''github-actions[bot]''
+
+      '
+    steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+    - name: Detect timebox, exploration, and no-auto-proceed directives
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        script: "const commentBody = context.payload.comment.body || '';\nconst prNumber\
+          \    = context.issue.number;\n\nconst TIMEBOX_START_MARKER   = 'SESSION_TIMEBOX_START';\n\
+          const TIMEBOX_EXPIRED_MARKER = 'SESSION_TIMEBOX_EXPIRED';\nconst EXPLORATION_MARKER\
+          \     = 'SESSION_TYPE_EXPLORATION';\n\n// Skip watchdog's own marker comments\
+          \ to prevent re-trigger loops\nif (\n  commentBody.includes(TIMEBOX_START_MARKER)\
+          \ ||\n  commentBody.includes(TIMEBOX_EXPIRED_MARKER) ||\n  commentBody.includes(EXPLORATION_MARKER)\n\
+          ) {\n  console.log('Skipping watchdog-generated comment to prevent loop.');\n\
+          \  return;\n}\n\n// Get all existing PR comments for dedup and expiry checks\n\
+        const { data: comments } = await github.rest.issues.listComments({\n  owner:\
+        \ context.repo.owner,\n  repo: context.repo.repo,\n  issue_number: prNumber,\n\
+          });\n\n// \u2500\u2500 A. Detect and record timebox directive \u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+        \u2500\u2500\nconst timeboxMatch = commentBody.match(/~\\s*(\\d+)\\s*(?:minutes?|mins?)/i);\n\
+          if (timeboxMatch) {\n  const minutes    = parseInt(timeboxMatch[1], 10);\n\
+          \  const now        = new Date();\n  const expiresAt  = new Date(now.getTime()\
+          \ + minutes * 60000);\n  const expiresISO = expiresAt.toISOString();\n\n\
+        \  // Dedup: skip if there is already an active (non-expired) timebox on\
+          \ this PR\n  const activeStart = comments.find(c => {\n    if (!c.body.includes(TIMEBOX_START_MARKER))\
+        \ return false;\n    const em = c.body.match(/\\*\\*Expires:\\*\\*\\s*(\\\
+          S+)/);\n    if (!em) return false;\n    const exp = new Date(em[1]);\n \
+          \   return !isNaN(exp.getTime()) && new Date() < exp;\n  });\n\n  if (!activeStart)\
+        \ {\n    await github.rest.issues.createComment({\n      owner: context.repo.owner,\n\
+        \      repo: context.repo.repo,\n      issue_number: prNumber,\n      body:\
+          \ [\n        `## \u23F1 ${TIMEBOX_START_MARKER}`,\n        '',\n       \
+        \ `**Timebox detected:** \\`~${minutes} minutes\\``,\n        `**Started:**\
+        \ ${now.toISOString()}`,\n        `**Expires:** ${expiresISO}`,\n      \
+        \  '',\n        `> \U0001F916 **Agent:** Your session window is **${minutes}\
+          \ minutes**.`,\n        '> Post a `## \U0001F9E0 Session Summary` comment\
+        \ before this expires.',\n        '> To extend: post a new `~N minutes`\
+          \ comment.',\n        '',\n        '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',\n\
+        \    '',\n    '---',\n    `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+        \      ].join('\\n'),\n    });\n    core.notice(`Timebox set: ${minutes}min,\
+        \ expires ${expiresISO}`, {\n      title: '\u23F1 Session Timebox Recorded',\n\
+          \    });\n  }\n}\n\n// \u2500\u2500 B. Detect and record exploration session\
+          \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\nconst isExploration    = /exploration\\s+session|capability\\\
+          s+discussion/i.test(commentBody);\nconst doNotAutoProceed = /do\\s+not\\\
+          s+auto.?proceed/i.test(commentBody);\n\nif (isExploration && !comments.find(c\
+          \ => c.body.includes(EXPLORATION_MARKER))) {\n  const dnap = doNotAutoProceed\n\
+          \    ? '\\n> \U0001F6D1 **\"Do NOT auto-proceed\"** directive active. Agent\
+        \ MUST wait for explicit human \"continue\" after each item.\\n'\n    :\
+        \ '';\n\n  await github.rest.issues.createComment({\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    issue_number: prNumber,\n    body: [\n\
+          \      `## \U0001F50D ${EXPLORATION_MARKER}`,\n      '',\n      '**Exploration\
+          \ session detected.** [Session Continuity Policy](.github/docs/SessionContinuityPolicy.md)\
+        \ is now **active:**',\n      dnap,\n      '| Rule | Enforcement |',\n \
+          \     '|------|-------------|',\n      '| Never self-close | Post findings\
+          \ + ask \"proceed or deeper?\" after each agenda item |',\n      '| Incremental\
+          \ summaries | Post a PR comment every ~10 minutes of work |',\n      `|\
+          \ Wait for human | ${doNotAutoProceed ? '\U0001F6D1 **REQUIRED** \u2014\
+        \ \"Do NOT auto-proceed\" detected' : 'Treat silence as pause, not signal\
+        \ to close'} |`,\n      '| Session close | **REQUIRED:** Post `## \U0001F9E0\
+          \ Session Summary` with topics + follow-up `@copilot` prompt |',\n     \
+          \ '',\n      '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',\n\
+        \  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+          \    ].join('\\n'),\n  });\n  core.notice('Exploration session recorded\
+        \ \u2014 Session Continuity Policy active', {\n    title: '\U0001F50D Exploration\
+          \ Session Active',\n  });\n}\n\n// \u2500\u2500 C. Check if any active timebox\
+          \ has expired \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+          \u2500\u2500\nconst timeboxStarts = comments.filter(c => c.body.includes(TIMEBOX_START_MARKER));\n\
+        for (const ts of timeboxStarts) {\n  const m = ts.body.match(/\\*\\*Expires:\\\
+          *\\*\\s*(\\S+)/);\n  if (!m) continue;\n\n  const expiresAt = new Date(m[1]);\n\
+          \  if (isNaN(expiresAt.getTime())) continue;\n\n  if (new Date() > expiresAt)\
+          \ {\n    // Already posted expiry notice for this exact timebox?\n    const\
+          \ alreadyExpired = comments.find(c =>\n      c.body.includes(TIMEBOX_EXPIRED_MARKER)\
+          \ && c.body.includes(m[1])\n    );\n\n    if (!alreadyExpired) {\n     \
+        \ await github.rest.issues.createComment({\n        owner: context.repo.owner,\n\
+        \        repo: context.repo.repo,\n        issue_number: prNumber,\n   \
+        \     body: [\n          `## \U0001F514 ${TIMEBOX_EXPIRED_MARKER}`,\n  \
+          \        '',\n          '**Your session timebox has expired.**',\n     \
+        \     '',\n          `**Expired:** ${expiresAt.toISOString()}`,\n      \
+        \    `**Current time:** ${new Date().toISOString()}`,\n          '',\n \
+        \         'If you are the active agent on this session:',\n          '-\
+          \ [ ] Post `## \U0001F9E0 Session Summary` with topics covered and key findings',\n\
+          \          '- [ ] Include a suggested follow-up `@copilot` prompt for the\
+          \ next session',\n          '- [ ] Do NOT start new work \u2014 timebox\
+        \ is expired',\n          '',\n          'To extend: post a new `~N minutes`\
+          \ comment.',\n          '',\n          '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',\n\
+        \    '',\n    '---',\n    `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+        \        ].join('\\n'),\n      });\n      core.warning(`Timebox expired:\
+        \ ${m[1]}`, {\n        title: '\U0001F514 Session Timebox Expired',\n  \
+          \    });\n    }\n  }\n}\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

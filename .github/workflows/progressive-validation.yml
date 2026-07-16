@@ -1,3 +1,4 @@
+---
 name: Progressive Validation Suite
 on:
   pull_request:
@@ -136,11 +137,9 @@ jobs:
 
         python -c "import sys; print(f''Python: {sys.version}'')"
 
-
         # Test core module imports
 
         python -c "import pathlib; import json; import subprocess" || exit 1
-
 
         echo "✓ Import validation passed"
 

@@ -1,3 +1,4 @@
+---
 name: App Package Download
 
 on:
@@ -42,7 +43,6 @@ permissions:
   contents: read
   actions: read
 
-
 jobs:
   package-app:
     name: Package Application
@@ -74,34 +74,34 @@ jobs:
         run: |
           # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
           # This eliminates the untrusted code checkout vulnerability in workflow_dispatch contexts
-          
+
           # Parse repository into owner/repo format using bash parameter expansion
           REPO_FULL="${{ github.repository }}"
           OWNER="${REPO_FULL%%/*}"
           REPO="${REPO_FULL##*/}"
           BRANCH="${{ steps.branch.outputs.branch }}"
-          
+
           # Create base directory structure
           mkdir -p apps/dev
           mkdir -p src/services/audio/workflow
           mkdir -p package_staging
-          
+
           # Helper function to fetch file from repository via GitHub API
           # SECURITY: file_path parameter must be hardcoded or safely validated (not from untrusted input)
           fetch_file_from_repo() {
             local file_path=$1
             local output_path=$2
             local ref=$3
-            
+
             # Validate path does not contain path traversal sequences
             if [[ "$file_path" =~ \.\. ]]; then
               echo "WARNING: Invalid file path (contains path traversal), skipping: $file_path" >&2
               return 1
             fi
-            
+
             # Create parent directory if needed
             mkdir -p "$(dirname "$output_path")"
-            
+
             # Try to fetch the file from the specified branch
             if gh api repos/$OWNER/$REPO/contents/$file_path?ref=$ref -q '.content' 2>/dev/null | base64 -d > "$output_path" 2>/dev/null; then
               return 0
@@ -109,51 +109,51 @@ jobs:
               return 1
             fi
           }
-          
+
           # Helper function to list files in a directory via GitHub API
           list_files_in_dir() {
             local dir_path=$1
             local ref=$2
-            
+
             # Validate path does not contain path traversal sequences
             if [[ "$dir_path" =~ \.\. ]]; then
               echo "WARNING: Invalid directory path (contains path traversal), skipping: $dir_path" >&2
               return 1
             fi
-            
+
             # List directory contents; filter for files, not directories
             gh api repos/$OWNER/$REPO/contents/$dir_path?ref=$ref -q '.[] | select(.type == "file") | .path' 2>/dev/null
           }
-          
+
           echo "📥 Fetching repository structure from $BRANCH via GitHub API..."
-          
+
           # Fetch key application files from apps/dev/
           for file in zd_voice_lines.py audio_transcriber_ui.py __init__.py; do
             if fetch_file_from_repo "apps/dev/$file" "apps/dev/$file" "$BRANCH"; then
               echo "✅ Fetched apps/dev/$file"
             fi
           done
-          
+
           # Fetch requirements file if it exists
           if fetch_file_from_repo "requirements-audio-transcription.txt" "requirements-audio-transcription.txt" "$BRANCH"; then
             echo "✅ Fetched requirements-audio-transcription.txt"
           fi
-          
+
           # Fetch audio transcription workflow if it exists
           if fetch_file_from_repo "src/services/audio/workflow/transcription_workflow.py" "src/services/audio/workflow/transcription_workflow.py" "$BRANCH"; then
             echo "✅ Fetched transcription_workflow.py"
           fi
-          
+
           # Fetch audio workflow init file if it exists
           if fetch_file_from_repo "apps/dev/templates/audio_workflow_init.py" "apps/dev/templates/audio_workflow_init.py" "$BRANCH"; then
             echo "✅ Fetched audio_workflow_init.py"
           fi
-          
+
           # Fetch test file if it exists
           if fetch_file_from_repo "apps/dev/test_api_client.py" "apps/dev/test_api_client.py" "$BRANCH"; then
             echo "✅ Fetched test_api_client.py"
           fi
-          
+
           echo "✅ Repository structure fetched via GitHub API (no git operations)"
 
       - name: Verify apps directory exists
@@ -407,30 +407,29 @@ jobs:
 
           ### Testing
 
-           - \`test_api_client.py\` - Component tests (when packaging zd_voice_lines)
+            - \`test_api_client.py\` - Component tests (when packaging zd_voice_lines)
 
           ## 🚀 Quick Start
 
           ### Prerequisites
 
-           - Python 3.12 or higher
-           - tkinter (usually included with Python)
-           - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription workflows)
+            - Python 3.12 or higher
+            - tkinter (usually included with Python)
+            - ffmpeg installed on PATH (required for MP3/MP4 conversion in transcription workflows)
 
           ### Installation
 
           1. Extract this package to your desired location
           2. Install dependencies:
-             \`\`\`bash
-             # Pin pytest plugins (PR  #3248)
-             # Pin pytest plugins before package install (PR  #3248 stability fix)
+              \`\`\`bash
+              # Pin pytest plugins (PR  #3248)
+              # Pin pytest plugins before package install (PR  #3248 stability fix)
           pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
 
+              pip install -r requirements.txt
+              \`\`\`
 
-             pip install -r requirements.txt
-             \`\`\`
-
-           3. Run the application:
+            3. Run the application:
               \`\`\`bash
               python ${APP_ENTRY}
               \`\`\`
@@ -439,17 +438,17 @@ jobs:
 
           Run component tests to verify installation:
 
-           \`\`\`bash
-           ${QUICK_TEST_NOTE}
-           \`\`\`
+            \`\`\`bash
+            ${QUICK_TEST_NOTE}
+            \`\`\`
 
-           Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
+            Expected output: \`7 passed, 0 failed\` (zd_voice_lines package only)
 
           ## 📚 Documentation
 
-           - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
-           - For development information, see \`docs/DEVELOPMENT.md\`
-           - For API reference, see \`APPLICATION_SPEC.md\`
+            - For detailed usage instructions, see \`docs/USER_GUIDE.md\`
+            - For development information, see \`docs/DEVELOPMENT.md\`
+            - For API reference, see \`APPLICATION_SPEC.md\`
 
           ## 🔗 Resources
 

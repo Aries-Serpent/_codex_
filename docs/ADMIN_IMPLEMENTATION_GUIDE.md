@@ -5,83 +5,83 @@
 ## Table of Contents
 
 - [ Executive Summary for Administrators](#-executive-summary-for-administrators)
-  - [Purpose](#purpose)
-  - [Your Role as Administrator](#your-role-as-administrator)
-  - [Systems Requiring Admin Action](#systems-requiring-admin-action)
+ - [Purpose](#purpose)
+ - [Your Role as Administrator](#your-role-as-administrator)
+ - [Systems Requiring Admin Action](#systems-requiring-admin-action)
 - [ Quick Status Dashboard](#-quick-status-dashboard)
 - [ Section 1: GitHub Organization Settings](#-section-1-github-organization-settings)
-  - [1.1 Enable GitHub Copilot for Organization](#11-enable-github-copilot-for-organization)
-  - [1.2 Repository Permissions](#12-repository-permissions)
+ - [1.1 Enable GitHub Copilot for Organization](#11-enable-github-copilot-for-organization)
+ - [1.2 Repository Permissions](#12-repository-permissions)
 - [ Section 2: GitHub App Creation (PR Reviewer Bot)](#-section-2-github-app-creation-pr-reviewer-bot)
-  - [2.1 Create GitHub App](#21-create-github-app)
-    - [Step 1: Basic Information](#step-1-basic-information)
-    - [Step 2: Identifying and authorizing users](#step-2-identifying-and-authorizing-users)
-    - [Step 3: Post installation](#step-3-post-installation)
-    - [Step 4: Webhook Configuration](#step-4-webhook-configuration)
+ - [2.1 Create GitHub App](#21-create-github-app)
+ - [Step 1: Basic Information](#step-1-basic-information)
+ - [Step 2: Identifying and authorizing users](#step-2-identifying-and-authorizing-users)
+ - [Step 3: Post installation](#step-3-post-installation)
+ - [Step 4: Webhook Configuration](#step-4-webhook-configuration)
 - [Run this command to generate a secure webhook secret](#run-this-command-to-generate-a-secure-webhook-secret)
 - [Step 5: Repository Permissions (CRITICAL)](#step-5-repository-permissions-critical)
-  - [Step 6: Subscribe to Events](#step-6-subscribe-to-events)
-    - [Step 7: Where can this GitHub App be installed?](#step-7-where-can-this-github-app-be-installed)
-    - [Step 8: Create GitHub App](#step-8-create-github-app)
-  - [2.2 After App Creation - Collect Required Information](#22-after-app-creation---collect-required-information)
-  - [2.3 Install App on Repository](#23-install-app-on-repository)
-- [🔑 Section 3: Repository Secrets Configuration](#-section-3-repository-secrets-configuration)
-  - [3.1 Navigate to Secrets Settings](#31-navigate-to-secrets-settings)
-  - [3.2 Required Secrets (CRITICAL)](#32-required-secrets-critical)
-  - [3.3 Optional Secrets (Enhanced Features)](#33-optional-secrets-enhanced-features)
-  - [3.4 How to Add a Secret](#34-how-to-add-a-secret)
-  - [3.5 Personal Access Token (if needed)](#35-personal-access-token-if-needed)
+ - [Step 6: Subscribe to Events](#step-6-subscribe-to-events)
+ - [Step 7: Where can this GitHub App be installed?](#step-7-where-can-this-github-app-be-installed)
+ - [Step 8: Create GitHub App](#step-8-create-github-app)
+ - [2.2 After App Creation - Collect Required Information](#22-after-app-creation---collect-required-information)
+ - [2.3 Install App on Repository](#23-install-app-on-repository)
+- [ Section 3: Repository Secrets Configuration](#-section-3-repository-secrets-configuration)
+ - [3.1 Navigate to Secrets Settings](#31-navigate-to-secrets-settings)
+ - [3.2 Required Secrets (CRITICAL)](#32-required-secrets-critical)
+ - [3.3 Optional Secrets (Enhanced Features)](#33-optional-secrets-enhanced-features)
+ - [3.4 How to Add a Secret](#34-how-to-add-a-secret)
+ - [3.5 Personal Access Token (if needed)](#35-personal-access-token-if-needed)
 - [ Section 4: Deployment Infrastructure](#-section-4-deployment-infrastructure)
-  - [4.1 Choose Deployment Method](#41-choose-deployment-method)
-    - [Option A: GitHub Actions Only (Simplest - RECOMMENDED for start)](#option-a-github-actions-only-simplest---recommended-for-start)
-    - [Option B: AWS Lambda (Recommended for Production)](#option-b-aws-lambda-recommended-for-production)
-    - [Option C: Azure Functions](#option-c-azure-functions)
-    - [Option D: Self-Hosted Runner](#option-d-self-hosted-runner)
-  - [4.2 GitHub Actions Runner Configuration](#42-github-actions-runner-configuration)
+ - [4.1 Choose Deployment Method](#41-choose-deployment-method)
+ - [Option A: GitHub Actions Only (Simplest - RECOMMENDED for start)](#option-a-github-actions-only-simplest---recommended-for-start)
+ - [Option B: AWS Lambda (Recommended for Production)](#option-b-aws-lambda-recommended-for-production)
+ - [Option C: Azure Functions](#option-c-azure-functions)
+ - [Option D: Self-Hosted Runner](#option-d-self-hosted-runner)
+ - [4.2 GitHub Actions Runner Configuration](#42-github-actions-runner-configuration)
 - [On your server:](#on-your-server)
 - [Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)](#download-runner-get-url-from-settings--actions--runners--new-self-hosted-runner)
 - [Extract](#extract)
 - [Configure (token from GitHub Settings)](#configure-token-from-github-settings)
 - [Run](#run)
-- [🛡️ Section 5: Security & Compliance](#-section-5-security--compliance)
-  - [5.1 Security Settings Verification](#51-security-settings-verification)
-  - [5.2 Branch Protection Rules](#52-branch-protection-rules)
-  - [5.3 CODEOWNERS File](#53-codeowners-file)
+- [️ Section 5: Security & Compliance](#-section-5-security--compliance)
+ - [5.1 Security Settings Verification](#51-security-settings-verification)
+ - [5.2 Branch Protection Rules](#52-branch-protection-rules)
+ - [5.3 CODEOWNERS File](#53-codeowners-file)
 - [View current CODEOWNERS](#view-current-codeowners)
 - [Default owners for everything](#default-owners-for-everything)
 - [Workflow files require owner approval](#workflow-files-require-owner-approval)
 - [Security-sensitive files](#security-sensitive-files)
 - [ Section 6: Verification Checklist](#-section-6-verification-checklist)
-  - [Organization Level](#organization-level)
-  - [Repository Level](#repository-level)
-  - [GitHub App](#github-app)
-  - [Secrets](#secrets)
-  - [Infrastructure](#infrastructure)
-  - [Testing](#testing)
+ - [Organization Level](#organization-level)
+ - [Repository Level](#repository-level)
+ - [GitHub App](#github-app)
+ - [Secrets](#secrets)
+ - [Infrastructure](#infrastructure)
+ - [Testing](#testing)
 - [ Section 7: Information to Return to Copilot](#-section-7-information-to-return-to-copilot)
 - [==============================================================================](#)
 - [Admin Configuration Report for _codex_](#admin-configuration-report-for-_codex_)
 - [==============================================================================](#)
-- [Date: 2026-07-13](#date-todays-date---eg-2025-12-21)
+- [Date: 2026-07-16](#date-todays-date---eg-2025-12-21)
 - [Administrator: [YOUR_NAME]](#administrator-your_name)
 - [==============================================================================](#)
 - [List any issues or blockers](#list-any-issues-or-blockers)
 - [Questions for Copilot Agent](#questions-for-copilot-agent)
 - [Additional notes](#additional-notes)
 - [ Section 8: Troubleshooting Guide](#-section-8-troubleshooting-guide)
-  - [Common Issues and Solutions](#common-issues-and-solutions)
-    - [Issue: "Copilot Agents not available"](#issue-copilot-agents-not-available)
-    - [Issue: "Workflows failing with permission errors"](#issue-workflows-failing-with-permission-errors)
-    - [Issue: "Cannot create GitHub App"](#issue-cannot-create-github-app)
-    - [Issue: "Webhook not receiving events"](#issue-webhook-not-receiving-events)
-    - [Issue: "Secret scanning blocking push"](#issue-secret-scanning-blocking-push)
-    - [Issue: "Required status checks not found"](#issue-required-status-checks-not-found)
-- [📞 Section 9: Support Resources](#-section-9-support-resources)
-  - [Documentation Links](#documentation-links)
-  - [Getting Help](#getting-help)
-  - [Repository-Specific Resources](#repository-specific-resources)
+ - [Common Issues and Solutions](#common-issues-and-solutions)
+ - [Issue: "Copilot Agents not available"](#issue-copilot-agents-not-available)
+ - [Issue: "Workflows failing with permission errors"](#issue-workflows-failing-with-permission-errors)
+ - [Issue: "Cannot create GitHub App"](#issue-cannot-create-github-app)
+ - [Issue: "Webhook not receiving events"](#issue-webhook-not-receiving-events)
+ - [Issue: "Secret scanning blocking push"](#issue-secret-scanning-blocking-push)
+ - [Issue: "Required status checks not found"](#issue-required-status-checks-not-found)
+- [ Section 9: Support Resources](#-section-9-support-resources)
+ - [Documentation Links](#documentation-links)
+ - [Getting Help](#getting-help)
+ - [Repository-Specific Resources](#repository-specific-resources)
 - [ Section 10: Final Validation](#-section-10-final-validation)
-  - [Test 1: Verify Workflow Execution](#test-1-verify-workflow-execution)
+ - [Test 1: Verify Workflow Execution](#test-1-verify-workflow-execution)
 - [Using GitHub CLI](#using-github-cli)
 - [Trigger a workflow manually](#trigger-a-workflow-manually)
 - [Check recent runs](#check-recent-runs)
@@ -90,19 +90,19 @@
 - [Make a small change](#make-a-small-change)
 - [Commit and push](#commit-and-push)
 - [Test 3: Verify Security Scanning](#test-3-verify-security-scanning)
-  - [Test 4: Verify Branch Protection](#test-4-verify-branch-protection)
-  - [Cleanup Test PR](#cleanup-test-pr)
+ - [Test 4: Verify Branch Protection](#test-4-verify-branch-protection)
+ - [Cleanup Test PR](#cleanup-test-pr)
 - [Delete test branch](#delete-test-branch)
 - [ Notes Section](#-notes-section)
-  - [Admin Notes](#admin-notes)
-  - [Version History](#version-history)
+ - [Admin Notes](#admin-notes)
+ - [Version History](#version-history)
 - [ Document Metadata](#-document-metadata)
 
 > **Version:** 1.0.0 | **Generated:** 2025-12-21 | **Status:** IMPLEMENTATION_REQUIRED
 
 ---
 
-##  Executive Summary for Administrators
+## Executive Summary for Administrators
 
 ### Purpose
 
@@ -127,19 +127,19 @@ You need to:
 
 ---
 
-##  Quick Status Dashboard
+## Quick Status Dashboard
 
 | System | Current Status | Admin Actions Required | Priority |
 |--------|---------------|----------------------|----------|
-| Copilot Agent |  Not Configured | 5 actions | **CRITICAL** |
-| PR Reviewer |  App Not Created | 8 actions | **HIGH** |
+| Copilot Agent | Not Configured | 5 actions | **CRITICAL** |
+| PR Reviewer | App Not Created | 8 actions | **HIGH** |
 | Security Scanning | ️ Partial | 3 actions | **HIGH** |
 | Workflows | ️ Failing | 4 actions | **MEDIUM** |
-| Evolution System |  Not Deployed | 6 actions | **MEDIUM** |
+| Evolution System | Not Deployed | 6 actions | **MEDIUM** |
 
 ---
 
-##  Section 1: GitHub Organization Settings
+## Section 1: GitHub Organization Settings
 
 ### 1.1 Enable GitHub Copilot for Organization
 
@@ -153,7 +153,7 @@ You need to:
 4. Enable: **"Copilot Agents"** (if available in your plan)
 5. Copy and provide: **Organization ID**
 
->  **How to find Organization ID:**
+> **How to find Organization ID:**
 > - Go to `https://api.github.com/orgs/Aries-Serpent`
 > - Look for the `"id"` field in the JSON response
 
@@ -161,11 +161,11 @@ You need to:
 
 ```yaml
 organization_settings:
-  org_name: "Aries-Serpent"
-  org_id: [YOUR_ORG_ID]  # e.g., 123456789
-  copilot_enabled: [true/false]
-  copilot_agents_enabled: [true/false]
-  copilot_tier: [free/team/enterprise]
+ org_name: "Aries-Serpent"
+ org_id: [YOUR_ORG_ID] # e.g., 123456789
+ copilot_enabled: [true/false]
+ copilot_agents_enabled: [true/false]
+ copilot_tier: [free/team/enterprise]
 ```
 
 ### 1.2 Repository Permissions
@@ -176,15 +176,15 @@ organization_settings:
 
 | Setting | Location | Required Value |
 |---------|----------|---------------|
-| Actions | Settings → Actions → General |  Enabled |
+| Actions | Settings → Actions → General | Enabled |
 | Workflow Permissions | Settings → Actions → General | Read and write permissions |
-| Allow PR approval | Settings → Actions → General |  Allow GitHub Actions to create and approve pull requests |
-| Dependency Graph | Settings → Security → Code security |  Enabled |
-| Dependabot Alerts | Settings → Security → Code security |  Enabled |
-| Dependabot Security Updates | Settings → Security → Code security |  Enabled |
-| Secret Scanning | Settings → Security → Code security |  Enabled |
-| Push Protection | Settings → Security → Code security |  Enabled |
-| GitHub Pages | Settings → Pages |  Enabled (Deploy from Actions) |
+| Allow PR approval | Settings → Actions → General | Allow GitHub Actions to create and approve pull requests |
+| Dependency Graph | Settings → Security → Code security | Enabled |
+| Dependabot Alerts | Settings → Security → Code security | Enabled |
+| Dependabot Security Updates | Settings → Security → Code security | Enabled |
+| Secret Scanning | Settings → Security → Code security | Enabled |
+| Push Protection | Settings → Security → Code security | Enabled |
+| GitHub Pages | Settings → Pages | Enabled (Deploy from Actions) |
 
 **Step-by-Step for Actions Permissions:**
 
@@ -198,7 +198,7 @@ organization_settings:
 
 ---
 
-##  Section 2: GitHub App Creation (PR Reviewer Bot)
+## Section 2: GitHub App Creation (PR Reviewer Bot)
 
 ### 2.1 Create GitHub App
 
@@ -223,22 +223,22 @@ Copy these values exactly:
 | Setting | Value |
 |---------|-------|
 | Callback URL | Leave empty |
-| Expire user authorization tokens |  Enabled |
-| Request user authorization (OAuth) during installation |  Disabled |
-| Enable Device Flow |  Disabled |
+| Expire user authorization tokens | Enabled |
+| Request user authorization (OAuth) during installation | Disabled |
+| Enable Device Flow | Disabled |
 
 #### Step 3: Post installation
 
 | Setting | Value |
 |---------|-------|
 | Setup URL (optional) | Leave empty |
-| Redirect on update |  Disabled |
+| Redirect on update | Disabled |
 
 #### Step 4: Webhook Configuration
 
 | Setting | Value |
 |---------|-------|
-| Active |  Enabled |
+| Active | Enabled |
 | Webhook URL | `https://github.com/Aries-Serpent/_codex_/dispatches` (or leave empty initially) |
 | Webhook secret | Generate using command below |
 
@@ -249,7 +249,7 @@ Copy these values exactly:
 openssl rand -hex 32
 ```
 
->  **SAVE THIS VALUE SECURELY** - You will need it later for the `CODEX_WEBHOOK_SECRET` secret.
+> **SAVE THIS VALUE SECURELY** - You will need it later for the `CODEX_WEBHOOK_SECRET` secret.
 
 ## Step 5: Repository Permissions (CRITICAL)
 
@@ -297,20 +297,20 @@ After creating the app, you'll be redirected to the app settings page.
 1. **App ID:** Shown at the top of the page (e.g., `123456`)
 2. **Client ID:** Listed in the "About" section
 3. **Generate Private Key:**
-   - Scroll down to "Private keys"
-   - Click **"Generate a private key"**
-   - A `.pem` file will download - **KEEP THIS SECURE**
+ - Scroll down to "Private keys"
+ - Click **"Generate a private key"**
+ - A `.pem` file will download - **KEEP THIS SECURE**
 
 **Return this information:**
 
 ```yaml
 github_app:
-  app_id: [APP_ID]  # e.g., 123456
-  client_id: [CLIENT_ID]  # e.g., Iv1.abc123def456
-  app_name: "codex-quantum-reviewer"
-  webhook_secret: [SECRET_FROM_STEP_4]  # KEEP SECURE
-  private_key_generated: [true/false]
-  private_key_file: [FILENAME.pem]
+ app_id: [APP_ID] # e.g., 123456
+ client_id: [CLIENT_ID] # e.g., Iv1.abc123def456
+ app_name: "codex-quantum-reviewer"
+ webhook_secret: [SECRET_FROM_STEP_4] # KEEP SECURE
+ private_key_generated: [true/false]
+ private_key_file: [FILENAME.pem]
 ```
 
 ### 2.3 Install App on Repository
@@ -333,14 +333,14 @@ github_app:
 
 ```yaml
 app_installation:
-  installation_id: [INSTALLATION_ID]  # e.g., 12345678
-  installed_on_repo: "_codex_"
-  installation_url: "https://github.com/organizations/Aries-Serpent/settings/installations/[INSTALLATION_ID]"
+ installation_id: [INSTALLATION_ID] # e.g., 12345678
+ installed_on_repo: "_codex_"
+ installation_url: "https://github.com/organizations/Aries-Serpent/settings/installations/[INSTALLATION_ID]"
 ```
 
 ---
 
-## 🔑 Section 3: Repository Secrets Configuration
+## Section 3: Repository Secrets Configuration
 
 ### 3.1 Navigate to Secrets Settings
 
@@ -373,19 +373,19 @@ Create these secrets **exactly as named**:
 1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
 2. Click: **"New repository secret"**
 3. Enter:
-   - **Name:** The secret name exactly as shown in the table
-   - **Secret:** The value
+ - **Name:** The secret name exactly as shown in the table
+ - **Secret:** The value
 4. Click: **"Add secret"**
 
 **For the Private Key Secret (`CODEX_PRIVATE_KEY`):**
 
 1. Open the downloaded `.pem` file in a text editor
 2. Copy the **entire contents** including:
-   ```
-   -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
-   [multiple lines of characters]
-   -----END RSA PRIVATE KEY-----
-   ```
+ ```
+ -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
+ [multiple lines of characters]
+ -----END RSA PRIVATE KEY-----
+ ```
 3. Paste into the secret value field
 
 ### 3.5 Personal Access Token (if needed)
@@ -395,16 +395,16 @@ If any workflow requires a PAT:
 1. Go to: `https://github.com/settings/tokens?type=beta`
 2. Click: **"Generate new token"**
 3. Configure:
-   - **Token name:** `codex-automation`
-   - **Expiration:** 90 days (recommended) or no expiration
-   - **Repository access:** Only select repositories → `Aries-Serpent/_codex_`
-   - **Permissions:**
-     - Repository permissions:
-       - Contents: Read and write
-       - Issues: Read and write
-       - Metadata: Read-only
-       - Pull requests: Read and write
-       - Workflows: Read and write
+ - **Token name:** `codex-automation`
+ - **Expiration:** 90 days (recommended) or no expiration
+ - **Repository access:** Only select repositories → `Aries-Serpent/_codex_`
+ - **Permissions:**
+ - Repository permissions:
+ - Contents: Read and write
+ - Issues: Read and write
+ - Metadata: Read-only
+ - Pull requests: Read and write
+ - Workflows: Read and write
 4. Click: **"Generate token"**
 5. Copy the token and save as secret `GH_PAT` (if needed)
 
@@ -412,24 +412,24 @@ If any workflow requires a PAT:
 
 ```yaml
 secrets_configured:
-  # Required secrets
-  CODEX_APP_ID: [configured/missing]
-  CODEX_PRIVATE_KEY: [configured/missing]
-  CODEX_WEBHOOK_SECRET: [configured/missing]
-  CODEX_INSTALLATION_ID: [configured/missing]
+ # Required secrets
+ CODEX_APP_ID: [configured/missing]
+ CODEX_PRIVATE_KEY: [configured/missing]
+ CODEX_WEBHOOK_SECRET: [configured/missing]
+ CODEX_INSTALLATION_ID: [configured/missing]
 
-  # Optional secrets
-  optional_secrets:
-    OPENAI_API_KEY: [configured/missing/not_needed]
-    PINECONE_API_KEY: [configured/missing/not_needed]
-    AWS_ACCESS_KEY_ID: [configured/missing/not_needed]
-    AWS_SECRET_ACCESS_KEY: [configured/missing/not_needed]
-    ENABLE_LIVE_TESTS: [configured/missing/not_needed]
+ # Optional secrets
+ optional_secrets:
+ OPENAI_API_KEY: [configured/missing/not_needed]
+ PINECONE_API_KEY: [configured/missing/not_needed]
+ AWS_ACCESS_KEY_ID: [configured/missing/not_needed]
+ AWS_SECRET_ACCESS_KEY: [configured/missing/not_needed]
+ ENABLE_LIVE_TESTS: [configured/missing/not_needed]
 ```
 
 ---
 
-##  Section 4: Deployment Infrastructure
+## Section 4: Deployment Infrastructure
 
 ### 4.1 Choose Deployment Method
 
@@ -503,12 +503,12 @@ Select ONE of the following options based on your needs:
 ```yaml
 deployment_choice: [actions_only/aws_lambda/azure_functions/self_hosted]
 deployment_details:
-  # Only fill if NOT using actions_only
-  cloud_provider: [aws/azure/gcp/none]
-  account_id: [IF_APPLICABLE]
-  region: [IF_APPLICABLE]
-  infrastructure_ready: [true/false]
-  webhook_url: [URL or "not_deployed"]
+ # Only fill if NOT using actions_only
+ cloud_provider: [aws/azure/gcp/none]
+ account_id: [IF_APPLICABLE]
+ region: [IF_APPLICABLE]
+ infrastructure_ready: [true/false]
+ webhook_url: [URL or "not_deployed"]
 ```
 
 ### 4.2 GitHub Actions Runner Configuration
@@ -540,7 +540,7 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 ---
 
-## 🛡️ Section 5: Security & Compliance
+## ️ Section 5: Security & Compliance
 
 ### 5.1 Security Settings Verification
 
@@ -550,11 +550,11 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 | Feature | Status Required | How to Enable |
 |---------|----------------|---------------|
-| Dependency graph |  Enabled | Settings → Security → Enable |
-| Dependabot alerts |  Enabled | Settings → Security → Enable |
-| Dependabot security updates |  Enabled | Settings → Security → Enable |
-| Secret scanning |  Enabled | Settings → Security → Enable |
-| Push protection |  Enabled | Settings → Security → Enable |
+| Dependency graph | Enabled | Settings → Security → Enable |
+| Dependabot alerts | Enabled | Settings → Security → Enable |
+| Dependabot security updates | Enabled | Settings → Security → Enable |
+| Secret scanning | Enabled | Settings → Security → Enable |
+| Push protection | Enabled | Settings → Security → Enable |
 | Code scanning | ️ Optional | Configure in workflow |
 
 ### 5.2 Branch Protection Rules
@@ -569,14 +569,14 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 | Setting | Value |
 |---------|-------|
-| Require a pull request before merging |  |
+| Require a pull request before merging | |
 | Require approvals | 1 |
-| Dismiss stale pull request approvals |  |
+| Dismiss stale pull request approvals | |
 | Require review from Code Owners | ️ Optional |
-| Require status checks to pass |  |
-| Require branches to be up to date |  |
+| Require status checks to pass | |
+| Require branches to be up to date | |
 | **Required status checks:** | See list below |
-| Require conversation resolution |  |
+| Require conversation resolution | |
 | Do not allow bypassing | ️ Optional |
 | Restrict who can push | ️ Optional |
 
@@ -615,7 +615,7 @@ Dockerfile* @Aries-Serpent/owners
 
 ---
 
-##  Section 6: Verification Checklist
+## Section 6: Verification Checklist
 
 Use this checklist to verify all configurations are complete:
 
@@ -665,7 +665,7 @@ Use this checklist to verify all configurations are complete:
 
 ---
 
-##  Section 7: Information to Return to Copilot
+## Section 7: Information to Return to Copilot
 
 Copy and complete this template, then provide it to the Copilot Agent:
 
@@ -673,79 +673,79 @@ Copy and complete this template, then provide it to the Copilot Agent:
 # ==============================================================================
 # Admin Configuration Report for _codex_
 # ==============================================================================
-# Date: 2026-07-13
+# Date: 2026-07-16
 # Administrator: [YOUR_NAME]
 # ==============================================================================
 
 organization:
-  name: "Aries-Serpent"
-  id: [ORG_ID]  # Numeric ID from API
-  copilot_enabled: [true/false]
-  copilot_agents_available: [true/false]
-  copilot_tier: [free/team/enterprise]
+ name: "Aries-Serpent"
+ id: [ORG_ID] # Numeric ID from API
+ copilot_enabled: [true/false]
+ copilot_agents_available: [true/false]
+ copilot_tier: [free/team/enterprise]
 
 repository:
-  name: "_codex_"
-  full_name: "Aries-Serpent/_codex_"
-  default_branch: "main"
-  visibility: [public/private]
+ name: "_codex_"
+ full_name: "Aries-Serpent/_codex_"
+ default_branch: "main"
+ visibility: [public/private]
 
 github_app:
-  created: [true/false]
-  app_id: [APP_ID or "not_created"]
-  app_name: [APP_NAME or "not_created"]  # Should be "codex-quantum-reviewer"
-  installation_id: [INSTALLATION_ID or "not_installed"]
-  webhook_configured: [true/false]
-  private_key_generated: [true/false]
+ created: [true/false]
+ app_id: [APP_ID or "not_created"]
+ app_name: [APP_NAME or "not_created"] # Should be "codex-quantum-reviewer"
+ installation_id: [INSTALLATION_ID or "not_installed"]
+ webhook_configured: [true/false]
+ private_key_generated: [true/false]
 
 secrets_status:
-  # Required (all must be "configured" for full functionality)
-  CODEX_APP_ID: [configured/missing]
-  CODEX_PRIVATE_KEY: [configured/missing]
-  CODEX_WEBHOOK_SECRET: [configured/missing]
-  CODEX_INSTALLATION_ID: [configured/missing]
+ # Required (all must be "configured" for full functionality)
+ CODEX_APP_ID: [configured/missing]
+ CODEX_PRIVATE_KEY: [configured/missing]
+ CODEX_WEBHOOK_SECRET: [configured/missing]
+ CODEX_INSTALLATION_ID: [configured/missing]
 
-  # Optional
-  OPENAI_API_KEY: [configured/missing/not_needed]
-  PINECONE_API_KEY: [configured/missing/not_needed]
-  AWS_ACCESS_KEY_ID: [configured/missing/not_needed]
-  AWS_SECRET_ACCESS_KEY: [configured/missing/not_needed]
-  ENABLE_LIVE_TESTS: [configured/missing/not_needed]
+ # Optional
+ OPENAI_API_KEY: [configured/missing/not_needed]
+ PINECONE_API_KEY: [configured/missing/not_needed]
+ AWS_ACCESS_KEY_ID: [configured/missing/not_needed]
+ AWS_SECRET_ACCESS_KEY: [configured/missing/not_needed]
+ ENABLE_LIVE_TESTS: [configured/missing/not_needed]
 
 deployment:
-  method_chosen: [actions_only/aws_lambda/azure_functions/self_hosted/not_decided]
-  infrastructure_ready: [true/false]
-  webhook_url: [URL or "not_deployed" or "not_applicable"]
+ method_chosen: [actions_only/aws_lambda/azure_functions/self_hosted/not_decided]
+ infrastructure_ready: [true/false]
+ webhook_url: [URL or "not_deployed" or "not_applicable"]
 
 security:
-  branch_protection_enabled: [true/false]
-  required_status_checks_configured: [true/false]
-  security_scanning_enabled: [true/false]
-  secret_scanning_enabled: [true/false]
-  dependabot_enabled: [true/false]
+ branch_protection_enabled: [true/false]
+ required_status_checks_configured: [true/false]
+ security_scanning_enabled: [true/false]
+ secret_scanning_enabled: [true/false]
+ dependabot_enabled: [true/false]
 
 actions_permissions:
-  workflow_permissions: [read_only/read_write]
-  can_approve_prs: [true/false]
+ workflow_permissions: [read_only/read_write]
+ can_approve_prs: [true/false]
 
 # List any issues or blockers
 blockers:
-  - [LIST ANY BLOCKERS - e.g., "Cannot create GitHub App - need owner permissions"]
-  - [OR "None" if no blockers]
+ - [LIST ANY BLOCKERS - e.g., "Cannot create GitHub App - need owner permissions"]
+ - [OR "None" if no blockers]
 
 # Questions for Copilot Agent
 questions:
-  - [ANY QUESTIONS - e.g., "Should I enable Copilot Agents if available?"]
-  - [OR "None" if no questions]
+ - [ANY QUESTIONS - e.g., "Should I enable Copilot Agents if available?"]
+ - [OR "None" if no questions]
 
 # Additional notes
 notes: |
-  [Any additional observations or information that might be helpful]
+ [Any additional observations or information that might be helpful]
 ```
 
 ---
 
-##  Section 8: Troubleshooting Guide
+## Section 8: Troubleshooting Guide
 
 ### Common Issues and Solutions
 
@@ -802,11 +802,11 @@ notes: |
 **Solution:**
 1. Remove the secret from code
 2. If false positive, use `.github/secret_scanning.yml` to allow:
-   ```yaml
-   paths-ignore:
-     - "docs/**"
-     - "**/*.md"
-   ```
+ ```yaml
+ paths-ignore:
+ - "docs/**"
+ - "**/*.md"
+ ```
 
 ---
 
@@ -822,7 +822,7 @@ notes: |
 
 ---
 
-## 📞 Section 9: Support Resources
+## Section 9: Support Resources
 
 ### Documentation Links
 
@@ -852,7 +852,7 @@ notes: |
 
 ---
 
-##  Section 10: Final Validation
+## Section 10: Final Validation
 
 Once all sections are complete, perform these validation tests:
 
@@ -892,17 +892,17 @@ git push origin test/admin-config-validation
 
 1. Create PR via GitHub UI
 2. Verify:
-   - [ ] PR checks start running
-   - [ ] Status checks appear
-   - [ ] If bot is configured, verify it responds
+ - [ ] PR checks start running
+ - [ ] Status checks appear
+ - [ ] If bot is configured, verify it responds
 
 ## Test 3: Verify Security Scanning
 
 1. Go to: `https://github.com/Aries-Serpent/_codex_/security`
 2. Verify:
-   - [ ] Dependabot alerts section visible
-   - [ ] Code scanning section visible (if enabled)
-   - [ ] Secret scanning section visible
+ - [ ] Dependabot alerts section visible
+ - [ ] Code scanning section visible (if enabled)
+ - [ ] Secret scanning section visible
 
 ### Test 4: Verify Branch Protection
 
@@ -921,7 +921,7 @@ git push origin --delete test/admin-config-validation
 
 ---
 
-##  Notes Section
+## Notes Section
 
 ### Admin Notes
 
@@ -943,7 +943,7 @@ _Use this space for any additional notes, concerns, or observations:_
 
 ---
 
-##  Document Metadata
+## Document Metadata
 
 | Property | Value |
 |----------|-------|

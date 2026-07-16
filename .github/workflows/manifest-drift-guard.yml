@@ -1,3 +1,4 @@
+---
 name: manifest-drift-guard
 
 on:
@@ -82,4 +83,3 @@ jobs:
 
           print(f"Manifest validation passed. Checked {len(set(paths))} referenced path(s).")
           PY
-

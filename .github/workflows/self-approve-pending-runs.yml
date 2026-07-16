@@ -1,3 +1,4 @@
+---
 name: "\u26A1 Self-Approve Pending Workflow Runs"
 on:
   schedule:
@@ -141,4 +142,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

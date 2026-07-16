@@ -1,3 +1,4 @@
+---
 # Cognitive Brain CI Feedback Loop
 # Phase 1, Pre-commit 2 (S108): wires report_completion() to actual CI outcomes.
 # Triggered after any workflow completes; maps the workflow name to pattern IDs
@@ -276,7 +277,3 @@ jobs:
 
           print(f"📝 Stored failure candidate for pattern review: '{workflow}'")
           EOF
-
-
-
-

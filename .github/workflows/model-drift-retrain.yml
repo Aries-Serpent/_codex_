@@ -1,3 +1,4 @@
+---
 name: Model Drift Detection & Auto-Retrain
 
 # SAR-G03: Wire ContinuousLearningPipeline.should_retrain() to a GHA trigger.
@@ -34,7 +35,6 @@ on:
   repository_dispatch:
     types:
       - drift-detected  # fired by monitoring agents or post-deploy hooks
-
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -101,7 +101,7 @@ jobs:
               samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
               threshold  = float(os.environ.get("DRIFT_THRESHOLD") or 0.15)
               should     = (drift_score >= threshold and samples >= 100) or \
-                           os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
+                            os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
               result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
           else:
               drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)

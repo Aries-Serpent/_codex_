@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
+**Last Updated**: 2026-07-08 
 **Version**: 1.0.0
 
 This guide helps you report bugs effectively and request features thoughtfully.
@@ -92,10 +92,10 @@ ValueError is raised with message "Invalid path: /tmp/my config/model.yaml"
 ## Steps to Reproduce
 1. Create a config file at `/tmp/my config/model.yaml`
 2. Run:
-   ```python
-   from codex_ml import load_model
-   model = load_model('/tmp/my config/model.yaml')
-   ```
+ ```python
+ from codex_ml import load_model
+ model = load_model('/tmp/my config/model.yaml')
+ ```
 3. Observe error
 
 ## Environment
@@ -107,12 +107,12 @@ ValueError is raised with message "Invalid path: /tmp/my config/model.yaml"
 ## Error Message
 ```
 Traceback (most recent call last):
-  File "test.py", line 2, in <module>
-    model = load_model('/tmp/my config/model.yaml')
-  File "src/codex_ml/loader.py", line 45, in load_model
-    validate_path(path)
-  File "src/codex_ml/loader.py", line 78, in validate_path
-    raise ValueError(f"Invalid path: {path}")
+ File "test.py", line 2, in <module>
+ model = load_model('/tmp/my config/model.yaml')
+ File "src/codex_ml/loader.py", line 45, in load_model
+ validate_path(path)
+ File "src/codex_ml/loader.py", line 78, in validate_path
+ raise ValueError(f"Invalid path: {path}")
 ValueError: Invalid path: /tmp/my config/model.yaml
 ```
 
@@ -125,45 +125,45 @@ model = load_model('/tmp/my config/model.yaml')
 ## Additional Context
 This works fine when the path has no spaces:
 ```python
-model = load_model('/tmp/my_config/model.yaml')  # Works 
+model = load_model('/tmp/my_config/model.yaml') # Works 
 ```
 ```
 
 ### Bug Report Quality Tips
 
-####  Good Bug Reports Include
+#### Good Bug Reports Include
 
 - **Title**: Specific and descriptive
-  - Good: "Model loading fails with spaces in path"
-  - Bad: "Bug in loader"
+ - Good: "Model loading fails with spaces in path"
+ - Bad: "Bug in loader"
 
 - **Clear description**: What's broken?
-  - Good: "When loading a model from a path with spaces, ValueError is raised"
-  - Bad: "Something is broken"
+ - Good: "When loading a model from a path with spaces, ValueError is raised"
+ - Bad: "Something is broken"
 
 - **Steps to reproduce**: Exact steps to see the bug
-  - Good: 
-    1. Create `/tmp/my config/config.yaml`
-    2. Run `load_model('/tmp/my config/config.yaml')`
-  - Bad: "Just use spaces in the path"
+ - Good: 
+ 1. Create `/tmp/my config/config.yaml`
+ 2. Run `load_model('/tmp/my config/config.yaml')`
+ - Bad: "Just use spaces in the path"
 
 - **Expected vs actual**: What should happen vs. what happens
-  - Good: "Should load the model; instead raises ValueError"
-  - Bad: "It doesn't work"
+ - Good: "Should load the model; instead raises ValueError"
+ - Bad: "It doesn't work"
 
 - **Full error message**: The complete traceback
-  - Good: Full traceback from Python
-  - Bad: "Got an error"
+ - Good: Full traceback from Python
+ - Bad: "Got an error"
 
 - **Minimal example**: Standalone code to reproduce
-  - Good: 5-10 lines of code
-  - Bad: "Just load a model with spaces"
+ - Good: 5-10 lines of code
+ - Bad: "Just load a model with spaces"
 
 - **Environment details**: Python version, OS, etc.
-  - Good: "Python 3.12.1, Ubuntu 22.04, codex-ml 0.1.0"
-  - Bad: "Latest version"
+ - Good: "Python 3.12.1, Ubuntu 22.04, codex-ml 0.1.0"
+ - Bad: "Latest version"
 
-####  Avoid
+#### Avoid
 
 - Vague descriptions
 - Multi-issue reports (one issue per report)
@@ -233,16 +233,16 @@ model = load_model('huggingface://gpt2')
 
 ## Alternatives Considered
 1. Manual download with `huggingface-hub` package
-   - Pros: No changes needed
-   - Cons: Extra steps, harder for new users
+ - Pros: No changes needed
+ - Cons: Extra steps, harder for new users
 
 2. Environment variable for cache directory
-   - Pros: Simple
-   - Cons: Still requires manual download
+ - Pros: Simple
+ - Cons: Still requires manual download
 
 3. Async loading with caching
-   - Pros: Flexible
-   - Cons: More complex API
+ - Pros: Flexible
+ - Cons: More complex API
 
 ## Additional Context
 HuggingFace Hub hosts 10,000+ open models. This would:
@@ -263,7 +263,7 @@ Related discussions:
 
 ### Feature Request Quality Tips
 
-####  Good Feature Requests
+#### Good Feature Requests
 
 - **Clear title**: What feature is being requested?
 - **Motivation**: Why is it needed? (not just "would be cool")
@@ -273,7 +273,7 @@ Related discussions:
 - **Alternatives**: Other ways to solve the problem
 - **Impact assessment**: How big is this change?
 
-####  Avoid
+#### Avoid
 
 - "I think this would be cool"
 - Vague descriptions without motivation
@@ -327,13 +327,13 @@ predictions = model.predict(preprocessed)
 ```python
 # This reproduces the issue without external dependencies
 data = [
-    {'value': 1},
-    {'value': 'not a number'},  # This causes the issue
-    {'value': 3},
+ {'value': 1},
+ {'value': 'not a number'}, # This causes the issue
+ {'value': 3},
 ]
 
 for item in data:
-    print(item['value'] + 1)  # Fails on second item
+ print(item['value'] + 1) # Fails on second item
 ```
 
 ### MRE Checklist
@@ -404,7 +404,7 @@ If you find the solution yourself:
 
 ## Common Mistakes & How to Avoid Them
 
-###  Screenshot of Error Message
+### Screenshot of Error Message
 
 **Wrong**:
 ```
@@ -415,18 +415,18 @@ If you find the solution yourself:
 ```
 ValueError: invalid literal for int() with base 10: 'abc'
 Traceback (most recent call last):
-  File "test.py", line 5, in <module>
-    x = int(my_string)
+ File "test.py", line 5, in <module>
+ x = int(my_string)
 ValueError: invalid literal for int() with base 10: 'abc'
 ```
 
-###  Asking in Wrong Place
+### Asking in Wrong Place
 
 **Wrong**: Using issues for "how do I" questions
 
 **Right**: Use GitHub Discussions for questions, Issues for bugs/features
 
-###  Missing Reproduction Steps
+### Missing Reproduction Steps
 
 **Wrong**: "It doesn't work when I load models"
 
@@ -435,13 +435,13 @@ ValueError: invalid literal for int() with base 10: 'abc'
 2. Run `load_model('/tmp/test.yaml')`
 3. Observe ValueError
 
-###  Including Secrets
+### Including Secrets
 
 **Wrong**: Posting your API keys or credentials
 
 **Right**: Use dummy values or scrub real ones
 
-###  Multiple Issues in One
+### Multiple Issues in One
 
 **Wrong**: "Bug in loader AND feature request for streaming"
 
@@ -465,4 +465,4 @@ ValueError: invalid literal for int() with base 10: 'abc'
 - Read existing issues and PRs
 - Look at the [Roadmap](ROADMAP.md)
 
-Thank you for helping make Codex ML better! 🎉
+Thank you for helping make Codex ML better! 

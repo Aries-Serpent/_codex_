@@ -22,7 +22,9 @@ def _load() -> ModuleType:
 
 _module = _load()
 __all__ = getattr(_module, "__all__", [])
-globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})
+for name in __all__:
+    if hasattr(_module, name):
+        globals()[name] = getattr(_module, name)
 
 
 def _run_app() -> None:
@@ -44,3 +46,8 @@ def _run_app() -> None:
 
 if __name__ == "__main__":
     _run_app()
+
+
+def _append_error_block(error_text: str, block_name: str = "error") -> str:
+    """Append an error block to formatted output."""
+    return f"\n[{block_name}]\n{error_text}\n"

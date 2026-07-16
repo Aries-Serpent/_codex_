@@ -1,3 +1,4 @@
+---
 name: Template Lint (HTML includes)
 on:
   pull_request:

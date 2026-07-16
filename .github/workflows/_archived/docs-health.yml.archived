@@ -1,0 +1,90 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+name: Docs Health (Post-Merge)
+
+# Post-merge documentation health check.
+# Runs after every push to main that touches docs/ or mkdocs.yml to confirm
+# the documentation tree is clean and all nav entries resolve to real files.
+# Also available as workflow_dispatch for on-demand verification.
+#
+# Priority 1 deliverable: confirms docs-health.yml auto-run is clean post-merge.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+jobs:
+  docs-health:
+    name: "📚 Docs Health Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5  # v6.0.3
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6  # v6
+        with:
+          python-version: '3.12.13'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install pyyaml --quiet
+
+      - name: Run docs_lint --strict (nav + file existence)
+        id: docs_lint
+        run: |
+          python scripts/ci/docs_lint.py --strict 2>&1 | tee /tmp/docs_lint_output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify cost-dashboard page exists
+        run: |
+          if [ ! -f "docs/ops/cost-dashboard.md" ]; then
+            echo "::error::docs/ops/cost-dashboard.md missing — cost-dashboard nav entry will 404"
+            exit 1
+          fi
+          echo "✅ docs/ops/cost-dashboard.md present"
+
+      - name: Post docs health summary
+        if: always()
+        run: |
+          {
+            echo "## 📚 Docs Health Check"
+            echo ""
+            if [ -f /tmp/docs_lint_output.txt ]; then
+              echo '```'
+              cat /tmp/docs_lint_output.txt
+              echo '```'
+            fi
+            if [ "${{ steps.docs_lint.outputs.exit_code }}" = "0" ]; then
+              echo "✅ **All nav entries resolve to existing files — GitHub Pages safe to deploy.**"
+            else
+              echo "❌ **Docs lint errors detected — fix before next deployment.**"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+<<<<<<< HEAD
+
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

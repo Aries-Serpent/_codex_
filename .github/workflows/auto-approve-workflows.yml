@@ -1,3 +1,4 @@
+---
 name: "\u26A1 Auto-Approve Pending Workflow Runs"
 on:
   push:
@@ -415,11 +416,9 @@ jobs:
         TIMESTAMP: ${{ github.event.repository.updated_at }}
       run: 'set -euo pipefail
 
-
         # Generate UUID for approval record
 
         APPROVAL_ID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")
-
 
         # Create audit log entry (JSONL format for append-only)
 
@@ -429,7 +428,6 @@ jobs:
         github.event.inputs.target_run_id }}","pr_number":"$TARGET_PR","approval_source":"$APPROVAL_SOURCE","rule_matched":"$RULE_MATCHED","confidence":$CONFIDENCE}
 
         EOF
-
 
         # Commit audit log (best effort, non-fatal if fails)
 
@@ -498,11 +496,9 @@ jobs:
         DECISION: ${{ needs.evaluate-approval.outputs.approval_decision }}
       run: 'set -euo pipefail
 
-
         # Create metrics directory
 
         mkdir -p .codex/metrics
-
 
         # Append hourly metric (JSONL format)
 

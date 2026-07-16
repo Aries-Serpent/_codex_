@@ -1,3 +1,4 @@
+---
 name: "\U0001F309 Discussion \u2192 PR Response Bridge (RC-3)"
 on:
   discussion_comment:
@@ -102,4 +103,3 @@ jobs:
         \ to post bridge notification: ${e.message}`);\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-

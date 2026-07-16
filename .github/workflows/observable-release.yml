@@ -1,3 +1,4 @@
+---
 name: observable-release
 
 on:
@@ -323,4 +324,3 @@ jobs:
           echo "📝 Release notes: release-notes-${{ steps.release.outputs.tag }}.md"
           echo "📦 Artifacts: dist/"
           echo "📄 SBOMs: .codex/sbom/"
-

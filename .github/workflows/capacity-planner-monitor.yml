@@ -1,3 +1,4 @@
+---
 name: Capacity Planner Monitor
 on:
   schedule:
@@ -99,9 +100,9 @@ jobs:
           \      "forecast": np.linspace(78, 92, 30),
             },
             "memory": {
-           \     "current": 65.0,
+            \     "current": 65.0,
                 "forecast": np.linspace(65, 88, 30),
-           \ },
+            \ },
             "disk": {
                 "current": 70.0,
                 "forecast": np.linspace(70,\ 82, 30),

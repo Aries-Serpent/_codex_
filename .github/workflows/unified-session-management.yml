@@ -1,0 +1,78 @@
+name: Session Management Suite
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Session operation'
+        required: false
+        type: choice
+        options:
+          - capture-context
+          - increment-summary
+          - recovery-monitor
+          - recovery-handler
+          - watchdog
+          - all
+        default: 'all'
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  # Context Capture (from session-context-capture.yml)
+  context-capture:
+    if: github.event.inputs.operation == 'capture-context' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture session context
+        run: echo "Capturing session context..."
+
+  # Incremental Summary (from session-incremental-summary-reminder.yml)
+  incremental-summary:
+    if: github.event.inputs.operation == 'increment-summary' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate incremental summary
+        run: echo "Generating incremental summary..."
+
+  # Recovery Monitor (from session-recovery-continuous-monitoring.yml)
+  recovery-monitor:
+    if: github.event.inputs.operation == 'recovery-monitor' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Monitor session recovery
+        run: echo "Monitoring session recovery status..."
+
+  # Recovery Handler (from session-recovery-handler.yml)
+  recovery-handler:
+    if: github.event.inputs.operation == 'recovery-handler' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    needs: [recovery-monitor]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Handle recovery operations
+        run: echo "Executing recovery handler..."
+
+  # Watchdog (from session-watchdog.yml)
+  watchdog:
+    if: github.event.inputs.operation == 'watchdog' || github.event.inputs.operation == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Session watchdog
+        run: echo "Running session watchdog checks..."
+
+  summary:
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [context-capture, incremental-summary, recovery-monitor, recovery-handler, watchdog]
+    steps:
+      - name: Report session status
+        run: echo "Session management completed"

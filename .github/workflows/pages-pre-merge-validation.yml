@@ -1,3 +1,4 @@
+---
 name: Pages Pre-Merge Validation
 on:
   pull_request:
@@ -59,7 +60,6 @@ jobs:
         EXIT_CODE=$?
 
         echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-
 
         # Extract issue count
 

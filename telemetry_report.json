@@ -1,0 +1,414 @@
+{
+  "generated_at": "2026-07-16T02:03:46.789264+00:00",
+  "repository": "Aries-Serpent/_codex_",
+  "branch": "main",
+  "days_analyzed": 7,
+  "summary": {
+    "total_runs": 1000,
+    "failed_runs": 7,
+    "cancelled_runs": 35,
+    "failure_rate": 0.007
+  },
+  "pattern_distribution": {
+    "self-healing": 1,
+    "coverage-timeout": 5,
+    "unknown": 1
+  },
+  "failed_runs": [
+    {
+      "run_id": 29465409990,
+      "run_name": "Self-Healing CI Loop",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990",
+      "conclusion": "failure",
+      "created_at": "2026-07-16T01:57:50Z",
+      "pattern": "self-healing",
+      "jobs": [
+        {
+          "job_id": 87517437177,
+          "job_name": "Lane Metadata Contract",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517437177",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87517468352,
+          "job_name": "Detect & Classify Failures",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517468352",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87517607802,
+          "job_name": "Analyze & Plan Remediation",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517607802",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87517712341,
+          "job_name": "Apply Remediation Actions",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517712341",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87517835620,
+          "job_name": "Validate Contract Compliance",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517835620",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87517887328,
+          "job_name": "Self-Healing Summary Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29465409990/job/87517887328",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": [
+        {
+          "artifact_id": 8362810545,
+          "artifact_name": "self-healing-act-contract",
+          "size_bytes": 1660,
+          "expired": false
+        },
+        {
+          "artifact_id": 8362797983,
+          "artifact_name": "self-healing-analyze-contract",
+          "size_bytes": 818,
+          "expired": false
+        },
+        {
+          "artifact_id": 8362785899,
+          "artifact_name": "self-healing-detect-contract",
+          "size_bytes": 418,
+          "expired": false
+        },
+        {
+          "artifact_id": 8362770761,
+          "artifact_name": "self-healing-lane-contract",
+          "size_bytes": 13618,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 29464228253,
+      "run_name": "Ensemble Predictor Monitoring",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253",
+      "conclusion": "failure",
+      "created_at": "2026-07-16T01:29:11Z",
+      "pattern": "coverage-timeout",
+      "jobs": [
+        {
+          "job_id": 87513868638,
+          "job_name": "Latency SLA Monitoring",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87513868638",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87513868640,
+          "job_name": "Model Drift Detection",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87513868640",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87513868652,
+          "job_name": "Test Coverage Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87513868652",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87513868670,
+          "job_name": "Escalation Rate Monitoring",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87513868670",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87513868671,
+          "job_name": "Model Accuracy Tracking",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87513868671",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87514052506,
+          "job_name": "Publish Monitoring Results",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29464228253/job/87514052506",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 29463756783,
+      "run_name": "Scaling Framework Monitor",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783",
+      "conclusion": "failure",
+      "created_at": "2026-07-16T01:17:39Z",
+      "pattern": "coverage-timeout",
+      "jobs": [
+        {
+          "job_id": 87512454702,
+          "job_name": "Cost Optimization Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454702",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87512454717,
+          "job_name": "Auto-Scaling Trigger Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454717",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87512454720,
+          "job_name": "Failover Capability Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454720",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87512454742,
+          "job_name": "Test Coverage Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454742",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87512454770,
+          "job_name": "Load Distribution Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454770",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87512454795,
+          "job_name": "Multi-Tenant Isolation Health",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512454795",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87512455218,
+          "job_name": "Weekly Cost Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512455218",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 87512455222,
+          "job_name": "Weekly Failover Drill",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512455222",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 87512536979,
+          "job_name": "SLA Compliance Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512536979",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87512569615,
+          "job_name": "Framework Health Summary",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512569615",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87512580172,
+          "job_name": "Notify Completion",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463756783/job/87512580172",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 29463041281,
+      "run_name": "\ud83c\udfe5 Health Dashboard Metrics Collection",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463041281",
+      "conclusion": "failure",
+      "created_at": "2026-07-16T01:01:18Z",
+      "pattern": "coverage-timeout",
+      "jobs": [
+        {
+          "job_id": 87510361558,
+          "job_name": "\ud83d\udcca Collect & Update Metrics",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463041281/job/87510361558",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87510489776,
+          "job_name": "\ud83d\udd14 Send Notifications",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29463041281/job/87510489776",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 29460354738,
+      "run_name": "Batch CI Failure Triage",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29460354738",
+      "conclusion": "failure",
+      "created_at": "2026-07-16T00:03:36Z",
+      "pattern": "unknown",
+      "jobs": [
+        {
+          "job_id": 87502351692,
+          "job_name": "Batch Triage CI Failures",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29460354738/job/87502351692",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ],
+      "artifacts": [
+        {
+          "artifact_id": 8360966125,
+          "artifact_name": "ci-triage-report-29460354738",
+          "size_bytes": 566,
+          "expired": false
+        }
+      ]
+    },
+    {
+      "run_id": 29459841060,
+      "run_name": "Scaling Framework Monitor",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060",
+      "conclusion": "failure",
+      "created_at": "2026-07-15T23:52:41Z",
+      "pattern": "coverage-timeout",
+      "jobs": [
+        {
+          "job_id": 87500819920,
+          "job_name": "Failover Capability Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500819920",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87500819925,
+          "job_name": "Test Coverage Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500819925",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87500819938,
+          "job_name": "Load Distribution Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500819938",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87500819942,
+          "job_name": "Multi-Tenant Isolation Health",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500819942",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87500819955,
+          "job_name": "Cost Optimization Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500819955",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87500820007,
+          "job_name": "Auto-Scaling Trigger Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500820007",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87500820522,
+          "job_name": "Weekly Failover Drill",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500820522",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 87500820592,
+          "job_name": "Weekly Cost Report",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500820592",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 87500889954,
+          "job_name": "SLA Compliance Check",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500889954",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87500960372,
+          "job_name": "Framework Health Summary",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500960372",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 87500986253,
+          "job_name": "Notify Completion",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29459841060/job/87500986253",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": []
+    },
+    {
+      "run_id": 29458669534,
+      "run_name": "\ud83c\udfe5 Health Dashboard Metrics Collection",
+      "run_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29458669534",
+      "conclusion": "failure",
+      "created_at": "2026-07-15T23:29:10Z",
+      "pattern": "coverage-timeout",
+      "jobs": [
+        {
+          "job_id": 87497375372,
+          "job_name": "\ud83d\udcca Collect & Update Metrics",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29458669534/job/87497375372",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 87497511829,
+          "job_name": "\ud83d\udd14 Send Notifications",
+          "job_html_url": "https://github.com/Aries-Serpent/_codex_/actions/runs/29458669534/job/87497511829",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": []
+    }
+  ],
+  "cascade_analysis": {
+    "cascade_detected": false,
+    "cascade_rate": 0.1429,
+    "self_healing_count": 1,
+    "total_failures": 7,
+    "root_cause": "No cascade detected: self-healing failures at 14.3% of total (1/7).",
+    "recommended_action": "Investigate top failure pattern: 'coverage-timeout' (5 occurrences). See '.codex/patterns/ci_failure_patterns.yaml' for pattern fix guidance. Run: python scripts/ci/collect_telemetry.py --classify-run <RUN_ID> --owner Aries-Serpent --repo _codex_",
+    "pattern_distribution": {
+      "self-healing": 1,
+      "coverage-timeout": 5,
+      "unknown": 1
+    }
+  }
+}

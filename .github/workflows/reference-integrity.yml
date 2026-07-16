@@ -1,3 +1,4 @@
+---
 name: 🔗 Reference Integrity + Agent Size Gate
 on:
   pull_request:

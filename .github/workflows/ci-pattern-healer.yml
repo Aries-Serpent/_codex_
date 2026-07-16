@@ -1,3 +1,4 @@
+---
 name: 🔧 CI Pattern Healer — Automated Failure Detection & Healing
 on:
   workflow_run:
@@ -170,4 +171,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-

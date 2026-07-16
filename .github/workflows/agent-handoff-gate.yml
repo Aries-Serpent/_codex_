@@ -1,3 +1,4 @@
+---
 name: Agent Handoff Gate
 on:
   issue_comment:
@@ -49,7 +50,6 @@ jobs:
         import os
         import re
         import sys
-
 
                 comment = os.environ[\"COMMENT_BODY\"]
         pr_number = os.environ[\"PR_NUMBER

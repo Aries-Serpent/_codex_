@@ -1,3 +1,4 @@
+---
 name: Self-Healing CI Loop
 
 # Triggers:
@@ -799,7 +800,3 @@ jobs:
           echo "**Analysis:** ${{ needs.self-healing-analyze.result }}"
           echo "**Remediation:** ${{ needs.self-healing-act.result }}"
           echo "**Validation:** ${{ needs.validate-self-healing-artifact-contract.result }}"
-
-
-
-

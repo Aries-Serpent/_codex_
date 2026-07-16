@@ -1,3 +1,4 @@
+---
 name: Optimized Test Execution (Consolidated)
 
 on:
@@ -109,9 +110,9 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
-       github.event_name == 'push' ||
-       github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'core')
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
     steps:
       - uses: actions/checkout@v5
         with:
@@ -125,7 +126,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run fast unit tests in parallel
         run: |
           python -m pytest tests/ \
@@ -146,9 +147,9 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
-       github.event_name == 'push' ||
-       github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'core')
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
     steps:
       - uses: actions/checkout@v5
         with:
@@ -162,7 +163,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run integration tests
         run: |
           python -m pytest tests/ \
@@ -183,9 +184,9 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
-       github.event_name == 'push' ||
-       github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'core')
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
     steps:
       - uses: actions/checkout@v5
         with:
@@ -199,7 +200,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run slow tests
         run: |
           python -m pytest tests/ \
@@ -217,9 +218,9 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'auth' ||
-       contains(github.event.pull_request.files.*.path, 'src/codex/auth/') ||
-       contains(github.event.pull_request.files.*.path, 'tests/auth/'))
+        github.event.inputs.test-type == 'auth' ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/auth/') ||
+        contains(github.event.pull_request.files.*.path, 'tests/auth/'))
     steps:
       - uses: actions/checkout@v5
         with:
@@ -233,7 +234,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run authentication tests
         run: |
           python -m pytest tests/auth/ \
@@ -252,9 +253,9 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'ml' ||
-       contains(github.event.pull_request.files.*.path, 'training/') ||
-       contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))
+        github.event.inputs.test-type == 'ml' ||
+        contains(github.event.pull_request.files.*.path, 'training/') ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
@@ -277,7 +278,7 @@ jobs:
           pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -e ".[dev]"
-          pip install pytest-cov pytest-mock pytest-timeout
+          pip install pytest-cov pytest-mock pytest-timeout==2.4.0
       - name: Run ML tests for ${{ matrix.test-suite }}
         run: |
           python -m pytest tests/ml_${{ matrix.test-suite }}* \
@@ -297,9 +298,9 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'rag' ||
-       contains(github.event.pull_request.files.*.path, 'src/codex/rag/') ||
-       contains(github.event.pull_request.files.*.path, 'tests/test_rag'))
+        github.event.inputs.test-type == 'rag' ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/rag/') ||
+        contains(github.event.pull_request.files.*.path, 'tests/test_rag'))
     steps:
       - uses: actions/checkout@v5
         with:
@@ -313,7 +314,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-xdist pytest-timeout
+          pip install pytest-xdist pytest-timeout==2.4.0
       - name: Run RAG module tests
         run: |
           python -m pytest tests/test_rag_* \
@@ -332,9 +333,9 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
-       github.event.inputs.test-type == 'rust' ||
-       contains(github.event.pull_request.files.*.path, 'rust_swarm/') ||
-       contains(github.event.pull_request.files.*.path, '.rs'))
+        github.event.inputs.test-type == 'rust' ||
+        contains(github.event.pull_request.files.*.path, 'rust_swarm/') ||
+        contains(github.event.pull_request.files.*.path, '.rs'))
     steps:
       - uses: actions/checkout@v5
         with:
@@ -382,7 +383,7 @@ jobs:
           python-version: 3.12.13
           cache: pip
           cache-dependency-path: pyproject.toml
-      
+
       # P19 Shadow Import Safeguard: Invalidate pip cache before coverage job
       - name: "🔍 P19 Shadow Import Check (Pre-Coverage)"
         run: |
@@ -395,12 +396,12 @@ jobs:
                   import shutil
                   shutil.rmtree(Path.home() / '.cache' / 'pip', ignore_errors=True)
           "
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install coverage pytest-xdist pytest-timeout
-      
+          pip install coverage pytest-xdist pytest-timeout==2.4.0
+
       # Optimized coverage collection with selective test discovery
       - name: Run coverage collection (optimized)
         run: |
@@ -412,13 +413,13 @@ jobs:
             --dist=loadscope \
             --tb=short \
             --maxfail=10 || true
-      
+
       - name: Generate coverage reports
         run: |
           coverage json -o .coverage.json || echo '{}' > .coverage.json
           coverage html -d htmlcov || mkdir -p htmlcov
           coverage report --skip-covered
-      
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
@@ -494,4 +495,3 @@ jobs:
             echo "::error::Core test suite failed"
             exit 1
           fi
-
