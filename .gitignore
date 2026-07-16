@@ -119,3 +119,13 @@ mlruns/
 /coverage_post_ws1.json
 /performance_baseline.json
 /decision_history.json
+
+# Database caches that should never be committed
+.CODEX/*.db
+.CODEX/*.cache
+.artifacts/*.db
+.artifacts/*.cache
+.cache/codex_l3/
+.bandit
+.bandit.yaml
+.bandit.yml
