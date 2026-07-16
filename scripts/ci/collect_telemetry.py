@@ -238,8 +238,6 @@ class TelemetryCollector:
             "same issues persist", "permanent ci block",
             "RP-026",
         ],
-<<<<<<< HEAD
-=======
         
         # ── P0 CRITICAL #5322: NEW PATTERN CLASSIFIERS ─────────────────────────
         # Added to reduce unknown patterns from 63.5% (442) to <30%
@@ -358,19 +356,22 @@ class TelemetryCollector:
             "assert failed", "assert_", "assertEqual", "assertTrue",
             "assertRaises", "assertion failed",
         ],
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     }
 
     def __init__(self, owner: str, repo: str, token: str):
         self.owner = owner
         self.repo = repo
-        self.token = token
+        self._token = token  # Store as private to prevent accidental logging
         self.base_url = "https://api.github.com"
         self.headers = {
             "Authorization": f"token {token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
+    
+    def __repr__(self) -> str:
+        """Prevent token leakage in string representations."""
+        return f"<GitHubClient owner={self.owner} repo={self.repo}>"
 
     def collect_workflow_runs(
         self, branch: str, days: int = 7, max_pages: int = 10
