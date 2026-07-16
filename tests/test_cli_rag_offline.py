@@ -153,9 +153,10 @@ class TestProviderSelection:
             assert provider is not None, "provider must be initialized"
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert ("CachedEmbeddingProvider" in provider.__class__.__name__, "Condition must be true"
+            assert (
+                "CachedEmbeddingProvider" in provider.__class__.__name__
                 or "TfidfEmbeddingProvider" in provider.__class__.__name__
-            )
+            ), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
 

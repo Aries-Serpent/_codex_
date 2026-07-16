@@ -162,9 +162,10 @@ class TestModelServing:
             "float16": {"bits": 16, "size_reduction": 0.5},
             "float32": {"bits": 32, "size_reduction": 1.0},
         }
-        assert (quantization_modes["int8"]["size_reduction"], "Condition must be true"
+        assert (
+            quantization_modes["int8"]["size_reduction"]
             < quantization_modes["float32"]["size_reduction"]
-        )
+        ), "Condition must be true"
 
     def test_model_serving_metrics(self):
         """Test serving metrics collection."""

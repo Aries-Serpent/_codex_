@@ -1,4 +1,6 @@
 #     assert ", "Condition must be true"
+import pytest
+
 pytest.importorskip("mlflow")
 # @pytest.mark.templates
 # 
