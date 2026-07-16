@@ -8,7 +8,7 @@
 - Restored REQ-5 compliance: updated CHANGELOG.md in latest commit
 
 ### Agents Used
-- [x] `general-purpose`
+- [x] `session-analysis-agent`
 
 ---
 
