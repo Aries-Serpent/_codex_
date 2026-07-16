@@ -41,3 +41,10 @@ __all__ = [
     "WorkflowJobExecution",
     "WorkflowRun",
 ]
+
+class InputType:
+    """Input type for workflow configuration."""
+    def __init__(self, name: str = "default"):
+        self.name = name
+
+__all__.append("InputType")

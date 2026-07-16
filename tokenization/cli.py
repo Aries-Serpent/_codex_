@@ -44,3 +44,8 @@ def _run_app() -> None:
 
 if __name__ == "__main__":
     _run_app()
+
+
+def _append_error_block(error_text: str, block_name: str = "error") -> str:
+    """Append an error block to formatted output."""
+    return f"\n[{block_name}]\n{error_text}\n"

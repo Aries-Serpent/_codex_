@@ -84,7 +84,7 @@ class TestParseMetadata:
         """Test that missing equals raises BadParameter."""
         try:
             import click
-                from codex.archive.cli import _parse_metadata
+            from codex.archive.cli import _parse_metadata
 
             with pytest.raises(click.BadParameter):
                 _parse_metadata(["invalid_no_equals"])
@@ -197,8 +197,7 @@ class TestBatchProgressLogger:
         """Test batch progress logger can be created."""
         try:
             import logging
-
-        from codex.archive.cli import _batch_progress_logger
+            from codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             callback = _batch_progress_logger(logger, mock_config)
@@ -210,8 +209,7 @@ class TestBatchProgressLogger:
         """Test batch progress callback outputs status."""
         try:
             import logging
-
-        from codex.archive.cli import _batch_progress_logger
+            from codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             mock_config.batch.progress_interval = 1

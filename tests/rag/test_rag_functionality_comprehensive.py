@@ -454,8 +454,7 @@ class TestRAGEdgeCases:
         """Test thread safety of RAG operations."""
         try:
             import threading
-
-        from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
             results = []
