@@ -364,7 +364,7 @@ class TelemetryCollector:
         self._token = token  # Store as private to prevent accidental logging
         self.base_url = "https://api.github.com"
         self.headers = {
-            "Authorization": f"token {token}",
+            "Authorization": f"token {self._token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
