@@ -37,29 +37,65 @@ jobs:
       id: refresh
       env:
         AAIS_THRESHOLD: ${{ inputs.aais_threshold || '0.75' }}
-        run: "python -c \"\nimport json, sys\nfrom pathlib import Path\nfrom codex.skills.aais\
-        \ import AAISScorer\n\nscorer = AAISScorer()\nthreshold = float('${AAIS_THRESHOLD}')\n\
-        results = []\nstale = []\n\nfor doc_dir in ['docs/agent', 'docs/admin', 'docs/how-to']:\n\
-        \    doc_path = Path(doc_dir)\n    if not doc_path.exists():\n        continue\n\
-        \    for md in sorted(doc_path.glob('**/*.md')):\n        text = md.read_text(encoding='utf-8',\
-        \ errors='replace')\n        if len(text.strip()) < 50:\n            continue\n\
-        \        score = scorer.score(text)\n        entry = {\n            'file':\
-        \ str(md),\n            'aais_total': round(score.total, 4),\n           \
-        \ 'concision': round(score.concision, 4),\n            'acronym': round(score.acronym_discipline,\
-        \ 4),\n            'structure': round(score.structure, 4),\n            'clarity':\
-        \ round(score.clarity, 4),\n            'citation': round(score.citation_lineage,\
-        \ 4),\n        }\n        results.append(entry)\n        if score.total <\
-        \ threshold:\n            stale.append(entry)\n\nreport = {\n    'threshold':\
-        \ threshold,\n    'total_docs': len(results),\n    'passing': len(results)\
-        \ - len(stale),\n    'below_threshold': len(stale),\n    'stale_docs': stale,\n\
-        \    'all_scores': sorted(results, key=lambda x: x['aais_total']),\n}\n\n\
-        Path('.codex').mkdir(exist_ok=True)\nPath('.codex/doc_refresh_report.json').write_text(\n\
-        \    json.dumps(report, indent=2) + '\\n', encoding='utf-8'\n)\n\nprint(f'\U0001F4CA\
-        \ Scanned {len(results)} docs | Threshold: {threshold}')\nprint(f'✅ Passing:\
-        \ {len(results) - len(stale)}')\nprint(f'⚠️  Below threshold: {len(stale)}')\n\
-        if stale:\n    print()\n    print('Files below AAIS threshold:')\n    for\
-        \ s in stale:\n        print(f'  {s[\\\"aais_total\\\"]:.3f}  {s[\\\"file\\\
-        \"]}')\n\n# Non-blocking: always exit 0\nsys.exit(0)\n\"\n"
+      run: |
+        python -c "
+        import json, sys
+        from pathlib import Path
+        from codex.skills.aais import AAISScorer
+        
+        scorer = AAISScorer()
+        threshold = float('${AAIS_THRESHOLD}')
+        results = []
+        stale = []
+        
+        for doc_dir in ['docs/agent', 'docs/admin', 'docs/how-to']:
+            doc_path = Path(doc_dir)
+            if not doc_path.exists():
+                continue
+            for md in sorted(doc_path.glob('**/*.md')):
+                text = md.read_text(encoding='utf-8', errors='replace')
+                if len(text.strip()) < 50:
+                    continue
+                score = scorer.score(text)
+                entry = {
+                    'file': str(md),
+                    'aais_total': round(score.total, 4),
+                    'concision': round(score.concision, 4),
+                    'acronym': round(score.acronym_discipline, 4),
+                    'structure': round(score.structure, 4),
+                    'clarity': round(score.clarity, 4),
+                    'citation': round(score.citation_lineage, 4),
+                }
+                results.append(entry)
+                if score.total < threshold:
+                    stale.append(entry)
+        
+        report = {
+            'threshold': threshold,
+            'total_docs': len(results),
+            'passing': len(results) - len(stale),
+            'below_threshold': len(stale),
+            'stale_docs': stale,
+            'all_scores': sorted(results, key=lambda x: x['aais_total']),
+        }
+        
+        Path('.codex').mkdir(exist_ok=True)
+        Path('.codex/doc_refresh_report.json').write_text(
+            json.dumps(report, indent=2) + '\n', encoding='utf-8'
+        )
+        
+        print(f'📊 Scanned {len(results)} docs | Threshold: {threshold}')
+        print(f'✅ Passing: {len(results) - len(stale)}')
+        print(f'⚠️  Below threshold: {len(stale)}')
+        if stale:
+            print()
+            print('Files below AAIS threshold:')
+            for s in stale:
+                print(f'  {s[\"aais_total\"]:.3f}  {s[\"file\"]}')
+        
+        # Non-blocking: always exit 0
+        sys.exit(0)
+        "
     - name: 📤 Upload refresh report
       if: always()
       uses: actions/upload-artifact@v5
@@ -67,7 +103,5 @@ jobs:
         name: doc-refresh-report
         path: .codex/doc_refresh_report.json
         retention-days: 30
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
-
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
