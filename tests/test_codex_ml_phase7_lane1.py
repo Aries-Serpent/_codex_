@@ -73,6 +73,8 @@ class TestModelInitializationPatterns:
         """Test dtype conversion to torch.float16."""
         try:
             import torch
+            if not hasattr(torch, "float16"):
+                pytest.skip("torch.float16 not available")
         except ImportError:
             pytest.skip("torch not available")
 
@@ -85,6 +87,8 @@ class TestModelInitializationPatterns:
         """Test dtype conversion to torch.float32."""
         try:
             import torch
+            if not hasattr(torch, "float32"):
+                pytest.skip("torch.float32 not available")
         except ImportError:
             pytest.skip("torch not available")
 
@@ -97,6 +101,8 @@ class TestModelInitializationPatterns:
         """Test that invalid dtype string raises ValueError."""
         try:
             import torch
+            if not hasattr(torch, "float16"):
+                pytest.skip("torch dtypes not available")
         except ImportError:
             pytest.skip("torch not available")
 
@@ -109,6 +115,8 @@ class TestModelInitializationPatterns:
         """Test that passing actual torch dtype is passed through."""
         try:
             import torch
+            if not hasattr(torch, "float32"):
+                pytest.skip("torch.float32 not available")
         except ImportError:
             pytest.skip("torch not available")
 
@@ -139,7 +147,7 @@ class TestCognitiveBrainAPIIntegration:
         """Test structured logger instantiation."""
         from codex_ml.codex_structured_logging import get_session_logger
 
-        logger = get_session_logger("test_component")
+        logger = get_session_logger()
         assert logger is not None
         assert hasattr(logger, "info")
         assert hasattr(logger, "error")
@@ -159,7 +167,7 @@ class TestCognitiveBrainAPIIntegration:
         from codex_ml.config import ConfigError
 
         with pytest.raises(ConfigError):
-            raise ConfigError("Test configuration error")
+            raise ConfigError("test_path", "Test configuration error")
 
     def test_structured_logging_ndjson_mode(self):
         """Test legacy NDJSON logging mode detection."""
@@ -384,7 +392,7 @@ class TestIntegrationScenarios:
         from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 
         session_id = get_session_id()
-        logger = get_session_logger("training")
+        logger = get_session_logger()
 
         assert session_id is not None
         assert logger is not None
@@ -555,8 +563,9 @@ class TestErrorHandlingAndEdgeCases:
         from codex_ml.config import ConfigError
 
         error_msg = "Invalid configuration parameter"
+        path_val = "config.test"
         with pytest.raises(ConfigError) as exc_info:
-            raise ConfigError(error_msg)
+            raise ConfigError(path_val, error_msg)
 
         assert error_msg in str(exc_info.value)
 
