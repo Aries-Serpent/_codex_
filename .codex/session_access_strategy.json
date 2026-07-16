@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-07-16T22:27:33.193795+00:00",
+  "generated_at": "2026-07-16T22:34:31.680820+00:00",
   "methods": [
     "rest",
     "graphql"
   ],
   "rest_available": true,
-  "rest_remaining": 4893,
+  "rest_remaining": 5000,
   "graphql_available": true,
-  "graphql_remaining": 4993,
+  "graphql_remaining": 4991,
   "gh_cli_available": false,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [],
   "branch": "0D_base_",
   "recommendation": "Use REST for data fetches. "
