@@ -183,7 +183,7 @@ def test_invalid_input_returns_400(client):
 
 | Test Class | Count | Focus | LOC | Priority |
 |-----------|-------|-------|-----|---|
-| `TestAuthN_AuthZ` | 4 | Token, roles, JWT | 500 | HIGH |
+| `TestAuthN_AuthZ` | 4 | Token, roles, JWT | 500 | HIGH | <!-- pragma: allowlist secret -->
 | `TestDatabaseQueries` | 3 | Query composition, filtering | 400 | HIGH |
 | `TestServiceIntegration` | 2 | End-to-end workflows | 400 | MEDIUM |
 | **SUBTOTAL** | **9** | | **1,300** | |

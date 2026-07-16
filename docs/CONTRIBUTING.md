@@ -156,7 +156,7 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 **Example:**
 ```
 [PLACEHOLDER: MIGRATION_INTENT_SUMMARY] 
-→ "Relocate tokenizer helpers to `codex.text`"
+→ "Relocate tokenizer helpers to `codex.text`"  # pragma: allowlist secret
 
 [PLACEHOLDER: COMMAND_LIST]
 → "`codex-cli sync`, `codex-cli diff`"

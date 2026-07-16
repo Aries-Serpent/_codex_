@@ -223,7 +223,7 @@ RBAC, approval workflows, and cognitive memory.
 | **cognitive/ml/validation** | 49 | 14 | 29% | T1 | Partial |
 | **workflow_optimizer** | 43 | 0 | 0% | T1 | None |
 | **github/mcp_poster** | 32 | 6 | 19% | T2 | Partial |
-| **autonomy/token_broker** | 28 | 4 | 14% | T2 | Partial |
+| **autonomy/token_broker** | 28 | 4 | 14% | T2 | Partial | <!-- pragma: allowlist secret -->
 | **quantum_planset_engine** | 26 | 0 | 0% | T1 | None |
 | **auth/github_app** | 25 | 5 | 20% | T2 | Partial |
 | **rag/embeddings** | 24 | 2 | 8% | T2 | Partial |

@@ -135,7 +135,7 @@ cache_key = hashlib.md5(data, usedforsecurity=False).hexdigest()
 ## UNSAFE Pattern
 ```python
 # Don't use MD5 for security without marking it
-hash_value = hashlib.md5(password) # Security warning!
+hash_value = hashlib.md5(password) # Security warning!  # pragma: allowlist secret
 ```
 
 **Why**: MD5 is cryptographically broken. Use SHA256+ for security, or explicitly mark MD5 as non-security use.

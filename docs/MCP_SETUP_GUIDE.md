@@ -380,7 +380,7 @@ Watch for MCP support in JetBrains IDEs.
 │ ~/Library/Application Support/Claude/           │
 │   claude_desktop_config.json                    │
 │                                                  │
-│ Required Token Scopes:                          │
+│ Required Token Scopes:                          │  # pragma: allowlist secret
 │  repo                                          │
 │  workflow                                      │
 │  read:org                                      │

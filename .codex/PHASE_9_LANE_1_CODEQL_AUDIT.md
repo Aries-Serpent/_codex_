@@ -76,7 +76,7 @@ Authentication/Authorization:
 Cryptography:
   - py/weak-cryptographic-algorithm: 0 findings ✅
   - py/insecure-random-generation: 0 findings ✅
-  - py/hardcoded-secrets: 0 findings ✅
+  - py/hardcoded-secrets: 0 findings ✅  # pragma: allowlist secret
 ```
 
 ### 2️⃣ CodeQL JavaScript Analysis

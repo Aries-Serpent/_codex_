@@ -105,13 +105,13 @@ EOF
 # Security risk
 if 'GITHUB_OUTPUT' in os.environ:
  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
- f.write(f"new_secret={new_secret}\n") # EXPOSED!
+ f.write(f"new_secret={new_secret}\n") # EXPOSED!  # pragma: allowlist secret
 
 # Secure approach
 if 'GITHUB_OUTPUT' in os.environ:
  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
- f.write(f"backup_file={backup_file}\n") # No secrets
- # Secret updated via API directly
+ f.write(f"backup_file={backup_file}\n") # No secrets  # pragma: allowlist secret
+ # Secret updated via API directly  # pragma: allowlist secret
 ```
 
 **Best Practice**: Use API calls for secret updates, not workflow outputs
@@ -148,8 +148,8 @@ if 'GITHUB_OUTPUT' in os.environ:
 ### New Documentation Tree
 ```
 docs/
-├── SECRETS_AND_ENVIRONMENT_VARIABLES.md [NEW]
-│ ├── Secret definitions and formats
+├── SECRETS_AND_ENVIRONMENT_VARIABLES.md [NEW]  # pragma: allowlist secret
+│ ├── Secret definitions and formats  # pragma: allowlist secret
 │ ├── Rotation schedules
 │ ├── Security best practices
 │ ├── Troubleshooting guide
@@ -175,11 +175,11 @@ docs/
 
 | Workflow | Status | Purpose | Frequency |
 |----------|--------|---------|-----------|
-| `auth-token-rotation.yml` | Ready | JWT secret rotation | Monthly |
-| `auth-secret-rotation.yml` | Ready | GitHub secrets rotation | Monthly |
+| `auth-token-rotation.yml` | Ready | JWT secret rotation | Monthly | <!-- pragma: allowlist secret -->
+| `auth-secret-rotation.yml` | Ready | GitHub secrets rotation | Monthly | <!-- pragma: allowlist secret -->
 | `auth-compliance-report.yml` | Ready | Compliance reporting | per-phase |
 | `auth-mfa-enrollment.yml` | Partial | MFA enrollment | On-demand |
-| `phase10-automated-secrets-setup.yml` | Ready | Initial secret setup | Manual |
+| `phase10-automated-secrets-setup.yml` | Ready | Initial secret setup | Manual | <!-- pragma: allowlist secret -->
 | `rust_swarm_ci.yml` | Fixed | Rust/Python CI | Per PR |
 
 **Legend**:

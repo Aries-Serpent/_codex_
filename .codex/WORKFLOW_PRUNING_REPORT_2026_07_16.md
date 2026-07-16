@@ -335,7 +335,7 @@ To execute the pruning recommendations in this report, the following authorizati
 | Requirement | Value |
 |-------------|-------|
 | Authorization Level | D-tier autonomous |
-| Token Required | CODEX_MASTER_KEY |
+| Token Required | CODEX_MASTER_KEY | <!-- pragma: allowlist secret -->
 | API Scope | `repo:admin`, `actions:write` |
 | Action | Cancel workflow run #29523198240 |
 

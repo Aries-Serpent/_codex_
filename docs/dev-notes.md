@@ -8,10 +8,10 @@
 
 | Area | Existing Files | Canonical Target | Notes |
 |------|----------------|------------------|-------|
-| Tokenizer interface | `src/codex_ml/interfaces/tokenizer.py0`, `tokenizer.py00`, `tokenizer.py1` | `src/codex_ml/interfaces/tokenizer.py` | Implement `TokenizerAdapter` with HF wrapper |
+| Tokenizer interface | `src/codex_ml/interfaces/tokenizer.py0`, `tokenizer.py00`, `tokenizer.py1` | `src/codex_ml/interfaces/tokenizer.py` | Implement `TokenizerAdapter` with HF wrapper | <!-- pragma: allowlist secret -->
 | MLflow utilities | `src/codex_ml/tracking/mlflow_utils.py001`, `mlflow_utils.py0`, `mlflow_utils.py1` | `src/codex_ml/tracking/mlflow_utils.py` | Dataclass config + no-op fallbacks |
 | Ingestion helpers | `src/ingestion/__init__.py0`, `__init__.py1`, `encoding_detect.py1`, `io_text.py0`, `utils.py00`, `utils.py0`, `utils.py1` | `src/ingestion/__init__.py`, `encoding_detect.py`, `io_text.py`, `utils.py` | Consolidate reading, encoding detection, and deterministic shuffle |
-| Tests | `tests/interfaces/test_tokenizer_hf.py0`, `tests/tracking/test_mlflow_utils.py00`, `tests/tracking/test_mlflow_utils.py0`, `tests/ingestion/test_io_text.py0`, etc. | Unsuffixed equivalents | Update to exercise canonical modules |
+| Tests | `tests/interfaces/test_tokenizer_hf.py0`, `tests/tracking/test_mlflow_utils.py00`, `tests/tracking/test_mlflow_utils.py0`, `tests/ingestion/test_io_text.py0`, etc. | Unsuffixed equivalents | Update to exercise canonical modules | <!-- pragma: allowlist secret -->
 | Tools | `tools/codex_run_tasks.py00`, `codex_run_tasks.py0`, `codex_run_tasks.py1`, `tools/codex_exec.py.bkup`, `codex_exec.py0`, `codex_exec.py1`, `tools/install_codex_hooks.py0` | Unsuffixed scripts | Remove legacy variants |
 | Training | `training/engine_hf_trainer.py00`, `engine_hf_trainer.py0`, `engine_hf_trainer.py1` | `training/engine_hf_trainer.py` | Merge features and drop suffixes |
 

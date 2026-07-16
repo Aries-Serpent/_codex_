@@ -85,7 +85,7 @@
 | Merge base exists | ❌ NO | ✅ YES | ✅ FIXED |
 | GitHub Actions cache | Corrupt | Clean | ✅ FIXED |
 | Branch Rebase Gate | FAIL | PASS | ⏳ PENDING RE-RUN |
-| Secrets Detection | FAIL | PASS | ⏳ PENDING RE-RUN |
+| Secrets Detection | FAIL | PASS | ⏳ PENDING RE-RUN | <!-- pragma: allowlist secret -->
 | Workflow cascade | 98% fail | <5% fail | ⏳ PENDING |
 
 ---
@@ -117,7 +117,7 @@ Merge base detection fails
   ↓
 Branch Rebase Gate Python setup fails
   ↓
-Secrets Detection also fails
+Secrets Detection also fails  # pragma: allowlist secret
   ↓
 96 dependent workflows cascade to failure
 ```
@@ -130,7 +130,7 @@ Merge base verification succeeds
   ↓
 Branch Rebase Gate can now execute
   ↓
-Secrets Detection can now execute
+Secrets Detection can now execute  # pragma: allowlist secret
   ↓
 All 96 dependent workflows can execute
 ```

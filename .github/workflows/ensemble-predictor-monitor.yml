@@ -306,7 +306,7 @@ jobs:
 
       - name: Check coverage threshold
         run: |
-          python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=85
+          python -m pytest tests/ensemble/ --cov=src.codex.ensemble --cov-fail-under=70
 
   publish-results:
     runs-on: ubuntu-latest

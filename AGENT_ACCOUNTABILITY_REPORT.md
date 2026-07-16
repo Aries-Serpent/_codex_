@@ -214,7 +214,7 @@ Test Execution Summary:
 #### Authentication/Authorization (5 tests)
 ```python
 ✅ Principal creation
-✅ Session token generation
+✅ Session token generation  # pragma: allowlist secret
 ✅ Permission checking
 ✅ Permission hashing
 ✅ Confirmation flags
@@ -222,7 +222,7 @@ Test Execution Summary:
 
 #### Rate Limiting (5 tests)
 ```python
-✅ Token bucket algorithm
+✅ Token bucket algorithm  # pragma: allowlist secret
 ✅ Capacity validation
 ✅ Rate validation
 ✅ Principal isolation

@@ -26,7 +26,7 @@ def build_small_local_model(**kwargs):
     # kwargs include dtype/device/LoRA hints
     return {
         "model": load_local_model(dtype=kwargs.get("dtype")),
-        "tokenizer": load_local_tokenizer(),
+        "tokenizer": load_local_tokenizer(),  # pragma: allowlist secret
     }
 ```text
 
@@ -81,14 +81,14 @@ The same pattern works for tokenizers using
 `codex_ml.registry.tokenizers.register_tokenizer`:
 
 ```python
-from codex_ml.registry.tokenizers import register_tokenizer
+from codex_ml.registry.tokenizers import register_tokenizer  # pragma: allowlist secret
 
 
-def register_tokenizers(register_fn=register_tokenizer):
-    register_fn("custom", build_custom_tokenizer)
+def register_tokenizers(register_fn=register_tokenizer):  # pragma: allowlist secret
+    register_fn("custom", build_custom_tokenizer)  # pragma: allowlist secret
 
 
-def build_custom_tokenizer(**kwargs):
+def build_custom_tokenizer(**kwargs):  # pragma: allowlist secret
     ...
 ```text
 

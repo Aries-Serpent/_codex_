@@ -41,9 +41,9 @@ Fix Action:
 
 ### Category 2: Security/Secrets (9 checks)
 ```
-Trigger: Secrets Detection fails immediately (2s)
+Trigger: Secrets Detection fails immediately (2s)  # pragma: allowlist secret
 Fix Actions:
-  1. Verify .secretsbaselinerc exists and is readable
+  1. Verify .secretsbaselinerc exists and is readable  # pragma: allowlist secret
   2. Verify Dockerfiles exist at: .config/Dockerfile, docker/Dockerfile.cpu, docker/Dockerfile.gpu
   3. Check if CVE scan config (requirements files) are valid
   4. If config paths invalid: update workflow to correct paths

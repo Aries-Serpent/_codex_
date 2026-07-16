@@ -38,8 +38,8 @@
 | Check | Issue | Status |
 |-------|-------|--------|
 | **1. Branch Rebase Gate** | Script exists, branch status "ahead" (up-to-date) | ✅ **PASS** |
-| **2. Secrets False-Positive Healer** | No markdown secrets found, script runs cleanly | ✅ **PASS** |
-| **3. Secrets Detection & Remediation** | detect-secrets scans slow, baseline verified | ✅ **PASS** |
+| **2. Secrets False-Positive Healer** | No markdown secrets found, script runs cleanly | ✅ **PASS** | <!-- pragma: allowlist secret -->
+| **3. Secrets Detection & Remediation** | detect-secrets scans slow, baseline verified | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | **4. Pre-Flight CI Validation** | Missing pytest-timeout pin, timeout configs | ✅ **FIXED** |
 | **5. Unified Governance Check** | Compliance check failing: branch name, PR title, reviews, CHANGELOG, accountability report | ✅ **FIXED** |
 
@@ -57,8 +57,8 @@
 |---------|----------|------|-------|--------|
 | **1. Merge Conflict** | 🔴 CRITICAL | scripts/ci/collect_telemetry.py:241-361 | Unresolved merge conflict with invalid Python syntax | ✅ **FIXED** |
 | **2. XSS Vulnerability** | 🟠 HIGH | src/aries_serpent_core/reporting/cli.py:85-89 | HTML injection via unescaped metrics data | ✅ **FIXED** |
-| **3. Globals Injection** | 🟡 MEDIUM | tokenization/cli.py:25 | Unrestricted globals import pattern | ✅ **FIXED** |
-| **4. Token Exposure** | 🟡 MEDIUM | scripts/ci/collect_telemetry.py:364-370 | GitHub token in public attributes | ✅ **FIXED** |
+| **3. Globals Injection** | 🟡 MEDIUM | tokenization/cli.py:25 | Unrestricted globals import pattern | ✅ **FIXED** | <!-- pragma: allowlist secret -->
+| **4. Token Exposure** | 🟡 MEDIUM | scripts/ci/collect_telemetry.py:364-370 | GitHub token in public attributes | ✅ **FIXED** | <!-- pragma: allowlist secret -->
 
 **Remediation Details:**
 
@@ -89,7 +89,7 @@
 ```
 ✅ scripts/ci/collect_telemetry.py — PASSED
 ✅ src/aries_serpent_core/reporting/cli.py — PASSED
-✅ tokenization/cli.py — PASSED
+✅ tokenization/cli.py — PASSED  # pragma: allowlist secret
 ```
 
 **Commit SHA:** `36e0a1f3` (fix(security): Resolve critical merge conflict and address 4 security vulnerabilities)
@@ -19046,7 +19046,7 @@ All 5 lanes executed successfully with 100% of primary targets exceeded. Campaig
 
 | Workstream | Objective | Duration | Primary Agent | Status |
 |-----------|-----------|----------|---------------|--------|
-| **WS1** | Immediate Deployment (merge Phase 7 PRs, v0.1.0-final) | 2 days (Day 1-2) | task-agent | → ACTIVE |
+| **WS1** | Immediate Deployment (merge Phase 7 PRs, v0.1.0-final) | 2 days (Day 1-2) | task-agent | → ACTIVE | <!-- pragma: allowlist secret -->
 | **WS2** | Coverage Roadmap Phases 3-4 (102 gap-fill tests, 40-50% target) | 11 days (Day 3-14) | unified-coverage-agent | → QUEUED |
 | **WS3** | Post-Deployment Monitoring (8-metric baseline, health tracking) | 30 days (Day 1-30) | performance-monitor-agent | → ACTIVE |
 | **WS4** | Phase 9 Planning (structure design, agent briefs, readiness) | 10 days (Day 5-14) | orchestrator-agent | → QUEUED |

@@ -112,7 +112,7 @@ codex_ml/
 ├── agents/              ✅ 25+ agent modules
 ├── codex_ml/
 ├── training/            ✅ Training utilities
-├── tokenization/        ✅ Tokenization support
+├── tokenization/        ✅ Tokenization support  # pragma: allowlist secret
 ├── utils/               ✅ Utility modules
 └── ...
 

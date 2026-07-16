@@ -67,8 +67,8 @@
 |----------|-------|
 | **CVE** | PYSEC-2026-120 |
 | **CVSS Score** | 8.1 (HIGH) |
-| **Description** | JWT validation bypass allowing forged tokens |
-| **Impact** | Authentication bypass; attackers could forge valid JWT tokens |
+| **Description** | JWT validation bypass allowing forged tokens | <!-- pragma: allowlist secret -->
+| **Impact** | Authentication bypass; attackers could forge valid JWT tokens | <!-- pragma: allowlist secret -->
 | **Fix** | Update to v2.13.0+ (or v2.12.0 for minimum patch) |
 | **Status** | ✅ **FIXED** in `pyproject.toml` |
 | **Validation** | Constraint verified: `"PyJWT>=2.13.0,<3.0.0"` |

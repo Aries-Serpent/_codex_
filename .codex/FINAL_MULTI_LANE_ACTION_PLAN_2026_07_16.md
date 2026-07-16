@@ -54,7 +54,7 @@ Branch Rebase Gate CANNOT execute (no merge base = cannot rebase)
   ↓
 Workflow fails at Python setup (sparse checkout dependency issue)
   ↓
-Secrets Detection also triggered → also fails
+Secrets Detection also triggered → also fails  # pragma: allowlist secret
   ↓
 Both failures block 96 dependent workflows
   ↓

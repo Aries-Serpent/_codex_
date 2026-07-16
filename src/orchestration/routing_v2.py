@@ -304,7 +304,7 @@ class EnhancedRouter:
     def _semantic_search(self, task_description: str) -> Optional[str]:
         """Semantic search via FAISS (Phase 3 corpus)."""
         try:
-            from scripts.ci.query_corpus import query as corpus_query  # type: ignore
+            from scripts.ci.query_corpus import query as corpus_query
             results = corpus_query(f"agent capable of: {task_description}", top_k=3)
             agent_results = [
                 r for r in results

@@ -40,7 +40,7 @@ Phase 10 has successfully completed all 3 core lanes with comprehensive delivera
 
 | Severity | Count | Tools | Details |
 |----------|-------|-------|---------|
-| 🔴 CRITICAL | 4 | CodeQL, detect-secrets | CWE-798, CWE-89, CWE-79, CWE-502 |
+| 🔴 CRITICAL | 4 | CodeQL, detect-secrets | CWE-798, CWE-89, CWE-79, CWE-502 | <!-- pragma: allowlist secret -->
 | 🟠 HIGH | 4 | Bandit, Semgrep, pip-audit | CWE-22, dependency vulnerabilities, code issues |
 | 🟡 MEDIUM | 2 | CodeQL, Semgrep | Minor pattern violations |
 

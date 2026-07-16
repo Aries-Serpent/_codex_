@@ -70,7 +70,7 @@
 ```
 17:17:25 — Commit 6230a0f8 pushed
          — Branch Rebase Gate triggered
-         — Secrets Detection triggered
+         — Secrets Detection triggered  # pragma: allowlist secret
          
 17:26:01 — Both fail within 2-6 seconds
          — Cascade triggers 96 dependent workflows

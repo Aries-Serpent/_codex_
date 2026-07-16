@@ -8,7 +8,7 @@
 
 | Lane | Agent | Task | Status | Duration | Notes |
 |------|-------|------|--------|----------|-------|
-| 1️⃣ | ci-failure-resolution-agent | Gate & validation failures | ⏳ **RUNNING** | 336s | Lane 1: Branch Rebase, Secrets, Pre-Flight, Unified Governance |
+| 1️⃣ | ci-failure-resolution-agent | Gate & validation failures | ⏳ **RUNNING** | 336s | Lane 1: Branch Rebase, Secrets, Pre-Flight, Unified Governance | <!-- pragma: allowlist secret -->
 | 2️⃣ | code-scanning-remediation-agent | Security & dependency failures | ⏳ **RUNNING** | 336s | Lane 2: CVE scanning, Trivy containers, security suite |
 | 3️⃣ | autonomous-test-healer-agent | Test & validation failures | ⏳ **RUNNING** | 336s | Lane 3: mypy, actionlint, code examples, setup steps, E→D transition |
 | 4️⃣ | workflow-health-monitor | Infrastructure & metrics failures | ✅ **COMPLETE** | 327s | Lane 4: MCP Health, comment review gate, QA walkthrough |

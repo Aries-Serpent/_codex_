@@ -107,7 +107,7 @@ No high severity alerts detected in:
    - All workflows use API-driven approach
    - 214 workflows audited, 0 violations
 
-✅ Token scope verification:
+✅ Token scope verification:  # pragma: allowlist secret
    - No excessive permissions granted
    - RBAC properly enforced
    - Credential handling: ✅ SAFE

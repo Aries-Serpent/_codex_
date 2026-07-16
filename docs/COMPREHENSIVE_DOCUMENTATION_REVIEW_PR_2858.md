@@ -146,7 +146,7 @@ Repository Documentation Tree (Analyzed: 234 files)
 │ ├── plans/ (15 files) - Detailed planning
 │ ├── architecture/ (3 files) - System design
 │ ├── cognitive_brain/ (2 files) - Brain integration
-│ ├── **NEW: SECRETS_AND_ENVIRONMENT_VARIABLES.md**
+│ ├── **NEW: SECRETS_AND_ENVIRONMENT_VARIABLES.md**  # pragma: allowlist secret
 │ ├── **NEW: CI_FAILURE_RESOLUTION_PR_2858.md**
 │ └── **NEW: COGNITIVE_BRAIN_STATUS_PHASE_11_X_COMPLETE.md**
 │

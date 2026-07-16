@@ -210,7 +210,7 @@ This document tracks the implementation status of all components, features, and 
 | MetricCard | 10 tests | 10 tests | Complete |
 | QuantumVisualizer | 8 tests | 0 tests | ⚪ Pending |
 | AgentOrchestrationPanel | 12 tests | 0 tests | ⚪ Pending |
-| WorkflowTokenOrchestrator | 15 tests | 0 tests | ⚪ Pending |
+| WorkflowTokenOrchestrator | 15 tests | 0 tests | ⚪ Pending | <!-- pragma: allowlist secret -->
 | MemoryManagementDashboard | 10 tests | 0 tests | ⚪ Pending |
 
 **In Progress:**

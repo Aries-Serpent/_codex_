@@ -272,7 +272,7 @@
 | Phase 9 Lane 1 any critical/high alert unfixed | codeql-alert-resolution-agent | **BLOCKING FAILURE** |
 | Phase 9 Lane 2 any HIGH/CRITICAL CVE unfixed | dependency-vulnerability-scanner | **BLOCKING FAILURE** |
 | Phase 9 Lane 3 <100% policy adherence | unified-governance-gate | **BLOCKING FAILURE** |
-| Phase 9 Lane 4 RBAC/secret violations found | security-audit-agent | **BLOCKING FAILURE** |
+| Phase 9 Lane 4 RBAC/secret violations found | security-audit-agent | **BLOCKING FAILURE** | <!-- pragma: allowlist secret -->
 
 ---
 

@@ -84,7 +84,7 @@ _codex_/
 ├── .github/ # CI/CD workflows (gated for cost control)
 ├── agents/ # AI Agent infrastructure
 │ ├── prompts/ # Pre-defined prompts library
-│ ├── workflow_navigator.py # Tokenized workflow execution
+│ ├── workflow_navigator.py # Tokenized workflow execution  # pragma: allowlist secret
 │ └── codex_client/ # Codex-GitHub bridge client
 ├── src/codex_ml/ # Core ML framework
 │ ├── training/ # Training pipelines
@@ -160,10 +160,10 @@ agents/
 │ ├── deployment/ # Deployment workflows
 │ ├── documentation/ # Doc generation
 │ └── organization/ # Repository organization
-├── workflow_navigator.py # Token-based workflow execution
+├── workflow_navigator.py # Token-based workflow execution  # pragma: allowlist secret
 ├── physics_orchestrator.py # Energy-based decision making
 ├── mental_mapping.py # Decision tracking
-├── TOKENIZED_WORKFLOWS.md # Workflow documentation
+├── TOKENIZED_WORKFLOWS.md # Workflow documentation  # pragma: allowlist secret
 └── codex_client/ # API bridge for Codex-GitHub ops
 ```
 
@@ -206,7 +206,7 @@ scripts/space_traversal/
 ```
 tests/
 ├── capabilities/ # Capability-specific tests
-├── tokenization/ # Tokenization parity tests
+├── tokenization/ # Tokenization parity tests  # pragma: allowlist secret
 ├── space_traversal/ # Audit pipeline tests
 ├── plugins/ # Plugin system tests
 ├── training/ # Training pipeline tests
@@ -382,7 +382,7 @@ class Plugin(ABC):
 **Token-Based Execution**:
 ```python
 navigator = WorkflowNavigator()
-navigator.execute('AUDIT_EXEC') # Execute by token
+navigator.execute('AUDIT_EXEC') # Execute by token  # pragma: allowlist secret
 navigator.execute("Run audit pipeline") # Natural language
 navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE']) # Chaining
 ```
@@ -644,7 +644,7 @@ Trigger (Schedule/Event)
  ↓
 Workflow Navigator
  ↓
-Tokenized Workflow Execution
+Tokenized Workflow Execution  # pragma: allowlist secret
  ↓
 Results Collection
  ↓

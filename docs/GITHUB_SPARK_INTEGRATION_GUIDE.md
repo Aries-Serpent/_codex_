@@ -393,7 +393,7 @@ TOP - Active Agents Grid (3 columns):
  - Last execution time
 - Hover effect: border glow + shadow
 
-MIDDLE - Workflow Token Buttons:
+MIDDLE - Workflow Token Buttons:  # pragma: allowlist secret
 - 6 buttons in 2 rows (3x2 grid):
  - AUDIT_EXEC, DOC_GEN, HEAL
  - DECIDE, ORGANIZE, REVIEW
@@ -701,9 +701,9 @@ Implement user authentication system:
 
 LOGIN MODAL:
 - GitHub OAuth button ("Sign in with GitHub")
-- Alternative: Email + password form
+- Alternative: Email + password form  # pragma: allowlist secret
 - "Remember me" checkbox
-- "Forgot password?" link
+- "Forgot password?" link  # pragma: allowlist secret
 - Registration link
 
 USER MENU (Top right):

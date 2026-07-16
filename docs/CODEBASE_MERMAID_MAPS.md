@@ -921,7 +921,7 @@ Constraints: Do NOT delete test stubs — only production src/ paths.
 ```
 You are continuing Phase 11 coverage work on Aries-Serpent/_codex_.
 Context: Two modules remain at 0% coverage from the S1293 cognitive run.
-Files: src/codex/cognitive/okr_tracker.py (141 stmts, 0%), src/codex/cognitive/task_router.py (104 stmts, 0%)
+Files: src/codex/cognitive/okr_tracker.py (141 stmts, 0%), src/codex/cognitive/task_router.py (104 stmts, 0%)  # pragma: allowlist secret
 Task: Add targeted tests to reach ≥60% on each file.
 Constraints:
 - Use tests/cognitive/ directory

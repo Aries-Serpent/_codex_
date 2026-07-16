@@ -16,8 +16,8 @@ I have successfully resolved all **5 failing CI gate and validation checks** on 
 | # | Check | Issue | Fix | Status |
 |---|-------|-------|-----|--------|
 | 1 | Branch Rebase Gate (REQ-10) | Branch rebase status unknown | Verified branch up-to-date (+226 commits) | ✅ PASS |
-| 2 | Secrets False-Positive Healer (RP-007) | Markdown secret scan false positives | Executed RP-007 auto-fix pattern | ✅ PASS |
-| 3 | Secrets Detection & Remediation | Baseline sync failure | Verified baseline established | ✅ PASS |
+| 2 | Secrets False-Positive Healer (RP-007) | Markdown secret scan false positives | Executed RP-007 auto-fix pattern | ✅ PASS | <!-- pragma: allowlist secret -->
+| 3 | Secrets Detection & Remediation | Baseline sync failure | Verified baseline established | ✅ PASS | <!-- pragma: allowlist secret -->
 | 4 | Pre-Flight CI Validation | 2 of 6 checks failing | Fixed pytest-timeout pinning + workflow timeouts | ✅ PASS |
 | 5 | Unified Governance Check | REQ-4/REQ-5 documentation gap | Updated accountability report + CHANGELOG | ✅ PASS |
 
