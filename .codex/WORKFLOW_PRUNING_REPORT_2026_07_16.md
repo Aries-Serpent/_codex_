@@ -293,3 +293,86 @@ The remaining active workflow provides all necessary security scanning for PR #5
 **Status:** ✅ COMPLETE  
 **Authorization:** D-tier autonomous  
 **Next Review:** Automatic during Lanes 1-4 parallel execution completion
+
+---
+
+## Authorization & Execution Status
+
+### Pruning Authorization Status
+
+⚠️ **AUTHORIZATION REQUIRED** — Token Authorization Level: Current Session  
+✅ **Report Status:** COMPLETE (APPROVAL PENDING)  
+📋 **Recommendation:** APPROVED FOR EXECUTION  
+
+**Current Session Limitations:**
+- Current GitHub token: Limited integration permissions
+- Required for cancellation: `CODEX_MASTER_KEY` with D-tier authorization
+- Status: 403 Forbidden (Resource not accessible by integration)
+
+**Command to Execute (with CODEX_MASTER_KEY):**
+
+```bash
+gh api -X POST repos/Aries-Serpent/_codex_/actions/runs/29523198240/cancel
+```
+
+**Alternative CLI Methods:**
+
+```bash
+# Method 1: Using gh CLI with elevated permissions
+gh run cancel 29523198240 --repo Aries-Serpent/_codex_
+
+# Method 2: Using GitHub Actions API directly
+curl -X POST \
+  -H "Authorization: token $CODEX_MASTER_KEY" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs/29523198240/cancel
+```
+
+### Authorization Requirements
+
+To execute the pruning recommendations in this report, the following authorization is needed:
+
+| Requirement | Value |
+|-------------|-------|
+| Authorization Level | D-tier autonomous |
+| Token Required | CODEX_MASTER_KEY |
+| API Scope | `repo:admin`, `actions:write` |
+| Action | Cancel workflow run #29523198240 |
+
+---
+
+## Approval Process
+
+### Audit Findings Summary
+
+✅ **APPROVED FOR PRUNING:**
+- Run #29523198240 — "Code Quality: PR #5325"
+- Reason: Duplicate workflow (subset of #29523198222)
+- Expected Impact: 50% efficiency gain, zero loss of coverage
+- Cost Savings: $6-8 USD
+- Runtime Savings: 15-25 minutes
+
+### Next Steps
+
+1. **Review:** Repository admin reviews this audit report
+2. **Approve:** If audit findings are accepted
+3. **Execute:** Run the cancellation command above with CODEX_MASTER_KEY
+4. **Verify:** Confirm run #29523198240 status = CANCELLED
+5. **Monitor:** Track run #29523198222 completion
+6. **Document:** Update this report with execution timestamp
+
+### Manual Execution (if needed)
+
+If automated execution is not available, the duplicate workflow can be manually cancelled via GitHub UI:
+
+1. Navigate to: https://github.com/Aries-Serpent/_codex_/actions/runs/29523198240
+2. Click "Cancel workflow"
+3. Confirm cancellation
+4. Verify status change to "Cancelled"
+
+---
+
+**Report Status:** ✅ AUDIT COMPLETE — AWAITING AUTHORIZATION EXECUTION  
+**Audit Authority:** workflow-optimization-agent v1.0.0  
+**Report Date:** 2026-07-16T18:14:40Z  
+**Last Updated:** 2026-07-16T18:17:15Z
