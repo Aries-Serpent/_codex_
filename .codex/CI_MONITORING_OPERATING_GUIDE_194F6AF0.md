@@ -144,7 +144,7 @@ nohup bash .codex/scripts/monitor_194f6af0_workflows.sh &
 | RP-002 | WF-002 | REQ-5: CHANGELOG.md not updated | ✅ AUTO | ✅ YES | ✅ COMPLIANT |
 | RP-003 | WF-003 | WEC state loss (section stripped) | ⚠️ PARTIAL | ✅ YES | ⏳ PENDING |
 | RP-004 | WF-004 | WEC format invalid (checkbox syntax) | ✅ AUTO | ✅ YES | ⏳ PENDING |
-| RP-005 | WF-005 | Approval token insufficient | ❌ NO | ❌ NO | ⏳ PENDING |
+| RP-005 | WF-005 | Approval token insufficient | ❌ NO | ❌ NO | ⏳ PENDING | <!-- pragma: allowlist secret -->
 | RP-006 | WF-006 | REQUIRED WEC items unchecked | ⚠️ MANUAL | ✅ YES | ⏳ PENDING |
 | RP-007 | WF-007 | Cost gate exceeded | ❌ NO | 🟡 CONDITIONAL | ⏳ PENDING |
 | RP-008 | WF-008 | Rate limiting (API exhaustion) | ✅ RETRY | ❌ NO | ⏳ PENDING |

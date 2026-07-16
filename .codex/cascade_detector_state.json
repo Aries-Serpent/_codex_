@@ -65,7 +65,7 @@
     "35:.codex/POST_MERGE_FOLLOW_UP_CHECKPOINT_v0.1.0.md": 5,
     "19:src/services/audio/workflow/transcription_workflow.py": 1,
     "19:src/tools/archive_pr_checklist.py": 1,
-    "24:.github/workflows/security-scan-phase-16.yml": 3,
+    "24:.github/workflows/security-scan-phase-16.yml": 4,
     "34:Would fix missing newline in artifacts/20260710-082727-6774fcb3/source/\u6d4b\u8bd5.py": 1,
     "34:Would fix missing newline in artifacts/20260710-082728-e5fc567c/source/test.py": 1,
     "15:.mypy_baseline is 172 but live count is 1 (171 lower \u2014 update recommended via 'python scripts/ci/mypy_baseline.py --update' in isolated-venv)": 1,
@@ -84,7 +84,13 @@
     "21:.github/workflows/agent-auth-delegation.yml": 1,
     "21:.github/workflows/comment-review-gate.yml": 1,
     "35:.codex/CI_FAILURE_FIX_COORDINATION_PLAN_2026_07_16.md": 2,
-    "35:.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md": 3
+    "35:.codex/CI_FAILURE_TRIAGE_LANE1_2026_07_16.md": 3,
+    "10:src/aries_serpent_core/archive/archive_utils.py": 1,
+    "10:src/aries_serpent_core/brain/memory_consolidation.py": 2,
+    "10:src/aries_serpent_core/brain/memory_sync.py": 2,
+    "35:.codex/CI_MONITORING_OPERATING_GUIDE_194F6AF0.md": 1,
+    "35:.codex/CI_REMEDIATION_194F6AF0.md": 2,
+    "35:.codex/SECURITY_SCAN_194F6AF0.md": 2
   },
   "circuit_state": {
     "6": "BROKEN",
@@ -101,7 +107,7 @@
     "12": "BROKEN",
     "13": "BROKEN",
     "30": "BROKEN",
-    "24": "OPEN",
+    "24": "BROKEN",
     "35": "OPEN",
     "19": "BROKEN",
     "21": "OPEN"

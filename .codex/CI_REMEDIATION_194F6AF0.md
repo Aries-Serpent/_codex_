@@ -39,8 +39,8 @@ This document tracks all workflow failures detected on commit 194f6af0, categori
 |---------|----------|--------|-------|
 | RP-001 (REQ-4) | ❌ NO | ✅ COMPLIANT | AGENT_ACCOUNTABILITY_REPORT.md was updated |
 | RP-002 (REQ-5) | ❌ NO | ✅ COMPLIANT | CHANGELOG.md was updated |
-| RP-003 (WEC) | ⚠️ SKIPPED | ⏳ PENDING | GitHub token unavailable; will check when restored |
-| RP-004 (WEC format) | ⏳ PENDING | ⏳ PENDING | Requires PR body access (GitHub token unavailable) |
+| RP-003 (WEC) | ⚠️ SKIPPED | ⏳ PENDING | GitHub token unavailable; will check when restored | <!-- pragma: allowlist secret -->
+| RP-004 (WEC format) | ⏳ PENDING | ⏳ PENDING | Requires PR body access (GitHub token unavailable) | <!-- pragma: allowlist secret -->
 | RP-005 (Approval) | ⏳ PENDING | ⏳ PENDING | Non-blocking; escalate if needed |
 | RP-006 (Required items) | ⏳ PENDING | ⏳ PENDING | Requires PR body access |
 | RP-007 (Cost gate) | ⏳ PENDING | ⏳ PENDING | Non-blocking; check cost-gate.yml |

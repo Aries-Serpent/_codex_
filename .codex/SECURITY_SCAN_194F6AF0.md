@@ -354,7 +354,7 @@ Create a patch to update `requirements.txt`:
 | Category | Score | Weight | Contribution |
 |----------|-------|--------|--------------|
 | SAST Vulnerabilities | 0/10 | 30% | 0 |
-| Secret Exposure | 0/10 | 40% | 0 |
+| Secret Exposure | 0/10 | 40% | 0 | <!-- pragma: allowlist secret -->
 | Dependency Vulnerabilities | 8.5/10 | 30% | 2.55 |
 | **Overall Risk Score** | **8.5/10** | — | — |
 
@@ -393,7 +393,7 @@ After applying all 12 patches:
 | Check | Status | Details |
 |-------|--------|---------|
 | Source code SAST | ✅ PASS | No Python code changes |
-| Secret detection | ✅ PASS | No API keys, tokens, or credentials |
+| Secret detection | ✅ PASS | No API keys, tokens, or credentials | <!-- pragma: allowlist secret -->
 | Dependency audit | ⚠️ ACTION | 44 CVEs identified, remediation plan created |
 | CWE coverage | ✅ COMPLETE | All vulnerabilities mapped to CWE |
 | Confidence scoring | ✅ COMPLETE | 100% confidence for CRITICAL, 95%+ for HIGH |
