@@ -1,21 +1,22 @@
-# Session Context — 2026-07-16T21:19:20Z
+# Session Context — 2026-07-16T21:24:17Z
 **Branch:** `copilot/explore-codebase-create-campaign-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `4997` (✅)
-- GraphQL remaining: `4998` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/cache-pruning.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/build-agent-env-cache.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/pages-scheduled-validation.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
-- **.github/workflows/nox_gates.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/agent-auth-delegation.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/code-quality-coverage-suite.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/release-to-pypi.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/branch-cleanup.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
 
 ## 📝 Recent Commits
+- `6d994638` Apply remaining changes — copilot-swe-agent[bot] (2026-07-16)
 - `7eb708bd` ✅ PHASE 14 WS4 ORCHESTRATION FRAMEWORK COMPLETE. Agent-orchestrator delivered 6  — copilot-swe-agent[bot] (2026-07-16)
 - `acdf0c08` Add PHASE_14_WS4 Implementation Summary — Framework fully operational — copilot-swe-agent[bot] (2026-07-16)
 - `3edda2f5` PHASE_14_WS4: Multi-workstream orchestration framework activated — copilot-swe-agent[bot] (2026-07-16)
@@ -23,7 +24,6 @@
 - `e06f7a0e` ✅ SESSION COMPLETION: @mbaetiong D-tier autonomous, GO CONTINUE CONFIRMED. Phase — copilot-swe-agent[bot] (2026-07-16)
 - `b8683ae6` ✅ FORMAL AUTHORIZATION CONFIRMED: @mbaetiong D-tier autonomous, GO CONTINUE. Pha — copilot-swe-agent[bot] (2026-07-16)
 - `a69f7c34` Phase 13 WS4 Complete - Permanent ops infrastructure live (89.3% deliverables).  — copilot-swe-agent[bot] (2026-07-16)
-- `030831c3` Phase 14 Hybrid Multi-Workstream Activation: WS1-4 delegated (Feature Delivery,  — copilot-swe-agent[bot] (2026-07-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
