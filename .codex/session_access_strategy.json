@@ -1,32 +1,18 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-07-16T03:07:38.900410+00:00",
-=======
-  "generated_at": "2026-07-16T02:31:58.552940+00:00",
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+  "generated_at": "2026-07-16T04:09:42.738100+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-<<<<<<< HEAD
   "rest_remaining": 5000,
   "graphql_available": true,
-  "graphql_remaining": 4993,
-=======
-  "rest_remaining": 4864,
-  "graphql_available": true,
-  "graphql_remaining": 4999,
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [],
-<<<<<<< HEAD
   "branch": "copilot/ctep-phase4-6-continuation-s2026-07-16",
-=======
-  "branch": "copilot/enable-ctep-mode-post-merge-hotfix-checkpoint",
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
   "recommendation": "Use REST for data fetches. "
 }

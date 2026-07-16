@@ -1,49 +1,26 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-07-16T03:07:29.657616+00:00",
-  "session_sha": "d7ff7220b5eb",
+  "generated_at": "2026-07-16T04:09:34.440044+00:00",
+  "session_sha": "5bf5b8191bc4",
   "branch": "copilot/ctep-phase4-6-continuation-s2026-07-16",
   "repo": "Aries-Serpent/_codex_",
   "rest": {
     "available": true,
-    "detail": "5000 remaining via GITHUB_TOKEN, resets 04:07:31Z",
+    "detail": "5000 remaining via CODEX_MASTER_KEY, resets 05:09:35Z",
     "extra": {
       "remaining": 5000,
-      "reset_epoch": 1784174851
-=======
-  "generated_at": "2026-07-16T02:31:47.965372+00:00",
-  "session_sha": "ccfd3e4e7274",
-  "branch": "copilot/enable-ctep-mode-post-merge-hotfix-checkpoint",
-  "repo": "Aries-Serpent/_codex_",
-  "rest": {
-    "available": true,
-    "detail": "4864 remaining via GITHUB_TOKEN, resets 02:52:49Z",
-    "extra": {
-      "remaining": 4864,
-      "reset_epoch": 1784170369
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+      "reset_epoch": 1784178575
     }
   },
   "graphql": {
     "available": true,
-<<<<<<< HEAD
-    "detail": "4993 pts remaining via CODEX_MASTER_KEY",
+    "detail": "5000 pts remaining via CODEX_MASTER_KEY",
     "extra": {
-      "remaining": 4993
-=======
-    "detail": "4999 pts remaining via GITHUB_TOKEN",
-    "extra": {
-      "remaining": 4999
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+      "remaining": 5000
     }
   },
   "gh_cli": {
     "available": true,
-<<<<<<< HEAD
     "detail": "gh version 2.96.0 (2026-07-02) | auth=OK | api=core.remaining=5000",
-=======
-    "detail": "gh version 2.96.0 (2026-07-02) | auth=OK | api=core.remaining=4864",
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     "extra": {
       "version": "gh version 2.96.0 (2026-07-02)",
       "auth_ok": true,
@@ -78,175 +55,101 @@
       "rate_limits": {
         "core": {
           "resource": "core",
-<<<<<<< HEAD
-          "remaining": 4883,
+          "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1784173403,
-          "reset_human": "03:43:23Z"
-=======
-          "remaining": 4773,
-          "limit": 5000,
-          "reset_epoch": 1784169591,
-          "reset_human": "02:39:51Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "search": {
           "resource": "search",
           "remaining": 30,
           "limit": 30,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "graphql": {
           "resource": "graphql",
-          "remaining": 4993,
+          "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1784173471,
-          "reset_human": "03:44:31Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
-        },
-        "graphql": {
-          "resource": "graphql",
-          "remaining": 4970,
-          "limit": 5000,
-          "reset_epoch": 1784169678,
-          "reset_human": "02:41:18Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "integration_manifest": {
           "resource": "integration_manifest",
           "remaining": 5000,
           "limit": 5000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "source_import": {
           "resource": "source_import",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "code_scanning_autofix": {
           "resource": "code_scanning_autofix",
           "remaining": 10,
           "limit": 10,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "actions_runner_registration": {
           "resource": "actions_runner_registration",
           "remaining": 10000,
           "limit": 10000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "scim": {
           "resource": "scim",
           "remaining": 15000,
           "limit": 15000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "dependency_snapshots": {
           "resource": "dependency_snapshots",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "dependency_sbom": {
           "resource": "dependency_sbom",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "audit_log": {
           "resource": "audit_log",
           "remaining": 1750,
           "limit": 1750,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "audit_log_streaming": {
           "resource": "audit_log_streaming",
           "remaining": 15,
           "limit": 15,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         },
         "code_search": {
           "resource": "code_search",
           "remaining": 10,
           "limit": 10,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169168,
-          "reset_human": "02:32:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175034,
+          "reset_human": "04:10:34Z"
         },
         "copilot_usage_records": {
           "resource": "copilot_usage_records",
           "remaining": 1750,
           "limit": 1750,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172708,
-          "reset_human": "03:31:48Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178574,
+          "reset_human": "05:09:34Z"
         }
       },
       "scopes": [
@@ -276,204 +179,119 @@
       "error": ""
     },
     {
-<<<<<<< HEAD
-      "token_tail": "vNrA",
-=======
-      "token_tail": "n1Nw",
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+      "token_tail": "Q7aw",
       "source_var": "GITHUB_TOKEN",
       "is_elevated": false,
       "rate_limits": {
         "core": {
           "resource": "core",
-<<<<<<< HEAD
           "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "remaining": 4864,
-          "limit": 5000,
-          "reset_epoch": 1784170369,
-          "reset_human": "02:52:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "search": {
           "resource": "search",
           "remaining": 30,
           "limit": 30,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "graphql": {
           "resource": "graphql",
-          "remaining": 4991,
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
-        },
-        "graphql": {
-          "resource": "graphql",
-          "remaining": 4999,
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "remaining": 5000,
           "limit": 5000,
-          "reset_epoch": 1784172617,
-          "reset_human": "03:30:17Z"
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "integration_manifest": {
           "resource": "integration_manifest",
           "remaining": 5000,
           "limit": 5000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "source_import": {
           "resource": "source_import",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "code_scanning_autofix": {
           "resource": "code_scanning_autofix",
           "remaining": 10,
           "limit": 10,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "actions_runner_registration": {
           "resource": "actions_runner_registration",
           "remaining": 10000,
           "limit": 10000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "scim": {
           "resource": "scim",
           "remaining": 15000,
           "limit": 15000,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "dependency_snapshots": {
           "resource": "dependency_snapshots",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "dependency_sbom": {
           "resource": "dependency_sbom",
           "remaining": 100,
           "limit": 100,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "audit_log": {
           "resource": "audit_log",
           "remaining": 1750,
           "limit": 1750,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "audit_log_streaming": {
           "resource": "audit_log_streaming",
           "remaining": 15,
           "limit": 15,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         },
         "code_search": {
           "resource": "code_search",
           "remaining": 10,
           "limit": 10,
-<<<<<<< HEAD
-          "reset_epoch": 1784171310,
-          "reset_human": "03:08:30Z"
-=======
-          "reset_epoch": 1784169169,
-          "reset_human": "02:32:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784175035,
+          "reset_human": "04:10:35Z"
         },
         "copilot_usage_records": {
           "resource": "copilot_usage_records",
           "remaining": 1750,
           "limit": 1750,
-<<<<<<< HEAD
-          "reset_epoch": 1784174850,
-          "reset_human": "04:07:30Z"
-=======
-          "reset_epoch": 1784172709,
-          "reset_human": "03:31:49Z"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+          "reset_epoch": 1784178575,
+          "reset_human": "05:09:35Z"
         }
       },
       "scopes": [],
       "error": ""
     }
   ],
-  "best_token_var": "GITHUB_TOKEN",
-<<<<<<< HEAD
+  "best_token_var": "CODEX_MASTER_KEY",
   "best_token_rest_remaining": 5000,
-  "rest_reset_epoch": 1784174851,
-  "graphql_remaining": 4993,
+  "rest_reset_epoch": 1784178575,
+  "graphql_remaining": 5000,
   "open_prs": [],
-  "head_sha": "d7ff7220b5ebb1e9d832bfe11cd033e6f377fff0",
+  "head_sha": "5bf5b8191bc46c6b192a0d3adacfd3aa78bc7b15",
   "recommended_method": "REST",
-  "recommended_method_detail": "core.remaining=5000 via GITHUB_TOKEN"
-=======
-  "best_token_rest_remaining": 4864,
-  "rest_reset_epoch": 1784170369,
-  "graphql_remaining": 4999,
-  "open_prs": [],
-  "head_sha": "ccfd3e4e7274ce907db05e365a39e218ef6c85cf",
-  "recommended_method": "REST",
-  "recommended_method_detail": "core.remaining=4864 via GITHUB_TOKEN"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+  "recommended_method_detail": "core.remaining=5000 via CODEX_MASTER_KEY"
 }

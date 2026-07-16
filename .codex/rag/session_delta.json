@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-07-16T03:07:38.900251+00:00",
-=======
-  "generated_at": "2026-07-16T02:31:58.552761+00:00",
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+  "generated_at": "2026-07-16T04:09:42.737904+00:00",
   "rag_delta": {
     "updated": 0,
     "skipped": 0,
@@ -14,11 +10,6 @@
     "graphql",
     "gh_cli"
   ],
-<<<<<<< HEAD
   "rest_remaining": 5000,
-  "graphql_remaining": 4993
-=======
-  "rest_remaining": 4864,
-  "graphql_remaining": 4999
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+  "graphql_remaining": 5000
 }
