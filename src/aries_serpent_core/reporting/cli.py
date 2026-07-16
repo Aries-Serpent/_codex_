@@ -4,7 +4,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Any
-
+import html
 import click
 
 logger = logging.getLogger(__name__)
@@ -82,15 +82,16 @@ def dashboard_main(output: str, open_browser: bool) -> None:
         body = "<p><em>No metrics data found in <code>.codex/metrics.ndjson</code>.</em></p>"
     else:
         keys = sorted({k for e in entries for k in e})
-        header_cells = "".join(f"<th>{k}</th>" for k in keys)
+        header_cells = "".join(f"<th>{html.escape(str(k))}</th>" for k in keys)
         rows_html = ""
         for e in entries:
-            cells = "".join(f"<td>{e.get(k, '')}</td>" for k in keys)
+            cells = "".join(f"<td>{html.escape(str(e.get(k, '')))}</td>" for k in keys)
             rows_html += f"<tr>{cells}</tr>\n"
         body = (
             f"<table border='1'><thead><tr>{header_cells}</tr></thead>"
             f"<tbody>{rows_html}</tbody></table>"
         )
+
 
     html = (
         "<!DOCTYPE html><html><head><title>Codex Dashboard</title></head>"

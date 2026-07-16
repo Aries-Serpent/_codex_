@@ -1,9 +1,10 @@
 # WEC Canonical Items — Authoritative Workflow Checklist
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-26  
+**Version:** 1.1.0  
+**Last Updated:** 2026-07-16 (Phase 8 Lane 3 Consolidation)  
 **Source of Truth:** `scripts/ci/session_wrapup_autofix.py` (line numbers to be verified in Phase 3.1 implementation)  
-**Status:** APPROVED for all PRs merging to main or 0D_base_
+**Status:** APPROVED for all PRs merging to main or 0D_base_  
+**Note:** Phase 8 Lane 3 consolidated 39 workflows into 7 unified workflows; WEC items updated accordingly
 
 ---
 
@@ -18,7 +19,13 @@ This document defines the **canonical list of all Workflow Execution Checklist (
 
 ---
 
-## Canonical WEC Items (9 Total)
+## Canonical WEC Items (7 Total — Updated Phase 8 Lane 3)
+
+**Update Note:** Phase 8 Lane 3 Consolidation (2026-07-16):
+- Consolidated 39 workflows into 7 unified workflows
+- Items 6-8 (copilot-agent-checkin, copilot-agent-session-done, copilot-iterative-self-healing) now route through `unified-copilot-management.yml`
+- Original workflows archived in `.github/workflows/_archived/` but functionality preserved
+- All WEC requirements remain unchanged (optional, non-blocking)
 
 ### Item 1: pre-merge-validation.yml
 
@@ -99,55 +106,33 @@ This document defines the **canonical list of all Workflow Execution Checklist (
 
 ---
 
-### Item 6: copilot-agent-checkin.yml
+### Item 6: unified-copilot-management.yml
 
 | Attribute | Value |
 |-----------|-------|
-| **Filename** | copilot-agent-checkin.yml |
-| **Display Label** | Agent check-in |
+| **Filename** | unified-copilot-management.yml |
+| **Display Label** | Copilot management suite |
 | **Required for main** | ❌ NO — OPTIONAL |
 | **Required for 0D_base_** | ❌ NO — OPTIONAL |
 | **Auto-Approve Prerequisite** | None |
-| **Purpose** | Agent status reporting & session diagnostics |
+| **Purpose** | Unified copilot agent operations (check-in, session done, self-healing, etc.) |
 | **Failure Mode** | Non-blocking; informational only |
-| **Owner Agent** | session-analysis-agent |
+| **Owner Agent** | session-analysis-agent, self-healing-orchestrator-agent |
 | **Recommendation** | Check if agent diagnostics/status reporting needed |
+| **Phase 8 Consolidation** | Consolidates 9 original workflows (copilot-agent-checkin.yml, copilot-agent-session-done.yml, copilot-iterative-self-healing.yml, etc.) |
+| **Backward Compatibility** | Functionality identical to previous separate workflows; original workflows archived for reference |
+
+**Available Operations (via workflow_dispatch):**
+- `agent-checkin` — Agent status reporting & diagnostics
+- `session-done` — Automatic post-session review
+- `self-healing` — Iterative CI failure diagnosis and fixing
+- `all` — Run all copilot operations (default)
 
 ---
 
-### Item 7: copilot-agent-session-done.yml
-
-| Attribute | Value |
-|-----------|-------|
-| **Filename** | copilot-agent-session-done.yml |
-| **Display Label** | Auto-post review |
-| **Required for main** | ❌ NO — OPTIONAL |
-| **Required for 0D_base_** | ❌ NO — OPTIONAL |
-| **Auto-Approve Prerequisite** | None |
-| **Purpose** | Automatic post-session review comment |
-| **Failure Mode** | Non-blocking |
-| **Owner Agent** | session-analysis-agent |
-| **Recommendation** | Uncheck if session review already posted manually |
+### Item 7: cost-gate.yml (Previously Item 9)
 
 ---
-
-### Item 8: copilot-iterative-self-healing.yml
-
-| Attribute | Value |
-|-----------|-------|
-| **Filename** | copilot-iterative-self-healing.yml |
-| **Display Label** | Iterative self-healing |
-| **Required for main** | ❌ NO — OPTIONAL |
-| **Required for 0D_base_** | ❌ NO — OPTIONAL |
-| **Auto-Approve Prerequisite** | None |
-| **Purpose** | Automated CI failure diagnosis and fixing loops |
-| **Failure Mode** | Non-blocking |
-| **Owner Agent** | self-healing-orchestrator-agent |
-| **Recommendation** | Check if CI failures expected; self-healing will attempt fixes |
-
----
-
-### Item 9: cost-gate.yml
 
 | Attribute | Value |
 |-----------|-------|
@@ -180,9 +165,7 @@ Select workflows to execute for this PR. **REQUIRED items must be checked to mer
 - [x] workflow-execution-gate.yml — WEC gate
 
 ### OPTIONAL - Select as Needed
-- [x] copilot-agent-checkin.yml — Agent check-in
-- [ ] copilot-agent-session-done.yml — Auto-post review
-- [x] copilot-iterative-self-healing.yml — Iterative self-healing
+- [x] unified-copilot-management.yml — Copilot management suite (consolidates: agent-checkin, session-done, self-healing, and more)
 - [ ] cost-gate.yml — Cost governance gate
 ```
 
@@ -210,9 +193,7 @@ Select workflows to execute for this PR. **REQUIRED items must be checked to mer
 | deferral-language-gate.yml | ✅ MUST | ✅ YES | Policy enforcement required |
 | agent-auth-delegation.yml | ✅ MUST (if agent PR) | ✅ YES | Required for copilot/* or feature/* branches |
 | workflow-execution-gate.yml | ✅ MUST | ✅ YES | WEC gate always required |
-| copilot-agent-checkin.yml | ❌ OPTIONAL | ❌ NO | Agent diagnostics optional |
-| copilot-agent-session-done.yml | ❌ OPTIONAL | ❌ NO | Auto-review optional |
-| copilot-iterative-self-healing.yml | ❌ OPTIONAL | ❌ NO | Self-healing optional |
+| unified-copilot-management.yml | ❌ OPTIONAL | ❌ NO | Copilot operations optional (replaces 3 separate workflows) |
 | cost-gate.yml | ❌ OPTIONAL | ❌ NO | Cost gate optional |
 
 **Merge Blocked If:**

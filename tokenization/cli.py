@@ -22,7 +22,9 @@ def _load() -> ModuleType:
 
 _module = _load()
 __all__ = getattr(_module, "__all__", [])
-globals().update({k: v for k, v in _module.__dict__.items() if not k.startswith("_")})
+for name in __all__:
+    if hasattr(_module, name):
+        globals()[name] = getattr(_module, name)
 
 
 def _run_app() -> None:

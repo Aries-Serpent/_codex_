@@ -1,0 +1,116 @@
+{
+  "timestamp": "2026-07-16T15:01:38.923020",
+  "current_hit_rate": 0.4,
+  "target_hit_rate": 0.6,
+  "workflows_analyzed": 110,
+  "workflows_optimized": 0,
+  "optimization_strategies": {
+    "layer1_pip": {
+      "layer": 1,
+      "type": "pip",
+      "cache_paths": [
+        "~/.cache/pip"
+      ],
+      "key_format": "${{ runner.os }}-${{ github.workflow }}-pip-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}",
+      "restore_keys": [
+        "Linux-pr-checks-job-test-pip-",
+        "Linux-pr-checks-job-test-"
+      ],
+      "retention_policy": {
+        "max_age_days": 30,
+        "max_size_mb": 5000,
+        "auto_cleanup": true
+      },
+      "expected_improvement": "5-10% hit rate gain"
+    },
+    "layer2_npm": {
+      "layer": 2,
+      "type": "npm",
+      "cache_paths": [
+        "~/.yarn/cache",
+        "~/.npm"
+      ],
+      "key_format": "${{ runner.os }}-${{ github.workflow }}-npm-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}",
+      "restore_keys": [
+        "Linux-test-frontend-node-18-yarn-",
+        "Linux-test-frontend-node-18-"
+      ],
+      "package_managers": [
+        "npm",
+        "yarn",
+        "pnpm"
+      ],
+      "retention_policy": {
+        "max_age_days": 30,
+        "max_size_mb": 2000,
+        "auto_cleanup": true
+      },
+      "expected_improvement": "5-10% hit rate gain"
+    },
+    "layer3_workflow": {
+      "layer": 3,
+      "type": "workflow_scope",
+      "key_specification": {
+        "format": "{OS}-{WORKFLOW}-{TYPE}-{HASH}",
+        "components": [
+          "OS (runner.os)",
+          "WORKFLOW (github.workflow)",
+          "TYPE (cache type: pip, npm, cargo, etc.)",
+          "HASH (dependency file hash)"
+        ],
+        "fallback_levels": 3
+      },
+      "restore_key_strategy": [
+        "Level 1: Exact match (highest priority)",
+        "Level 2: Workflow-scoped prefix",
+        "Level 3: Type-only fallback",
+        "Level 4: OS-only fallback (last resort)"
+      ],
+      "isolation_benefits": [
+        "Prevents cross-workflow contamination",
+        "Improves cache hit rates",
+        "Reduces cache key collisions"
+      ],
+      "expected_improvement": "5-10% hit rate gain"
+    },
+    "layer4_retention": {
+      "layer": 4,
+      "type": "retention_cleanup",
+      "cleanup_policy": {
+        "retention_window_days": 30,
+        "cleanup_schedule": "Daily at 02:00 UTC",
+        "size_limits": {
+          "total_per_repo_gb": 200,
+          "per_workflow_gb": 10,
+          "alert_threshold_gb": 150
+        }
+      },
+      "monitoring": {
+        "cache_hit_rate_tracking": true,
+        "storage_cost_monitoring": true,
+        "eviction_rate_tracking": true
+      },
+      "automation": [
+        "Auto-delete caches older than 30 days",
+        "Alert if cache size exceeds threshold",
+        "Report cache efficiency metrics"
+      ],
+      "expected_improvement": "Stable >60% hit rate with automatic management"
+    }
+  },
+  "metrics": {
+    "estimated_daily_savings_hours": 13.3,
+    "estimated_annual_savings_hours": 4850,
+    "storage_savings_percent": 26.7,
+    "total_hit_rate_improvement": 0.2
+  },
+  "recommendations": [
+    "Update all pip cache keys with dependency hashing",
+    "Add workflow name to all cache keys for isolation",
+    "Implement 3-level restore-key fallback strategy",
+    "Set up daily cache cleanup workflow",
+    "Monitor cache hit rate and storage usage",
+    "Document cache key format specification",
+    "Train team on cache best practices"
+  ]
+}
