@@ -62,11 +62,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: >
-          python3 scripts/ci/check_pr_comments.py
-          --pr "${{ steps.pr_info.outputs.pr_number }}"
-          --repo "${{ steps.pr_info.outputs.repo }}"
-          --post-checklist
+        run: |
+          python3 scripts/ci/check_pr_comments.py \
+            --pr "${{ steps.pr_info.outputs.pr_number }}" \
+            --repo "${{ steps.pr_info.outputs.repo }}" \
+            --post-checklist
 
       - name: Upload scan report
         if: always()

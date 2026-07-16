@@ -47,23 +47,15 @@ jobs:
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
     - name: Install QA dependencies
-      run: 'PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
-
-        "$PYTHON_BIN" -m pip install --quiet ruff black isort pylint bandit safety
-        pip-audit 2>&1 || true
-
+      run: |
+        PYTHON_BIN="${VENV_PYTHON:-.venv_ci/bin/python}"
+        "$PYTHON_BIN" -m pip install --quiet ruff black isort pylint bandit safety pip-audit 2>&1 || true
+        
         echo "--- QA tool availability ---"
-
         which ruff    && echo "ruff:     installed" || echo "ruff:     MISSING"
-
         which bandit  && echo "bandit:   installed" || echo "bandit:   MISSING"
-
         which pylint  && echo "pylint:   installed" || echo "pylint:   MISSING"
-
-        "$PYTHON_BIN" -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed"
-        || echo "pip-audit: MISSING"
-
-        '
+        "$PYTHON_BIN" -c "import pip_audit" 2>/dev/null && echo "pip-audit: installed" || echo "pip-audit: MISSING"
     - name: Download recent CI artifacts
       uses: actions/github-script@v8
       id: artifacts
@@ -89,15 +81,33 @@ jobs:
       run: |
         python3 - <<'EOF'
         import ast, os, json, pathlib, sys
-        src_root = pathlib.Path(\"\
+        
+        src_root = pathlib.Path("src")
+        issues = []
+        
+        # Scan Python files for quality issues
+        for py_file in src_root.rglob("*.py"):
+          try:
+            with open(py_file) as f:
+              code = f.read()
+            ast.parse(code)
+          except SyntaxError as e:
+            issues.append({"file": str(py_file), "type": "SyntaxError", "message": str(e)})
+        
+        # Write report
+        with open("qa-report.json", "w") as f:
+          json.dump({"issues": issues}, f, indent=2)
+        
+        exit(0 if not issues else 1)
+        EOF
     - name: Run ruff lint
       run: |
-        python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \\
-        \
+        python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \
+          -o ruff-report.json --output-format json 2>/dev/null || true
     - name: Run bandit security scan
       run: |
-        python3 -m bandit -r src/ -f json -o bandit-report.json \\
-        --configfile\
+        python3 -m bandit -r src/ -f json -o bandit-report.json \
+          --configfile pyproject.toml 2>/dev/null || true
     - name: Generate QA summary
       id: summary
       uses: actions/github-script@v8
@@ -134,13 +144,10 @@ jobs:
       if: always()
       with:
         name: qa-walkthrough-reports-${{ github.run_id }}
-        path: 'qa-report.json
-
+        path: |
+          qa-report.json
           ruff-report.json
-
           bandit-report.json
-
-          '
         retention-days: 30
         if-no-files-found: warn
     - name: Update consolidated PR dashboard
