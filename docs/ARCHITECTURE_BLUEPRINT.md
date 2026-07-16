@@ -9,7 +9,7 @@
 
 ---
 
-##  Documentation Update
+## Documentation Update
 
 This document has been **consolidated** with `ARCHITECTURE.md` and `Architecture.md` into a single comprehensive reference:
 
@@ -80,39 +80,39 @@ This blueprint serves multiple audiences:
 
 ```
 _codex_/
-├── .codex/                      # Codex environment kit & setup scripts
-├── .github/                     # CI/CD workflows (gated for cost control)
-├── agents/                      # AI Agent infrastructure
-│   ├── prompts/                 # Pre-defined prompts library
-│   ├── workflow_navigator.py   # Tokenized workflow execution
-│   └── codex_client/           # Codex-GitHub bridge client
-├── src/codex_ml/               # Core ML framework
-│   ├── training/               # Training pipelines
-│   ├── evaluation/             # Evaluation metrics
-│   ├── connectors/             # Storage connectors
-│   └── plugins/                # Plugin system
-├── scripts/                     # Utility scripts (195+ files)
-│   └── space_traversal/        # Audit pipeline v0.2.1
-├── tests/                       # Test suite (2,079+ files)
-├── docs/                        # Documentation (693+ files)
-│   ├── mcp/                    # MCP (Model Context Protocol) docs
-│   ├── archive/                # Historical planning docs & session reports
-│   ├── api/                    # API reference documentation
-│   └── ADMIN_*.md              # Administrator guides
-├── reports/                     # Generated reports & diagnostics
-│   ├── codex/                  # Codex-specific reports
-│   └── diagnostics/            # Diagnostic outputs
-├── coverage_reports/            # Test coverage JSON reports
-├── training/                    # Training configurations
-├── services/                    # Microservices (ITA, etc.)
-├── cli/                         # CLI entrypoints
-├── configs/                     # Hydra configurations
-├── deploy/                      # Deployment manifests
-├── monitoring/                  # Observability tools
-├── audit_artifacts/            # Audit results & trends
-├── misc/                        # Archival & review
-│   └── repo-owner-review/      # Deprecated files for owner review
-└── [core config files]          # pyproject.toml, requirements*.txt, etc.
+├── .codex/ # Codex environment kit & setup scripts
+├── .github/ # CI/CD workflows (gated for cost control)
+├── agents/ # AI Agent infrastructure
+│ ├── prompts/ # Pre-defined prompts library
+│ ├── workflow_navigator.py # Tokenized workflow execution
+│ └── codex_client/ # Codex-GitHub bridge client
+├── src/codex_ml/ # Core ML framework
+│ ├── training/ # Training pipelines
+│ ├── evaluation/ # Evaluation metrics
+│ ├── connectors/ # Storage connectors
+│ └── plugins/ # Plugin system
+├── scripts/ # Utility scripts (195+ files)
+│ └── space_traversal/ # Audit pipeline v0.2.1
+├── tests/ # Test suite (2,079+ files)
+├── docs/ # Documentation (693+ files)
+│ ├── mcp/ # MCP (Model Context Protocol) docs
+│ ├── archive/ # Historical planning docs & session reports
+│ ├── api/ # API reference documentation
+│ └── ADMIN_*.md # Administrator guides
+├── reports/ # Generated reports & diagnostics
+│ ├── codex/ # Codex-specific reports
+│ └── diagnostics/ # Diagnostic outputs
+├── coverage_reports/ # Test coverage JSON reports
+├── training/ # Training configurations
+├── services/ # Microservices (ITA, etc.)
+├── cli/ # CLI entrypoints
+├── configs/ # Hydra configurations
+├── deploy/ # Deployment manifests
+├── monitoring/ # Observability tools
+├── audit_artifacts/ # Audit results & trends
+├── misc/ # Archival & review
+│ └── repo-owner-review/ # Deprecated files for owner review
+└── [core config files] # pyproject.toml, requirements*.txt, etc.
 ```
 
 ### Key Directories Deep Dive
@@ -125,20 +125,20 @@ _codex_/
 ```
 src/codex_ml/
 ├── training/
-│   ├── config.py              # TrainingConfig with gradient accumulation
-│   ├── engine_hf_trainer.py   # HuggingFace Trainer integration
-│   └── functional_training.py # Functional training pipeline
+│ ├── config.py # TrainingConfig with gradient accumulation
+│ ├── engine_hf_trainer.py # HuggingFace Trainer integration
+│ └── functional_training.py # Functional training pipeline
 ├── evaluation/
-│   └── runner.py              # Evaluation orchestration
+│ └── runner.py # Evaluation orchestration
 ├── connectors/
-│   └── base.py                # LocalConnector (async, path-validated)
+│ └── base.py # LocalConnector (async, path-validated)
 ├── plugins/
-│   ├── plugin_registry.py     # Plugin system
-│   └── plugin_sandbox.py      # Sandboxed plugin execution
+│ ├── plugin_registry.py # Plugin system
+│ └── plugin_sandbox.py # Sandboxed plugin execution
 ├── metrics/
-│   └── api.py                 # NDJSON metrics aggregation
+│ └── api.py # NDJSON metrics aggregation
 └── utils/
-    └── stub_cleanup.py        # Stub analysis tool
+ └── stub_cleanup.py # Stub analysis tool
 ```
 
 **Key Features**:
@@ -154,17 +154,17 @@ src/codex_ml/
 **Components**:
 ```
 agents/
-├── prompts/                    # Prompt library
-│   ├── audit/                  # Audit operations
-│   ├── debugging/              # Debugging guides (26KB)
-│   ├── deployment/             # Deployment workflows
-│   ├── documentation/          # Doc generation
-│   └── organization/           # Repository organization
-├── workflow_navigator.py       # Token-based workflow execution
-├── physics_orchestrator.py    # Energy-based decision making
-├── mental_mapping.py           # Decision tracking
-├── TOKENIZED_WORKFLOWS.md     # Workflow documentation
-└── codex_client/              # API bridge for Codex-GitHub ops
+├── prompts/ # Prompt library
+│ ├── audit/ # Audit operations
+│ ├── debugging/ # Debugging guides (26KB)
+│ ├── deployment/ # Deployment workflows
+│ ├── documentation/ # Doc generation
+│ └── organization/ # Repository organization
+├── workflow_navigator.py # Token-based workflow execution
+├── physics_orchestrator.py # Energy-based decision making
+├── mental_mapping.py # Decision tracking
+├── TOKENIZED_WORKFLOWS.md # Workflow documentation
+└── codex_client/ # API bridge for Codex-GitHub ops
 ```
 
 **Workflow Tokens**:
@@ -181,15 +181,15 @@ agents/
 **Components**:
 ```
 scripts/space_traversal/
-├── audit_runner.py            # Main orchestration
-├── trend_database.py          # SQLite trend storage
-├── performance.py             # Caching & profiling utilities
-├── ci_integration.py          # CI/CD integration
-├── migrations/                # Schema migrations
-├── viz_html.py                # HTML dashboards
-├── viz_ascii.py               # Terminal output
-├── viz_swagger.py             # OpenAPI docs
-└── viz_docs_hub.py            # Documentation hub
+├── audit_runner.py # Main orchestration
+├── trend_database.py # SQLite trend storage
+├── performance.py # Caching & profiling utilities
+├── ci_integration.py # CI/CD integration
+├── migrations/ # Schema migrations
+├── viz_html.py # HTML dashboards
+├── viz_ascii.py # Terminal output
+├── viz_swagger.py # OpenAPI docs
+└── viz_docs_hub.py # Documentation hub
 ```
 
 **Features**:
@@ -205,12 +205,12 @@ scripts/space_traversal/
 **Structure**:
 ```
 tests/
-├── capabilities/              # Capability-specific tests
-├── tokenization/              # Tokenization parity tests
-├── space_traversal/           # Audit pipeline tests
-├── plugins/                   # Plugin system tests
-├── training/                  # Training pipeline tests
-└── [2,079+ test files]        # Unit, integration, smoke tests
+├── capabilities/ # Capability-specific tests
+├── tokenization/ # Tokenization parity tests
+├── space_traversal/ # Audit pipeline tests
+├── plugins/ # Plugin system tests
+├── training/ # Training pipeline tests
+└── [2,079+ test files] # Unit, integration, smoke tests
 ```
 
 **Test Categories**:
@@ -227,63 +227,63 @@ tests/
 ### High-Level System Architecture
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "👥 Users", Developers'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Users", Developers'}}%%
 flowchart TB
-    subgraph Users["👥 Users"]
-        Dev[Developers]
-        Agent[AI Agents]
-        CI[CI/CD Systems]
-    end
+ subgraph Users[" Users"]
+ Dev[Developers]
+ Agent[AI Agents]
+ CI[CI/CD Systems]
+ end
 
-    subgraph Core["🔷 Codex Core"]
-        CLI[CLI Interface]
-        Logging[Session Logger]
-        Config[Configuration]
-    end
+ subgraph Core[" Codex Core"]
+ CLI[CLI Interface]
+ Logging[Session Logger]
+ Config[Configuration]
+ end
 
-    subgraph Pipeline[" Audit Pipeline v0.2.1"]
-        Runner[Audit Runner]
-        Scanner[Code Scanner]
-        Metrics[Metrics Collector]
-        Trends[Trend Database]
-    end
+ subgraph Pipeline[" Audit Pipeline v0.2.1"]
+ Runner[Audit Runner]
+ Scanner[Code Scanner]
+ Metrics[Metrics Collector]
+ Trends[Trend Database]
+ end
 
-    subgraph ML[" ML Framework"]
-        Training[Training Engine]
-        Eval[Evaluation]
-        Models[Model Registry]
-    end
+ subgraph ML[" ML Framework"]
+ Training[Training Engine]
+ Eval[Evaluation]
+ Models[Model Registry]
+ end
 
-    subgraph Viz[" Visualization"]
-        Dashboard[HTML Dashboard]
-        Terminal[ASCII Terminal]
-        Reports[Markdown Reports]
-    end
+ subgraph Viz[" Visualization"]
+ Dashboard[HTML Dashboard]
+ Terminal[ASCII Terminal]
+ Reports[Markdown Reports]
+ end
 
-    subgraph Storage["💾 Storage"]
-        SQLite[(SQLite DB)]
-        Logs[Log Files]
-        Cache[Cache Layer]
-    end
+ subgraph Storage[" Storage"]
+ SQLite[(SQLite DB)]
+ Logs[Log Files]
+ Cache[Cache Layer]
+ end
 
-    Dev --> CLI
-    Agent --> Runner
-    CI --> Runner
+ Dev --> CLI
+ Agent --> Runner
+ CI --> Runner
 
-    CLI --> Training
-    CLI --> Eval
+ CLI --> Training
+ CLI --> Eval
 
-    Runner --> Scanner
-    Scanner --> Metrics
-    Metrics --> Trends
+ Runner --> Scanner
+ Scanner --> Metrics
+ Metrics --> Trends
 
-    Trends --> SQLite
-    Trends --> Viz
+ Trends --> SQLite
+ Trends --> Viz
 
-    Training --> Models
-    Eval --> Models
+ Training --> Models
+ Eval --> Models
 
-    Dashboard --> Reports
+ Dashboard --> Reports
 ```
 
 ### Component Interaction Patterns
@@ -292,24 +292,24 @@ flowchart TB
 
 ```
 Data Validation → Configuration → Model Init → Training Loop → Checkpoint → Metrics
-     ↓                 ↓              ↓             ↓              ↓          ↓
-validate_dataset   Hydra      model_registry  engine_hf    RNGState   metrics.api
+ ↓ ↓ ↓ ↓ ↓ ↓
+validate_dataset Hydra model_registry engine_hf RNGState metrics.api
 ```
 
 #### 2. Audit Pipeline Flow
 
 ```
 Trigger → Scan → Analyze → Score → Store → Visualize → Notify
-   ↓       ↓       ↓         ↓       ↓        ↓          ↓
- CLI   Scanner  Metrics  Scorer  SQLite   viz_html  Webhooks
+ ↓ ↓ ↓ ↓ ↓ ↓ ↓
+ CLI Scanner Metrics Scorer SQLite viz_html Webhooks
 ```
 
 #### 3. Agent Workflow Flow
 
 ```
 Request → Parse → Execute → Validate → Report → Learn
-   ↓        ↓        ↓         ↓         ↓        ↓
- Agent  Navigator  Workflow   Tests   Progress  Mental Map
+ ↓ ↓ ↓ ↓ ↓ ↓
+ Agent Navigator Workflow Tests Progress Mental Map
 ```
 
 ### Design Principles (Physics-Inspired)
@@ -333,12 +333,12 @@ Based on the repository's physics-inspired orchestration (`agents/ORCHESTRATION.
 ```python
 @dataclass
 class TrainingConfig:
-    gradient_accumulation_steps: int = 1  # Exposed gradient accumulation
-    batch_size: int = 8
-    learning_rate: float = 5e-5
-    num_train_epochs: int = 3
-    precision: str = "fp32"  # fp32, fp16, bf16
-    deterministic: bool = True  # Reproducible training
+ gradient_accumulation_steps: int = 1 # Exposed gradient accumulation
+ batch_size: int = 8
+ learning_rate: float = 5e-5
+ num_train_epochs: int = 3
+ precision: str = "fp32" # fp32, fp16, bf16
+ deterministic: bool = True # Reproducible training
 ```
 
 **Validation**: Built-in constraints (gradient_accumulation_steps >= 1, etc.)
@@ -352,11 +352,11 @@ class TrainingConfig:
 
 ```python
 class LocalConnector(Connector):
-    async def read_file(self, path: str) -> bytes:
-        target = self._resolve(path)  # Validates path safety
-        if not target.exists():
-            raise ConnectorError(f"file does not exist: {path}")
-        return await asyncio.to_thread(target.read_bytes)
+ async def read_file(self, path: str) -> bytes:
+ target = self._resolve(path) # Validates path safety
+ if not target.exists():
+ raise ConnectorError(f"file does not exist: {path}")
+ return await asyncio.to_thread(target.read_bytes)
 ```
 
 ### 3. Plugin System (`src/codex_ml/plugins/`)
@@ -364,10 +364,10 @@ class LocalConnector(Connector):
 **Abstract Base Pattern**:
 ```python
 class Plugin(ABC):
-    @abstractmethod
-    def execute(self, *args, **kwargs) -> Any:
-        """Execute plugin logic. Override in subclass."""
-        raise NotImplementedError
+ @abstractmethod
+ def execute(self, *args, **kwargs) -> Any:
+ """Execute plugin logic. Override in subclass."""
+ raise NotImplementedError
 ```
 
 **Registry**: Dynamic plugin loading via entry points
@@ -382,9 +382,9 @@ class Plugin(ABC):
 **Token-Based Execution**:
 ```python
 navigator = WorkflowNavigator()
-navigator.execute('AUDIT_EXEC')  # Execute by token
-navigator.execute("Run audit pipeline")  # Natural language
-navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE'])  # Chaining
+navigator.execute('AUDIT_EXEC') # Execute by token
+navigator.execute("Run audit pipeline") # Natural language
+navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE']) # Chaining
 ```
 
 ---
@@ -395,53 +395,53 @@ navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE'])  # Chaining
 
 ```
 1. Setup Environment
-   └─> .codex/scripts/setup.sh
-       └─> UV lockfile resolution
-           └─> Virtual environment creation
+ └─> .codex/scripts/setup.sh
+ └─> UV lockfile resolution
+ └─> Virtual environment creation
 
 2. Code Development
-   └─> Local editing with Copilot
-       └─> Pre-commit hooks (ruff, black, mypy)
-           └─> Incremental validation
+ └─> Local editing with Copilot
+ └─> Pre-commit hooks (ruff, black, mypy)
+ └─> Incremental validation
 
 3. Testing
-   └─> pytest tests/ -v
-       └─> Coverage reporting
-           └─> Test artifacts
+ └─> pytest tests/ -v
+ └─> Coverage reporting
+ └─> Test artifacts
 
 4. Training
-   └─> codex_exec train --config config.yaml
-       └─> Training loop with checkpoints
-           └─> Metrics emission (NDJSON)
+ └─> codex_exec train --config config.yaml
+ └─> Training loop with checkpoints
+ └─> Metrics emission (NDJSON)
 
 5. Audit
-   └─> python scripts/space_traversal/audit_runner.py run
-       └─> Capability scoring
-           └─> Trend storage (SQLite)
+ └─> python scripts/space_traversal/audit_runner.py run
+ └─> Capability scoring
+ └─> Trend storage (SQLite)
 
 6. Documentation
-   └─> Automated generation via agents/prompts/documentation/
-       └─> Wiki bundle creation
-           └─> Deployment to GitHub Wiki
+ └─> Automated generation via agents/prompts/documentation/
+ └─> Wiki bundle creation
+ └─> Deployment to GitHub Wiki
 
 7. Deployment
-   └─> Docker build
-       └─> Container registry push
-           └─> Kubernetes/service deployment
+ └─> Docker build
+ └─> Container registry push
+ └─> Kubernetes/service deployment
 ```
 
 ### Data Flow Diagram
 
 ```
 Source Code → Validation → Training → Checkpoints
-     ↓            ↓           ↓           ↓
- Git Repo    validate.py  Training   RNGState
-                             ↓
-                          Metrics
-                             ↓
-                        Aggregation
-                             ↓
-                       Visualization
+ ↓ ↓ ↓ ↓
+ Git Repo validate.py Training RNGState
+ ↓
+ Metrics
+ ↓
+ Aggregation
+ ↓
+ Visualization
 ```
 
 ---
@@ -484,13 +484,13 @@ Source Code → Validation → Training → Checkpoints
 
 **Pyramid Approach**:
 ```
-        /\
-       /E2E\      ← 5% (End-to-end)
-      /------\
-     /Integ  \   ← 15% (Integration)
-    /--------\
-   /   Unit   \  ← 80% (Unit tests)
-  /------------\
+ /\
+ /E2E\ ← 5% (End-to-end)
+ /------\
+ /Integ \ ← 15% (Integration)
+ /--------\
+ / Unit \ ← 80% (Unit tests)
+ /------------\
 ```
 
 **Test Execution**:
@@ -520,18 +520,18 @@ pytest -m smoke -v
 - **Semgrep**: Pattern-based scanning (`semgrep_rules/`)
 - **CodeQL**: Static analysis (GitHub Advanced Security)
 
-**Current Status**:  Zero known vulnerabilities
+**Current Status**: Zero known vulnerabilities
 
 ### Recent Security Fixes
 
 1. **XSS Prevention** (`scripts/planning_components.py`):
-   - Hash-based ID generation
-   - Type validation for user inputs
-   - `CSS.escape()` for selector safety
+ - Hash-based ID generation
+ - Type validation for user inputs
+ - `CSS.escape()` for selector safety
 
 2. **Path Traversal Prevention** (`src/codex_ml/connectors/base.py`):
-   - Path validation in `_resolve()`
-   - Common path verification
+ - Path validation in `_resolve()`
+ - Common path verification
 
 ### Secrets Management
 
@@ -583,16 +583,16 @@ from agents.workflow_navigator import WorkflowNavigator
 navigator = WorkflowNavigator()
 
 # High-frequency workflows
-navigator.execute('AUDIT_EXEC')     # Audit pipeline
-navigator.execute('PHYS_DECIDE')    # Decision making
-navigator.execute('SELF_HEAL')      # Self-healing
+navigator.execute('AUDIT_EXEC') # Audit pipeline
+navigator.execute('PHYS_DECIDE') # Decision making
+navigator.execute('SELF_HEAL') # Self-healing
 
 # Medium-frequency workflows
-navigator.execute('DOC_GEN')        # Documentation
-navigator.execute('MENTAL_REVIEW')  # Review decisions
+navigator.execute('DOC_GEN') # Documentation
+navigator.execute('MENTAL_REVIEW') # Review decisions
 
 # Low-frequency workflows
-navigator.execute('REPO_ORG')       # Organization
+navigator.execute('REPO_ORG') # Organization
 ```
 
 ## 3. Physics-Inspired Orchestration
@@ -625,15 +625,15 @@ python scripts/space_traversal/audit_runner.py agent-interface --output agent_in
 
 ```
 Developer + Copilot
-    ↓
+ ↓
 Code Changes
-    ↓
+ ↓
 Pre-Commit Validation
-    ↓
+ ↓
 Agent Review (via prompts/debugging/)
-    ↓
+ ↓
 Test Execution
-    ↓
+ ↓
 Audit Pipeline
 ```
 
@@ -641,13 +641,13 @@ Audit Pipeline
 
 ```
 Trigger (Schedule/Event)
-    ↓
+ ↓
 Workflow Navigator
-    ↓
+ ↓
 Tokenized Workflow Execution
-    ↓
+ ↓
 Results Collection
-    ↓
+ ↓
 Mental Mapping Update
 ```
 
@@ -655,15 +655,15 @@ Mental Mapping Update
 
 ```
 Gap Detection
-    ↓
+ ↓
 Priority Assessment
-    ↓
+ ↓
 Auto-Fix Attempt
-    ↓
+ ↓
 Validation
-    ↓
+ ↓
 Success → Document
-    ↓
+ ↓
 Failure → Escalate
 ```
 
@@ -702,20 +702,20 @@ Failure → Escalate
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-ml
+ name: codex-ml
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: codex-ml
-  template:
-    spec:
-      containers:
-      - name: codex-ml
-        image: codex-ml:latest
-        resources:
-          limits:
-            nvidia.com/gpu: 1
+ replicas: 3
+ selector:
+ matchLabels:
+ app: codex-ml
+ template:
+ spec:
+ containers:
+ - name: codex-ml
+ image: codex-ml:latest
+ resources:
+ limits:
+ nvidia.com/gpu: 1
 ```
 
 ## Pattern 2: Self-Hosted Runner
@@ -866,11 +866,11 @@ cat agents/prompts/debugging/test-failure-debugging.md
 ### Current Status
 
 **Achieved**:
--  Level 4 MLOps Certification (100/100)
--  2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
--  Zero critical gaps (all P0 stubs are correct patterns)
--  Comprehensive documentation (693+ files)
--  AI Agent infrastructure operational
+- Level 4 MLOps Certification (100/100)
+- 2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
+- Zero critical gaps (all P0 stubs are correct patterns)
+- Comprehensive documentation (693+ files)
+- AI Agent infrastructure operational
 
 **Metrics**:
 - MLOps Score: 100/100
@@ -1015,7 +1015,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 **Environment Setup**:
 ```bash
 ./.codex/scripts/setup.sh
-source venv/bin/activate  # or .venv/bin/activate
+source venv/bin/activate # or .venv/bin/activate
 ```
 
 **CLI Usage**:
@@ -1049,32 +1049,32 @@ nav.execute('AUDIT_EXEC')
 **System Components**:
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         Users Layer                          │
-│  Developers │ AI Agents │ CI/CD │ Operators                  │
+│ Users Layer │
+│ Developers │ AI Agents │ CI/CD │ Operators │
 └────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
+ │
+ ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Interface Layer                         │
-│  CLI │ Workflow Navigator │ Agent Prompts                    │
+│ Interface Layer │
+│ CLI │ Workflow Navigator │ Agent Prompts │
 └────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
+ │
+ ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Application Layer                       │
-│  Training │ Evaluation │ Audit Pipeline │ Documentation     │
+│ Application Layer │
+│ Training │ Evaluation │ Audit Pipeline │ Documentation │
 └────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
+ │
+ ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Core Services                           │
-│  Plugin System │ Metrics │ Connectors │ Configuration       │
+│ Core Services │
+│ Plugin System │ Metrics │ Connectors │ Configuration │
 └────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
+ │
+ ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Storage Layer                           │
-│  SQLite │ File System │ Cache │ Logs                        │
+│ Storage Layer │
+│ SQLite │ File System │ Cache │ Logs │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1096,11 +1096,11 @@ nav.execute('AUDIT_EXEC')
 **Audit Metrics**:
 ```json
 {
-  "capability": "string",
-  "score": "float (0.0-1.0)",
-  "evidence": ["file paths"],
-  "timestamp": "ISO8601",
-  "trend": "increasing|stable|decreasing"
+ "capability": "string",
+ "score": "float (0.0-1.0)",
+ "evidence": ["file paths"],
+ "timestamp": "ISO8601",
+ "trend": "increasing|stable|decreasing"
 }
 ```
 
@@ -1113,12 +1113,12 @@ nav.execute('AUDIT_EXEC')
 **Reproducibility Manifest**:
 ```json
 {
-  "run_id": "uuid",
-  "timestamp": "ISO8601",
-  "python_version": "3.12",
-  "dependencies": {"package": "version"},
-  "rng_state": "base64_encoded",
-  "checkpoint_uri": "path/to/checkpoint"
+ "run_id": "uuid",
+ "timestamp": "ISO8601",
+ "python_version": "3.12",
+ "dependencies": {"package": "version"},
+ "rng_state": "base64_encoded",
+ "checkpoint_uri": "path/to/checkpoint"
 }
 ```
 

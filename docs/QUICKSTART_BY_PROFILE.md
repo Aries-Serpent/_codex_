@@ -297,6 +297,6 @@ python -m codex.cli health
 
 ---
 
-**Last Updated: 2026-07-08
+**Last Updated: 2026-07-16
 **For:** All User Profiles
 **Activation:** 2026-07-10T10:00Z

@@ -5,107 +5,107 @@
 ## Table of Contents
 
 - [ PR OVERVIEW](#-pr-overview)
-  - [Basic Information](#basic-information)
-  - [Scope Summary](#scope-summary)
+ - [Basic Information](#basic-information)
+ - [Scope Summary](#scope-summary)
 - [️ REQUIRED SAFETY CONFIRMATIONS](#-required-safety-confirmations)
-  - [Network & Security](#network--security)
-  - [Data Safety](#data-safety)
-  - [Code Quality](#code-quality)
+ - [Network & Security](#network--security)
+ - [Data Safety](#data-safety)
+ - [Code Quality](#code-quality)
 - [🧪 TESTING REQUIREMENTS](#-testing-requirements)
-  - [Test Coverage](#test-coverage)
-  - [Test Quality](#test-quality)
-  - [Validation](#validation)
+ - [Test Coverage](#test-coverage)
+ - [Test Quality](#test-quality)
+ - [Validation](#validation)
 - [ DOCUMENTATION REQUIREMENTS](#-documentation-requirements)
-  - [Code Documentation](#code-documentation)
-  - [User Documentation](#user-documentation)
-  - [Technical Documentation](#technical-documentation)
+ - [Code Documentation](#code-documentation)
+ - [User Documentation](#user-documentation)
+ - [Technical Documentation](#technical-documentation)
 - [ FEATURE-SPECIFIC REQUIREMENTS](#-feature-specific-requirements)
-  - [For New Features](#for-new-features)
-  - [For Bug Fixes](#for-bug-fixes)
-  - [For Performance Improvements](#for-performance-improvements)
-  - [For Refactoring](#for-refactoring)
+ - [For New Features](#for-new-features)
+ - [For Bug Fixes](#for-bug-fixes)
+ - [For Performance Improvements](#for-performance-improvements)
+ - [For Refactoring](#for-refactoring)
 - [ IMPLEMENTATION QUALITY](#-implementation-quality)
-  - [Code Quality](#code-quality)
-  - [Design Quality](#design-quality)
-  - [Dependencies](#dependencies)
+ - [Code Quality](#code-quality)
+ - [Design Quality](#design-quality)
+ - [Dependencies](#dependencies)
 - [ CAPABILITY-SPECIFIC CHECKLISTS](#-capability-specific-checklists)
-  - [A) Inference Serving & Model Management](#a-inference-serving--model-management)
-    - [Basic Inference Features](#basic-inference-features)
-    - [Embedding Generation](#embedding-generation)
-    - [Prediction & Inference](#prediction--inference)
-    - [Configuration & Monitoring](#configuration--monitoring)
-  - [B) Vector Store & Retrieval](#b-vector-store--retrieval)
-    - [VectorStore Interface & Base](#vectorstore-interface--base)
-    - [FAISS Store Implementation](#faiss-store-implementation)
-    - [Vector Operations](#vector-operations)
-    - [Metadata Filtering (MongoDB-style)](#metadata-filtering-mongodb-style)
-    - [Search & Retrieval](#search--retrieval)
-  - [C) Duplication Detection & Code Metrics](#c-duplication-detection--code-metrics)
-    - [Detection Engine](#detection-engine)
-    - [Metric Storage](#metric-storage)
-    - [CLI Commands](#cli-commands)
-    - [Integration & Workflows](#integration--workflows)
-  - [D) Performance Optimizations & Resilience](#d-performance-optimizations--resilience)
-    - [Request Batching](#request-batching)
-    - [Response Caching](#response-caching)
-    - [Retrieval Optimizations](#retrieval-optimizations)
-    - [Resilience Patterns](#resilience-patterns)
-    - [Performance Validation](#performance-validation)
-  - [E) CLI & Command-Line Interface](#e-cli--command-line-interface)
-    - [General CLI](#general-cli)
-    - [Duplication CLI Commands](#duplication-cli-commands)
-  - [F) Documentation & Guides](#f-documentation--guides)
-    - [User Guides Created/Updated](#user-guides-createdupdated)
-    - [Technical Documentation](#technical-documentation)
-    - [Code Documentation](#code-documentation)
-  - [G) Integration & End-to-End Workflows](#g-integration--end-to-end-workflows)
-    - [Inference + Vector Store Integration](#inference--vector-store-integration)
-    - [Duplication + CI/CD Integration](#duplication--cicd-integration)
-    - [Performance Integration](#performance-integration)
-  - [H) Database & Storage](#h-database--storage)
-    - [SQLite Storage](#sqlite-storage)
-    - [JSON Storage](#json-storage)
-    - [Storage Integration](#storage-integration)
-  - [I) Configuration & Environment](#i-configuration--environment)
-    - [Environment Variables](#environment-variables)
-    - [Configuration Files](#configuration-files)
-    - [Hydra Configuration (if applicable)](#hydra-configuration-if-applicable)
-  - [J) Error Handling & Validation](#j-error-handling--validation)
-    - [Exception Handling](#exception-handling)
-    - [Input Validation](#input-validation)
-    - [Edge Cases](#edge-cases)
-  - [K) Metrics & Monitoring](#k-metrics--monitoring)
-    - [Performance Metrics](#performance-metrics)
-    - [Business Metrics](#business-metrics)
-    - [Monitoring Integration](#monitoring-integration)
-- [🏗️ INFRASTRUCTURE & BUILD](#-infrastructure--build)
-  - [Build System](#build-system)
-  - [CI/CD Pipeline](#cicd-pipeline)
-  - [Environment](#environment)
+ - [A) Inference Serving & Model Management](#a-inference-serving--model-management)
+ - [Basic Inference Features](#basic-inference-features)
+ - [Embedding Generation](#embedding-generation)
+ - [Prediction & Inference](#prediction--inference)
+ - [Configuration & Monitoring](#configuration--monitoring)
+ - [B) Vector Store & Retrieval](#b-vector-store--retrieval)
+ - [VectorStore Interface & Base](#vectorstore-interface--base)
+ - [FAISS Store Implementation](#faiss-store-implementation)
+ - [Vector Operations](#vector-operations)
+ - [Metadata Filtering (MongoDB-style)](#metadata-filtering-mongodb-style)
+ - [Search & Retrieval](#search--retrieval)
+ - [C) Duplication Detection & Code Metrics](#c-duplication-detection--code-metrics)
+ - [Detection Engine](#detection-engine)
+ - [Metric Storage](#metric-storage)
+ - [CLI Commands](#cli-commands)
+ - [Integration & Workflows](#integration--workflows)
+ - [D) Performance Optimizations & Resilience](#d-performance-optimizations--resilience)
+ - [Request Batching](#request-batching)
+ - [Response Caching](#response-caching)
+ - [Retrieval Optimizations](#retrieval-optimizations)
+ - [Resilience Patterns](#resilience-patterns)
+ - [Performance Validation](#performance-validation)
+ - [E) CLI & Command-Line Interface](#e-cli--command-line-interface)
+ - [General CLI](#general-cli)
+ - [Duplication CLI Commands](#duplication-cli-commands)
+ - [F) Documentation & Guides](#f-documentation--guides)
+ - [User Guides Created/Updated](#user-guides-createdupdated)
+ - [Technical Documentation](#technical-documentation)
+ - [Code Documentation](#code-documentation)
+ - [G) Integration & End-to-End Workflows](#g-integration--end-to-end-workflows)
+ - [Inference + Vector Store Integration](#inference--vector-store-integration)
+ - [Duplication + CI/CD Integration](#duplication--cicd-integration)
+ - [Performance Integration](#performance-integration)
+ - [H) Database & Storage](#h-database--storage)
+ - [SQLite Storage](#sqlite-storage)
+ - [JSON Storage](#json-storage)
+ - [Storage Integration](#storage-integration)
+ - [I) Configuration & Environment](#i-configuration--environment)
+ - [Environment Variables](#environment-variables)
+ - [Configuration Files](#configuration-files)
+ - [Hydra Configuration (if applicable)](#hydra-configuration-if-applicable)
+ - [J) Error Handling & Validation](#j-error-handling--validation)
+ - [Exception Handling](#exception-handling)
+ - [Input Validation](#input-validation)
+ - [Edge Cases](#edge-cases)
+ - [K) Metrics & Monitoring](#k-metrics--monitoring)
+ - [Performance Metrics](#performance-metrics)
+ - [Business Metrics](#business-metrics)
+ - [Monitoring Integration](#monitoring-integration)
+- [️ INFRASTRUCTURE & BUILD](#-infrastructure--build)
+ - [Build System](#build-system)
+ - [CI/CD Pipeline](#cicd-pipeline)
+ - [Environment](#environment)
 - [ SECURITY CONSIDERATIONS](#-security-considerations)
-  - [Security Scanning](#security-scanning)
-  - [Security Best Practices](#security-best-practices)
+ - [Security Scanning](#security-scanning)
+ - [Security Best Practices](#security-best-practices)
 - [ COMPLIANCE & GOVERNANCE](#-compliance--governance)
-  - [Archival Policy Compliance](#archival-policy-compliance)
-  - [Repository Conventions](#repository-conventions)
-  - [Code Ownership](#code-ownership)
+ - [Archival Policy Compliance](#archival-policy-compliance)
+ - [Repository Conventions](#repository-conventions)
+ - [Code Ownership](#code-ownership)
 - [ ACCEPTANCE CRITERIA](#-acceptance-criteria)
-  - [Functional Acceptance](#functional-acceptance)
-  - [Technical Acceptance](#technical-acceptance)
-  - [Documentation Acceptance](#documentation-acceptance)
-- [🚦 READINESS CHECKLIST](#-readiness-checklist)
-  - [Pre-Merge Checklist](#pre-merge-checklist)
-  - [Post-Merge Checklist](#post-merge-checklist)
+ - [Functional Acceptance](#functional-acceptance)
+ - [Technical Acceptance](#technical-acceptance)
+ - [Documentation Acceptance](#documentation-acceptance)
+- [ READINESS CHECKLIST](#-readiness-checklist)
+ - [Pre-Merge Checklist](#pre-merge-checklist)
+ - [Post-Merge Checklist](#post-merge-checklist)
 - [ ADDITIONAL NOTES](#-additional-notes)
-  - [Summary of Changes](#summary-of-changes)
-  - [Testing Strategy](#testing-strategy)
-  - [Performance Impact](#performance-impact)
-  - [Breaking Changes](#breaking-changes)
-  - [Screenshots/Recordings](#screenshotsrecordings)
-  - [Deployment Notes](#deployment-notes)
-  - [Rollback Plan](#rollback-plan)
+ - [Summary of Changes](#summary-of-changes)
+ - [Testing Strategy](#testing-strategy)
+ - [Performance Impact](#performance-impact)
+ - [Breaking Changes](#breaking-changes)
+ - [Screenshots/Recordings](#screenshotsrecordings)
+ - [Deployment Notes](#deployment-notes)
+ - [Rollback Plan](#rollback-plan)
 - [ FINAL VERIFICATION](#-final-verification)
-  - [Maintainer Verification](#maintainer-verification)
+ - [Maintainer Verification](#maintainer-verification)
 - [ REFERENCES](#-references)
 
 > **Version:** 2.0.0
@@ -114,22 +114,22 @@
 
 ---
 
-##  PR OVERVIEW
+## PR OVERVIEW
 
 ### Basic Information
 - [ ] **PR Title**: Clear, descriptive title following convention: `[Type]: Brief description`
 - [ ] **Linked Issue(s)**: All related issues are linked (fixes #XXX, closes #XXX, relates to #XXX)
 - [ ] **PR Type**: Select one or more:
-  - [ ] 🐛 Bug Fix
-  - [ ]  New Feature
-  - [ ]  Code Refactor
-  - [ ]  Documentation
-  - [ ]  Performance Improvement
-  - [ ] 🧪 Tests
-  - [ ]  Security Fix
-  - [ ] 🎨 Code Style/Formatting
-  - [ ] 📦 Dependency Update
-  - [ ] 🏗️ Infrastructure/Build
+ - [ ] Bug Fix
+ - [ ] New Feature
+ - [ ] Code Refactor
+ - [ ] Documentation
+ - [ ] Performance Improvement
+ - [ ] 🧪 Tests
+ - [ ] Security Fix
+ - [ ] Code Style/Formatting
+ - [ ] Dependency Update
+ - [ ] ️ Infrastructure/Build
 
 ### Scope Summary
 - [ ] **S-IDs Listed**: All affected system IDs documented (e.g., Retrieval, Inference, Metrics)
@@ -183,7 +183,7 @@
 
 ---
 
-##  DOCUMENTATION REQUIREMENTS
+## DOCUMENTATION REQUIREMENTS
 
 ### Code Documentation
 - [ ] **Docstrings Added** - All new functions/classes have comprehensive docstrings
@@ -207,7 +207,7 @@
 
 ---
 
-##  FEATURE-SPECIFIC REQUIREMENTS
+## FEATURE-SPECIFIC REQUIREMENTS
 
 ### For New Features
 - [ ] **Feature Complete** - Feature is complete and ready for production use
@@ -237,7 +237,7 @@
 
 ---
 
-##  IMPLEMENTATION QUALITY
+## IMPLEMENTATION QUALITY
 
 ### Code Quality
 - [ ] **Follows Style Guide** - Code follows repository style guidelines
@@ -261,7 +261,7 @@
 
 ---
 
-##  CAPABILITY-SPECIFIC CHECKLISTS
+## CAPABILITY-SPECIFIC CHECKLISTS
 
 ### A) Inference Serving & Model Management
 **Check if this PR modifies inference serving, model loading, or embedding generation:**
@@ -646,7 +646,7 @@
 
 ---
 
-## 🏗️ INFRASTRUCTURE & BUILD
+## ️ INFRASTRUCTURE & BUILD
 
 ### Build System
 - [ ] **Build Passes** - Build system completes successfully
@@ -668,7 +668,7 @@
 
 ---
 
-##  SECURITY CONSIDERATIONS
+## SECURITY CONSIDERATIONS
 
 ### Security Scanning
 - [ ] **CodeQL Passed** - CodeQL security scan passed
@@ -688,7 +688,7 @@
 
 ---
 
-##  COMPLIANCE & GOVERNANCE
+## COMPLIANCE & GOVERNANCE
 
 ### Archival Policy Compliance
 - [ ] **Archival Policy Followed** - Codebase archival policy followed
@@ -711,7 +711,7 @@
 
 ---
 
-##  ACCEPTANCE CRITERIA
+## ACCEPTANCE CRITERIA
 
 ### Functional Acceptance
 - [ ] **All Requirements Met** - All acceptance criteria from issue/spec met
@@ -732,7 +732,7 @@
 
 ---
 
-## 🚦 READINESS CHECKLIST
+## READINESS CHECKLIST
 
 ### Pre-Merge Checklist
 - [ ] **All Checkboxes Reviewed** - All applicable checkboxes in this template reviewed
@@ -750,7 +750,7 @@
 
 ---
 
-##  ADDITIONAL NOTES
+## ADDITIONAL NOTES
 
 ### Summary of Changes
 **Provide a concise summary of what changed and why:**
@@ -789,7 +789,7 @@
 
 ---
 
-##  FINAL VERIFICATION
+## FINAL VERIFICATION
 
 ### Maintainer Verification
 **For maintainers only - verify before merge:**
@@ -811,7 +811,7 @@
 
 ---
 
-##  REFERENCES
+## REFERENCES
 
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Code Style Guide](dev/CODE_STYLE_GUIDE.md)

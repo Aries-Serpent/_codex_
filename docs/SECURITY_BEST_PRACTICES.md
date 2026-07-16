@@ -10,7 +10,7 @@ This guide provides security best practices for developers working on the _codex
 
 ---
 
-##  Core Principles
+## Core Principles
 
 ### 1. Defense in Depth
 Apply multiple layers of security controls:
@@ -32,11 +32,11 @@ Apply multiple layers of security controls:
 
 ---
 
-## 🛡️ Security Patterns by Category
+## ️ Security Patterns by Category
 
 ### Model Loading (PyTorch)
 
-####  SAFE Pattern
+#### SAFE Pattern
 ```python
 from utils.safe_torch_loader import safe_load
 
@@ -45,10 +45,10 @@ model_state = safe_load('model.pth', weights_only=True)
 model.load_state_dict(model_state)
 ```
 
-##  UNSAFE Pattern
+## UNSAFE Pattern
 ```python
 # NEVER do this with untrusted models
-model = torch.load('untrusted.pth')  # RCE vulnerability!
+model = torch.load('untrusted.pth') # RCE vulnerability!
 ```
 
 **Why**: `torch.load()` without `weights_only=True` can execute arbitrary code during deserialization.
@@ -57,7 +57,7 @@ model = torch.load('untrusted.pth')  # RCE vulnerability!
 
 ## Pickle Deserialization
 
-###  SAFE Pattern
+### SAFE Pattern
 ```python
 from utils.safe_pickle import safe_pickle_load
 
@@ -65,11 +65,11 @@ from utils.safe_pickle import safe_pickle_load
 data = safe_pickle_load('data.pkl', use_restricted_unpickler=True)
 ```
 
-##  UNSAFE Pattern
+## UNSAFE Pattern
 ```python
 # NEVER deserialize untrusted pickle data directly
 with open('untrusted.pkl', 'rb') as f:
-    data = pickle.load(f)  # RCE vulnerability!
+ data = pickle.load(f) # RCE vulnerability!
 ```
 
 **Why**: Pickle can execute arbitrary code during deserialization. Only use RestrictedUnpickler for untrusted sources.
@@ -91,16 +91,16 @@ state_dict = load_file('model.safetensors')
 
 ## Subprocess Execution
 
-###  SAFE Pattern
+### SAFE Pattern
 ```python
 import subprocess
 import shlex
 
 # Use list form - safe from command injection
 result = subprocess.run(['git', 'status', '--short'],
-                       capture_output=True,
-                       text=True,
-                       check=True)
+ capture_output=True,
+ text=True,
+ check=True)
 
 # If you must parse a string command
 command = "git status --short"
@@ -108,11 +108,11 @@ args = shlex.split(command)
 result = subprocess.run(args, capture_output=True, text=True)
 ```
 
-##  UNSAFE Pattern
+## UNSAFE Pattern
 ```python
 # NEVER use shell=True with user input
 user_input = request.args.get('file')
-subprocess.run(f'cat {user_input}', shell=True)  # Command injection!
+subprocess.run(f'cat {user_input}', shell=True) # Command injection!
 ```
 
 **Why**: `shell=True` interprets shell metacharacters, allowing command injection.
@@ -121,7 +121,7 @@ subprocess.run(f'cat {user_input}', shell=True)  # Command injection!
 
 ## Cryptographic Hashing
 
-###  SAFE Pattern
+### SAFE Pattern
 ```python
 import hashlib
 
@@ -132,10 +132,10 @@ secure_hash = hashlib.sha256(data).hexdigest()
 cache_key = hashlib.md5(data, usedforsecurity=False).hexdigest()
 ```
 
-##  UNSAFE Pattern
+## UNSAFE Pattern
 ```python
 # Don't use MD5 for security without marking it
-hash_value = hashlib.md5(password)  # Security warning!
+hash_value = hashlib.md5(password) # Security warning!
 ```
 
 **Why**: MD5 is cryptographically broken. Use SHA256+ for security, or explicitly mark MD5 as non-security use.
@@ -144,36 +144,36 @@ hash_value = hashlib.md5(password)  # Security warning!
 
 ## Error Handling
 
-###  SAFE Pattern
+### SAFE Pattern
 ```text
 import logging
 logger = logging.getLogger(__name__)
 
 try:
-    risky_operation()
+ risky_operation()
 except FileNotFoundError as e:
-    # Specific exception, with logging
-    logger.warning(f"File not found: {e}", exc_info=True)
-    return default_value
+ # Specific exception, with logging
+ logger.warning(f"File not found: {e}", exc_info=True)
+ return default_value
 except PermissionError as e:
-    # Critical error - log and re-raise
-    logger.error(f"Permission denied: {e}", exc_info=True)
-    raise
+ # Critical error - log and re-raise
+ logger.error(f"Permission denied: {e}", exc_info=True)
+ raise
 ```
 
-####  UNSAFE Pattern
+#### UNSAFE Pattern
 ```python
 # Silent failure - hides bugs
 try:
-    risky_operation()
+ risky_operation()
 except:
-    pass  # No logging, no visibility!
+ pass # No logging, no visibility!
 
 # Overly broad exception catching
 try:
-    operation()
-except Exception:  # Too broad
-    pass
+ operation()
+except Exception: # Too broad
+ pass
 ```
 
 **Why**: Silent failures make debugging impossible. Always log exceptions with context.
@@ -182,7 +182,7 @@ except Exception:  # Too broad
 
 ## API Security
 
-###  SAFE Pattern
+### SAFE Pattern
 ```python
 from fastapi import FastAPI, HTTPException
 from services.api.middleware.form_validator import SecureMultipartMiddleware
@@ -193,27 +193,27 @@ app.add_middleware(SecureMultipartMiddleware)
 
 @app.post("/upload")
 async def upload_file(file: UploadFile):
-    # Validate file size
-    if file.size > APIConfig.MAX_UPLOAD_SIZE:
-        raise HTTPException(413, "File too large")
+ # Validate file size
+ if file.size > APIConfig.MAX_UPLOAD_SIZE:
+ raise HTTPException(413, "File too large")
 
-    # Validate file type
-    allowed_types = {'text/plain', 'application/json'}
-    if file.content_type not in allowed_types:
-        raise HTTPException(415, "Unsupported media type")
+ # Validate file type
+ allowed_types = {'text/plain', 'application/json'}
+ if file.content_type not in allowed_types:
+ raise HTTPException(415, "Unsupported media type")
 
-    # Process file safely
-    content = await file.read()
-    return {"status": "success"}
+ # Process file safely
+ content = await file.read()
+ return {"status": "success"}
 ```
 
-####  UNSAFE Pattern
+#### UNSAFE Pattern
 ```python
 # No validation, no size limits
 @app.post("/upload")
 async def upload_file(file: UploadFile):
-    content = await file.read()  # No size limit! DoS risk
-    eval(content)  # Never eval user input! RCE risk
+ content = await file.read() # No size limit! DoS risk
+ eval(content) # Never eval user input! RCE risk
 ```
 
 **Why**: Always validate and limit user input. Never execute user-provided code.
@@ -222,7 +222,7 @@ async def upload_file(file: UploadFile):
 
 ## XML Parsing
 
-###  SAFE Pattern
+### SAFE Pattern
 ```python
 from defusedxml.ElementTree import parse
 
@@ -230,7 +230,7 @@ from defusedxml.ElementTree import parse
 tree = parse('data.xml')
 ```
 
-##  UNSAFE Pattern
+## UNSAFE Pattern
 ```python
 from xml.etree.ElementTree import parse
 
@@ -242,7 +242,7 @@ tree = parse('untrusted.xml')
 
 ---
 
-##  Security Checklist for Code Reviews
+## Security Checklist for Code Reviews
 
 ### Before Committing
 - [ ] No `eval()` or `exec()` with user input
@@ -265,7 +265,7 @@ tree = parse('untrusted.xml')
 
 ---
 
-##  Additional Resources
+## Additional Resources
 
 ### Internal Documentation
 - [SECURITY.md](./SECURITY.md) - Security policy and patched vulnerabilities
@@ -279,21 +279,21 @@ tree = parse('untrusted.xml')
 
 ---
 
-##  Reporting Security Issues
+## Reporting Security Issues
 
 If you discover a security vulnerability:
 
 1. **Do NOT** open a public issue
 2. Email: security@codex.dev
 3. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if available)
+ - Description of the vulnerability
+ - Steps to reproduce
+ - Potential impact
+ - Suggested fix (if available)
 
 ---
 
-##  Security Review Process
+## Security Review Process
 
 ### For All Pull Requests
 1. Run security validation: `python scripts/security/validate_security.py`
@@ -309,7 +309,7 @@ If you discover a security vulnerability:
 
 ---
 
-##  Security Metrics
+## Security Metrics
 
 Track these metrics for ongoing security health:
 
@@ -320,7 +320,7 @@ Track these metrics for ongoing security health:
 
 ---
 
-##  Quick Reference Card
+## Quick Reference Card
 
 ### Most Common Security Mistakes
 
@@ -342,6 +342,6 @@ Track these metrics for ongoing security health:
 
 ---
 
-**Last Updated**: 2025-12-22  
-**Version**: 1.0  
+**Last Updated**: 2025-12-22 
+**Version**: 1.0 
 **Owner**: Security Team

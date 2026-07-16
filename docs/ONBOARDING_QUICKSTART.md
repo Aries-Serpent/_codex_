@@ -1,20 +1,20 @@
-#  Codex ML: 5-Minute Onboarding Quickstart
+# Codex ML: 5-Minute Onboarding Quickstart
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker)  
-> **Audience:** New developers, ML engineers, AI researchers  
+> **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker) 
+> **Audience:** New developers, ML engineers, AI researchers 
 > **Updated: 2026-06-27
 
 ---
 
-##  TL;DR — One-Command Setup
+## TL;DR — One-Command Setup
 
 ### Local Setup (Recommended)
 ```bash
 git clone https://github.com/Aries-Serpent/_codex_.git
 cd _codex_
-python -m venv .venv && source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+python -m venv .venv && source .venv/bin/activate # or .venv\Scripts\activate on Windows
 pip install -e ".[dev]"
 python -m codex.cli train --config config/examples/minimal.yaml
 ```
@@ -31,7 +31,7 @@ docker run -it codex-ml python -m codex.cli train --config config/examples/minim
 
 ---
 
-##  Prerequisites Check (< 1 minute)
+## Prerequisites Check (< 1 minute)
 
 ```bash
 # Check Python version (need 3.12+)
@@ -41,8 +41,8 @@ python --version
 git --version
 
 # Check C++ compiler (for PyTorch)
-gcc --version  # Linux
-clang --version  # macOS
+gcc --version # Linux
+clang --version # macOS
 # Windows: Install Microsoft C++ Build Tools
 ```
 
@@ -55,7 +55,7 @@ clang --version  # macOS
 
 ---
 
-##  Path 1: Local Development Setup (5 minutes)
+## Path 1: Local Development Setup (5 minutes)
 
 ### Step 1: Clone & Navigate (1 min)
 ```bash
@@ -77,7 +77,7 @@ python -m venv .venv
 ### Step 3: Install Dependencies (2 min)
 ```bash
 pip install --upgrade pip setuptools wheel
-pip install -e ".[dev]"  # Install in editable mode with dev dependencies
+pip install -e ".[dev]" # Install in editable mode with dev dependencies
 ```
 
 **Expected:** Should complete without errors. Total size ~1.5 GB.
@@ -98,7 +98,7 @@ python examples/basic_training.py
 
 ---
 
-##  Path 2: Docker Setup (15 minutes)
+## Path 2: Docker Setup (15 minutes)
 
 ### Step 1: Clone Repository
 ```bash
@@ -129,7 +129,7 @@ python -m codex.cli train --config config/examples/minimal.yaml
 
 ---
 
-##  Path 3: Minimal Setup (Code Examples Only)
+## Path 3: Minimal Setup (Code Examples Only)
 
 If you just want to explore code without full installation:
 
@@ -148,31 +148,31 @@ python -c "from codex.cli import app; print('Import successful!')"
 
 ## 🧭 What to Do Next?
 
-###  Interested in Agents & Automation?
+### Interested in Agents & Automation?
 → Read [Cognitive Brain Guide](./cognitive_brain/README.md)
 - 145+ autonomous agents
 - Decision-making patterns
 - Self-healing CI/CD
 
-###  Interested in Machine Learning?
+### Interested in Machine Learning?
 → Read [ML Training Guide](./training/README.md)
 - Distributed training with PyTorch
 - Hyperparameter tuning with Hydra
 - Evaluation & benchmarking
 
-### 🏗️ Interested in Infrastructure & Deployment?
+### ️ Interested in Infrastructure & Deployment?
 → Read [Infrastructure Guide](./infrastructure/README.md)
 - Ray Serve for model serving
 - Kubernetes deployment
 - Cloud storage integration
 
-###  Interested in Configuration & Customization?
+### Interested in Configuration & Customization?
 → Read [Configuration Guide](./configuration/HYDRA_GUIDE.md)
 - Hydra defaults and sweeps
 - Environment variables
 - Plugin architecture
 
-###  Want to Understand the Architecture?
+### Want to Understand the Architecture?
 → Read [Architecture Deep Dive](./architecture/INDEX.md)
 - 5-layer architecture
 - Design patterns
@@ -186,7 +186,7 @@ python -c "from codex.cli import app; print('Import successful!')"
 
 ---
 
-##  Verify Installation
+## Verify Installation
 
 Run this to verify everything is set up correctly:
 
@@ -211,7 +211,7 @@ pytest tests/unit/test_imports.py -v
 
 ## 🆘 Common Setup Issues
 
-###  "Python 3.12 not found"
+### "Python 3.12 not found"
 **Solution:** Install Python 3.12+
 ```bash
 # macOS with Homebrew
@@ -225,20 +225,20 @@ python3.12 -m venv .venv
 # Windows: Download from python.org
 ```
 
-###  "ModuleNotFoundError: No module named 'torch'"
+### "ModuleNotFoundError: No module named 'torch'"
 **Solution:** Reinstall dependencies
 ```bash
 pip install --force-reinstall torch
 pip install -e ".[dev]"
 ```
 
-###  "C++ compiler not found (Windows)"
+### "C++ compiler not found (Windows)"
 **Solution:** Install Microsoft C++ Build Tools
 1. Download from [Microsoft Visual C++](https://visualstudio.microsoft.com/cpp-build-tools/)
 2. Run installer and select "C++ build tools"
 3. Restart terminal and try again
 
-###  "cuda/GPU errors"
+### "cuda/GPU errors"
 **Solution:** Use CPU-only build
 ```bash
 # Uninstall GPU PyTorch
@@ -248,7 +248,7 @@ pip uninstall torch torchvision torchaudio -y
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
-###  "Permission denied" on `.venv/bin/activate`
+### "Permission denied" on `.venv/bin/activate`
 **Solution:** Make it executable
 ```bash
 chmod +x .venv/bin/activate
@@ -259,7 +259,7 @@ source .venv/bin/activate
 
 ---
 
-## 🎓 Next Steps: Learning Paths
+## Next Steps: Learning Paths
 
 ### Beginner Path (2-4 hours)
 1. **Installation & First Run** ← You are here
@@ -283,7 +283,7 @@ source .venv/bin/activate
 
 ---
 
-##  Key Resources
+## Key Resources
 
 | Resource | Purpose | Time |
 |----------|---------|------|
@@ -295,21 +295,21 @@ source .venv/bin/activate
 
 ---
 
-##  Pro Tips
+## Pro Tips
 
 - **Use editable install**: `pip install -e ".[dev]"` lets you edit code without reinstalling
 - **Activate venv every session**: Always run `source .venv/bin/activate` before coding
 - **Check requirements**: Different setups available:
-  - `requirements-minimal.txt` — Core only
-  - `requirements.txt` — Full feature set
-  - `requirements-dev.txt` — Development tools
-  - `requirements-test.txt` — Testing tools
+ - `requirements-minimal.txt` — Core only
+ - `requirements.txt` — Full feature set
+ - `requirements-dev.txt` — Development tools
+ - `requirements-test.txt` — Testing tools
 - **Use Docker for reproducibility**: Docker ensures same environment across machines
 - **Test your setup early**: Run tests to catch issues before starting development
 
 ---
 
-##  Getting Help
+## Getting Help
 
 - **Setup issues?** → [Troubleshooting Guide](./TROUBLESHOOTING.md)
 - **Architecture questions?** → [Architecture Guide](./architecture/INDEX.md)
@@ -319,9 +319,9 @@ source .venv/bin/activate
 
 ---
 
-##  You're Ready!
+## You're Ready!
 
-You've successfully set up Codex ML! 🎉
+You've successfully set up Codex ML! 
 
 **Next:** Pick a path above based on your interests and start exploring.
 

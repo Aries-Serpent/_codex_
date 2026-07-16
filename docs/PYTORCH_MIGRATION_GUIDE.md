@@ -4,18 +4,18 @@
 
 **Last Updated: 2026-06-22
 
-**Date**: 2025-12-22  
+**Date**: 2025-12-22 
 **Purpose**: Migrate existing `torch.load()` calls to secure wrappers
 
-##  Security Issue
+## Security Issue
 
 CVE-2024-XXXXX: PyTorch's `torch.load()` can execute arbitrary code when loading malicious model files. This affects all versions before 2.2.2 and requires using `weights_only=True`.
 
-##  Solution
+## Solution
 
 We've created `utils/safe_torch_loader.py` which enforces secure loading practices.
 
-##  Migration Steps
+## Migration Steps
 
 ### Step 1: Update imports
 
@@ -66,7 +66,7 @@ state_dict = safe_load('model.pth', map_location='cpu')
 model.load_state_dict(state_dict)
 ```
 
-##  Files Requiring Migration
+## Files Requiring Migration
 
 Based on grep analysis, the following files need updates:
 
@@ -94,7 +94,7 @@ Based on grep analysis, the following files need updates:
 - [ ] `tests/checkpointing/test_checkpoint_comprehensive.py`
 - [ ] `tests/data/test_data_cache.py`
 
-##  Security Best Practices
+## Security Best Practices
 
 ### DO 
 ```python
@@ -107,8 +107,8 @@ state = safe_load('model.pth')
 from utils.torch_resource_manager import torch_resource_guard
 
 with torch_resource_guard():
-    state = safe_load('model.pth')
-    model.load_state_dict(state)
+ state = safe_load('model.pth')
+ model.load_state_dict(state)
 ```
 
 ## DON'T 
@@ -139,7 +139,7 @@ assert isinstance(state, dict)
 print(" Safe loading works!")
 ```
 
-## 📞 Support
+## Support
 
 If you encounter issues during migration:
 1. Check that torch>=2.2.2 is installed
@@ -147,7 +147,7 @@ If you encounter issues during migration:
 3. For legacy models that fail with weights_only=True, consider re-saving them
 4. Contact security team if you have questions
 
-##  Completion Checklist
+## Completion Checklist
 
 - [x] Security wrappers created
 - [x] Migration guide written
@@ -157,7 +157,7 @@ If you encounter issues during migration:
 - [ ] Documentation updated
 - [ ] Security audit passed
 
-##  References
+## References
 
 - [CVE-2024-XXXXX](https://github.com/Aries-Serpent/_codex_/security)
 - [PyTorch Security Advisory](https://pytorch.org/docs/stable/generated/torch.load.html)

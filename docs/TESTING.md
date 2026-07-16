@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 This document describes the testing infrastructure, conventions, and best practices for the _codex_ project.
 

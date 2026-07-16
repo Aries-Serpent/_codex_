@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Last Updated: 2026-06-27
-> **Status:** Phase 3 - Documentation Enhancement Campaign  
+> **Last Updated: 2026-07-16
+> **Status:** Phase 3 - Documentation Enhancement Campaign 
 > **Reading Level:** 8th Grade (Flesch-Kincaid)
 
 ---
@@ -35,8 +35,8 @@
 
 **Quick check:**
 ```bash
-python --version  # Should be 3.8+
-pip --version     # Should be 21.0+
+python --version # Should be 3.8+
+pip --version # Should be 21.0+
 ```
 
 ---
@@ -56,14 +56,14 @@ pip install -e .
 ```bash
 git clone https://github.com/Aries-Serpent/_codex_.git
 cd _codex_
-pip install -e ".[dev]"  # Includes testing tools
+pip install -e ".[dev]" # Includes testing tools
 ```
 
 **Option 3: Full Production Setup (15 minutes)**
 ```bash
 git clone https://github.com/Aries-Serpent/_codex_.git
 cd _codex_
-pip install -e ".[dev,all]"  # Includes all optional dependencies
+pip install -e ".[dev,all]" # Includes all optional dependencies
 ```
 
 **Verify installation:**
@@ -85,21 +85,21 @@ pip install -e ".[dev]" --force-reinstall
 
 **Fix 2: Check Python version**
 ```bash
-python --version  # Must be 3.8+
+python --version # Must be 3.8+
 # If not, install Python 3.10+
 ```
 
 **Fix 3: Check for conflicting packages**
 ```bash
-pip list | grep -i codex  # Look for conflicts
-pip uninstall codex_ml    # Remove conflicts
-pip install -e .          # Reinstall
+pip list | grep -i codex # Look for conflicts
+pip uninstall codex_ml # Remove conflicts
+pip install -e . # Reinstall
 ```
 
 **Fix 4: Create fresh virtual environment**
 ```bash
 python -m venv venv_fresh
-source venv_fresh/bin/activate  # On Windows: venv_fresh\Scripts\activate
+source venv_fresh/bin/activate # On Windows: venv_fresh\Scripts\activate
 pip install -e ".[dev]"
 ```
 
@@ -113,10 +113,10 @@ If still failing: Check [GitHub Issues](https://github.com/Aries-Serpent/_codex_
 
 **A:** **Hydra** is a framework for managing complex configurations. In _codex_, we use it to:
 
--  Organize settings in YAML files (easy to read)
--  Override settings from command line (no code changes needed)
--  Create experiment variations (A/B testing)
--  Track which settings produced which results
+- Organize settings in YAML files (easy to read)
+- Override settings from command line (no code changes needed)
+- Create experiment variations (A/B testing)
+- Track which settings produced which results
 
 **Example:**
 ```bash
@@ -141,15 +141,15 @@ python train.py +experiment=my_experiment
 ```
 _codex_/
 ├── configs/
-│   ├── default/           # Default settings
-│   │   ├── training.yaml
-│   │   ├── model.yaml
-│   │   └── evaluation.yaml
-│   └── production/        # Production-specific settings
-│       ├── training.yaml
-│       └── features.yaml
-└── experiments/           # Experiment variations
-    └── my_experiment.yaml
+│ ├── default/ # Default settings
+│ │ ├── training.yaml
+│ │ ├── model.yaml
+│ │ └── evaluation.yaml
+│ └── production/ # Production-specific settings
+│ ├── training.yaml
+│ └── features.yaml
+└── experiments/ # Experiment variations
+ └── my_experiment.yaml
 ```
 
 **Find the right config:**
@@ -177,13 +177,13 @@ nano configs/my_config.yaml
 ```yaml
 # configs/my_config.yaml
 training:
-  learning_rate: 0.001
-  batch_size: 32
-  epochs: 10
+ learning_rate: 0.001
+ batch_size: 32
+ epochs: 10
 
 model:
-  type: "transformer"
-  hidden_size: 768
+ type: "transformer"
+ hidden_size: 768
 ```
 
 **Step 3: Use it**
@@ -244,9 +244,9 @@ ls data/train.csv
 **Step 2: Run training**
 ```bash
 python -m codex_ml.training.cli train \
-  --config configs/default/training.yaml \
-  --data data/train.csv \
-  --output runs/experiment_1
+ --config configs/default/training.yaml \
+ --data data/train.csv \
+ --output runs/experiment_1
 ```
 
 **Step 3: Monitor progress**
@@ -283,9 +283,9 @@ Model saved to: runs/experiment_1/model.pt
 **Quick fix:**
 ```bash
 python train.py \
-  training.device=cuda \
-  training.batch_size=128 \
-  training.eval_every=100
+ training.device=cuda \
+ training.batch_size=128 \
+ training.eval_every=100
 ```
 
 **Still slow?** Check [Performance Optimization Guide](./guides/inference_performance.md)
@@ -317,9 +317,9 @@ print(model)
 **Option 3: Fine-tune existing model**
 ```bash
 python train.py \
-  +model.pretrained=true \
-  +model.model_name="bert-base-uncased" \
-  training.epochs=5  # Usually fewer epochs needed
+ +model.pretrained=true \
+ +model.model_name="bert-base-uncased" \
+ training.epochs=5 # Usually fewer epochs needed
 ```
 
 ---
@@ -331,9 +331,9 @@ python train.py \
 **Step 1: Run evaluation**
 ```bash
 python -m codex_ml.evaluation.cli evaluate \
-  --model runs/experiment_1/model.pt \
-  --data data/test.csv \
-  --output results/eval_1
+ --model runs/experiment_1/model.pt \
+ --data data/test.csv \
+ --output results/eval_1
 ```
 
 **Step 2: View results**
@@ -343,10 +343,10 @@ cat results/eval_1/metrics.json
 
 # Example output:
 # {
-#   "accuracy": 0.87,
-#   "f1_score": 0.85,
-#   "precision": 0.88,
-#   "recall": 0.83
+# "accuracy": 0.87,
+# "f1_score": 0.85,
+# "precision": 0.88,
+# "recall": 0.83
 # }
 ```
 
@@ -452,7 +452,7 @@ python train.py --data $(pwd)/data/train.csv
 # Data shape issue - reshape your data
 # In your script:
 import numpy as np
-data = data.reshape(-1, 1)  # Reshape to 2D
+data = data.reshape(-1, 1) # Reshape to 2D
 ```
 
 **Error: "ImportError: No module named 'transformers'"**
@@ -479,7 +479,7 @@ print(f"Input shape: {input_data.shape}")
 
 **Approach 2: Python debugger (pdb)**
 ```python
-import pdb; pdb.set_trace()  # Program stops here
+import pdb; pdb.set_trace() # Program stops here
 # Type 'n' to step, 'c' to continue, 'h' for help
 ```
 
@@ -502,34 +502,34 @@ logger.error("Error message")
 
 **What to include:**
 1. **Title** - Clear, one-line description
-   ```
-   "Training crashes with CUDA out of memory on second epoch"
-   ```
+ ```
+ "Training crashes with CUDA out of memory on second epoch"
+ ```
 
 2. **Steps to reproduce** - Exact commands
-   ```
-   python train.py --config configs/default/training.yaml
-   ```
+ ```
+ python train.py --config configs/default/training.yaml
+ ```
 
 3. **Expected vs actual** - What should happen vs what happened
-   ```
-   Expected: Training completes in 10 epochs
-   Actual: Crashes after 1 epoch
-   ```
+ ```
+ Expected: Training completes in 10 epochs
+ Actual: Crashes after 1 epoch
+ ```
 
 4. **Environment** - System information
-   ```bash
-   python --version
-   pip freeze > requirements.txt
-   nvidia-smi  # For GPU info
-   ```
+ ```bash
+ python --version
+ pip freeze > requirements.txt
+ nvidia-smi # For GPU info
+ ```
 
 5. **Error message** - Full traceback
-   ```
-   Traceback (most recent call last):
-     File "train.py", line 42, in <module>
-     ...
-   ```
+ ```
+ Traceback (most recent call last):
+ File "train.py", line 42, in <module>
+ ...
+ ```
 
 **Report it:**
 Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) → Click "New Issue"
@@ -545,13 +545,13 @@ Go to [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues) → Click
 **Option 1: Local REST API (for testing)**
 ```bash
 python -m codex_ml.serving.cli serve \
-  --model runs/experiment_1/model.pt \
-  --port 8000
+ --model runs/experiment_1/model.pt \
+ --port 8000
 
 # Test it
 curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"input": "test text"}'
+ -H "Content-Type: application/json" \
+ -d '{"input": "test text"}'
 ```
 
 **Option 2: Docker deployment (for production)**
@@ -596,8 +596,8 @@ cat artifacts/monitoring/metrics/daily.json
 ```bash
 # Check for data drift
 python -m codex_ml.monitoring.check_drift \
-  --baseline data/train.csv \
-  --current data/latest.csv
+ --baseline data/train.csv \
+ --current data/latest.csv
 
 # Alerts if incoming data differs significantly from training data
 ```
@@ -606,11 +606,11 @@ python -m codex_ml.monitoring.check_drift \
 ```yaml
 # monitoring.yaml
 alerting:
-  enabled: true
-  slack_webhook: "https://hooks.slack.com/..."
-  thresholds:
-    error_rate: 0.05  # Alert if >5% errors
-    latency_p95: 1000  # Alert if >1s latency
+ enabled: true
+ slack_webhook: "https://hooks.slack.com/..."
+ thresholds:
+ error_rate: 0.05 # Alert if >5% errors
+ latency_p95: 1000 # Alert if >1s latency
 ```
 
 ---
@@ -627,8 +627,8 @@ python train.py --output runs/experiment_2
 **Step 2: Test new model**
 ```bash
 python -m codex_ml.evaluation.cli evaluate \
-  --model runs/experiment_2/model.pt \
-  --data data/test.csv
+ --model runs/experiment_2/model.pt \
+ --data data/test.csv
 
 # Compare metrics with old model
 ```
@@ -709,12 +709,12 @@ python train.py --output runs/my_experiment
 
 # 2. Evaluate
 python -m codex_ml.evaluation.cli evaluate \
-  --model runs/my_experiment/model.pt \
-  --data data/test.csv
+ --model runs/my_experiment/model.pt \
+ --data data/test.csv
 
 # 3. Deploy
 python -m codex_ml.serving.cli serve \
-  --model runs/my_experiment/model.pt
+ --model runs/my_experiment/model.pt
 ```
 
 ---
@@ -751,20 +751,20 @@ python -m codex_ml.serving.cli serve \
 ## Additional Resources
 
 ### Documentation
--  [Main Documentation](./README.md)
--  [Quick Start Guide](./docs/guides/QUICKSTART.md)
--  [Configuration Guide](./configuration/)
--  [Evaluation Guide](./evaluation/README.md)
-- 🚢 [Deployment Guide](./guides/production_deployment.md)
+- [Main Documentation](./README.md)
+- [Quick Start Guide](./docs/guides/QUICKSTART.md)
+- [Configuration Guide](./configuration/)
+- [Evaluation Guide](./evaluation/README.md)
+- [Deployment Guide](./guides/production_deployment.md)
 
 ### Community
-- 💬 [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
-- 🐛 [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
+- [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
+- [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - ⭐ [Star us on GitHub](https://github.com/Aries-Serpent/_codex_)
 
 ### Examples
--  [Code Examples](../examples/)
-- 📓 [Jupyter Notebooks](../notebooks/)
+- [Code Examples](../examples/)
+- [Jupyter Notebooks](../notebooks/)
 - 🧪 [Test Cases](../tests/)
 
 ---
@@ -774,13 +774,13 @@ python -m codex_ml.serving.cli serve \
 | Property | Value |
 |----------|-------|
 | **Version** | 1.0.0 |
-| **Last Updated** | 2026-06-27 |
+| **Last Updated** | 2026-07-16 |
 | **Quality Score** | 0.92/1.0 |
 | **Questions** | 20 |
 | **Categories** | 6 |
 | **Links** | 15+ internal docs |
 | **Freshness** | Current |
-| **Status** |  Production Ready |
+| **Status** | Production Ready |
 
 ---
 
@@ -791,5 +791,5 @@ Found a gap in this FAQ? Help us improve:
 2. Add your question and we'll answer it
 3. Check back - your answer will be added here!
 
-**Last updated: 2026-06-27
+**Last updated: 2026-07-16
 **Maintained by:** _codex_ Documentation Team

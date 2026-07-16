@@ -3,9 +3,9 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-> **Last Updated: 2026-06-27
-> **Status:** Phase 3 - Documentation Enhancement Campaign  
-> **Reading Level:** 8th Grade (Flesch-Kincaid)  
+> **Last Updated: 2026-07-16
+> **Status:** Phase 3 - Documentation Enhancement Campaign 
+> **Reading Level:** 8th Grade (Flesch-Kincaid) 
 > **Scope:** Local Development → Docker → Cloud (AWS/Azure/GCP)
 
 ---
@@ -40,24 +40,24 @@
 **Step 1: Start the server**
 ```bash
 python -m codex_ml.serving.cli serve \
-  --model runs/experiment_1/model.pt \
-  --port 8000
+ --model runs/experiment_1/model.pt \
+ --port 8000
 ```
 
 **Step 2: Make a prediction**
 ```bash
 # In a new terminal
 curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "This is a test"}'
+ -H "Content-Type: application/json" \
+ -d '{"text": "This is a test"}'
 ```
 
 **Step 3: See the response**
 ```json
 {
-  "predictions": [0.92],
-  "latency_ms": 45,
-  "model": "experiment_1"
+ "predictions": [0.92],
+ "latency_ms": 45,
+ "model": "experiment_1"
 }
 ```
 
@@ -68,9 +68,9 @@ curl -X POST http://localhost:8000/predict \
 ## Local Deployment (Development)
 
 ### When to Use
--  Testing locally
--  Development & debugging
--  Quick validation
+- Testing locally
+- Development & debugging
+- Quick validation
 
 ### Setup (10 minutes)
 
@@ -83,30 +83,30 @@ python train.py --output runs/my_model
 ```bash
 # Option A: Simple (8-second startup)
 python -m codex_ml.serving.cli serve \
-  --model runs/my_model/model.pt
+ --model runs/my_model/model.pt
 
 # Option B: Detailed logging
 python -m codex_ml.serving.cli serve \
-  --model runs/my_model/model.pt \
-  --verbose
+ --model runs/my_model/model.pt \
+ --verbose
 
 # Option C: Custom port
 python -m codex_ml.serving.cli serve \
-  --model runs/my_model/model.pt \
-  --port 9000
+ --model runs/my_model/model.pt \
+ --port 9000
 ```
 
 **Step 3: Make requests**
 ```bash
 # Option 1: Using curl
 curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "test input"}'
+ -H "Content-Type: application/json" \
+ -d '{"text": "test input"}'
 
 # Option 2: Using Python
 import requests
 response = requests.post('http://localhost:8000/predict',
-  json={'text': 'test input'})
+ json={'text': 'test input'})
 print(response.json())
 
 # Option 3: Using a client script
@@ -134,10 +134,10 @@ pkill -f "serving.cli serve"
 ## Docker Deployment (Testing)
 
 ### Why Docker?
-- 🐳 Works same on all machines
--  Isolated environment (safer)
--  Easy to scale
-- 📦 Reproducible deployments
+- Works same on all machines
+- Isolated environment (safer)
+- Easy to scale
+- Reproducible deployments
 
 ### Prerequisites
 ```bash
@@ -166,8 +166,8 @@ EXPOSE 8000
 
 # Run server
 CMD ["python", "-m", "codex_ml.serving.cli", "serve", \
-     "--model", "/app/runs/experiment_1/model.pt", \
-     "--host", "0.0.0.0"]
+ "--model", "/app/runs/experiment_1/model.pt", \
+ "--host", "0.0.0.0"]
 ```
 
 **Step 2: Build image**
@@ -183,8 +183,8 @@ docker images | grep codex-model
 ```bash
 # Run the container
 docker run -p 8000:8000 \
-  -v $(pwd)/runs:/app/runs \
-  codex-model:1.0
+ -v $(pwd)/runs:/app/runs \
+ codex-model:1.0
 
 # Note: 
 # - `-p 8000:8000` means "port 8000 inside container → port 8000 outside"
@@ -195,8 +195,8 @@ docker run -p 8000:8000 \
 ```bash
 # Make a prediction
 curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "test"}'
+ -H "Content-Type: application/json" \
+ -d '{"text": "test"}'
 
 # Expected: 200 OK with predictions
 ```
@@ -235,33 +235,33 @@ docker push my-org/codex-model:v1.0
 version: '3.8'
 
 services:
-  model_v1:
-    build: .
-    ports:
-      - "8001:8000"
-    environment:
-      - MODEL_PATH=/app/runs/experiment_1/model.pt
-    volumes:
-      - ./runs:/app/runs
+ model_v1:
+ build: .
+ ports:
+ - "8001:8000"
+ environment:
+ - MODEL_PATH=/app/runs/experiment_1/model.pt
+ volumes:
+ - ./runs:/app/runs
 
-  model_v2:
-    build: .
-    ports:
-      - "8002:8000"
-    environment:
-      - MODEL_PATH=/app/runs/experiment_2/model.pt
-    volumes:
-      - ./runs:/app/runs
+ model_v2:
+ build: .
+ ports:
+ - "8002:8000"
+ environment:
+ - MODEL_PATH=/app/runs/experiment_2/model.pt
+ volumes:
+ - ./runs:/app/runs
 
-  load_balancer:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - model_v1
-      - model_v2
+ load_balancer:
+ image: nginx:latest
+ ports:
+ - "80:80"
+ volumes:
+ - ./nginx.conf:/etc/nginx/nginx.conf
+ depends_on:
+ - model_v1
+ - model_v2
 ```
 
 **Run with docker-compose:**
@@ -270,7 +270,7 @@ services:
 docker-compose up
 
 # In another terminal, test:
-curl http://localhost:80/predict  # Load balancer routes to v1 or v2
+curl http://localhost:80/predict # Load balancer routes to v1 or v2
 ```
 
 ---
@@ -293,14 +293,14 @@ curl http://localhost:80/predict  # Load balancer routes to v1 or v2
 ### Architecture
 ```
 Your Computer
-    ↓
-   API Request
-    ↓
-   AWS API Gateway
-    ↓
-   AWS SageMaker Endpoint
-    ↓
-   Your Model (Running)
+ ↓
+ API Request
+ ↓
+ AWS API Gateway
+ ↓
+ AWS SageMaker Endpoint
+ ↓
+ Your Model (Running)
 ```
 
 ### Step-by-Step (30 minutes)
@@ -333,7 +333,7 @@ aws s3 mb s3://my-codex-models
 
 # Upload model
 aws s3 cp runs/experiment_1/model.pt \
-  s3://my-codex-models/model.pt
+ s3://my-codex-models/model.pt
 
 # Verify
 aws s3 ls s3://my-codex-models/
@@ -347,19 +347,19 @@ import torch
 from codex_ml.models import load_checkpoint
 
 def model_fn(model_dir):
-    model = load_checkpoint(f"{model_dir}/model.pt")
-    return model
+ model = load_checkpoint(f"{model_dir}/model.pt")
+ return model
 
 def predict_fn(data, model):
-    return model(data)
+ return model(data)
 
 def input_fn(request_body, request_content_type):
-    import json
-    return json.loads(request_body)
+ import json
+ return json.loads(request_body)
 
 def output_fn(prediction, accept):
-    import json
-    return json.dumps(prediction.tolist()), accept
+ import json
+ return json.dumps(prediction.tolist()), accept
 EOF
 
 # Package for SageMaker
@@ -371,25 +371,25 @@ aws s3 cp model.tar.gz s3://my-codex-models/model.tar.gz
 ```bash
 # Use AWS console or CLI
 aws sagemaker create-model \
-  --model-name codex-model-1 \
-  --primary-container \
-    Image=763104330519.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.9-cpu-py38,\
-    ModelDataUrl=s3://my-codex-models/model.tar.gz
+ --model-name codex-model-1 \
+ --primary-container \
+ Image=763104330519.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.9-cpu-py38,\
+ ModelDataUrl=s3://my-codex-models/model.tar.gz
 
 # Create endpoint
 aws sagemaker create-endpoint \
-  --endpoint-name codex-model-endpoint \
-  --endpoint-config-name codex-model-config
+ --endpoint-name codex-model-endpoint \
+ --endpoint-config-name codex-model-config
 ```
 
 **Step 6: Make predictions**
 ```bash
 # Invoke the endpoint
 aws sagemaker-runtime invoke-endpoint \
-  --endpoint-name codex-model-endpoint \
-  --body '{"text": "test"}' \
-  --content-type application/json \
-  response.json
+ --endpoint-name codex-model-endpoint \
+ --body '{"text": "test"}' \
+ --content-type application/json \
+ response.json
 
 # View response
 cat response.json
@@ -426,9 +426,9 @@ az account show
 ```bash
 # Create registry
 az acr create \
-  --resource-group my-group \
-  --name mycodexregistry \
-  --sku Basic
+ --resource-group my-group \
+ --name mycodexregistry \
+ --sku Basic
 
 # Login to registry
 az acr login --name mycodexregistry
@@ -441,7 +441,7 @@ docker build -t codex-model:1.0 .
 
 # Tag for Azure
 docker tag codex-model:1.0 \
-  mycodexregistry.azurecr.io/codex-model:1.0
+ mycodexregistry.azurecr.io/codex-model:1.0
 
 # Push
 docker push mycodexregistry.azurecr.io/codex-model:1.0
@@ -451,17 +451,17 @@ docker push mycodexregistry.azurecr.io/codex-model:1.0
 ```bash
 # Deploy
 az container create \
-  --resource-group my-group \
-  --name codex-model-container \
-  --image mycodexregistry.azurecr.io/codex-model:1.0 \
-  --ports 8000 \
-  --registry-login-server mycodexregistry.azurecr.io
+ --resource-group my-group \
+ --name codex-model-container \
+ --image mycodexregistry.azurecr.io/codex-model:1.0 \
+ --ports 8000 \
+ --registry-login-server mycodexregistry.azurecr.io
 
 # Get the URL
 az container show \
-  --resource-group my-group \
-  --name codex-model-container \
-  --query ipAddress.fqdn
+ --resource-group my-group \
+ --name codex-model-container \
+ --query ipAddress.fqdn
 
 # Test
 curl http://<fqdn>:8000/health
@@ -499,7 +499,7 @@ gcloud config set project my-project-id
 ```bash
 # Build for GCP
 gcloud builds submit \
-  --tag gcr.io/my-project-id/codex-model:1.0 .
+ --tag gcr.io/my-project-id/codex-model:1.0 .
 
 # This automatically pushes to Google Container Registry
 ```
@@ -508,10 +508,10 @@ gcloud builds submit \
 ```bash
 # Deploy
 gcloud run deploy codex-model \
-  --image gcr.io/my-project-id/codex-model:1.0 \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated
+ --image gcr.io/my-project-id/codex-model:1.0 \
+ --platform managed \
+ --region us-central1 \
+ --allow-unauthenticated
 
 # Get URL (will be provided)
 # https://codex-model-xxxxx.run.app
@@ -521,8 +521,8 @@ gcloud run deploy codex-model \
 ```bash
 # Make prediction
 curl -X POST https://codex-model-xxxxx.run.app/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "test"}'
+ -H "Content-Type: application/json" \
+ -d '{"text": "test"}'
 ```
 
 **Cost estimate:**
@@ -536,54 +536,54 @@ curl -X POST https://codex-model-xxxxx.run.app/predict \
 ### Before Going Live
 
 - [ ] **Model Performance**
-  - [ ] Accuracy meets target (e.g., >90%)
-  - [ ] Latency acceptable (e.g., <500ms)
-  - [ ] No memory leaks after 24h test
+ - [ ] Accuracy meets target (e.g., >90%)
+ - [ ] Latency acceptable (e.g., <500ms)
+ - [ ] No memory leaks after 24h test
 
 - [ ] **Deployment**
-  - [ ] Docker image builds cleanly
-  - [ ] Model loads in <5 seconds
-  - [ ] Server starts without errors
-  - [ ] Health check working
+ - [ ] Docker image builds cleanly
+ - [ ] Model loads in <5 seconds
+ - [ ] Server starts without errors
+ - [ ] Health check working
 
 - [ ] **Security**
-  - [ ] No credentials in code/Docker image
-  - [ ] HTTPS enabled (not just HTTP)
-  - [ ] API authentication configured
-  - [ ] Rate limiting enabled
-  - [ ] No sensitive logs printed
+ - [ ] No credentials in code/Docker image
+ - [ ] HTTPS enabled (not just HTTP)
+ - [ ] API authentication configured
+ - [ ] Rate limiting enabled
+ - [ ] No sensitive logs printed
 
 - [ ] **Monitoring**
-  - [ ] Predictions/sec metric visible
-  - [ ] Error rate tracking enabled
-  - [ ] Alerts set up for >1% errors
-  - [ ] Log rotation configured
-  - [ ] Model performance dashboard created
+ - [ ] Predictions/sec metric visible
+ - [ ] Error rate tracking enabled
+ - [ ] Alerts set up for >1% errors
+ - [ ] Log rotation configured
+ - [ ] Model performance dashboard created
 
 - [ ] **Documentation**
-  - [ ] Deployment steps documented
-  - [ ] Rollback procedure documented
-  - [ ] Contact list for support
-  - [ ] Known limitations documented
+ - [ ] Deployment steps documented
+ - [ ] Rollback procedure documented
+ - [ ] Contact list for support
+ - [ ] Known limitations documented
 
 - [ ] **Testing**
-  - [ ] Load test (1000+ requests/sec)
-  - [ ] Failover test (what if server down?)
-  - [ ] Recovery test (restart and check data)
+ - [ ] Load test (1000+ requests/sec)
+ - [ ] Failover test (what if server down?)
+ - [ ] Recovery test (restart and check data)
 
 ### Validate Before Deployment
 ```bash
 # Run pre-deployment checks
 python scripts/deployment/pre_deploy_check.py \
-  --model runs/experiment_1/model.pt \
-  --output results/deployment_check.json
+ --model runs/experiment_1/model.pt \
+ --output results/deployment_check.json
 
 # Expected output:
 # {
-#   "model_loads": true,
-#   "latency_p95_ms": 145,
-#   "memory_mb": 2048,
-#   "status": "READY"
+# "model_loads": true,
+# "latency_p95_ms": 145,
+# "memory_mb": 2048,
+# "status": "READY"
 # }
 ```
 
@@ -672,27 +672,27 @@ python -m codex_ml.serving.cli serve --port 9000
 ```yaml
 # In deployment config
 serving:
-  model:
-    cache: true  # Cache model in memory
-    preload: true  # Load on startup
-  server:
-    workers: 4  # Number of workers
-    timeout: 60  # Request timeout
-  batch:
-    enabled: true  # Batch similar requests
-    max_size: 32
-    wait_ms: 100  # Wait up to 100ms for batch
+ model:
+ cache: true # Cache model in memory
+ preload: true # Load on startup
+ server:
+ workers: 4 # Number of workers
+ timeout: 60 # Request timeout
+ batch:
+ enabled: true # Batch similar requests
+ max_size: 32
+ wait_ms: 100 # Wait up to 100ms for batch
 ```
 
 ### Optimize Cost
 ```yaml
 # Use autoscaling
 cloud:
-  autoscale:
-    enabled: true
-    min_instances: 1  # Scale down to save cost
-    max_instances: 10  # Scale up for traffic
-    target_cpu: 70    # Target CPU usage
+ autoscale:
+ enabled: true
+ min_instances: 1 # Scale down to save cost
+ max_instances: 10 # Scale up for traffic
+ target_cpu: 70 # Target CPU usage
 ```
 
 ---
@@ -729,8 +729,8 @@ docker run -p 8000:8000 codex-model:1.0-fixed
 ```bash
 # Analyze what went wrong
 python scripts/deployment/analyze_failure.py \
-  --new-model runs/experiment_2/model.pt \
-  --old-model runs/experiment_1/model.pt
+ --new-model runs/experiment_2/model.pt \
+ --old-model runs/experiment_1/model.pt
 ```
 
 ---
@@ -775,9 +775,9 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 1. **Deploy locally** - Use steps in [Local Deployment](#local-deployment-development)
 2. **Test with Docker** - Follow [Docker Deployment](#docker-deployment-testing)
 3. **Go to cloud** - Choose your cloud provider:
-   - [AWS](#aws-deployment-sagemaker)
-   - [Azure](#azure-deployment-aciaks)
-   - [GCP](#gcp-deployment-cloud-run)
+ - [AWS](#aws-deployment-sagemaker)
+ - [Azure](#azure-deployment-aciaks)
+ - [GCP](#gcp-deployment-cloud-run)
 4. **Set up monitoring** - See [Production Checklist](#production-checklist)
 5. **Plan rollback** - Read [Rollback Procedure](#rollback-procedure)
 
@@ -785,10 +785,10 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 
 ## Getting Help
 
--  [FAQ](FAQ.md) - Common questions
--  [Full Documentation](README.md) - Complete guide
-- 🐛 [Report Issues](https://github.com/Aries-Serpent/_codex_/issues)
-- 💬 [Ask Questions](https://github.com/Aries-Serpent/_codex_/discussions)
+- [FAQ](FAQ.md) - Common questions
+- [Full Documentation](README.md) - Complete guide
+- [Report Issues](https://github.com/Aries-Serpent/_codex_/issues)
+- [Ask Questions](https://github.com/Aries-Serpent/_codex_/discussions)
 
 ---
 
@@ -797,14 +797,14 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 | Property | Value |
 |----------|-------|
 | **Version** | 1.0.0 |
-| **Last Updated** | 2026-06-27 |
+| **Last Updated** | 2026-07-16 |
 | **Quality Score** | 0.91/1.0 |
 | **Deployment Methods** | 5 (Local, Docker, AWS, Azure, GCP) |
 | **Checklists** | 1 (Pre-deployment) |
 | **Code Examples** | 30+ |
-| **Status** |  Production Ready |
+| **Status** | Production Ready |
 
 ---
 
-**Maintained by:** _codex_ Documentation Team  
-**Last updated: 2026-06-27
+**Maintained by:** _codex_ Documentation Team 
+**Last updated: 2026-07-16

@@ -169,7 +169,7 @@ Key rules enforced:
 
 ```json
 {
-  "MD025": false
+ "MD025": false
 }
 ```
 
@@ -203,24 +203,24 @@ From repository root
 
 **Supported:**
 
--  Relative paths
--  Absolute repo paths
--  Anchor references
--  External URLs (HTTP/HTTPS)
+- Relative paths
+- Absolute repo paths
+- Anchor references
+- External URLs (HTTP/HTTPS)
 
 **Skipped:**
 
--  External URLs (not fully validated)
--  Email links (mailto:)
+- External URLs (not fully validated)
+- Email links (mailto:)
 
 ### Heading Hierarchy Rules
 
 All documents must follow:
 
-1.  First heading is H1 (`#`)
-2.  No hierarchy jumps (H1 → H3 invalid, must use H2)
-3.  Consistent nesting within documents
-4.  Unique headings within sections (MD024)
+1. First heading is H1 (`#`)
+2. No hierarchy jumps (H1 → H3 invalid, must use H2)
+3. Consistent nesting within documents
+4. Unique headings within sections (MD024)
 
 ## Troubleshooting
 
@@ -314,7 +314,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 
 **PR Annotations:**
 
-- Errors appear as  annotations on PR
+- Errors appear as annotations on PR
 - Warnings appear as ️ (external links)
 - PR comments with detailed issues
 
@@ -327,9 +327,9 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 
 For merging PRs:
 
--  All consistency checks must pass
+- All consistency checks must pass
 - ️ Warnings do not block merge
--  External link warnings are informational
+- External link warnings are informational
 
 ## Best Practices
 
@@ -337,51 +337,51 @@ For merging PRs:
 
 1. **Start with H1:**
 
-   ```markdown
-   # Document Title
+ ```markdown
+ # Document Title
 
-   ## Section
-   ```
+ ## Section
+ ```
 
 2. **Use consistent anchors:**
 
-   ```markdown
-   ## My Section
-   [Link to section](#my-section)
-   ```
+ ```markdown
+ ## My Section
+ [Link to section](#my-section)
+ ```
 
 3. **Verify internal links:**
 
-   ```bash
-   python3 .github/scripts/check-cross-references.py --fail-on-errors
-   ```
+ ```bash
+ python3 .github/scripts/check-cross-references.py --fail-on-errors
+ ```
 
 4. **Keep line lengths reasonable:**
-   - Max 120 characters
-   - Code blocks exempt
-   - Tables exempt
+ - Max 120 characters
+ - Code blocks exempt
+ - Tables exempt
 
 ### Fixing Issues
 
 1. **Run locally first:**
 
-   ```bash
-   markdownlint --fix docs/**/*.md
-   python3 ../.github/scripts/check-cross-references.py
-   ```
+ ```bash
+ markdownlint --fix docs/**/*.md
+ python3 ../.github/scripts/check-cross-references.py
+ ```
 
 2. **Review changes:**
 
-   ```bash
-   git diff
-   ```
+ ```bash
+ git diff
+ ```
 
 3. **Stage and commit:**
 
-   ```bash
-   git add docs/
-   git commit -m "docs: fix consistency issues"
-   ```
+ ```bash
+ git add docs/
+ git commit -m "docs: fix consistency issues"
+ ```
 
 ## Disabling Checks (Not Recommended)
 
@@ -403,8 +403,8 @@ rm .git/hooks/pre-commit
 ```yaml
 # In ../.github/workflows/consistency-checks.yml
 on:
-  push:
-    branches: []  # No branches trigger it
+ push:
+ branches: [] # No branches trigger it
 ```
 
 ## Reporting Issues
@@ -414,10 +414,10 @@ If you encounter problems:
 1. Check the troubleshooting section above
 2. Run checks manually to get detailed output
 3. Open an issue with:
-   - Error message and stack trace
-   - File(s) affected
-   - Steps to reproduce
-   - Output of consistency check
+ - Error message and stack trace
+ - File(s) affected
+ - Steps to reproduce
+ - Output of consistency check
 
 ## Further Reading
 
@@ -430,6 +430,6 @@ If you encounter problems:
 
 For questions or issues:
 
-- 📧 Contact: @mbaetiong
--  Issues: Create GitHub issue with label `documentation`
--  Logs: Check GitHub Actions workflow runs for details
+- Contact: @mbaetiong
+- Issues: Create GitHub issue with label `documentation`
+- Logs: Check GitHub Actions workflow runs for details

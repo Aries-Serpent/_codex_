@@ -2,8 +2,8 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Status**: Master index for all architecture documentation  
-**Last Updated**: 2026-06-20  
+**Status**: Master index for all architecture documentation 
+**Last Updated**: 2026-06-20 
 **Maintainer**: @mbaetiong
 
 ## Overview
@@ -12,7 +12,7 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 
 ---
 
-##  Architecture Documents
+## Architecture Documents
 
 ### Core Architecture Documents
 
@@ -31,7 +31,7 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 
 ---
 
-## 🏗️ Architecture Layers
+## ️ Architecture Layers
 
 The _codex_ system is organized in the following layers:
 
@@ -73,20 +73,20 @@ The _codex_ system is organized in the following layers:
 
 ---
 
-##  Runtime Data Flow
+## Runtime Data Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
 flowchart LR
-    A[Ingestion] --> B[Tokenizer]
-    B --> C[Datasets]
-    C --> D[Model Loader]
-    D --> E{Training Engine}
-    E --> F[Metrics]
-    F --> G[Logging]
-    G --> H[Experiment Tracking]
-    E --> I[Checkpoint Manager]
-    I --> J[Model Registry]
+ A[Ingestion] --> B[Tokenizer]
+ B --> C[Datasets]
+ C --> D[Model Loader]
+ D --> E{Training Engine}
+ E --> F[Metrics]
+ F --> G[Logging]
+ G --> H[Experiment Tracking]
+ E --> I[Checkpoint Manager]
+ I --> J[Model Registry]
 ```
 
 **Data Flow Steps:**
@@ -104,85 +104,85 @@ flowchart LR
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 _codex_/
-├── .codex/                      # Codex environment configuration
-├── .github/                     # CI/CD workflows
-├── agents/                      # AI Agent infrastructure
-│   ├── prompts/                 # Pre-defined prompts
-│   └── codex_client/            # GitHub integration
-├── src/codex_ml/               # Core ML framework
-│   ├── training/               # Training pipelines
-│   ├── evaluation/             # Evaluation metrics
-│   ├── connectors/             # Storage connectors
-│   └── plugins/                # Plugin system
-├── scripts/                     # Utility scripts (195+)
-├── tests/                       # Test suite (2,079+)
-├── docs/                        # Documentation (693+)
-│   ├── mcp/                    # MCP documentation
-│   ├── api/                    # API reference
-│   ├── architecture/           # Architecture docs
-│   ├── deployment/             # Deployment guides
-│   ├── security/               # Security documentation
-│   └── operations/             # Operations guides
-├── config/                      # Configuration files
-│   └── training/               # Training configs
-├── requirements/                # Dependency specifications
-└── README.md                    # Project README
+├── .codex/ # Codex environment configuration
+├── .github/ # CI/CD workflows
+├── agents/ # AI Agent infrastructure
+│ ├── prompts/ # Pre-defined prompts
+│ └── codex_client/ # GitHub integration
+├── src/codex_ml/ # Core ML framework
+│ ├── training/ # Training pipelines
+│ ├── evaluation/ # Evaluation metrics
+│ ├── connectors/ # Storage connectors
+│ └── plugins/ # Plugin system
+├── scripts/ # Utility scripts (195+)
+├── tests/ # Test suite (2,079+)
+├── docs/ # Documentation (693+)
+│ ├── mcp/ # MCP documentation
+│ ├── api/ # API reference
+│ ├── architecture/ # Architecture docs
+│ ├── deployment/ # Deployment guides
+│ ├── security/ # Security documentation
+│ └── operations/ # Operations guides
+├── config/ # Configuration files
+│ └── training/ # Training configs
+├── requirements/ # Dependency specifications
+└── README.md # Project README
 ```
 
 ---
 
-## 🔌 Component Architecture
+## Component Architecture
 
 ### Core Components
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Class Diagram: > DataHandling
-    TrainingEng'}}%%
+ TrainingEng'}}%%
 classDiagram
-    class TrainingEngine {
-      +run(cfg)
-      +evaluate()
-      +save_checkpoint()
-    }
-    class DataHandling {
-      +iter_jsonl(path)
-      +deterministic_split()
-      +validate_schema()
-    }
-    class Metrics {
-      +batch_metrics()
-      +compute_accuracy()
-      +compute_loss()
-    }
-    class Checkpointing {
-      +save_checkpoint()
-      +load_checkpoint()
-      +resume_training()
-    }
-    class Logging {
-      +TBWriter
-      +wandb_logger
-      +file_logger
-    }
-    class ModelRegistry {
-      +register_model()
-      +load_model()
-      +list_versions()
-    }
-    TrainingEngine --> DataHandling
-    TrainingEngine --> Metrics
-    TrainingEngine --> Checkpointing
-    TrainingEngine --> Logging
-    TrainingEngine --> ModelRegistry
+ class TrainingEngine {
+ +run(cfg)
+ +evaluate()
+ +save_checkpoint()
+ }
+ class DataHandling {
+ +iter_jsonl(path)
+ +deterministic_split()
+ +validate_schema()
+ }
+ class Metrics {
+ +batch_metrics()
+ +compute_accuracy()
+ +compute_loss()
+ }
+ class Checkpointing {
+ +save_checkpoint()
+ +load_checkpoint()
+ +resume_training()
+ }
+ class Logging {
+ +TBWriter
+ +wandb_logger
+ +file_logger
+ }
+ class ModelRegistry {
+ +register_model()
+ +load_model()
+ +list_versions()
+ }
+ TrainingEngine --> DataHandling
+ TrainingEngine --> Metrics
+ TrainingEngine --> Checkpointing
+ TrainingEngine --> Logging
+ TrainingEngine --> ModelRegistry
 ```
 
 ---
 
-##  Security & Compliance
+## Security & Compliance
 
 ### Security Layers
 
@@ -201,7 +201,7 @@ classDiagram
 
 ---
 
-##  Deployment Architecture
+## Deployment Architecture
 
 ### Local Development
 
@@ -235,27 +235,27 @@ CMD ["python", "-m", "codex.training"]
 
 ---
 
-##  Configuration Management
+## Configuration Management
 
 The system uses Hydra for configuration management:
 
 ```yaml
 # config/training.yaml
 defaults:
-  - override hydra/job_logging: custom
+ - override hydra/job_logging: custom
 
 model:
-  name: "bert-base"
-  pretrained: true
+ name: "bert-base"
+ pretrained: true
 
 training:
-  learning_rate: 1e-4
-  batch_size: 32
-  epochs: 10
+ learning_rate: 1e-4
+ batch_size: 32
+ epochs: 10
 
 data:
-  dataset: "wikitext"
-  split: [0.8, 0.1, 0.1]
+ dataset: "wikitext"
+ split: [0.8, 0.1, 0.1]
 ```
 
 ## Configuration Hierarchy
@@ -267,19 +267,19 @@ data:
 
 ---
 
-##  Key Metrics
+## Key Metrics
 
 | Metric | Target | Current |
 |--------|--------|---------|
 | Test Coverage | ≥90% | 10.7% |
 | Documentation Coverage | ≥95% | 85% |
 | Code Quality Score | ≥8.0 | 7.2 |
-| Security Score | 100% | 100%  |
+| Security Score | 100% | 100% |
 | Availability | ≥99.9% | N/A |
 
 ---
 
-## 🛣️ Development Workflows
+## ️ Development Workflows
 
 ### Feature Development
 
@@ -302,7 +302,7 @@ data:
 
 ---
 
-##  Integration Points
+## Integration Points
 
 ### External Systems
 
@@ -321,7 +321,7 @@ data:
 
 ---
 
-##  Documentation Links
+## Documentation Links
 
 ### Architecture-Related Docs
 
@@ -340,7 +340,7 @@ data:
 
 ---
 
-##  AI Agent Integration
+## AI Agent Integration
 
 The system includes native support for AI agents:
 
@@ -356,21 +356,21 @@ The system includes native support for AI agents:
 
 ### Common Issues
 
-**Q: Which architecture document should I read?**  
+**Q: Which architecture document should I read?** 
 A: Start with [architecture.md](./human-facing/architecture.md) for quick overview, then [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md) for detailed information.
 
-**Q: How is the data flow organized?**  
+**Q: How is the data flow organized?** 
 A: See [Runtime Data Flow](#-runtime-data-flow) section above.
 
-**Q: Where do I find deployment information?**  
+**Q: Where do I find deployment information?** 
 A: See [docs/deployment/](./deployment/) directory.
 
-**Q: How is security implemented?**  
+**Q: How is security implemented?** 
 A: See [Security & Compliance](#-security--compliance) section and [docs/security/](./security/) directory.
 
 ---
 
-## 🏗️ Future Roadmap
+## ️ Future Roadmap
 
 ### Short Term (1-3 months)
 - [ ] Improve test coverage to ≥50%
@@ -389,7 +389,7 @@ A: See [Security & Compliance](#-security--compliance) section and [docs/securit
 
 ---
 
-## 📞 Support
+## Support
 
 For questions or clarifications about architecture:
 
@@ -400,7 +400,7 @@ For questions or clarifications about architecture:
 
 ---
 
-##  Maintenance
+## Maintenance
 
 - **Last Updated**: 2026-06-20
 - **Next Review**: 2026-07-20

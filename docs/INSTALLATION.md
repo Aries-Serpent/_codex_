@@ -3,21 +3,21 @@
 **Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
-**Document Type:** User Guide  
-**Audience:** Developers, DevOps Engineers, System Administrators, ML Engineers  
+**Document Type:** User Guide 
+**Audience:** Developers, DevOps Engineers, System Administrators, ML Engineers 
 **Last Updated: 2026-07-10
 **Version:** 0.1.0
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Quick Start](#quick-start-30-seconds)
 3. [Prerequisites](#prerequisites)
 4. [Installation Methods](#installation-methods)
 5. [Installation Profiles](#installation-profiles)
-   - [Core Profile](#core-profile)
-   - [Runtime Profile](#runtime-profile)
-   - [Full Profile](#full-profile)
+ - [Core Profile](#core-profile)
+ - [Runtime Profile](#runtime-profile)
+ - [Full Profile](#full-profile)
 6. [Platform-Specific Instructions](#platform-specific-instructions)
 7. [Verification](#verification)
 8. [Entry Points & CLI Commands](#entry-points--cli-commands)
@@ -30,11 +30,11 @@
 
 **codex-ml** (Aries-Serpent ML) is a production-ready, Level 4 MLOps-certified machine learning platform featuring:
 
--  **Three Installation Profiles**: Choose the right package size for your use case
--  **Production-Grade**: 90.2% test coverage, 0 CVEs, enterprise-ready
--  **Cognitive Brain Integration**: Advanced autonomous decision-making
--  **MLOps Ready**: Training, evaluation, and model serving all included
--  **Security First**: Network policy enforcement, cryptographic security
+- **Three Installation Profiles**: Choose the right package size for your use case
+- **Production-Grade**: 90.2% test coverage, 0 CVEs, enterprise-ready
+- **Cognitive Brain Integration**: Advanced autonomous decision-making
+- **MLOps Ready**: Training, evaluation, and model serving all included
+- **Security First**: Network policy enforcement, cryptographic security
 
 ### Why Three Profiles?
 
@@ -120,7 +120,7 @@ git --version
 docker --version
 
 # (Optional) Check CUDA availability
-nvidia-smi  # if GPU support needed
+nvidia-smi # if GPU support needed
 ```
 
 ---
@@ -136,23 +136,23 @@ Choose the installation method that best fits your use case:
 ```bash
 # Create virtual environment (highly recommended)
 python -m venv codex-env
-source codex-env/bin/activate  # On Windows: codex-env\Scripts\activate
+source codex-env/bin/activate # On Windows: codex-env\Scripts\activate
 
 # Upgrade pip to latest
 pip install --upgrade pip
 
 # Install with your chosen profile
-pip install codex-ml[runtime]==0.1.0      # Most common ⭐
+pip install codex-ml[runtime]==0.1.0 # Most common ⭐
 # OR
-pip install codex-ml[core]==0.1.0         # Lightweight
+pip install codex-ml[core]==0.1.0 # Lightweight
 # OR
-pip install codex-ml[full]==0.1.0         # Development
+pip install codex-ml[full]==0.1.0 # Development
 
 # Verify installation
 python -c "import codex_ml; print(codex_ml.__version__)"
 ```
 
-**Installation time:** 2-5 minutes (runtime), 1-2 minutes (core)  
+**Installation time:** 2-5 minutes (runtime), 1-2 minutes (core) 
 **Estimated size:** See [Installation Profiles](#installation-profiles)
 
 ### Method 2: Source Installation (For Contributors)
@@ -166,7 +166,7 @@ cd _codex_
 
 # Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # Install in development mode with all dependencies
 pip install -e ".[full]"
@@ -178,7 +178,7 @@ pytest tests/ -x --tb=short
 codex-ml --help
 ```
 
-**Installation time:** 5-15 minutes (includes compilation)  
+**Installation time:** 5-15 minutes (includes compilation) 
 **Best combined with:** Pre-commit hooks setup
 
 ### Method 3: Docker Installation (Containerized)
@@ -194,14 +194,14 @@ docker run -it ghcr.io/aries-serpent/codex:0.1.0 codex-ml --help
 
 # Run with mounted working directory
 docker run -it -v $(pwd):/workspace \
-  ghcr.io/aries-serpent/codex:0.1.0 \
-  codex-ml train config.yaml
+ ghcr.io/aries-serpent/codex:0.1.0 \
+ codex-ml train config.yaml
 
 # Build locally from Dockerfile
 docker build -t codex:latest -f Dockerfile .
 ```
 
-**Container size:** ~1.5 GB (pre-built image)  
+**Container size:** ~1.5 GB (pre-built image) 
 **Requires:** Docker or Docker Desktop
 
 ### Method 4: Offline Installation (Air-Gapped Environments)
@@ -230,7 +230,7 @@ codex-ml --version
 
 ## Platform-Specific Instructions
 
-### 🐧 Linux (Ubuntu/Debian/Fedora)
+### Linux (Ubuntu/Debian/Fedora)
 
 #### Ubuntu/Debian
 
@@ -286,7 +286,7 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 ---
 
-### 🍎 macOS (Intel & Apple Silicon)
+### macOS (Intel & Apple Silicon)
 
 #### Prerequisites for macOS
 
@@ -387,7 +387,7 @@ Get-ExecutionPolicy -List
 
 ---
 
-### 🐳 Docker (All Platforms)
+### Docker (All Platforms)
 
 #### Using Pre-Built Image (Easiest)
 
@@ -403,7 +403,7 @@ docker run --rm ghcr.io/aries-serpent/codex:0.1.0-runtime codex-ml --help
 
 # With GPU support (requires nvidia-docker)
 docker run -it --gpus all ghcr.io/aries-serpent/codex:0.1.0-runtime python -c \
-  "import torch; print(f'GPU available: {torch.cuda.is_available()}')"
+ "import torch; print(f'GPU available: {torch.cuda.is_available()}')"
 ```
 
 #### Building Locally
@@ -429,15 +429,15 @@ docker tag codex:0.1.0 ghcr.io/aries-serpent/codex:0.1.0
 # docker-compose.yml
 version: '3.8'
 services:
-  codex:
-    build: .
-    image: codex:latest
-    volumes:
-      - .:/workspace
-    working_dir: /workspace
-    command: /bin/bash
-    stdin_open: true
-    tty: true
+ codex:
+ build: .
+ image: codex:latest
+ volumes:
+ - .:/workspace
+ working_dir: /workspace
+ command: /bin/bash
+ stdin_open: true
+ tty: true
 ```
 
 ```bash
@@ -501,22 +501,22 @@ print(f'Executable: {sys.executable}')
 python << 'EOF'
 packages = ['pydantic', 'hydra', 'omegaconf', 'typer', 'click']
 for pkg in packages:
-    try:
-        __import__(pkg)
-        print(f' {pkg}')
-    except ImportError:
-        print(f' {pkg}')
+ try:
+ __import__(pkg)
+ print(f' {pkg}')
+ except ImportError:
+ print(f' {pkg}')
 EOF
 
 # 3. Runtime-specific packages (if runtime/full profile)
 python << 'EOF'
 try:
-    import torch
-    print(f' PyTorch {torch.__version__}')
-    if torch.cuda.is_available():
-        print(f'  - GPU available: {torch.cuda.get_device_name(0)}')
+ import torch
+ print(f' PyTorch {torch.__version__}')
+ if torch.cuda.is_available():
+ print(f' - GPU available: {torch.cuda.get_device_name(0)}')
 except ImportError:
-    print('ℹ PyTorch not installed (core profile)')
+ print('ℹ PyTorch not installed (core profile)')
 EOF
 
 # 4. Test CLI commands
@@ -526,7 +526,7 @@ codex-ml eval --help
 
 # 5. Run smoke tests (if full profile)
 pytest tests/ -x --tb=short -k "test_smoke" 2>/dev/null || \
-  echo "ℹ Smoke tests skipped (full profile only)"
+ echo "ℹ Smoke tests skipped (full profile only)"
 ```
 
 ### Platform-Specific Verification
@@ -554,7 +554,7 @@ pip show codex-ml | findstr Location
 **Docker:**
 ```bash
 docker run --rm ghcr.io/aries-serpent/codex:0.1.0 \
-  python -c "import codex_ml; print(codex_ml.__version__)"
+ python -c "import codex_ml; print(codex_ml.__version__)"
 ```
 
 ### Test by Profile
@@ -714,26 +714,26 @@ pip install codex-ml[full]==0.1.0
 ** Includes:**
 - Everything in Core + Runtime profiles
 - **Development Tools:**
-  - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
-  - Linting: ruff, black, isort, mypy
-  - Pre-commit hooks, git integration
-  - Type checking at 3.12+ level
+ - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
+ - Linting: ruff, black, isort, mypy
+ - Pre-commit hooks, git integration
+ - Type checking at 3.12+ level
 - **Documentation:** MkDocs, Sphinx support
 - **Profiling & Analysis:**
-  - Memory/CPU profiling
-  - Mutation testing (mutmut)
-  - Coverage analysis and gap-fill
+ - Memory/CPU profiling
+ - Mutation testing (mutmut)
+ - Coverage analysis and gap-fill
 - **ML Training:**
-  - Distributed training utilities
-  - Experiment tracking (MLflow)
-  - Hyperparameter tuning
+ - Distributed training utilities
+ - Experiment tracking (MLflow)
+ - Hyperparameter tuning
 - **Data Science:**
-  - Jupyter notebook support
-  - Advanced visualization
+ - Jupyter notebook support
+ - Advanced visualization
 - **Cognitive Brain:**
-  - OODA loop execution engine
-  - Pattern matching and learning
-  - Autonomous decision-making
+ - OODA loop execution engine
+ - Pattern matching and learning
+ - Autonomous decision-making
 
 ** Best for:**
 - Local development environments
@@ -766,14 +766,14 @@ mypy src/ --strict
 |---------|------|---------|------|
 | **Size** | 8-15 MB | 20-35 MB | 100+ MB |
 | **Installation Time** | <1 min | 3-5 min | 5-15 min |
-| **CLI Tools** |  |  |  |
-| **Configuration** |  |  |  |
-| **ML Inference** |  |  |  |
-| **Model Serving** |  |  |  |
-| **Training** |  |  |  |
-| **Development Tools** |  |  |  |
-| **Testing Framework** |  |  |  |
-| **GPU Support** |  | * | * |
+| **CLI Tools** | | | |
+| **Configuration** | | | |
+| **ML Inference** | | | |
+| **Model Serving** | | | |
+| **Training** | | | |
+| **Development Tools** | | | |
+| **Testing Framework** | | | |
+| **GPU Support** | | * | * |
 | **Cognitive Brain** | Basic | Yes | Full |
 
 *GPU support requires CUDA toolkit installed separately
@@ -810,8 +810,8 @@ After installation, the following commands are available:
 codex-ml [OPTIONS] COMMAND
 
 # Aliases
-codex-cli        # Alternative entry point
-codex-ml-cli     # Explicit naming
+codex-cli # Alternative entry point
+codex-ml-cli # Explicit naming
 
 # Help and info
 codex-ml --help
@@ -868,10 +868,10 @@ cli(['train', '--config-name=my_config'])
 
 | Entry Point | Core | Runtime | Full | Purpose |
 |------------|------|---------|------|---------|
-| `codex-ml` |  |  |  | Main CLI |
-| `codex-cli` |  |  |  | Alternative CLI |
-| `codex-ml-cli` |  |  |  | Explicit CLI |
-| `codex-smoke` |  |  |  | Smoke test app |
+| `codex-ml` | | | | Main CLI |
+| `codex-cli` | | | | Alternative CLI |
+| `codex-ml-cli` | | | | Explicit CLI |
+| `codex-smoke` | | | | Smoke test app |
 
 ### Extending with Plugins
 
@@ -900,8 +900,8 @@ orchestrator = OODAOrchestrator()
 
 # Observe → Orient → Decide → Act
 result = orchestrator.execute(
-    observation="Input data",
-    context={"mode": "inference"}
+ observation="Input data",
+ context={"mode": "inference"}
 )
 ```
 
@@ -942,8 +942,8 @@ python -c "from codex_ml.config import ConfigManager"
 pip list | grep codex
 
 # 2. Verify virtual environment is activated
-which python  # Should show path in your venv
-echo $VIRTUAL_ENV  # Should show venv path
+which python # Should show path in your venv
+echo $VIRTUAL_ENV # Should show venv path
 
 # 3. Reinstall entry points
 pip install --force-reinstall codex-ml[runtime]
@@ -961,7 +961,7 @@ python -m codex_ml.cli --help
 ```bash
 # 1. Create fresh virtual environment
 python -m venv fresh-env
-source fresh-env/bin/activate  # or fresh-env\Scripts\activate on Windows
+source fresh-env/bin/activate # or fresh-env\Scripts\activate on Windows
 
 # 2. Upgrade pip first
 pip install --upgrade pip setuptools wheel
@@ -1017,7 +1017,7 @@ cd _codex_
 docker build -t codex:0.1.0 .
 
 # 4. Check Docker daemon
-docker ps  # Verify Docker is running
+docker ps # Verify Docker is running
 ```
 
 ### Platform-Specific Issues
@@ -1050,7 +1050,7 @@ cmd /c "codex-env\Scripts\activate.bat"
 
 #### Linux: Missing Development Headers
 
-**Symptoms:** `error: Microsoft Visual C++ 14.0 or greater is required` (on Windows)  
+**Symptoms:** `error: Microsoft Visual C++ 14.0 or greater is required` (on Windows) 
 or `fatal error: Python.h: No such file or directory` (on Linux)
 
 ```bash
@@ -1092,8 +1092,8 @@ python -m cProfile -s cumulative script.py
 ps aux | grep python
 
 # 3. Check disk I/O
-iotop  # Linux
-iostat  # macOS
+iotop # Linux
+iostat # macOS
 
 # 4. Enable verbose logging
 export CODEX_LOG_LEVEL=DEBUG
@@ -1124,8 +1124,8 @@ import torch
 print(f'PyTorch: {torch.__version__}')
 print(f'CUDA Available: {torch.cuda.is_available()}')
 if torch.cuda.is_available():
-    print(f'GPU: {torch.cuda.get_device_name(0)}')
-    print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')
+ print(f'GPU: {torch.cuda.get_device_name(0)}')
+ print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')
 "
 ```
 
@@ -1135,24 +1135,24 @@ if torch.cuda.is_available():
 
 ### Documentation Resources
 
-- **🏠 Main README:** [README.md](../README.md)
+- ** Main README:** [README.md](../README.md)
 - ** Quick Start ML:** [./quickstart/QUICK_START_ML.md](./quickstart/QUICK_START_ML.md)
 - ** Cognitive Brain Guide:** [./quickstart/QUICK_START_COGNITIVE_BRAIN.md](./quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - ** Configuration Guide:** [docs/configuration/](configuration/)
-- **🐳 Docker Guide:** [docker/README.md](../../docker/Dockerfile.api)
+- ** Docker Guide:** [docker/README.md](../../docker/Dockerfile.api)
 - **☸️ Kubernetes Guide:** [k8s/README.md](../../k8s/Deployment.yaml)
 
 ### Community Support
 
 - ** Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
-- **💬 Discussions:** [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
-- **🐛 Bug Reports:** [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md)
+- ** Discussions:** [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
+- ** Bug Reports:** [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md)
 - ** Feature Requests:** [Request a Feature](https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md)
 
 ### Additional Resources
 
-- **📦 PyPI Package:** https://pypi.org/project/codex-ml/
-- **🐳 Docker Hub:** https://ghcr.io/aries-serpent/codex
+- ** PyPI Package:** https://pypi.org/project/codex-ml/
+- ** Docker Hub:** https://ghcr.io/aries-serpent/codex
 - ** Full Documentation:** 
 - ** Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
 
@@ -1227,5 +1227,5 @@ codex-ml is open source and available under the [MIT License](../LICENSE).
 ---
 
 **Last Updated: 2026-07-10
-**Installation Status:**  Ready for Production  
+**Installation Status:** Ready for Production 
 **Support Level:** Production

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 ## Prompt
 Use the following prompt when generating a status update 2026-07-13
@@ -25,63 +25,63 @@ Analyze the entire repository and produce a thorough implementation-status audit
 
 Audit Scope
 
-# 📍_codex_: Status Update (YYYY-MM-DD)
+# _codex_: Status Update (YYYY-MM-DD)
 
 1. **Repo Map**
-   - List top-level directories and key files.
-   - Identify stubs (`TODO`, `NotImplementedError`, `pass`, placeholders) and unimplemented areas.
+ - List top-level directories and key files.
+ - Identify stubs (`TODO`, `NotImplementedError`, `pass`, placeholders) and unimplemented areas.
 
 2. **Capability Audit Table**
 
-   For each **capability** below, provide:
+ For each **capability** below, provide:
 
-   - **Status**: `Implemented` / `Partially Implemented` / `Stubbed` / `Missing`
-   - **Existing artifacts**: modules, classes, functions, configs
-   - **Gaps**: what's missing exactly (files, flags, tests, CLI hooks)
-   - **Risks**: what could break in production
-   - **Minimal Patch Plan**: small, reviewable diffs and tests to implement
-   - **Rollback Plan**: how to revert safely if needed
+ - **Status**: `Implemented` / `Partially Implemented` / `Stubbed` / `Missing`
+ - **Existing artifacts**: modules, classes, functions, configs
+ - **Gaps**: what's missing exactly (files, flags, tests, CLI hooks)
+ - **Risks**: what could break in production
+ - **Minimal Patch Plan**: small, reviewable diffs and tests to implement
+ - **Rollback Plan**: how to revert safely if needed
 
-   **Capabilities list:**
-   - Tokenization (fast tokenizer, vocab, encode/decode, padding/truncation)
-   - ChatGPT Codex Modeling (model init, dtype, device placement, LoRA/PEFT hooks)
-   - Training Engine (HF Trainer or custom loop, precision, gradient accumulation)
-   - Configuration Management (Hydra/YAML structure, overrides, sweeps)
-   - Evaluation & Metrics (validation loops, metrics API, NDJSON/CSV logging)
-   - Logging & Monitoring (TensorBoard / W&B / MLflow, system metrics via `psutil`/NVML)
-   - Checkpointing & Resume (weights, optimizer state, scheduler, RNG, best-k retention)
-   - Data Handling (dataset splits, deterministic shuffling, caching)
-   - Security & Safety (dependency locking, secrets scanning, prompt safety)
-   - Internal CI/Test (pytest targets, tox/nox local gates, coverage enforcement)
-   - Deployment (packaging, CLI entry points, Docker infra)
-   - Documentation & Examples (README, quickstarts, diagrams, notebooks)
-   - Experiment Tracking (MLflow local tracking, W&B offline mode)
-   - Extensibility (pluggable components, registry patterns)
+ **Capabilities list:**
+ - Tokenization (fast tokenizer, vocab, encode/decode, padding/truncation)
+ - ChatGPT Codex Modeling (model init, dtype, device placement, LoRA/PEFT hooks)
+ - Training Engine (HF Trainer or custom loop, precision, gradient accumulation)
+ - Configuration Management (Hydra/YAML structure, overrides, sweeps)
+ - Evaluation & Metrics (validation loops, metrics API, NDJSON/CSV logging)
+ - Logging & Monitoring (TensorBoard / W&B / MLflow, system metrics via `psutil`/NVML)
+ - Checkpointing & Resume (weights, optimizer state, scheduler, RNG, best-k retention)
+ - Data Handling (dataset splits, deterministic shuffling, caching)
+ - Security & Safety (dependency locking, secrets scanning, prompt safety)
+ - Internal CI/Test (pytest targets, tox/nox local gates, coverage enforcement)
+ - Deployment (packaging, CLI entry points, Docker infra)
+ - Documentation & Examples (README, quickstarts, diagrams, notebooks)
+ - Experiment Tracking (MLflow local tracking, W&B offline mode)
+ - Extensibility (pluggable components, registry patterns)
 
 3. **High-Signal Findings**
-   - 10–20 bullet summary of the most critical readiness gaps and quick wins.
+ - 10–20 bullet summary of the most critical readiness gaps and quick wins.
 
 4. **Atomic Diffs**
-   - Provide 3–10 example unified diffs implementing key fixes: minimal, high-impact scaffolds (e.g. guarded MLflow init, Hydra defaults, LoRA wiring). Each diff must include:
-     - *Why*: rationale
-     - *Risk*: what could break
-     - *Rollback*: revert instructions
-     - *Tests/docs*: what must also be added
+ - Provide 3–10 example unified diffs implementing key fixes: minimal, high-impact scaffolds (e.g. guarded MLflow init, Hydra defaults, LoRA wiring). Each diff must include:
+ - *Why*: rationale
+ - *Risk*: what could break
+ - *Rollback*: revert instructions
+ - *Tests/docs*: what must also be added
 
 5. **Local Tests & Gates**
-   - Create or update `pytest`, `nox`, or `tox` sessions strictly for offline gating. Provide commands and example outputs.
-   - Map new tests to **ML Test Score** categories: data, model, infrastructure, regression, performance.
+ - Create or update `pytest`, `nox`, or `tox` sessions strictly for offline gating. Provide commands and example outputs.
+ - Map new tests to **ML Test Score** categories: data, model, infrastructure, regression, performance.
 
 6. **Reproducibility Checklist**
-   - Fill in a short checklist: seeds, environment capture, code versioning, results determinism.
-   - Flag missing items per reproducibility best practices. (Reference MLOps reproducibility checklist.)
+ - Fill in a short checklist: seeds, environment capture, code versioning, results determinism.
+ - Flag missing items per reproducibility best practices. (Reference MLOps reproducibility checklist.)
 
 7. **Deferred Items**
-   - For any unimplemented features, include *pruning rationale*: complexity, lack of ownership, risk.
-   - Suggest minimal future plans.
+ - For any unimplemented features, include *pruning rationale*: complexity, lack of ownership, risk.
+ - Suggest minimal future plans.
 
 8. **Error Capture Blocks**
-   - Whenever any analysis step fails, record a block:
+ - Whenever any analysis step fails, record a block:
 
 :::
 Question for ChatGPT @codex {{timestamp}}:
@@ -97,12 +97,12 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 ```text
 Codex-ready Task Sequence:
-  1. Preparation: ...
-  2. Search & Mapping: ...
-  3. Best-Effort Construction: ...
-  4. Controlled Pruning: ...
-  5. Error Capture: ...
-  6. Finalization: ...
+ 1. Preparation: ...
+ 2. Search & Mapping: ...
+ 3. Best-Effort Construction: ...
+ 4. Controlled Pruning: ...
+ 5. Error Capture: ...
+ 6. Finalization: ...
 ```text
 Populate the numbered phases with the concrete remediation work derived from the audit. Each sub-step should reference the modules, scripts, or tooling to explore, and the Error Capture phase must reuse the question block shown above.
 
@@ -136,13 +136,13 @@ Objective:
 
 Audit Scope
 
-# 📍_codex_: Status Update ({{date}})
+# _codex_: Status Update ({{date}})
 
 1. **Repo Map**
-   - **Top-level directories.** {{directories}}
-   - **Key files.** {{files}}
-   - **Stubs & placeholders.** {{stubs}}
-   - **Recent changes.** {{recent_changes}}
+ - **Top-level directories.** {{directories}}
+ - **Key files.** {{files}}
+ - **Stubs & placeholders.** {{stubs}}
+ - **Recent changes.** {{recent_changes}}
 
 2. **Capability Audit Table**
 
@@ -151,9 +151,9 @@ Audit Scope
 | {{capability}} | {{status}} | {{artifacts}} | {{gaps}} | {{risks}} | {{patch_plan}} | {{rollback}} |
 
 3. **High-Signal Findings**
-   1. {{finding1}}
-   2. {{finding2}}
-   3. ...
+ 1. {{finding1}}
+ 2. {{finding2}}
+ 3. ...
 
 4. **Atomic Diffs**
 ## Atomic Diff 1 — {{title1}}
@@ -187,11 +187,11 @@ Audit Scope
 > - Deterministic guard rails consolidate in `src/codex_ml/utils/determinism.py` (also surfaced through `codex_ml.utils.seeding`).
 
 7. **Deferred Items**
-   - {{deferred1}}
-   - {{deferred2}}
+ - {{deferred1}}
+ - {{deferred2}}
 
 8. **Error Capture Blocks**
-   - {{error_capture_summary}}
+ - {{error_capture_summary}}
 
 ---
 

@@ -2,9 +2,9 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Document Type:** Architecture & Design Guide  
-**Audience:** Architects, Senior Developers, DevOps Engineers  
-**Last Updated: 2026-07-09
+**Document Type:** Architecture & Design Guide 
+**Audience:** Architects, Senior Developers, DevOps Engineers 
+**Last Updated: 2026-07-16
 
 ## System Overview
 
@@ -12,22 +12,22 @@ Aries-Serpent is a modular AI agent framework with three main components:
 
 ```mermaid
 graph TB
-    CB[" Cognitive Brain<br/>(Pattern Recognition & Memory)"]
-    CORE[" Core<br/>(OODA Loop & Protocol Engine)"]
-    ML[" ML Components<br/>(Inference & Training)"]
-    API["📡 API Layer<br/>(FastAPI Services)"]
-    
-    CB -->|Patterns| CORE
-    CORE -->|Strategies| ML
-    ML -->|Results| API
-    
-    API -->|Requests| CORE
-    CORE -->|Queries| CB
-    
-    style CB fill:#ff9999
-    style CORE fill:#99ccff
-    style ML fill:#99ff99
-    style API fill:#ffcc99
+ CB[" Cognitive Brain<br/>(Pattern Recognition & Memory)"]
+ CORE[" Core<br/>(OODA Loop & Protocol Engine)"]
+ ML[" ML Components<br/>(Inference & Training)"]
+ API[" API Layer<br/>(FastAPI Services)"]
+ 
+ CB -->|Patterns| CORE
+ CORE -->|Strategies| ML
+ ML -->|Results| API
+ 
+ API -->|Requests| CORE
+ CORE -->|Queries| CB
+ 
+ style CB fill:#ff9999
+ style CORE fill:#99ccff
+ style ML fill:#99ff99
+ style API fill:#ffcc99
 ```
 
 ## Component Architecture
@@ -45,10 +45,10 @@ graph TB
 **Location:** `src/codex/cognitive_brain/`
 
 **Capabilities:**
--  Real-time pattern recognition
--  Short-term & long-term memory
--  Probabilistic decision making
--  Learning from feedback
+- Real-time pattern recognition
+- Short-term & long-term memory
+- Probabilistic decision making
+- Learning from feedback
 
 ### 2. Core System (OODA Loop)
 
@@ -103,27 +103,27 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    Client->>API: POST /api/v1/query
-    API->>CORE: Process query
-    CORE->>CB: Request pattern match
-    CB-->>CORE: Matched patterns
-    CORE->>ML: Generate strategy
-    ML-->>CORE: Model prediction
-    CORE->>API: Action & result
-    API-->>Client: Response
+ Client->>API: POST /api/v1/query
+ API->>CORE: Process query
+ CORE->>CB: Request pattern match
+ CB-->>CORE: Matched patterns
+ CORE->>ML: Generate strategy
+ ML-->>CORE: Model prediction
+ CORE->>API: Action & result
+ API-->>Client: Response
 ```
 
 ### Learning Flow
 
 ```mermaid
 sequenceDiagram
-    System->>CORE: Action result
-    CORE->>CB: Record outcome
-    CB-->>CORE: Updated patterns
-    CORE->>ML: Training signal
-    ML->>ML: Update model
-    ML-->>CORE: New checkpoint
-    CORE->>CORE: Update strategy
+ System->>CORE: Action result
+ CORE->>CB: Record outcome
+ CB-->>CORE: Updated patterns
+ CORE->>ML: Training signal
+ ML->>ML: Update model
+ ML-->>CORE: New checkpoint
+ CORE->>CORE: Update strategy
 ```
 
 ## Module Structure
@@ -131,25 +131,25 @@ sequenceDiagram
 ```
 src/codex/
 ├── cognitive_brain/
-│   ├── api.py                 # Main interface
-│   ├── pattern_recognizer.py  # Pattern detection
-│   ├── memory_manager.py      # STM/LTM management
-│   └── decision_engine.py     # Strategy selection
+│ ├── api.py # Main interface
+│ ├── pattern_recognizer.py # Pattern detection
+│ ├── memory_manager.py # STM/LTM management
+│ └── decision_engine.py # Strategy selection
 ├── core/
-│   ├── ooda_loop.py          # OODA orchestration
-│   ├── protocol_engine.py    # Message routing
-│   └── action_queue.py       # Action execution
+│ ├── ooda_loop.py # OODA orchestration
+│ ├── protocol_engine.py # Message routing
+│ └── action_queue.py # Action execution
 ├── ml/
-│   ├── training.py           # Training pipeline
-│   ├── inference.py          # Model inference
-│   └── registry.py           # Model management
+│ ├── training.py # Training pipeline
+│ ├── inference.py # Model inference
+│ └── registry.py # Model management
 ├── api/
-│   ├── main.py               # FastAPI app
-│   ├── routes.py             # API endpoints
-│   └── models.py             # Pydantic schemas
+│ ├── main.py # FastAPI app
+│ ├── routes.py # API endpoints
+│ └── models.py # Pydantic schemas
 └── config/
-    ├── hydra/               # Hydra configurations
-    └── defaults.yaml        # Default settings
+ ├── hydra/ # Hydra configurations
+ └── defaults.yaml # Default settings
 ```
 
 ## Deployment Architectures
@@ -158,39 +158,39 @@ src/codex/
 
 ```
 ┌─────────────────────────────┐
-│     Docker Container        │
+│ Docker Container │
 ├─────────────────────────────┤
-│  Cognitive Brain (STM/LTM)  │
-│  Core (OODA Loop)          │
-│  ML Models (Cached)        │
-│  API Server (FastAPI)      │
+│ Cognitive Brain (STM/LTM) │
+│ Core (OODA Loop) │
+│ ML Models (Cached) │
+│ API Server (FastAPI) │
 └─────────────────────────────┘
-         ↓
-    ┌─────────┐
-    │ PostgreSQL
-    └─────────┘
-         ↓
-    ┌─────────┐
-    │ Redis   │
-    └─────────┘
+ ↓
+ ┌─────────┐
+ │ PostgreSQL
+ └─────────┘
+ ↓
+ ┌─────────┐
+ │ Redis │
+ └─────────┘
 ```
 
 ### Kubernetes Multi-Pod Deployment
 
 ```
 ┌──────────────────────────────────────┐
-│  Kubernetes Cluster                   │
+│ Kubernetes Cluster │
 ├──────────────────────┬────────────────┤
-│  API Pod(s)         │  ML Pod(s)     │
-│  (FastAPI, 3x)      │  (Inference)   │
+│ API Pod(s) │ ML Pod(s) │
+│ (FastAPI, 3x) │ (Inference) │
 ├──────────────────────┼────────────────┤
-│  Cognitive Brain    │  Training Pod  │
-│  Pod (Shared STM)   │  (Batch Jobs)  │
+│ Cognitive Brain │ Training Pod │
+│ Pod (Shared STM) │ (Batch Jobs) │
 ├──────────────────────┴────────────────┤
-│  Stateful Services                     │
-│  - PostgreSQL StatefulSet             │
-│  - Redis Deployment                   │
-│  - Prometheus/Grafana                 │
+│ Stateful Services │
+│ - PostgreSQL StatefulSet │
+│ - Redis Deployment │
+│ - Prometheus/Grafana │
 └──────────────────────────────────────┘
 ```
 
@@ -203,34 +203,34 @@ Aries-Serpent uses a protocol-based architecture for flexible integration:
 ```python
 # Any system can integrate via protocol
 class ProtocolClient:
-    async def send_message(self, msg: Message) -> Response:
-        """
-        Send message following Aries-Serpent protocol
-        
-        Supported message types:
-        - QUERY: Request pattern recognition
-        - LEARN: Provide feedback for learning
-        - ACTION: Execute system action
-        """
-        return await self.protocol_engine.process(msg)
+ async def send_message(self, msg: Message) -> Response:
+ """
+ Send message following Aries-Serpent protocol
+ 
+ Supported message types:
+ - QUERY: Request pattern recognition
+ - LEARN: Provide feedback for learning
+ - ACTION: Execute system action
+ """
+ return await self.protocol_engine.process(msg)
 ```
 
 ### Webhook-Based Feedback Loop
 
 ```
 External System
-    ↓
-    POST /webhook/feedback
-    {
-      "event_id": "evt_123",
-      "outcome": "success|failure",
-      "metrics": {...}
-    }
-    ↓
+ ↓
+ POST /webhook/feedback
+ {
+ "event_id": "evt_123",
+ "outcome": "success|failure",
+ "metrics": {...}
+ }
+ ↓
 Cognitive Brain
-    ↓
+ ↓
 Updates patterns & models
-    ↓
+ ↓
 Improves decision quality
 ```
 
@@ -238,25 +238,25 @@ Improves decision quality
 
 ```mermaid
 graph LR
-    A["API Layer<br/>FastAPI"]
-    B["Core<br/>OODA Loop"]
-    C["Cognitive Brain<br/>Pattern Engine"]
-    D["ML<br/>PyTorch/HF"]
-    E["Config<br/>Hydra"]
-    F["Storage<br/>PostgreSQL"]
-    G["Cache<br/>Redis"]
-    
-    A -->|routes| B
-    B -->|patterns| C
-    B -->|inference| D
-    B -->|config| E
-    C -->|memory| F
-    B -->|cache| G
-    D -->|models| F
-    
-    style E fill:#e1f5ff
-    style F fill:#fff3e0
-    style G fill:#f3e5f5
+ A["API Layer<br/>FastAPI"]
+ B["Core<br/>OODA Loop"]
+ C["Cognitive Brain<br/>Pattern Engine"]
+ D["ML<br/>PyTorch/HF"]
+ E["Config<br/>Hydra"]
+ F["Storage<br/>PostgreSQL"]
+ G["Cache<br/>Redis"]
+ 
+ A -->|routes| B
+ B -->|patterns| C
+ B -->|inference| D
+ B -->|config| E
+ C -->|memory| F
+ B -->|cache| G
+ D -->|models| F
+ 
+ style E fill:#e1f5ff
+ style F fill:#fff3e0
+ style G fill:#f3e5f5
 ```
 
 ## Technology Stack
@@ -390,5 +390,5 @@ graph LR
 
 ---
 
-**Status:**  COMPLETE  
-**Last Updated: 2026-07-09
+**Status:** COMPLETE 
+**Last Updated: 2026-07-16
