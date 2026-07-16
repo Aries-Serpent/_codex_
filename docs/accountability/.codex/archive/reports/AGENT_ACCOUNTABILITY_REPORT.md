@@ -3,7 +3,7 @@
 **Session:** CIRescue-S2026_07_16T225734 | **Task:** Address CI rescue comments, restore REQ-4 compliance | **Date:** 2026-07-16T22:57:34Z | **Authority:** @mbaetiong D-tier autonomous | **Status:** ✅ COMPLETE
 
 ### Agents Used
-- [x] `general-purpose`
+- [x] `session-analysis-agent`
 
 ---
 

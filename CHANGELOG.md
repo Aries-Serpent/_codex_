@@ -1,7 +1,8 @@
 ## [Unreleased]
 
-### Fixed (CI rescue — 2026-07-16T22:57Z)
-- Restored REQ-4/REQ-5 compliance: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in latest commit (commit c2cc8fe9 follow-up)
+### Fixed (CI rescue — 2026-07-16T22:57Z — follow-up)
+- Restored REQ-4/REQ-14 compliance: AGENT_ACCOUNTABILITY_REPORT.md updated with registered agent identifier (session-analysis-agent)
+- Restored REQ-5 compliance: CHANGELOG.md updated in same commit
 - Acknowledged all @copilot CI rescue comments on PR #5328
 
 ### Fixed (auto-update — PR #5328)
