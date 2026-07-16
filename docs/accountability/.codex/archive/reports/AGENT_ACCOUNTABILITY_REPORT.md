@@ -9,8 +9,8 @@
 | Check | Issue | Status |
 |-------|-------|--------|
 | **1. Branch Rebase Gate** | Script exists, branch status "ahead" (up-to-date) | ✅ **PASS** |
-| **2. Secrets False-Positive Healer** | No markdown secrets found, script runs cleanly | ✅ **PASS** |
-| **3. Secrets Detection & Remediation** | detect-secrets scans slow, baseline verified | ✅ **PASS** |
+| **2. Secrets False-Positive Healer** | No markdown secrets found, script runs cleanly | ✅ **PASS** | <!-- pragma: allowlist secret -->
+| **3. Secrets Detection & Remediation** | detect-secrets scans slow, baseline verified | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | **4. Pre-Flight CI Validation** | Missing pytest-timeout pin, timeout configs | ✅ **FIXED** |
 | **5. Unified Governance Check** | Compliance check failing: branch name, PR title, reviews, CHANGELOG, accountability report | ✅ **FIXED** |
 
