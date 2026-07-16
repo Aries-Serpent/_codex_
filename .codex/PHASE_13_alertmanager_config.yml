@@ -1,0 +1,227 @@
+# PHASE 13 PERMANENT MONITORING - ALERTMANAGER CONFIGURATION
+# Production-Ready AlertManager for SLA-Driven Alerting
+# Status: Live (must be deployed by 2026-07-17T20:00Z)
+# Version: 1.0.0
+# Last Updated: 2026-07-16T20:51Z
+
+---
+global:
+  resolve_timeout: 5m
+  # Slack webhook for primary notifications
+  slack_api_url: '${SLACK_WEBHOOK_URL}'
+  
+# Templates for alert messages
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route tree for alert routing
+route:
+  receiver: 'slack-default'
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  routes:
+    # Critical SLA violations - escalate immediately
+    - match:
+        severity: critical
+        category: sla
+      receiver: 'oncall-escalation'
+      group_wait: 0s
+      group_interval: 5m
+      repeat_interval: 1h
+      continue: true
+
+    # High priority infrastructure issues
+    - match:
+        severity: high
+      receiver: 'infrastructure-team'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 2h
+
+    # Medium priority issues
+    - match:
+        severity: medium
+      receiver: 'slack-default'
+      group_wait: 1m
+      group_interval: 10m
+      repeat_interval: 4h
+
+    # Low priority / info
+    - match:
+        severity: low
+      receiver: 'slack-logging'
+      group_wait: 5m
+      group_interval: 30m
+      repeat_interval: 24h
+
+    # Pod crashes - immediate attention
+    - match:
+        alert_type: pod_crash
+      receiver: 'k8s-team'
+      group_wait: 0s
+      repeat_interval: 5m
+
+    # Database issues - critical
+    - match:
+        alert_type: database
+        severity: critical
+      receiver: 'database-oncall'
+      group_wait: 0s
+      repeat_interval: 5m
+
+    # Default catch-all
+    - receiver: 'slack-default'
+
+# Receivers define how to send alerts
+receivers:
+  # Default Slack notifications
+  - name: 'slack-default'
+    slack_configs:
+      - channel: '#operations'
+        title: 'Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+        actions:
+          - type: button
+            text: 'View in Grafana'
+            url: '{{ .CommonAnnotations.grafana_url }}'
+          - type: button
+            text: 'View Runbook'
+            url: '{{ .CommonAnnotations.runbook_url }}'
+
+  # On-call escalation (Slack + PagerDuty)
+  - name: 'oncall-escalation'
+    slack_configs:
+      - channel: '#oncall-alerts'
+        title: '🚨 CRITICAL SLA VIOLATION: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}{{ .Annotations.description }}\n{{ .Annotations.sla_impact }}{{ end }}'
+        send_resolved: true
+        color: 'danger'
+        actions:
+          - type: button
+            text: '⚡ ACK Alert'
+            url: '{{ .CommonAnnotations.ack_url }}'
+          - type: button
+            text: 'Start Runbook'
+            url: '{{ .CommonAnnotations.runbook_url }}'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}: {{ .Alerts.Firing | len }} alerts'
+        details:
+          firing: '{{ range .Alerts.Firing }}{{ .Labels.instance }}{{ end }}'
+          sla_impact: '{{ .CommonAnnotations.sla_impact }}'
+
+  # Infrastructure team
+  - name: 'infrastructure-team'
+    slack_configs:
+      - channel: '#infrastructure'
+        title: 'Infrastructure Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # Kubernetes team
+  - name: 'k8s-team'
+    slack_configs:
+      - channel: '#kubernetes'
+        title: 'K8s Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}Pod: {{ .Labels.pod_name }}\nNamespace: {{ .Labels.namespace }}\nReason: {{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # Database on-call
+  - name: 'database-oncall'
+    slack_configs:
+      - channel: '#database-alerts'
+        title: '🔴 DATABASE CRITICAL: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}{{ .Annotations.description }}\nImpacted Queries: {{ .Annotations.impacted_queries }}{{ end }}'
+        send_resolved: true
+        color: 'danger'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_DATABASE_KEY}'
+        description: 'Database Alert: {{ .GroupLabels.alertname }}'
+
+  # Logging channel (info/low priority)
+  - name: 'slack-logging'
+    slack_configs:
+      - channel: '#monitoring-logs'
+        title: '📊 Info: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts.Firing }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: false
+
+# Inhibition rules prevent duplicate alerts
+inhibit_rules:
+  # Don't alert on instance if node is down
+  - source_match:
+      alert_type: 'node_down'
+    target_match_re:
+      alert_type: '.*'
+    equal: ['instance']
+
+  # Don't alert on pod if cluster is down
+  - source_match:
+      alert_type: 'cluster_down'
+    target_match_re:
+      alert_type: '.*'
+    equal: ['cluster']
+
+  # Don't alert on query perf if database is down
+  - source_match:
+      alert_type: 'database_down'
+    target_match:
+      alert_type: 'query_performance'
+    equal: ['instance']
+
+  # Suppress resolved alerts
+  - source_match:
+      severity: 'info'
+    target_match_re:
+      severity: '.*'
+    equal: ['alertname', 'instance']
+
+---
+# DEPLOYMENT NOTES
+
+# 1. Required Environment Variables:
+#    - SLACK_WEBHOOK_URL: Slack incoming webhook URL
+#    - PAGERDUTY_SERVICE_KEY: PagerDuty service integration key
+#    - PAGERDUTY_DATABASE_KEY: PagerDuty database service key
+
+# 2. Deployment Steps:
+#    - Create /etc/alertmanager/alertmanager.yml
+#    - Set environment variables (use .env or secrets manager)
+#    - Create /etc/alertmanager/templates/ directory
+#    - Add alert templates (see below)
+#    - Start AlertManager: systemctl restart alertmanager
+#    - Verify: curl http://localhost:9093/api/v1/status
+
+# 3. Alert Templates (save to /etc/alertmanager/templates/default.tmpl):
+#    See PHASE_13_alertmanager_templates.tmpl
+
+# 4. Integration Points:
+#    - Prometheus sends alerts to AlertManager on port 9093
+#    - Slack sends acknowledgments back
+#    - PagerDuty creates incidents for critical alerts
+#    - On-call dashboard reads from AlertManager
+
+# 5. Testing Alerts:
+#    curl -X POST http://localhost:9093/api/v1/alerts \
+#      -H 'Content-Type: application/json' \
+#      -d '[{
+#        "labels": { "alertname": "TestAlert", "severity": "critical" },
+#        "annotations": { "description": "Test alert from AlertManager" }
+#      }]'
+
+# 6. Monitoring AlertManager:
+#    - http://localhost:9093 (web UI)
+#    - http://localhost:9093/metrics (Prometheus metrics)
+#    - Check alert routing: http://localhost:9093/api/v1/alerts
+
+# SUCCESS CRITERIA (Post-Deployment):
+# ✓ AlertManager receiving alerts from Prometheus
+# ✓ Alerts routed to correct channels (Slack + PagerDuty)
+# ✓ Inhibition rules suppressing duplicate alerts
+# ✓ All notification channels functional
+# ✓ Web UI showing active alerts
+# ✓ On-call escalation working (0s delay for critical)
