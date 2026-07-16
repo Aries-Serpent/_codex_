@@ -106,6 +106,9 @@ jobs:
     name: 'Post research + Q&A to Discussion  #3756'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      group: discussion-posting  # Ensure only one discussion post at a time
+      cancel-in-progress: false   # Don't cancel mid-post
     if: '(github.event_name == ''push'' || github.event_name == ''workflow_dispatch'')
       &&
 
@@ -182,7 +185,7 @@ jobs:
         n\")\nprint(f\"Generated Q1\u2013{min(3, len(solutions))} from PDA pattern\
         \ library ({len(solutions)} patterns).\")\nPYEOF\n"
     - name: 'Post research topics and open check-in to Discussion  #3756'
-      if: false  # TEMPORARILY DISABLED (ba8af81 API error cascade fix)
+      if: true  # RE-ENABLED with concurrency lock (ba8af81 cascade fixed)
       uses: actions/github-script@v8
       env:
         SHA: ${{ github.sha }}
