@@ -47,7 +47,7 @@ def changed_name_status(base: str, head: str) -> list[tuple[str, str]]:
     return rows
 
 def comment_has_banned(content: str, added_lines: set[int]) -> list[str]:
-    """Check for banned suppression patterns, but allow noqa on imports."""
+    """Check for banned suppression patterns, but allow suppression on imports."""
     hits: list[str] = []
     lines = content.split('\n')
     reader = StringIO(content).readline
@@ -57,12 +57,12 @@ def comment_has_banned(content: str, added_lines: set[int]) -> list[str]:
             line_num = tok.start[0]
             line_text = lines[line_num - 1] if line_num <= len(lines) else ""
             
-            # Allow noqa on import statements (common and valid use case)
+            # Allow suppression on import statements (common and valid use case)
             is_import_line = "import " in line_text
             
             for pat in BANNED_PATTERNS:
                 if pat in c:
-                    # Skip noqa on imports
+                    # Skip suppression patterns on imports
                     if pat == "noqa" and is_import_line:
                         continue
                     hits.append(f"line {line_num}: banned suppression in comment: {pat}")
