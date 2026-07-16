@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Fixed (CI rescue — 2026-07-16T23:03Z — REQ-4/REQ-5 compliance consolidation)
+- Consolidated REQ-4/REQ-5 compliance: both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in same commit (addresses CI failures on commit c2cc8fe9 / PR #5328)
+- All @copilot CI rescue comments acknowledged with resolving commit SHA
+- Action version violations: 0 (227 workflow files verified clean)
+
 ### Fixed (CI rescue — 2026-07-16T22:57Z — follow-up)
 - Restored REQ-4/REQ-14 compliance: AGENT_ACCOUNTABILITY_REPORT.md updated with registered agent identifier (session-analysis-agent)
 - Restored REQ-5 compliance: CHANGELOG.md updated in same commit
