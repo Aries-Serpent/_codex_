@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Workflow Health Update
 on:
   schedule:
@@ -38,12 +42,20 @@ jobs:
         run: |
           git config --local user.email "copilot@github.com"
           git config --local user.name "GitHub Copilot"
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if git diff --quiet .codex/; then
             echo "ℹ️ No changes to commit"
             exit 0
           fi
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           git add .codex/workflow_health_snapshot.json .codex/WORKFLOW_HEALTH_DASHBOARD.md
           git commit -m "chore: Update workflow health dashboard [skip ci]"
           git push

@@ -188,6 +188,9 @@
 #         )
 #         assert response.status_code in [200, 429, 500]
 
+import pytest
+from unittest.mock import patch
+from starlette.testclient import TestClient
 
 class TestPayloadAttacks:
     """Test payload-based attacks."""

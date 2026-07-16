@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Repository Health Monitoring
 on:
   schedule:
@@ -74,15 +78,23 @@ jobs:
           candidates found'
         body: '## Repository Health Monitoring Report
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Scan Date**: ${{ steps.scan.outputs.scan_time }}
 
         **Triggered by**: ${{ github.event_name }}
 
+<<<<<<< HEAD
 
           ### Summary
 
 
+=======
+          ### Summary
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         - **Offload Candidates**: ${{ steps.scan.outputs.candidate_count }}
 
         - **Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB
@@ -91,6 +103,7 @@ jobs:
 
         - **Detailed Report**: [View Candidates](.codex/repository_health/offload_candidates.json)
 
+<<<<<<< HEAD
 
           ### Recommendations
 
@@ -99,23 +112,38 @@ jobs:
         and execute offloads as appropriate using:
 
 
+=======
+          ### Recommendations
+
+          Review the candidates in `.codex/repository_health/offload_candidates.json`
+        and execute offloads as appropriate using:
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           ```bash
 
           # Review candidates
 
           cat .codex/repository_health/offload_candidates.json | jq ''.candidates[]''
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Execute offload (manual review required)
 
           # Determine appropriate category and move files
 
           ```
 
+<<<<<<< HEAD
 
           ### Next Steps
 
 
+=======
+          ### Next Steps
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           1. Review offload candidates
 
           2. Determine which files should be offloaded
@@ -124,6 +152,7 @@ jobs:
 
           4. Update documentation
 
+<<<<<<< HEAD
 
           ### Automation
 
@@ -131,6 +160,12 @@ jobs:
           This PR was automatically created by the Repository Health Monitoring workflow.
 
 
+=======
+          ### Automation
+
+          This PR was automatically created by the Repository Health Monitoring workflow.
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Workflow**: `.github/workflows/repository-health-monitoring.yml`
 
         **Agent**: `repository-organization-agent`
@@ -176,4 +211,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

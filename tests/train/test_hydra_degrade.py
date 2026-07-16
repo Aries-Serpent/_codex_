@@ -1,12 +1,14 @@
-import pytest
-from __future__ import annotations
-
-pytest.importorskip("mlflow")
 """
 Test Hydra Degrade
 
 Test module for hydra degrade.
 """
+
+from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("mlflow")
 
 
 import codex_ml.cli.hydra_main as hydra_main

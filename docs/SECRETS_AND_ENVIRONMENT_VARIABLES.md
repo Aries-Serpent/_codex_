@@ -6,82 +6,82 @@
 
 - [Overview](#overview)
 - [ Full Inventory](#-full-inventory)
-  - [Environment Variables — `Aries_Serpent_codex_` Environment](#environment-variables--aries_serpent_codex_-environment)
-  - [Repository Variables](#repository-variables)
-    - [Agent & Autonomy Control](#agent--autonomy-control)
-    - [CI/CD & Quality Gates](#cicd--quality-gates)
-    - [Cognitive Brain & Session Management](#cognitive-brain--session-management)
-    - [Copilot Agent Configuration](#copilot-agent-configuration)
-    - [Infrastructure & Runtime](#infrastructure--runtime)
-    - [LLM & ML Pipeline](#llm--ml-pipeline)
-    - [Zendesk Integration](#zendesk-integration)
-  - [Environment Secrets — `Aries_Serpent_codex_`](#environment-secrets--aries_serpent_codex_)
-  - [Repository Secrets](#repository-secrets)
-  - [Organization Secrets](#organization-secrets)
+ - [Environment Variables — `Aries_Serpent_codex_` Environment](#environment-variables--aries_serpent_codex_-environment)
+ - [Repository Variables](#repository-variables)
+ - [Agent & Autonomy Control](#agent--autonomy-control)
+ - [CI/CD & Quality Gates](#cicd--quality-gates)
+ - [Cognitive Brain & Session Management](#cognitive-brain--session-management)
+ - [Copilot Agent Configuration](#copilot-agent-configuration)
+ - [Infrastructure & Runtime](#infrastructure--runtime)
+ - [LLM & ML Pipeline](#llm--ml-pipeline)
+ - [Zendesk Integration](#zendesk-integration)
+ - [Environment Secrets — `Aries_Serpent_codex_`](#environment-secrets--aries_serpent_codex_)
+ - [Repository Secrets](#repository-secrets)
+ - [Organization Secrets](#organization-secrets)
 - [ Gap Analysis — Variables Referenced in Code but NOT in Inventory](#-gap-analysis--variables-referenced-in-code-but-not-in-inventory)
-  - [Service API (`services/api/main.py`)](#service-api-servicesapimainpy)
-  - [Nox / ML Pipeline (`noxfile.py`, `scripts/`)](#nox--ml-pipeline-noxfilepy-scripts)
-  - [Cognitive Brain & Session (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cognitive-brain--session-codexcritical_repository_variablesmd)
-  - [CI/CD Timeouts & Parallelism (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cicd-timeouts--parallelism-codexcritical_repository_variablesmd)
+ - [Service API (`services/api/main.py`)](#service-api-servicesapimainpy)
+ - [Nox / ML Pipeline (`noxfile.py`, `scripts/`)](#nox--ml-pipeline-noxfilepy-scripts)
+ - [Cognitive Brain & Session (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cognitive-brain--session-codexcritical_repository_variablesmd)
+ - [CI/CD Timeouts & Parallelism (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cicd-timeouts--parallelism-codexcritical_repository_variablesmd)
 - [ Token Chain](#-token-chain)
 - [ Secret Rotation Schedule](#-secret-rotation-schedule)
 - [🧩 `settings/variables/agents` — Recommended Additions](#-settingsvariablesagents--recommended-additions)
 - [Workflow Permissions Reference](#workflow-permissions-reference)
-- [🗺️ Workflow & Agent Variable Usage Map](#-workflow--agent-variable-usage-map)
-  - [Copilot Sandbox Bootstrap Surface (`.github/workflows/copilot-setup-steps.yml`)](#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml)
-  - [Agents Settings Surface (`settings/variables/agents`)](#agents-settings-surface-settingsvariablesagents)
-  - [Workflow Automation / CI Surface](#workflow-automation--ci-surface)
-  - [Runtime / Service Guard Surface](#runtime--service-guard-surface)
-  - [Variable Access Pattern in Workflows](#variable-access-pattern-in-workflows)
-  - [Agent Variable Expectations](#agent-variable-expectations)
+- [️ Workflow & Agent Variable Usage Map](#-workflow--agent-variable-usage-map)
+ - [Copilot Sandbox Bootstrap Surface (`.github/workflows/copilot-setup-steps.yml`)](#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml)
+ - [Agents Settings Surface (`settings/variables/agents`)](#agents-settings-surface-settingsvariablesagents)
+ - [Workflow Automation / CI Surface](#workflow-automation--ci-surface)
+ - [Runtime / Service Guard Surface](#runtime--service-guard-surface)
+ - [Variable Access Pattern in Workflows](#variable-access-pattern-in-workflows)
+ - [Agent Variable Expectations](#agent-variable-expectations)
 - [Security Best Practices](#security-best-practices)
 - [Monitoring and Auditing](#monitoring-and-auditing)
 - [What’s Next (After Variable Sync)](#whats-next-after-variable-sync)
 - [References](#references)
 - [Change Log](#change-log)
-  - [`GITLEAKS_LICENSE`](#gitleaks_license)
-    - [`SESSION_ENCRYPTION_KEY`](#session_encryption_key)
-    - [`ENABLE_LIVE_TESTS`](#enable_live_tests)
-  - [Third-Party Integration Secrets](#third-party-integration-secrets)
-    - [`NOTEBOOKLM_WEBHOOK_URL`](#notebooklm_webhook_url)
-    - [`GOOGLE_CLIENT_SECRET`](#google_client_secret)
-    - [`GDRIVE_SERVICE_ACCOUNT_JSON`](#gdrive_service_account_json)
-    - [`GITHUB_OAUTH_CLIENT_ID`](#github_oauth_client_id)
-    - [`GITHUB_OAUTH_CLIENT_SECRET`](#github_oauth_client_secret)
-  - [PyPI Publishing Secrets](#pypi-publishing-secrets)
-    - [`PYPI_API_TOKEN`](#pypi_api_token)
-    - [`TEST_PYPI_API_TOKEN`](#test_pypi_api_token)
-  - [AWS Integration Secrets](#aws-integration-secrets)
-    - [`AWS_ACCESS_KEY_ID`](#aws_access_key_id)
-    - [`AWS_SECRET_ACCESS_KEY`](#aws_secret_access_key)
-  - [Zendesk Integration Secrets](#zendesk-integration-secrets)
-    - [`ZENDESK_TOKEN`](#zendesk_token)
-    - [`ZENDESK_USER`](#zendesk_user)
-    - [`ZENDESK_URL`](#zendesk_url)
+ - [`GITLEAKS_LICENSE`](#gitleaks_license)
+ - [`SESSION_ENCRYPTION_KEY`](#session_encryption_key)
+ - [`ENABLE_LIVE_TESTS`](#enable_live_tests)
+ - [Third-Party Integration Secrets](#third-party-integration-secrets)
+ - [`NOTEBOOKLM_WEBHOOK_URL`](#notebooklm_webhook_url)
+ - [`GOOGLE_CLIENT_SECRET`](#google_client_secret)
+ - [`GDRIVE_SERVICE_ACCOUNT_JSON`](#gdrive_service_account_json)
+ - [`GITHUB_OAUTH_CLIENT_ID`](#github_oauth_client_id)
+ - [`GITHUB_OAUTH_CLIENT_SECRET`](#github_oauth_client_secret)
+ - [PyPI Publishing Secrets](#pypi-publishing-secrets)
+ - [`PYPI_API_TOKEN`](#pypi_api_token)
+ - [`TEST_PYPI_API_TOKEN`](#test_pypi_api_token)
+ - [AWS Integration Secrets](#aws-integration-secrets)
+ - [`AWS_ACCESS_KEY_ID`](#aws_access_key_id)
+ - [`AWS_SECRET_ACCESS_KEY`](#aws_secret_access_key)
+ - [Zendesk Integration Secrets](#zendesk-integration-secrets)
+ - [`ZENDESK_TOKEN`](#zendesk_token)
+ - [`ZENDESK_USER`](#zendesk_user)
+ - [`ZENDESK_URL`](#zendesk_url)
 - [Environment Variables](#environment-variables)
-  - [Runtime Configuration](#runtime-configuration)
-    - [`CODEX_ENV_*`](#codex_env_)
-    - [`CODEX_SESSION_*`](#codex_session_)
-    - [`CODEX_LOG_DB_PATH` / `CODEX_DB_PATH`](#codex_log_db_path--codex_db_path)
-    - [`CODEX_SQLITE_POOL`](#codex_sqlite_pool)
-  - [CI/CD Environment Variables](#cicd-environment-variables)
-    - [`CARGO_TERM_COLOR`](#cargo_term_color)
-    - [`RUST_BACKTRACE`](#rust_backtrace)
-    - [`RUST_TEST_THREADS`](#rust_test_threads)
+ - [Runtime Configuration](#runtime-configuration)
+ - [`CODEX_ENV_*`](#codex_env_)
+ - [`CODEX_SESSION_*`](#codex_session_)
+ - [`CODEX_LOG_DB_PATH` / `CODEX_DB_PATH`](#codex_log_db_path--codex_db_path)
+ - [`CODEX_SQLITE_POOL`](#codex_sqlite_pool)
+ - [CI/CD Environment Variables](#cicd-environment-variables)
+ - [`CARGO_TERM_COLOR`](#cargo_term_color)
+ - [`RUST_BACKTRACE`](#rust_backtrace)
+ - [`RUST_TEST_THREADS`](#rust_test_threads)
 - [Workflow Permissions](#workflow-permissions)
-  - [Required Permissions by Workflow](#required-permissions-by-workflow)
-    - [`auth-token-rotation.yml`](#auth-token-rotationyml)
-    - [`auth-secret-rotation.yml`](#auth-secret-rotationyml)
-    - [`auth-compliance-report.yml`](#auth-compliance-reportyml)
-    - [`phase10-automated-secrets-setup.yml`](#phase10-automated-secrets-setupyml)
+ - [Required Permissions by Workflow](#required-permissions-by-workflow)
+ - [`auth-token-rotation.yml`](#auth-token-rotationyml)
+ - [`auth-secret-rotation.yml`](#auth-secret-rotationyml)
+ - [`auth-compliance-report.yml`](#auth-compliance-reportyml)
+ - [`phase10-automated-secrets-setup.yml`](#phase10-automated-secrets-setupyml)
 - [Security Best Practices](#security-best-practices)
-  - [Secret Rotation Schedule](#secret-rotation-schedule)
-  - [Secrets Usage Matrix](#secrets-usage-matrix)
-  - [Secret Management Guidelines](#secret-management-guidelines)
-  - [MFA and Authentication](#mfa-and-authentication)
-    - [MFA Enrollment Process](#mfa-enrollment-process)
+ - [Secret Rotation Schedule](#secret-rotation-schedule)
+ - [Secrets Usage Matrix](#secrets-usage-matrix)
+ - [Secret Management Guidelines](#secret-management-guidelines)
+ - [MFA and Authentication](#mfa-and-authentication)
+ - [MFA Enrollment Process](#mfa-enrollment-process)
 - [Troubleshooting](#troubleshooting)
-  - [Missing Secret Errors](#missing-secret-errors)
+ - [Missing Secret Errors](#missing-secret-errors)
 
 **Last Updated: 2026-06-22
 
@@ -96,7 +96,7 @@ This document provides comprehensive documentation for all secrets and environme
 
 ---
 
-##  Full Inventory
+## Full Inventory
 
 ### Environment Variables — `Aries_Serpent_codex_` Environment
 
@@ -275,7 +275,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 
 ---
 
-##  Gap Analysis — Variables Referenced in Code but NOT in Inventory
+## Gap Analysis — Variables Referenced in Code but NOT in Inventory
 
 The following variables are referenced in source code, workflow files, or `.codex/` docs but **are not present** in the active repository/environment variable inventory. The maintainer should evaluate each for creation.
 
@@ -329,19 +329,19 @@ The following variables are referenced in source code, workflow files, or `.code
 
 ---
 
-##  Token Chain
+## Token Chain
 
 All write operations in this repository use the following fallback chain:
 
 ```
-GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token  # pragma: allowlist secret
+GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token # pragma: allowlist secret
 ```
 
 Defined in `COPILOT_AGENT_PREFLIGHT_RULES.token_rule`. Never use `git push` directly — always use `report_progress` tool.
 
 ---
 
-##  Secret Rotation Schedule
+## Secret Rotation Schedule
 
 | Secret | Rotation Frequency | Method | Due <!-- pragma: allowlist secret --> |
 |--------|-------------------|--------|-----|
@@ -390,7 +390,7 @@ The Copilot agents settings page currently shows only the firewall defaults. The
 
 ---
 
-## 🗺️ Workflow & Agent Variable Usage Map
+## ️ Workflow & Agent Variable Usage Map
 
 This section maps each key repository variable to the GitHub Actions workflows and custom agents that read it. Reference this when changing a variable value to understand downstream impact.
 
@@ -448,11 +448,11 @@ All variables should be accessed using the safe fallback pattern:
 
 ```yaml
 env:
-  CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-  # NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:
-  #   env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }
-  CODEX_TEST_TIMEOUT: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
-  COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
+ CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+ # NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:
+ # env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }
+ CODEX_TEST_TIMEOUT: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
+ COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}
 ```
 
 > **Note on Node.js version variables**:
@@ -469,11 +469,11 @@ timeout-minutes: ${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}
 For action inputs:
 ```yaml
 - uses: ./.github/actions/setup-python-cached
-  with:
-    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+ with:
+ cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 - uses: actions/setup-node@v6
-  with:
-    node-version: ${{ vars.NODE_JS_VERSION || '22' }}
+ with:
+ node-version: ${{ vars.NODE_JS_VERSION || '22' }}
 ```
 
 ### Agent Variable Expectations
@@ -558,7 +558,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 - **Purpose**: License key for Gitleaks Pro/Enterprise for enhanced secret scanning capabilities
 - **Format**: Gitleaks license key string
 - **Used In**:
-  - `security-suite.yml`
+ - `security-suite.yml`
 - **Generation**: Obtained from Gitleaks subscription (https://gitleaks.io)
 - **Security Level**: LOW - Does not grant access to sensitive data, only enables scanning features
 - **Required**: No (Gitleaks works without it in free mode with limited features)
@@ -614,8 +614,8 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 - **Purpose**: GitHub OAuth app client secret
 - **Format**: 40-character hex string
 - **Used In**:
-  - `auth-oauth-app-sync.yml`
-  - `auth-secret-rotation.yml`
+ - `auth-oauth-app-sync.yml`
+ - `auth-secret-rotation.yml`
 - **Generation**: Via GitHub OAuth App settings
 - **Security Level**: HIGH - Rotate every 180 iterations
 - **Required**: Yes (for OAuth authentication)
@@ -626,8 +626,8 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 - **Purpose**: PyPI API token for publishing packages to production PyPI
 - **Format**: `pypi-` prefixed token string from PyPI account settings
 - **Used In**:
-  - `pypi-publish.yml`
-  - Package publishing workflows
+ - `pypi-publish.yml`
+ - Package publishing workflows
 - **Generation**: Via PyPI Account Settings → API tokens → Generate new token
 - **Security Level**: HIGH - Rotate every 90 iterations or after each use
 - **Required**: Yes (for production PyPI publishing)
@@ -638,8 +638,8 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 - **Purpose**: TestPyPI API token for testing package uploads before production
 - **Format**: `pypi-` prefixed token string from TestPyPI account settings
 - **Used In**:
-  - `pypi-publish.yml`
-  - Pre-release testing workflows
+ - `pypi-publish.yml`
+ - Pre-release testing workflows
 - **Generation**: Via TestPyPI Account Settings → API tokens → Generate new token
 - **Security Level**: MEDIUM - Rotate every 90 iterations
 - **Required**: No (recommended for testing releases before production)
@@ -694,17 +694,17 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 #### `CODEX_ENV_*`
 - **Purpose**: Select language versions during environment setup
 - **Variables**:
-  - `CODEX_ENV_PYTHON_VERSION` (default: 3.12)
-  - `CODEX_ENV_NODE_VERSION` (default: 22)
-  - `CODEX_ENV_RUST_VERSION` (default: 1.92)
-  - `CODEX_ENV_GO_VERSION` (default: 1.21)
-  - `CODEX_ENV_SWIFT_VERSION` (default: 5.9)
+ - `CODEX_ENV_PYTHON_VERSION` (default: 3.12)
+ - `CODEX_ENV_NODE_VERSION` (default: 22)
+ - `CODEX_ENV_RUST_VERSION` (default: 1.92)
+ - `CODEX_ENV_GO_VERSION` (default: 1.21)
+ - `CODEX_ENV_SWIFT_VERSION` (default: 5.9)
 
 #### `CODEX_SESSION_*`
 - **Purpose**: Session management and logging
 - **Variables**:
-  - `CODEX_SESSION_ID`: Unique session identifier
-  - `CODEX_SESSION_LOG_DIR`: Log directory (default: `.codex/sessions`)
+ - `CODEX_SESSION_ID`: Unique session identifier
+ - `CODEX_SESSION_LOG_DIR`: Log directory (default: `.codex/sessions`)
 
 #### `CODEX_LOG_DB_PATH` / `CODEX_DB_PATH`
 - **Purpose**: SQLite database path for logging
@@ -740,32 +740,32 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 #### `auth-token-rotation.yml`
 ```yaml
 permissions:
-  contents: write     # Read/write repository contents
-  issues: write       # Create audit issues
-  secrets: write      # Update GitHub secrets
+ contents: write # Read/write repository contents
+ issues: write # Create audit issues
+ secrets: write # Update GitHub secrets
 ```
 
 #### `auth-secret-rotation.yml`
 ```yaml
 permissions:
-  contents: write     # Read/write repository contents
-  secrets: write      # Rotate secrets
-  issues: write       # Create audit trail
+ contents: write # Read/write repository contents
+ secrets: write # Rotate secrets
+ issues: write # Create audit trail
 ```
 
 #### `auth-compliance-report.yml`
 ```yaml
 permissions:
-  contents: read      # Read repository data
-  issues: write       # Post compliance reports
+ contents: read # Read repository data
+ issues: write # Post compliance reports
 ```
 
 #### `phase10-automated-secrets-setup.yml`
 ```yaml
 permissions:
-  contents: read      # Read configuration
-  actions: write      # Manage workflow state
-  secrets: write      # Initialize secrets
+ contents: read # Read configuration
+ actions: write # Manage workflow state
+ secrets: write # Initialize secrets
 ```
 
 ## Security Best Practices
@@ -810,10 +810,10 @@ Complete mapping of all secrets to workflows: **.codex/security/secrets_usage_ma
 The MFA enrollment automation (`scripts/mfa_enrollment_automation.py`) generates TOTP secrets and backup codes but **does not store or transmit them automatically**. In production:
 
 1. Credentials must be delivered via secure, authenticated channels:
-   - Encrypted email with PGP
-   - SMS to verified numbers
-   - Secure internal portal with authentication
-   - Physical security keys
+ - Encrypted email with PGP
+ - SMS to verified numbers
+ - Secure internal portal with authentication
+ - Physical security keys
 
 2. The current implementation is a **placeholder** - implement secure delivery before production use.
 

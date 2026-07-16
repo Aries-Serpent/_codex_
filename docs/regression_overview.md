@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 This repository now ships an offline-first regression harness covering data, modeling, infrastructure, performance, and safety/honesty surfaces.
 

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Admin Setup Verification
 
 # §8 ADMIN_MANUAL_SETUP_GUIDE.md — Automated verification of all admin setup
@@ -36,7 +40,10 @@ permissions:
   pull-requests: write
   issues: write
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   verify-setup:
     name: Verify Admin Setup
@@ -57,7 +64,10 @@ jobs:
         with:
           persist-credentials: false
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -207,7 +217,10 @@ jobs:
             { echo ""; echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**"; } >> "$GITHUB_STEP_SUMMARY"
           fi
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
@@ -592,4 +605,7 @@ jobs:
           result = poster.post_pr_comment(os.environ.get("GITHUB_REPOSITORY", ""), pr, body)
           print(f"✅ Posted: {result.get('html_url')}")
           EOF
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

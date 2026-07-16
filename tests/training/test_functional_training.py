@@ -1,9 +1,10 @@
-import pytest
-
-pytest.importorskip("tensorboard")
 """Lightweight coverage for training.functional_training helpers."""
 
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("tensorboard")
 
 from pathlib import Path
 

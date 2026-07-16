@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Performance Monitoring - Regression Detection
 on:
   schedule:
@@ -78,7 +82,11 @@ jobs:
           script: |
             const fs = require("fs");
             const comment = fs.readFileSync("sla_check_result.md", "utf8");
+<<<<<<< HEAD
              
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

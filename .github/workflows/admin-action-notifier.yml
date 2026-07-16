@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Admin Action Notifier (Reusable)
 # aais-cache: none  # No pip install — Python snippets use stdlib only (json, sys); no pip cache needed
 
@@ -271,6 +275,7 @@ jobs:
             case "${SCOPE_OK}" in
               true)    echo "### ✅ Gap CLOSED — probe returned expected status (HTTP ${EXPECTED_OK})" ;;
               false)   echo "### ⚠️ Gap OPEN — admin action required (HTTP ${HTTP_STATUS} instead of ${EXPECTED_OK})"
+<<<<<<< HEAD
                        echo ""
                        echo "**Error Details:** \`${RESPONSE_MSG}\`"
                        [ -n "${ISSUE_NUM}" ] && echo "**Fix Steps:** See issue  #${ISSUE_NUM} for click-by-click instructions"
@@ -280,5 +285,16 @@ jobs:
                        echo "**Error Details:** \`${RESPONSE_MSG}\`"
                        echo "**Action:** Check workflow logs for details, or run workflow again"
                        ;;
+=======
+                        echo ""
+                        echo "**Error Details:** \`${RESPONSE_MSG}\`"
+                        [ -n "${ISSUE_NUM}" ] && echo "**Fix Steps:** See issue  #${ISSUE_NUM} for click-by-click instructions"
+                        ;;
+              unknown) echo "### ℹ️ Inconclusive probe — unexpected HTTP ${HTTP_STATUS}"
+                        echo ""
+                        echo "**Error Details:** \`${RESPONSE_MSG}\`"
+                        echo "**Action:** Check workflow logs for details, or run workflow again"
+                        ;;
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             esac
           } >> "$GITHUB_STEP_SUMMARY"

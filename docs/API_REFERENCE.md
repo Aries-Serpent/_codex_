@@ -8,7 +8,7 @@
 
 This document provides comprehensive API reference for all Codex ML modules across Phases 1-4.
 
->  **External Users:** Start with [10 Stable Public APIs](#10-stable-public-apis-v010) below. These are guaranteed backward-compatible through v0.1.x releases.
+> **External Users:** Start with [10 Stable Public APIs](#10-stable-public-apis-v010) below. These are guaranteed backward-compatible through v0.1.x releases.
 
 ---
 
@@ -17,8 +17,8 @@ This document provides comprehensive API reference for all Codex ML modules acro
 **These APIs are production-ready and backward-compatible across all v0.1.x releases.**
 
 ### 1️⃣ PromptSanitizer (Safety)
-**Module:** `codex_ml.safety.prompt_sanitizer`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `codex_ml.safety.prompt_sanitizer` 
+**Status:** Stable | **Since:** v0.2.1
 
 Sanitizes user prompts to prevent injection attacks.
 
@@ -32,8 +32,8 @@ is_safe = sanitizer.is_safe(user_input)
 ```
 
 ### 2️⃣ Config (Configuration)
-**Module:** `codex_ml.config`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `codex_ml.config` 
+**Status:** Stable | **Since:** v0.2.1
 
 Configuration management with Hydra + OmegaConf.
 
@@ -45,8 +45,8 @@ training_cfg = config.get('training')
 ```
 
 ### 3️⃣ Planner (Cognitive Brain)
-**Module:** `cognitive_brain`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `cognitive_brain` 
+**Status:** Stable | **Since:** v0.2.1
 
 OODA loop orchestrator for deterministic planning.
 
@@ -59,8 +59,8 @@ decision = planner.execute()
 ```
 
 ### 4️⃣ MemoryManager (Cognitive Brain)
-**Module:** `cognitive_brain`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `cognitive_brain` 
+**Status:** Stable | **Since:** v0.2.1
 
 Pattern-based memory with STM/LTM hierarchy.
 
@@ -73,8 +73,8 @@ retrieved = memory.recall_pattern(...)
 ```
 
 ### 5️⃣ ModelServer (Serving)
-**Module:** `codex_ml.serving`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `codex_ml.serving` 
+**Status:** Stable | **Since:** v0.2.1
 
 Ray Serve integration for production inference.
 
@@ -87,8 +87,8 @@ result = server.infer(input_data)
 ```
 
 ### 6️⃣ CLI Main (Command-Line Interface)
-**Module:** `codex_ml.cli`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `codex_ml.cli` 
+**Status:** Stable | **Since:** v0.2.1
 
 Typer-based CLI for training, eval, and serving.
 
@@ -104,8 +104,8 @@ exit_code = main(['train', '--config', 'config.yaml'])
 ```
 
 ### 7️⃣ ObservationData (Cognitive Brain)
-**Module:** `cognitive_brain`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `cognitive_brain` 
+**Status:** Stable | **Since:** v0.2.1
 
 Data class representing observations in OODA loop.
 
@@ -113,15 +113,15 @@ Data class representing observations in OODA loop.
 from cognitive_brain import ObservationData
 
 obs = ObservationData(
-    timestamp=datetime.now(),
-    metrics={'accuracy': 0.95},
-    context={...}
+ timestamp=datetime.now(),
+ metrics={'accuracy': 0.95},
+ context={...}
 )
 ```
 
 ### 8️⃣ Decision (Cognitive Brain)
-**Module:** `cognitive_brain`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `cognitive_brain` 
+**Status:** Stable | **Since:** v0.2.1
 
 Decision result from OODA Orient/Decide phase.
 
@@ -129,15 +129,15 @@ Decision result from OODA Orient/Decide phase.
 from cognitive_brain import Decision
 
 decision = Decision(
-    action='execute_training',
-    confidence=0.88,
-    rationale='metrics crossed threshold'
+ action='execute_training',
+ confidence=0.88,
+ rationale='metrics crossed threshold'
 )
 ```
 
 ### 9️⃣ NetworkPolicy (Safety)
-**Module:** `codex_ml.safety.network_policy`  
-**Status:**  Stable | **Since:** v0.2.1
+**Module:** `codex_ml.safety.network_policy` 
+**Status:** Stable | **Since:** v0.2.1
 
 Enforce network access policies (fail-closed by default).
 
@@ -145,14 +145,14 @@ Enforce network access policies (fail-closed by default).
 from codex_ml.safety.network_policy import enforce_network_policy, PolicyViolationError
 
 try:
-    enforce_network_policy("https://approved-host.example.com")
+ enforce_network_policy("https://approved-host.example.com")
 except PolicyViolationError as e:
-    print(f"Access denied: {e}")
+ print(f"Access denied: {e}")
 ```
 
-### 🔟 PatternSet (Cognitive Brain)
-**Module:** `cognitive_brain`  
-**Status:**  Stable | **Since:** v0.2.1
+### PatternSet (Cognitive Brain)
+**Module:** `cognitive_brain` 
+**Status:** Stable | **Since:** v0.2.1
 
 Collection of learned patterns for decision-making.
 
@@ -178,48 +178,48 @@ Sanitizes user prompts to prevent injection attacks.
 
 ```python
 class PromptSanitizer:
-    """Sanitizes prompts against injection patterns."""
+ """Sanitizes prompts against injection patterns."""
 
-    def __init__(self, strict_mode: bool = True):
-        """Initialize sanitizer.
+ def __init__(self, strict_mode: bool = True):
+ """Initialize sanitizer.
 
-        Args:
-            strict_mode: If True, raises ValueError on unsafe prompts.
-                        If False, redacts unsafe patterns.
-        """
+ Args:
+ strict_mode: If True, raises ValueError on unsafe prompts.
+ If False, redacts unsafe patterns.
+ """
 
-    def sanitize(self, prompt: str) -> str:
-        """Sanitize a prompt string.
+ def sanitize(self, prompt: str) -> str:
+ """Sanitize a prompt string.
 
-        Args:
-            prompt: Input prompt to sanitize
+ Args:
+ prompt: Input prompt to sanitize
 
-        Returns:
-            Sanitized prompt (or raises ValueError in strict mode)
+ Returns:
+ Sanitized prompt (or raises ValueError in strict mode)
 
-        Raises:
-            ValueError: If prompt is unsafe and strict_mode=True
-        """
+ Raises:
+ ValueError: If prompt is unsafe and strict_mode=True
+ """
 
-    def is_safe(self, prompt: str) -> bool:
-        """Check if prompt is safe.
+ def is_safe(self, prompt: str) -> bool:
+ """Check if prompt is safe.
 
-        Args:
-            prompt: Prompt to check
+ Args:
+ prompt: Prompt to check
 
-        Returns:
-            True if prompt passes all safety checks
-        """
+ Returns:
+ True if prompt passes all safety checks
+ """
 
-    def get_violations(self, prompt: str) -> List[str]:
-        """Get list of violations in prompt.
+ def get_violations(self, prompt: str) -> List[str]:
+ """Get list of violations in prompt.
 
-        Args:
-            prompt: Prompt to check
+ Args:
+ prompt: Prompt to check
 
-        Returns:
-            List of violation pattern names
-        """
+ Returns:
+ List of violation pattern names
+ """
 ```
 
 **Detected Patterns:**
@@ -242,9 +242,9 @@ from codex_ml.safety.prompt_sanitizer import PromptSanitizer
 # Strict mode (raises on unsafe input)
 sanitizer = PromptSanitizer(strict_mode=True)
 try:
-    result = sanitizer.sanitize("<script>alert('xss')</script>")
+ result = sanitizer.sanitize("<script>alert('xss')</script>")
 except ValueError as e:
-    print(f"Unsafe prompt detected: {e}")
+ print(f"Unsafe prompt detected: {e}")
 
 # Non-strict mode (redacts patterns)
 sanitizer = PromptSanitizer(strict_mode=False)
@@ -260,38 +260,38 @@ Health and readiness check endpoints for Kubernetes/production deployments.
 
 ```python
 def health_check() -> Dict[str, Any]:
-    """Basic health check (liveness probe).
+ """Basic health check (liveness probe).
 
-    Returns:
-        {"status": "healthy", "timestamp": "..."}
-    """
+ Returns:
+ {"status": "healthy", "timestamp": "..."}
+ """
 
 def readiness_check(
-    required_dirs: Optional[List[Path]] = None,
-    required_env_vars: Optional[List[str]] = None,
-    min_disk_space_gb: float = 1.0  # pragma: allowlist secret
+ required_dirs: Optional[List[Path]] = None,
+ required_env_vars: Optional[List[str]] = None,
+ min_disk_space_gb: float = 1.0 # pragma: allowlist secret
 ) -> Dict[str, Any]:
-    """Readiness check with system validation.
+ """Readiness check with system validation.
 
-    Args:
-        required_dirs: Directories that must exist
-        required_env_vars: Environment variables that must be set
-        min_disk_space_gb: Minimum free disk space in GB  # pragma: allowlist secret
+ Args:
+ required_dirs: Directories that must exist
+ required_env_vars: Environment variables that must be set
+ min_disk_space_gb: Minimum free disk space in GB # pragma: allowlist secret
 
-    Returns:
-        {
-            "status": "ready" | "not_ready",
-            "checks": {...},
-            "timestamp": "..."
-        }
-    """
+ Returns:
+ {
+ "status": "ready" | "not_ready",
+ "checks": {...},
+ "timestamp": "..."
+ }
+ """
 
 def get_health_router():
-    """Get FastAPI router with health endpoints.
+ """Get FastAPI router with health endpoints.
 
-    Returns:
-        FastAPI APIRouter with /health, /ready, /healthz, /readyz
-    """
+ Returns:
+ FastAPI APIRouter with /health, /ready, /healthz, /readyz
+ """
 ```
 
 **Example:**
@@ -316,54 +316,54 @@ Prometheus metrics collection and export.
 
 ```python
 class MetricsCollector:
-    """Collects and exports Prometheus metrics."""
+ """Collects and exports Prometheus metrics."""
 
-    def record_request(
-        self,
-        method: str,
-        endpoint: str,
-        status_code: int
-    ):
-        """Record an HTTP request.
+ def record_request(
+ self,
+ method: str,
+ endpoint: str,
+ status_code: int
+ ):
+ """Record an HTTP request.
 
-        Args:
-            method: HTTP method (GET, POST, etc.)
-            endpoint: Request endpoint
-            status_code: HTTP status code
-        """
+ Args:
+ method: HTTP method (GET, POST, etc.)
+ endpoint: Request endpoint
+ status_code: HTTP status code
+ """
 
-    def record_latency(
-        self,
-        duration_seconds: float,
-        method: str,
-        endpoint: str
-    ):
-        """Record request latency.
+ def record_latency(
+ self,
+ duration_seconds: float,
+ method: str,
+ endpoint: str
+ ):
+ """Record request latency.
 
-        Args:
-            duration_seconds: Request duration in seconds
-            method: HTTP method
-            endpoint: Request endpoint
-        """
+ Args:
+ duration_seconds: Request duration in seconds
+ method: HTTP method
+ endpoint: Request endpoint
+ """
 
-    def record_error(
-        self,
-        error_type: str,
-        endpoint: str
-    ):
-        """Record an error.
+ def record_error(
+ self,
+ error_type: str,
+ endpoint: str
+ ):
+ """Record an error.
 
-        Args:
-            error_type: Type/class of error
-            endpoint: Endpoint where error occurred
-        """
+ Args:
+ error_type: Type/class of error
+ endpoint: Endpoint where error occurred
+ """
 
 def get_metrics_router():
-    """Get FastAPI router with /metrics endpoint.
+ """Get FastAPI router with /metrics endpoint.
 
-    Returns:
-        FastAPI APIRouter with Prometheus metrics endpoint
-    """
+ Returns:
+ FastAPI APIRouter with Prometheus metrics endpoint
+ """
 ```
 
 **Metrics Exported:**
@@ -396,40 +396,40 @@ RNG state management for deterministic training resume.
 
 ```python
 class RNGState:
-    """Captures and restores RNG state across training sessions."""
+ """Captures and restores RNG state across training sessions."""
 
-    def __init__(self):
-        """Initialize RNG state manager."""
+ def __init__(self):
+ """Initialize RNG state manager."""
 
-    def capture(self):
-        """Capture current RNG state from all sources.
+ def capture(self):
+ """Capture current RNG state from all sources.
 
-        Captures state from:
-        - Python random module
-        - NumPy random
-        - PyTorch (CPU and CUDA)
-        """
+ Captures state from:
+ - Python random module
+ - NumPy random
+ - PyTorch (CPU and CUDA)
+ """
 
-    def restore(self):
-        """Restore previously captured RNG state."""
+ def restore(self):
+ """Restore previously captured RNG state."""
 
-    def save_to_file(self, path: Path):
-        """Save RNG state to JSON file.
+ def save_to_file(self, path: Path):
+ """Save RNG state to JSON file.
 
-        Args:
-            path: Path to .rng.json file
-        """
+ Args:
+ path: Path to .rng.json file
+ """
 
-    @classmethod
-    def load_from_file(cls, path: Path) -> "RNGState":
-        """Load RNG state from JSON file.
+ @classmethod
+ def load_from_file(cls, path: Path) -> "RNGState":
+ """Load RNG state from JSON file.
 
-        Args:
-            path: Path to .rng.json file
+ Args:
+ path: Path to .rng.json file
 
-        Returns:
-            RNGState instance with loaded state
-        """
+ Returns:
+ RNGState instance with loaded state
+ """
 ```
 
 **Example:**
@@ -455,59 +455,59 @@ Dataset integrity validation with SHA256 hashing.
 
 ```python
 class DatasetManifest:
-    """Manages dataset integrity manifests."""
+ """Manages dataset integrity manifests."""
 
-    def __init__(
-        self,
-        dataset_path: Path | str,
-        extensions: Optional[List[str]] = None,
-        recursive: bool = True
-    ):
-        """Initialize dataset manifest.
+ def __init__(
+ self,
+ dataset_path: Path | str,
+ extensions: Optional[List[str]] = None,
+ recursive: bool = True
+ ):
+ """Initialize dataset manifest.
 
-        Args:
-            dataset_path: Path to dataset directory
-            extensions: File extensions to include (e.g., [".txt", ".json"])
-            recursive: Whether to scan recursively
-        """
+ Args:
+ dataset_path: Path to dataset directory
+ extensions: File extensions to include (e.g., [".txt", ".json"])
+ recursive: Whether to scan recursively
+ """
 
-    def generate(self) -> "DatasetManifest":
-        """Generate manifest by hashing all dataset files.
+ def generate(self) -> "DatasetManifest":
+ """Generate manifest by hashing all dataset files.
 
-        Returns:
-            Self for method chaining
-        """
+ Returns:
+ Self for method chaining
+ """
 
-    def save(self, manifest_path: Path | str):
-        """Save manifest to JSON file.
+ def save(self, manifest_path: Path | str):
+ """Save manifest to JSON file.
 
-        Args:
-            manifest_path: Path to save manifest
-        """
+ Args:
+ manifest_path: Path to save manifest
+ """
 
-    def verify(self, manifest_path: Path | str) -> Dict[str, List[str]]:
-        """Verify dataset against saved manifest.
+ def verify(self, manifest_path: Path | str) -> Dict[str, List[str]]:
+ """Verify dataset against saved manifest.
 
-        Args:
-            manifest_path: Path to manifest file
+ Args:
+ manifest_path: Path to manifest file
 
-        Returns:
-            {
-                "missing": [...],  # Files in manifest but not in dataset
-                "modified": [...], # Files with changed hashes
-                "added": [...]     # Files in dataset but not in manifest
-            }
-        """
+ Returns:
+ {
+ "missing": [...], # Files in manifest but not in dataset
+ "modified": [...], # Files with changed hashes
+ "added": [...] # Files in dataset but not in manifest
+ }
+ """
 
-    def has_drift(self, manifest_path: Optional[Path | str] = None) -> bool:
-        """Check if dataset has drifted from manifest.
+ def has_drift(self, manifest_path: Optional[Path | str] = None) -> bool:
+ """Check if dataset has drifted from manifest.
 
-        Args:
-            manifest_path: Path to manifest (uses self.manifest_path if None)
+ Args:
+ manifest_path: Path to manifest (uses self.manifest_path if None)
 
-        Returns:
-            True if any files are missing, modified, or added
-        """
+ Returns:
+ True if any files are missing, modified, or added
+ """
 ```
 
 **Example:**
@@ -522,11 +522,11 @@ manifest.save("data/train_manifest.json")
 
 # Verify integrity on resume
 if manifest.has_drift("data/train_manifest.json"):
-    print("️ Dataset drift detected!")
-    diff = manifest.verify("data/train_manifest.json")
-    print(f"Modified: {len(diff['modified'])}")
-    print(f"Missing: {len(diff['missing'])}")
-    print(f"Added: {len(diff['added'])}")
+ print("️ Dataset drift detected!")
+ diff = manifest.verify("data/train_manifest.json")
+ print(f"Modified: {len(diff['modified'])}")
+ print(f"Missing: {len(diff['missing'])}")
+ print(f"Added: {len(diff['added'])}")
 ```
 
 ## `codex_ml.utils.deterministic`
@@ -535,23 +535,23 @@ Enforce deterministic algorithms for reproducibility.
 
 ```python
 def enable_deterministic_mode():
-    """Enable deterministic mode for all frameworks.
+ """Enable deterministic mode for all frameworks.
 
-    Sets:
-    - PyTorch: torch.use_deterministic_algorithms(True)
-    - TensorFlow: tf.config.experimental.enable_op_determinism()
-    - CuDNN: deterministic=True, benchmark=False
-    - Environment: PYTHONHASHSEED=0, CUBLAS_WORKSPACE_CONFIG=:4096:8
-    """
+ Sets:
+ - PyTorch: torch.use_deterministic_algorithms(True)
+ - TensorFlow: tf.config.experimental.enable_op_determinism()
+ - CuDNN: deterministic=True, benchmark=False
+ - Environment: PYTHONHASHSEED=0, CUBLAS_WORKSPACE_CONFIG=:4096:8
+ """
 
 class DeterministicContext:
-    """Context manager for temporary deterministic execution."""
+ """Context manager for temporary deterministic execution."""
 
-    def __enter__(self):
-        """Enable deterministic mode."""
+ def __enter__(self):
+ """Enable deterministic mode."""
 
-    def __exit__(self, *args):
-        """Restore previous settings."""
+ def __exit__(self, *args):
+ """Restore previous settings."""
 ```
 
 **Example:**
@@ -564,8 +564,8 @@ enable_deterministic_mode()
 
 # Or use context manager
 with DeterministicContext():
-    # Bit-exact reproducibility within this block
-    train_model()
+ # Bit-exact reproducibility within this block
+ train_model()
 ```
 
 ## `codex_ml.utils.checkpoint_integrity_validation`
@@ -574,41 +574,41 @@ Checkpoint corruption detection with SHA256 validation.
 
 ```python
 class CheckpointIntegrity:
-    """Validates checkpoint file integrity."""
+ """Validates checkpoint file integrity."""
 
-    def __init__(self, checkpoint_path: Path | str):
-        """Initialize integrity validator.
+ def __init__(self, checkpoint_path: Path | str):
+ """Initialize integrity validator.
 
-        Args:
-            checkpoint_path: Path to checkpoint file
-        """
+ Args:
+ checkpoint_path: Path to checkpoint file
+ """
 
-    def compute_hash(self) -> str:
-        """Compute SHA256 hash of checkpoint.
+ def compute_hash(self) -> str:
+ """Compute SHA256 hash of checkpoint.
 
-        Returns:
-            Hex string of SHA256 hash
-        """
+ Returns:
+ Hex string of SHA256 hash
+ """
 
-    def save_integrity(self, metadata: Optional[Dict] = None):
-        """Save integrity metadata to .integrity.json file.
+ def save_integrity(self, metadata: Optional[Dict] = None):
+ """Save integrity metadata to .integrity.json file.
 
-        Args:
-            metadata: Optional metadata to include (e.g., epoch, metrics)
-        """
+ Args:
+ metadata: Optional metadata to include (e.g., epoch, metrics)
+ """
 
-    def validate(self, strict: bool = True) -> bool:
-        """Validate checkpoint against saved integrity file.
+ def validate(self, strict: bool = True) -> bool:
+ """Validate checkpoint against saved integrity file.
 
-        Args:
-            strict: If True, raises exception on validation failure
+ Args:
+ strict: If True, raises exception on validation failure
 
-        Returns:
-            True if validation passes
+ Returns:
+ True if validation passes
 
-        Raises:
-            ValueError: If validation fails and strict=True
-        """
+ Raises:
+ ValueError: If validation fails and strict=True
+ """
 ```
 
 **Example:**
@@ -623,7 +623,7 @@ integrity.save_integrity(metadata={"epoch": 10, "loss": 0.5})
 # On checkpoint load (validate before loading)
 integrity = CheckpointIntegrity("checkpoint.pt")
 if not integrity.validate(strict=True):
-    raise RuntimeError("Checkpoint corrupted!")
+ raise RuntimeError("Checkpoint corrupted!")
 ```
 
 ## `codex_ml.utils.config_drift`
@@ -632,51 +632,51 @@ Configuration drift detection for reproducibility.
 
 ```python
 class ConfigDrift:
-    """Detects configuration drift between runs."""
+ """Detects configuration drift between runs."""
 
-    def __init__(self, config: Dict[str, Any]):
-        """Initialize config drift detector.
+ def __init__(self, config: Dict[str, Any]):
+ """Initialize config drift detector.
 
-        Args:
-            config: Configuration dictionary
-        """
+ Args:
+ config: Configuration dictionary
+ """
 
-    def compute_hash(self) -> str:
-        """Compute SHA256 hash of configuration.
+ def compute_hash(self) -> str:
+ """Compute SHA256 hash of configuration.
 
-        Returns:
-            Hex string of config hash
-        """
+ Returns:
+ Hex string of config hash
+ """
 
-    def save_baseline(self, baseline_path: Path | str):
-        """Save configuration as baseline.
+ def save_baseline(self, baseline_path: Path | str):
+ """Save configuration as baseline.
 
-        Args:
-            baseline_path: Path to save baseline JSON
-        """
+ Args:
+ baseline_path: Path to save baseline JSON
+ """
 
-    def validate_against_baseline(
-        self,
-        baseline_path: Path | str,
-        strict: bool = True
-    ) -> Dict[str, Any]:
-        """Validate config against baseline.
+ def validate_against_baseline(
+ self,
+ baseline_path: Path | str,
+ strict: bool = True
+ ) -> Dict[str, Any]:
+ """Validate config against baseline.
 
-        Args:
-            baseline_path: Path to baseline file
-            strict: If True, raises exception on drift
+ Args:
+ baseline_path: Path to baseline file
+ strict: If True, raises exception on drift
 
-        Returns:
-            {
-                "has_drift": bool,
-                "added": [...],
-                "removed": [...],
-                "modified": [...]
-            }
+ Returns:
+ {
+ "has_drift": bool,
+ "added": [...],
+ "removed": [...],
+ "modified": [...]
+ }
 
-        Raises:
-            ValueError: If drift detected and strict=True
-        """
+ Raises:
+ ValueError: If drift detected and strict=True
+ """
 ```
 
 **Example:**
@@ -707,44 +707,44 @@ Autonomous error recovery and self-healing framework.
 
 ```python
 class SelfHealingContext:
-    """Context manager for self-healing execution."""
+ """Context manager for self-healing execution."""
 
-    def __init__(
-        self,
-        batch_size: int,
-        enable_oom_recovery: bool = True,
-        max_retries: int = 3,
-        min_batch_size: int = 1
-    ):
-        """Initialize self-healing context.
+ def __init__(
+ self,
+ batch_size: int,
+ enable_oom_recovery: bool = True,
+ max_retries: int = 3,
+ min_batch_size: int = 1
+ ):
+ """Initialize self-healing context.
 
-        Args:
-            batch_size: Initial batch size
-            enable_oom_recovery: Enable automatic OOM recovery
-            max_retries: Maximum recovery attempts
-            min_batch_size: Minimum batch size (stop reducing below this)
-        """
+ Args:
+ batch_size: Initial batch size
+ enable_oom_recovery: Enable automatic OOM recovery
+ max_retries: Maximum recovery attempts
+ min_batch_size: Minimum batch size (stop reducing below this)
+ """
 
-    def __enter__(self) -> "SelfHealingContext":
-        """Enter context."""
+ def __enter__(self) -> "SelfHealingContext":
+ """Enter context."""
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
-        """Exit context with automatic remediation.
+ def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+ """Exit context with automatic remediation.
 
-        Returns:
-            True if error was handled, False to propagate
-        """
+ Returns:
+ True if error was handled, False to propagate
+ """
 
 def auto_remediate(
-    max_retries: int = 3,
-    batch_size: Optional[int] = None
+ max_retries: int = 3,
+ batch_size: Optional[int] = None
 ):
-    """Decorator for auto-remediation.
+ """Decorator for auto-remediation.
 
-    Args:
-        max_retries: Maximum retry attempts
-        batch_size: Initial batch size (for OOM recovery)
-    """
+ Args:
+ max_retries: Maximum retry attempts
+ batch_size: Initial batch size (for OOM recovery)
+ """
 ```
 
 **Example:**
@@ -754,13 +754,13 @@ from codex_ml.utils.self_healing import SelfHealingContext, auto_remediate
 
 # Context manager approach
 with SelfHealingContext(batch_size=32, enable_oom_recovery=True) as healer:
-    train_model(batch_size=healer.batch_size)
-    # If OOM occurs: batch_size automatically reduced to 16, 8, 4...
+ train_model(batch_size=healer.batch_size)
+ # If OOM occurs: batch_size automatically reduced to 16, 8, 4...
 
 # Decorator approach
 @auto_remediate(max_retries=3, batch_size=32)
 def train_with_recovery(batch_size):
-    return train_model(batch_size=batch_size)
+ return train_model(batch_size=batch_size)
 ```
 
 ## Drift Detection
@@ -771,63 +771,63 @@ Comprehensive drift monitoring for data, config, and model performance.
 
 ```python
 class ComprehensiveDriftMonitor:
-    """Unified drift monitoring system."""
+ """Unified drift monitoring system."""
 
-    def __init__(
-        self,
-        data_threshold: float = 0.1,
-        config_threshold: float = 0.0,
-        model_threshold: float = 0.1
-    ):
-        """Initialize drift monitor.
+ def __init__(
+ self,
+ data_threshold: float = 0.1,
+ config_threshold: float = 0.0,
+ model_threshold: float = 0.1
+ ):
+ """Initialize drift monitor.
 
-        Args:
-            data_threshold: Threshold for data drift (0-1)
-            config_threshold: Threshold for config drift
-            model_threshold: Threshold for model performance drift
-        """
+ Args:
+ data_threshold: Threshold for data drift (0-1)
+ config_threshold: Threshold for config drift
+ model_threshold: Threshold for model performance drift
+ """
 
-    def monitor_all(
-        self,
-        current_data_stats: Optional[Dict[str, float]] = None,
-        baseline_data_stats: Optional[Dict[str, float]] = None,
-        current_config: Optional[Dict] = None,
-        baseline_config: Optional[Dict] = None,
-        current_metrics: Optional[Dict[str, float]] = None,
-        baseline_metrics: Optional[Dict[str, float]] = None
-    ) -> Dict[str, Any]:
-        """Monitor all drift types.
+ def monitor_all(
+ self,
+ current_data_stats: Optional[Dict[str, float]] = None,
+ baseline_data_stats: Optional[Dict[str, float]] = None,
+ current_config: Optional[Dict] = None,
+ baseline_config: Optional[Dict] = None,
+ current_metrics: Optional[Dict[str, float]] = None,
+ baseline_metrics: Optional[Dict[str, float]] = None
+ ) -> Dict[str, Any]:
+ """Monitor all drift types.
 
-        Returns:
-            {
-                "data_drift": {...},
-                "config_drift": {...},
-                "model_drift": {...}
-            }
-        """
+ Returns:
+ {
+ "data_drift": {...},
+ "config_drift": {...},
+ "model_drift": {...}
+ }
+ """
 
-    def has_critical_drift(self) -> bool:
-        """Check if any critical drift detected.
+ def has_critical_drift(self) -> bool:
+ """Check if any critical drift detected.
 
-        Returns:
-            True if any alerts with severity="critical"
-        """
+ Returns:
+ True if any alerts with severity="critical"
+ """
 
-    def get_drift_summary(self) -> Dict[str, int]:
-        """Get summary of drift alerts.
+ def get_drift_summary(self) -> Dict[str, int]:
+ """Get summary of drift alerts.
 
-        Returns:
-            {
-                "total_alerts": int,
-                "critical_count": int,
-                "high_count": int,
-                "medium_count": int,
-                "low_count": int
-            }
-        """
+ Returns:
+ {
+ "total_alerts": int,
+ "critical_count": int,
+ "high_count": int,
+ "medium_count": int,
+ "low_count": int
+ }
+ """
 
-    def save_alerts(self, output_path: Path | str):
-        """Save drift alerts to JSON file."""
+ def save_alerts(self, output_path: Path | str):
+ """Save drift alerts to JSON file."""
 ```
 
 **Alert Severity Levels:**
@@ -842,26 +842,26 @@ class ComprehensiveDriftMonitor:
 from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 monitor = ComprehensiveDriftMonitor(
-    data_threshold=0.1,
-    config_threshold=0.0,
-    model_threshold=0.1
+ data_threshold=0.1,
+ config_threshold=0.0,
+ model_threshold=0.1
 )
 
 results = monitor.monitor_all(
-    current_data_stats={"mean": 0.5, "std": 0.2},
-    baseline_data_stats={"mean": 0.48, "std": 0.19},
-    current_config=config,
-    baseline_config=baseline_config,
-    current_metrics={"loss": 0.3, "accuracy": 0.92},
-    baseline_metrics={"loss": 0.25, "accuracy": 0.95}
+ current_data_stats={"mean": 0.5, "std": 0.2},
+ baseline_data_stats={"mean": 0.48, "std": 0.19},
+ current_config=config,
+ baseline_config=baseline_config,
+ current_metrics={"loss": 0.3, "accuracy": 0.92},
+ baseline_metrics={"loss": 0.25, "accuracy": 0.95}
 )
 
 if monitor.has_critical_drift():
-    print("️ Critical drift detected!")
-    monitor.save_alerts("drift_alerts.json")
-    summary = monitor.get_drift_summary()
-    print(f"Total alerts: {summary['total_alerts']}")
-    print(f"Critical: {summary['critical_count']}")
+ print("️ Critical drift detected!")
+ monitor.save_alerts("drift_alerts.json")
+ summary = monitor.get_drift_summary()
+ print(f"Total alerts: {summary['total_alerts']}")
+ print(f"Critical: {summary['critical_count']}")
 ```
 
 ### Training
@@ -872,24 +872,24 @@ Auto-injected early stopping for HuggingFace trainers.
 
 ```python
 def auto_inject_early_stopping_for_trainer(
-    trainer_class,
-    eval_dataset: Optional[Any] = None,
-    callbacks: Optional[List] = None,
-    patience: int = 3,
-    threshold: float = 0.0
+ trainer_class,
+ eval_dataset: Optional[Any] = None,
+ callbacks: Optional[List] = None,
+ patience: int = 3,
+ threshold: float = 0.0
 ) -> List:
-    """Auto-inject EarlyStopping callback.
+ """Auto-inject EarlyStopping callback.
 
-    Args:
-        trainer_class: HuggingFace Trainer class
-        eval_dataset: Evaluation dataset (required for early stopping)
-        callbacks: Existing callbacks
-        patience: Number of evaluations with no improvement
-        threshold: Minimum change to qualify as improvement
+ Args:
+ trainer_class: HuggingFace Trainer class
+ eval_dataset: Evaluation dataset (required for early stopping)
+ callbacks: Existing callbacks
+ patience: Number of evaluations with no improvement
+ threshold: Minimum change to qualify as improvement
 
-    Returns:
-        Updated callbacks list with EarlyStopping added
-    """
+ Returns:
+ Updated callbacks list with EarlyStopping added
+ """
 ```
 
 **Example:**
@@ -899,10 +899,10 @@ from codex_ml.training.early_stopping import auto_inject_early_stopping_for_trai
 from transformers import Trainer
 
 callbacks = auto_inject_early_stopping_for_trainer(
-    trainer_class=Trainer,
-    eval_dataset=eval_dataset,
-    callbacks=[],
-    patience=3
+ trainer_class=Trainer,
+ eval_dataset=eval_dataset,
+ callbacks=[],
+ patience=3
 )
 
 trainer = Trainer(..., callbacks=callbacks)
@@ -915,35 +915,35 @@ Offline-first Weights & Biases logger with NDJSON fallback.
 
 ```python
 def init_wandb(
-    project: str,
-    name: Optional[str] = None,
-    config: Optional[Dict] = None,
-    **kwargs
+ project: str,
+ name: Optional[str] = None,
+ config: Optional[Dict] = None,
+ **kwargs
 ) -> "WandBLogger":
-    """Initialize W&B logger (offline by default).
+ """Initialize W&B logger (offline by default).
 
-    Args:
-        project: Project name
-        name: Run name
-        config: Configuration dictionary
-        **kwargs: Additional wandb.init kwargs
+ Args:
+ project: Project name
+ name: Run name
+ config: Configuration dictionary
+ **kwargs: Additional wandb.init kwargs
 
-    Returns:
-        WandBLogger instance (graceful fallback to NDJSON if W&B unavailable)
-    """
+ Returns:
+ WandBLogger instance (graceful fallback to NDJSON if W&B unavailable)
+ """
 
 class WandBLogger:
-    """W&B logger with graceful fallback."""
+ """W&B logger with graceful fallback."""
 
-    def log(self, metrics: Dict[str, Any]):
-        """Log metrics.
+ def log(self, metrics: Dict[str, Any]):
+ """Log metrics.
 
-        Args:
-            metrics: Dictionary of metric values
-        """
+ Args:
+ metrics: Dictionary of metric values
+ """
 
-    def finish(self):
-        """Finish logging session."""
+ def finish(self):
+ """Finish logging session."""
 ```
 
 **Example:**
@@ -971,79 +971,79 @@ Auto-retraining pipeline with drift-triggered model updates.
 
 ```python
 class ContinuousLearningPipeline:
-    """Continuous learning with auto-retraining."""
+ """Continuous learning with auto-retraining."""
 
-    def __init__(
-        self,
-        model_name: str,
-        registry_path: Path | str = "models/registry.json",
-        drift_threshold: float = 0.15,
-        min_samples_retrain: int = 1000,
-        performance_degradation_threshold: float = 0.05
-    ):
-        """Initialize continuous learning pipeline.
+ def __init__(
+ self,
+ model_name: str,
+ registry_path: Path | str = "models/registry.json",
+ drift_threshold: float = 0.15,
+ min_samples_retrain: int = 1000,
+ performance_degradation_threshold: float = 0.05
+ ):
+ """Initialize continuous learning pipeline.
 
-        Args:
-            model_name: Model name
-            registry_path: Path to model registry
-            drift_threshold: Drift score threshold for retraining
-            min_samples_retrain: Minimum samples required
-            performance_degradation_threshold: Max acceptable performance drop
-        """
+ Args:
+ model_name: Model name
+ registry_path: Path to model registry
+ drift_threshold: Drift score threshold for retraining
+ min_samples_retrain: Minimum samples required
+ performance_degradation_threshold: Max acceptable performance drop
+ """
 
-    def should_retrain(
-        self,
-        drift_score: float,
-        samples_count: int,
-        current_performance: Optional[Dict[str, float]] = None
-    ) -> bool:
-        """Determine if retraining should be triggered.
+ def should_retrain(
+ self,
+ drift_score: float,
+ samples_count: int,
+ current_performance: Optional[Dict[str, float]] = None
+ ) -> bool:
+ """Determine if retraining should be triggered.
 
-        Returns:
-            True if retraining criteria met
-        """
+ Returns:
+ True if retraining criteria met
+ """
 
-    def retrain(
-        self,
-        train_fn: Callable,
-        train_data: Any,
-        dataset_hash: Optional[str] = None,
-        drift_score: Optional[float] = None
-    ) -> ModelVersion:
-        """Execute retraining.
+ def retrain(
+ self,
+ train_fn: Callable,
+ train_data: Any,
+ dataset_hash: Optional[str] = None,
+ drift_score: Optional[float] = None
+ ) -> ModelVersion:
+ """Execute retraining.
 
-        Args:
-            train_fn: Training function that returns (model, metrics)
-            train_data: Training dataset
-            dataset_hash: Hash of training dataset
-            drift_score: Drift score that triggered retraining
+ Args:
+ train_fn: Training function that returns (model, metrics)
+ train_data: Training dataset
+ dataset_hash: Hash of training dataset
+ drift_score: Drift score that triggered retraining
 
-        Returns:
-            New ModelVersion
-        """
+ Returns:
+ New ModelVersion
+ """
 
-    def compare_models(
-        self,
-        new_version: ModelVersion,
-        baseline_version: Optional[ModelVersion] = None,
-        primary_metric: str = "accuracy"
-    ) -> Dict[str, Any]:
-        """Compare model versions.
+ def compare_models(
+ self,
+ new_version: ModelVersion,
+ baseline_version: Optional[ModelVersion] = None,
+ primary_metric: str = "accuracy"
+ ) -> Dict[str, Any]:
+ """Compare model versions.
 
-        Returns:
-            {
-                "is_better": bool,
-                "improvement": float,
-                "new_metric": float,
-                "baseline_metric": float
-            }
-        """
+ Returns:
+ {
+ "is_better": bool,
+ "improvement": float,
+ "new_metric": float,
+ "baseline_metric": float
+ }
+ """
 
-    def deploy_model(self, version: ModelVersion):
-        """Deploy model version to production."""
+ def deploy_model(self, version: ModelVersion):
+ """Deploy model version to production."""
 
-    def rollback(self, to_version: Optional[str] = None):
-        """Rollback to previous model version."""
+ def rollback(self, to_version: Optional[str] = None):
+ """Rollback to previous model version."""
 ```
 
 **Example:**
@@ -1053,28 +1053,28 @@ from codex_ml.training.continuous_learning import ContinuousLearningPipeline
 from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 pipeline = ContinuousLearningPipeline(
-    model_name="my_model",
-    drift_threshold=0.15,
-    min_samples_retrain=1000
+ model_name="my_model",
+ drift_threshold=0.15,
+ min_samples_retrain=1000
 )
 
 monitor = ComprehensiveDriftMonitor(...)
 
 # Auto-retrain on drift
 if monitor.has_critical_drift():
-    drift_score = monitor.get_drift_summary()["max_drift"]
+ drift_score = monitor.get_drift_summary()["max_drift"]
 
-    if pipeline.should_retrain(drift_score=drift_score, samples_count=1500):
-        # Retrain
-        new_version = pipeline.retrain(train_fn, train_data)
+ if pipeline.should_retrain(drift_score=drift_score, samples_count=1500):
+ # Retrain
+ new_version = pipeline.retrain(train_fn, train_data)
 
-        # Compare with production
-        comparison = pipeline.compare_models(new_version)
+ # Compare with production
+ comparison = pipeline.compare_models(new_version)
 
-        if comparison["is_better"]:
-            pipeline.deploy_model(new_version)
-        else:
-            pipeline.rollback()
+ if comparison["is_better"]:
+ pipeline.deploy_model(new_version)
+ else:
+ pipeline.rollback()
 ```
 
 ## A/B Testing
@@ -1085,50 +1085,50 @@ A/B testing framework for model evaluation.
 
 ```python
 class ABTestManager:
-    """A/B test manager for model experiments."""
+ """A/B test manager for model experiments."""
 
-    def __init__(self, config: ABTestConfig):
-        """Initialize A/B test manager.
+ def __init__(self, config: ABTestConfig):
+ """Initialize A/B test manager.
 
-        Args:
-            config: A/B test configuration
-        """
+ Args:
+ config: A/B test configuration
+ """
 
-    def record_result(self, variant_name: str, metrics: Dict[str, float]):
-        """Record result for a variant.
+ def record_result(self, variant_name: str, metrics: Dict[str, float]):
+ """Record result for a variant.
 
-        Args:
-            variant_name: Name of variant (e.g., "v1.0", "v2.0")
-            metrics: Dictionary of metric values
-        """
+ Args:
+ variant_name: Name of variant (e.g., "v1.0", "v2.0")
+ metrics: Dictionary of metric values
+ """
 
-    def is_significant(self, alpha: float = 0.05) -> bool:
-        """Check if results are statistically significant.
+ def is_significant(self, alpha: float = 0.05) -> bool:
+ """Check if results are statistically significant.
 
-        Args:
-            alpha: Significance level (default: 0.05 for 95% confidence)
+ Args:
+ alpha: Significance level (default: 0.05 for 95% confidence)
 
-        Returns:
-            True if difference is statistically significant
-        """
+ Returns:
+ True if difference is statistically significant
+ """
 
-    def get_winner(self) -> str:
-        """Determine winning variant based on primary metric.
+ def get_winner(self) -> str:
+ """Determine winning variant based on primary metric.
 
-        Returns:
-            Name of winning variant
-        """
+ Returns:
+ Name of winning variant
+ """
 
-    def gradual_rollout(self, winner_variant: str, steps: int = 5):
-        """Gradually rollout winning variant.
+ def gradual_rollout(self, winner_variant: str, steps: int = 5):
+ """Gradually rollout winning variant.
 
-        Args:
-            winner_variant: Variant to roll out
-            steps: Number of rollout steps
-        """
+ Args:
+ winner_variant: Variant to roll out
+ steps: Number of rollout steps
+ """
 
-    def save_results(self, output_path: Path | str):
-        """Save experiment results to file."""
+ def save_results(self, output_path: Path | str):
+ """Save experiment results to file."""
 ```
 
 **Example:**
@@ -1137,27 +1137,27 @@ class ABTestManager:
 from codex_ml.training.ab_testing import ABTestManager, ABTestConfig
 
 config = ABTestConfig(
-    experiment_name="model_v2_test",
-    control_variant="v1.0",
-    treatment_variants=["v2.0"],
-    traffic_split={"v1.0": 0.5, "v2.0": 0.5},
-    primary_metric="accuracy"
+ experiment_name="model_v2_test",
+ control_variant="v1.0",
+ treatment_variants=["v2.0"],
+ traffic_split={"v1.0": 0.5, "v2.0": 0.5},
+ primary_metric="accuracy"
 )
 
 manager = ABTestManager(config)
 
 # Track performance
 for i in range(100):
-    variant = "v1.0" if i % 2 == 0 else "v2.0"
-    metrics = get_metrics(variant)
-    manager.record_result(variant, metrics)
+ variant = "v1.0" if i % 2 == 0 else "v2.0"
+ metrics = get_metrics(variant)
+ manager.record_result(variant, metrics)
 
 # Determine winner
 if manager.is_significant():
-    winner = manager.get_winner()
-    print(f"Winner: {winner}")
-    manager.gradual_rollout(winner, steps=5)
-    manager.save_results("ab_test_results.json")
+ winner = manager.get_winner()
+ print(f"Winner: {winner}")
+ manager.gradual_rollout(winner, steps=5)
+ manager.save_results("ab_test_results.json")
 ```
 
 ## Plugin Sandbox
@@ -1168,58 +1168,58 @@ Sandboxed plugin execution with contract validation and auto-disable.
 
 ```python
 class Plugin(ABC):
-    """Base class for plugins."""
+ """Base class for plugins."""
 
-    @abstractmethod
-    def initialize(self) -> bool:
-        """Initialize plugin."""
+ @abstractmethod
+ def initialize(self) -> bool:
+ """Initialize plugin."""
 
-    @abstractmethod
-    def execute(self, *args, **kwargs) -> Any:
-        """Execute plugin logic."""
+ @abstractmethod
+ def execute(self, *args, **kwargs) -> Any:
+ """Execute plugin logic."""
 
-    @abstractmethod
-    def cleanup(self):
-        """Clean up resources."""
+ @abstractmethod
+ def cleanup(self):
+ """Clean up resources."""
 
-    def get_contract(self) -> PluginContract:
-        """Get plugin contract specification."""
+ def get_contract(self) -> PluginContract:
+ """Get plugin contract specification."""
 
 class PluginManager:
-    """Plugin lifecycle manager."""
+ """Plugin lifecycle manager."""
 
-    def __init__(
-        self,
-        sandbox: Optional[PluginSandbox] = None,
-        validate_contracts: bool = True
-    ):
-        """Initialize plugin manager.
+ def __init__(
+ self,
+ sandbox: Optional[PluginSandbox] = None,
+ validate_contracts: bool = True
+ ):
+ """Initialize plugin manager.
 
-        Args:
-            sandbox: Plugin sandbox (creates default if None)
-            validate_contracts: Enable contract validation
-        """
+ Args:
+ sandbox: Plugin sandbox (creates default if None)
+ validate_contracts: Enable contract validation
+ """
 
-    def register_plugin(self, plugin: Plugin) -> bool:
-        """Register a plugin.
+ def register_plugin(self, plugin: Plugin) -> bool:
+ """Register a plugin.
 
-        Args:
-            plugin: Plugin instance
+ Args:
+ plugin: Plugin instance
 
-        Returns:
-            True if registration successful
-        """
+ Returns:
+ True if registration successful
+ """
 
-    def execute_plugin(
-        self,
-        plugin_name: str,
-        *args,
-        **kwargs
-    ) -> Optional[Any]:
-        """Execute a registered plugin."""
+ def execute_plugin(
+ self,
+ plugin_name: str,
+ *args,
+ **kwargs
+ ) -> Optional[Any]:
+ """Execute a registered plugin."""
 
-    def get_plugin_health_report(self) -> Dict[str, Any]:
-        """Get health report for all plugins."""
+ def get_plugin_health_report(self) -> Dict[str, Any]:
+ """Get health report for all plugins."""
 ```
 
 **Example:**
@@ -1228,20 +1228,20 @@ class PluginManager:
 from codex_ml.plugins.plugin_sandbox import Plugin, PluginContract, PluginManager
 
 class MyPlugin(Plugin):
-    def initialize(self) -> bool:
-        return True
+ def initialize(self) -> bool:
+ return True
 
-    def execute(self, data):
-        return {"result": "processed"}
+ def execute(self, data):
+ return {"result": "processed"}
 
-    def cleanup(self):
-        pass
+ def cleanup(self):
+ pass
 
-    def get_contract(self) -> PluginContract:
-        return PluginContract(
-            required_methods=["initialize", "execute", "cleanup"],
-            max_execution_time=10.0
-        )
+ def get_contract(self) -> PluginContract:
+ return PluginContract(
+ required_methods=["initialize", "execute", "cleanup"],
+ max_execution_time=10.0
+ )
 
 # Use plugin manager
 manager = PluginManager()
@@ -1282,65 +1282,65 @@ from codex_ml.training.continuous_learning import ContinuousLearningPipeline
 from codex_ml.training.ab_testing import ABTestManager
 
 def autonomous_training_pipeline(config, train_data, eval_data):
-    """Fully autonomous training with all features."""
+ """Fully autonomous training with all features."""
 
-    # Phase 2: Deterministic mode
-    enable_deterministic_mode()
+ # Phase 2: Deterministic mode
+ enable_deterministic_mode()
 
-    # Phase 2: Dataset integrity
-    manifest = DatasetManifest("data/train")
-    assert not manifest.has_drift("dataset_manifest.json")
+ # Phase 2: Dataset integrity
+ manifest = DatasetManifest("data/train")
+ assert not manifest.has_drift("dataset_manifest.json")
 
-    # Phase 2: Config validation
-    drift = ConfigDrift(config)
-    drift.validate_against_baseline("config_baseline.json", strict=True)
+ # Phase 2: Config validation
+ drift = ConfigDrift(config)
+ drift.validate_against_baseline("config_baseline.json", strict=True)
 
-    # Phase 3: Offline logging
-    logger = init_wandb(project="codex")
+ # Phase 3: Offline logging
+ logger = init_wandb(project="codex")
 
-    # Phase 3: Auto early stopping
-    callbacks = auto_inject_early_stopping_for_trainer(
-        trainer_class=Trainer,
-        eval_dataset=eval_data
-    )
+ # Phase 3: Auto early stopping
+ callbacks = auto_inject_early_stopping_for_trainer(
+ trainer_class=Trainer,
+ eval_dataset=eval_data
+ )
 
-    # Phase 3: Self-healing training
-    with SelfHealingContext(batch_size=config["batch_size"]) as healer:
-        trainer = Trainer(
-            model=model,
-            args=TrainingArguments(
-                per_device_train_batch_size=healer.batch_size
-            ),
-            train_dataset=train_data,
-            eval_dataset=eval_data,
-            callbacks=callbacks
-        )
+ # Phase 3: Self-healing training
+ with SelfHealingContext(batch_size=config["batch_size"]) as healer:
+ trainer = Trainer(
+ model=model,
+ args=TrainingArguments(
+ per_device_train_batch_size=healer.batch_size
+ ),
+ train_dataset=train_data,
+ eval_dataset=eval_data,
+ callbacks=callbacks
+ )
 
-        trainer.train()
-        logger.log(trainer.state.log_history[-1])
+ trainer.train()
+ logger.log(trainer.state.log_history[-1])
 
-    # Phase 2: Save with integrity
-    checkpoint_path = "checkpoint.pt"
-    torch.save(model.state_dict(), checkpoint_path)
+ # Phase 2: Save with integrity
+ checkpoint_path = "checkpoint.pt"
+ torch.save(model.state_dict(), checkpoint_path)
 
-    integrity = CheckpointIntegrity(checkpoint_path)
-    integrity.save_integrity()
+ integrity = CheckpointIntegrity(checkpoint_path)
+ integrity.save_integrity()
 
-    rng_state = RNGState()
-    rng_state.capture()
-    rng_state.save_to_file(Path(f"{checkpoint_path}.rng.json"))
+ rng_state = RNGState()
+ rng_state.capture()
+ rng_state.save_to_file(Path(f"{checkpoint_path}.rng.json"))
 
-    logger.finish()
+ logger.finish()
 
-    # Phase 4: Continuous learning
-    monitor = ComprehensiveDriftMonitor(...)
-    if monitor.has_critical_drift():
-        pipeline = ContinuousLearningPipeline(...)
-        new_version = pipeline.retrain(train_fn, train_data)
-        pipeline.deploy_model(new_version)
+ # Phase 4: Continuous learning
+ monitor = ComprehensiveDriftMonitor(...)
+ if monitor.has_critical_drift():
+ pipeline = ContinuousLearningPipeline(...)
+ new_version = pipeline.retrain(train_fn, train_data)
+ pipeline.deploy_model(new_version)
 
 if __name__ == "__main__":
-    autonomous_training_pipeline(config, train_data, eval_data)
+ autonomous_training_pipeline(config, train_data, eval_data)
 ```
 
 ---
@@ -1363,7 +1363,7 @@ For architecture documentation, see:
 
 
 ---
-## 📎 Consolidated from: docs/api/API_DOCUMENTATION.md
+## Consolidated from: docs/api/API_DOCUMENTATION.md
 
 # API Reference Documentation
 
@@ -1407,16 +1407,16 @@ frame = memory.start_task("Fix security vulnerability")
 
 # Store a decision
 memory_id = memory.store_decision(
-    task_id="task_001",  # pragma: allowlist secret
-    decision="Use input validation",
-    rationale="Prevents injection attacks",
-    context={"file": "auth.py"}
+ task_id="task_001", # pragma: allowlist secret
+ decision="Use input validation",
+ rationale="Prevents injection attacks",
+ context={"file": "auth.py"}
 )
 
 # Retrieve similar contexts
 contexts = memory.retrieve_similar_context(
-    task_description="security input validation",  # pragma: allowlist secret
-    limit=5
+ task_description="security input validation", # pragma: allowlist secret
+ limit=5
 )
 
 # Get pattern library
@@ -1464,8 +1464,8 @@ print(f"Health Score: {report.health_score}/100")
 
 # Get issues
 for issue in report.issues:
-    print(f"- {issue.issue_type}: {issue.description}")
-    print(f"  Fix: {issue.suggested_fix}")
+ print(f"- {issue.issue_type}: {issue.description}")
+ print(f" Fix: {issue.suggested_fix}")
 
 # Apply fixes (dry run)
 results = engine.apply_fixes(dry_run=True)
@@ -1490,24 +1490,24 @@ Physics-inspired game theory for Blue/Red team simulations.
 
 ```python
 from agents.quantum_game_theory import (
-    ClassicalGameEngine,
-    QuantumInspiredGameEngine,
-    BlueRedTeamSimulator
+ ClassicalGameEngine,
+ QuantumInspiredGameEngine,
+ BlueRedTeamSimulator
 )
 
 # Classical game
 classical = ClassicalGameEngine(
-    strategy_sizes=(3, 3),
-    payoff_a=[[3, 0, 5], [1, 2, 1], [0, 1, 4]],
-    payoff_b=[[3, 1, 0], [0, 2, 1], [5, 1, 4]]
+ strategy_sizes=(3, 3),
+ payoff_a=[[3, 0, 5], [1, 2, 1], [0, 1, 4]],
+ payoff_b=[[3, 1, 0], [0, 2, 1], [5, 1, 4]]
 )
 eq = classical.find_nash_equilibrium()
 
 # Quantum-inspired game
 quantum = QuantumInspiredGameEngine(
-    strategy_sizes=(3, 3),
-    payoff_a=payoff_a,
-    payoff_b=payoff_b
+ strategy_sizes=(3, 3),
+ payoff_a=payoff_a,
+ payoff_b=payoff_b
 )
 quantum.apply_entanglement(strength=0.5)
 result = quantum.measure_strategy()
@@ -1532,28 +1532,28 @@ from codex_ml.plugins.plugin_sandbox import PluginSandbox, PluginMetadata
 
 # Create sandbox
 sandbox = PluginSandbox(
-    max_memory_mb=512,
-    max_execution_time=30.0,
-    allowed_imports=["numpy", "pandas"]
+ max_memory_mb=512,
+ max_execution_time=30.0,
+ allowed_imports=["numpy", "pandas"]
 )
 
 # Register plugin
 sandbox.register_plugin(
-    name="my_plugin",
-    module_path="plugins/my_plugin.py"
+ name="my_plugin",
+ module_path="plugins/my_plugin.py"
 )
 
 # Execute plugin
 result = sandbox.execute_plugin(
-    name="my_plugin",
-    method="process",
-    args={"data": input_data}
+ name="my_plugin",
+ method="process",
+ args={"data": input_data}
 )
 
 # Check quarantine status
 metadata = sandbox.get_plugin_metadata("my_plugin")
 if metadata.is_quarantine_expired(quarantine_duration=3600):
-    sandbox.restore_plugin("my_plugin")
+ sandbox.restore_plugin("my_plugin")
 ```
 
 ---
@@ -1566,9 +1566,9 @@ HTTP Archive (HAR) recording and replay.
 
 ```python
 from codex_ml.integrations.har_integration import (
-    HARRecorder,
-    HARCache,
-    HARReplayer
+ HARRecorder,
+ HARCache,
+ HARReplayer
 )
 
 # Record HTTP transactions
@@ -1586,7 +1586,7 @@ cached = cache.get_cached_response(request)
 # Replay transactions
 replayer = HARReplayer("transactions.har")
 for entry in replayer.entries:
-    response = replayer.replay_entry(entry)
+ response = replayer.replay_entry(entry)
 ```
 
 ---
@@ -1599,12 +1599,12 @@ Performance and scalability utilities.
 
 ```python
 from codex_ml.utils.scalability import (
-    LRUCache,
-    RateLimiter,
-    CircuitBreaker,
-    LoadBalancer,
-    ResourcePool,
-    PerformanceMonitor
+ LRUCache,
+ RateLimiter,
+ CircuitBreaker,
+ LoadBalancer,
+ ResourcePool,
+ PerformanceMonitor
 )
 
 # LRU Cache
@@ -1615,33 +1615,33 @@ value = cache.get("key")
 # Rate Limiter
 limiter = RateLimiter(rate=100, per_seconds=1)
 if limiter.acquire():
-    # Process request
-    pass
+ # Process request
+ pass
 
 # Circuit Breaker
 breaker = CircuitBreaker(failure_threshold=5, reset_timeout=30)
 with breaker:
-    # Protected operation
-    result = risky_operation()
+ # Protected operation
+ result = risky_operation()
 
 # Load Balancer
 balancer = LoadBalancer(
-    endpoints=["server1", "server2", "server3"],
-    strategy="round_robin"
+ endpoints=["server1", "server2", "server3"],
+ strategy="round_robin"
 )
 endpoint = balancer.get_endpoint()
 
 # Resource Pool
 pool = ResourcePool(factory=create_connection, max_size=10)
 with pool.acquire() as conn:
-    conn.execute(query)
+ conn.execute(query)
 
 # Performance Monitor
 monitor = PerformanceMonitor()
 
 @monitor.timed("operation_name")
 def my_operation():
-    pass
+ pass
 
 stats = monitor.get_stats("operation_name")
 ```
@@ -1664,14 +1664,14 @@ publisher = EventPublisher()
 
 # Subscribe to events
 def on_model_trained(event: Event):
-    print(f"Model trained: {event.data}")
+ print(f"Model trained: {event.data}")
 
 publisher.subscribe("model.trained", on_model_trained)
 
 # Publish events
 publisher.publish(Event(
-    type="model.trained",
-    data={"model_id": "model_001", "accuracy": 0.95}
+ type="model.trained",
+ data={"model_id": "model_001", "accuracy": 0.95}
 ))
 ```
 
@@ -1687,10 +1687,10 @@ AST-based stub detection and cleanup.
 
 ```python
 from scripts.stub_cleanup import (
-    analyze_file,
-    analyze_directory,
-    generate_report,
-    StubDetector
+ analyze_file,
+ analyze_directory,
+ generate_report,
+ StubDetector
 )
 
 # Analyze single file
@@ -1699,9 +1699,9 @@ print(f"Found {result.total_stubs} stubs")
 
 # Analyze directory
 result = analyze_directory(
-    Path("src/"),
-    exclude_abstract=True,
-    exclude_patterns=["**/test_*.py"]
+ Path("src/"),
+ exclude_abstract=True,
+ exclude_patterns=["**/test_*.py"]
 )
 
 # Generate report
@@ -1717,21 +1717,21 @@ All APIs use consistent error handling:
 
 ```python
 from codex_ml.exceptions import (
-    CodexError,          # Base exception
-    PluginError,         # Plugin-related errors
-    ValidationError,     # Input validation errors
-    ConfigurationError,  # Configuration errors
-    ResourceError,       # Resource allocation errors
+ CodexError, # Base exception
+ PluginError, # Plugin-related errors
+ ValidationError, # Input validation errors
+ ConfigurationError, # Configuration errors
+ ResourceError, # Resource allocation errors
 )
 
 try:
-    result = api_call()
+ result = api_call()
 except ValidationError as e:
-    logger.error(f"Invalid input: {e}")
+ logger.error(f"Invalid input: {e}")
 except PluginError as e:
-    logger.error(f"Plugin failed: {e}")
+ logger.error(f"Plugin failed: {e}")
 except CodexError as e:
-    logger.error(f"Operation failed: {e}")
+ logger.error(f"Operation failed: {e}")
 ```
 
 ---
@@ -1770,7 +1770,7 @@ APIs follow semantic versioning:
 
 
 ---
-## 📎 Consolidated from: docs/INGESTION_API_REFERENCE.md
+## Consolidated from: docs/INGESTION_API_REFERENCE.md
 
 # Ingestion Pipeline API Reference
 
@@ -1792,16 +1792,16 @@ Configuration dataclass for the ingestion pipeline.
 from src.ingestion.pipeline import PipelineConfig
 
 config = PipelineConfig(
-    encoding='auto',           # File encoding detection
-    batch_size=1000,          # Records per batch
-    max_file_size_mb=100,     # Maximum file size
-    shuffle=False,            # Shuffle records
-    shuffle_seed=42,          # Random seed
-    lowercase=False,          # Lowercase text
-    strip_whitespace=True,    # Strip whitespace
-    skip_empty=True,          # Skip empty records
-    timeout_seconds=300,      # Operation timeout
-    validate_utf8=True        # Validate UTF-8
+ encoding='auto', # File encoding detection
+ batch_size=1000, # Records per batch
+ max_file_size_mb=100, # Maximum file size
+ shuffle=False, # Shuffle records
+ shuffle_seed=42, # Random seed
+ lowercase=False, # Lowercase text
+ strip_whitespace=True, # Strip whitespace
+ skip_empty=True, # Skip empty records
+ timeout_seconds=300, # Operation timeout
+ validate_utf8=True # Validate UTF-8
 )
 ```
 
@@ -1827,13 +1827,13 @@ from src.ingestion.pipeline import PipelineResult
 result = pipeline.ingest_file('data.csv')
 
 # Access results
-print(result.success)               # bool
-print(result.records_processed)     # int
-print(result.records_skipped)       # int
-print(result.errors)                # List[str]
-print(result.duration_seconds)      # float
-print(result.output_path)           # str
-print(result.metadata)              # dict
+print(result.success) # bool
+print(result.records_processed) # int
+print(result.records_skipped) # int
+print(result.errors) # List[str]
+print(result.duration_seconds) # float
+print(result.output_path) # str
+print(result.metadata) # dict
 ```
 
 **Attributes:**
@@ -1864,9 +1864,9 @@ Process a single file.
 
 ```python
 result = pipeline.ingest_file(
-    input_path='data/input.csv',
-    output_path='data/output.jsonl',
-    transform_fn=None
+ input_path='data/input.csv',
+ output_path='data/output.jsonl',
+ transform_fn=None
 )
 ```
 
@@ -1887,21 +1887,21 @@ result = pipeline.ingest_file(
 ```python
 # Process with transformation
 def transform(record):
-    return {
-        'text': record.get('text', '').lower(),
-        'label': int(record.get('label', 0))
-    }
+ return {
+ 'text': record.get('text', '').lower(),
+ 'label': int(record.get('label', 0))
+ }
 
 result = pipeline.ingest_file(
-    'raw_data.csv',
-    'processed_data.jsonl',
-    transform_fn=transform
+ 'raw_data.csv',
+ 'processed_data.jsonl',
+ transform_fn=transform
 )
 
 if result.success:
-    print(f"Processed {result.records_processed} records")
+ print(f"Processed {result.records_processed} records")
 else:
-    print(f"Errors: {result.errors}")
+ print(f"Errors: {result.errors}")
 ```
 
 ## `ingest_directory()`
@@ -1910,9 +1910,9 @@ Process all files in a directory.
 
 ```python
 result = pipeline.ingest_directory(
-    input_dir='data/raw',
-    output_dir='data/processed',
-    pattern='*.csv'
+ input_dir='data/raw',
+ output_dir='data/processed',
+ pattern='*.csv'
 )
 ```
 
@@ -1927,9 +1927,9 @@ result = pipeline.ingest_directory(
 
 ```python
 result = pipeline.ingest_directory(
-    'data/raw',
-    'data/processed',
-    pattern='*.{csv,json}'
+ 'data/raw',
+ 'data/processed',
+ pattern='*.{csv,json}'
 )
 
 print(f"Total: {result.records_processed}")
@@ -1942,8 +1942,8 @@ Stream records from a file (memory-efficient).
 
 ```python
 for batch in pipeline.stream_records('data/large_file.csv'):
-    # Process batch (list of dicts)
-    process_batch(batch)
+ # Process batch (list of dicts)
+ process_batch(batch)
 ```
 
 **Parameters:**
@@ -1957,9 +1957,9 @@ for batch in pipeline.stream_records('data/large_file.csv'):
 # Process large file in batches
 batch_count = 0
 for batch in pipeline.stream_records('data/large_file.csv'):
-    batch_count += 1
-    process_batch(batch)
-    print(f"Processed batch {batch_count}")
+ batch_count += 1
+ process_batch(batch)
+ print(f"Processed batch {batch_count}")
 ```
 
 ## File Format Support
@@ -1989,10 +1989,10 @@ Single JSON object or array.
 ```python
 # Input: data.json
 {
-  "data": [
-    {"id": 1, "text": "Sample text", "label": 0},
-    {"id": 2, "text": "Another example", "label": 1}
-  ]
+ "data": [
+ {"id": 1, "text": "Sample text", "label": 0},
+ {"id": 2, "text": "Another example", "label": 1}
+ ]
 }
 
 # Usage
@@ -2020,7 +2020,7 @@ Another example
 
 # Usage with transformation
 def text_to_record(line):
-    return {"text": line}
+ return {"text": line}
 
 result = pipeline.ingest_file('data.txt')
 ```
@@ -2033,9 +2033,9 @@ result = pipeline.ingest_file('data.txt')
 from src.ingestion.csv_ingestor import CSVIngestor
 
 ingestor = CSVIngestor(
-    encoding='utf-8',
-    delimiter=',',
-    quotechar='"'
+ encoding='utf-8',
+ delimiter=',',
+ quotechar='"'
 )
 
 records = ingestor.ingest('data.csv')
@@ -2066,9 +2066,9 @@ records = ingestor.ingest('data.txt')
 **FileNotFoundError:**
 ```python
 try:
-    result = pipeline.ingest_file('nonexistent.csv')
+ result = pipeline.ingest_file('nonexistent.csv')
 except FileNotFoundError:
-    print("Input file not found")
+ print("Input file not found")
 ```
 
 **EncodingError:**
@@ -2082,7 +2082,7 @@ result = pipeline.ingest_file('data_with_encoding_issues.csv')
 ```python
 config = PipelineConfig(max_file_size_mb=50)
 pipeline = IngestionPipeline(config)
-result = pipeline.ingest_file('large_file.csv')  # Will fail if > 50MB
+result = pipeline.ingest_file('large_file.csv') # Will fail if > 50MB
 ```
 
 **TimeoutError:**
@@ -2090,22 +2090,22 @@ result = pipeline.ingest_file('large_file.csv')  # Will fail if > 50MB
 config = PipelineConfig(timeout_seconds=60)
 pipeline = IngestionPipeline(config)
 try:
-    result = pipeline.ingest_file('data.csv')
+ result = pipeline.ingest_file('data.csv')
 except TimeoutError:
-    print("Operation exceeded 60 second timeout")
+ print("Operation exceeded 60 second timeout")
 ```
 
 ## Performance Considerations
 
 1. **Batch Size**: Larger batches = faster processing but higher memory
 ```python
-config = PipelineConfig(batch_size=5000)  # Larger batches
+config = PipelineConfig(batch_size=5000) # Larger batches
 ```
 
 2. **Streaming**: Use `stream_records()` for large files to save memory
 ```python
 for batch in pipeline.stream_records('large_file.csv'):
-    process_batch(batch)
+ process_batch(batch)
 ```
 
 3. **Parallel Processing**: Process multiple files simultaneously
@@ -2114,12 +2114,12 @@ from concurrent.futures import ProcessPoolExecutor
 
 files = ['file1.csv', 'file2.csv', 'file3.csv']
 with ProcessPoolExecutor(max_workers=4) as executor:
-    results = executor.map(pipeline.ingest_file, files)
+ results = executor.map(pipeline.ingest_file, files)
 ```
 
 4. **Encoding Detection**: Auto-detection is slower than specifying encoding
 ```python
-config = PipelineConfig(encoding='utf-8')  # Faster
+config = PipelineConfig(encoding='utf-8') # Faster
 ```
 
 ## Best Practices
@@ -2140,14 +2140,14 @@ config = PipelineConfig(shuffle=True, shuffle_seed=42)
 ```python
 result = pipeline.ingest_file('data.csv', 'output.jsonl')
 logging.info(f"Processed: {result.records_processed}, "
-             f"Skipped: {result.records_skipped}")
+ f"Skipped: {result.records_skipped}")
 ```
 
 4. **Handle errors gracefully**
 ```python
 if not result.success:
-    logging.error(f"Pipeline errors: {result.errors}")
-    # Implement fallback or retry logic
+ logging.error(f"Pipeline errors: {result.errors}")
+ # Implement fallback or retry logic
 ```
 
 ## See Also

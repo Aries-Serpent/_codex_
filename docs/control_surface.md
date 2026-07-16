@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 The `_codex_` control surface enumerates the product-facing knobs that
 Engineering and Product agree to expose in the ChatGPT-Codex UI. The

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Security Copilot Commands
 on:
   issue_comment:
@@ -41,7 +45,10 @@ jobs:
 
           const path = require(''path'');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           // Safely write comment body to file using environment variable
 
           const commentBody = process.env.COMMENT_BODY;
@@ -52,7 +59,10 @@ jobs:
 
           console.log(`✓ Comment body written to ${tempFile}`);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           // Output temp file path for next steps
 
           core.setOutput(''comment_file'', tempFile);
@@ -114,4 +124,7 @@ jobs:
           \ '❌ Failed to generate security scan summary. Please check the workflow\
           \ logs.'\n});\n"
     timeout-minutes: 30
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

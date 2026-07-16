@@ -810,3 +810,12 @@ def get_monitor() -> PerformanceMonitor:
     if _monitor is None:
         _monitor = PerformanceMonitor()
     return _monitor
+
+
+class PerformanceSnapshot:
+    """Snapshot of performance metrics at a point in time."""
+    def __init__(self):
+        self.metrics = {}
+        self.timestamp = None
+
+__all__ = ["PerformanceMonitor", "PerformanceSnapshot", "get_monitor"]

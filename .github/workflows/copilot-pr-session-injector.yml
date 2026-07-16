@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Copilot PR Session Injector
 on:
   pull_request:
@@ -37,7 +41,10 @@ jobs:
 
         echo "changed_files=${CHANGED}" >> $GITHUB_OUTPUT
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Detect cognitive brain touch
 
         BRAIN_TOUCHED=$(git diff --name-only "origin/${BASE_REF}...HEAD" 2>/dev/null
@@ -47,7 +54,10 @@ jobs:
 
         echo "brain_touched=${BRAIN_TOUCHED}" >> $GITHUB_OUTPUT
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Detect CI touch
 
         CI_TOUCHED=$(git diff --name-only "origin/${BASE_REF}...HEAD" 2>/dev/null
@@ -190,4 +200,8 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
+<<<<<<< HEAD
       run: python scripts/ci/post_rescue_comment.py
+=======
+      run: python scripts/ci/post_rescue_comment.py
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

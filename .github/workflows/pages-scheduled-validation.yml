@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Pages Scheduled Validation
 on:
   schedule:
@@ -94,7 +98,10 @@ jobs:
 
         echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Extract warning count
 
         WARNING_COUNT=$(grep -c "WARNING" build_report.txt || echo "0")
@@ -233,4 +240,7 @@ jobs:
         \  fi\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

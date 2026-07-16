@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: "CI - Build, Smoke Test, and Push Docker (GHCR) \u2014 OWNER APPROVED (NO-MARKETPLACE)"
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

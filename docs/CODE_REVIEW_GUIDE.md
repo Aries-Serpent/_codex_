@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated**: 2026-07-08  
+**Last Updated**: 2026-07-08 
 **Version**: 1.0.0
 
 Code reviews are critical for maintaining code quality, sharing knowledge, and fostering collaboration. This guide helps reviewers and contributors make the code review process smooth and productive.
@@ -92,12 +92,12 @@ Code reviews are critical for maintaining code quality, sharing knowledge, and f
 
 ### Effective Feedback Examples
 
-####  Don't:
+#### Don't:
 ```markdown
 This code is terrible. Fix it.
 ```
 
-####  Do:
+#### Do:
 ```markdown
 This function has high complexity and is hard to follow. Consider
 breaking it into smaller functions, or adding more inline comments
@@ -105,12 +105,12 @@ to explain the logic. For example, the loop on lines 42-67 could be
 its own function that validates the batch.
 ```
 
-####  Don't:
+#### Don't:
 ```markdown
 Why would anyone do it this way?
 ```
 
-####  Do:
+#### Do:
 ```markdown
 I'm not immediately clear on why you're using a list instead of
 a set here. Sets have O(1) lookup. Is there a reason you need to
@@ -118,12 +118,12 @@ preserve order? If so, consider using `collections.OrderedDict` or
 adding a comment explaining the requirement.
 ```
 
-####  Don't:
+#### Don't:
 ```markdown
 Add tests.
 ```
 
-####  Do:
+#### Do:
 ```markdown
 The new `validate_config()` function isn't covered by tests. Could
 you add tests for:
@@ -253,19 +253,19 @@ Closes #ISSUE_NUMBER
 ### Receiving Feedback
 
 **Do**:
--  Read all feedback carefully
--  Ask clarifying questions
--  Respond to all comments (even if just saying "Done")
--  Make requested changes
--  Acknowledge good suggestions
--  Push fixes and re-request review
+- Read all feedback carefully
+- Ask clarifying questions
+- Respond to all comments (even if just saying "Done")
+- Make requested changes
+- Acknowledge good suggestions
+- Push fixes and re-request review
 
 **Don't**:
--  Ignore feedback
--  Dismiss suggestions without explanation
--  Argue about subjective preferences
--  Make excuses
--  Push new features while being reviewed
+- Ignore feedback
+- Dismiss suggestions without explanation
+- Argue about subjective preferences
+- Make excuses
+- Push new features while being reviewed
 
 ### Responding to Feedback
 
@@ -317,9 +317,9 @@ If your PR is stuck (not reviewed in several days):
 
 1. **First**: Check if review is requested (you should have seen notification)
 2. **After 3 days**: Leave a friendly comment
-   ```markdown
-   Friendly ping! Would appreciate feedback when available. 😊
-   ```
+ ```markdown
+ Friendly ping! Would appreciate feedback when available. 
+ ```
 3. **After 1 week**: Ask in discussions or mention a maintainer
 4. **Never**: Get angry or demanding
 
@@ -441,23 +441,23 @@ Could you add a docstring to this function? Include:
 Here's our docstring style:
 ```python
 def process_data(items: list[dict], batch_size: int = 32) -> Iterator[list]:
-    \"\"\"Process items in batches.
-    
-    Args:
-        items: List of data items to process
-        batch_size: Number of items per batch (default: 32)
-    
-    Returns:
-        Iterator of batches
-    
-    Raises:
-        ValueError: If batch_size is not positive
-    
-    Example:
-        >>> data = [{'id': 1}, {'id': 2}]
-        >>> for batch in process_data(data, batch_size=1):
-        ...     print(batch)
-    \"\"\"
+ \"\"\"Process items in batches.
+ 
+ Args:
+ items: List of data items to process
+ batch_size: Number of items per batch (default: 32)
+ 
+ Returns:
+ Iterator of batches
+ 
+ Raises:
+ ValueError: If batch_size is not positive
+ 
+ Example:
+ >>> data = [{'id': 1}, {'id': 2}]
+ >>> for batch in process_data(data, batch_size=1):
+ ... print(batch)
+ \"\"\"
 ```
 
 ### Style Violations
@@ -495,7 +495,7 @@ of the intended ValueError.
 Could you add a check like:
 \`\`\`python
 if user_id is None:
-    raise ValueError("user_id is required")
+ raise ValueError("user_id is required")
 \`\`\`
 
 Or if None is acceptable, what should happen?
@@ -516,12 +516,12 @@ for lookups instead:
 \`\`\`python
 # Current approach (O(n²)):
 for item in items:
-    if item in other_list:  # O(n) search
+ if item in other_list: # O(n) search
 
 # Faster approach (O(n)):
 other_set = set(other_list)
 for item in items:
-    if item in other_set:  # O(1) lookup
+ if item in other_set: # O(1) lookup
 \`\`\`
 
 If performance isn't a concern here, feel free to leave as-is.

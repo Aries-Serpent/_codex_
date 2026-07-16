@@ -1,6 +1,3 @@
-import pytest
-
-pytest.importorskip("mlflow")
 """
 Comprehensive test suite for codex_ml.training.distributed module.
 
@@ -14,6 +11,10 @@ Target Coverage: 70%+
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("mlflow")
 
 import os
 

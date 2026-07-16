@@ -50,7 +50,7 @@ dependencies = [
     "PyNaCl>=1.5.0,<2.0.0",  # Security: Cryptographic library
     "pyOpenSSL>=26.0.0,<27.0.0",  # Security: CVE-2026-27448/27459 fixes
     # Standard library replacements & utilities
-    "certifi>=2024.7.4",  # Security: Phase 5.4.1 - PYSEC-2024-230 (SSL verification bypass fix)
+    "certifi>=2026.6.17",  # Security: Phase 5.4.1 - PYSEC-2024-230 (SSL verification bypass fix), CVE-2024-39689
     "filelock>=3.29.0",
     "idna>=3.15",  # Security: Phase 5.4.1 - PYSEC-2024-60, PYSEC-2026-215 (DNS domain encoding fixes)
     "urllib3>=2.7.0",  # Security: Phase 5.4.1 - PYSEC-2026-141/1999/1998/1995/1994/1996 (connection/proxy fixes)

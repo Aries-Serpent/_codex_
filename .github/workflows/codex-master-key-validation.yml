@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: CODEX_MASTER_KEY Scope Validation
 
 on:
@@ -78,4 +82,7 @@ jobs:
                 print('✓ Scope validation passed')
             " || true
           fi
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

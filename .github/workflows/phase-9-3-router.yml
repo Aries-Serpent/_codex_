@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Phase 9.3 Semantic Router & Multi-Agent Orchestration
 
 on:
@@ -435,7 +439,10 @@ jobs:
           echo "⚠️  Phase 9.3 routing encountered issues"
           echo "Status: ${{ needs.concurrent-execution.outputs.execution_result }}"
           exit 0  # Non-fatal for now, monitoring only
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

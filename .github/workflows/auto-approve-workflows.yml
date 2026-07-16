@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: "\u26A1 Auto-Approve Pending Workflow Runs"
 on:
   push:
@@ -415,12 +419,18 @@ jobs:
         TIMESTAMP: ${{ github.event.repository.updated_at }}
       run: 'set -euo pipefail
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate UUID for approval record
 
         APPROVAL_ID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Create audit log entry (JSONL format for append-only)
 
         cat >> .codex/approvals.jsonl << EOF
@@ -430,7 +440,10 @@ jobs:
 
         EOF
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Commit audit log (best effort, non-fatal if fails)
 
         git config user.name "GitHub Action" || true
@@ -498,12 +511,18 @@ jobs:
         DECISION: ${{ needs.evaluate-approval.outputs.approval_decision }}
       run: 'set -euo pipefail
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Create metrics directory
 
         mkdir -p .codex/metrics
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Append hourly metric (JSONL format)
 
         cat >> .codex/metrics/hourly.jsonl << EOF
@@ -512,7 +531,10 @@ jobs:
 
         EOF
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Commit metrics (best effort)
 
         git config user.name "GitHub Action" || true

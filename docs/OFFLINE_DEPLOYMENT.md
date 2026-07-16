@@ -2,11 +2,11 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Version**: 1.0.0-phase8-groundwork  
-**Timeline**: 3 days post-merge (2026-07-09 activation)  
-**Lead Agent**: unified-security-scanner  
+**Version**: 1.0.0-phase8-groundwork 
+**Timeline**: 3 days post-merge (2026-07-09 activation) 
+**Lead Agent**: unified-security-scanner 
 
-##  Overview
+## Overview
 
 Codex Cognitive Brain supports **air-gap (fully offline) deployment** using pre-generated offline wheelhouses. This enables deployment to isolated machines with **zero external network calls** required.
 
@@ -20,7 +20,7 @@ Codex Cognitive Brain supports **air-gap (fully offline) deployment** using pre-
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 - **Python 3.12+** (pre-installed on target machine)
 - **Offline wheelhouse** (pre-generated on network-connected machine)
@@ -45,7 +45,7 @@ pip install cyclonedx-bom
 
 ---
 
-##  Phase 8 Groundwork Execution (Starting 2026-07-09)
+## Phase 8 Groundwork Execution (Starting 2026-07-09)
 
 ### Step 1: Generate Offline Wheelhouse on Network-Connected Machine
 
@@ -59,8 +59,8 @@ cd /path/to/_codex_
 ./scripts/prepare_offline_env.sh --runtime
 
 # Alternative modes:
-./scripts/prepare_offline_env.sh --minimal   # Core package only
-./scripts/prepare_offline_env.sh --full      # Development ecosystem
+./scripts/prepare_offline_env.sh --minimal # Core package only
+./scripts/prepare_offline_env.sh --full # Development ecosystem
 ```
 
 **What this creates:**
@@ -115,7 +115,7 @@ Execute these steps **on the target machine WITHOUT network access**.
 
 ```bash
 # Extract wheelhouse
-cd /tmp  # or appropriate location
+cd /tmp # or appropriate location
 tar -xzf wheelhouse-runtime-*.tar.gz
 
 # Enter wheelhouse directory
@@ -168,16 +168,16 @@ cd /tmp/wheelhouse
 
 # Install all dependencies from local wheels
 pip install --no-index \
-    --find-links . \
-    --no-deps \
-    -q \
-    -r /path/to/requirements-offline.txt
+ --find-links . \
+ --no-deps \
+ -q \
+ -r /path/to/requirements-offline.txt
 
 # Or for runtime mode:
 pip install --no-index \
-    --find-links . \
-    --no-deps \
-    -r /path/to/requirements.txt
+ --find-links . \
+ --no-deps \
+ -r /path/to/requirements.txt
 ```
 
 **Expected output:**
@@ -195,24 +195,24 @@ import sys
 
 # Test core imports
 try:
-    from omegaconf import OmegaConf
-    from hydra import initialize, compose
-    from pydantic import BaseModel
-    from cryptography.fernet import Fernet
-    print(" All core packages imported successfully")
-    print(f" Python {sys.version}")
+ from omegaconf import OmegaConf
+ from hydra import initialize, compose
+ from pydantic import BaseModel
+ from cryptography.fernet import Fernet
+ print(" All core packages imported successfully")
+ print(f" Python {sys.version}")
 except ImportError as e:
-    print(f" Import failed: {e}")
-    sys.exit(1)
+ print(f" Import failed: {e}")
+ sys.exit(1)
 VERIFY_TEST
 
 # Test no external network calls
-ip addr show  # Confirm network interface exists but is isolated
+ip addr show # Confirm network interface exists but is isolated
 ```
 
 ---
 
-##  Configure for Air-Gap Operation
+## Configure for Air-Gap Operation
 
 ### Environment Variables for Offline Mode
 
@@ -254,10 +254,10 @@ export CODEX_LOCAL_LOOPBACK=true
 if ! python3 -c "
 import os
 if os.environ.get('ALLOW_NETWORK_CALLS', '').lower() != 'false':
-    raise RuntimeError('Network calls enabled - security policy violated')
+ raise RuntimeError('Network calls enabled - security policy violated')
 "; then
-    echo "ERROR: Network policy not enforced" >&2
-    exit 1
+ echo "ERROR: Network policy not enforced" >&2
+ exit 1
 fi
 
 # Run codex
@@ -270,7 +270,7 @@ chmod +x /usr/local/bin/codex-offline
 
 ---
 
-##  Verify Air-Gap Compliance
+## Verify Air-Gap Compliance
 
 ### 1. Network Isolation Test (requires root)
 
@@ -356,47 +356,47 @@ import socket
 from pathlib import Path
 
 def check_network_policy():
-    """Verify network policy enforcement."""
-    
-    # Check environment variables
-    allow_network = os.environ.get('ALLOW_NETWORK_CALLS', 'false').lower()
-    local_loopback = os.environ.get('CODEX_LOCAL_LOOPBACK', 'true').lower()
-    
-    assert allow_network == 'false', "ALLOW_NETWORK_CALLS must be false"
-    assert local_loopback == 'true', "CODEX_LOCAL_LOOPBACK must be true"
-    
-    print(" Environment variables correct")
-    
-    # Test localhost access (should work)
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex(('127.0.0.1', 6379))
-        if result == 0 or result == 111:  # 0=connected, 111=connection refused (port closed)
-            print(" Localhost access allowed")
-        sock.close()
-    except Exception as e:
-        print(f" Localhost test inconclusive: {e}")
-    
-    # Test external access (should fail)
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex(('8.8.8.8', 53))
-        if result != 0:  # Non-zero means connection failed
-            print(" External network access blocked")
-        else:
-            print(" WARNING: External network access allowed!")
-            return False
-        sock.close()
-    except Exception:
-        print(" External network access blocked (expected error)")
-    
-    return True
+ """Verify network policy enforcement."""
+ 
+ # Check environment variables
+ allow_network = os.environ.get('ALLOW_NETWORK_CALLS', 'false').lower()
+ local_loopback = os.environ.get('CODEX_LOCAL_LOOPBACK', 'true').lower()
+ 
+ assert allow_network == 'false', "ALLOW_NETWORK_CALLS must be false"
+ assert local_loopback == 'true', "CODEX_LOCAL_LOOPBACK must be true"
+ 
+ print(" Environment variables correct")
+ 
+ # Test localhost access (should work)
+ try:
+ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ sock.settimeout(1)
+ result = sock.connect_ex(('127.0.0.1', 6379))
+ if result == 0 or result == 111: # 0=connected, 111=connection refused (port closed)
+ print(" Localhost access allowed")
+ sock.close()
+ except Exception as e:
+ print(f" Localhost test inconclusive: {e}")
+ 
+ # Test external access (should fail)
+ try:
+ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ sock.settimeout(1)
+ result = sock.connect_ex(('8.8.8.8', 53))
+ if result != 0: # Non-zero means connection failed
+ print(" External network access blocked")
+ else:
+ print(" WARNING: External network access allowed!")
+ return False
+ sock.close()
+ except Exception:
+ print(" External network access blocked (expected error)")
+ 
+ return True
 
 if __name__ == '__main__':
-    success = check_network_policy()
-    sys.exit(0 if success else 1)
+ success = check_network_policy()
+ sys.exit(0 if success else 1)
 ```
 
 ```bash
@@ -406,7 +406,7 @@ python3 scripts/check_offline_compliance.py
 
 ---
 
-##  Runtime Operations
+## Runtime Operations
 
 ### Start Codex in Offline Mode
 
@@ -478,7 +478,7 @@ sudo iptables -L -v | grep -E "(OUTPUT|FORWARD)"
 
 ---
 
-##  Monitoring & Validation
+## Monitoring & Validation
 
 ### System Resource Monitoring
 
@@ -514,38 +514,38 @@ DATE=$(date +%Y-%m-%d)
 LOG="/var/log/codex-offline-validation-${DATE}.log"
 
 {
-    echo "=== Codex Air-Gap Validation Report ==="
-    echo "Date: $DATE"
-    echo "Host: $(hostname)"
-    echo ""
-    
-    # Network policy
-    echo "Network Policy:"
-    echo "  ALLOW_NETWORK_CALLS: $(echo $ALLOW_NETWORK_CALLS)"
-    echo "  CODEX_LOCAL_LOOPBACK: $(echo $CODEX_LOCAL_LOOPBACK)"
-    echo ""
-    
-    # Network connections
-    echo "Active Network Connections:"
-    netstat -tan | grep ESTABLISHED | grep -v 127.0.0.1 || echo "  None ( Offline)"
-    echo ""
-    
-    # Disk usage
-    echo "Storage:"
-    df -h /opt/codex-offline-env/ | tail -1
-    echo ""
-    
-    # Python environment
-    echo "Python Environment:"
-    which python3
-    python3 --version
-    pip list | head -10
-    echo ""
-    
-    # Recent operations
-    echo "Recent Operations:"
-    tail -10 ~/.codex/logs/codex.log
-    
+ echo "=== Codex Air-Gap Validation Report ==="
+ echo "Date: $DATE"
+ echo "Host: $(hostname)"
+ echo ""
+ 
+ # Network policy
+ echo "Network Policy:"
+ echo " ALLOW_NETWORK_CALLS: $(echo $ALLOW_NETWORK_CALLS)"
+ echo " CODEX_LOCAL_LOOPBACK: $(echo $CODEX_LOCAL_LOOPBACK)"
+ echo ""
+ 
+ # Network connections
+ echo "Active Network Connections:"
+ netstat -tan | grep ESTABLISHED | grep -v 127.0.0.1 || echo " None ( Offline)"
+ echo ""
+ 
+ # Disk usage
+ echo "Storage:"
+ df -h /opt/codex-offline-env/ | tail -1
+ echo ""
+ 
+ # Python environment
+ echo "Python Environment:"
+ which python3
+ python3 --version
+ pip list | head -10
+ echo ""
+ 
+ # Recent operations
+ echo "Recent Operations:"
+ tail -10 ~/.codex/logs/codex.log
+ 
 } | tee "$LOG"
 
 echo "Validation report saved to: $LOG"
@@ -553,7 +553,7 @@ echo "Validation report saved to: $LOG"
 
 ---
 
-##  Rollback Procedure
+## Rollback Procedure
 
 If deployment fails or you need to revert to online mode:
 
@@ -577,7 +577,7 @@ pip install codex-ml
 
 ---
 
-##  Phase 8 Validation Checklist
+## Phase 8 Validation Checklist
 
 ### Groundwork Preparation (Now)
 - [ ] `scripts/prepare_offline_env.sh` created
@@ -606,7 +606,7 @@ pip install codex-ml
 
 ---
 
-##  Related Documentation
+## Related Documentation
 
 - **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** (§DECIDE Phase Decision 3)
 - **OFFLINE_BOOTSTRAP.sh** (Emergency offline bootstrap)
@@ -615,7 +615,7 @@ pip install codex-ml
 
 ---
 
-##  Security Considerations
+## Security Considerations
 
 ### Data Isolation
 - All data stays on local machine (no cloud sync)
@@ -642,23 +642,23 @@ pip install codex-ml
 
 ---
 
-## 📞 Support & Escalation
+## Support & Escalation
 
 ### Common Questions
 
-**Q: Can I update dependencies in offline mode?**  
+**Q: Can I update dependencies in offline mode?** 
 A: No, all dependencies must be pre-installed in wheelhouse. Generate new wheelhouse on network-connected machine.
 
-**Q: What if I need a new Python package?**  
+**Q: What if I need a new Python package?** 
 A: Regenerate wheelhouse with new dependency on network machine, transfer, and reinstall.
 
-**Q: Can I access external APIs in offline mode?**  
+**Q: Can I access external APIs in offline mode?** 
 A: No, `ALLOW_NETWORK_CALLS=false` prevents all external calls. This is by design for air-gap security.
 
-**Q: How do I add new models or data?**  
+**Q: How do I add new models or data?** 
 A: Place model/data files on local storage and configure paths in config files (no network required).
 
-**Q: What if network connectivity is restored?**  
+**Q: What if network connectivity is restored?** 
 A: Unset `ALLOW_NETWORK_CALLS=false` to re-enable network. No re-installation needed.
 
 ### Escalation Path
@@ -671,6 +671,6 @@ A: Unset `ALLOW_NETWORK_CALLS=false` to re-enable network. No re-installation ne
 
 ---
 
-**Last Updated**: 2026-07-06  
-**Next Review**: 2026-07-15 (post-Phase-8-activation)  
+**Last Updated**: 2026-07-06 
+**Next Review**: 2026-07-15 (post-Phase-8-activation) 
 **Version**: 1.0.0-phase8-groundwork

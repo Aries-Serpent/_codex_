@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Parallel Quality Checks (Optimized)
 
 on:
@@ -154,7 +158,10 @@ jobs:
           echo "- Security Analysis: ${{ needs.bandit-security.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Execution Time:** ~15 minutes (parallel execution instead of ~40 min sequential)" >> $GITHUB_STEP_SUMMARY
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: restore-pipeline CI
 
 on:
@@ -21,7 +25,10 @@ concurrency:
 permissions:
   contents: read
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   test:
     name: "restore-pipeline — Python 3.12 (CPU only)"
@@ -70,7 +77,10 @@ jobs:
       - name: Demo script smoke test
         run: |
           bash examples/run_demo.sh
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

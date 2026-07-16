@@ -4,11 +4,11 @@
 **Last Updated: 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
-**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code  
-**Tool**: `notebooklm-skill` for Claude Code  
+**Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code 
+**Tool**: `notebooklm-skill` for Claude Code 
 **Integration Level**: Deep (AI Architect queries)
 
-> **📌 NOTE:** The `scripts/run.py` references in this guide are for the **external** `notebooklm-skill` repository cloned to `~/.claude/skills/notebooklm/`. These scripts are NOT part of the `_codex_` repository. After cloning the external skill, all commands reference its local copy, not the `_codex_` codebase scripts directory.
+> ** NOTE:** The `scripts/run.py` references in this guide are for the **external** `notebooklm-skill` repository cloned to `~/.claude/skills/notebooklm/`. These scripts are NOT part of the `_codex_` repository. After cloning the external skill, all commands reference its local copy, not the `_codex_` codebase scripts directory.
 
 ---
 
@@ -41,11 +41,11 @@ ls -la
 
 **Expected Output**:
 ```
-drwxr-xr-x  scripts/
-drwxr-xr-x  src/
--rw-r--r--  README.md
--rw-r--r--  requirements.txt
--rw-r--r--  setup.py
+drwxr-xr-x scripts/
+drwxr-xr-x src/
+-rw-r--r-- README.md
+-rw-r--r-- requirements.txt
+-rw-r--r-- setup.py
 ```
 
 ## Step 2: Install Dependencies
@@ -53,7 +53,7 @@ drwxr-xr-x  src/
 ```bash
 # Create virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
 # Install required packages
 pip install -r requirements.txt
@@ -112,9 +112,9 @@ python scripts/run.py auth_manager.py verify
 ```bash
 # Add notebook with descriptive name
 python scripts/run.py notebook_manager.py add \
-  --url "https://notebooklm.google.com/notebook/[YOUR_NOTEBOOK_ID]" \
-  --name "codex_architecture" \
-  --description "Codex Architecture Knowledge Base - AI-powered development platform"
+ --url "https://notebooklm.google.com/notebook/[YOUR_NOTEBOOK_ID]" \
+ --name "codex_architecture" \
+ --description "Codex Architecture Knowledge Base - AI-powered development platform"
 
 # Verify notebook added
 python scripts/run.py notebook_manager.py list
@@ -128,7 +128,7 @@ Name: codex_architecture
 Description: Codex Architecture Knowledge Base - AI-powered development platform
 Notebook ID: [YOUR_NOTEBOOK_ID]
 Sources: 1 (codex-architecture-sync.xml)
-Status:  Active
+Status: Active
 Last updated: 2026-07-11
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -137,8 +137,8 @@ Last updated: 2026-07-11
 ```bash
 # Test basic query functionality
 python scripts/run.py notebook_manager.py query \
-  --notebook "codex_architecture" \
-  --question "What is the architecture of the auto-remediation system?"
+ --notebook "codex_architecture" \
+ --question "What is the architecture of the auto-remediation system?"
 ```
 
 **Expected Response** (truncated):
@@ -149,26 +149,26 @@ python scripts/run.py notebook_manager.py query \
 The auto-remediation system in _codex_ follows a multi-stage pipeline:
 
 1. **Detection Phase**:
-   - ML Threat Detector identifies vulnerabilities
-   - Pattern matching against known vulnerability database
+ - ML Threat Detector identifies vulnerabilities
+ - Pattern matching against known vulnerability database
 
 2. **Analysis Phase**:
-   - Context-aware code analysis
-   - AST parsing for surgical edits
+ - Context-aware code analysis
+ - AST parsing for surgical edits
 
 3. **Fix Generation Phase** (tools/auto_remediation/fix_generator.py):
-   - Strategy selection based on vulnerability type
-   - Code replacement with precision checks
+ - Strategy selection based on vulnerability type
+ - Code replacement with precision checks
 
 4. **Verification Phase** (tools/auto_remediation/verifier.py):
-   - Pre-fix snapshot capture
-   - Fix application and validation
-   - Regression detection
+ - Pre-fix snapshot capture
+ - Fix application and validation
+ - Regression detection
 
 5. **PR Creation Phase** (tools/auto_remediation/pr_generator.py):
-   - Branch creation
-   - Commit and push
-   - PR generation with review assignment
+ - Branch creation
+ - Commit and push
+ - PR generation with review assignment
 
 Key Components:
 - fix_generator.py: Generates fixes using AST
@@ -264,69 +264,69 @@ default_notebook: codex_architecture
 
 ```json
 {
-  "commands": [
-    {
-      "name": "health_check",
-      "trigger": "@architect health check",
-      "prompt": "Perform a comprehensive health check of the _codex_ repository architecture. Analyze: 1) Module dependencies, 2) Security posture, 3) Code quality metrics, 4) Test coverage, 5) Technical debt. Provide a structured report with scores (0-100) for each category.",
-      "notebook": "codex_architecture",
-      "followup_questions": [
-        "Are there any circular dependencies?",
-        "What are the highest-risk security areas?",
-        "Which modules need refactoring most urgently?"
-      ]
-    },
-    {
-      "name": "dependency_analysis",
-      "trigger": "@architect analyze dependencies",
-      "prompt": "Generate a dependency graph for the _codex_ repository. Identify: 1) Circular dependencies, 2) Tightly coupled modules, 3) God classes (>500 LOC, >10 dependencies), 4) Unused dependencies. Output as Mermaid diagram.",
-      "notebook": "codex_architecture",
-      "output_format": "mermaid"
-    },
-    {
-      "name": "security_audit",
-      "trigger": "@architect security audit",
-      "prompt": "Conduct a security audit of _codex_. Check for: 1) Unvalidated inputs, 2) Injection vulnerabilities (SQL, XSS, command), 3) Weak cryptography, 4) Authentication issues, 5) Secrets in code. Prioritize findings by severity (Critical, High, Medium, Low).",
-      "notebook": "codex_architecture",
-      "severity_levels": true
-    },
-    {
-      "name": "refactoring_suggestions",
-      "trigger": "@architect suggest refactoring for {module}",
-      "prompt": "Analyze the {module} module in _codex_ and suggest refactoring improvements. Consider: 1) Code complexity (cyclomatic), 2) Duplication, 3) Performance bottlenecks, 4) Maintainability. Provide specific code examples and before/after comparisons.",
-      "notebook": "codex_architecture",
-      "include_examples": true
-    },
-    {
-      "name": "test_coverage",
-      "trigger": "@architect check test coverage",
-      "prompt": "Analyze test coverage for _codex_. Identify: 1) Untested code paths, 2) Missing edge cases, 3) Flaky tests (non-deterministic), 4) Test duplication. Suggest new test cases for critical paths with high business impact.",
-      "notebook": "codex_architecture",
-      "prioritize_critical": true
-    },
-    {
-      "name": "performance_analysis",
-      "trigger": "@architect analyze performance",
-      "prompt": "Perform performance analysis of _codex_. Identify: 1) N+1 query patterns, 2) Inefficient algorithms (O(n²) or worse), 3) Missing caching opportunities, 4) Memory leaks. Provide optimization recommendations with estimated impact.",
-      "notebook": "codex_architecture",
-      "include_metrics": true
-    },
-    {
-      "name": "integration_points",
-      "trigger": "@architect show integration points",
-      "prompt": "Map all integration points in _codex_. Include: 1) External APIs, 2) Database connections, 3) Message queues, 4) File systems, 5) Third-party services. Document authentication methods and error handling for each.",
-      "notebook": "codex_architecture",
-      "include_auth": true
-    },
-    {
-      "name": "recursive_analysis",
-      "trigger": "@architect deep dive {topic}",
-      "prompt": "Perform recursive deep-dive analysis on {topic} in _codex_. Start with high-level overview, then progressively drill down into implementation details. After each level, ask yourself: 'Is that ALL you need to know?' Continue until all logic bottlenecks are resolved and you have complete understanding.",
-      "notebook": "codex_architecture",
-      "recursive": true,
-      "max_depth": 5
-    }
-  ]
+ "commands": [
+ {
+ "name": "health_check",
+ "trigger": "@architect health check",
+ "prompt": "Perform a comprehensive health check of the _codex_ repository architecture. Analyze: 1) Module dependencies, 2) Security posture, 3) Code quality metrics, 4) Test coverage, 5) Technical debt. Provide a structured report with scores (0-100) for each category.",
+ "notebook": "codex_architecture",
+ "followup_questions": [
+ "Are there any circular dependencies?",
+ "What are the highest-risk security areas?",
+ "Which modules need refactoring most urgently?"
+ ]
+ },
+ {
+ "name": "dependency_analysis",
+ "trigger": "@architect analyze dependencies",
+ "prompt": "Generate a dependency graph for the _codex_ repository. Identify: 1) Circular dependencies, 2) Tightly coupled modules, 3) God classes (>500 LOC, >10 dependencies), 4) Unused dependencies. Output as Mermaid diagram.",
+ "notebook": "codex_architecture",
+ "output_format": "mermaid"
+ },
+ {
+ "name": "security_audit",
+ "trigger": "@architect security audit",
+ "prompt": "Conduct a security audit of _codex_. Check for: 1) Unvalidated inputs, 2) Injection vulnerabilities (SQL, XSS, command), 3) Weak cryptography, 4) Authentication issues, 5) Secrets in code. Prioritize findings by severity (Critical, High, Medium, Low).",
+ "notebook": "codex_architecture",
+ "severity_levels": true
+ },
+ {
+ "name": "refactoring_suggestions",
+ "trigger": "@architect suggest refactoring for {module}",
+ "prompt": "Analyze the {module} module in _codex_ and suggest refactoring improvements. Consider: 1) Code complexity (cyclomatic), 2) Duplication, 3) Performance bottlenecks, 4) Maintainability. Provide specific code examples and before/after comparisons.",
+ "notebook": "codex_architecture",
+ "include_examples": true
+ },
+ {
+ "name": "test_coverage",
+ "trigger": "@architect check test coverage",
+ "prompt": "Analyze test coverage for _codex_. Identify: 1) Untested code paths, 2) Missing edge cases, 3) Flaky tests (non-deterministic), 4) Test duplication. Suggest new test cases for critical paths with high business impact.",
+ "notebook": "codex_architecture",
+ "prioritize_critical": true
+ },
+ {
+ "name": "performance_analysis",
+ "trigger": "@architect analyze performance",
+ "prompt": "Perform performance analysis of _codex_. Identify: 1) N+1 query patterns, 2) Inefficient algorithms (O(n²) or worse), 3) Missing caching opportunities, 4) Memory leaks. Provide optimization recommendations with estimated impact.",
+ "notebook": "codex_architecture",
+ "include_metrics": true
+ },
+ {
+ "name": "integration_points",
+ "trigger": "@architect show integration points",
+ "prompt": "Map all integration points in _codex_. Include: 1) External APIs, 2) Database connections, 3) Message queues, 4) File systems, 5) Third-party services. Document authentication methods and error handling for each.",
+ "notebook": "codex_architecture",
+ "include_auth": true
+ },
+ {
+ "name": "recursive_analysis",
+ "trigger": "@architect deep dive {topic}",
+ "prompt": "Perform recursive deep-dive analysis on {topic} in _codex_. Start with high-level overview, then progressively drill down into implementation details. After each level, ask yourself: 'Is that ALL you need to know?' Continue until all logic bottlenecks are resolved and you have complete understanding.",
+ "notebook": "codex_architecture",
+ "recursive": true,
+ "max_depth": 5
+ }
+ ]
 }
 ```
 
@@ -484,7 +484,7 @@ After successful installation:
 
 ---
 
-**Task Status**: READY FOR EXECUTION  
-**Prerequisites**: Task 1 & 2 must be complete  
-**Estimated Time**: 2 hours  
+**Task Status**: READY FOR EXECUTION 
+**Prerequisites**: Task 1 & 2 must be complete 
+**Estimated Time**: 2 hours 
 **Cognitive Brain Impact**: Self-Healing +3, Knowledge Synthesis +5

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Trigger validations on approval
 on:
   pull_request_review:
@@ -183,4 +187,7 @@ jobs:
         tee -a "$GITHUB_STEP_SUMMARY"
 
         '
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

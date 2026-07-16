@@ -5,35 +5,35 @@
 ## Table of Contents
 
 - [Autonomous Execution Readiness](#autonomous-execution-readiness)
-  - [Planset Status](#planset-status)
-  - [AI Agency Policy Compliance Checklist](#ai-agency-policy-compliance-checklist)
+ - [Planset Status](#planset-status)
+ - [AI Agency Policy Compliance Checklist](#ai-agency-policy-compliance-checklist)
 - [Executive Summary](#executive-summary)
 - [Phase Overview](#phase-overview)
 - [Phase 14.0: Foundation (Current Phase)](#phase-140-foundation-current-phase)
-  - [Completed Items](#completed-items)
-  - [Exit Criteria - ALL MET ](#exit-criteria---all-met-)
+ - [Completed Items](#completed-items)
+ - [Exit Criteria - ALL MET ](#exit-criteria---all-met-)
 - [Phase 14.1: Core Modules (30% → 50%)](#phase-141-core-modules-30--50)
-  - [Priority Modules (High Impact)](#priority-modules-high-impact)
-  - [Top 10 Priority Modules (from Priority Matrix)](#top-10-priority-modules-from-priority-matrix)
-  - [Test Categories to Add](#test-categories-to-add)
-  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
-  - [Exit Criteria](#exit-criteria)
+ - [Priority Modules (High Impact)](#priority-modules-high-impact)
+ - [Top 10 Priority Modules (from Priority Matrix)](#top-10-priority-modules-from-priority-matrix)
+ - [Test Categories to Add](#test-categories-to-add)
+ - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+ - [Exit Criteria](#exit-criteria)
 - [Phase 14.2: Training, Agents & RAG (50% → 70%)](#phase-142-training-agents--rag-50--70)
-  - [Priority Modules](#priority-modules)
-  - [Test Categories to Add](#test-categories-to-add)
-  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
-  - [Exit Criteria](#exit-criteria)
+ - [Priority Modules](#priority-modules)
+ - [Test Categories to Add](#test-categories-to-add)
+ - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+ - [Exit Criteria](#exit-criteria)
 - [Phase 14.3: Integration & Edge Cases (70% → 85%)](#phase-143-integration--edge-cases-70--85)
-  - [Focus Areas](#focus-areas)
-  - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
-  - [Exit Criteria](#exit-criteria)
+ - [Focus Areas](#focus-areas)
+ - [Coverage Targets by Module Group](#coverage-targets-by-module-group)
+ - [Exit Criteria](#exit-criteria)
 - [Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)](#phase-144-final-gaps--branch-coverage-85--100)
-  - [Strategy](#strategy)
-  - [Final Push Categories](#final-push-categories)
-  - [Exit Criteria](#exit-criteria)
+ - [Strategy](#strategy)
+ - [Final Push Categories](#final-push-categories)
+ - [Exit Criteria](#exit-criteria)
 - [Implementation Guidelines](#implementation-guidelines)
-  - [Test File Structure](#test-file-structure)
-  - [Test Naming Convention](#test-naming-convention)
+ - [Test File Structure](#test-file-structure)
+ - [Test Naming Convention](#test-naming-convention)
 - [Examples:](#examples)
 - [Coverage Configuration](#coverage-configuration)
 - [Phase 14.0 (Current)](#phase-140-current)
@@ -45,31 +45,31 @@
 - [Workflow Updates](#workflow-updates)
 - [.github/workflows/test-rag.yml](#githubworkflowstest-ragyml)
 - [Priority Test Proposals](#priority-test-proposals)
-  - [TP-001: Unit Tests for High-Priority Modules](#tp-001-unit-tests-for-high-priority-modules)
-  - [TP-002: Integration Tests for Cross-Module Interactions](#tp-002-integration-tests-for-cross-module-interactions)
-  - [TP-003: E2E Tests for Critical Workflows](#tp-003-e2e-tests-for-critical-workflows)
+ - [TP-001: Unit Tests for High-Priority Modules](#tp-001-unit-tests-for-high-priority-modules)
+ - [TP-002: Integration Tests for Cross-Module Interactions](#tp-002-integration-tests-for-cross-module-interactions)
+ - [TP-003: E2E Tests for Critical Workflows](#tp-003-e2e-tests-for-critical-workflows)
 - [Monitoring & Tracking](#monitoring--tracking)
-  - [Coverage Dashboard](#coverage-dashboard)
-  - [per-phase Check-ins](#per-phase-check-ins)
+ - [Coverage Dashboard](#coverage-dashboard)
+ - [per-phase Check-ins](#per-phase-check-ins)
 - [Risk Mitigation](#risk-mitigation)
-  - [Common Blockers & Solutions](#common-blockers--solutions)
-  - [Exclusion Guidelines](#exclusion-guidelines)
+ - [Common Blockers & Solutions](#common-blockers--solutions)
+ - [Exclusion Guidelines](#exclusion-guidelines)
 - [Acceptable exclusions:](#acceptable-exclusions)
 - [Unacceptable exclusions:](#unacceptable-exclusions)
 - [Success Metrics](#success-metrics)
-  - [Phase Completion Checklist](#phase-completion-checklist)
-  - [Quality Indicators](#quality-indicators)
+ - [Phase Completion Checklist](#phase-completion-checklist)
+ - [Quality Indicators](#quality-indicators)
 - [References](#references)
 - [Next Steps](#next-steps)
-  - [Phase 14.1 Implementation Checklist](#phase-141-implementation-checklist)
-- [Phase 14.2: Security Hardening -  COMPLETE](#phase-142-security-hardening----complete)
-- [Phase 14.3: Integration & Edge Cases -  COMPLETE](#phase-143-integration--edge-cases----complete)
+ - [Phase 14.1 Implementation Checklist](#phase-141-implementation-checklist)
+- [Phase 14.2: Security Hardening - COMPLETE](#phase-142-security-hardening----complete)
+- [Phase 14.3: Integration & Edge Cases - COMPLETE](#phase-143-integration--edge-cases----complete)
 
-**Created:** 2026-01-18  
+**Created:** 2026-01-18 
 **Updated: 2026-07-11
-**Current Baseline:** ~27.5% (estimated 196 of 714 modules covered)  
-**Target:** 100% test coverage  
-**Status:**  Phase 14.0 Complete | 🚧 Phase 14.1 Executing
+**Current Baseline:** ~27.5% (estimated 196 of 714 modules covered) 
+**Target:** 100% test coverage 
+**Status:** Phase 14.0 Complete | Phase 14.1 Executing
 
 ---
 
@@ -79,11 +79,11 @@
 
 | Phase | Planset Ready | Execution Status |
 |-------|---------------|------------------|
-| Phase 14.0 |  Complete |  DONE |
-| Phase 14.1 |  Ready | 🚧 EXECUTING |
-| Phase 14.2 |  Ready |  Queued |
-| Phase 14.3 |  Ready |  Queued |
-| Phase 14.4 |  Ready |  Queued |
+| Phase 14.0 | Complete | DONE |
+| Phase 14.1 | Ready | EXECUTING |
+| Phase 14.2 | Ready | Queued |
+| Phase 14.3 | Ready | Queued |
+| Phase 14.4 | Ready | Queued |
 
 ### AI Agency Policy Compliance Checklist
 
@@ -126,10 +126,10 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 
 ## Phase 14.0: Foundation (Current Phase)
 
-**Goal:** Establish test infrastructure and baseline coverage  
-**Duration:** 2 phases  
-**Threshold:** `fail_under = 0`  
-**Status:**  COMPLETE
+**Goal:** Establish test infrastructure and baseline coverage 
+**Duration:** 2 phases 
+**Threshold:** `fail_under = 0` 
+**Status:** COMPLETE
 
 ### Completed Items
 - [x] Fix CI/CD pipeline issues (Rust compilation, pytest plugin discovery)
@@ -144,30 +144,30 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 - [x] Create coverage roadmap (this document)
 
 ### Exit Criteria - ALL MET 
--  All CI jobs passing
--  Coverage baseline established (27.5%)
--  Test infrastructure documented
--  Templates and fixtures ready
+- All CI jobs passing
+- Coverage baseline established (27.5%)
+- Test infrastructure documented
+- Templates and fixtures ready
 
 ---
 
 ## Phase 14.1: Core Modules (30% → 50%)
 
-**Goal:** Cover high-impact core modules  
-**Duration:** 3 phases  
-**Threshold:** `fail_under = 30`  
-**Status:** 🚧 IN PROGRESS
+**Goal:** Cover high-impact core modules 
+**Duration:** 3 phases 
+**Threshold:** `fail_under = 30` 
+**Status:** IN PROGRESS
 
 ### Priority Modules (High Impact)
 
 | Module | Files | Current Tests | Target | Impact | Status |
 |--------|-------|---------------|--------|--------|--------|
-| `src/codex/logging/` | 8 | 2 | 8 | Critical - session logging | 🚧 |
-| `src/codex/cli/` | 3 | 1 | 3 | Critical - entry points | 🚧 |
-| `src/codex/utils/` | 5 | 1 | 5 | High - utility functions |  |
-| `src/codex_ml/config/` | 3 | 0 | 3 | High - configuration |  |
-| `src/codex_ml/cli/` | 25 | 3 | 15 | High - CLI commands |  |
-| `src/codex_ml/data/` | 18 | 4 | 12 | High - data loading |  |
+| `src/codex/logging/` | 8 | 2 | 8 | Critical - session logging | |
+| `src/codex/cli/` | 3 | 1 | 3 | Critical - entry points | |
+| `src/codex/utils/` | 5 | 1 | 5 | High - utility functions | |
+| `src/codex_ml/config/` | 3 | 0 | 3 | High - configuration | |
+| `src/codex_ml/cli/` | 25 | 3 | 15 | High - CLI commands | |
+| `src/codex_ml/data/` | 18 | 4 | 12 | High - data loading | |
 
 ### Top 10 Priority Modules (from Priority Matrix)
 
@@ -187,25 +187,25 @@ Based on `.codex/qa_walkthrough/test_priority_matrix.json`:
 ### Test Categories to Add
 
 1. **Unit Tests for Core Functions** (~100 tests)
-   - Configuration loading and validation
-   - Data serialization/deserialization
-   - CLI command parsing
-   - Logging functionality
+ - Configuration loading and validation
+ - Data serialization/deserialization
+ - CLI command parsing
+ - Logging functionality
 
 2. **Integration Tests** (~30 tests)
-   - CLI end-to-end flows
-   - Config → execution paths
-   - Data pipeline integration
+ - CLI end-to-end flows
+ - Config → execution paths
+ - Data pipeline integration
 
 ### Coverage Targets by Module Group
 
 ```
-src/codex/logging/    → 80%
-src/codex/cli/        → 70%
-src/codex/utils/      → 70%
-src/codex_ml/config/  → 80%
-src/codex_ml/cli/     → 60%
-src/codex_ml/data/    → 70%
+src/codex/logging/ → 80%
+src/codex/cli/ → 70%
+src/codex/utils/ → 70%
+src/codex_ml/config/ → 80%
+src/codex_ml/cli/ → 60%
+src/codex_ml/data/ → 70%
 ```
 
 ### Exit Criteria
@@ -217,8 +217,8 @@ src/codex_ml/data/    → 70%
 
 ## Phase 14.2: Training, Agents & RAG (50% → 70%)
 
-**Goal:** Cover ML training pipeline, agents, and RAG system  
-**Duration:** 4 phases  
+**Goal:** Cover ML training pipeline, agents, and RAG system 
+**Duration:** 4 phases 
 **Threshold:** `fail_under = 50`
 
 ### Priority Modules
@@ -234,33 +234,33 @@ src/codex_ml/data/    → 70%
 ### Test Categories to Add
 
 1. **Training Pipeline Tests** (~80 tests)
-   - Model initialization
-   - Training loop execution
-   - Checkpoint save/load
-   - Early stopping logic
-   - Distributed training mocks
+ - Model initialization
+ - Training loop execution
+ - Checkpoint save/load
+ - Early stopping logic
+ - Distributed training mocks
 
 2. **RAG System Tests** (~100 tests)
-   - See detailed plan in `docs/PLAN_100_PERCENT_COVERAGE.md`
-   - Embeddings providers
-   - Index building
-   - Retrieval accuracy
-   - Cache management
+ - See detailed plan in `docs/PLAN_100_PERCENT_COVERAGE.md`
+ - Embeddings providers
+ - Index building
+ - Retrieval accuracy
+ - Cache management
 
 3. **Agent Tests** (~50 tests)
-   - Agent initialization
-   - Message handling
-   - Memory management
-   - Orchestrator logic
+ - Agent initialization
+ - Message handling
+ - Memory management
+ - Orchestrator logic
 
 ### Coverage Targets by Module Group
 
 ```
 src/codex_ml/training/ → 80%
-src/codex/rag/         → 90%
-agents/                → 60%
-training/              → 70%
-src/codex_ml/models/   → 80%
+src/codex/rag/ → 90%
+agents/ → 60%
+training/ → 70%
+src/codex_ml/models/ → 80%
 ```
 
 ### Exit Criteria
@@ -273,36 +273,36 @@ src/codex_ml/models/   → 80%
 
 ## Phase 14.3: Integration & Edge Cases (70% → 85%)
 
-**Goal:** Cover integration paths and edge cases  
-**Duration:** 3 phases  
+**Goal:** Cover integration paths and edge cases 
+**Duration:** 3 phases 
 **Threshold:** `fail_under = 70`
 
 ### Focus Areas
 
 1. **Cross-Module Integration Tests** (~60 tests)
-   - Config → Training → Evaluation flow
-   - RAG → Agent → Response flow
-   - CLI → Core → Output flow
+ - Config → Training → Evaluation flow
+ - RAG → Agent → Response flow
+ - CLI → Core → Output flow
 
 2. **Error Handling & Edge Cases** (~80 tests)
-   - Invalid inputs
-   - Network failures
-   - Resource exhaustion
-   - Concurrent access
-   - Platform-specific paths
+ - Invalid inputs
+ - Network failures
+ - Resource exhaustion
+ - Concurrent access
+ - Platform-specific paths
 
 3. **Remaining Module Coverage** (~100 tests)
-   - `src/codex_ml/serving/`
-   - `src/codex_ml/monitoring/`
-   - `src/codex/security/`
-   - `src/codex/quantum_orchestrator/`
+ - `src/codex_ml/serving/`
+ - `src/codex_ml/monitoring/`
+ - `src/codex/security/`
+ - `src/codex/quantum_orchestrator/`
 
 ### Coverage Targets by Module Group
 
 ```
-src/codex_ml/serving/        → 80%
-src/codex_ml/monitoring/     → 75%
-src/codex/security/          → 90%
+src/codex_ml/serving/ → 80%
+src/codex_ml/monitoring/ → 75%
+src/codex/security/ → 90%
 src/codex/quantum_orchestrator/ → 70%
 ```
 
@@ -316,26 +316,26 @@ src/codex/quantum_orchestrator/ → 70%
 
 ## Phase 14.4: Final Gaps & Branch Coverage (85% → 100%)
 
-**Goal:** Achieve 100% line and branch coverage  
-**Duration:** 3 phases  
+**Goal:** Achieve 100% line and branch coverage 
+**Duration:** 3 phases 
 **Threshold:** `fail_under = 85`
 
 ### Strategy
 
 1. **Coverage Gap Analysis**
-   ```bash
-   pytest --cov=src --cov-report=term-missing --cov-branch
-   ```
+ ```bash
+ pytest --cov=src --cov-report=term-missing --cov-branch
+ ```
 
 2. **Targeted Test Generation**
-   - Use coverage reports to identify uncovered lines
-   - Add tests for each uncovered branch
-   - Document any `# pragma: no cover` exclusions
+ - Use coverage reports to identify uncovered lines
+ - Add tests for each uncovered branch
+ - Document any `# pragma: no cover` exclusions
 
 3. **Documentation Example Tests**
-   - Validate all code examples in docs
-   - Add tests for README examples
-   - Test CLI help examples
+ - Validate all code examples in docs
+ - Add tests for README examples
+ - Test CLI help examples
 
 ### Final Push Categories
 
@@ -360,28 +360,28 @@ src/codex/quantum_orchestrator/ → 70%
 
 ```
 tests/
-├── conftest.py                  # Shared fixtures
-├── conftest_shared.py           # Additional fixtures
-├── unit/                        # Unit tests
-│   ├── test_codex_ml/           # codex_ml module tests
-│   ├── test_codex/              # codex module tests
-│   └── test_agents/             # agents module tests
-├── integration/                 # Integration tests
-│   ├── test_cli_flows.py
-│   ├── test_training_pipeline.py
-│   └── test_rag_pipeline.py
-├── e2e/                         # End-to-end tests
-│   ├── test_full_workflow.py
-│   └── test_cli_e2e.py
-└── test_rag_*.py                # Existing RAG tests
+├── conftest.py # Shared fixtures
+├── conftest_shared.py # Additional fixtures
+├── unit/ # Unit tests
+│ ├── test_codex_ml/ # codex_ml module tests
+│ ├── test_codex/ # codex module tests
+│ └── test_agents/ # agents module tests
+├── integration/ # Integration tests
+│ ├── test_cli_flows.py
+│ ├── test_training_pipeline.py
+│ └── test_rag_pipeline.py
+├── e2e/ # End-to-end tests
+│ ├── test_full_workflow.py
+│ └── test_cli_e2e.py
+└── test_rag_*.py # Existing RAG tests
 ```
 
 ### Test Naming Convention
 
 ```text
 def test_<module>_<function>_<scenario>():
-    """Test description."""
-    pass
+ """Test description."""
+ pass
 
 # Examples:
 def test_indexer_chunk_text_empty_string():
@@ -421,12 +421,12 @@ Each phase should update the CI workflow thresholds:
 ```yaml
 # .github/workflows/test-rag.yml
 - name: Run tests with coverage
-  run: |
-    pytest tests/ \
-      --cov=src \
-      --cov-report=xml \
-      --cov-report=html \
-      --cov-fail-under=${PHASE_THRESHOLD}
+ run: |
+ pytest tests/ \
+ --cov=src \
+ --cov-report=xml \
+ --cov-report=html \
+ --cov-fail-under=${PHASE_THRESHOLD}
 ```
 
 ---
@@ -491,12 +491,12 @@ Only exclude code with valid reasons:
 
 ```python
 # Acceptable exclusions:
-if TYPE_CHECKING:  # pragma: no cover
-    ...
+if TYPE_CHECKING: # pragma: no cover
+ ...
 
 # Unacceptable exclusions:
-if complex_condition:  # pragma: no cover  #  Don't do this
-    important_logic()
+if complex_condition: # pragma: no cover # Don't do this
+ important_logic()
 ```
 
 ---
@@ -535,52 +535,52 @@ if complex_condition:  # pragma: no cover  #  Don't do this
 
 ## Next Steps
 
-1.  Fix current CI failures (xdist plugin discovery)
-2.  Verify all existing tests pass
-3.  Phase 14.0 Complete - Foundation established
-4. 🚧 Begin Phase 14.1 - Core modules unit tests
-5.  Update coverage threshold to 30% after Phase 14.1
+1. Fix current CI failures (xdist plugin discovery)
+2. Verify all existing tests pass
+3. Phase 14.0 Complete - Foundation established
+4. Begin Phase 14.1 - Core modules unit tests
+5. Update coverage threshold to 30% after Phase 14.1
 
 ### Phase 14.1 Implementation Checklist
 
 **CLI Tests (55+ tests):**
-- [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py`  CREATED
-- [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py`  CREATED
-- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py`  CREATED
-- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py`  CREATED
+- [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py` CREATED
+- [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py` CREATED
+- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py` CREATED
+- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py` CREATED
 
 **Data Tests (60+ tests):**
-- [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py`  CREATED
-- [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py`  CREATED
-- [x] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py`  CREATED
+- [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py` CREATED
+- [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py` CREATED
+- [x] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py` CREATED
 
 **Training Tests (65+ tests):**
-- [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py`  CREATED
-- [x] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py`  CREATED
-- [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py`  CREATED
+- [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py` CREATED
+- [x] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py` CREATED
+- [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py` CREATED
 
 **Phase 14.1 Progress Summary:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| CLI Tests | 55+ | 60+ |  100% |
-| Data Tests | 60+ | 65+ |  100% |
-| Training Tests | 65+ | 70+ |  100% |
-| **Total** | **180+** | **195+** |  100% |
+| CLI Tests | 55+ | 60+ | 100% |
+| Data Tests | 60+ | 65+ | 100% |
+| Training Tests | 65+ | 70+ | 100% |
+| **Total** | **180+** | **195+** | 100% |
 
 ---
 
-## Phase 14.2: Security Hardening -  COMPLETE
+## Phase 14.2: Security Hardening - COMPLETE
 
 **Security Tests Progress:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| CVE Monitor Tests | 15+ | 20+ |  100% |
-| Denylist Tests | 15+ | 20+ |  100% |
-| Sanitizers Tests | 20+ | 25+ |  100% |
-| Moderation Tests | 20+ | 25+ |  100% |
-| **Total** | **70+** | **90+** |  100% |
+| CVE Monitor Tests | 15+ | 20+ | 100% |
+| Denylist Tests | 15+ | 20+ | 100% |
+| Sanitizers Tests | 20+ | 25+ | 100% |
+| Moderation Tests | 20+ | 25+ | 100% |
+| **Total** | **70+** | **90+** | 100% |
 
 **Files Created:**
 - [x] `tests/security/test_cve_monitor_coverage.py` - 20+ tests
@@ -590,19 +590,19 @@ if complex_condition:  # pragma: no cover  #  Don't do this
 
 ---
 
-## Phase 14.3: Integration & Edge Cases -  COMPLETE
+## Phase 14.3: Integration & Edge Cases - COMPLETE
 
 **Integration Tests Progress:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| Cross-Module Integration | 30+ | 35+ |  100% |
-| Edge Case & Boundary | 40+ | 45+ |  100% |
-| **Total** | **70+** | **80+** |  100% |
+| Cross-Module Integration | 30+ | 35+ | 100% |
+| Edge Case & Boundary | 40+ | 45+ | 100% |
+| **Total** | **70+** | **80+** | 100% |
 
 **Files Created:**
 - [x] `tests/integration/test_phase14_cross_module_coverage.py` - 35+ tests
 - [x] `tests/integration/test_phase14_edge_cases_coverage.py` - 45+ tests
 
-**Owner:** Phase 14 implementation team  
+**Owner:** Phase 14 implementation team 
 **Review Cadence:** per-phase coverage review

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: "\U0001F504 Auto-Post @copilot review After Agent Session"
 on:
   workflow_run:
@@ -618,4 +622,7 @@ jobs:
         \ = await github.rest.issues.createComment({\n    owner, repo, issue_number:\
         \ prNumber, body: standaloneBody.slice(0, 65536),\n  });\n  console.log(`\u2705\
         \ Created quality-findings comment: ${created.html_url}`);\n}\n"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-07-08
-**Audience:** Developers, DevOps, Admins  
+**Audience:** Developers, DevOps, Admins 
 **Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
@@ -16,19 +16,19 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ## Quick Navigation by Role
 
-### 👨‍💻 **Developers**
+### ‍ **Developers**
 1. **Get started:** [Quickstart Guide](getting-started.md)
 2. **Understand the system:** [Architecture Quick Reference](ARCHITECTURE_QUICK_REFERENCE.md)
 3. **Code & test:** [Contributing Guidelines](CONTRIBUTING.md), [Testing Guide](TESTING.md)
 4. **Integrate:** [API Reference](API_REFERENCE.md), [CLI Guide](./api/cli.md)
 
-###  **DevOps & Operations**
+### **DevOps & Operations**
 1. **Deploy:** [Deployment Guide](DEPLOYMENT_GUIDE.md)
 2. **Configure:** [Configuration Guide](CONFIGURATION_GUIDE.md)
 3. **Troubleshoot:** [Troubleshooting Guide](TROUBLESHOOTING.md)
 4. **Manage:** [Admin Guide](admin/INDEX.md)
 
-###  **Security & Compliance**
+### **Security & Compliance**
 1. **Review policies:** [Security Guide](SECURITY.md)
 2. **Understand governance:** [Governance Guide](admin/GOVERNANCE.md)
 3. **Manage access:** [Token Management](tokens/INDEX.md)
@@ -45,13 +45,13 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 ### User Guides
 - [CLI Usage](./api/cli.md) — Command-line interface guide
 - **API Documentation** — Complete API reference (NEW!)
-  - [API Documentation Index](API_DOCUMENTATION_INDEX.md) — Start here
-  - [Core API Reference](CORE_API_REFERENCE.md) — CLI, training, utilities
-  - [Quantum Orchestration API](QUANTUM_ORCHESTRATION_API.md) — Physics-inspired orchestration
-  - [Storage & Archive API](STORAGE_API.md) — Data persistence & retrieval
-  - [Integration & GitHub API](INTEGRATION_API.md) — GitHub, auth, tokens
-  - [ML Inference API](ML_INFERENCE_API.md) — ML validation & integration
-  - [Governance & Memory API](GOVERNANCE_API.md) — RBAC, memory, approval workflows
+ - [API Documentation Index](API_DOCUMENTATION_INDEX.md) — Start here
+ - [Core API Reference](CORE_API_REFERENCE.md) — CLI, training, utilities
+ - [Quantum Orchestration API](QUANTUM_ORCHESTRATION_API.md) — Physics-inspired orchestration
+ - [Storage & Archive API](STORAGE_API.md) — Data persistence & retrieval
+ - [Integration & GitHub API](INTEGRATION_API.md) — GitHub, auth, tokens
+ - [ML Inference API](ML_INFERENCE_API.md) — ML validation & integration
+ - [Governance & Memory API](GOVERNANCE_API.md) — RBAC, memory, approval workflows
 - [Configuration](CONFIGURATION_GUIDE.md) — Configuration management
 
 ### Architecture & Design
@@ -71,9 +71,9 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ### Templates & Patterns
 - [Operational Templates](templates/README.md) — Reusable templates:
-  - Migration — Python File Relocation
-  - Migration — CLI Hardening
-  - Planning — Intent Validation
+ - Migration — Python File Relocation
+ - Migration — CLI Hardening
+ - Planning — Intent Validation
 
 ### Advanced Topics
 - [RAG Integration](EXPANDED_CONTEXT_RAG.md) — Retrieval-augmented generation
@@ -148,14 +148,14 @@ Improve the documentation:
 ### Documentation Standards
 
 All documentation follows these standards:
--  Single H1 title per page
--  Metadata header (Last Updated, Audience)
--  Clear, active voice
--  Working code examples
--  Proper heading hierarchy
--  Relative links for internal docs
--  13-point quality checklist
--  Updated every 6 months
+- Single H1 title per page
+- Metadata header (Last Updated, Audience)
+- Clear, active voice
+- Working code examples
+- Proper heading hierarchy
+- Relative links for internal docs
+- 13-point quality checklist
+- Updated every 6 months
 
 See [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md) for full standards.
 

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Progressive Validation Suite
 on:
   pull_request:
@@ -136,12 +140,18 @@ jobs:
 
         python -c "import sys; print(f''Python: {sys.version}'')"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Test core module imports
 
         python -c "import pathlib; import json; import subprocess" || exit 1
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "✓ Import validation passed"
 
         '
@@ -379,7 +389,10 @@ jobs:
         run: python scripts/ci/post_rescue_comment.py
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

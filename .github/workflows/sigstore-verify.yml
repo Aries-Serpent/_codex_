@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Sigstore Dependency Verification
 
 on:
@@ -26,7 +30,10 @@ concurrency:
 permissions:
   contents: read
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   sigstore-verify:
     name: Sigstore Signature Verification
@@ -112,4 +119,7 @@ jobs:
           path: sigstore-report.json
           if-no-files-found: warn
           retention-days: 30
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

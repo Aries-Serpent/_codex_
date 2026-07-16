@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Build & Push Preview Image
 on:
   push:
@@ -53,7 +57,11 @@ jobs:
     timeout-minutes: 5
     needs: cost-gate
     steps:
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
@@ -84,7 +92,11 @@ jobs:
           - preview-dev
     steps:
       - uses: actions/checkout@v5
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()

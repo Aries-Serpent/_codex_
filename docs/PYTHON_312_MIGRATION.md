@@ -9,7 +9,7 @@
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
@@ -24,7 +24,7 @@
 
 ---
 
-##  Overview
+## Overview
 
 This guide covers migration from Python 3.11 to 3.12 for the **_codex_** repository.
 
@@ -34,9 +34,9 @@ This guide covers migration from Python 3.11 to 3.12 for the **_codex_** reposit
 |--------|---------|
 | **Current Baseline** | Python ≥ 3.11 |
 | **Target Version** | Python 3.12 (primary), maintain 3.11 compatibility |
-| **Migration Status** |  **READY** - All dependencies compatible |
+| **Migration Status** | **READY** - All dependencies compatible |
 | **Breaking Changes** | **0** - Zero breaking changes required |
-| **Risk Level** |  **LOW** - Modern codebase, proactive patterns |
+| **Risk Level** | **LOW** - Modern codebase, proactive patterns |
 | **Estimated Effort** | 2-4 hours (testing + validation) |
 | **Test Coverage** | ≥70% minimum, 100% target for future |
 
@@ -50,7 +50,7 @@ This guide covers migration from Python 3.11 to 3.12 for the **_codex_** reposit
 
 ---
 
-##  Prerequisites
+## Prerequisites
 
 ### System Requirements
 
@@ -82,7 +82,7 @@ python --version > python_version_backup.txt
 
 ---
 
-##  Migration Steps
+## Migration Steps
 
 ### Step 1: Update Environment
 
@@ -91,9 +91,9 @@ python --version > python_version_backup.txt
 python3.12 -m venv venv_312
 
 # Activate environment
-source venv_312/bin/activate  # Linux/macOS
+source venv_312/bin/activate # Linux/macOS
 # OR
-venv_312\Scripts\activate     # Windows
+venv_312\Scripts\activate # Windows
 
 # Verify Python version
 python --version
@@ -110,9 +110,9 @@ pip install -e ".[dev,test]"
 pip list | grep -E "(torch|transformers|pytest)"
 
 # Expected output should include:
-# torch         >=2.6.0
-# transformers  >=4.48.0
-# pytest        >=7.4
+# torch >=2.6.0
+# transformers >=4.48.0
+# pytest >=7.4
 ```
 
 ## Step 3: Run Compatibility Tests
@@ -164,22 +164,22 @@ The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
 
 ## ️ Breaking Changes
 
-**GOOD NEWS: Zero Breaking Changes Required!** 🎉
+**GOOD NEWS: Zero Breaking Changes Required!** 
 
 The _codex_ codebase is already compatible with Python 3.12. The following have been verified:
 
-###  Verified Compatible
+### Verified Compatible
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Type Hints (PEP 585/604) |  Compatible | Using `dict[str, Any]`, `X \| None` syntax |
-| tomllib (TOML parsing) |  Compatible | Proper fallback to `tomli` in place |
-| asyncio patterns |  Compatible | No deprecated `get_event_loop()` usage |
-| Exception handling |  Compatible | ExceptionGroup not used (as expected) |
-| Import system |  Compatible | Using `importlib`, not deprecated `imp` |
-| Collections ABC |  Compatible | Proper imports from `typing` |
+| Type Hints (PEP 585/604) | Compatible | Using `dict[str, Any]`, `X \| None` syntax |
+| tomllib (TOML parsing) | Compatible | Proper fallback to `tomli` in place |
+| asyncio patterns | Compatible | No deprecated `get_event_loop()` usage |
+| Exception handling | Compatible | ExceptionGroup not used (as expected) |
+| Import system | Compatible | Using `importlib`, not deprecated `imp` |
+| Collections ABC | Compatible | Proper imports from `typing` |
 
-###  Patterns Already Modernized
+### Patterns Already Modernized
 
 The codebase proactively uses:
 
@@ -191,7 +191,7 @@ The codebase proactively uses:
 
 ---
 
-##  Performance Improvements
+## Performance Improvements
 
 Python 3.12 provides significant performance gains:
 
@@ -199,12 +199,12 @@ Python 3.12 provides significant performance gains:
 
 | Operation | Improvement | Impact on _codex_ |
 |-----------|-------------|-------------------|
-| **Overall Speed** | 5-10% faster |  Training/inference speedup |
-| **Dict Operations** | Up to 10% faster |  Config/metadata processing |
-| **Comprehensions** | 10-15% faster |  Data transformations |
-| **f-strings** | 2x faster |  Logging and formatting |
-| **Import Time** | Faster imports |  Faster startup |
-| **asyncio** | Improved performance |  FastAPI/Ray Serve |
+| **Overall Speed** | 5-10% faster | Training/inference speedup |
+| **Dict Operations** | Up to 10% faster | Config/metadata processing |
+| **Comprehensions** | 10-15% faster | Data transformations |
+| **f-strings** | 2x faster | Logging and formatting |
+| **Import Time** | Faster imports | Faster startup |
+| **asyncio** | Improved performance | FastAPI/Ray Serve |
 
 ### Benchmark Results
 
@@ -258,9 +258,9 @@ pytest tests/integration/test_py312_e2e.py -v --slow
 pytest tests/ --cov=src --cov-report=term-missing --cov-report=html
 
 # View HTML report
-open htmlcov/index.html  # macOS
-xdg-open htmlcov/index.html  # Linux
-start htmlcov/index.html  # Windows
+open htmlcov/index.html # macOS
+xdg-open htmlcov/index.html # Linux
+start htmlcov/index.html # Windows
 
 # Check coverage threshold
 coverage report --fail-under=70
@@ -273,16 +273,16 @@ The GitHub Actions workflow already tests Python 3.12:
 ```yaml
 # .github/workflows/test-comprehensive.yml
 strategy:
-  fail-fast: false
-  matrix:
-    python-version: ['3.11', '3.12']
+ fail-fast: false
+ matrix:
+ python-version: ['3.11', '3.12']
 ```
 
 **No changes needed** - CI is already configured correctly.
 
 ---
 
-##  Rollback Procedure
+## Rollback Procedure
 
 If issues arise during migration, follow this rollback procedure:
 
@@ -293,7 +293,7 @@ If issues arise during migration, follow this rollback procedure:
 deactivate
 
 # 2. Reactivate Python 3.12 environment
-source venv/bin/activate  # Your original Python 3.12 venv
+source venv/bin/activate # Your original Python 3.12 venv
 
 # 3. Verify Python version
 python --version
@@ -333,7 +333,7 @@ If rollback is needed, please report the issue:
 ```bash
 # Create GitHub issue with details
 gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
-  --body "### Issue Description
+ --body "### Issue Description
 [Describe the problem]
 
 ## Steps to Reproduce
@@ -353,24 +353,24 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
 
 ---
 
-##  Support Matrix
+## Support Matrix
 
 ### Python Version Support
 
 | Python Version | Support Status | Notes |
 |---------------|----------------|-------|
-| **3.10** |  Not Supported | Below minimum requirement |
-| **3.11** |  Supported | Current baseline, fully tested |
-| **3.12** |  Primary Target | Recommended for new deployments |
-| **3.13** |  Future | Planned for future iteration |
+| **3.10** | Not Supported | Below minimum requirement |
+| **3.11** | Supported | Current baseline, fully tested |
+| **3.12** | Primary Target | Recommended for new deployments |
+| **3.13** | Future | Planned for future iteration |
 
 ### Operating System Support
 
 | OS | Python 3.12 | Python 3.12 | Notes |
 |----|------------|-------------|-------|
-| **Linux (Ubuntu 20.04+)** |  |  | Fully supported |
-| **macOS (11+)** |  |  | Fully supported |
-| **Windows (10+)** |  |  | Fully supported |
+| **Linux (Ubuntu 20.04+)** | | | Fully supported |
+| **macOS (11+)** | | | Fully supported |
+| **Windows (10+)** | | | Fully supported |
 
 ### Dependency Compatibility
 
@@ -386,7 +386,7 @@ All 37 core dependencies verified compatible with Python 3.12:
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -405,7 +405,7 @@ python --version
 
 # Should be 3.11 or higher
 # If not, upgrade Python or use fallback:
-pip install tomli  # Fallback for Python < 3.11
+pip install tomli # Fallback for Python < 3.11
 ```
 
 ## Issue 2: Deprecation Warnings
@@ -422,9 +422,9 @@ DeprecationWarning: asyncio.get_event_loop() is deprecated
 loop = asyncio.get_event_loop()
 
 # NEW:
-loop = asyncio.get_running_loop()  # Inside async context
+loop = asyncio.get_running_loop() # Inside async context
 # OR
-asyncio.run(async_function())  # From sync context
+asyncio.run(async_function()) # From sync context
 ```
 
 ## Issue 3: Type Hint Errors
@@ -441,7 +441,7 @@ from __future__ import annotations
 
 # This enables string-based type hints
 def func(data: dict[str, Any]) -> list[str]:
-    pass
+ pass
 ```
 
 ## Issue 4: Test Failures
@@ -465,25 +465,25 @@ pytest tests/some_test.py -m "not py312" -v
 ## Getting Help
 
 1. **Check documentation:**
-   - Migration audit: `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`
-   - Test files: `tests/*/test_py312_*.py`
+ - Migration audit: `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`
+ - Test files: `tests/*/test_py312_*.py`
 
 2. **Search issues:**
-   ```bash
-   gh issue list --label "python-3.12"
-   ```
+ ```bash
+ gh issue list --label "python-3.12"
+ ```
 
 3. **Create new issue:**
-   ```bash
-   gh issue create --label "python-3.12" --label "migration"
-   ```
+ ```bash
+ gh issue create --label "python-3.12" --label "migration"
+ ```
 
 4. **Contact maintainers:**
-   - @mbaetiong for urgent issues
+ - @mbaetiong for urgent issues
 
 ---
 
-##  Path to 100% Coverage
+## Path to 100% Coverage
 
 Current test coverage: **≥70%** (minimum requirement met)
 Target: **100%** (future iteration)
@@ -501,8 +501,8 @@ from hypothesis import given, strategies as st
 
 @given(st.lists(st.integers()))
 def test_sort_property(lst):
-    sorted_lst = sorted(lst)
-    assert all(sorted_lst[i] <= sorted_lst[i+1] for i in range(len(sorted_lst)-1))
+ sorted_lst = sorted(lst)
+ assert all(sorted_lst[i] <= sorted_lst[i+1] for i in range(len(sorted_lst)-1))
 ```
 
 ## Phase 7: Mutation Testing (Future)
@@ -522,7 +522,7 @@ mutmut results
 
 ```bash
 # Add fuzzing for parser/config code
-pip install atheris  # For Python fuzzing
+pip install atheris # For Python fuzzing
 
 # Example fuzz test for TOML parsing
 ```
@@ -544,7 +544,7 @@ Comprehensive testing of:
 
 ---
 
-##  Migration Checklist
+## Migration Checklist
 
 Use this checklist to track migration progress:
 
@@ -581,7 +581,7 @@ Use this checklist to track migration progress:
 
 ---
 
-## 🎉 Success Metrics
+## Success Metrics
 
 After completing migration, verify these metrics:
 
@@ -596,7 +596,7 @@ After completing migration, verify these metrics:
 
 ---
 
-##  Additional Resources
+## Additional Resources
 
 ### Official Documentation
 
@@ -619,7 +619,7 @@ After completing migration, verify these metrics:
 
 ---
 
-## 📞 Support
+## Support
 
 For questions or issues:
 
@@ -629,6 +629,6 @@ For questions or issues:
 
 ---
 
-**Document Status:**  Production Ready
+**Document Status:** Production Ready
 **Last Updated: 2026-07-11
 **Next Review:** After Phase 6 (100% coverage) completion

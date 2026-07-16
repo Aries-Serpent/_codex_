@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: rust-ffi
 
 on:
@@ -63,4 +67,7 @@ jobs:
           name: codex-core-wheel-${{ runner.os }}-py3.12
           path: dist/*
           if-no-files-found: error
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

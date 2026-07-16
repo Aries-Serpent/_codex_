@@ -159,7 +159,7 @@ class TestTokenizationCliEncoding:
         try:
             from tokenization.cli import encode_command
             
-                result = runner.invoke(encode_command, [
+            result = runner.invoke(encode_command, [
                 '--text', 'Short text',
                 '--max-length', '128',
                 '--padding',

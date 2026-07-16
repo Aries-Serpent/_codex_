@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Adaptive Agent Delegation Framework
 
 on:
@@ -61,12 +65,20 @@ jobs:
         run: |
           echo '::add-mask::' "${{ secrets.CODEX_MASTER_KEY }}"
           echo '::add-mask::' "${{ secrets.CODEX_BACKUP_KEY }}"
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           persist-credentials: false
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: load
         name: Load context manifest
         env:
@@ -79,13 +91,18 @@ jobs:
             echo "⚠️ Manifest not found at $MANIFEST_PATH, using empty context"
             echo "manifest={}" >> $GITHUB_OUTPUT
           fi
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: parse
         name: Parse delegation recommendations
         env:
           MANIFEST: ${{ steps.load.outputs.manifest }}
         run: |
           AGENTS=$(echo "$MANIFEST" | jq -r '.delegation_recommendations[0].recommended_agents[]?' 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+<<<<<<< HEAD
           
           if [ -z "$AGENTS" ]; then
             AGENTS="unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor"
@@ -106,6 +123,28 @@ jobs:
           
           echo "📋 Delegating to agents: $AGENTS"
       
+=======
+
+          if [ -z "$AGENTS" ]; then
+            AGENTS="unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor"
+          fi
+
+          AGENT_COUNT=$(echo "$AGENTS" | tr ',' '\n' | wc -l)
+          MAX_AGENTS="${{ inputs.max_agents || 5 }}"
+
+          if [ "$AGENT_COUNT" -gt "$MAX_AGENTS" ]; then
+            AGENTS=$(echo "$AGENTS" | tr ',' '\n' | head -n "$MAX_AGENTS" | tr '\n' ',')
+          fi
+
+          echo "agents=$AGENTS" >> $GITHUB_OUTPUT
+          echo "count=$AGENT_COUNT" >> $GITHUB_OUTPUT
+
+          HAS_CRITICAL=$(echo "$AGENTS" | grep -c "security\|auth\|critical" || echo "0")
+          echo "has_critical=$HAS_CRITICAL" >> $GITHUB_OUTPUT
+
+          echo "📋 Delegating to agents: $AGENTS"
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Summary
         run: |
           echo "## Context Load Summary" >> $GITHUB_STEP_SUMMARY
@@ -127,7 +166,11 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: init
         name: Initialize delegation context
         env:
@@ -139,7 +182,11 @@ jobs:
           echo "   Mode: $DELEGATION_MODE"
           echo "   Dry run: $DRY_RUN"
           echo "agent_name=$AGENT" >> $GITHUB_OUTPUT
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: task_manifest
         name: Generate agent task manifest
         env:
@@ -165,15 +212,25 @@ jobs:
             ]
           }
           EOF
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Safe substitution using sed
           sed -i "s|AGENT_ID_PLACEHOLDER|$AGENT_ID|g" /tmp/agent_task.json
           sed -i "s|MANIFEST_PLACEHOLDER|${MANIFEST_CONTENT//|/\\|}|g" /tmp/agent_task.json
           sed -i "s|MODE_PLACEHOLDER|$DELEGATION_MODE|g" /tmp/agent_task.json
           sed -i "s|DRY_RUN_PLACEHOLDER|$DRY_RUN|g" /tmp/agent_task.json
+<<<<<<< HEAD
           
           echo "task_manifest=$(cat /tmp/agent_task.json | jq -c .)" >> $GITHUB_OUTPUT
       
+=======
+
+          echo "task_manifest=$(cat /tmp/agent_task.json | jq -c .)" >> $GITHUB_OUTPUT
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: delegate
         if: ${{ inputs.dry_run != 'true' }}
         name: Execute agent delegation (non-blocking)
@@ -182,10 +239,17 @@ jobs:
         run: |
           TASK_ID=$(uuidgen | cut -c1-8)
           echo "📬 Queuing agent: $AGENT_NAME (task_id: $TASK_ID)"
+<<<<<<< HEAD
           
           echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
           echo "status=queued" >> $GITHUB_OUTPUT
           
+=======
+
+          echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
+          echo "status=queued" >> $GITHUB_OUTPUT
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           mkdir -p .codex/delegation_tasks
           cat > ".codex/delegation_tasks/${TASK_ID}.json" << 'EOF'
           {
@@ -195,12 +259,20 @@ jobs:
             "status": "queued"
           }
           EOF
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Safe substitution
           sed -i "s|TASK_ID_PLACEHOLDER|$TASK_ID|g" ".codex/delegation_tasks/${TASK_ID}.json"
           sed -i "s|AGENT_PLACEHOLDER|$AGENT_NAME|g" ".codex/delegation_tasks/${TASK_ID}.json"
           sed -i "s|TIMESTAMP_PLACEHOLDER|$(date -u +'%Y-%m-%dT%H:%M:%SZ')|g" ".codex/delegation_tasks/${TASK_ID}.json"
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - if: always()
         name: Cache test results (Layer 3)
         uses: actions/cache@v5
@@ -209,7 +281,11 @@ jobs:
           path: .pytest_cache/
           restore-keys: |
             ${{ runner.os }}-pytest-
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - if: ${{ inputs.dry_run == 'true' }}
         name: Dry-run output
         env:
@@ -218,7 +294,11 @@ jobs:
         run: |
           echo "🧪 DRY RUN: Would delegate to $AGENT_NAME"
           echo "   Task manifest: $TASK_MANIFEST"
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Summary
         run: |
           echo "## Agent Delegation Step Summary" >> $GITHUB_STEP_SUMMARY
@@ -240,13 +320,21 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: collect
         name: Collect parallel outputs
         run: |
@@ -285,7 +373,11 @@ jobs:
           print(f"✅ Coalesced results from {results['total_agents']} agents")
           print(f"   Output saved to: {output_file}")
           PYTHON_EOF
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Generate delegation summary
         env:
           DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
@@ -298,21 +390,35 @@ jobs:
             echo "**Mode:** $DELEGATION_MODE"
             echo "**Agents Delegated:** $DELEGATION_COUNT"
             echo ""
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             if [ -f ".codex/delegation_results.json" ]; then
               echo "**Results:** ✅ Coalesced"
               echo ""
               cat .codex/delegation_results.json
             fi
           } | tee /tmp/delegation_summary.md
+<<<<<<< HEAD
           
           cat /tmp/delegation_summary.md >> $GITHUB_STEP_SUMMARY
       
+=======
+
+          cat /tmp/delegation_summary.md >> $GITHUB_STEP_SUMMARY
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - id: dashboard
         name: Generate dashboard
         run: |
           python3 scripts/ci/rapid_delegation_engine.py 2>/dev/null || echo "ℹ️ Dashboard generation skipped (optional)"
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Summary
         run: |
           echo "## Coalesce Results Summary" >> $GITHUB_STEP_SUMMARY
@@ -332,7 +438,11 @@ jobs:
         uses: actions/checkout@v5
         with:
           persist-credentials: false
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Report delegation status
         env:
           DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
@@ -355,7 +465,11 @@ jobs:
           echo "  - .codex/delegation_results.json"
           echo "  - .codex/RAPID_DELEGATION_STATUS.md"
           echo "  - .codex/delegation_tasks/*.json"
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Summary
         env:
           DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}

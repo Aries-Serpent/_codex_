@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Profile Validation
 
 on:
@@ -168,8 +172,13 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.profile-drift-check.result }}" == "success" ] && \
+<<<<<<< HEAD
              [ "${{ needs.lock-hash-validation.result }}" == "success" ] && \
              [ "${{ needs.offline-install-test.result }}" == "success" ]; then
+=======
+              [ "${{ needs.lock-hash-validation.result }}" == "success" ] && \
+              [ "${{ needs.offline-install-test.result }}" == "success" ]; then
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             echo "✅ **ALL CHECKS PASSED**" >> $GITHUB_STEP_SUMMARY
             exit 0
           else
@@ -180,4 +189,7 @@ jobs:
             echo "- Offline Install: ${{ needs.offline-install-test.result }}" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

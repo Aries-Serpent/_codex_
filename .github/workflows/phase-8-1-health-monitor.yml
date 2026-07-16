@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Phase 8.1 - Health Monitor
 on:
   schedule:
@@ -220,4 +224,7 @@ jobs:
         \ collected\"\necho \"  - All dashboards updated\"\necho \"  - All incidents\
         \ classified\"\necho \"  - All reports generated\"\necho \"\"\necho \"Next\
         \ execution: 1 hour\"\n"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

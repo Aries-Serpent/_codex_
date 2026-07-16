@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Copilot Issue Triage
 on:
   issues:
@@ -61,7 +65,10 @@ jobs:
           \nReturn ONLY valid JSON. No markdown fences. No explanation.\n"
         prompt: 'Triage this GitHub issue:
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         Repository: ${{ github.repository }}
 
         Issue  #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
@@ -72,7 +79,10 @@ jobs:
 
           ${{ github.event.issue.body }}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           Return a JSON triage object following the schema exactly.
 
           '
@@ -124,4 +134,7 @@ jobs:
         \ \"This is non-blocking \u2014 issue was created normally.\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Status Gate (.statusrc)
 on:
   pull_request:
@@ -71,4 +75,7 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

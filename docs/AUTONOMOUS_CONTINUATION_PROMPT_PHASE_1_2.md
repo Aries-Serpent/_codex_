@@ -7,9 +7,9 @@
 
 ## Executive Summary
 
-**Current Status**: Phase 1 In Progress - Critical scope adjustment made  
-**Progress**: 71 Python modules documented (+18% coverage improvement)  
-**Self-Review Iterations**: 1 complete, proceeding with hybrid approach  
+**Current Status**: Phase 1 In Progress - Critical scope adjustment made 
+**Progress**: 71 Python modules documented (+18% coverage improvement) 
+**Self-Review Iterations**: 1 complete, proceeding with hybrid approach 
 **Timeline**: Adjusted from 2 iterations → 4 phases for realistic 98% coverage
 
 ---
@@ -18,9 +18,9 @@
 
 ### Documentation Coverage Reality
 
-**Initial Claim**: 98% coverage (2% gap)  
-**Actual Analysis**: ~60% coverage (40% gap)  
-**Root Cause**: Metric calculated on core modules only, excluded scripts/workflows  
+**Initial Claim**: 98% coverage (2% gap) 
+**Actual Analysis**: ~60% coverage (40% gap) 
+**Root Cause**: Metric calculated on core modules only, excluded scripts/workflows 
 **Impact**: 402 documentation gaps identified vs. 15-20 estimated
 
 **Gap Breakdown**:
@@ -31,7 +31,7 @@
 
 ### Approach Adjustment
 
-**Original Plan**: 2 iterations to 100% coverage  
+**Original Plan**: 2 iterations to 100% coverage 
 **Revised Plan**: 4 phase hybrid approach to 98% coverage
 
 **Hybrid Approach**:
@@ -46,53 +46,53 @@
 ### Completed (Iteration 1) 
 
 1. **Gap Analysis**
-   - Analyzed entire codebase systematically
-   - Generated `docs/DOCUMENTATION_GAP_ANALYSIS.json`
-   - Identified 402 documentation gaps
-   - Categorized by type and priority
+ - Analyzed entire codebase systematically
+ - Generated `docs/DOCUMENTATION_GAP_ANALYSIS.json`
+ - Identified 402 documentation gaps
+ - Categorized by type and priority
 
 2. **Automation Tooling**
-   - Created `scripts/auto_document_python.py`
-   - Automated module docstring generation
-   - Analysis and reporting capabilities
-   - Ready for batch deployment
+ - Created `scripts/auto_document_python.py`
+ - Automated module docstring generation
+ - Analysis and reporting capabilities
+ - Ready for batch deployment
 
 3. **Initial Documentation Wave**
-   - MCP Server: 11/16 files documented (68.8% success)
-   - Codex Core: 38/229 files documented (16.6% coverage improvement)
-   - MCP Full: 22/60 files documented (36.7% success)
-   - **Total**: 71 modules documented in first pass
+ - MCP Server: 11/16 files documented (68.8% success)
+ - Codex Core: 38/229 files documented (16.6% coverage improvement)
+ - MCP Full: 22/60 files documented (36.7% success)
+ - **Total**: 71 modules documented in first pass
 
 4. **Verification**
-   - Core auth modules: 100% documented 
-   - Critical security paths: Verified 
-   - API interfaces: In progress 
+ - Core auth modules: 100% documented 
+ - Critical security paths: Verified 
+ - API interfaces: In progress 
 
 ### In Progress 
 
 1. **High-Priority Documentation**
-   - CLI modules
-   - Utility modules
-   - Integration interfaces
+ - CLI modules
+ - Utility modules
+ - Integration interfaces
 
 2. **Workflow Documentation**
-   - Template development
-   - Automated README generation
+ - Template development
+ - Automated README generation
 
 ### Pending 
 
 1. **Script Documentation**
-   - 239 scripts need headers
-   - Batch processing required
+ - 239 scripts need headers
+ - Batch processing required
 
 2. **Configuration Documentation**
-   - Inline comments for configs
-   - Explanation of non-obvious settings
+ - Inline comments for configs
+ - Explanation of non-obvious settings
 
 3. **Architecture Documentation**
-   - System diagrams
-   - Integration guides
-   - Design decisions
+ - System diagrams
+ - Integration guides
+ - Design decisions
 
 ---
 
@@ -106,7 +106,7 @@
 ```bash
 # Document remaining critical modules
 for module in src/codex/cli*.py src/utils/*.py src/config/*.py src/security/*.py; do
-    python scripts/auto_document_python.py "$(dirname $module)"
+ python scripts/auto_document_python.py "$(dirname $module)"
 done
 ```
 
@@ -142,14 +142,14 @@ import yaml
 from pathlib import Path
 
 def generate_workflow_readme(workflow_path):
-    """Generate README for a workflow file."""
+ """Generate README for a workflow file."""
 
-    with open(workflow_path) as f:
-        workflow = yaml.safe_load(f)
+ with open(workflow_path) as f:
+ workflow = yaml.safe_load(f)
 
-    name = workflow.get('name', workflow_path.stem)
+ name = workflow.get('name', workflow_path.stem)
 
-    readme = f"""# {name}
+ readme = f"""# {name}
 
 ## Purpose
 {workflow.get('# purpose', '[To be documented]')}
@@ -157,46 +157,46 @@ def generate_workflow_readme(workflow_path):
 ## Triggers
 """
 
-    # Add trigger information
-    if 'on' in workflow:
-        for trigger, config in workflow['on'].items():
-            readme += f"- **{trigger}**: "
-            if isinstance(config, dict):
-                readme += f"{config}\n"
-            else:
-                readme += f"Enabled\n"
+ # Add trigger information
+ if 'on' in workflow:
+ for trigger, config in workflow['on'].items():
+ readme += f"- **{trigger}**: "
+ if isinstance(config, dict):
+ readme += f"{config}\n"
+ else:
+ readme += f"Enabled\n"
 
-    readme += f"""
+ readme += f"""
 ## Permissions Required
 """
 
-    # Add permissions
-    if 'permissions' in workflow:
-        for perm, level in workflow['permissions'].items():
-            readme += f"- `{perm}`: {level}\n"
+ # Add permissions
+ if 'permissions' in workflow:
+ for perm, level in workflow['permissions'].items():
+ readme += f"- `{perm}`: {level}\n"
 
-    readme += f"""
+ readme += f"""
 ## Jobs
 """
 
-    # Add jobs
-    if 'jobs' in workflow:
-        for job_name, job_config in workflow['jobs'].items():
-            readme += f"### {job_name}\n"
-            if isinstance(job_config, dict) and 'steps' in job_config:
-                readme += f"Steps: {len(job_config['steps'])}\n\n"
+ # Add jobs
+ if 'jobs' in workflow:
+ for job_name, job_config in workflow['jobs'].items():
+ readme += f"### {job_name}\n"
+ if isinstance(job_config, dict) and 'steps' in job_config:
+ readme += f"Steps: {len(job_config['steps'])}\n\n"
 
-    # Write README
-    readme_path = workflow_path.parent / f"{workflow_path.stem}.md"
-    with open(readme_path, 'w') as f:
-        f.write(readme)
+ # Write README
+ readme_path = workflow_path.parent / f"{workflow_path.stem}.md"
+ with open(readme_path, 'w') as f:
+ f.write(readme)
 
-    return readme_path
+ return readme_path
 
 # Process all workflows
 for workflow in Path('.github/workflows').glob('*.yml'):
-    readme = generate_workflow_readme(workflow)
-    print(f" Generated {readme}")
+ readme = generate_workflow_readme(workflow)
+ print(f" Generated {readme}")
 ```
 
 **Execute**:
@@ -231,10 +231,10 @@ HEADER_TEMPLATE = '''"""
 {title}
 
 Purpose:
-    {purpose}
+ {purpose}
 
 Usage:
-    python {script_path} [options]
+ python {script_path} [options]
 
 Author: Codex Team
 Last updated: 2026-07-11
@@ -243,44 +243,44 @@ Last updated: 2026-07-11
 '''
 
 def generate_script_header(script_path):
-    """Generate header for a script."""
+ """Generate header for a script."""
 
-    # Extract potential purpose from first few lines or filename
-    title = script_path.stem.replace('_', ' ').title()
-    purpose = f"[To be documented - {title}]"
+ # Extract potential purpose from first few lines or filename
+ title = script_path.stem.replace('_', ' ').title()
+ purpose = f"[To be documented - {title}]"
 
-    with open(script_path) as f:
-        content = f.read()
+ with open(script_path) as f:
+ content = f.read()
 
-    # Skip if already has docstring
-    if content.strip().startswith('"""') or content.strip().startswith("'''"):
-        return False
+ # Skip if already has docstring
+ if content.strip().startswith('"""') or content.strip().startswith("'''"):
+ return False
 
-    header = HEADER_TEMPLATE.format(
-        title=title,
-        purpose=purpose,
-        script_path=script_path
-    )
+ header = HEADER_TEMPLATE.format(
+ title=title,
+ purpose=purpose,
+ script_path=script_path
+ )
 
-    # Insert after shebang if present
-    lines = content.split('\n')
-    insert_idx = 0
-    if lines and lines[0].startswith('#!'):
-        insert_idx = 1
+ # Insert after shebang if present
+ lines = content.split('\n')
+ insert_idx = 0
+ if lines and lines[0].startswith('#!'):
+ insert_idx = 1
 
-    lines.insert(insert_idx, header)
+ lines.insert(insert_idx, header)
 
-    with open(script_path, 'w') as f:
-        f.write('\n'.join(lines))
+ with open(script_path, 'w') as f:
+ f.write('\n'.join(lines))
 
-    return True
+ return True
 
 # Process all scripts
 documented = 0
 for script in Path('scripts').rglob('*.py'):
-    if generate_script_header(script):
-        documented += 1
-        print(f" Added header to {script}")
+ if generate_script_header(script):
+ documented += 1
+ print(f" Added header to {script}")
 
 print(f"\n Documented {documented} scripts")
 ```
@@ -314,23 +314,23 @@ from pathlib import Path
 
 # Define all processes
 processes = {
-    "development": [
-        {"name": "Environment setup", "automated": True, "evidence": "Docker/nox"},
-        {"name": "Dependency install", "automated": True, "evidence": "pip/cargo"},
-        {"name": "Code formatting", "automated": True, "evidence": "pre-commit"},
-        {"name": "Linting", "automated": True, "evidence": "ruff/clippy"},
-        {"name": "Test execution", "automated": True, "evidence": "pytest/cargo test"},
-        {"name": "DB migrations", "automated": False, "manual": "SQL scripts"},
-        {"name": "Test data gen", "automated": False, "manual": "Manual fixtures"},
-    ],
-    "ci_cd": [
-        {"name": "Build automation", "automated": True, "evidence": "GitHub Actions"},
-        {"name": "Test automation", "automated": True, "evidence": "GitHub Actions"},
-        {"name": "Security scanning", "automated": True, "evidence": "CodeQL"},
-        {"name": "CI investigation", "automated": False, "manual": "Manual log review"},
-        {"name": "Dep updates", "automated": False, "manual": "Manual PR"},
-    ],
-    # Add more categories...
+ "development": [
+ {"name": "Environment setup", "automated": True, "evidence": "Docker/nox"},
+ {"name": "Dependency install", "automated": True, "evidence": "pip/cargo"},
+ {"name": "Code formatting", "automated": True, "evidence": "pre-commit"},
+ {"name": "Linting", "automated": True, "evidence": "ruff/clippy"},
+ {"name": "Test execution", "automated": True, "evidence": "pytest/cargo test"},
+ {"name": "DB migrations", "automated": False, "manual": "SQL scripts"},
+ {"name": "Test data gen", "automated": False, "manual": "Manual fixtures"},
+ ],
+ "ci_cd": [
+ {"name": "Build automation", "automated": True, "evidence": "GitHub Actions"},
+ {"name": "Test automation", "automated": True, "evidence": "GitHub Actions"},
+ {"name": "Security scanning", "automated": True, "evidence": "CodeQL"},
+ {"name": "CI investigation", "automated": False, "manual": "Manual log review"},
+ {"name": "Dep updates", "automated": False, "manual": "Manual PR"},
+ ],
+ # Add more categories...
 }
 
 # Calculate coverage
@@ -341,7 +341,7 @@ print(f"Automation Coverage: {automated}/{total} ({automated/total*100:.1f}%)")
 
 # Save audit
 with open("docs/AUTOMATION_AUDIT.json", "w") as f:
-    json.dump(processes, f, indent=2)
+ json.dump(processes, f, indent=2)
 
 EOF
 ```
@@ -358,24 +358,24 @@ EOF
 **Priority Automations** (sorted by ROI):
 
 1. **CI Failure Auto-Investigation** (Highest ROI)
-   - Time saved: 15 hours/month
-   - Implementation: 1 iteration
-   - Create `.github/workflows/ci-auto-investigator.yml`
+ - Time saved: 15 hours/month
+ - Implementation: 1 iteration
+ - Create `.github/workflows/ci-auto-investigator.yml`
 
 2. **Automated Dependency Updates** (High ROI)
-   - Time saved: 8 hours/month
-   - Implementation: 0.5 iterations
-   - Configure Dependabot + auto-merge
+ - Time saved: 8 hours/month
+ - Implementation: 0.5 iterations
+ - Configure Dependabot + auto-merge
 
 3. **Documentation Sync** (High ROI)
-   - Time saved: 20 hours/month
-   - Implementation: 1 iteration
-   - Create `.github/workflows/doc-sync.yml`
+ - Time saved: 20 hours/month
+ - Implementation: 1 iteration
+ - Create `.github/workflows/doc-sync.yml`
 
 4. **Performance Monitoring** (Medium ROI)
-   - Time saved: 12 hours/month
-   - Implementation: 1 iteration
-   - Create continuous monitoring workflow
+ - Time saved: 12 hours/month
+ - Implementation: 1 iteration
+ - Create continuous monitoring workflow
 
 **Implementation Order**:
 ```bash
@@ -565,7 +565,7 @@ Post comprehensive report including:
 - Disabling existing automations
 - Changes to security policies
 
-🚫 **Not Authorized**:
+ **Not Authorized**:
 - Deploying to production without testing
 - Modifying user-facing behavior
 - Changing API contracts
@@ -608,10 +608,10 @@ Report progress per-iteration and escalate only if scope changes >20% or critica
 
 ---
 
-**Generated**: 2026-01-16  
-**Status**:  READY FOR AUTONOMOUS EXECUTION  
-**Self-Review**: Iteration 1 complete, realistic plan established  
-**Authorization**: Full autonomous execution within defined boundaries  
+**Generated**: 2026-01-16 
+**Status**: READY FOR AUTONOMOUS EXECUTION 
+**Self-Review**: Iteration 1 complete, realistic plan established 
+**Authorization**: Full autonomous execution within defined boundaries 
 **Expected Completion**: 4 phases to 95%+ coverage on both metrics
 
  **Execute autonomously until complete or escalation required**

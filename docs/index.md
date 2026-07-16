@@ -7,12 +7,12 @@
 
 ---
 
-##  Cognitive Brain (Start Here for AI Agents)
+## Cognitive Brain (Start Here for AI Agents)
 
 ### **Unified Navigation System**
-- 🗺️ **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
--  **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
--  **[Roadmap](./ROADMAP.md)** - Iteration plans, priorities, future scope
+- ️ **[Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Complete architecture, components, flows, dependencies
+- **[Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live status, current work, blockers, metrics
+- **[Roadmap](./ROADMAP.md)** - Iteration plans, priorities, future scope
 
 ### **Why This Matters**
 The cognitive brain enables:
@@ -24,34 +24,34 @@ The cognitive brain enables:
 
 ---
 
-##  Quick Links
+## Quick Links
 
-###  CI Rescue & Health
--  **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
--  **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
+### CI Rescue & Health
+- **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
+- **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
 
 ### Core Documentation
--  **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
+- **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
--  **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
--  **[API Reference](api/index.md)** - Complete API documentation
--  **[Getting Started](guides/quickstart.md)** - Quick start guide
--  **[Examples](guides/examples.md)** - Code examples
-- 📜 **[Changelog](CHANGELOG.md)** - Release history
+- **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
+- **[API Reference](api/index.md)** - Complete API documentation
+- **[Getting Started](guides/quickstart.md)** - Quick start guide
+- **[Examples](guides/examples.md)** - Code examples
+- **[Changelog](CHANGELOG.md)** - Release history
 
 ### MCP Package System (93+ KB Documentation)
-- 📦 **[Quick Start](mcp/QUICK_START.md)** - 5-minute onboarding guide
-- 📘 **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** - Complete packaging workflows
--  **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
--  **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
+- **[Quick Start](mcp/QUICK_START.md)** - 5-minute onboarding guide
+- **[Packaging Guide](mcp/PACKAGING_GUIDE.md)** - Complete packaging workflows
+- **[Packageable Capabilities](mcp/PACKAGEABLE_CAPABILITIES.md)** - Capability transfer framework
+- **[ChatGPT System Prompt](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)** - AI assistant prompt template
 - 🧭 **[Navigation System](mcp/GENERIC_NAVIGATION_SYSTEM.md)** - Universal navigation framework
--  **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap
+- **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap
 
 ### Capability Guides
--  **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
-- 🏋️ **[Training Loops](capabilities/train_loop.md)** - Production training patterns
--  **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
--  **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
+- **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
+- ️ **[Training Loops](capabilities/train_loop.md)** - Production training patterns
+- **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
+- **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
 
 ---
 
@@ -67,7 +67,7 @@ Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the 
 
 ---
 
-##  Quick Links for Reasoning Teams
+## Quick Links for Reasoning Teams
 
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the [`codex_cli` help](src/codex_cli/app.py) for command details.
 - **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in [`README_ROOT.md`](README_ROOT.md#training-quickstart).
@@ -76,7 +76,7 @@ Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the 
 
 ---
 
-##  Operational Templates
+## Operational Templates
 
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning checkpoints with consistent safeguards. Begin with the [Operational Templates index](./templates/README.md) to review prerequisites, required metadata, and cross-references before copying a template into your service.
 
@@ -101,7 +101,7 @@ See [CONTRIBUTING](../CONTRIBUTING.md#using-operational-templates) for the full 
 
 ---
 
-##  Phase 8.7: Universal Intelligence
+## Phase 8.7: Universal Intelligence
 
 Complete meta-learning framework with 170 tests.
 
@@ -120,10 +120,10 @@ Complete meta-learning framework with 170 tests.
 from github.agents.core.universal_intelligence import UniversalTaskInterface, TaskSpec
 
 spec = TaskSpec(
-    environment="gridworld",
-    initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
-    reward_spec={"id": "reward:v1"},
-    termination={"max_steps": 100},
+ environment="gridworld",
+ initial_state={"x": 0, "y": 0, "goal": {"x": 5, "y": 5}},
+ reward_spec={"id": "reward:v1"},
+ termination={"max_steps": 100},
 )
 
 uti = UniversalTaskInterface(seed=12345)
@@ -132,7 +132,7 @@ result = uti.execute_task(spec)
 
 ---
 
-##  Installation
+## Installation
 
 ```bash
 pip install -e .
@@ -140,15 +140,15 @@ pip install -e .
 
 ---
 
-## 🚢 Deployment and Operational Expectations
+## Deployment and Operational Expectations
 
 To generate and review a deployment manifest for a bespoke reasoning agent, run a dry-run deploy:
 
 ```bash
 codex deploy \
-  --config configs/deploy/reasoning_pod.yaml \
-  --model artifacts/runs/reasoning-starter:last \
-  --dry-run
+ --config configs/deploy/reasoning_pod.yaml \
+ --model artifacts/runs/reasoning-starter:last \
+ --dry-run
 ```
 
 This renders the "reasoning pod" manifest for inspection. It does **not** create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) for what that pod is expected to look like (resources, telemetry, trace capture mode, curriculum phase, etc.).
@@ -164,7 +164,7 @@ This repository uses staged rollout rings to represent maturity and review state
 
 ---
 
-## 📏 Conventions
+## Conventions
 
 - Keep docs small and composable.
 - Use a single fenced `diff` block for proposed patches in prompts/guides.
@@ -172,7 +172,7 @@ This repository uses staged rollout rings to represent maturity and review state
 
 ---
 
-##  Related
+## Related
 
 - Project audit ritual: see `AUDIT_PROMPT.md`
 - CHANGELOG practices follow "Keep a Changelog" with an **Unreleased** section at the top.

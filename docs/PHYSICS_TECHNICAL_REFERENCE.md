@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Last Updated: 2026-06-22
+**Last Updated: 2026-07-16
 
 ## Purpose
 This document serves as a comprehensive technical reference for AI Assistants and Agents to intuitively apply and make corrections to the advanced physics calculators. It contains all validated physics equations, implementation patterns, and design decisions.

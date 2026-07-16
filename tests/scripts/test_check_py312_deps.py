@@ -6,26 +6,22 @@ Ensures dependency compatibility checker works correctly.
 
 from __future__ import annotations
 
+import importlib.util
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 
 @pytest.fixture(autouse=True)
 def cleanup_mocks():
-    """Automatically reset all mocks after each test."""
-    yield
-    mock.patch.stopall()
+   """Automatically reset all mocks after each test."""
+   yield
+   patch.stopall()
 
-
-    import importlib.util
 
 # Import the script module
-    import sys
-    from pathlib import Path
-    from unittest.mock import MagicMock, patch
-
-    import pytest
-
-# Load the script as a module
 script_path = Path(__file__).parent.parent.parent / "scripts" / "check_py312_deps.py"
 spec = importlib.util.spec_from_file_location("check_py312_deps", script_path)
 check_py312_deps = importlib.util.module_from_spec(spec)

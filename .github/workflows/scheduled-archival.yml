@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Scheduled Archival
 on:
   schedule:
@@ -55,7 +59,11 @@ jobs:
         run: |
           echo "## Archival Candidate Analysis"
           echo ""
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Find markdown files older than 90 days with no recent modifications
           CANDIDATES=$(find . -name "*.md" -type f \
             -not -path "./.git/*" \
@@ -66,12 +74,21 @@ jobs:
             -not -name "CONTRIBUTING.md" \
             -not -name "CHANGELOG.md" \
             -mtime +90 2>/dev/null | head -20 || echo "")
+<<<<<<< HEAD
            
           COUNT=$(echo "$CANDIDATES" | grep -c "." || echo "0")
            
           echo "Found $COUNT potential archival candidates"
           echo ""
            
+=======
+
+          COUNT=$(echo "$CANDIDATES" | grep -c "." || echo "0")
+
+          echo "Found $COUNT potential archival candidates"
+          echo ""
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if [ -n "$CANDIDATES" ]; then
             echo "### Candidates (older than 90 days):"
             echo "$CANDIDATES" | while read -r file; do
@@ -81,7 +98,11 @@ jobs:
               fi
             done
           fi
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Output for GitHub Actions
           {
             echo "count=$COUNT"
@@ -110,6 +131,7 @@ jobs:
           script: |
             const candidates = `${{ needs.identify-candidates.outputs.candidates }}`;
             const count = "${{ needs.identify-candidates.outputs.count }}";
+<<<<<<< HEAD
              
             const body = `## Archival Proposal
              
@@ -141,6 +163,39 @@ jobs:
             This issue was automatically created by the Scheduled Archival workflow.
             `;
              
+=======
+
+            const body = `## Archival Proposal
+
+            **Generated**: ${new Date().toISOString().split("T")[0]}
+            **Candidates**: ${count} files
+
+            ### Files Proposed for Archival
+
+            The following files have not been modified in over 90 days and may be candidates for archival:
+
+            \`\`\`
+            ${candidates}
+            \`\`\`
+
+            ### Approval Required
+
+            - [ ] Review each candidate file
+            - [ ] Confirm no active references exist
+            - [ ] Approve archival by commenting \`/approve-archival\`
+
+            ### Archival Process
+
+            1. Files will be moved to \`misc/repo-owner-review/archived/\`
+            2. A redirect/reference will be added to original location
+            3. Documentation index will be updated
+
+            ---
+
+            This issue was automatically created by the Scheduled Archival workflow.
+            `;
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -175,10 +230,17 @@ jobs:
         run: |
           echo "## Large File Compression"
           echo ""
+<<<<<<< HEAD
            
           # Find files larger than 100KB in archive directories
           LARGE_FILES=$(find ./misc/repo-owner-review -type f -size +100k 2>/dev/null || echo "")
            
+=======
+
+          # Find files larger than 100KB in archive directories
+          LARGE_FILES=$(find ./misc/repo-owner-review -type f -size +100k 2>/dev/null || echo "")
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if [ -n "$LARGE_FILES" ]; then
             echo "Found large files for potential compression:"
             echo "$LARGE_FILES" | while read -r file; do

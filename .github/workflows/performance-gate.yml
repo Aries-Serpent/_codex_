@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 # D10 Performance Gate — Latency Baseline Policy Validation
 #
 # Runs on PR and nightly schedule. Validates the committed
@@ -22,7 +26,10 @@ concurrency:
 permissions:
   contents: read
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   performance-gate:
     name: Latency Baseline Policy Check
@@ -87,4 +94,7 @@ jobs:
           name: perf-baseline
           path: benchmarks/perf/latency_baseline.json
           retention-days: 90
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

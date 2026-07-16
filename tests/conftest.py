@@ -2071,3 +2071,96 @@ TORCH_PROFILER_PROBLEMATIC_TESTS = [
     "test_performance_benchmark.py",
     "test_models_registry_api.py",
 ]
+
+
+# ============================================================================
+# BATCH 3 FLAKY TEST STABILIZATION FIXTURES
+# Added 2026-07-16 for Phase 6C test remediation
+# ============================================================================
+
+class PollingHelper:
+    """Helper for polling-based assertions (race conditions)"""
+    
+    @staticmethod
+    def wait_for_condition(condition, timeout=2.0, poll_interval=0.01, error_msg="Condition not met"):
+        """Poll for a condition to become true"""
+        import time
+        start = time.time()
+        last_error = None
+        
+        while time.time() - start < timeout:
+            try:
+                if condition():
+                    return True
+            except Exception as e:
+                last_error = e
+            
+            time.sleep(poll_interval)
+        
+        if last_error:
+            raise TimeoutError(f"{error_msg} (last error: {last_error})")
+        raise TimeoutError(error_msg)
+
+
+@pytest.fixture
+def polling_helper():
+    """Provide polling helper for race conditions"""
+    return PollingHelper()
+
+
+@pytest.fixture
+def mock_requests(monkeypatch):
+    """Mock requests library for network calls"""
+    
+    class MockResponse:
+        def __init__(self, status_code=200, json_data=None, text=None):
+            self.status_code = status_code
+            self._json_data = json_data or {}
+            self.text = text or ""
+            self.headers = {}
+        
+        def json(self):
+            return self._json_data
+    
+    def mock_get(url, *args, **kwargs):
+        return MockResponse(status_code=200)
+    
+    def mock_post(url, *args, **kwargs):
+        return MockResponse(status_code=201)
+    
+    monkeypatch.setattr("requests.get", mock_get)
+    monkeypatch.setattr("requests.post", mock_post)
+    
+    return {
+        "get": mock_get,
+        "post": mock_post,
+        "Response": MockResponse,
+    }
+
+
+@pytest.fixture
+def time_mock(monkeypatch):
+    """Mock time module for timing-dependent tests"""
+    import time
+    
+    class TimeMock:
+        def __init__(self):
+            self.current_time = time.time()
+            self.sleep_total = 0
+        
+        def time(self):
+            return self.current_time
+        
+        def sleep(self, duration):
+            self.current_time += duration
+            self.sleep_total += duration
+        
+        def advance(self, duration):
+            """Manually advance time"""
+            self.current_time += duration
+    
+    mock = TimeMock()
+    monkeypatch.setattr("time.time", mock.time)
+    monkeypatch.setattr("time.sleep", mock.sleep)
+    
+    return mock

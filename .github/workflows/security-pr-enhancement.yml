@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Security PR Enhancement
 on:
   pull_request_target:
@@ -124,4 +128,7 @@ jobs:
         \ as e:\n    print(f\"❌ Invalid JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\
         ℹ️  No findings file found (will be created if needed)\")\nEOF\n"
     timeout-minutes: 15
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
