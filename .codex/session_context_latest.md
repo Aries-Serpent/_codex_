@@ -1,21 +1,22 @@
-# Session Context — 2026-07-16T19:16:33Z
+# Session Context — 2026-07-16T19:28:15Z
 **Branch:** `copilot/explore-codebase-create-campaign-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4966` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4949` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **PR Comment Review Gate** — `failure` on `main` (2026-07-16)
-- **.github/workflows/pages-pre-merge-validation.yml** — `failure` on `0D_base_` (2026-07-16)
-- **.github/workflows/ci-pass-rate-gate.yml** — `failure` on `0D_base_` (2026-07-16)
-- **.github/workflows/agent-auth-delegation.yml** — `failure` on `0D_base_` (2026-07-16)
-- **.github/workflows/issue-resolution-gate.yml** — `failure` on `0D_base_` (2026-07-16)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/proactive-ci-monitor.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/build-agent-env-cache.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
+- **.github/workflows/pages-pre-merge-validation.yml** — `failure` on `copilot/explore-codebase-create-campaign-plan` (2026-07-16)
 
 ## 📝 Recent Commits
+- `f6ada739` Apply remaining changes — copilot-swe-agent[bot] (2026-07-16)
 - `54bef087` Merge branch 'main' into 0D_base_ — Statix (2026-07-16)
 - `c92a6e7c` 0 d base  (#5325) — Statix (2026-07-16)
 - `ff0bba15` Apply remaining changes — copilot-swe-agent[bot] (2026-07-16)
@@ -23,7 +24,6 @@
 - `a1092a19` Governance compliance fixes: CHANGELOG and accountability report updated with po — copilot-swe-agent[bot] (2026-07-16)
 - `4fa44d55` fix(governance): Add post-approval monitoring session entries to CHANGELOG and a — copilot-swe-agent[bot] (2026-07-16)
 - `57fe5626` Workflow monitoring initiated: 70 approved workflows active, monitoring for casc — copilot-swe-agent[bot] (2026-07-16)
-- `24d2f972` docs(workflow): Post-approval execution status and analysis report — copilot-swe-agent[bot] (2026-07-16)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
