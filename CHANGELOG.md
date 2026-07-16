@@ -17771,8 +17771,6 @@ Completed Phase 1-3 post-merge validation for v0.2.3 release. All 8 critical val
 - **WEC**: Auto-approve enabled
 
 ---
-<<<<<<< HEAD
-=======
 
 ## [Unreleased] — 2026-07-16 (Phase 4-6 Continuation: Post-Merge Hotfix Checkpoint & Coverage Sprint Planning)
 
@@ -17844,7 +17842,7 @@ Completed Phase 1-3 post-merge validation for v0.2.3 release. All 8 critical val
 - Cache: ✅ OPERATIONAL (4-layer hierarchy active)
 - Cascades: ✅ CONTAINED (99.2% confidence, rate limited to 5/hour max)
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
+
 
 ### Campaign Execution Complete — 2026-07-16T04:50Z
 
