@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 # ARCHIVED: Phase 9.2 - Self-Healing Cascade
 # Status: Disabled due to YAML syntax constraints
 # Note: This workflow has been archived as Phase 9 functionality is now integrated
@@ -19,4 +23,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - run: echo "This workflow has been archived. See Phase 10+ for current healing."
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

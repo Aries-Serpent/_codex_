@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "timestamp": "2026-07-16T03:07:41.939899",
+=======
+  "timestamp": "2026-07-16T02:32:02.911539",
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
   "context_scorer_time_ms": 0,
   "pattern_injection_time_ms": 0,
   "patterns_count": 0,

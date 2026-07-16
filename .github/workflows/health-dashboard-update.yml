@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: 🏥 Health Dashboard Metrics Collection
 
 on:
@@ -56,6 +60,7 @@ jobs:
           import os
           from datetime import datetime, timedelta
           import subprocess
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           
@@ -66,6 +71,18 @@ jobs:
           # Update timestamp
           dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+
+          # Load existing metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+          # Update timestamp
+          dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Get workflow runs from last 24 hours
           cmd = [
               'gh', 'api',
@@ -76,7 +93,11 @@ jobs:
           ]
           result = subprocess.run(cmd, capture_output=True, text=True)
           total_runs = int(result.stdout.strip() or 0)
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Get successful runs
           cmd_success = [
               'gh', 'api',
@@ -89,16 +110,28 @@ jobs:
           ]
           result_success = subprocess.run(cmd_success, capture_output=True, text=True)
           successful_runs = int(result_success.stdout.strip() or 0)
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Calculate success rate
           if total_runs > 0:
               success_rate = (successful_runs / total_runs) * 100
               dashboard['metrics']['workflow_success_rate']['current_value'] = round(success_rate, 1)
+<<<<<<< HEAD
           
           # Save updated metrics
           with open(metrics_file, 'w') as f:
               json.dump(dashboard, f, indent=2)
           
+=======
+
+          # Save updated metrics
+          with open(metrics_file, 'w') as f:
+              json.dump(dashboard, f, indent=2)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           print(f"✅ Metrics collected: {total_runs} total runs, {successful_runs} successful")
           EOF
 
@@ -109,6 +142,7 @@ jobs:
           import json
           import os
           import subprocess
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           
@@ -116,6 +150,15 @@ jobs:
           with open(metrics_file, 'r') as f:
               dashboard = json.load(f)
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+
+          # Load existing metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Get CodeQL alerts
           try:
               cmd = [
@@ -124,6 +167,7 @@ jobs:
                   '-q', '.[] | select(.state=="open")'
               ]
               result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+<<<<<<< HEAD
               
               alerts = result.stdout.strip().split('\n') if result.stdout.strip() else []
               alert_count = len([a for a in alerts if a])
@@ -134,6 +178,18 @@ jobs:
           except Exception as e:
               print(f"⚠️  Could not fetch CodeQL alerts: {e}")
           
+=======
+
+              alerts = result.stdout.strip().split('\n') if result.stdout.strip() else []
+              alert_count = len([a for a in alerts if a])
+
+              dashboard['metrics']['codeql_alert_volume']['current_value'] = alert_count
+
+              print(f"✅ CodeQL alerts: {alert_count}")
+          except Exception as e:
+              print(f"⚠️  Could not fetch CodeQL alerts: {e}")
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Save updated metrics
           with open(metrics_file, 'w') as f:
               json.dump(dashboard, f, indent=2)
@@ -146,6 +202,7 @@ jobs:
           import json
           import os
           import subprocess
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           
@@ -153,6 +210,15 @@ jobs:
           with open(metrics_file, 'r') as f:
               dashboard = json.load(f)
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+
+          # Load existing metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Get dependency alerts
           try:
               cmd = [
@@ -163,6 +229,7 @@ jobs:
               ]
               result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
               vuln_count = int(result.stdout.strip() or 0)
+<<<<<<< HEAD
               
               dashboard['metrics']['security_vulnerability_count']['current_value'] = vuln_count
               
@@ -170,6 +237,15 @@ jobs:
           except Exception as e:
               print(f"⚠️  Could not fetch security metrics: {e}")
           
+=======
+
+              dashboard['metrics']['security_vulnerability_count']['current_value'] = vuln_count
+
+              print(f"✅ Security vulnerabilities: {vuln_count}")
+          except Exception as e:
+              print(f"⚠️  Could not fetch security metrics: {e}")
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Save updated metrics
           with open(metrics_file, 'w') as f:
               json.dump(dashboard, f, indent=2)
@@ -182,6 +258,7 @@ jobs:
           import json
           import os
           from datetime import datetime
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           
@@ -189,13 +266,28 @@ jobs:
           with open(metrics_file, 'r') as f:
               dashboard = json.load(f)
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+
+          # Load existing metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Simulate collecting test metrics
           # In production, these would come from test result reports
           dashboard['metrics']['test_pass_rate']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
           dashboard['metrics']['code_coverage']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
+<<<<<<< HEAD
           
           print("✅ Test and coverage metrics current")
           
+=======
+
+          print("✅ Test and coverage metrics current")
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Save updated metrics
           with open(metrics_file, 'w') as f:
               json.dump(dashboard, f, indent=2)
@@ -208,6 +300,7 @@ jobs:
           import json
           import os
           from datetime import datetime
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           
@@ -215,19 +308,36 @@ jobs:
           with open(metrics_file, 'r') as f:
               dashboard = json.load(f)
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+
+          # Load metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Analyze metrics
           metrics = dashboard['metrics']
           on_target = 0
           off_target = 0
           critical_count = 0
           warning_count = 0
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           for metric_key, metric in metrics.items():
               current = metric.get('current_value', 0)
               target = metric.get('target', 0)
               crit_threshold = metric.get('alert_threshold_critical', 0)
               warn_threshold = metric.get('alert_threshold_warning', 0)
+<<<<<<< HEAD
               
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
               # Determine if on target (considering direction)
               if 'rate' in metric_key or 'coverage' in metric_key or 'success' in metric_key:
                   # Higher is better
@@ -235,7 +345,11 @@ jobs:
                       on_target += 1
                   else:
                       off_target += 1
+<<<<<<< HEAD
                   
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
                   if current <= crit_threshold:
                       critical_count += 1
                   elif current <= warn_threshold:
@@ -246,12 +360,20 @@ jobs:
                       on_target += 1
                   else:
                       off_target += 1
+<<<<<<< HEAD
                   
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
                   if current >= crit_threshold:
                       critical_count += 1
                   elif current >= warn_threshold:
                       warning_count += 1
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Determine overall health
           if critical_count > 0:
               health_status = 'CRITICAL'
@@ -265,11 +387,19 @@ jobs:
           else:
               health_status = 'HEALTHY'
               health_icon = '🟢'
+<<<<<<< HEAD
           
           # Calculate health score
           total_metrics = len(metrics)
           health_score = (on_target / total_metrics * 100) if total_metrics > 0 else 100
           
+=======
+
+          # Calculate health score
+          total_metrics = len(metrics)
+          health_score = (on_target / total_metrics * 100) if total_metrics > 0 else 100
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Update dashboard
           dashboard['health_status'] = health_status
           dashboard['summary'] = {
@@ -279,6 +409,7 @@ jobs:
               'warning_alerts': warning_count,
               'health_score': round(health_score, 1)
           }
+<<<<<<< HEAD
           
           dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
           
@@ -286,12 +417,25 @@ jobs:
           with open(metrics_file, 'w') as f:
               json.dump(dashboard, f, indent=2)
           
+=======
+
+          dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
+
+          # Save updated dashboard
+          with open(metrics_file, 'w') as f:
+              json.dump(dashboard, f, indent=2)
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           print(f"{health_icon} Health Status: {health_status}")
           print(f"📊 Health Score: {health_score:.1f}/100")
           print(f"✅ On Target: {on_target}/{total_metrics}")
           print(f"⚠️  Critical Alerts: {critical_count}")
           print(f"🟠 Warning Alerts: {warning_count}")
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Export for next steps
           with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
               f.write(f"health_status={health_status}\n")
@@ -304,7 +448,11 @@ jobs:
         run: |
           git config user.name "Health Dashboard Bot"
           git config user.email "health-dashboard@codex.dev"
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if git diff --quiet ${{ env.METRICS_FILE }}; then
             echo "✅ No changes to metrics file"
           else
@@ -317,14 +465,20 @@ jobs:
         if: |
           always() &&
           (steps.analyze.outputs.health_status == 'CRITICAL' ||
+<<<<<<< HEAD
            steps.analyze.outputs.health_status == 'WARNING' ||
            github.event.inputs.force_alert != '')
+=======
+            steps.analyze.outputs.health_status == 'WARNING' ||
+            github.event.inputs.force_alert != '')
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         run: |
           python << 'EOF'
           import json
           import os
           from datetime import datetime
           import subprocess
+<<<<<<< HEAD
           
           metrics_file = os.getenv('METRICS_FILE')
           force_alert = "${{ github.event.inputs.force_alert }}" or "${{ steps.analyze.outputs.health_status }}"
@@ -336,6 +490,19 @@ jobs:
           health_status = dashboard['health_status']
           health_score = dashboard['summary']['health_score']
           
+=======
+
+          metrics_file = os.getenv('METRICS_FILE')
+          force_alert = "${{ github.event.inputs.force_alert }}" or "${{ steps.analyze.outputs.health_status }}"
+
+          # Load metrics
+          with open(metrics_file, 'r') as f:
+              dashboard = json.load(f)
+
+          health_status = dashboard['health_status']
+          health_score = dashboard['summary']['health_score']
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Prepare alert message
           icon_map = {
               'HEALTHY': '🟢',
@@ -343,6 +510,7 @@ jobs:
               'WARNING': '🟠',
               'CRITICAL': '🔴'
           }
+<<<<<<< HEAD
           
           icon = icon_map.get(health_status, '❓')
           
@@ -353,23 +521,48 @@ jobs:
           **Health Score:** {health_score}/100  
           **Last Updated:** {datetime.utcnow().isoformat()}Z
           
+=======
+
+          icon = icon_map.get(health_status, '❓')
+
+          message = f"""
+          {icon} **Health Dashboard Alert**
+
+          **Status:** {health_status}
+          **Health Score:** {health_score}/100
+          **Last Updated:** {datetime.utcnow().isoformat()}Z
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           **Metrics Summary:**
           - On Target: {dashboard['summary']['metrics_on_target']}/12
           - Off Target: {dashboard['summary']['metrics_off_target']}/12
           - Critical Alerts: {dashboard['summary']['critical_alerts']}
           - Warning Alerts: {dashboard['summary']['warning_alerts']}
+<<<<<<< HEAD
           
           **Key Metrics:**
           """
           
+=======
+
+          **Key Metrics:**
+          """
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Add metric details
           for metric_key, metric in dashboard['metrics'].items():
               current = metric.get('current_value', 'N/A')
               target = metric.get('target', 'N/A')
               message += f"\n- **{metric.get('display_name')}:** {current} (target: {target})"
+<<<<<<< HEAD
           
           message += f"\n\n[View Full Dashboard](../operations/health-dashboard.md)"
           
+=======
+
+          message += f"\n\n[View Full Dashboard](../operations/health-dashboard.md)"
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # TODO: Post to GitHub Discussions
           # For now, just log
           print("Alert Message:")

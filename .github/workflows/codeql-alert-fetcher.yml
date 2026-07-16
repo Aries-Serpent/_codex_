@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: 🔍 CodeQL Alert Fetcher
 
 # WEC opt-in — Security section (index 30)
@@ -104,7 +108,10 @@ on:
   repository_dispatch:
     types: [codeql-alert-fetcher]
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -282,8 +289,13 @@ jobs:
           set -euo pipefail
           BASE="https://api.github.com/repos/${{ github.repository }}"
           HEADERS=('-H' "Authorization: Bearer $CODEX_MASTER_KEY"
+<<<<<<< HEAD
                    '-H' "Accept: application/vnd.github+json"
                    '-H' "X-GitHub-Api-Version: 2022-11-28")
+=======
+                    '-H' "Accept: application/vnd.github+json"
+                    '-H' "X-GitHub-Api-Version: 2022-11-28")
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           ANALYSES_DIR="${{ steps.params.outputs.analyses_dir }}"
 
           fetch_json_or_default() {
@@ -442,8 +454,13 @@ jobs:
           set -euo pipefail
           BASE="https://api.github.com/repos/${{ github.repository }}"
           HEADERS=('-H' "Authorization: Bearer $CODEX_MASTER_KEY"
+<<<<<<< HEAD
                    '-H' "Accept: application/vnd.github+json"
                    '-H' "X-GitHub-Api-Version: 2022-11-28")
+=======
+                    '-H' "Accept: application/vnd.github+json"
+                    '-H' "X-GitHub-Api-Version: 2022-11-28")
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           POLICY_DIR="${{ steps.params.outputs.policy_dir }}"
           COMMUNITY_FILE="${POLICY_DIR}/community_profile.json"
           POLICY_FILE="${POLICY_DIR}/security_policy.json"
@@ -763,4 +780,7 @@ jobs:
           echo "  3. Start with AGENT_SECURITY_CONTEXT.md for the full picture."
           echo "     Then open codeql/alerts_fixable.md for actionable fix list."
           echo "================================================================"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

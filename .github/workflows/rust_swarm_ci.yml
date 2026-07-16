@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Rust-Python Hybrid Swarm CI/CD
 on:
   push:
@@ -58,4 +62,8 @@ jobs:
       - name: Free disk space
         run: |
         run: |
+<<<<<<< HEAD
         run: |
+=======
+        run: |
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

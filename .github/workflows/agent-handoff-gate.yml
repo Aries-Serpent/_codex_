@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Agent Handoff Gate
 on:
   issue_comment:
@@ -50,7 +54,10 @@ jobs:
         import re
         import sys
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
                 comment = os.environ[\"COMMENT_BODY\"]
         pr_number = os.environ[\"PR_NUMBER
         ]\n# P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.\n\
@@ -186,4 +193,7 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py || true
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

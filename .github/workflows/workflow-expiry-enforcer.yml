@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Workflow Expiry Enforcer — Auto-disable on expiry
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -65,4 +69,8 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
+<<<<<<< HEAD
       run: python scripts/ci/post_rescue_comment.py
+=======
+      run: python scripts/ci/post_rescue_comment.py
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

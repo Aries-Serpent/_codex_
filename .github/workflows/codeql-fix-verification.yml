@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: codeql-fix-verification
 
 on:
@@ -92,4 +96,7 @@ jobs:
               echo "::warning::Discovered test path '$t' not present in checkout; skipping."
             fi
           done
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

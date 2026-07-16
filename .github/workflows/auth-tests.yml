@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Authentication Tests
 
 on:
@@ -258,7 +262,10 @@ jobs:
 
         from src.codex.auth import OAuthManager, MFAProvider, TokenManager
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Verify all components initialize correctly
 
         oauth = OAuthManager()
@@ -267,7 +274,10 @@ jobs:
 
         tokens = TokenManager()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         print(''✓ All authentication components initialized successfully'')
 
         "
@@ -278,7 +288,10 @@ jobs:
 
         from src.codex.auth.mfa_provider import MFAProvider
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         mfa = MFAProvider()
 
         secret = mfa.generate_totp_secret(''test_user'')
@@ -287,7 +300,10 @@ jobs:
 
         valid = mfa.verify_totp(secret.secret, code, ''test_user'')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         assert valid, ''MFA verification failed''
 
         print(''✓ MFA functionality verified'')
@@ -300,14 +316,20 @@ jobs:
 
         from src.codex.auth.token_manager import TokenManager, TokenType
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         tokens = TokenManager()
 
         access_token = tokens.generate_access_token(''test_user'')
 
         claims = tokens.validate_token(access_token, TokenType.ACCESS)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         assert claims.sub == ''test_user'', ''Token validation failed''
 
         print(''✓ Token management verified'')
@@ -356,8 +378,11 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

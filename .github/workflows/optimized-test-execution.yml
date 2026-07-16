@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Optimized Test Execution (Consolidated)
 
 on:
@@ -109,9 +113,15 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
+<<<<<<< HEAD
        github.event_name == 'push' ||
        github.event.inputs.test-type == 'all' ||
        github.event.inputs.test-type == 'core')
+=======
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -146,9 +156,15 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
+<<<<<<< HEAD
        github.event_name == 'push' ||
        github.event.inputs.test-type == 'all' ||
        github.event.inputs.test-type == 'core')
+=======
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -183,9 +199,15 @@ jobs:
     if: |
       always() &&
       (github.event_name == 'pull_request' ||
+<<<<<<< HEAD
        github.event_name == 'push' ||
        github.event.inputs.test-type == 'all' ||
        github.event.inputs.test-type == 'core')
+=======
+        github.event_name == 'push' ||
+        github.event.inputs.test-type == 'all' ||
+        github.event.inputs.test-type == 'core')
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -217,9 +239,15 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
+<<<<<<< HEAD
        github.event.inputs.test-type == 'auth' ||
        contains(github.event.pull_request.files.*.path, 'src/codex/auth/') ||
        contains(github.event.pull_request.files.*.path, 'tests/auth/'))
+=======
+        github.event.inputs.test-type == 'auth' ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/auth/') ||
+        contains(github.event.pull_request.files.*.path, 'tests/auth/'))
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -252,9 +280,15 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
+<<<<<<< HEAD
        github.event.inputs.test-type == 'ml' ||
        contains(github.event.pull_request.files.*.path, 'training/') ||
        contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))
+=======
+        github.event.inputs.test-type == 'ml' ||
+        contains(github.event.pull_request.files.*.path, 'training/') ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/ml/'))
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
@@ -297,9 +331,15 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
+<<<<<<< HEAD
        github.event.inputs.test-type == 'rag' ||
        contains(github.event.pull_request.files.*.path, 'src/codex/rag/') ||
        contains(github.event.pull_request.files.*.path, 'tests/test_rag'))
+=======
+        github.event.inputs.test-type == 'rag' ||
+        contains(github.event.pull_request.files.*.path, 'src/codex/rag/') ||
+        contains(github.event.pull_request.files.*.path, 'tests/test_rag'))
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -332,9 +372,15 @@ jobs:
     if: |
       always() &&
       (github.event.inputs.test-type == 'all' ||
+<<<<<<< HEAD
        github.event.inputs.test-type == 'rust' ||
        contains(github.event.pull_request.files.*.path, 'rust_swarm/') ||
        contains(github.event.pull_request.files.*.path, '.rs'))
+=======
+        github.event.inputs.test-type == 'rust' ||
+        contains(github.event.pull_request.files.*.path, 'rust_swarm/') ||
+        contains(github.event.pull_request.files.*.path, '.rs'))
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -382,7 +428,11 @@ jobs:
           python-version: 3.12.13
           cache: pip
           cache-dependency-path: pyproject.toml
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       # P19 Shadow Import Safeguard: Invalidate pip cache before coverage job
       - name: "🔍 P19 Shadow Import Check (Pre-Coverage)"
         run: |
@@ -395,12 +445,20 @@ jobs:
                   import shutil
                   shutil.rmtree(Path.home() / '.cache' / 'pip', ignore_errors=True)
           "
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
           pip install coverage pytest-xdist pytest-timeout
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       # Optimized coverage collection with selective test discovery
       - name: Run coverage collection (optimized)
         run: |
@@ -412,13 +470,21 @@ jobs:
             --dist=loadscope \
             --tb=short \
             --maxfail=10 || true
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Generate coverage reports
         run: |
           coverage json -o .coverage.json || echo '{}' > .coverage.json
           coverage html -d htmlcov || mkdir -p htmlcov
           coverage report --skip-covered
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
@@ -494,4 +560,7 @@ jobs:
             echo "::error::Core test suite failed"
             exit 1
           fi
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

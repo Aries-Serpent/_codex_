@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Machine Readable Governance
 
 on:
@@ -82,4 +86,7 @@ jobs:
             docs-data/generated/agent-context.json
             docs-data/generated/search-index.jsonl
             docs-data/generated/unmanaged-candidates-report.json
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

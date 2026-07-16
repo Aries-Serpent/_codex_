@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Coverage with Timeout Guards
 on:
   pull_request:
@@ -53,8 +57,11 @@ jobs:
         pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0
         pytest-asyncio==1.3.0
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         pip install pytest pytest-cov pytest-timeout pytest-xdist
 
         pip install -e .
@@ -73,7 +80,10 @@ jobs:
 
         EOF
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "Pytest timeout configuration created"
 
         cat pytest_timeout.ini
@@ -206,7 +216,10 @@ jobs:
 
         echo "4. Add explicit timeouts to slow operations" >> $GITHUB_STEP_SUMMARY
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "::warning::Coverage collection in degraded mode - partial data available"
 
         '
@@ -244,4 +257,8 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
+<<<<<<< HEAD
       run: python scripts/ci/post_rescue_comment.py
+=======
+      run: python scripts/ci/post_rescue_comment.py
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

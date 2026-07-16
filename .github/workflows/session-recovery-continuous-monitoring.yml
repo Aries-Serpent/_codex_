@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Session Recovery Continuous Monitoring
 on:
   schedule:
@@ -120,4 +124,7 @@ jobs:
         \ weekly\"\necho \"2. Update configuration if needed\"\necho \"3. Escalate\
         \ repeated failures to @mbaetiong\"\necho \"4. Archive old recovery logs (>30\
         \ days)\"\n"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

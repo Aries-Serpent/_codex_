@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: ML Lifecycle E2E Gate
 on:
   workflow_dispatch: null
@@ -99,7 +103,11 @@ jobs:
           python3 - <<'PYEOF'
           import json, sys
           from datetime import datetime, timezone
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           results = {
               "reproducibility": "${{ needs.reproducibility-check.result }}",
               "serving_smoke":   "${{ needs.serving-smoke.result }}",
@@ -108,7 +116,11 @@ jobs:
           }
           passed = [k for k, v in results.items() if v == "success"]
           failed = [k for k, v in results.items() if v != "success"]
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           report = {
               "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
               "domain": "D2_ml_lifecycle",
@@ -126,4 +138,7 @@ jobs:
           PYEOF
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

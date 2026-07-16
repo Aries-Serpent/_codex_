@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: 'Phase 8.3: Performance Monitoring'
 on:
   schedule:
@@ -170,22 +174,33 @@ jobs:
 
         # Performance Monitoring Dashboard
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Last Updated:** $(date -u ''+%Y-%m-%d %H:%M:%S UTC'')
 
         **Status:** 🟢 Monitoring Active
 
+<<<<<<< HEAD
 
         ## Recent Metrics
 
 
+=======
+        ## Recent Metrics
+
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         - Performance metrics collected hourly
 
         - Analysis results available in artifacts
 
         - SLA enforcement active
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         For detailed metrics, see:
 
         - `performance-metrics/` — Raw metrics
@@ -194,7 +209,10 @@ jobs:
 
         - `sla-violations/` — SLA violation reports
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         [View Full Reports](./)
 
         EOF
@@ -274,4 +292,7 @@ jobs:
         '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

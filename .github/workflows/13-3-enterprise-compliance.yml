@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: CodeQL Security Analysis
 on:
   pull_request:
@@ -116,4 +120,7 @@ jobs:
         with:
           sarif_file: semgrep-report.json
     timeout-minutes: 30
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

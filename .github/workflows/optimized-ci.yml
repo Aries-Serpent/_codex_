@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: CI — Optimized with Caching
 
 on:
@@ -17,7 +21,10 @@ concurrency:
 permissions:
   contents: read
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 env:
   CODEX_FORCE_CPU: "1"
   UV_CACHE_DIR: /tmp/.uv-cache
@@ -48,7 +55,10 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --type pip --workflow optimized-ci --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

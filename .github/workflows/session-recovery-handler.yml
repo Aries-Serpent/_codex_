@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Session Recovery Handler
 on:
   workflow_run:
@@ -83,7 +87,10 @@ jobs:
 
         BRANCH="${{ steps.extract_context.outputs.branch }}"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Create JSONL entry for session tracking
 
         cat >> .codex/session_recovery_log.jsonl << ''EOF''
@@ -94,7 +101,10 @@ jobs:
 
         EOF
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat .codex/session_recovery_log.jsonl
 
         '
@@ -167,4 +177,7 @@ jobs:
         \ Workflow Run: ${{ github.run_id }}\"\necho \"\"\necho \"Status: Recovery\
         \ logged and artifacts created\"\necho \"Next Steps: Manual intervention may\
         \ be required if auto-recovery was not triggered\"\n"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -238,6 +238,127 @@ class TelemetryCollector:
             "same issues persist", "permanent ci block",
             "RP-026",
         ],
+<<<<<<< HEAD
+=======
+        
+        # ── P0 CRITICAL #5322: NEW PATTERN CLASSIFIERS ─────────────────────────
+        # Added to reduce unknown patterns from 63.5% (442) to <30%
+        # 18 new patterns covering YAML, dependencies, network, security, performance
+        
+        # YAML / CONFIGURATION ERRORS (5 patterns)
+        "yaml-syntax": [
+            "yaml", "syntax error", "invalid yaml", "yaml.parser",
+            "mapping values", "expected", "could not find expected",
+            "ansible-lint", "yamllint", "yaml error",
+        ],
+        
+        "env-variable-missing": [
+            "environment variable", "undefined variable", "not set",
+            "missing env", "env var", "unbound variable", "variable not defined",
+            "env: ", "echo ${", "env substitution",
+        ],
+        
+        "docker-compose-error": [
+            "docker-compose", "compose", "yml", "service",
+            "depends_on", "networking", "docker compose", "compose up",
+            "docker network", "compose config",
+        ],
+        
+        "credentials-config": [
+            "credentials", "auth.json", ".netrc", "config file",
+            "gitconfig", "authentication config", "credentials store",
+            "docker config", "ssh config", "~/.config",
+        ],
+        
+        "http-config": [
+            "http_proxy", "https_proxy", "no_proxy", "proxy error",
+            "certificate", "ssl error", "cert verify", "peer verification",
+            "proxy configuration", "tls", "ssl_certificate",
+        ],
+        
+        # DEPENDENCY / IMPORT ERRORS (4 patterns)
+        "dependency-version-conflict": [
+            "version conflict", "incompatible", "requires", "constraint",
+            "dependency conflict", "cannot satisfy", "version mismatch",
+            "pip version", "poetry lock", "version spec",
+        ],
+        
+        "import-not-found": [
+            "importerror", "modulenotfounderror", "no module named",
+            "cannot import", "import failed", "no such module",
+            "sys.path", "moduleerror", "from X import",
+        ],
+        
+        "lockfile-mismatch": [
+            "lock file", "poetry.lock", "package-lock.json", "yarn.lock",
+            "requirements.lock", "lockfile", "lock mismatch", "frozen deps",
+            "lock out of sync", "lock integrity",
+        ],
+        
+        "optional-dependency": [
+            "optional", "extra", "[dev]", "[test]", "[all]",
+            "optional dependency", "not installed", "optional-test-deps",
+            "requires-dist", "install with", "[extras]",
+        ],
+        
+        # NETWORK / INFRASTRUCTURE ERRORS (3 patterns)
+        "network-timeout": [
+            "timeout", "connection timeout", "timed out", "read timeout",
+            "connect timeout", "request timeout", "deadline exceeded",
+            "socket timeout", "dns timeout", "http timeout",
+        ],
+        
+        "rate-limit": [
+            "rate limit", "rate-limit", "exceeded", "throttled",
+            "429", "too many requests", "api limit", "quota",
+            "api rate", "ratelimit", "429 too many",
+        ],
+        
+        "dns-resolution": [
+            "dns", "name resolution", "getaddrinfo", "cannot resolve",
+            "unknown host", "name or service not known", "temporary failure",
+            "resolver", "dns lookup", "host unreachable",
+        ],
+        
+        # PERMISSION / ACCESS ERRORS (2 patterns)
+        "permission-denied": [
+            "permission denied", "access denied", "not permitted", "forbidden",
+            "chmod", "file mode", "execute permission", "read-only", "403",
+            "insufficient privileges", "operation not permitted",
+        ],
+        
+        "token-invalid": [
+            "invalid token", "token expired", "bad credentials", "401",
+            "authentication failed", "token invalid", "unauthorized",
+            "invalid credentials", "token rejected", "invalid oauth",
+        ],
+        
+        # PERFORMANCE / RESOURCE ERRORS (2 patterns)
+        "out-of-memory": [
+            "out of memory", "oom", "memory error", "memoryerror",
+            "cannot allocate", "heap space", "max heap", "gc overhead limit",
+            "memory exhausted", "killed", "oom-killer",
+        ],
+        
+        "disk-full": [
+            "disk full", "no space", "out of space", "disk space",
+            "enospc", "write failed", "disk quota", "cannot write",
+            "partition full", "storage full",
+        ],
+        
+        # PYTHON / TEST ERRORS (2 patterns)
+        "python-syntax": [
+            "syntaxerror", "syntax error", "invalid syntax",
+            "unexpected token", "indentationerror", "unexpected indent",
+            "unexpected dedent", "invalid character", "def ", "class ",
+        ],
+        
+        "assertion-failure": [
+            "assertion", "assert ", "AssertionError", "failed assertion",
+            "assert failed", "assert_", "assertEqual", "assertTrue",
+            "assertRaises", "assertion failed",
+        ],
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     }
 
     def __init__(self, owner: str, repo: str, token: str):

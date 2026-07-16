@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Docs Health (Post-Merge)
 
 # Post-merge documentation health check.
@@ -23,7 +27,10 @@ concurrency:
 permissions:
   contents: read
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   docs-health:
     name: "📚 Docs Health Check"
@@ -77,4 +84,7 @@ jobs:
               echo "❌ **Docs lint errors detected — fix before next deployment.**"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

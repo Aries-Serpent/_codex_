@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Cognitive Registry Validation Workflow
 on:
   workflow_dispatch:
@@ -191,7 +195,10 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: 'echo "Storing registry metadata in repository variables..."
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         gh variable set REGISTRY_TYPE --body "${{ env.REGISTRY_TYPE }}" || echo "Variable
         REGISTRY_TYPE set"
 
@@ -207,7 +214,10 @@ jobs:
         gh variable set REGISTRY_LAST_VALIDATED --body "$(date -u +''%Y-%m-%dT%H:%M:%SZ'')"
         || echo "Variable REGISTRY_LAST_VALIDATED set"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "Repository variables updated successfully"
 
         '
@@ -314,4 +324,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

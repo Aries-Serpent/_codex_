@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+---
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Release to PyPI
 on:
   push:
@@ -46,4 +50,8 @@ jobs:
         run: |
           echo "Preparing release..."
           VERSION="v1.0.0"
+<<<<<<< HEAD
           echo "version=${VERSION}"
+=======
+          echo "version=${VERSION}"
+>>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
