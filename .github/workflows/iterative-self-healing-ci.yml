@@ -25,10 +25,35 @@ permissions:
   issues: write
   actions: read
 jobs:
+  cascade-guard:
+    name: Pre-flight Cascade Guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name == 'workflow_run'
+    outputs:
+      should-continue: ${{ steps.check.outputs.should-continue }}
+    steps:
+      - name: Check for cascade (self-reference on action_required/skipped)
+        id: check
+        run: |
+          # Prevent cascading self-referential triggers
+          # If trigger is self AND conclusion is not 'failure', skip
+          TRIGGER_NAME="${{ github.event.workflow_run.name }}"
+          CONCLUSION="${{ github.event.workflow_run.conclusion }}"
+          
+          if [[ "$TRIGGER_NAME" == "Iterative Self-Healing CI" ]] && [[ "$CONCLUSION" != "failure" ]]; then
+            echo "::notice::Cascade Guard: Skipping self-reference (action_required/skipped conclusion)"
+            echo "should-continue=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          echo "should-continue=true" >> "$GITHUB_OUTPUT"
+
   triage:
     name: D-00 Triage failure
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: cascade-guard
     if: "github.event_name == 'workflow_dispatch' || (\n  github.event.workflow_run.conclusion\
       \ == 'failure' &&\n  github.event.workflow_run.name != 'Iterative Self-Healing\
       \ CI' &&\n  github.event.workflow_run.name != 'Copilot Iterative Self-Healing\
