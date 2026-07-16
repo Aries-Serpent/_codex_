@@ -37,7 +37,7 @@ from src.orchestration.routing_v2 import EnhancedRouter
 
 router = EnhancedRouter()
 decision = router.select_best_agent(
-    task_description="fix failing CI tests",
+    task_description="fix failing CI tests",  # pragma: allowlist secret
     max_latency_ms=500,
     require_sla_compliance=True,
     top_k=1
@@ -100,7 +100,7 @@ balancer = LoadBalancer()
 balancer.register_agent("ci-testing-agent", max_concurrent=5)
 
 # Enqueue
-entry = balancer.enqueue("task-123", "ci-testing-agent", TaskPriority.HIGH)
+entry = balancer.enqueue("task-123", "ci-testing-agent", TaskPriority.HIGH)  # pragma: allowlist secret
 
 # Recommend
 best_agent = balancer.recommend_agent(
@@ -109,7 +109,7 @@ best_agent = balancer.recommend_agent(
 )
 
 # Complete
-balancer.complete("task-123", best_agent, success=True, actual_duration_ms=4500)
+balancer.complete("task-123", best_agent, success=True, actual_duration_ms=4500)  # pragma: allowlist secret
 ```
 
 **Metrics:**

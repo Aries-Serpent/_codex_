@@ -81,7 +81,7 @@ jobs:
           }}
         DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      run: '# Make script executable
+        run: '# Make script executable
 
         chmod +x scripts/dependabot_sheriff.sh
 
@@ -151,3 +151,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

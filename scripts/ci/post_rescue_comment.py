@@ -6,6 +6,12 @@ All CI workflows call this script when they fail.  The script maintains
 the same commit *appends* its failure section to that same comment rather
 than creating a new one.
 
+When cascading Copilot errors are detected (10+ comments), the script implements
+**append-first batching**: instead of aborting, it appends to the existing
+successful rescue comment. Multiple workflow failures destined for the same
+commit are automatically batched and posted as a single append, preventing
+rate-limiting and sprawling comments.
+
 Marker: ``<!-- ci-rescue-sha:{pr_number}:{sha_short} -->``
 
 Two operating modes
@@ -38,6 +44,9 @@ SECTION_CONTENT Markdown content to append as a named ``<details>`` section.
 APPEND_ONLY     Set to "true" to skip creating a new comment when no existing
                 rescue comment is found.  Useful for RCA appends that should
                 only update an already-existing rescue thread.
+BATCH_WAIT_SECONDS  Time to wait for other workflows before flushing queued
+                    comments as a batch append (default: 3 seconds). Used when
+                    cascading errors are detected to prevent rate-limiting.
 
 Usage — PR-triggered workflow step
 ------------------------------------
@@ -73,14 +82,25 @@ import datetime
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
+import pathlib
+from typing import Any
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
 CONSOLIDATION_DELAY_SECONDS = 3
 DUPLICATE_DIGEST_LENGTH = 16
+# Note: UTC_TIMESTAMP_FORMAT is also defined in rescue_comment_batch_queue.py.
+# We keep both to maintain module independence and avoid circular imports.
+UTC_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+# Cascade error marker constant for detecting already-consolidated cascades
+# Note: The consolidation script creates markers with CASCADE_ERROR_ID_MARKER_PREFIX
+# ('<!-- cascade-error-id:...') to indicate which errors were consolidated.
+# We detect consolidation by looking for this 'cascade-error-id' substring.
+CASCADE_CONSOLIDATED_CHECK = "cascade-error-id"
 
 
 def _gh(
@@ -112,6 +132,125 @@ def _gh(
         except Exception:
             err_body = {}
         return exc.code, err_body
+
+
+def _get_batch_queue_module() -> Any:
+    """Lazily import batch queue module, gracefully degrading if unavailable."""
+    try:
+        script_dir = str(pathlib.Path(__file__).parent)
+        if script_dir not in sys.path:
+            sys.path.insert(0, script_dir)
+        import rescue_comment_batch_queue as batch_queue
+        return batch_queue
+    except ImportError:
+        return None
+
+
+def _build_append_section(
+    workflow_name: str,
+    run_id: str,
+    run_url: str,
+    section_title: str | None,
+    section_content: str | None,
+    timestamp: str,
+    commit_sha: str,
+ ) -> str:
+    """Build markdown section for appending to rescue comment."""
+    if section_title and section_content:
+        return (
+            f"\n\n---\n\n"
+            f"<details><summary>📋 <code>{section_title}</code> — {timestamp} · "
+            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+            f"{section_content}\n\n"
+            f"</details>"
+        )
+    else:
+        return (
+            f"\n\n---\n\n"
+            f"<details><summary>🔴 <code>{workflow_name}</code> — {timestamp} · "
+            f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
+            f"@copilot **{workflow_name}** failed on commit `{commit_sha[:12]}`. "
+            f"Check [run #{run_id}]({run_url}) for details.\n\n"
+            f"</details>"
+        )
+
+
+def _handle_cascade_append(
+    token: str,
+    repo: str,
+    pr_number: int,
+    commit_sha: str,
+    existing_id: int | None,
+    workflow_name: str,
+    run_id: str,
+    run_url: str,
+    section_title: str | None,
+    section_content: str | None,
+) -> bool:
+    """Handle append-first behavior when cascade detected.
+
+    If existing comment found, append to it immediately.
+    Otherwise, queue for batch posting.
+
+    Returns True if handled, False otherwise.
+    """
+    if existing_id:
+        # Cascade detected but existing comment found — append to it
+        now = datetime.datetime.now(tz=datetime.timezone.utc).strftime(UTC_TIMESTAMP_FORMAT)
+        append_section = _build_append_section(
+            workflow_name=workflow_name,
+            run_id=run_id,
+            run_url=run_url,
+            section_title=section_title,
+            section_content=section_content,
+            timestamp=now,
+            commit_sha=commit_sha,
+        )
+
+        # Fetch existing comment
+        status, comments = _gh(
+            "GET",
+            f"/repos/{repo}/issues/comments/{existing_id}",
+            token,
+        )
+        if status != 200:
+            return False
+
+        existing_body = (comments.get("body") or "").rstrip()
+        updated_body = (existing_body + append_section)[:MAX_COMMENT_LEN]
+
+        status, _ = _gh(
+            "PATCH",
+            f"/repos/{repo}/issues/comments/{existing_id}",
+            token,
+            {"body": updated_body},
+        )
+        if status in (200, 201):
+            print(
+                f"✅ CASCADE: Appended `{workflow_name}` failure to rescue comment #{existing_id} "
+                f"(cascade handling, commit {commit_sha[:12]})"
+            )
+            return True
+        return False
+    else:
+        # Cascade detected but no existing comment — queue for batch
+        batch_queue = _get_batch_queue_module()
+        if batch_queue:
+            try:
+                batch_queue.queue_item(
+                    pr_number=pr_number,
+                    commit_sha=commit_sha,
+                    workflow_name=workflow_name,
+                    run_id=run_id,
+                    run_url=run_url,
+                    section_title=section_title,
+                    section_content=section_content,
+                )
+                return True
+            except Exception as exc:
+                # Batch queue operation failed (file I/O, etc.); continue with other approaches
+                print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
+        return False
 
 
 def _find_rescue_comment(
@@ -182,6 +321,103 @@ def _matching_rescue_comments(
     return sorted(matches, key=lambda c: c.get("id", 0))
 
 
+def _detect_cascading_copilot_errors(
+    token: str,
+    repo: str,
+    pr_number: int,
+    threshold: int = 5,
+) -> dict:
+    """Detect cascading Copilot error comments and already-consolidated cascades.
+
+    Cascades are identified by:
+    - 5+ comments with "comment-generic-error" marker (fresh errors, threshold configurable)
+    - 5+ comments with "cascade-error-id" marker (already consolidated)
+    - Created by Copilot user within short timespan
+    - Repeating UUID patterns
+
+    Note: Consolidated cascades are detected by the presence of cascade-error-id markers,
+    which indicate that consolidation has already occurred. Both fresh and consolidated
+    error comments are counted, but consolidated cascades skip further processing.
+
+    Args:
+        token: GitHub API token
+        repo: Repository slug (owner/repo)
+        pr_number: Pull request number
+        threshold: Minimum error comment count to trigger consolidation (default: 5)
+
+    Returns:
+        {
+            "is_cascading": bool - True if cascade detected (fresh or already-consolidated)
+            "error_count": int - Total error comments found (fresh + consolidated)
+            "last_error_id": int or None - Most recent error comment ID
+            "action": str - One of "CONSOLIDATE_ERRORS", "ALREADY_CONSOLIDATED", "APPEND_TO_EXISTING", "PROCEED"
+        }
+    """
+    page = 1
+    error_comments = []
+    has_consolidated_error = False
+
+    while True:
+        status, comments = _gh(
+            "GET",
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+            token,
+        )
+        if status != 200:
+            break
+        if not isinstance(comments, list) or not comments:
+            break
+
+        for c in comments:
+            body = c.get("body") or ""
+            # Count both fresh error comments ("comment-generic-error") and already-consolidated
+            # errors (marked with "cascade-error-id"). Both indicate Copilot errors on this PR.
+            if ("comment-generic-error" in body or CASCADE_CONSOLIDATED_CHECK in body):
+                if c.get("user", {}).get("login") == "Copilot":
+                    error_comments.append(c)
+                    # Track if any comments are already consolidated (have cascade-error-id markers)
+                    if CASCADE_CONSOLIDATED_CHECK in body:
+                        has_consolidated_error = True
+
+        if len(comments) < 100:
+            break
+        page += 1
+
+    if not error_comments:
+        return {
+            "is_cascading": False,
+            "error_count": 0,
+            "last_error_id": None,
+            "action": "PROCEED",
+        }
+
+    # If already consolidated, skip further action
+    if has_consolidated_error:
+        return {
+            "is_cascading": True,
+            "error_count": len(error_comments),
+            "last_error_id": None,
+            "action": "ALREADY_CONSOLIDATED",
+        }
+
+    # If more than threshold error comments, it's an active cascade
+    if len(error_comments) >= threshold:
+        last_error = max(error_comments, key=lambda c: c.get("created_at", ""))
+        return {
+            "is_cascading": True,
+            "error_count": len(error_comments),
+            "last_error_id": last_error.get("id"),
+            "action": "CONSOLIDATE_ERRORS",
+        }
+
+    return {
+        "is_cascading": False,
+        "error_count": len(error_comments),
+        "last_error_id": error_comments[-1].get("id") if error_comments else None,
+        "action": "PROCEED",
+    }
+
+
 def _consolidate_duplicate_rescue_comments(
     token: str,
     repo: str,
@@ -191,9 +427,32 @@ def _consolidate_duplicate_rescue_comments(
     created_id: int,
 ) -> None:
     """Collapse same-SHA rescue-comment races into one appended thread."""
+    # CRITICAL: Check for cascading Copilot errors before consolidating (PR #5324)
+    cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number, threshold=5)
+
+    if cascade_info["is_cascading"]:
+        import sys
+        action = cascade_info["action"]
+        count = cascade_info["error_count"]
+        print(
+            f"⚠️  CASCADE DETECTED: {count} Copilot error comments. "
+            f"Action: {action}. Aborting consolidation.",
+            file=sys.stderr,
+        )
+        return
+
     time.sleep(CONSOLIDATION_DELAY_SECONDS)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
+        return
+
+    # CIRCUIT BREAKER: Prevent cascading consolidation (Issue: PR #5324)
+    # If more than 5 rescue comments exist for this SHA, skip consolidation
+    # to avoid exponential growth and circular reference loops
+    if len(matches) > 5:
+        import sys
+        print(f"⚠️  CIRCUIT BREAKER: {len(matches)} rescue comments detected for SHA {signature}.", file=sys.stderr)
+        print("    Skipping consolidation to prevent cascading loop.", file=sys.stderr)
         return
 
     canonical = matches[0]
@@ -216,7 +475,8 @@ def _consolidate_duplicate_rescue_comments(
         duplicate_digest = hashlib.sha256(duplicate_body.encode()).hexdigest()[
             :DUPLICATE_DIGEST_LENGTH
         ]
-        duplicate_marker = f"<!-- rescue-duplicate:{duplicate_digest} -->"
+        # Use safe marker format to prevent circular reference in HTML-encoded PR body
+        duplicate_marker = f"<!-- rescue-dup-digest:{duplicate_digest} -->"
         if duplicate_body and duplicate_marker not in canonical_body:
             canonical_body = (
                 canonical_body
@@ -311,6 +571,16 @@ def main() -> None:
             return
         pr_number = looked_up
 
+    # CRITICAL CASCADE CHECK: Handle cascading Copilot errors (PR #5324 pattern)
+    # NEW BEHAVIOR: Instead of aborting, append to existing comment or queue for batch
+    # This ensures no comments are lost and prevents multiple sprawling comments
+    cascade_info = None
+    try:
+        cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number)
+    except Exception as exc:
+        print(f"⚠️  Cascade check failed (non-blocking): {exc}", file=sys.stderr)
+        # Continue execution—cascade check failure shouldn't block rescue posts
+
     # Defensive: when COMMIT_SHA or BRANCH env vars were not supplied (e.g. when
     # the calling workflow is triggered by an issue_comment or pull_request_review
     # event where github.event.pull_request.head.sha / github.head_ref are empty),
@@ -371,25 +641,88 @@ def main() -> None:
         )
         return
 
+    # CASCADE APPEND-FIRST: If cascade detected, prioritize appending to existing comment
+    # or consolidating existing errors instead of creating a new comment
+    if cascade_info and cascade_info.get("is_cascading"):
+        action = cascade_info.get("action")
+        count = cascade_info.get("error_count", 0)
+
+        if action == "CONSOLIDATE_ERRORS":
+            print(
+                f"🔄 CASCADE CONSOLIDATION: {count} Copilot error comments detected. "
+                f"Triggering error consolidation script.",
+                file=sys.stderr,
+            )
+            # Try to consolidate the existing error comments
+            try:
+                consolidate_script = str(pathlib.Path(__file__).parent / "consolidate_cascade_errors.py")
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        consolidate_script,
+                    ],
+                    env={
+                        **os.environ,
+                        "GH_TOKEN": token,
+                        "REPO": repo,
+                        "PR_NUMBER": str(pr_number),
+                    },
+                    timeout=30,
+                    capture_output=True,
+                    text=True,
+                )
+                if result.returncode == 0:
+                    print(result.stdout, file=sys.stderr)
+                    return  # Consolidation successful
+                else:
+                    print(f"⚠️  Consolidation script returned {result.returncode}", file=sys.stderr)
+                    if result.stderr:
+                        print(result.stderr, file=sys.stderr)
+            except Exception as exc:
+                print(f"⚠️  Failed to run consolidation script: {exc}", file=sys.stderr)
+            # Fall through to normal rescue comment creation
+
+        elif action == "ALREADY_CONSOLIDATED":
+            print(
+                f"✅ CASCADE ALREADY CONSOLIDATED: {count} Copilot error comments detected "
+                f"(already consolidated). No new rescue comment needed.",
+                file=sys.stderr,
+            )
+            return  # Cascade already handled, no new comment needed
+
+        elif action == "APPEND_TO_EXISTING":
+            print(
+                f"🔄 CASCADE APPEND: {count} Copilot error comments detected. "
+                f"Action: APPEND_TO_EXISTING. Attempting append-first strategy.",
+                file=sys.stderr,
+            )
+            # Try to append to existing comment or queue for batch
+            if _handle_cascade_append(
+                token,
+                repo,
+                pr_number,
+                commit_sha,
+                existing_id,
+                workflow,
+                run_id,
+                run_url,
+                section_title,
+                section_content,
+            ):
+                return  # Successfully appended or queued
+            # If append failed and no existing comment, fall through to normal create
+
     if existing_id:
         # Append this workflow's section to the existing comment (collapsed).
-        if section_title and section_content:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>📋 <code>{section_title}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"{section_content}\n\n"
-                f"</details>"
-            )
-        else:
-            append_section = (
-                f"\n\n---\n\n"
-                f"<details><summary>🔴 <code>{workflow}</code> — {now} · "
-                f"<a href=\"{run_url}\">Run #{run_id}</a></summary>\n\n"
-                f"@copilot **{workflow}** failed on commit `{sha_short}`. "
-                f"Check [run #{run_id}]({run_url}) for details.\n\n"
-                f"</details>"
-            )
+        append_section = _build_append_section(
+            workflow_name=workflow,
+            run_id=run_id,
+            run_url=run_url,
+            section_title=section_title,
+            section_content=section_content,
+            timestamp=now,
+            commit_sha=commit_sha,
+        )
         updated_body = (existing_body.rstrip() + append_section)[:MAX_COMMENT_LEN]
         status, _ = _gh(
             "PATCH",
@@ -412,9 +745,9 @@ def main() -> None:
     # immediately sees the action queue without needing a separate API call.
     inline_ctx = ""
     try:
-        import pathlib as _pathlib
+        # pathlib already imported
         import sys as _sys
-        _scripts_ci = str(_pathlib.Path(__file__).parent)
+        _scripts_ci = str(pathlib.Path(__file__).parent)
         if _scripts_ci not in _sys.path:
             _sys.path.insert(0, _scripts_ci)
         from discussion_context_store import build_comment_context  # noqa: PLC0415
@@ -492,12 +825,38 @@ def main() -> None:
             status == 403 and "rate limit" in msg.lower()
         )
         if is_rate_limit:
-            # Rescue comment is best-effort; transient rate limits must not fail CI.
-            print(
-                f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
-                "Rescue comment will be posted on the next run."
-            )
-            sys.exit(0)
+            # Rate limited: queue for batch posting instead of losing the comment
+            batch_queue = _get_batch_queue_module()
+            if batch_queue:
+                try:
+                    batch_queue.queue_item(
+                        pr_number=pr_number,
+                        commit_sha=commit_sha,
+                        workflow_name=workflow,
+                        run_id=run_id,
+                        run_url=run_url,
+                        section_title=section_title,
+                        section_content=section_content,
+                    )
+                    print(
+                        f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                        "Queued for batch posting on next workflow run."
+                    )
+                    sys.exit(0)
+                except Exception as exc:
+                    print(
+                        f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                        f"Batch queue also failed: {exc}. "
+                        "Rescue comment will be attempted on next run."
+                    )
+                    sys.exit(0)
+            else:
+                # Rescue comment is best-effort; transient rate limits must not fail CI.
+                print(
+                    f"⚠️  POST skipped: HTTP {status} — rate limit exceeded. "
+                    "Rescue comment will be posted on the next run."
+                )
+                sys.exit(0)
         print(f"❌ POST failed: HTTP {status} — {resp}")
         sys.exit(1)
 

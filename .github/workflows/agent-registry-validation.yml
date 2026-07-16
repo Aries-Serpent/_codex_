@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           fetch-depth: 1
       - name: Set up Python
@@ -138,11 +138,11 @@ jobs:
         n\")\nPYEOF\n"
       - name: Post validation summary
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8
         env:
-        REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
-        MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
-        ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
+          REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
+          MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
+          ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
         with:
           github-token: ${{ github.token }}
           script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
@@ -164,9 +164,9 @@ jobs:
           \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
           \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ body,\n});\n"
-    
+
       - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
         if: always()
         with:
           path: .pytest_cache/
@@ -176,15 +176,12 @@ jobs:
 
       - name: Trigger embedding index refresh
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
         ✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh\" \\\n\
         \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
-        env:
-        GH_TOKEN: ${{ github.token }}
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -202,23 +199,23 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        fetch-depth: 1
+          fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Agent Registry Validation
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: Agent Registry Validation
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+
+
+
+
+

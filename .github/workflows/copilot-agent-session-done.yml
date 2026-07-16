@@ -63,43 +63,43 @@ jobs:
       run: |
         set -euo pipefail
         echo "autofix_ran=false" >> "$GITHUB_OUTPUT"
-        
+
         if [ -z "${PR_NUMBER}" ]; then
           echo "No PR number — skipping pre-flight auto-fix."
           exit 0
         fi
-        
+
         # Check if the 🔄 Auto-Post checkbox is checked in the PR body
         PR_BODY=$(gh pr view "${PR_NUMBER}" \
           --repo "${{ github.repository }}" \
           --json body -q '.body // ""' 2>/dev/null || echo "")
-        
+
         if ! printf '%s' "$PR_BODY" | grep -qiE '\-\s*\[x\]\s*.*Auto-Post.*@copilot'; then
           echo "🔄 Auto-Post checkbox not checked — skipping pre-flight auto-fix."
           exit 0
         fi
-        
+
         echo "🔄 Auto-Post checkbox is CHECKED — running pre-flight auto-fix..."
-        
+
         # Use gh CLI to determine which files were changed in the PR
         # This avoids needing a git checkout in the privileged workflow_run context
         CHANGED_FILES=$(gh pr diff "${PR_NUMBER}" --repo "${{ github.repository }}" --name-only 2>/dev/null || echo "")
         FIX_ARGS=""
-        
+
         if ! echo "$CHANGED_FILES" | grep -q "AGENT_ACCOUNTABILITY_REPORT.md"; then
           FIX_ARGS="$FIX_ARGS --fix-accountability"
           echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md needs auto-fix"
         else
           echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md already updated — OK"
         fi
-        
+
         if ! echo "$CHANGED_FILES" | grep -q "CHANGELOG.md"; then
           FIX_ARGS="$FIX_ARGS --fix-changelog"
           echo "  REQ-5: CHANGELOG.md needs auto-fix"
         else
           echo "  REQ-5: CHANGELOG.md already updated — OK"
         fi
-        
+
         # MANDATORY session-close gate (S177): ALWAYS refresh PR description with
         # scorecard + follow-up + WEC — regardless of whether REQ-4/5 need fixing.
         echo "📊 Refreshing PR description (scorecard + follow-up + WEC)..."
@@ -107,7 +107,7 @@ jobs:
           --update-pr-description \
           --pr-number "${PR_NUMBER}" \
           || echo "⚠️  PR description update failed (non-fatal — continuing)"
-        
+
         if [ -z "$FIX_ARGS" ]; then
           echo "✅ REQ-4/5 already satisfied — no requirement files need fixing."
         else
@@ -119,7 +119,7 @@ jobs:
             --run-url "${RUN_URL}" \
             --fix-all
         fi
-        
+
         # Use gh CLI to update PR with auto-fixed files
         # This avoids git operations in the privileged context
         echo "✅ Pre-flight auto-fix completed via API."
@@ -618,3 +618,4 @@ jobs:
         \ = await github.rest.issues.createComment({\n    owner, repo, issue_number:\
         \ prNumber, body: standaloneBody.slice(0, 65536),\n  });\n  console.log(`\u2705\
         \ Created quality-findings comment: ${created.html_url}`);\n}\n"
+

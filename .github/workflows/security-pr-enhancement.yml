@@ -21,7 +21,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-        persist-credentials: false
         persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -105,7 +104,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-        persist-credentials: false
         persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -126,3 +124,4 @@ jobs:
         \ as e:\n    print(f\"❌ Invalid JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\
         ℹ️  No findings file found (will be created if needed)\")\nEOF\n"
     timeout-minutes: 15
+

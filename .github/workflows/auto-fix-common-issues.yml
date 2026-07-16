@@ -94,10 +94,9 @@ jobs:
         !inputs.check_only
 
         '
-      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
-        github-actions[bot]@users.noreply.github.com\"\n\ngit add -A\n\nif git diff\
-        \ --staged --quiet; then\n  echo \"No changes to commit\"\nelse\n  git commit\
-        \ -m \"fix(ci): auto-fix common CI issues [skip ci]\"\n\n  git push\nfi\n"
+      run: |
+        git config user.name \"github-actions[bot]\"
+        git config user.email \"
     - name: Comment on PR (if auto-fixable issues found)
       if: 'github.event_name == ''pull_request'' &&
 
@@ -106,30 +105,7 @@ jobs:
         '
       uses: actions/github-script@v8
       with:
-        script: "const MARKER = '<!-- auto-fix-ci-issues -->';\nconst message = `${MARKER}\\\
-          n## ❌ Auto-Fixable CI Issues Detected\n\nThe auto-fix script detected issues\
-        \ that can be automatically fixed:\n\n| Pattern | Description | Auto-Fix\
-          \ | Causes CI Failure |\n|---------|-------------|----------|-------------------|\n\
-          | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |\n| 4 | Coverage thresholds\
-          \ | ✅ Yes | ✅ Yes |\n| 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |\n\n###\
-        \ Informational Warnings (Do NOT cause CI failure):\n\n| Pattern | Description\
-          \ | Auto-Fix |\n|---------|-------------|----------|\n| 2 | Unused variables\
-          \ | ⚠️ Manual review |\n| 3 | YAML indentation | ⚠️ Manual review |\n| 5\
-          \ | Tokenizer fallbacks | ⚠️ Manual review |\n| 6 | Test assertions | ⚠️\
-          \ Manual review |\n| 7 | Redundant imports | ⚠️ Manual review |\n\n### To\
-        \ apply automatic fixes:\n\n\\`\\`\\`bash\n# Locally\npython scripts/ci/auto_fix_common_issues.py\n\
-          \n# Via workflow\n# Go to Actions > Auto-Fix Common CI Issues > Run workflow\n\
-        \\`\\`\\`\n\n**Note:** Manual review patterns are informational only and\
-          \ do not cause CI failures.\n\nSee the workflow logs for details.\n\n_[\U0001F517\
-        \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
-        \nconst { data: comments } = await github.rest.issues.listComments({\n \
-        \ owner: context.repo.owner, repo: context.repo.repo,\n  issue_number: context.issue.number,\
-        \ per_page: 100,\n});\nconst existing = comments.find(c => c.body && c.body.includes(MARKER));\n\
-        if (existing) {\n  await github.rest.issues.updateComment({\n    owner:\
-        \ context.repo.owner, repo: context.repo.repo,\n    comment_id: existing.id,\
-        \ body: message,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
-        \ repo: context.repo.repo,\n    body: message,\n  });\n}\n"
+        script: "const MARKER = '<!-- auto-fix-ci-issues -->';\nconst message = `${MARKER}\\ n## ❌ Auto-Fixable CI Issues Detected\n\nThe auto-fix script detected issues \ that can be automatically fixed:\n\n| Pattern | Description | Auto-Fix \ | Causes CI Failure |\n|---------|-------------|----------|-------------------|\n | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |\n| 4 | Coverage thresholds \ | ✅ Yes | ✅ Yes |\n| 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |\n\n### \ Informational Warnings (Do NOT cause CI failure):\n\n| Pattern | Description \ | Auto-Fix |\n|---------|-------------|----------|\n| 2 | Unused variables \ | ⚠️ Manual review |\n| 3 | YAML indentation | ⚠️ Manual review |\n| 5 \ | Tokenizer fallbacks | ⚠️ Manual review |\n| 6 | Test assertions | ⚠️ \ Manual review |\n| 7 | Redundant imports | ⚠️ Manual review |\n\n### To \ apply automatic fixes:\n\n\\`\\`\\`bash\n# Locally\npython scripts/ci/auto_fix_common_issues.py\n \n# Via workflow\n# Go to Actions > Auto-Fix Common CI Issues > Run workflow\n \\`\\`\\`\n\n**Note:** Manual review patterns are informational only and \ do not cause CI failures.\n\nSee the workflow logs for details.\n\n_[\U0001F517 \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n \nconst { data: comments } = await github.rest.issues.listComments({\n \ owner: context.repo.owner, repo: context.repo.repo,\n  issue_number: context.issue.number, \ per_page: 100,\n});\nconst existing = comments.find(c => c.body && c.body.includes(MARKER));\n if (existing) {\n  await github.rest.issues.updateComment({\n    owner: \ context.repo.owner, repo: context.repo.repo,\n    comment_id: existing.id, \ body: message,\n  });\n} else {\n  await github.rest.issues.createComment({\n \    issue_number: context.issue.number,\n    owner: context.repo.owner, \ repo: context.repo.repo,\n    body: message,\n  });\n}\n"
     - name: Apply and push fixes on PR (Detect→Heal→Commit)
       id: pr_heal
       if: 'github.event_name == ''pull_request'' &&
@@ -145,16 +121,9 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         TARGET_BRANCH: ${{ github.head_ref }}
-      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
-        github-actions[bot]@users.noreply.github.com\"\n\n# Apply all auto-fixable\
-        \ patterns (includes Pattern 35: Markdown FP Secrets)\npython scripts/ci/auto_fix_common_issues.py\
-        \ || true\n\ngit add -A\nif git diff --staged --quiet; then\n  echo \"healed=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"ℹ️  No changes after auto-fix — issues may\
-        \ require manual review.\"\nelse\n  TIMESTAMP=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\"\
-        )\n  git commit -m \"fix(ci): auto-fix CI issues on PR [skip ci] (Pattern\
-        \ 35/RP-007)\"\n\n  git push origin \"HEAD:${TARGET_BRANCH}\"\n  echo \"healed=true\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Auto-fixes applied and pushed to PR branch.\"\
-        \nfi\n"
+      run: |
+        git config user.name \"github-actions[bot]\"
+        git config user.email \"
     - name: Re-check after heal (fail only if manual issues remain)
       if: 'github.event_name == ''pull_request'' &&
 
@@ -211,18 +180,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Auto-Fix Common Issues
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}

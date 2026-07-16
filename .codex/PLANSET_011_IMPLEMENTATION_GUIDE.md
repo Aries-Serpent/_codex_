@@ -507,7 +507,7 @@ Forecast validation feedback → Planset 011
 **Resolution**:
 ```python
 # 1. Expand causal graph with domain knowledge
-graph.add_link("infrastructure.disk_io", "performance.cpu_spike", prob=0.75)
+graph.add_link("infrastructure.disk_io", "performance.cpu_spike", prob=0.75)  # pragma: allowlist secret
 graph.add_link("cloud.scaling_event", "performance.latency_spike", prob=0.68)
 
 # 2. Reduce confidence threshold

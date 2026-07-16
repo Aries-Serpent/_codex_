@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    
+
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
@@ -50,9 +50,9 @@ jobs:
           fetch-depth: 1
       - name: Initialize with repository variables
         env:
-        CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-        CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
-        CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
+          CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          CODEX_COVERAGE_THRESHOLD: ${{ vars.CODEX_COVERAGE_THRESHOLD || '80' }}
+          CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
         run: 'echo "CI checkpoint validation variables initialized:"
 
         echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
@@ -151,8 +151,6 @@ jobs:
         \ steps.cp5_aais_scorer.outcome == 'failure'\n)\n"
         run: "echo \"\u274C One or more checkpoints failed and fail_on_threshold_breach=true\"\
         \nexit 1\n"
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
@@ -176,16 +174,17 @@ jobs:
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: CI Checkpoint Validation
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: CI Checkpoint Validation
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+
+
+
+

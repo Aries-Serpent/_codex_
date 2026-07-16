@@ -41,26 +41,9 @@ jobs:
         fetch-depth: 0
     - name: Analyze PR Size
       id: analyze
-      run: "# Count changed files between base and head\n# Support both direct PR\
-        \ trigger and workflow_call\nif [ -n \"${{ github.event.pull_request.base.sha\
-        \ }}\" ]; then\n  BASE_SHA=\"${{ github.event.pull_request.base.sha }}\"\n\
-        else\n  # When called via workflow_call, fetch base from event\n  BASE_SHA=\"\
-        ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1'\
-        \ }}\"\nfi\nHEAD_SHA=\"${{ github.sha }}\"\n\necho \"Comparing $BASE_SHA...$HEAD_SHA\"\
-        \n\n# Ensure we have the base ref\ngit fetch origin \"$BASE_SHA\" 2>/dev/null\
-        \ || true\n\nCHANGED_FILES=$(git diff --name-only \"$BASE_SHA\" \"$HEAD_SHA\"\
-        \ 2>/dev/null | wc -l)\n\n# If git diff failed, try alternative method\nif\
-        \ [ \"$CHANGED_FILES\" -eq 0 ]; then\n  CHANGED_FILES=$(git diff --name-only\
-        \ HEAD~1 HEAD | wc -l)\nfi\n\necho \"changed_files_count=$CHANGED_FILES\"\
-        \ >> $GITHUB_OUTPUT\n\n# Determine size tier and validation strategy\nif [\
-        \ \"$CHANGED_FILES\" -lt 20 ]; then\n  echo \"pr_size=small\" >> $GITHUB_OUTPUT\n\
-        \  echo \"validation_strategy=full_validation\" >> $GITHUB_OUTPUT\nelif [\
-        \ \"$CHANGED_FILES\" -lt 100 ]; then\n  echo \"pr_size=medium\" >> $GITHUB_OUTPUT\n\
-        \  echo \"validation_strategy=targeted_tests\" >> $GITHUB_OUTPUT\nelif [ \"\
-        $CHANGED_FILES\" -lt 500 ]; then\n  echo \"pr_size=large\" >> $GITHUB_OUTPUT\n\
-        \  echo \"validation_strategy=smoke_tests\" >> $GITHUB_OUTPUT\nelse\n  echo\
-        \ \"pr_size=refactor\" >> $GITHUB_OUTPUT\n  echo \"validation_strategy=import_validation\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
+      run: |
+        # Count changed files between base and head
+        # Support both direct PR\
     - name: Report PR Size
       run: 'echo "### PR Size Analysis Results" >> $GITHUB_STEP_SUMMARY
 
@@ -151,6 +134,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}

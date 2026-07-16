@@ -59,7 +59,7 @@ jobs:
         || 'true' }}
       CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    permissions:
+      permissions:
       contents: read
       pull-requests: read
       issues: read
@@ -375,3 +375,4 @@ jobs:
         \ failed (variables:write scope required)\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+

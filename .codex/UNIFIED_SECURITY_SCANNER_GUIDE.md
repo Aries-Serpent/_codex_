@@ -49,7 +49,7 @@ Unified risk scoring using CVSS + entropy + context formula.
 
 **Formula**:
 ```
-risk_score = (0.50 × cvss_score + 0.30 × entropy_score + 0.20 × context_score) / 1.0
+risk_score = (0.50 × cvss_score + 0.30 × entropy_score + 0.20 × context_score) / 1.0  # pragma: allowlist secret
 
 Classification:
 - CRITICAL: 8.0-10.0
@@ -67,7 +67,7 @@ Classification:
 
 **Usage**:
 ```python
-from scripts.ci.vulnerability_risk_scorer import VulnerabilityRiskScorer
+from scripts.ci.vulnerability_risk_scorer import VulnerabilityRiskScorer  # pragma: allowlist secret
 
 scorer = VulnerabilityRiskScorer()
 

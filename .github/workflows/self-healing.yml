@@ -136,8 +136,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Resolve lane metadata defaults safely
         id: meta
@@ -270,7 +270,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -397,7 +397,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -488,7 +488,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -630,8 +630,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Download all contract artifacts
         uses: actions/download-artifact@v5
@@ -702,14 +702,14 @@ jobs:
               try:
                   with open(file_path) as f:
                       data = json.load(f)
-                  
+
                   missing_keys = [k for k in keys if k not in data]
                   if missing_keys:
                       print(f"❌ {filename}: Missing keys {missing_keys}")
                       contracts_valid = False
                   else:
                       print(f"✅ {filename}: Valid schema")
-                  
+
                   # Check input_lock consistency
                   if "input_lock_sha256" in data:
                       if input_lock_sha is None:
@@ -799,3 +799,7 @@ jobs:
           echo "**Analysis:** ${{ needs.self-healing-analyze.result }}"
           echo "**Remediation:** ${{ needs.self-healing-act.result }}"
           echo "**Validation:** ${{ needs.validate-self-healing-artifact-contract.result }}"
+
+
+
+

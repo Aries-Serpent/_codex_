@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    
+
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
@@ -48,7 +48,7 @@ jobs:
         threshold_pct\": 95.0,\n    \"gate_passed\": rate >= 95.0,\n}\nwith open(\"\
         reports/orchestration/health_latest.json\", \"w\") as f:\n    json.dump(report,\
         \ f, indent=2)\nPYEOF\n"
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -65,8 +65,8 @@ jobs:
           path: reports/orchestration/health_latest.json
       - name: Evaluate 95% threshold
         env:
-        RATE: ${{ steps.metrics.outputs.rate }}
-        run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
+          RATE: ${{ steps.metrics.outputs.rate }}
+          run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
         if rate >= 95.0:\n    print(f'::notice::✅ D3 exit criteria  #1 met: {rate}%\
         \ >= 95%')\nelse:\n    print(f'::warning::D3 success rate {rate}% below 95%\
         \ threshold')\n\"\n"
@@ -103,3 +103,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

@@ -156,7 +156,7 @@ jobs:
       with:
         name: ci-patterns-fixed-${{ github.run_id }}
         path: .codex/
-      continue-on-error: true
+        continue-on-error: true
     - name: Generate summary
       run: "echo \"## \U0001F527 CI Pattern Healing Report\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\n\nif [ -f .codex/ci-patterns-detected.json\
@@ -170,3 +170,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Setup Python
@@ -42,3 +42,4 @@ jobs:
       - name: Drift summary
         run: |
           echo "Maintenance workflow ran in read-only mode."
+

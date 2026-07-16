@@ -169,7 +169,7 @@ Number of days data must be retained for compliance, audit, or backup purposes.
 
 ### Formula
 ```
-disk_gb = peak_qps * 86400 sec/day * retention_days * 0.001 GB/sec * 1.05
+disk_gb = peak_qps * 86400 sec/day * retention_days * 0.001 GB/sec * 1.05  # pragma: allowlist secret
 ```
 
 **Assumptions**:
@@ -184,8 +184,8 @@ SLA Requirements:
   data_retention_days = 30 days
 
 Disk Calculation:
-  disk_gb = 5000 * 86400 * 30 * 0.001 * 1.05
-  disk_gb = 13,608 GB (~13.6 TB)
+  disk_gb = 5000 * 86400 * 30 * 0.001 * 1.05  # pragma: allowlist secret
+  disk_gb = 13,608 GB (~13.6 TB)  # pragma: allowlist secret
 
 Backup Strategy for 30 days:
   - Hot backup: 13.6 TB (immediate access)
@@ -215,7 +215,7 @@ Maximum monthly budget constraint for resource spend.
 monthly_cost = (
     cpu_cores * 0.05 * 730 +           # CPU: $0.05/core/hour * 730 hours/month
     memory_gb * 0.01 * 730 +           # Memory: $0.01/GB/hour * 730 hours/month
-    disk_gb * 0.10 +                    # Storage: $0.10/GB/month
+    disk_gb * 0.10 +                    # Storage: $0.10/GB/month  # pragma: allowlist secret
     network_mbps * 5.00                 # Network: $5.00/Mbps/month
 ) * tier.cost_multiplier * reserved_discount
 ```

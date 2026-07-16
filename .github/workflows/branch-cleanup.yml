@@ -74,7 +74,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         INPUT_PREFIXES: ${{ inputs.prefixes }}
         INPUT_STALE_DAYS: ${{ inputs.stale_days || 30 }}
-      run: "# Build argument list using an array to avoid SC2089/SC2090\nARGS=()\n\
+        run: "# Build argument list using an array to avoid SC2089/SC2090\nARGS=()\n\
         \n# Strategy flags\n# On schedule: always delete merged + by-prefix (safe\
         \ defaults)\nif [ \"${{ github.event_name }}\" = \"schedule\" ]; then\n  ARGS+=(--delete-merged\
         \ --delete-by-prefix)\n  ARGS+=(--prefixes \"copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/\"\
@@ -94,7 +94,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "if [ ! -f /tmp/branch_cleanup_report.json ]; then\n  echo \"No report\
+        run: "if [ ! -f /tmp/branch_cleanup_report.json ]; then\n  echo \"No report\
         \ file found — skipping issue creation\"\n  exit 0\nfi\n\n# Build issue body\
         \ from JSON report\nTIMESTAMP=$(python3 -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
         \ print(d['timestamp'][:19]+'Z')\" 2>/dev/null || echo \"unknown\")\nTO_DEL=$(python3\
@@ -127,3 +127,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

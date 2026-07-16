@@ -73,7 +73,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-      run: "python scripts/ci/proactive_ci_monitor.py \\\n  --repo \"$GITHUB_REPOSITORY\"\
+        run: "python scripts/ci/proactive_ci_monitor.py \\\n  --repo \"$GITHUB_REPOSITORY\"\
         \ \\\n  --token \"$GITHUB_TOKEN\" \\\n  --output /tmp/proactive_report.json\
         \ \\\n  ${{ steps.args.outputs.cli_args }} || true\n\n# Ensure output file\
         \ exists (create fallback if script failed)\nif [ ! -f /tmp/proactive_report.json\
@@ -91,7 +91,7 @@ jobs:
       if: always()
       env:
         DRY_RUN_FLAG: ${{ inputs.dry_run || 'false' }}
-      run: "[ -f /tmp/proactive_report.json ] || { echo \"No report generated.\" >>\
+        run: "[ -f /tmp/proactive_report.json ] || { echo \"No report generated.\" >>\
         \ \"$GITHUB_STEP_SUMMARY\"; exit 0; }\npython3 - <<'PYEOF'\nimport json, os,\
         \ sys\ntry:\n    data = json.load(open('/tmp/proactive_report.json'))\nexcept\
         \ Exception as e:\n    print(f\"Could not parse report: {e}\", file=sys.stderr)\n\
@@ -118,3 +118,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

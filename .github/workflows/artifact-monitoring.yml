@@ -43,7 +43,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-      run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
+        run: "REMAINING=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null\
         \ || echo \"0\")\necho \"GitHub API rate-limit remaining: $REMAINING\"\nif\
         \ [ \"$REMAINING\" -lt \"${GH_TRICKLE_MIN_REMAINING}\" ]; then\n  echo \"\u26A0\
         \uFE0F  Rate limit low ($REMAINING remaining < ${GH_TRICKLE_MIN_REMAINING}\
@@ -86,7 +86,7 @@ jobs:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         WORKFLOW_FILTER: ${{ github.event.inputs.workflow_filter || '' }}
-      run: "# Determine dry-run flag\nDRY_RUN_FLAG=\"\"\nif [ \"$DRY_RUN\" = \"true\"\
+        run: "# Determine dry-run flag\nDRY_RUN_FLAG=\"\"\nif [ \"$DRY_RUN\" = \"true\"\
         \ ]; then\n  DRY_RUN_FLAG=\"--dry-run\"\n  echo \"\U0001F50D Running in DRY-RUN\
         \ mode\"\nfi\n\n# Determine workflow filter\nWORKFLOW_FLAG=\"\"\nif [ -n \"\
         $WORKFLOW_FILTER\" ]; then\n  WORKFLOW_FLAG=\"--workflow $WORKFLOW_FILTER\"\
@@ -121,7 +121,7 @@ jobs:
       if: always()
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      run: "echo \"## \U0001F50D GitHub API Rate Limit\" >> $GITHUB_STEP_SUMMARY\n\
+        run: "echo \"## \U0001F50D GitHub API Rate Limit\" >> $GITHUB_STEP_SUMMARY\n\
         gh api rate_limit | jq -r '.resources.core | \"- **Remaining**: \\(.remaining)/\\\
         (.limit)\\n- **Reset**: \\(.reset | strflocaltime(\"%Y-%m-%d %H:%M:%S UTC\"\
         ))\"' >> $GITHUB_STEP_SUMMARY || true\n"
@@ -144,3 +144,4 @@ jobs:
           \ ['automated', 'monitoring-failure', 'critical']\n  });\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+

@@ -125,7 +125,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Resolve lane metadata defaults safely
@@ -242,8 +242,8 @@ jobs:
           - javascript
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - uses: github/codeql-action/init@v3
         with:
@@ -343,8 +343,8 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -511,7 +511,7 @@ jobs:
           docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
 
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@ed142fd341e2811a1b3a3d15dc3e3c1e5df2b2f7  # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -670,8 +670,8 @@ jobs:
       (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - uses: ./.github/actions/setup-python-cached
         with:
@@ -764,7 +764,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-python-cached
@@ -860,8 +860,8 @@ jobs:
       (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all'))
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - uses: ./.github/actions/setup-python-cached
         with:
@@ -952,7 +952,7 @@ jobs:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-        continue-on-error: true
+          continue-on-error: true
 
       - name: Build consolidated security summary
         if: always()
@@ -1031,7 +1031,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Download all security-suite artifacts
@@ -1040,7 +1040,7 @@ jobs:
           path: security-suite-artifacts/
           pattern: security-suite-*
           merge-multiple: false
-        continue-on-error: true
+          continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -1206,7 +1206,7 @@ jobs:
         with:
           name: security-suite-comprehensive-findings
           path: contract-input/
-        continue-on-error: false
+          continue-on-error: false
 
       - name: Debug contract input file listing
         if: always()
@@ -1288,8 +1288,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@v6
         with:
@@ -1301,7 +1301,7 @@ jobs:
         with:
           name: security-suite-comprehensive-findings
           path: .
-        continue-on-error: true
+          continue-on-error: true
 
       - name: Cache Findings
         run: |
@@ -1356,7 +1356,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 
@@ -1371,3 +1371,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+
+
+
+

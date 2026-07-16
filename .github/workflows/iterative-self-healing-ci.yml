@@ -25,10 +25,35 @@ permissions:
   issues: write
   actions: read
 jobs:
+  cascade-guard:
+    name: Pre-flight Cascade Guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name == 'workflow_run'
+    outputs:
+      should-continue: ${{ steps.check.outputs.should-continue }}
+    steps:
+      - name: Check for cascade (self-reference on action_required/skipped)
+        id: check
+        run: |
+          # Prevent cascading self-referential triggers
+          # If trigger is self AND conclusion is not 'failure', skip
+          TRIGGER_NAME="${{ github.event.workflow_run.name }}"
+          CONCLUSION="${{ github.event.workflow_run.conclusion }}"
+          
+          if [[ "$TRIGGER_NAME" == "Iterative Self-Healing CI" ]] && [[ "$CONCLUSION" != "failure" ]]; then
+            echo "::notice::Cascade Guard: Skipping self-reference (action_required/skipped conclusion)"
+            echo "should-continue=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          echo "should-continue=true" >> "$GITHUB_OUTPUT"
+
   triage:
     name: D-00 Triage failure
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: cascade-guard
     if: "github.event_name == 'workflow_dispatch' || (\n  github.event.workflow_run.conclusion\
       \ == 'failure' &&\n  github.event.workflow_run.name != 'Iterative Self-Healing\
       \ CI' &&\n  github.event.workflow_run.name != 'Copilot Iterative Self-Healing\
@@ -355,7 +380,7 @@ jobs:
           "scripts/ci/ci_triage_repro.sh"
           "scripts/ci/session_wrapup_autofix.py"
         )
-        
+
         # Validate scripts exist on main via API (no git operations)
         for script in "${SCRIPTS[@]}"; do
           if gh api repos/"${REPO}"/contents/"${script}" -f ref=main --silent 2>/dev/null; then
@@ -364,7 +389,7 @@ jobs:
             echo "⚠️ Warning: Script not found on main: $script"
           fi
         done
-        
+
         # Record scripts for later restore (they are from main branch via explicit ref)
         echo ".github/actions/setup-python-cached/action.yml scripts/ci/auto_fix_common_issues.py scripts/ci/branch_rebase_check.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_scripts.txt"
         echo "✅ Trusted fix scripts + composite action validated from origin/main (API-only)"
@@ -640,7 +665,7 @@ jobs:
             echo "⚠️ Warning: workflow_run head_sha not found; continuing with main"
           fi
         fi
-        
+
         # Validate triage head_sha exists via API (no git fetch needed)
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
           if gh api repos/"${REPO}"/commits/"${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
@@ -663,7 +688,7 @@ jobs:
           "scripts/ci/sync_tracked_files.py"
           "scripts/ci/session_wrapup_autofix.py"
         )
-        
+
         # Validate scripts exist on main via API (no git operations)
         for script in "${SCRIPTS[@]}"; do
           if gh api repos/"${REPO}"/contents/"${script}" -f ref=main --silent 2>/dev/null; then
@@ -672,7 +697,7 @@ jobs:
             echo "⚠️ Warning: Script not found on main: $script"
           fi
         done
-        
+
         # Record scripts for later restore (they are from main branch via explicit ref)
         echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_sweep.txt"
     - name: Set up Python
@@ -844,7 +869,7 @@ jobs:
         ref: refs/heads/main
         fetch-depth: 1
         token: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
+        continue-on-error: true
     - name: Query high-recurrence + cross-PR patterns
       id: high_rec
       env:
@@ -979,3 +1004,4 @@ jobs:
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+

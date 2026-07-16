@@ -205,7 +205,7 @@ jobs:
         build-args: 'PYTHON_VERSION=${{ matrix.python_version }}
 
           '
-      continue-on-error: ${{ matrix.python_version != '3.11' }}
+        continue-on-error: ${{ matrix.python_version != '3.11' }}
     - name: Report compatibility
       if: always()
       env:
@@ -416,3 +416,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

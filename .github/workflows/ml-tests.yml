@@ -50,7 +50,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-        cache: 'pip'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -74,10 +74,10 @@ jobs:
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
         if: always()
         with:
-        file: ./coverage.xml
-        flags: ${{ matrix.test-suite }}
-        name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
-        token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: ${{ matrix.test-suite }}
+          name: ${{ matrix.test-suite }}-${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
   test-integration-slow:
@@ -96,7 +96,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-        cache: 'pip'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -150,5 +150,6 @@ jobs:
         uses: actions/upload-artifact@v5
         if: always()
         with:
-        name: coverage-report
-        path: htmlcov/
+          name: coverage-report
+          path: htmlcov/
+

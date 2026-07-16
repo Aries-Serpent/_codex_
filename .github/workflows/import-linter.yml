@@ -27,19 +27,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: 3.12.13
-        cache: pip
-    - name: Install import-linter
-      run: 'pip install import-linter --quiet
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.12.13
+          cache: pip
+      - name: Install import-linter
+        run: 'pip install import-linter --quiet
 
         '
-    - name: Run import-linter
-      run: lint-imports
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      - name: Run import-linter
+        run: lint-imports
+        env:
+         GH_TOKEN: "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
+

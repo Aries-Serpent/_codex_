@@ -24,24 +24,24 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-          fetch-depth: 1
-      - name: Download security findings artifacts
-        uses: actions/download-artifact@v5
-        with:
-          name: security-suite-comprehensive-findings
-          path: ./security-findings/
-        continue-on-error: true
-      - name: Load and parse findings
-        id: findings
-        shell: bash
-        run: |
-          set -euo pipefail
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 1
+    - name: Download security findings artifacts
+      uses: actions/download-artifact@v5
+      with:
+        name: security-suite-comprehensive-findings
+        path: ./security-findings/
+      continue-on-error: true
+    - name: Load and parse findings
+      id: findings
+      shell: bash
+      run: |
+        set -euo pipefail
 
-          if [ ! -f ./security-findings/.codex/security-findings-comprehensive.json ]; then
+        if [ ! -f ./security-findings/.codex/security-findings-comprehensive.json ]; then
             echo "No comprehensive findings available - skipping issue creation"
             echo "issue_title=No Security Findings Available" >> "$GITHUB_OUTPUT"
             exit 0
@@ -60,10 +60,11 @@ jobs:
           print(f"TOTAL={summary.get('total_findings', 0)}")
           print(f"AGENTS={len(summary.get('recommended_agent_handoffs', []))}")
           PYTHON_EOF
-      - name: Create findings issue
-        if: steps.findings.outputs.TOTAL != ''
-        uses: actions/github-script@v8
-        with:
+
+    - name: Create findings issue
+      if: steps.findings.outputs.TOTAL != ''
+      uses: actions/github-script@v8
+      with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
@@ -139,10 +140,11 @@ jobs:
             console.log(`✅ Created issue  #${issue.data.number}`);
             core.setOutput('issue_number', issue.data.number);
             core.setOutput('issue_url', issue.data.html_url);
-      - name: Comment on PR if available
-        if: github.event.workflow_run.event == 'pull_request'
-        uses: actions/github-script@v8
-        with:
+
+    - name: Comment on PR if available
+      if: github.event.workflow_run.event == 'pull_request'
+      uses: actions/github-script@v8
+      with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const fs = require('fs');
@@ -196,5 +198,7 @@ jobs:
             } catch (e) {
               console.log(`Warning: Could not post comment to PR: ${e.message}`);
             }
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+
+
+

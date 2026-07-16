@@ -39,12 +39,9 @@ jobs:
       run: pip install pyyaml --quiet
     - name: Run promotion evaluation
       id: promotion
-      run: "# Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).\n\
-        # Dry-run on PR triggers (advisory preview only).\n# Manual workflow_dispatch\
-        \ respects the apply_promotions input.\nAPPLY_FLAG=\"\"\nif [ \"${{ github.event_name\
-        \ }}\" = \"schedule\" ]; then\n  APPLY_FLAG=\"--promote\"\nelif [ \"${{ github.event.inputs.apply_promotions\
-        \ }}\" = \"true\" ]; then\n  APPLY_FLAG=\"--promote\"\nfi\npython scripts/cognitive/d_capable_promotion.py\
-        \ ${APPLY_FLAG}\n"
+      run: |
+        # Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).
+        \
     - name: Commit promotion changes (apply only)
       if: 'steps.promotion.outputs.applied == ''true'' && (github.event_name == ''schedule''
         || github.event.inputs.apply_promotions == ''true'')
@@ -59,14 +56,11 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Post promotion summary
       if: always()
-      run: "{\n  echo \"## \U0001F680 D_CAPABLE Promotion Gate\"\n  echo \"\"\n  echo\
-        \ \"| Metric | Count |\"\n  echo \"|--------|-------|\"\n  echo \"| Already\
-        \ D_CAPABLE | ${{ steps.promotion.outputs.already_d_count }} |\"\n  echo \"\
-        | Newly eligible | ${{ steps.promotion.outputs.eligible_count }} |\"\n  echo\
-        \ \"| Promotions applied | ${{ steps.promotion.outputs.applied == 'true' &&\
-        \ '✅ Yes' || '— (dry-run)' }} |\"\n  echo \"\"\n  if [ -f \".codex/promotion_report.json\"\
-        \ ]; then\n    echo '```json'\n    cat .codex/promotion_report.json\n    echo\
-        \ '```'\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\n"
+      run: |
+        {
+        echo \"## \U0001F680 D_CAPABLE Promotion Gate\"
+        echo \"\"
+        echo\
     - name: Upload promotion report
       if: always()
       uses: actions/upload-artifact@v5
@@ -101,18 +95,4 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: D-Capable Promotion Gate
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}

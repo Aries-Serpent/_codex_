@@ -96,7 +96,7 @@ No anomalies or issues detected during initial 5% traffic ramp.
 |---|---|---|
 | **CodeQL Findings** | ✅ Clean | No new vulnerabilities introduced |
 | **Dependency Vulnerabilities** | ✅ Clean | All dependencies current |
-| **Secret Scanning** | ✅ Clean | No credentials detected in logs/config |
+| **Secret Scanning** | ✅ Clean | No credentials detected in logs/config | <!-- pragma: allowlist secret -->
 | **Network Security** | ✅ Configured | TLS 1.3, certificate valid |
 | **Auth & Access** | ✅ Verified | RBAC policies enforced |
 

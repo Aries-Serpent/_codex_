@@ -294,9 +294,9 @@ If CodeQL still reports alerts after these fixes, they would likely be:
 
 | Alert | File | Issue | Fix | Status |
 |-------|------|-------|-----|--------|
-| HIGH | app-package-download.yml | User-controlled branch param | Removed custom_branch, added token | ✅ FIXED |
-| CRITICAL | copilot-agent-session-done.yml | Missing explicit token | Added token parameter | ✅ FIXED |
-| CRITICAL | iterative-self-healing-ci.yml | Malformed YAML + missing token | Fixed YAML, added token to all | ✅ FIXED |
+| HIGH | app-package-download.yml | User-controlled branch param | Removed custom_branch, added token | ✅ FIXED | <!-- pragma: allowlist secret -->
+| CRITICAL | copilot-agent-session-done.yml | Missing explicit token | Added token parameter | ✅ FIXED | <!-- pragma: allowlist secret -->
+| CRITICAL | iterative-self-healing-ci.yml | Malformed YAML + missing token | Fixed YAML, added token to all | ✅ FIXED | <!-- pragma: allowlist secret -->
 
 ---
 

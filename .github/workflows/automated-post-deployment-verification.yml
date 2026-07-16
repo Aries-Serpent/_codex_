@@ -301,7 +301,7 @@ jobs:
         \    {\n      \"type\": \"section\",\n      \"text\": {\n        \"type\"\
         : \"mrkdwn\",\n        \"text\": \"*Artifacts:*\\nCheck Actions tab for\
           \ detailed reports\"\n      }\n    }\n  ]\n}\n"
-      if: always()
+        if: always()
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -324,3 +324,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

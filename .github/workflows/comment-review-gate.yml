@@ -1,5 +1,5 @@
 name: PR Comment Review Gate
-on:
+true:
   pull_request:
     types:
     - opened
@@ -21,7 +21,7 @@ permissions:
   issues: write
 jobs:
   scan-and-post:
-    name: "\U0001F50D Scan PR comments"
+    name: 🔍 Scan PR comments
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: "(github.event_name == 'pull_request' || github.event_name == 'pull_request_review')\
@@ -33,15 +33,20 @@ jobs:
       warning_count: ${{ steps.scan.outputs.warning_count }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         persist-credentials: false
-        sparse-checkout: |
-          scripts/__init__.py
+        sparse-checkout: 'scripts/__init__.py
+
           scripts/ci/__init__.py
+
           scripts/ci/check_pr_comments.py
+
           scripts/ci/_token_resolver.py
+
           pyproject.toml
+
+          '
         sparse-checkout-cone-mode: false
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -83,18 +88,18 @@ jobs:
         print(len(r.get('unaddressed_warning', [])))\n\" 2>/dev/null || echo \"0\"\
         )\n\necho \"exit_code=${EXIT_CODE}\" >> \"$GITHUB_OUTPUT\"\necho \"blocking_count=${BLOCKING}\"\
         \ >> \"$GITHUB_OUTPUT\"\necho \"warning_count=${WARNING}\" >> \"$GITHUB_OUTPUT\"\
-        \n\n# Write step summary \u2014 use BLOCKING/WARNING counts, not EXIT_CODE,\n\
-        # because --write-session-requirements always exits 0 even when\n# blocking\
+        \n\n# Write step summary — use BLOCKING/WARNING counts, not EXIT_CODE,\n#\
+        \ because --write-session-requirements always exits 0 even when\n# blocking\
         \ comments exist.\necho \"## \U0001F50D PR Comment Review Gate\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\nif [ \"${BLOCKING:-0}\" -gt 0 ];\
         \ then\n  echo \"### \U0001F6A8 ${BLOCKING} blocking comment(s) unaddressed\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n \
-        \ echo \"Requirements written to session_requirements.md \u2014 injected into\
-        \ next Copilot session prompt.\" >> \"$GITHUB_STEP_SUMMARY\"\nelif [ \"${WARNING:-0}\"\
-        \ -gt 0 ]; then\n  echo \"### \u26A0\uFE0F ${WARNING} warning comment(s) unaddressed\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"### \u2705 All comments addressed\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\nfi\n\n# Return 0 always here \u2014 the gate\
-        \ job below enforces failure\nexit 0\n"
+        \ echo \"Requirements written to session_requirements.md — injected into next\
+        \ Copilot session prompt.\" >> \"$GITHUB_STEP_SUMMARY\"\nelif [ \"${WARNING:-0}\"\
+        \ -gt 0 ]; then\n  echo \"### ⚠️ ${WARNING} warning comment(s) unaddressed\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  echo \"### ✅ All comments addressed\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\nfi\n\n# Return 0 always here — the gate job\
+        \ below enforces failure\nexit 0\n"
     - name: Upload scan report
       if: always()
       uses: actions/upload-artifact@v5
@@ -115,7 +120,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   gate:
-    name: "\U0001F6A6 Comment review gate"
+    name: 🚦 Comment review gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: scan-and-post
@@ -125,24 +130,27 @@ jobs:
       env:
         BLOCKING: ${{ needs.scan-and-post.outputs.blocking_count }}
         EXIT_CODE: ${{ needs.scan-and-post.outputs.exit_code }}
+        SERVER_URL: ${{ github.server_url }}
+        REPOSITORY: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
       run: "echo \"Blocking unaddressed comments: ${BLOCKING}\"\necho \"Exit code\
-        \ from scan: ${EXIT_CODE}\"\n\nif [ \"${EXIT_CODE}\" = \"1\" ] || [ \"${BLOCKING:-0}\"\
-        \ -gt 0 ]; then\n  echo \"::error::${BLOCKING} blocking comment(s) from mbaetiong\
-        \ or CI bots are unaddressed.\"\n  echo \"::error::Review the PR comment checklist\
-        \ and address each item before committing.\"\n  echo \"\"\n  echo \"### \U0001F6A8\
-        \ CI GATE FAILED \u2014 Unaddressed Blocking Comments\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \ from scan: ${EXIT_CODE}\"\n\nif [ \"${BLOCKING:-0}\" -gt 0 ]; then\n  echo\
+        \ \"::error::${BLOCKING} blocking comment(s) from mbaetiong or CI bots are\
+        \ unaddressed.\"\n  echo \"::error::Review the PR comment checklist and address\
+        \ each item before committing.\"\n  echo \"\"\n  echo \"### \U0001F6A8 CI\
+        \ GATE FAILED — Unaddressed Blocking Comments\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"**${BLOCKING} blocking\
         \ comment(s)** from \\`mbaetiong\\` or CI bots remain unaddressed.\" >> \"\
         $GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\
         **To resolve:**\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"1. Read every \U0001F6A8\
         \ row in the comment review checklist on this PR\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"2. Reply to each comment with your resolution\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \n  echo \"3. Push a new commit \u2014 this gate will re-scan automatically\"\
-        \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n \
-        \ echo \"_[\U0001F517 Workflow run](${{ github.server_url }}/${{ github.repository\
-        \ }}/actions/runs/${{ github.run_id }})_\" >> \"$GITHUB_STEP_SUMMARY\"\n \
-        \ exit 1\nfi\n\necho \"### \u2705 Comment Review Gate: PASSED\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"All blocking comments are\
+        \n  echo \"3. Push a new commit — this gate will re-scan automatically\" >>\
+        \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\n  echo\
+        \ \"_[\U0001F517 Workflow run](${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID})_\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\n  exit 1\nfi\n\necho \"### ✅ Comment Review Gate: PASSED\"\
+        \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
+        \ \"All blocking comments are"\
         \ addressed.\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"_[\U0001F517 Workflow run](${{ github.server_url }}/${{ github.repository\
         \ }}/actions/runs/${{ github.run_id }})_\" >> \"$GITHUB_STEP_SUMMARY\"\n"
@@ -159,10 +167,11 @@ jobs:
       issues: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@b4ffbf834c0629c142f8ab1d298ccc547cee7c843
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
       continue-on-error: true
@@ -179,5 +188,3 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref || github.event.pull_request.head.ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

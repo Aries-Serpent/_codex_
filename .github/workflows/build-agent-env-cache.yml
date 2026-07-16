@@ -44,7 +44,7 @@ jobs:
       if: inputs.force-rebuild == true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "CACHE_KEY=\"Linux-agent-venv-${CACHE_VERSION}-py${PYTHON_VERSION}-\"\n\
+        run: "CACHE_KEY=\"Linux-agent-venv-${CACHE_VERSION}-py${PYTHON_VERSION}-\"\n\
         echo \"Deleting caches matching: $CACHE_KEY\"\ngh cache list --key \"$CACHE_KEY\"\
         \ --json id --jq '.[].id' | \\\n  xargs -I{} gh cache delete {} || true\n"
     - name: Setup agent environment (L6 cache build)
@@ -98,3 +98,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

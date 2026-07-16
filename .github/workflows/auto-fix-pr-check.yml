@@ -86,7 +86,7 @@ jobs:
         AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
         TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}
         MANUAL_REVIEW: ${{ steps.read_report.outputs.manual_review }}
-      with:
+        with:
         script: "const fs = require('fs');\nconst prNumber = context.issue.number;\n\
           const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;\n\
           \n// Read diagnostic report\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/diagnostic-report.json',\
@@ -176,7 +176,7 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         TARGET_BRANCH: ${{ github.head_ref || github.event.pull_request.head.ref }}
-      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         github-actions[bot]@users.noreply.github.com\"\n\n# Apply all auto-fixable\
         \ patterns (includes Pattern 35: Markdown FP Secrets)\npython scripts/ci/auto_fix_common_issues.py\
         \ || true\n\ngit add -A\nif git diff --staged --quiet; then\n  echo \"healed=false\"\
@@ -239,6 +239,4 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: python scripts/ci/post_rescue_comment.py

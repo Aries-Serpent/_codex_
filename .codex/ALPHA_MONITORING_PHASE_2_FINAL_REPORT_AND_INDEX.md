@@ -164,7 +164,7 @@ Vulnerabilities: 0 ✅
   - SAST: 0 findings
   - Dependencies: 0 unpatched CVEs
   - Container: 0 layer vulnerabilities
-  - Secrets: 0 exposed
+  - Secrets: 0 exposed  # pragma: allowlist secret
   - Access audit: 0 unauthorized
 
 Encryption: ✅ Active (TLS 1.3 + AES-256)

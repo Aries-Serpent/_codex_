@@ -237,15 +237,22 @@ def scan(
         lines.append("")
         lines.append("| Workflow | Status | ETA | Monitor? |")
         lines.append("|----------|--------|-----|----------|")
-        for ip in in_progress_items:
+        # Truncate to first 15 items to prevent Copilot parser overflow (R-010 cascading fixes)
+        truncated_items = in_progress_items[:15]
+        for ip in truncated_items:
             flag = "🔔 YES" if ip in monitor else "—"
             lines.append(
                 f"| `{ip['name']}` | {ip['status']} | {ip['eta']} | {flag} |"
             )
+        remaining_count = len(in_progress_items) - len(truncated_items)
+        if remaining_count > 0:
+            lines.append(f"| _...and {remaining_count} more workflows_ | — | — | — |")
         lines.append("")
 
         if monitor:
-            names = ", ".join(f"`{m['name']}`" for m in monitor)
+            names = ", ".join(f"`{m['name']}`" for m in monitor[:10])
+            if len(monitor) > 10:
+                names += f", _...and {len(monitor) - 10} more_"
             lines.append(
                 f"> **⚠️ Monitor while fixing:** {names} — "
                 f"complete in < {monitor_threshold} min. "

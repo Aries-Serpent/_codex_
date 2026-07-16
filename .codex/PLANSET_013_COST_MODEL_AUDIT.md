@@ -27,7 +27,7 @@ monthly_cost = (
     memory_gb * memory_rate_per_hour * 730 +
     
     # 3. Storage costs
-    disk_gb * storage_rate_per_month +
+    disk_gb * storage_rate_per_month +  # pragma: allowlist secret
     
     # 4. Network costs
     network_mbps * network_rate_per_month +
@@ -90,7 +90,7 @@ Monthly Cost: 16 * 0.01 * 730 = $116.80
 
 ### Pricing Model
 ```
-storage_cost_monthly = disk_gb * $0.10 per GB per month
+storage_cost_monthly = disk_gb * $0.10 per GB per month  # pragma: allowlist secret
 ```
 
 ### Example Calculation
@@ -257,7 +257,7 @@ Monthly Cost = (
     # Base resources
     (cpu_cores * 0.05 * 730) +
     (memory_gb * 0.01 * 730) +
-    (disk_gb * 0.10) +
+    (disk_gb * 0.10) +  # pragma: allowlist secret
     (network_mbps * 5.00)
 ) * tier_multiplier * reserved_discount * (1 - sla_credit)
 ```

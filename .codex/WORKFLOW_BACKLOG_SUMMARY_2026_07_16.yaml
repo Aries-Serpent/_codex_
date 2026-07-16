@@ -1,0 +1,51 @@
+# Workflow Backlog Analysis Summary
+# PR #5323 Phase 4 GA Deployment - 2026-07-16
+
+analysis:
+  timestamp: '2026-07-16T01:02:36Z'
+  scope: First 500 workflows (pages 1-5)
+
+summary:
+  total_workflows: 500
+  tier_1_critical: 53
+  tier_2_standard: 383
+  tier_3_optional: 64
+  unique_names: 69
+  duplicate_names: 68
+
+recommendations:
+  cancel_tier3: 64 workflows
+  cancel_duplicates: 431 excess runs
+  total_candidates: 495
+
+top_duplicates:
+  - name: Iterative Self-Healing CI
+    count: 50
+    action: 'Cancel 49; keep 1'
+  - name: ⚡ Auto-Approve Pending Workflow Runs
+    count: 22
+    action: 'Cancel 21; keep 1'
+  - name: 🔄 Auto-Post @copilot review After Agent Session
+    count: 16
+    action: 'Cancel 15; keep 1'
+  - name: 🔐 Secrets Baseline Enforcer
+    count: 13
+    action: 'Cancel 12; keep 1'
+  - name: 🔗 Reference Integrity + Agent Size Gate
+    count: 12
+    action: 'Cancel 11; keep 1'
+  - name: Phase 12.2 Compliance Check
+    count: 12
+    action: 'Cancel 11; keep 1'
+  - name: CodeQL
+    count: 11
+    action: 'Cancel 10; keep 1'
+  - name: Documentation Link Checker
+    count: 9
+    action: 'Cancel 8; keep 1'
+  - name: 🔖 Required Actions Version Enforcer
+    count: 9
+    action: 'Cancel 8; keep 1'
+  - name: 💰 PR Cost Check
+    count: 7
+    action: 'Cancel 6; keep 1'

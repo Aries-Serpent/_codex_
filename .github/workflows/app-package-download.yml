@@ -67,17 +67,94 @@ jobs:
           fi
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout repository
-        # SECURITY: lgtm[py/workflow/untrusted-checkout]
-        # This workflow uses manual input validation (lines 62-67) that restricts
-        # checkout to predefined safe branches (main, 0D_base_) only.
-        # workflow_dispatch is non-privileged; ref parameter is verified against allowlist.
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          ref: ${{ steps.branch.outputs.branch }}
-          fetch-depth: 1
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch repository structure via GitHub API (security-hardened, no git operations)
+        id: fetch_repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
+          # This eliminates the untrusted code checkout vulnerability in workflow_dispatch contexts
+          
+          # Parse repository into owner/repo format using bash parameter expansion
+          REPO_FULL="${{ github.repository }}"
+          OWNER="${REPO_FULL%%/*}"
+          REPO="${REPO_FULL##*/}"
+          BRANCH="${{ steps.branch.outputs.branch }}"
+          
+          # Create base directory structure
+          mkdir -p apps/dev
+          mkdir -p src/services/audio/workflow
+          mkdir -p package_staging
+          
+          # Helper function to fetch file from repository via GitHub API
+          # SECURITY: file_path parameter must be hardcoded or safely validated (not from untrusted input)
+          fetch_file_from_repo() {
+            local file_path=$1
+            local output_path=$2
+            local ref=$3
+            
+            # Validate path does not contain path traversal sequences
+            if [[ "$file_path" =~ \.\. ]]; then
+              echo "WARNING: Invalid file path (contains path traversal), skipping: $file_path" >&2
+              return 1
+            fi
+            
+            # Create parent directory if needed
+            mkdir -p "$(dirname "$output_path")"
+            
+            # Try to fetch the file from the specified branch
+            if gh api repos/$OWNER/$REPO/contents/$file_path?ref=$ref -q '.content' 2>/dev/null | base64 -d > "$output_path" 2>/dev/null; then
+              return 0
+            else
+              return 1
+            fi
+          }
+          
+          # Helper function to list files in a directory via GitHub API
+          list_files_in_dir() {
+            local dir_path=$1
+            local ref=$2
+            
+            # Validate path does not contain path traversal sequences
+            if [[ "$dir_path" =~ \.\. ]]; then
+              echo "WARNING: Invalid directory path (contains path traversal), skipping: $dir_path" >&2
+              return 1
+            fi
+            
+            # List directory contents; filter for files, not directories
+            gh api repos/$OWNER/$REPO/contents/$dir_path?ref=$ref -q '.[] | select(.type == "file") | .path' 2>/dev/null
+          }
+          
+          echo "📥 Fetching repository structure from $BRANCH via GitHub API..."
+          
+          # Fetch key application files from apps/dev/
+          for file in zd_voice_lines.py audio_transcriber_ui.py __init__.py; do
+            if fetch_file_from_repo "apps/dev/$file" "apps/dev/$file" "$BRANCH"; then
+              echo "✅ Fetched apps/dev/$file"
+            fi
+          done
+          
+          # Fetch requirements file if it exists
+          if fetch_file_from_repo "requirements-audio-transcription.txt" "requirements-audio-transcription.txt" "$BRANCH"; then
+            echo "✅ Fetched requirements-audio-transcription.txt"
+          fi
+          
+          # Fetch audio transcription workflow if it exists
+          if fetch_file_from_repo "src/services/audio/workflow/transcription_workflow.py" "src/services/audio/workflow/transcription_workflow.py" "$BRANCH"; then
+            echo "✅ Fetched transcription_workflow.py"
+          fi
+          
+          # Fetch audio workflow init file if it exists
+          if fetch_file_from_repo "apps/dev/templates/audio_workflow_init.py" "apps/dev/templates/audio_workflow_init.py" "$BRANCH"; then
+            echo "✅ Fetched audio_workflow_init.py"
+          fi
+          
+          # Fetch test file if it exists
+          if fetch_file_from_repo "apps/dev/test_api_client.py" "apps/dev/test_api_client.py" "$BRANCH"; then
+            echo "✅ Fetched test_api_client.py"
+          fi
+          
+          echo "✅ Repository structure fetched via GitHub API (no git operations)"
 
       - name: Verify apps directory exists
         run: |
@@ -109,7 +186,7 @@ jobs:
           echo "**Total applications found**: $TOTAL_APPS" >> $GITHUB_STEP_SUMMARY
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6  # v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
         with:
           python-version: '3.12.13'
           cache: 'pip'
@@ -431,7 +508,7 @@ jobs:
           echo "- **Size**: $SIZE" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package as artifact
-        uses: actions/upload-artifact@v5  # v7.0.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
           name: ${{ steps.package.outputs.package_name }}
           path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format }}
@@ -490,15 +567,17 @@ jobs:
           echo "✅ Generated package manifest" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package manifest
-        uses: actions/upload-artifact@v5  # v7.0.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         with:
           name: ${{ steps.package.outputs.package_name }}-manifest
           path: package_manifest.json
           retention-days: 90
 
       - name: Final summary
+        env:
+          APP_NAME_INPUT: ${{ github.event.inputs.app_name }}
         run: |
-          APP_NAME="${{ github.event.inputs.app_name }}"
+          APP_NAME="$APP_NAME_INPUT"
           APP_ENTRY="zd_voice_lines.py"
           if [ "$APP_NAME" = "audio_transcriber_ui" ]; then
             APP_ENTRY="audio_transcriber_ui.py"
@@ -518,3 +597,4 @@ jobs:
           echo "3. Follow the instructions in \`PACKAGE_INFO.md\`" >> $GITHUB_STEP_SUMMARY
           echo "4. Install dependencies with \`pip install -r requirements.txt\`" >> $GITHUB_STEP_SUMMARY
           echo "5. Run the application with \`python ${APP_ENTRY}\`" >> $GITHUB_STEP_SUMMARY
+

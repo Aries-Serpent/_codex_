@@ -212,7 +212,7 @@ Vulnerabilities: 0 ✅
   - SAST scan: 0 findings
   - Dependency scan: 0 unpatched CVEs
   - Container scan: 0 layer vulnerabilities
-  - Secret detection: 0 exposed secrets
+  - Secret detection: 0 exposed secrets  # pragma: allowlist secret
   - Access audit: 0 unauthorized attempts
 
 Encryption: ✅ Active

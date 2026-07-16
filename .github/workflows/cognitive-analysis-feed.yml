@@ -110,7 +110,7 @@ jobs:
         \ checkout needed)\n  git add cognitive/\n  \n  git commit -m \"\U0001F9E0\
         \ Update cognitive learning outcomes [automated]\n  \n  - Analysis period:\
         \ ${{ inputs.evaluation_mode || 'full' }}\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase --autostash\
         \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates pushed\
         \ to $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive learning\"\nfi\n"
@@ -191,7 +191,7 @@ jobs:
         \           .codex/cognitive_brain/metadata.json\n  \n  git commit -m \"\U0001F9E0\
         \ Update cognitive brain patterns [automated]\n  \n  - Analysis period: ${{\
         \ inputs.days_back || '30' }} days\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase --autostash\
         \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
         \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
@@ -259,3 +259,4 @@ jobs:
         fi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+

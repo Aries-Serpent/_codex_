@@ -55,7 +55,7 @@ Home (index.md)
 │
 ├── Security (SECURITY.md)
 │   ├── Safety Guide (safety/safety_guide.md)
-│   ├── Secret Management (SECRETS_RUNBOOK.md)
+│   ├── Secret Management (SECRETS_RUNBOOK.md)  # pragma: allowlist secret
 │   └── Alert Audit (SECURITY_ALERT_AUDIT_REPORT.md)
 │
 ├── Admin (REPO_ADMIN_IMPLEMENTATION_DECISIONS.md)

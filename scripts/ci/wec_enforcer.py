@@ -125,11 +125,19 @@ _CHECKBOX_RE = re.compile(
 
 
 def _extract_wec_section(body: str) -> str:
-    """Return the raw WEC section text from a PR body, or empty string."""
-    idx = body.find(_WEC_HEADING)
+    """Return the raw WEC section text from a PR body, or empty string.
+    
+    Handles HTML-encoded entities (e.g., &lt;!-- for <!--) to ensure
+    marker detection works correctly. See Issue: PR #5324 cascading error loop.
+    """
+    # Decode HTML entities to handle PR body storage encoding
+    import html
+    decoded_body = html.unescape(body)
+    
+    idx = decoded_body.find(_WEC_HEADING)
     if idx == -1:
         return ""
-    rest = body[idx:]
+    rest = decoded_body[idx:]
     # Find next ## heading (but not the same one)
     next_heading = re.search(r"\n## ", rest[3:])
     if next_heading:

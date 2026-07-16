@@ -247,8 +247,8 @@ PodSecurityPolicy: ✅ Enforced (restricted admission controller)
 
 **Secret Management**:
 ```
-Secrets Rotated: 2026-07-14T16:00:00Z ✅
-Secret Access Logs: Audit trail enabled ✅
+Secrets Rotated: 2026-07-14T16:00:00Z ✅  # pragma: allowlist secret
+Secret Access Logs: Audit trail enabled ✅  # pragma: allowlist secret
 Encryption Keys: Rotated weekly (last: 2026-07-08) ✅
 ```
 

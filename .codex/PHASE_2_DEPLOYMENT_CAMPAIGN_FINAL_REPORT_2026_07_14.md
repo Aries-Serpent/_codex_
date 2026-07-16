@@ -163,7 +163,7 @@ Phase 2 (Short-term Monitoring & Beta Prep) of the Multi-Phase Deployment Campai
 |---|---|---|
 | CRITICAL CVEs | 0 | ✅ PASS |
 | HIGH CVEs | 0 | ✅ PASS |
-| Exposed Secrets | 0 | ✅ PASS |
+| Exposed Secrets | 0 | ✅ PASS | <!-- pragma: allowlist secret -->
 | CodeQL Alerts | 0 | ✅ PASS |
 | Runtime Violations | 0 | ✅ PASS |
 
@@ -177,7 +177,7 @@ Phase 2 (Short-term Monitoring & Beta Prep) of the Multi-Phase Deployment Campai
 | GDPR | ✅ EU residency verified |
 | TLS 1.3 | ✅ Active on all endpoints |
 | AES-256 encryption | ✅ At-rest and in-transit |
-| Secret storage | ✅ Vaulted (0 in code) |
+| Secret storage | ✅ Vaulted (0 in code) | <!-- pragma: allowlist secret -->
 
 **Result**: All compliance standards maintained. **No findings or violations**. ✅
 

@@ -66,9 +66,9 @@ All 3 critical CodeQL security alerts blocking Phase 4 GA deployment have been *
 ### Changes Summary
 | File | Changes | Type |
 |------|---------|------|
-| app-package-download.yml | Removed custom_branch, added token, simplified validation | Security + Code Quality |
-| copilot-agent-session-done.yml | Added explicit token parameter | Security |
-| iterative-self-healing-ci.yml | Fixed YAML, added tokens to all checkouts | Security + Bug Fix |
+| app-package-download.yml | Removed custom_branch, added token, simplified validation | Security + Code Quality | <!-- pragma: allowlist secret -->
+| copilot-agent-session-done.yml | Added explicit token parameter | Security | <!-- pragma: allowlist secret -->
+| iterative-self-healing-ci.yml | Fixed YAML, added tokens to all checkouts | Security + Bug Fix | <!-- pragma: allowlist secret -->
 
 **Net Effect**: Improved security with reduced complexity (net -14 lines removed)
 
