@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Pages Pre-Merge Validation
 on:
   pull_request:
@@ -64,9 +61,6 @@ jobs:
 
         echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Extract issue count
 
@@ -75,10 +69,7 @@ jobs:
 
         echo "issue_count=$ISSUE_COUNT" >> $GITHUB_OUTPUT
 
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat table_report.txt
 
         '

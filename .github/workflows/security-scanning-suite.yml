@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Security Scanning Suite
 
 'on':
@@ -538,32 +535,15 @@ jobs:
           mkdir -p .codex/contracts
 
           {
-<<<<<<< HEAD
-           echo "# Container Security Scan Report"
-           echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
-           echo "- **Scan outcome:** ${{ job.status }}"
-           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
-           echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
-=======
             echo "# Container Security Scan Report"
             echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
             echo "- **Scan outcome:** ${{ job.status }}"
             echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
             echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           } > container-scan-summary-${{ strategy.job-index }}.md
 
           cat > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json <<'EOFJ'
           {
-<<<<<<< HEAD
-           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
-           "job": "container-scan",
-           "matrix_index": "${{ strategy.job-index }}",
-           "dockerfile": "${{ matrix.dockerfile }}",
-           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
-           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
-           "status": "${{ job.status }}"
-=======
             "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
             "job": "container-scan",
             "matrix_index": "${{ strategy.job-index }}",
@@ -571,7 +551,6 @@ jobs:
             "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
             "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
             "status": "${{ job.status }}"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           }
           EOFJ
 
@@ -581,15 +560,9 @@ jobs:
         with:
           name: security-suite-container-${{ strategy.job-index }}
           path: |
-<<<<<<< HEAD
-           trivy-results-${{ strategy.job-index }}.sarif
-           container-scan-summary-${{ strategy.job-index }}.md
-           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
-=======
             trivy-results-${{ strategy.job-index }}.sarif
             container-scan-summary-${{ strategy.job-index }}.md
             .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if-no-files-found: warn
           retention-days: 30
 
@@ -625,11 +598,7 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
-<<<<<<< HEAD
-           ${{ runner.os }}-pip-
-=======
             ${{ runner.os }}-pip-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 
       - if: matrix.ecosystem == 'python'
         name: Scan Python dependencies (pip-audit)
@@ -662,36 +631,20 @@ jobs:
           mkdir -p .codex/contracts
 
           {
-<<<<<<< HEAD
-           echo "# CVE & Dependency Audit Report"
-           echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
-           echo "- **Scan outcome:** ${{ job.status }}"
-           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
-=======
             echo "# CVE & Dependency Audit Report"
             echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
             echo "- **Scan outcome:** ${{ job.status }}"
             echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           } > cve-scan-summary-${{ matrix.ecosystem }}.md
 
           cat > .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json <<'EOFJ'
           {
-<<<<<<< HEAD
-           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
-           "job": "cve-scan",
-           "ecosystem": "${{ matrix.ecosystem }}",
-           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
-           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
-           "status": "${{ job.status }}"
-=======
             "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
             "job": "cve-scan",
             "ecosystem": "${{ matrix.ecosystem }}",
             "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
             "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
             "status": "${{ job.status }}"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           }
           EOFJ
 
@@ -701,15 +654,9 @@ jobs:
         with:
           name: security-suite-cve-${{ matrix.ecosystem }}
           path: |
-<<<<<<< HEAD
-           *-cve-audit.json
-           cve-scan-summary-${{ matrix.ecosystem }}.md
-           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
-=======
             *-cve-audit.json
             cve-scan-summary-${{ matrix.ecosystem }}.md
             .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if-no-files-found: warn
           retention-days: 30
 
@@ -1425,10 +1372,3 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

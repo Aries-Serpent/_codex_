@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Forward-Sync Auto-Generated Files → staging chain (Safety Net)
 on:
   push:
@@ -41,13 +38,8 @@ jobs:
       id: check-target
       run: "TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\nif [ \"$TARGET\"\
         \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
-<<<<<<< HEAD
-       ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
-       \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
-=======
         ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     - name: 📥 Checkout main (trusted base)
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
@@ -152,7 +144,3 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

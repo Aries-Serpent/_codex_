@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: manifest-drift-guard
 
 on:
@@ -86,7 +83,3 @@ jobs:
 
           print(f"Manifest validation passed. Checked {len(set(paths))} referenced path(s).")
           PY
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Validation Pipeline
 on:
   pull_request:
@@ -235,8 +232,4 @@ jobs:
         flags: full-validation
         name: full-validation-coverage
         fail_ci_if_error: false
-<<<<<<< HEAD
         continue-on-error: true
-=======
-        continue-on-error: true
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

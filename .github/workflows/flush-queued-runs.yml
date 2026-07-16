@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: "🚿 Flush Queued Workflow Runs"
 
 # Emergency bulk-cancel for queued/waiting workflow runs.
@@ -48,9 +45,6 @@ permissions:
   actions: write
   contents: read
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   flush:
@@ -202,10 +196,7 @@ jobs:
             if (errors > 10) {
               core.setFailed(`Too many errors (${errors}) — check logs`);
             }
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

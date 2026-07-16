@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Automated Rollback Generation
 on:
   workflow_dispatch:
@@ -211,9 +208,6 @@ jobs:
 
         Automated Rollback Generation Workflow Complete
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         Generated Artifacts:
 
@@ -225,18 +219,10 @@ jobs:
 
       - Validation checklist
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         Location: .codex/
 
         Status: DRAFT - Requires Review
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         Next Steps:
 
         1. Review all generated procedures
@@ -247,10 +233,6 @@ jobs:
 
         EOF
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat notification.txt
 
         '
@@ -259,7 +241,4 @@ jobs:
         \necho \"Set SLACK_WEBHOOK_URL secret to enable notifications\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

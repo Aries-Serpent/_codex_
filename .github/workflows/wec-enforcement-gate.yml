@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: WEC Enforcement Gate
 
 on:
@@ -34,11 +31,3 @@ jobs:
       - name: Check WEC compliance
         run: |
           echo "✓ WEC enforcement gate passed"
-<<<<<<< HEAD
-
-
-
-
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

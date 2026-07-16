@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Tiered Approval Gate
 on:
   pull_request:
@@ -36,11 +33,3 @@ jobs:
         run: |
           PR_NUMBER="${{ github.event.pull_request.number || github.event.number }}"
           python scripts/ci/tiered_approval_gate.py "$PR_NUMBER"
-<<<<<<< HEAD
-
-
-
-
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

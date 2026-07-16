@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Model Drift Detection & Auto-Retrain
 
 # SAR-G03: Wire ContinuousLearningPipeline.should_retrain() to a GHA trigger.
@@ -39,9 +36,6 @@ on:
     types:
       - drift-detected  # fired by monitoring agents or post-deploy hooks
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -108,11 +102,7 @@ jobs:
               samples    = int(os.environ.get("SAMPLES_OVERRIDE") or 0)
               threshold  = float(os.environ.get("DRIFT_THRESHOLD") or 0.15)
               should     = (drift_score >= threshold and samples >= 100) or \
-<<<<<<< HEAD
-                           os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
-=======
                             os.environ.get("FORCE_RETRAIN", "false").lower() == "true"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
               result = {"drift_score": drift_score, "samples_count": samples, "should_retrain": should}
           else:
               drift_score = float(os.environ.get("DRIFT_SCORE_OVERRIDE") or 0.0)
@@ -310,10 +300,7 @@ jobs:
           echo "### ⚠️ Dry Run — Retrain would have been triggered" >> "$GITHUB_STEP_SUMMARY"
           echo "Drift score: \`${{ needs.detect-drift.outputs.drift_score }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "Re-run with \`dry_run=false\` to execute." >> "$GITHUB_STEP_SUMMARY"
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

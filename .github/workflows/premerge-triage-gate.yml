@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: premerge-triage-gate
 
 on:
@@ -42,7 +39,3 @@ jobs:
           fi
 
           echo "No unresolved triage markers detected."
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

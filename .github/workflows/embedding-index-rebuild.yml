@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Embedding Index Rebuild
 on:
   schedule:
@@ -55,30 +52,18 @@ jobs:
           import json, os, sys
           from datetime import datetime,\ timezone
           from pathlib import Path
-<<<<<<< HEAD
-          
-          META = Path(\".codex/embeddings/codex_index_meta.json\")
-          STALE_WARN_HOURS  = 25  # emit warning if older than 25 h
-          STALE_ERROR_HOURS\ = 72  # emit error if older than 72 h
-          
-=======
 
           META = Path(\".codex/embeddings/codex_index_meta.json\")
           STALE_WARN_HOURS  = 25  # emit warning if older than 25 h
           STALE_ERROR_HOURS\ = 72  # emit error if older than 72 h
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if not META.exists():
               print(\"::warning::codex_index_meta.json not found — full rebuild required\")
             \  with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
                   f.write(\"freshness_status=missing\
           \")
               sys.exit(0)
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           meta = json.loads(META.read_text())
           generated_at_str = meta.get(\"generated_at\", \"\")
           try:
@@ -90,17 +75,10 @@ jobs:
                   f.write(\"freshness_status=unknown\
           \")
               sys.exit(0)
-<<<<<<< HEAD
-          
-          now = datetime.now(timezone.utc)
-          age_hours = (now - ts).total_seconds()\ / 3600
-          
-=======
 
           now = datetime.now(timezone.utc)
           age_hours = (now - ts).total_seconds()\ / 3600
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           status = \"fresh\"
           if age_hours > STALE_ERROR_HOURS:
               print(f\"::error::RAG index is {age_hours:.1f}h old (>{STALE_ERROR_HOURS}h) — stale\ rebuild required\")
@@ -110,11 +88,7 @@ jobs:
               status = \"stale_warn\"
           else:
               print(f\"✅ RAG index freshness OK: {age_hours:.1f}h old (threshold {STALE_WARN_HOURS}h)\")
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:
               f.write(f\"freshness_status={status}\
           \")
@@ -123,11 +97,7 @@ jobs:
               f.write(f\"generated_at={generated_at_str}\
           \")
           PYEOF
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Install embedding dependencies
         run: "# Upgrade cryptography and pyOpenSSL first to fix compatibility issues
 
@@ -154,11 +124,7 @@ jobs:
               f.write(f\\\"build_time={meta["build_time_seconds"]}\
           \\\")
           \"
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
         run: |-
           CHUNK_COUNT=\"${{ steps.rebuild.outputs.chunk_count }}\"
@@ -169,11 +135,7 @@ jobs:
           else
             echo \"✅ REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s\"
           fi
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Active-PR guard — skip push when any open/draft PR targets the push target
         id: pr_guard
         env:
@@ -188,22 +150,14 @@ jobs:
               --jq "length" 2>/dev/null || echo \"0\")
             if [ \"${PR_COUNT}\"\ -gt \"0\" ]; then
               echo \"pr_skip=true\" >> \"$GITHUB_OUTPUT\"
-<<<<<<< HEAD
-             \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` — embedding\ index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"
-=======
               \ echo \"⛔ ${PR_COUNT} open/draft PR(s) targeting \\`${_TARGET}\\` — embedding\ index push deferred.\" >> \"$GITHUB_STEP_SUMMARY\"
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
             else
               echo \"pr_skip=false\" >> \"$GITHUB_OUTPUT\"
             fi
           else
             echo \"pr_skip=false\"\ >> \"$GITHUB_OUTPUT\"
           fi
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Commit updated index metadata
         if: steps.pr_guard.outputs.pr_skip != "true"
         env:
@@ -224,11 +178,7 @@ jobs:
             git commit -m \"chore(phase-3): update embedding index metadata\ [skip ci]\"
           git push origin HEAD:\"$_TARGET\"
           echo \"\U0001F4E4 Pushed\ to $_TARGET\"
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
       - name: Post rebuild summary
         if: always()
         run: |-
@@ -250,11 +200,7 @@ jobs:
           else
             echo \"Index metadata not found\ — build may have failed.\" >> \"$GITHUB_STEP_SUMMARY\"
           fi
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

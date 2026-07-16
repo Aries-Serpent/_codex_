@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: 🔐 Security Findings Copilot Handoff
 on:
   workflow_run:
@@ -202,10 +199,3 @@ jobs:
             } catch (e) {
               console.log(`Warning: Could not post comment to PR: ${e.message}`);
             }
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

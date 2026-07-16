@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: agentic-diff-guard
 
 on:
@@ -41,7 +38,3 @@ jobs:
         run: |
           set -euo pipefail
           python .github/scripts/agentic_diff_guard.py
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

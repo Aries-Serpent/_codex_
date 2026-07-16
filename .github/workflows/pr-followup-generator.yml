@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Generate PR Follow-Up Prompt
 
 on:
@@ -27,9 +24,6 @@ permissions:
   contents: write
   pull-requests: write
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   generate:
@@ -218,10 +212,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Automated Release Creation
 on:
   workflow_dispatch:
@@ -165,9 +162,6 @@ jobs:
 
         # Release ${{ github.event.inputs.version }} Summary
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Release Status
 
@@ -177,10 +171,6 @@ jobs:
 
       - **Created At**: $(date -u +''%Y-%m-%dT%H:%M:%SZ'')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Artifacts Generated
 
       - ✅ Release Notes: `.codex/release-notes.md`
@@ -194,10 +184,6 @@ jobs:
 
       - ✅ Audit: `${{ steps.generate-audit.outputs.audit_path }}`
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Announcements
 
       - ✅ GitHub Discussions: `.codex/release-announcements/github-discussions-${{
@@ -215,10 +201,6 @@ jobs:
       - ✅ Twitter: `.codex/release-announcements/twitter-${{ github.event.inputs.version
         }}.txt`
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Next Steps
 
         1. Review release notes: `.codex/release-notes.md`
@@ -233,10 +215,6 @@ jobs:
 
         EOF
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat release-summary.md
 
         '
@@ -279,7 +257,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

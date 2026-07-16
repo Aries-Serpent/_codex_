@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Root Organization Validation
 on:
   pull_request:
@@ -65,9 +62,6 @@ jobs:
 
         pip install pytest-xdist==3.8.0 pytest-timeout==2.4.0
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         python -m pip install --upgrade pip
 
@@ -119,10 +113,6 @@ jobs:
         steps.pytest-baseline.outcome }}\",\"ruff\":\"${{ steps.ruff-baseline.outcome
         }}\",\"mkdocs\":\"${{ steps.mkdocs-baseline.outcome }}\"}" >> $GITHUB_OUTPUT
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Save baseline to artifact
 
         mkdir -p .codex/validation
@@ -200,10 +190,6 @@ jobs:
     - name: Generate reference report
       run: 'mkdir -p .codex/reports
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "# Reference Validation Report" > .codex/reports/reference_validation.md
 
         echo "**Date:** $(date)" >> .codex/reports/reference_validation.md
@@ -271,18 +257,10 @@ jobs:
     - name: Generate final report
       run: 'mkdir -p .codex/reports
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat > .codex/reports/root_org_validation_${{ github.run_number }}.md << EOF
 
         # Root Organization Validation Report
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Run:** ${{ github.run_number }}
 
         **Date:** $(date)
@@ -291,34 +269,18 @@ jobs:
 
         **Status:** ${{ job.status }}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Pre-Validation Results
 
         ${{ needs.pre-validation.outputs.baseline_metrics }}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Reference Check
 
         ✅ Completed
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Post-Validation
 
         ✅ No regressions detected
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Recommendations
 
         - Continue with root organization operations
@@ -327,10 +289,6 @@ jobs:
 
         - Review artifact reports for details
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ## Artifacts Generated
 
         - validation-baseline
@@ -341,10 +299,7 @@ jobs:
 
         EOF
 
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "Final report generated"
 
         cat .codex/reports/root_org_validation_${{ github.run_number }}.md

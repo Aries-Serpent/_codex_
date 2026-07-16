@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: RAG Quality Nightly Gate
 on:
   workflow_dispatch: null
@@ -86,11 +83,7 @@ jobs:
           python3 - <<'PYEOF'
           import json
           from datetime import datetime, timezone
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           results = {
               "freshness": "${{ needs.freshness-check.result }}",
               "quality":   "${{ needs.quality-gate.result }}",
@@ -107,7 +100,3 @@ jobs:
           PYEOF
         env:
           GH_TOKEN: "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

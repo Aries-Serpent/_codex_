@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: PR Size Analyzer
 on:
   pull_request:
@@ -63,9 +60,6 @@ jobs:
 
         echo "" >> $GITHUB_STEP_SUMMARY
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Also output to job log
 
@@ -98,10 +92,6 @@ jobs:
           | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }}
           |
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted
           · Large (100-499) → Smoke · Refactor (500+) → Import only
 
@@ -143,8 +133,5 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-<<<<<<< HEAD
       run: python scripts/ci/post_rescue_comment.py
-=======
       run: python scripts/ci/post_rescue_comment.py
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

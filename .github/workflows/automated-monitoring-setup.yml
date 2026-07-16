@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Automated Monitoring Setup
 on:
   workflow_dispatch:
@@ -66,34 +63,19 @@ jobs:
     - name: Generate monitoring configuration
       run: 'echo "🔧 Generating monitoring configuration..."
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate ServiceMonitor resources
 
         python scripts/deployment/generate_servicemonitor.py
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate alert rules
 
         python scripts/deployment/generate_alert_rules.py
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Generate dashboards
 
         python scripts/deployment/create_monitoring_dashboard.py
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "✅ Configuration generation complete"
 
         '
@@ -106,10 +88,6 @@ jobs:
 
         chmod 600 ~/.kube/config
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Verify connection
 
         kubectl cluster-info
@@ -171,10 +149,6 @@ jobs:
     - name: Wait for stack readiness
       run: 'echo "⏳ Waiting for monitoring stack to be ready..."
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Wait for all deployments
 
         kubectl rollout status deployment/prometheus -n monitoring --timeout=300s
@@ -186,20 +160,12 @@ jobs:
         kubectl rollout status deployment/alertmanager -n monitoring --timeout=300s
         || true
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "✅ Stack readiness check complete"
 
         '
     - name: Verify monitoring health
       run: 'echo "🔍 Verifying monitoring health..."
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Check component health
 
         echo "Prometheus health:"
@@ -207,19 +173,11 @@ jobs:
         kubectl exec -n monitoring -it deployment/prometheus -- curl -s http://localhost:9090/-/healthy
         || true
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         printf "\nGrafana health:\n"
 
         kubectl exec -n monitoring -it deployment/grafana -- curl -s http://localhost:3000/api/health
         || true
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         printf "\nAlertManager health:\n"
 
         kubectl exec -n monitoring -it deployment/alertmanager -- curl -s http://localhost:9093/-/healthy
@@ -229,18 +187,10 @@ jobs:
     - name: Generate setup report
       run: 'echo "📝 Generating setup report..."
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat > setup-report.md <<EOF
 
         # Monitoring Stack Setup Report
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         **Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
         **Environment:** ${{ inputs.environment }}
@@ -251,30 +201,16 @@ jobs:
 
         **Status:** ✅ SUCCESS
 
-<<<<<<< HEAD
-
         ## Deployed Components
 
-
-=======
-        ## Deployed Components
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         - ✅ Prometheus (Metrics collection & storage)
 
         - ✅ Grafana (Visualization & dashboards)
 
         - ✅ AlertManager (Alert routing & notifications)
 
-<<<<<<< HEAD
-
         ## Configuration
 
-
-=======
-        ## Configuration
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         - ✅ ServiceMonitor resources (5 services)
 
         - ✅ Alert rules (13 rules, 3 groups)
@@ -283,30 +219,16 @@ jobs:
 
         - ✅ Grafana dashboards (3 dashboards, 13 panels)
 
-<<<<<<< HEAD
-
         ## Access Information
 
-
-=======
-        ## Access Information
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         - Prometheus: http://prometheus.local:9090
 
         - Grafana: http://grafana.local:3000
 
         - AlertManager: http://alertmanager.local:9093
 
-<<<<<<< HEAD
-
         ## Next Steps
 
-
-=======
-        ## Next Steps
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         1. Configure notification channels (Slack, PagerDuty, email)
 
         2. Customize alert thresholds
@@ -317,15 +239,8 @@ jobs:
 
         5. Set up backup for persistent volumes
 
-<<<<<<< HEAD
-
         ## Troubleshooting
 
-
-=======
-        ## Troubleshooting
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         If issues occur, check:
 
         - Pod logs: \`kubectl logs -n monitoring deployment/[component]\`
@@ -334,18 +249,10 @@ jobs:
 
         - Events: \`kubectl describe pod -n monitoring [pod-name]\`
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         For more details, see documentation in .codex/MONITORING_MANIFESTS_GUIDE.md
 
         EOF
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         cat setup-report.md
 
         '
@@ -359,15 +266,8 @@ jobs:
       if: always()
       run: 'echo "📋 Collecting deployment logs..."
 
-<<<<<<< HEAD
-
         mkdir -p logs
 
-
-=======
-        mkdir -p logs
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Collect pod logs
 
         kubectl logs -n monitoring deployment/prometheus > logs/prometheus.log 2>&1
@@ -378,18 +278,10 @@ jobs:
         kubectl logs -n monitoring deployment/alertmanager > logs/alertmanager.log
         2>&1 || true
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Collect events
 
         kubectl get events -n monitoring > logs/events.log 2>&1 || true
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Collect resource status
 
         kubectl get all -n monitoring > logs/resources.log 2>&1 || true
@@ -414,7 +306,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

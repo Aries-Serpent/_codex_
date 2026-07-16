@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Workflow Compliance Gate
 on:
   pull_request:
@@ -61,8 +58,4 @@ jobs:
         \"\
     - name: Fail on violations
       if: steps.check.outputs.exit_code != '0'
-<<<<<<< HEAD
       run: exit 1
-=======
-      run: exit 1
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

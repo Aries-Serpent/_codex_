@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Test Variables API
 on:
   workflow_dispatch:
@@ -88,21 +85,13 @@ jobs:
           echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
           echo "Has repo scope: ${{ needs.validate-token.outputs.has_repo_scope }}"
           echo ""
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if [ "$DRY_RUN" = "true" ]; then
             echo "DRY RUN — skipping variable CRUD tests"
             python scripts/ci/test_variables_api.py 2>&1 | head -30
             exit 0
           fi
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           python scripts/ci/test_variables_api.py
       - name: Post result to PR Status Dashboard
         if: always() && github.event.pull_request.number != ''
@@ -141,21 +130,13 @@ jobs:
           echo "Token source: ${{ needs.validate-token.outputs.token_source }}"
           echo "Has admin:org scope: ${{ needs.validate-token.outputs.has_admin_org }}"
           echo ""
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if [ "${{ needs.validate-token.outputs.has_admin_org }}" = "false" ]; then
             echo "::warning::Skipping org tests — token lacks admin:org scope"
             echo "Required: classic PAT with admin:org OR fine-grained PAT with 'Variables: write' org permission"
             exit 0
           fi
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           python scripts/ci/test_variables_api.py
       - name: Post result to PR Status Dashboard
         if: always() && github.event.pull_request.number != ''
@@ -194,7 +175,3 @@ jobs:
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

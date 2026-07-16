@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: E→D Transition Readiness Gate
 on:
   pull_request: null
@@ -137,17 +134,9 @@ jobs:
         details: '**Score:** ${{ steps.check.outputs.score }}/5 | **D_CAPABLE:** ${{
           steps.check.outputs.capable }}
 
-<<<<<<< HEAD
-
           Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition
           breakdown.
 
-
-=======
-          Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition
-          breakdown.
-
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           _Phase 4 FSM | [e-to-d-transition-gate.yml]_
 
           '

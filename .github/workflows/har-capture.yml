@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: HAR Cache Capture
 # aais-cache: none  # Python referenced in template/doc strings only — no pip install
 
@@ -54,9 +51,6 @@ concurrency:
 permissions:
   contents: read
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   capture-har:
@@ -264,7 +258,4 @@ jobs:
           with open(summary_path, "a") as f:
               f.write("\n".join(lines) + "\n")
           PYEOF
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

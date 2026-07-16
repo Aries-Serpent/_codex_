@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Maturity Check
 on:
   workflow_dispatch: null
@@ -15,7 +12,3 @@ jobs:
     steps:
     - run: "echo \"disabled \u2014 stub only\""
     timeout-minutes: 60
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

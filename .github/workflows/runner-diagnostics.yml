@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Runner diagnostics — self-hosted readiness
 
 on:
@@ -14,9 +11,6 @@ concurrency:
 permissions:
   contents: read
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   diag:
@@ -69,7 +63,4 @@ jobs:
             echo "- Buildx: checked"
             echo "- binfmt: checked (best-effort)"
           } >> "$GITHUB_STEP_SUMMARY"
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

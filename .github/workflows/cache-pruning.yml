@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Cache Pruning
 on:
   schedule:
@@ -76,7 +73,3 @@ jobs:
           + kept} |`,\n  `| ${action} | ${dryRun ? toDelete.length : deleted} |`,\n\
           \  `| Kept | ${kept} |`,\n  `| Space freed | ~${freedMB} MB |`,\n].join('\\\
           n');\nawait core.summary.addRaw(summary).write();\n"
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

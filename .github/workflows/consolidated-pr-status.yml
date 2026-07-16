@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Consolidated PR Status
 on:
   workflow_call:
@@ -90,7 +87,3 @@ jobs:
         summary: ${{ inputs.summary }}
         details: ${{ steps.build-details.outputs.details }}
         github-token: ${{ secrets.github-token || github.token }}
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Nightly CodeQL Alert Triage
 
 on:
@@ -37,9 +34,6 @@ permissions:
 env:
   PYTHON_VERSION: '3.12'
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 jobs:
   alert-triage:
@@ -133,7 +127,4 @@ jobs:
           else
             echo "No pipeline result file found." >> $GITHUB_STEP_SUMMARY
           fi
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Smoke Tests - Deployment Verification
 
 on:
@@ -405,7 +402,3 @@ jobs:
             });
 
             console.log(`Created rollback issue  #${issue.data.number}`);
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

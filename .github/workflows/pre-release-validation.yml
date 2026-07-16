@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Pre-Release Validation
 on:
   pull_request:
@@ -99,9 +96,6 @@ jobs:
       name: Build results summary
       run: 'echo "## ✅ Pre-Release Validation Results
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ### Version Check
 
@@ -109,10 +103,6 @@ jobs:
 
         - Status: ${{ needs.validate-version.result }}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ### Checklist
 
         - [ ] CHANGELOG.md updated: ${{ needs.validate-changelog.result }}
@@ -129,10 +119,6 @@ jobs:
 
         - [ ] Artifacts ready: ${{ needs.validate-artifacts.result }}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         ### Next Steps
 
         Once all checks pass:
@@ -375,7 +361,4 @@ jobs:
         \ \"✅ Version is valid\"\nelse\n  echo \"❌ Version must be higher than last\
         \ release\"\n  exit 1\nfi\n"
     timeout-minutes: 15
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

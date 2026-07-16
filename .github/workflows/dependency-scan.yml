@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Dependency Scan (template)
 
 on:
@@ -9,9 +6,6 @@ on:
     - cron: '0 3 * * *'  # daily at 03:00 UTC
   workflow_dispatch:
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -40,10 +34,7 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --type pip --workflow dependency-scan --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Audit & QA Suite (Unified)
 on:
   schedule:
@@ -200,11 +197,7 @@ jobs:
         # For issue_comment events: use main (trusted)
         # For workflow_dispatch: use inputs.target_ref with validation
         # For workflow_call: use github.sha (trusted)
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         TARGET_REF=""
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           TARGET_REF="${{ github.event.pull_request.head.sha }}"
@@ -217,28 +210,17 @@ jobs:
         else
           TARGET_REF="${{ github.sha }}"
         fi
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Validate that TARGET_REF doesn't contain path traversal or other injection attempts
         # Use strict pattern: only alphanumerics, hyphens, dots, underscores (no slashes or special chars)
         if [[ ! "$TARGET_REF" =~ ^[a-zA-Z0-9._-]+$ ]]; then
           echo "❌ Error: Invalid target ref format: $TARGET_REF"
           exit 1
         fi
-<<<<<<< HEAD
-        
-        echo "target_ref=$TARGET_REF" >> $GITHUB_OUTPUT
-        echo "✅ Target ref validated: $TARGET_REF"
-    
-=======
 
         echo "target_ref=$TARGET_REF" >> $GITHUB_OUTPUT
         echo "✅ Target ref validated: $TARGET_REF"
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     - name: Create required directory structure
       env:
         GH_TOKEN: ${{ github.token }}
@@ -246,34 +228,20 @@ jobs:
       run: |
         # SECURITY: Use GitHub API instead of git checkout to fetch repository structure
         # This eliminates the untrusted code checkout vulnerability in workflow_run contexts
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Parse repository into owner/repo format using bash parameter expansion
         REPO_FULL="${GITHUB_REPOSITORY}"
         OWNER="${REPO_FULL%%/*}"
         REPO="${REPO_FULL##*/}"
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Create directory structure we need for QA walkthrough
         mkdir -p scripts/qa
         mkdir -p .github/actions/setup-python-cached
         mkdir -p .codex/qa
         mkdir -p reports/qa
-<<<<<<< HEAD
-        
-        echo "✅ Created required directory structure"
-    
-=======
 
         echo "✅ Created required directory structure"
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
     - name: Fetch trusted scripts via GitHub API (no git checkout)
       env:
         GH_TOKEN: ${{ github.token }}
@@ -283,54 +251,34 @@ jobs:
         REPO_FULL="${{ github.repository }}"
         OWNER="${REPO_FULL%%/*}"
         REPO="${REPO_FULL##*/}"
-<<<<<<< HEAD
-         
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Use mktemp for all temporary files to avoid conflicts on shared runners
         ACTION_TEMP=$(mktemp)
         SCRIPT_TEMP=$(mktemp)
         API_ERROR=$(mktemp)
         DECODE_ERROR=$(mktemp)
         trap "rm -f '$ACTION_TEMP' '$SCRIPT_TEMP' '$API_ERROR' '$DECODE_ERROR'" EXIT
-<<<<<<< HEAD
-         
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Helper function to fetch and decode file from main branch
         # SECURITY: file_path parameter must be hardcoded (not from untrusted input)
         fetch_file_from_main() {
           local file_path=$1
           local output_file=$2
           local error_log=$3
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           # Validate path does not contain path traversal sequences
           if [[ "$file_path" =~ \.\. ]]; then
             echo "ERROR: Invalid file path (contains path traversal)" >&2
             return 1
           fi
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
           if gh api repos/$OWNER/$REPO/contents/$file_path?ref=main -q '.content' 2>"$error_log" | base64 -d > "$output_file" 2>&1; then
             return 0
           else
             return 1
           fi
         }
-<<<<<<< HEAD
-         
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Fetch action.yml from main
         if fetch_file_from_main ".github/actions/setup-python-cached/action.yml" "$ACTION_TEMP" "$API_ERROR"; then
           mkdir -p .github/actions/setup-python-cached/
@@ -341,11 +289,7 @@ jobs:
           ERROR_MSG=$(head -c 100 "$API_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
           echo "⚠️ Failed to fetch action.yml from origin/main ($ERROR_MSG...) — will use fallback"
         fi
-<<<<<<< HEAD
-         
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Fetch codebase_walkthrough.py from main
         if fetch_file_from_main "scripts/qa/codebase_walkthrough.py" "$SCRIPT_TEMP" "$DECODE_ERROR"; then
           mkdir -p scripts/qa/
@@ -356,11 +300,7 @@ jobs:
           ERROR_MSG=$(head -c 100 "$DECODE_ERROR" 2>/dev/null | sed 's/[^[:print:]]/./g' || echo 'unknown error')
           echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main ($ERROR_MSG...) — will use fallback"
         fi
-<<<<<<< HEAD
-         
-=======
 
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         echo "✅ Trusted code fetch complete (API-based, no git operations)"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -488,9 +428,6 @@ jobs:
 
         echo "- QA issues: ${QA_ISSUES_FOUND}" >> improvement_pr_body.md
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         # Note: Actual PR creation would be done via gh CLI or GitHub API
 
@@ -580,8 +517,5 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-<<<<<<< HEAD
       run: python scripts/ci/post_rescue_comment.py
-=======
       run: python scripts/ci/post_rescue_comment.py
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 ---
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
 name: Code Example Validation
 "on":
   pull_request:
@@ -49,9 +46,6 @@ jobs:
 
         pattern = re.compile(r"```python\n(.*?)\n```", re.DOTALL)
 
-<<<<<<< HEAD
-
-=======
 >>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
@@ -79,10 +73,6 @@ jobs:
 
             return sorted(Path("docs").rglob("*.md"))
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         extracted = []
         for md_file in get_target_files():
             with open(md_file) as f:
@@ -145,10 +135,6 @@ jobs:
 
         pattern = re.compile(r"```bash\n(.*?)\n```", re.DOTALL)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
@@ -175,10 +161,6 @@ jobs:
 
             return sorted(Path("docs").rglob("*.md"))
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         extracted = []
         for md_file in get_target_files():
             with open(md_file) as f:
@@ -239,10 +221,6 @@ jobs:
 
         pattern = re.compile(r"```ya?ml\n(.*?)\n```", re.DOTALL)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
@@ -269,10 +247,6 @@ jobs:
 
             return sorted(Path("docs").rglob("*.md"))
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
         errors = []
         total = 0
 
@@ -317,7 +291,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-<<<<<<< HEAD
 
-=======
->>>>>>> ae487242 (Session checkpoint complete: Cherry-pick enablement, all phases planning documented, handoff ready)
