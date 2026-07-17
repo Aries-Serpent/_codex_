@@ -1,0 +1,4479 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/evolution/PLANSET_REGISTRY/" rel="canonical"/>
+<link href="../EVOLUTION_TIMELINE/" rel="prev"/>
+<link href="../COGNITIVE_EVOLUTION_TREE/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>Planset Registry - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#planset-registry-historical-archive">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Planset Registry
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#registry-overview">
+<span class="md-ellipsis">
+      
+        Registry Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#detailed-records">
+<span class="md-ellipsis">
+      
+        Detailed Records
+      
+    </span>
+</a>
+<nav aria-label="Detailed Records" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-01-configuration-consolidation">
+<span class="md-ellipsis">
+      
+        PS-01: Configuration Consolidation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-02-ipc-bridge-hardening">
+<span class="md-ellipsis">
+      
+        PS-02: IPC Bridge Hardening
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-03-split-brain-elimination">
+<span class="md-ellipsis">
+      
+        PS-03: Split Brain Elimination
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-04-privacy-first-memory">
+<span class="md-ellipsis">
+      
+        PS-04: Privacy-First Memory
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-05-token-security-neutralization">
+<span class="md-ellipsis">
+      
+        PS-05: Token Security Neutralization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-06-knowledge-crawler-service">
+<span class="md-ellipsis">
+      
+        PS-06: Knowledge Crawler Service
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-06e-knowledge-crawler-enhancement">
+<span class="md-ellipsis">
+      
+        PS-06e: Knowledge Crawler Enhancement
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-07-business-logic-elevation">
+<span class="md-ellipsis">
+      
+        PS-07: Business Logic Elevation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-08-microservice-root-cleanup">
+<span class="md-ellipsis">
+      
+        PS-08: Microservice Root Cleanup
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-09-training-entry-point-unification">
+<span class="md-ellipsis">
+      
+        PS-09: Training Entry Point Unification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-10-owner-guard-cicd-enforcement">
+<span class="md-ellipsis">
+      
+        PS-10: Owner Guard CI/CD Enforcement
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advancement-era-plansets-phase-11-12">
+<span class="md-ellipsis">
+      
+        Advancement Era Plansets (Phase 11-12)
+      
+    </span>
+</a>
+<nav aria-label="Advancement Era Plansets (Phase 11-12)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-11-mcp-size-estimation">
+<span class="md-ellipsis">
+      
+        PS-11: MCP Size Estimation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-12-mcp-exclude-patterns">
+<span class="md-ellipsis">
+      
+        PS-12: MCP Exclude Patterns
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-13-agent-task-router">
+<span class="md-ellipsis">
+      
+        PS-13: Agent Task Router
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-14-cognitive-dashboard-msv">
+<span class="md-ellipsis">
+      
+        PS-14: Cognitive Dashboard MSV
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-15-advanced-infrastructure">
+<span class="md-ellipsis">
+      
+        PS-15: Advanced Infrastructure
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#analytics">
+<span class="md-ellipsis">
+      
+        Analytics
+      
+    </span>
+</a>
+<nav aria-label="Analytics" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#by-category">
+<span class="md-ellipsis">
+      
+        By Category
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-16-production-readiness">
+<span class="md-ellipsis">
+      
+        PS-16: Production Readiness
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#completion-rate">
+<span class="md-ellipsis">
+      
+        Completion Rate
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-17-operational-excellence">
+<span class="md-ellipsis">
+      
+        PS-17: Operational Excellence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-18-continuous-improvement">
+<span class="md-ellipsis">
+      
+        PS-18: Continuous Improvement
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-19-next-evolution-phase">
+<span class="md-ellipsis">
+      
+        PS-19: Next Evolution Phase
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cross-references">
+<span class="md-ellipsis">
+      
+        Cross-References
+      
+    </span>
+</a>
+<nav aria-label="Cross-References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-20-v40-scoring-implementation">
+<span class="md-ellipsis">
+      
+        PS-20: V4.0 Scoring Implementation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#registry-overview">
+<span class="md-ellipsis">
+      
+        Registry Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#detailed-records">
+<span class="md-ellipsis">
+      
+        Detailed Records
+      
+    </span>
+</a>
+<nav aria-label="Detailed Records" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-01-configuration-consolidation">
+<span class="md-ellipsis">
+      
+        PS-01: Configuration Consolidation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-02-ipc-bridge-hardening">
+<span class="md-ellipsis">
+      
+        PS-02: IPC Bridge Hardening
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-03-split-brain-elimination">
+<span class="md-ellipsis">
+      
+        PS-03: Split Brain Elimination
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-04-privacy-first-memory">
+<span class="md-ellipsis">
+      
+        PS-04: Privacy-First Memory
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-05-token-security-neutralization">
+<span class="md-ellipsis">
+      
+        PS-05: Token Security Neutralization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-06-knowledge-crawler-service">
+<span class="md-ellipsis">
+      
+        PS-06: Knowledge Crawler Service
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-06e-knowledge-crawler-enhancement">
+<span class="md-ellipsis">
+      
+        PS-06e: Knowledge Crawler Enhancement
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-07-business-logic-elevation">
+<span class="md-ellipsis">
+      
+        PS-07: Business Logic Elevation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-08-microservice-root-cleanup">
+<span class="md-ellipsis">
+      
+        PS-08: Microservice Root Cleanup
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-09-training-entry-point-unification">
+<span class="md-ellipsis">
+      
+        PS-09: Training Entry Point Unification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-10-owner-guard-cicd-enforcement">
+<span class="md-ellipsis">
+      
+        PS-10: Owner Guard CI/CD Enforcement
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advancement-era-plansets-phase-11-12">
+<span class="md-ellipsis">
+      
+        Advancement Era Plansets (Phase 11-12)
+      
+    </span>
+</a>
+<nav aria-label="Advancement Era Plansets (Phase 11-12)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-11-mcp-size-estimation">
+<span class="md-ellipsis">
+      
+        PS-11: MCP Size Estimation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-12-mcp-exclude-patterns">
+<span class="md-ellipsis">
+      
+        PS-12: MCP Exclude Patterns
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-13-agent-task-router">
+<span class="md-ellipsis">
+      
+        PS-13: Agent Task Router
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-14-cognitive-dashboard-msv">
+<span class="md-ellipsis">
+      
+        PS-14: Cognitive Dashboard MSV
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-15-advanced-infrastructure">
+<span class="md-ellipsis">
+      
+        PS-15: Advanced Infrastructure
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#analytics">
+<span class="md-ellipsis">
+      
+        Analytics
+      
+    </span>
+</a>
+<nav aria-label="Analytics" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#by-category">
+<span class="md-ellipsis">
+      
+        By Category
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-16-production-readiness">
+<span class="md-ellipsis">
+      
+        PS-16: Production Readiness
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#completion-rate">
+<span class="md-ellipsis">
+      
+        Completion Rate
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-17-operational-excellence">
+<span class="md-ellipsis">
+      
+        PS-17: Operational Excellence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-18-continuous-improvement">
+<span class="md-ellipsis">
+      
+        PS-18: Continuous Improvement
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-19-next-evolution-phase">
+<span class="md-ellipsis">
+      
+        PS-19: Next Evolution Phase
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cross-references">
+<span class="md-ellipsis">
+      
+        Cross-References
+      
+    </span>
+</a>
+<nav aria-label="Cross-References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ps-20-v40-scoring-implementation">
+<span class="md-ellipsis">
+      
+        PS-20: V4.0 Scoring Implementation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="planset-registry-historical-archive">Planset Registry — Historical Archive<a class="headerlink" href="#planset-registry-historical-archive" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#-registry-overview"> Registry Overview</a></li>
+<li><a href="#-detailed-records"> Detailed Records</a></li>
+<li><a href="#ps-01-configuration-consolidation">PS-01: Configuration Consolidation</a></li>
+<li><a href="#ps-02-ipc-bridge-hardening">PS-02: IPC Bridge Hardening</a></li>
+<li><a href="#ps-03-split-brain-elimination">PS-03: Split Brain Elimination</a></li>
+<li><a href="#ps-04-privacy-first-memory">PS-04: Privacy-First Memory</a></li>
+<li><a href="#ps-05-token-security-neutralization">PS-05: Token Security Neutralization</a></li>
+<li><a href="#ps-06-knowledge-crawler-service">PS-06: Knowledge Crawler Service</a></li>
+<li><a href="#ps-06e-knowledge-crawler-enhancement">PS-06e: Knowledge Crawler Enhancement</a></li>
+<li><a href="#ps-07-business-logic-elevation">PS-07: Business Logic Elevation</a></li>
+<li><a href="#ps-08-microservice-root-cleanup">PS-08: Microservice Root Cleanup</a></li>
+<li><a href="#ps-09-training-entry-point-unification">PS-09: Training Entry Point Unification</a></li>
+<li><a href="#ps-10-owner-guard-cicd-enforcement">PS-10: Owner Guard CI/CD Enforcement</a></li>
+<li><a href="#-advancement-era-plansets-phase-11-12"> Advancement Era Plansets (Phase 11-12)</a></li>
+<li><a href="#ps-11-mcp-size-estimation">PS-11: MCP Size Estimation</a></li>
+<li><a href="#ps-12-mcp-exclude-patterns">PS-12: MCP Exclude Patterns</a></li>
+<li><a href="#ps-13-agent-task-router">PS-13: Agent Task Router</a></li>
+<li><a href="#ps-14-cognitive-dashboard-msv">PS-14: Cognitive Dashboard MSV</a></li>
+<li><a href="#ps-15-advanced-infrastructure">PS-15: Advanced Infrastructure</a></li>
+<li><a href="#-analytics"> Analytics</a></li>
+<li><a href="#by-category">By Category</a></li>
+<li><a href="#ps-16-production-readiness">PS-16: Production Readiness</a></li>
+<li><a href="#completion-rate">Completion Rate</a></li>
+<li><a href="#ps-17-operational-excellence">PS-17: Operational Excellence</a></li>
+<li><a href="#ps-18-continuous-improvement">PS-18: Continuous Improvement</a></li>
+<li><a href="#ps-19-next-evolution-phase">PS-19: Next Evolution Phase</a></li>
+<li><a href="#-cross-references"> Cross-References</a></li>
+<li><a href="#ps-20-v40-scoring-implementation">PS-20: V4.0 Scoring Implementation</a></li>
+</ul>
+<p><strong>Last Updated</strong>: 2026-06-22
+<strong>Version</strong>: 3.0.0
+<strong>Purpose</strong>: Permanent, queryable catalog of all planset records with outcomes, dates, and cross-references.
+<strong>Format</strong>: Structured for search, filtering, and AI agent consumption.</p>
+<hr/>
+<h2 id="registry-overview">Registry Overview<a class="headerlink" href="#registry-overview" title="Permanent link">¶</a></h2>
+<!-- anchor: -registry-overview -->
+<table>
+<thead>
+<tr>
+<th>PS ID</th>
+<th>Name</th>
+<th>Status</th>
+<th>Date</th>
+<th>Era</th>
+<th>Category</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ps-01-configuration-consolidation">PS-01</a></td>
+<td>Configuration Consolidation</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Infrastructure</td>
+</tr>
+<tr>
+<td><a href="#ps-02-ipc-bridge-hardening">PS-02</a></td>
+<td>IPC Bridge Hardening</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Security</td>
+</tr>
+<tr>
+<td><a href="#ps-03-split-brain-elimination">PS-03</a></td>
+<td>Split Brain Elimination</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Architecture</td>
+</tr>
+<tr>
+<td><a href="#ps-04-privacy-first-memory">PS-04</a></td>
+<td>Privacy-First Memory (PII)</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Security</td>
+</tr>
+<tr>
+<td><a href="#ps-05-token-security-neutralization">PS-05</a></td>
+<td>Token Security Neutralization</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Security</td>
+</tr>
+<tr>
+<td><a href="#ps-06-knowledge-crawler-service">PS-06</a></td>
+<td>Knowledge Crawler Service</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Intelligence</td>
+</tr>
+<tr>
+<td><a href="#ps-06e-knowledge-crawler-enhancement">PS-06e</a></td>
+<td>Knowledge Crawler Enhancement</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Intelligence</td>
+</tr>
+<tr>
+<td><a href="#ps-07-business-logic-elevation">PS-07</a></td>
+<td>Business Logic Elevation</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Business Logic</td>
+</tr>
+<tr>
+<td><a href="#ps-08-microservice-root-cleanup">PS-08</a></td>
+<td>Microservice Root Cleanup</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Architecture</td>
+</tr>
+<tr>
+<td><a href="#ps-09-training-entry-point-unification">PS-09</a></td>
+<td>Training Entry Point Unification</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>ML/Training</td>
+</tr>
+<tr>
+<td><a href="#ps-10-owner-guard-cicd-enforcement">PS-10</a></td>
+<td>Owner Guard CI/CD Enforcement</td>
+<td>Complete</td>
+<td>2026-01-09</td>
+<td>Cognitive</td>
+<td>Governance</td>
+</tr>
+<tr>
+<td><a href="#ps-11-mcp-size-estimation">PS-11</a></td>
+<td>MCP Size Estimation</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>MCP/Tooling</td>
+</tr>
+<tr>
+<td><a href="#ps-12-mcp-exclude-patterns">PS-12</a></td>
+<td>MCP Exclude Patterns</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>MCP/Tooling</td>
+</tr>
+<tr>
+<td><a href="#ps-13-agent-task-router">PS-13</a></td>
+<td>Agent Task Router</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>AI/Agents</td>
+</tr>
+<tr>
+<td><a href="#ps-14-cognitive-dashboard-msv">PS-14</a></td>
+<td>Cognitive Dashboard MSV</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>UI/Visualization</td>
+</tr>
+<tr>
+<td><a href="#ps-15-advanced-infrastructure">PS-15</a></td>
+<td>Advanced Infrastructure</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>Infrastructure</td>
+</tr>
+<tr>
+<td><a href="#ps-16-production-readiness">PS-16</a></td>
+<td>Production Readiness</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Advancement</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><a href="#ps-17-operational-excellence">PS-17</a></td>
+<td>Operational Excellence</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Post-Merge</td>
+<td>Operations</td>
+</tr>
+<tr>
+<td><a href="#ps-18-continuous-improvement">PS-18</a></td>
+<td>Continuous Improvement</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Continuous</td>
+<td>Framework</td>
+</tr>
+<tr>
+<td><a href="#ps-19-next-evolution-phase">PS-19</a></td>
+<td>Next Evolution Phase</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Evolution</td>
+<td>AI/Platform</td>
+</tr>
+<tr>
+<td><a href="#ps-20-v40-scoring-implementation">PS-20</a></td>
+<td>V4.0 Scoring Implementation</td>
+<td>Complete</td>
+<td>2026-02-12</td>
+<td>Evolution</td>
+<td>AI/Scoring</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="detailed-records">Detailed Records<a class="headerlink" href="#detailed-records" title="Permanent link">¶</a></h2>
+<!-- anchor: -detailed-records -->
+<h3 id="ps-01-configuration-consolidation">PS-01: Configuration Consolidation<a class="headerlink" href="#ps-01-configuration-consolidation" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-01:-configuration-consolidation -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-01</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Configuration Consolidation</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>ALL CYCLES COMPLETE — Production Ready</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8 (Cognitive Brain Infrastructure)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Infrastructure</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps01_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ol>
+<li>Pre-commit Cycle 1: Error Configuration System (100%)</li>
+<li>Pre-commit Cycle 2: Configuration Migration (100%)</li>
+<li>Pre-commit Cycle 3: Validation &amp; Production Hardening (100%)</li>
+<li>Self-Healing Iteration 1: Code Quality Improvements (100%)</li>
+</ol>
+<p><strong>Key Deliverables</strong>:</p>
+<ul>
+<li>Structured error configuration system (<code>conf/errors/defaults.yaml</code>)</li>
+<li>Centralized ConfigLoader with Hydra Compose API (213 lines, 71% coverage)</li>
+<li>30 comprehensive unit tests (100% passing)</li>
+<li>Backward compatibility via deprecation warnings</li>
+<li>Migrated 32 P0 configs to <code>conf/</code> directory</li>
+<li>Dual-path fallback support (<code>conf/</code> <code>configs/</code>)</li>
+<li>Eliminated 5 duplicate evaluation configs</li>
+</ul>
+<p><strong>Patterns Learned</strong>: Dual-Path Configuration Loading, Hydra migration strategy</p>
+<hr/>
+<h3 id="ps-02-ipc-bridge-hardening">PS-02: IPC Bridge Hardening<a class="headerlink" href="#ps-02-ipc-bridge-hardening" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-02:-ipc-bridge-hardening -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-02</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>IPC Bridge Hardening</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE — Production Ready</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Security</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps02_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>IPC bridge security monitoring implemented</li>
+<li>Unauthorized access detection active</li>
+<li>Message integrity validation operational</li>
+<li>Bridge Security Monitor agent deployed</li>
+</ul>
+<p><strong>Patterns Learned</strong>: Inter-process communication security, message validation</p>
+<hr/>
+<h3 id="ps-03-split-brain-elimination">PS-03: Split Brain Elimination<a class="headerlink" href="#ps-03-split-brain-elimination" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-03:-split-brain-elimination -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-03</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Split Brain Elimination</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Architecture</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps03_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Eliminated configuration split-brain scenarios</li>
+<li>Single source of truth for cognitive brain state</li>
+<li>Consistency validation across distributed components</li>
+</ul>
+<p><strong>Related Doc</strong>: <code>docs/cognitive_brain/SPLIT_BRAIN_RESOLUTION.md</code></p>
+<hr/>
+<h3 id="ps-04-privacy-first-memory">PS-04: Privacy-First Memory<a class="headerlink" href="#ps-04-privacy-first-memory" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-04:-privacy-first-memory -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-04</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Privacy-First Memory (PII Scrubbing)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Security / Compliance</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps04_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>PII scrubbing pipeline implemented</li>
+<li>GDPR/CCPA compliance for RAG pipeline</li>
+<li>PII Scrubber agent deployed and operational</li>
+</ul>
+<p><strong>Compliance</strong>: GDPR, CCPA</p>
+<hr/>
+<h3 id="ps-05-token-security-neutralization">PS-05: Token Security Neutralization<a class="headerlink" href="#ps-05-token-security-neutralization" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-05:-token-security-neutralization -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-05</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Token Security Neutralization</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE — Production Ready</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Security</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps05_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Token exposure prevention</li>
+<li>Secret scanning integration</li>
+<li>Credential rotation support</li>
+</ul>
+<hr/>
+<h3 id="ps-06-knowledge-crawler-service">PS-06: Knowledge Crawler Service<a class="headerlink" href="#ps-06-knowledge-crawler-service" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-06:-knowledge-crawler-service -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-06</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Knowledge Crawler Service</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE — Production Ready</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Intelligence</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps06_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Knowledge crawler service operational</li>
+<li>Automated knowledge extraction</li>
+<li>RAG index integration</li>
+<li>Semantic search capabilities</li>
+</ul>
+<hr/>
+<h3 id="ps-06e-knowledge-crawler-enhancement">PS-06e: Knowledge Crawler Enhancement<a class="headerlink" href="#ps-06e-knowledge-crawler-enhancement" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-06e:-knowledge-crawler-enhancement -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-06e</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Knowledge Crawler Enhancement</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>FULLY IMPLEMENTED</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>7-8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Intelligence</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps06_enhancement_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Enhanced crawling strategies</li>
+<li>Improved knowledge extraction accuracy</li>
+<li>Quantum tokenization integration</li>
+</ul>
+<hr/>
+<h3 id="ps-07-business-logic-elevation">PS-07: Business Logic Elevation<a class="headerlink" href="#ps-07-business-logic-elevation" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-07:-business-logic-elevation -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-07</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Business Logic Elevation (D365 SLA)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>9-10</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Business Logic</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps07_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>D365 SLA monitoring integration</li>
+<li>Business logic validation rules</li>
+<li>Pydantic model definitions</li>
+<li>SLA compliance tracking</li>
+</ul>
+<p><strong>Implementation</strong>: Pydantic models for validation, automated SLA checks</p>
+<hr/>
+<h3 id="ps-08-microservice-root-cleanup">PS-08: Microservice Root Cleanup<a class="headerlink" href="#ps-08-microservice-root-cleanup" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-08:-microservice-root-cleanup -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-08</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Microservice Root Cleanup</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>8</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Architecture</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps08_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Audio service migrated from root to <code>src/services/audio/</code></li>
+<li>Configs centralized in <code>configs/services/</code></li>
+<li>Root directory decluttered</li>
+<li>Service boundaries enforced</li>
+</ul>
+<hr/>
+<h3 id="ps-09-training-entry-point-unification">PS-09: Training Entry Point Unification<a class="headerlink" href="#ps-09-training-entry-point-unification" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-09:-training-entry-point-unification -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-09</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Training Entry Point Unification</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>9</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>ML / Training</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps09_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Unified training entry point via Hydra</li>
+<li>Training configuration standardized</li>
+<li>Multi-model training support</li>
+<li>Reproducibility guarantees</li>
+</ul>
+<hr/>
+<h3 id="ps-10-owner-guard-cicd-enforcement">PS-10: Owner Guard CI/CD Enforcement<a class="headerlink" href="#ps-10-owner-guard-cicd-enforcement" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-10:-owner-guard-ci-cd-enforcement -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-10</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Owner Guard CI/CD Enforcement</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-01-09</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>10</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Governance</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>.codex/cognitive_brain/ps10_status.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ul>
+<li>Owner approval guard in CI/CD workflows</li>
+<li>Autonomous action gating</li>
+<li>Audit trail for all operations</li>
+<li>Cost-incurring workflow protection</li>
+</ul>
+<hr/>
+<h2 id="advancement-era-plansets-phase-11-12">Advancement Era Plansets (Phase 11-12)<a class="headerlink" href="#advancement-era-plansets-phase-11-12" title="Permanent link">¶</a></h2>
+<!-- anchor: -advancement-era-plansets-phase-11-12 -->
+<h3 id="ps-11-mcp-size-estimation">PS-11: MCP Size Estimation<a class="headerlink" href="#ps-11-mcp-size-estimation" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-11:-mcp-size-estimation -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-11</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>MCP Size Estimation (<code>--estimate</code> flag)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12 (completed)</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>11 (MCP Advanced Features)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>MCP / Tooling</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>docs/mcp/ADVANCED_FEATURES_PLANSET.md</code> Feature 1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives</strong>:</p>
+<ol>
+<li>Implement <code>estimate()</code> method in <code>scripts/mcp/mcp-package</code></li>
+<li>Add <code>--estimate</code> / <code>-e</code> CLI flag</li>
+<li>Size breakdown by file type with color-coded warnings</li>
+<li>Includes ~10% overhead for manifest/README/index</li>
+<li>11 unit tests passing in <code>tests/mcp/test_mcp_packaging_cli.py</code></li>
+</ol>
+<p><strong>Key Deliverables</strong>:</p>
+<ul>
+<li><code>estimate()</code> method with file count, total size, and per-extension breakdown</li>
+<li>CLI flag integration with <code>--topic</code>, <code>--custom</code>, and <code>--exclude</code> selectors</li>
+<li>Formatted output: green (&lt;30 MB), yellow (30-50 MB), red (&gt;50 MB)</li>
+<li>Tests in <code>tests/mcp/test_mcp_packaging_cli.py</code></li>
+</ul>
+<p><strong>Implementation Pattern</strong>: CLI Enhancement Select files Compute sizes Format output</p>
+<p><strong>Effort</strong>: 1 iteration-day
+<strong>Dependencies</strong>: None (uses existing <code>select_components.py</code>)</p>
+<hr/>
+<h3 id="ps-12-mcp-exclude-patterns">PS-12: MCP Exclude Patterns<a class="headerlink" href="#ps-12-mcp-exclude-patterns" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-12:-mcp-exclude-patterns -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-12</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>MCP Exclude Patterns (<code>--exclude</code> parameter)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12 (completed)</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>11 (MCP Advanced Features)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>MCP / Tooling</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>docs/mcp/ADVANCED_FEATURES_PLANSET.md</code> Feature 2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives</strong>:</p>
+<ol>
+<li>Enhanced <code>expand_globs()</code> in <code>scripts/mcp/select_components.py</code> with exclusion</li>
+<li>Added <code>--exclude</code> / <code>-x</code> CLI parameter accepting comma-separated patterns</li>
+<li>Refactored <code>_resolve_patterns()</code> helper to eliminate duplication</li>
+<li>Full backward compatibility with existing include-only usage</li>
+</ol>
+<p><strong>Key Deliverables</strong>:</p>
+<ul>
+<li><code>_resolve_patterns()</code> extracted as shared helper</li>
+<li><code>expand_globs()</code> accepts <code>exclude_patterns</code> parameter (complement subtraction)</li>
+<li>CLI integration supporting <code>--exclude "tests/**,**/__pycache__/**"</code></li>
+<li>5 unit tests for exclude patterns, 2 for topic/glob integration</li>
+</ul>
+<p><strong>Implementation Pattern</strong>: Pattern complement subtraction on file sets</p>
+<p><strong>Effort</strong>: 1 iteration-day
+<strong>Dependencies</strong>: None</p>
+<hr/>
+<h3 id="ps-13-agent-task-router">PS-13: Agent Task Router<a class="headerlink" href="#ps-13-agent-task-router" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-13:-agent-task-router -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-13</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Agent Task Router (L4 Automatic Classification)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>COMPLETE — Production Ready</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12 (completed)</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>12 (Agent System Enhancement)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>AI / Agent Coordination</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>scripts/monitoring/agent_orchestrator.py</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives Completed</strong>:</p>
+<ol>
+<li>Formalize agent routing protocol using task classification taxonomy (7 categories)</li>
+<li>Implement keywordagent mapping in orchestrator (<code>TASK_ROUTING_TABLE</code>)</li>
+<li>Add routing confidence scores with fallback chains (<code>TaskRouter</code> class)</li>
+<li>Create routing documentation via <code>list_categories()</code> and docstrings</li>
+<li>Module-level convenience function <code>route_task()</code> for quick access</li>
+</ol>
+<p><strong>Key Deliverables</strong>:</p>
+<ul>
+<li><code>TASK_ROUTING_TABLE</code>: 7 categories (ci_cd, testing, security, documentation, rag_ml, configuration, repository)</li>
+<li><code>TaskRouter</code> class: keyword matching, confidence scoring, fallback chains</li>
+<li><code>route_task()</code> convenience function for single-call routing</li>
+<li>18 tests in <code>tests/monitoring/test_task_router.py</code> (100% passing)</li>
+</ul>
+<p><strong>Implementation Details</strong>:</p>
+<ul>
+<li>7 categories with 70+ keywords total</li>
+<li>Each category maps to primary agent + 1-2 fallback agents</li>
+<li>Confidence = keyword_matches / total_keywords (0.0-1.0)</li>
+<li>Threshold: 0.3 minimum to select a category</li>
+<li>Default agent: <code>ci-testing-agent</code> when no match</li>
+</ul>
+<p><strong>ACE Layer</strong>: L4 (Executive Function) — automatic task-to-agent classification
+<strong>AAIS Impact</strong>: +1.5 points (Executive Function efficiency)</p>
+<p><strong>Patterns Learned</strong>: Keyword-based routing with confidence scoring, fallback chains</p>
+<hr/>
+<h3 id="ps-14-cognitive-dashboard-msv">PS-14: Cognitive Dashboard MSV<a class="headerlink" href="#ps-14-cognitive-dashboard-msv" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-14:-cognitive-dashboard-msv -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-14</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Cognitive Dashboard MSV Dimensions</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>ALL OBJECTIVES COMPLETE — Deployment Awaiting Merge</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>12 (Agent System Enhancement)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>UI / Visualization</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td><code>docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md</code> Path to 97.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives</strong>:</p>
+<ol>
+<li>Design MSV component for cognitive_app (5-dimension radar chart)</li>
+<li>Implement <code>MSVRadarChart.tsx</code> in <code>cognitive_app/src/components/quantum-viz/</code></li>
+<li>Real-time score updates from cognitive brain metrics (10s refresh)</li>
+<li>Interactive drill-down with tooltips and progress bars</li>
+<li>Integrate into MetricsDashboard.tsx</li>
+<li>Add fragile test hardening (65 files, top-10 packages)</li>
+<li>Document CacheManager workflow integration (5/42 workflows)</li>
+<li>Update AAIS V3.0 score (93.2 93.5)</li>
+</ol>
+<p><strong>Implementation Status (2026-02-12)</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> MSVRadarChart.tsx:
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>   - 5-dimension radar chart (Recharts)
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>   - Correctness, Conflict, Importance, Experience, Adaptive dimensions
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>   - Interactive tooltips with current/target/gap metrics
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>   - Composite score display with grade (A/A+)
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>   - Progress bars for each dimension
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>   - Color-coded status indicators
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> useMSVMetrics() hook:
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>   - Real-time data fetching (10s auto-refresh)
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>   - Fallback to mock data (development mode)
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>   - Loading/error state handling
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>   - TypeScript interfaces for MSV data
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> MetricsDashboard integration:
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>   - MSV card section added
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>   - Consistent styling with existing sections
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>   - Auto-refresh badge display
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> Infrastructure improvements:
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>   - 65 test files hardened with pytest.importorskip()
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>   - Top-10 packages: numpy (81), torch (53), hypothesis (34), typer.testing (30)
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>   - CacheManager workflow plan: 5/42 workflows documented
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>   - AAIS V3.0 update: Path to 97.0 progress tracked
+</code></pre></div>
+<p><strong>Design Specification</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Component: MSVRadarChart.tsx (10.5KB, 349 lines)
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Location: cognitive_app/src/components/quantum-viz/
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Framework: React + TypeScript + Recharts v0.2.1
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>5 MSV Dimensions (from AAIS V3.0):
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>  1. Correctness Awareness  — Tests, CodeQL, validation (95/100)
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>  2. Conflict Detection     — Split-brain, config consolidation (92/100)
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>  3. Importance Assessment  — Priority plansets, phase-gating (94/100)
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>  4. Experience Matching    — Pattern detection, meta-learning (90/100)
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>  5. Adaptive Response      — CI auto-fix, self-healing (93/100)
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>Data Model:
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>  interface MSVMetrics {
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    correctness_awareness: number;
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    conflict_detection: number;
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    importance_assessment: number;
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    experience_matching: number;
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    adaptive_response: number;
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    composite_score: number;
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    timestamp: string;
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    phase: string;
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>  }
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>Current Scores (PS-14 Implementation):
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>  Correctness:  95/100 (target: 96)
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>  Conflict:     92/100 (target: 95)
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>  Importance:   94/100 (target: 96)
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>  Experience:   90/100 (target: 94)
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>  Adaptive:     93/100 (target: 95)
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>  Composite:    92.8/100 (MSV Score)
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>  Overall AAIS: 93.5/100 (A) — Updated from 93.2
+</code></pre></div>
+<p><strong>Key Deliverables</strong>:</p>
+<ul>
+<li>React component: <code>MSVRadarChart.tsx</code> with Recharts integration</li>
+<li>TypeScript hook: <code>useMSVMetrics()</code> for data fetching</li>
+<li>Mock data generator for development</li>
+<li>Dashboard integration in MetricsDashboard.tsx</li>
+<li>Color coding: optimal (green), good (blue), warning (yellow)</li>
+<li>Interactive tooltips with target gaps</li>
+<li>Progress bars for dimension tracking</li>
+<li>Fragile test hardening (65 files)</li>
+<li>CacheManager workflow integration plan (5 workflows)</li>
+</ul>
+<p><strong>ACE Layer</strong>: L3 (Agent Model) — self-awareness visualization
+<strong>MSV Impact</strong>: +0.5 points (UI visualization complete)
+<strong>AAIS Impact</strong>: +0.3 points (93.2 93.5, Path to 97.0 progress)</p>
+<p><strong>Effort</strong>: 3 iteration-days (4-5 estimated, completed in 3)
+<strong>Dependencies</strong>: cognitive_app infrastructure, Recharts v0.2.1 (already present)</p>
+<p><strong>Files Modified</strong>: 69 files (2 new, 67 test guards, CacheManager plan doc)</p>
+<hr/>
+<h3 id="ps-15-advanced-infrastructure">PS-15: Advanced Infrastructure<a class="headerlink" href="#ps-15-advanced-infrastructure" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-15:-advanced-infrastructure -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-15</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Advanced Infrastructure</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>12 (Agent Enhancement + Infrastructure)</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Infrastructure</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objectives</strong>:</p>
+<ol>
+<li>PS-15a: CacheManager Phase 3 — Key generation replacement</li>
+<li>Replace <code>setup-python-cached</code> hash-based keys with CacheManager-generated keys in 5 target workflows</li>
+<li>Standardize cache key format across all workflows</li>
+<li>
+<p>Add cache hit/miss metrics to health reports</p>
+</li>
+<li>
+<p>PS-15b: Cognitive Brain trend analysis v2</p>
+</li>
+<li>Historical AAIS score tracking with per-session deltas</li>
+<li>Automated regression detection (score drops &gt; 0.5 trigger alert)</li>
+<li>
+<p>Mermaid trend charts in dashboard</p>
+</li>
+<li>
+<p>PS-15c: Autonomous healing loop v2</p>
+</li>
+<li>Multi-iteration healing (run up to 3 cycles until clean)</li>
+<li>Cross-module error correlation (ACE L5 improvement)</li>
+<li>Integration with CI auto-fix for closed-loop feedback</li>
+</ol>
+<p><strong>ACE Layer</strong>: L5 (Cognitive Control) — continuous improvement infrastructure
+<strong>AAIS Impact</strong>: +0.8 points (target: 93.5 94.3)
+<strong>Dependencies</strong>: CacheManager Phase 2, Healing loop v1, Trend analysis v1</p>
+<hr/>
+<h2 id="analytics">Analytics<a class="headerlink" href="#analytics" title="Permanent link">¶</a></h2>
+<!-- anchor: -analytics -->
+<h3 id="by-category">By Category<a class="headerlink" href="#by-category" title="Permanent link">¶</a></h3>
+<!-- anchor: by-category -->
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Count</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Security</td>
+<td>3 (PS-02, PS-04, PS-05)</td>
+<td>All Complete</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>2 (PS-03, PS-08)</td>
+<td>All Complete</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>1 (PS-01)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Intelligence</td>
+<td>2 (PS-06, PS-06e)</td>
+<td>All Complete</td>
+</tr>
+<tr>
+<td>Business Logic</td>
+<td>1 (PS-07)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>ML/Training</td>
+<td>1 (PS-09)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>1 (PS-10)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>MCP/Tooling</td>
+<td>2 (PS-11, PS-12)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>AI/Agents</td>
+<td>1 (PS-13)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>UI/Visualization</td>
+<td>1 (PS-14)</td>
+<td>Complete</td>
+</tr>
+<tr>
+<td>Infrastructure (Adv)</td>
+<td>1 (PS-15)</td>
+<td>Complete</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ps-16-production-readiness">PS-16: Production Readiness<a class="headerlink" href="#ps-16-production-readiness" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-16:-production-readiness -->
+<ul>
+<li><strong>ID</strong>: PS-16</li>
+<li><strong>Status</strong>: Active</li>
+<li><strong>Created</strong>: 2026-02-12</li>
+<li><strong>Era</strong>: Advancement</li>
+<li><strong>Category</strong>: Production</li>
+<li><strong>Description</strong>: Final production hardening — MSV deployment, AAIS A+ target, CacheManager full rollout, Genesis guard removal, autonomous operation mode.</li>
+</ul>
+<p><strong>Sub-plansets</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-PS</th>
+<th>Name</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PS-16a</td>
+<td>GitHub Pages Deployment</td>
+<td>Ready</td>
+<td>Deploy cognitive_app MSV dashboard via GitHub Pages (vite.config.ts configured, awaiting merge)</td>
+</tr>
+<tr>
+<td>PS-16b</td>
+<td>AAIS Path to 97.0</td>
+<td>Active</td>
+<td>3 new improvements: #9 multi-agent consensus (+0.7), #10 context window optimization (+0.8), #11 cross-session knowledge transfer (+0.7)</td>
+</tr>
+<tr>
+<td>PS-16c</td>
+<td>CacheManager Phase 4</td>
+<td>Planning</td>
+<td>Full key replacement in remaining 37 workflows (10 per batch)</td>
+</tr>
+<tr>
+<td>PS-16d</td>
+<td>Genesis Phase 10.1</td>
+<td>Planning</td>
+<td>3-step guard removal: workflow guard script guard config guard</td>
+</tr>
+<tr>
+<td>PS-16e</td>
+<td>Autonomous Operation Mode</td>
+<td>Planning</td>
+<td>4-mode progression: advisory supervised semi-autonomous autonomous</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AAIS Improvements Defined</strong>:
+- <strong>#9</strong>: Multi-agent consensus protocol — TaskRouter confidence cross-validation with agent_introspection (+0.7 pts, ACE L4)
+- <strong>#10</strong>: Context window optimization — Session state compression + priority-based context selection (+0.8 pts, MSV Awareness)
+- <strong>#11</strong>: Cross-session knowledge transfer — Persistent pattern library with session-to-session learning (+0.7 pts, Agentic Metrics)</p>
+<p><strong>Key Files</strong>:
+- <code>cognitive_app/vite.config.ts</code> — GitHub Pages base path configured
+- <code>scripts/monitoring/agent_introspection.py</code> — Agent capability scanner (consensus input)
+- <code>scripts/ci/generate_cache_keys.py</code> — CacheManager bridge for Phase 4
+- <code>.codex/ethics/imperatives.yaml</code> — Ethical framework for autonomous mode
+- <code>.codex/strategy/okr_tracking.yaml</code> — OKR-linked strategy tracking</p>
+<hr/>
+<h3 id="completion-rate">Completion Rate<a class="headerlink" href="#completion-rate" title="Permanent link">¶</a></h3>
+<!-- anchor: completion-rate -->
+<ul>
+<li><strong>Total Plansets</strong>: 17 (including PS-06e)</li>
+<li><strong>Completed</strong>: 16/17 (94%)</li>
+<li><strong>Active</strong>: 1/18 (6%)</li>
+<li><strong>Planning</strong>: 0/18 (0%)</li>
+<li><strong>Foundation Completion Date</strong>: 2026-01-09</li>
+<li><strong>Advancement Era Start</strong>: 2026-02-11</li>
+<li><strong>Latest Completion</strong>: PS-16 (2026-02-12)</li>
+<li><strong>Current Active</strong>: PS-17 (Operational Excellence), PS-18 (Continuous Improvement — Planned)</li>
+</ul>
+<hr/>
+<h3 id="ps-17-operational-excellence">PS-17: Operational Excellence<a class="headerlink" href="#ps-17-operational-excellence" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-17:-operational-excellence -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-17</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Active</td>
+</tr>
+<tr>
+<td><strong>Created</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Era</strong></td>
+<td>Post-Merge</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Operations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objective</strong>: Post-merge operational tasks — deploy cognitive_app to GitHub Pages, CacheManager Phase 4 (full key replacement in 56 remaining workflows), Genesis Phase 10.1 guard removal, and cognitive brain autonomous operation.</p>
+<p><strong>Sub-Plansets</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-PS</th>
+<th>Name</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PS-17a</td>
+<td>GitHub Pages Deployment</td>
+<td>Complete</td>
+<td>cognitive_app build step added to pages-mkdocs.yml</td>
+</tr>
+<tr>
+<td>PS-17b</td>
+<td>CacheManager Phase 4 Batch 1</td>
+<td>Complete</td>
+<td>Cache-health steps in 10 additional workflows (15/61 total)</td>
+</tr>
+<tr>
+<td>PS-17c</td>
+<td>Genesis Phase 10.1</td>
+<td>Planned</td>
+<td>3-step guard removal after admin approval</td>
+</tr>
+<tr>
+<td>PS-17d</td>
+<td>RAG Centralized Loader</td>
+<td>Complete</td>
+<td>safe_load_sentence_transformer() in _model_utils.py</td>
+</tr>
+<tr>
+<td>PS-17e</td>
+<td>Dead Link Remediation</td>
+<td>Complete</td>
+<td>Fixed 3 dead links in docs</td>
+</tr>
+<tr>
+<td>PS-17f</td>
+<td>CacheManager Phase 4 Batch 2</td>
+<td>Complete</td>
+<td>Cache-health steps in 10 more workflows (25/61 total)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deliverables</strong>:
+- <code>src/codex/rag/_model_utils.py</code> — Centralized SentenceTransformer loader
+- <code>pages-mkdocs.yml</code> — cognitive_app build + deploy step
+- 20 workflows updated with CacheManager cache-health steps (Batch 1 + 2)</p>
+<hr/>
+<h3 id="ps-18-continuous-improvement">PS-18: Continuous Improvement<a class="headerlink" href="#ps-18-continuous-improvement" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-18:-continuous-improvement -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-18</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>Created</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Completed</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Era</strong></td>
+<td>Continuous</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>Framework</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objective</strong>: Establish continuous improvement framework — CacheManager full coverage (61 workflows), automated AAIS scoring pipeline, cognitive brain autonomous healing activation, and workflow performance benchmarking.</p>
+<p><strong>Sub-Plansets</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-PS</th>
+<th>Name</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PS-18a</td>
+<td>CacheManager Phase 4 Batch 3</td>
+<td>Complete</td>
+<td>Cache-health steps in next 10 workflows (35/61)</td>
+</tr>
+<tr>
+<td>PS-18b</td>
+<td>CacheManager Phase 4 Batch 4</td>
+<td>Complete</td>
+<td>Cache-health steps in remaining 26 workflows (61/61)</td>
+</tr>
+<tr>
+<td>PS-18c</td>
+<td>AAIS Automated Pipeline</td>
+<td>Complete</td>
+<td>scripts/ci/aais_scoring_pipeline.py</td>
+</tr>
+<tr>
+<td>PS-18d</td>
+<td>Cognitive Autonomous Healing</td>
+<td>Complete</td>
+<td>healing_loop.py activated in self-healing.yml</td>
+</tr>
+<tr>
+<td>PS-18e</td>
+<td>Performance Benchmarking</td>
+<td>Complete</td>
+<td>scripts/ci/performance_benchmark.py</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="ps-19-next-evolution-phase">PS-19: Next Evolution Phase<a class="headerlink" href="#ps-19-next-evolution-phase" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-19:-next-evolution-phase -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-19</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Complete</td>
+</tr>
+<tr>
+<td><strong>Created</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Era</strong></td>
+<td>Evolution</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>AI/Platform</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Objective</strong>: Define advanced capabilities — AAIS V4.0 framework, multi-repo orchestration, ML performance tracking, automated documentation generation, and cross-team knowledge sharing.</p>
+<p><strong>Sub-Plansets</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-PS</th>
+<th>Name</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PS-19a</td>
+<td>AAIS V4.0 Framework</td>
+<td>Complete</td>
+<td>docs/evolution/AAIS_V4_FRAMEWORK.md — 4-pillar, 16-dimension model</td>
+</tr>
+<tr>
+<td>PS-19b</td>
+<td>Multi-Repo Orchestration</td>
+<td>Complete</td>
+<td>scripts/monitoring/multi_repo_orchestrator.py</td>
+</tr>
+<tr>
+<td>PS-19c</td>
+<td>ML Model Performance Tracking</td>
+<td>Complete</td>
+<td>scripts/monitoring/ml_model_tracker.py</td>
+</tr>
+<tr>
+<td>PS-19d</td>
+<td>Auto-Documentation Pipeline</td>
+<td>Complete</td>
+<td>scripts/ci/auto_doc_generator.py</td>
+</tr>
+<tr>
+<td>PS-19e</td>
+<td>Cross-Team Knowledge Sharing</td>
+<td>Complete</td>
+<td>scripts/cognitive/knowledge_sharing.py — 15 entries, 7 categories</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="cross-references">Cross-References<a class="headerlink" href="#cross-references" title="Permanent link">¶</a></h2>
+<!-- anchor: -cross-references -->
+<ul>
+<li><a href="../EVOLUTION_TIMELINE/">Evolution Timeline</a> — Phase-level view of all plansets in context</li>
+<li><a href="../COGNITIVE_EVOLUTION_TREE/">Cognitive Evolution Tree</a> — Visual representation</li>
+<li><a href="../AI_EMERGENCE_STORYBOARD/">AI Emergence Storyboard</a> — Narrative context</li>
+<li><a href="https://github.com/Aries-Serpent/_codex_/tree/main/.codex/cognitive_brain/status">Cognitive Brain Status Directory</a> — Raw status files</li>
+</ul>
+<hr/>
+<h3 id="ps-20-v40-scoring-implementation">PS-20: V4.0 Scoring Implementation<a class="headerlink" href="#ps-20-v40-scoring-implementation" title="Permanent link">¶</a></h3>
+<!-- anchor: ps-20:-v4.0-scoring-implementation -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>PS-20</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>V4.0 Scoring Implementation</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Active</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-02-12</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>Evolution</td>
+</tr>
+<tr>
+<td><strong>Category</strong></td>
+<td>AI/Scoring</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sub-plansets:</strong>
+- <strong>PS-20a</strong> V4.0 automated scorer (<code>scripts/ci/aais_v4_scorer.py</code>) — 4-pillar, 16-dimension model
+- <strong>PS-20b</strong> Technical excellence metrics (<code>scripts/ci/technical_excellence.py</code>) — lint, tests, CI, security
+- <strong>PS-20c</strong> Cognitive sophistication measurement (<code>scripts/ci/cognitive_sophistication.py</code>) — awareness, learning, patterns, decisions
+- <strong>PS-20d</strong> Operational maturity assessment (<code>scripts/ci/operational_maturity.py</code>) — automation, reliability, observability, response
+- <strong>PS-20e</strong> Ecosystem impact tracking (<code>scripts/ci/ecosystem_impact.py</code>) — reusability, docs, community, integration</p>
+<p><strong>Deliverables:</strong>
+- <code>scripts/ci/aais_v4_scorer.py</code> — Automated V4.0 scoring (99.8/100, S+ grade)
+- <code>docs/evolution/AAIS_V4_FRAMEWORK.md</code> — 4-pillar framework definition</p>
+<p><strong>AAIS V4.0 Score:</strong> 99.8/100 (S+)
+- Technical Excellence: 100.0/100
+- Cognitive Sophistication: 99.3/100
+- Operational Maturity: 100.0/100
+- Ecosystem Impact: 100.0/100</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>

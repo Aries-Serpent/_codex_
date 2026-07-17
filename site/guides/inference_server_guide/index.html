@@ -1,0 +1,2834 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/guides/inference_server_guide/" rel="canonical"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>FastAPI Inference Server - User Guide - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#fastapi-inference-server-user-guide">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              FastAPI Inference Server - User Guide
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../architecture/">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+<span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation">
+<span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#examples">
+<span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#openapi-documentation">
+<span class="md-ellipsis">
+      
+        OpenAPI Documentation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support">
+<span class="md-ellipsis">
+      
+        Support
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="fastapi-inference-server-user-guide">FastAPI Inference Server - User Guide<a class="headerlink" href="#fastapi-inference-server-user-guide" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p>**Last Updated: 2026-06-22</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The FastAPI Inference Server provides ML model serving with comprehensive safeguards including rate limiting, input validation, health checks, and metrics collection.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Rate Limiting</strong>: Per-IP request throttling (1000 req/min)</li>
+<li><strong>Input Validation</strong>: Batch size and length limits with Pydantic</li>
+<li><strong>Health Checks</strong>: Monitor server and model status</li>
+<li><strong>Metrics</strong>: Request counts, uptime, performance tracking</li>
+<li><strong>Error Handling</strong>: Graceful degradation and informative errors</li>
+<li><strong>Auto Documentation</strong>: OpenAPI/Swagger UI included</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>fastapi<span class="w"> </span>uvicorn<span class="w"> </span>pydantic
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1">## Quickstart</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1">### Basic Server</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>create_app
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="c1"># Create app</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>create_app<span class="o">(</span><span class="nv">model_name</span><span class="o">=</span><span class="s2">"my-model-v1"</span><span class="o">)</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="c1"># Run server</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="k">if</span><span class="w"> </span><span class="nv">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"__main__"</span>:
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span>import<span class="w"> </span>uvicorn
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span>uvicorn.run<span class="o">(</span>app,<span class="w"> </span><span class="nv">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">8000</span><span class="o">)</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="c1">## Start Server</span>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="c1"># Method 1: Direct</span>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>python<span class="w"> </span>src/codex_ml/serving/inference_server.py
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="c1"># Method 2: Uvicorn</span>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>uvicorn<span class="w"> </span>src.codex_ml.serving.inference_server:create_app<span class="w"> </span>--factory<span class="w"> </span>--reload
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="c1"># Method 3: Custom</span>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from src.codex_ml.serving.inference_server import create_app; import uvicorn; uvicorn.run(create_app('my-model'), port=8000)"</span>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="c1">## Make Requests</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>import<span class="w"> </span>requests
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="c1"># Health check</span>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>print<span class="o">(</span>response.json<span class="o">())</span>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="c1"># {"status": "healthy", "model_loaded": true, "uptime_seconds": 42.5, ...}</span>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="c1"># Prediction</span>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="w">    </span><span class="s2">"inputs"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"Hello world"</span>,<span class="w"> </span><span class="s2">"Another input"</span><span class="o">]</span>,
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">    </span><span class="s2">"parameters"</span>:<span class="w"> </span><span class="o">{</span><span class="s2">"temperature"</span>:<span class="w"> </span><span class="m">0</span>.7<span class="o">}</span>
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="o">}</span>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="nv">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>response.json<span class="o">()</span>
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>print<span class="o">(</span>results<span class="o">[</span><span class="s2">"predictions"</span><span class="o">])</span>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="c1">## Configuration</span>
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="c1">### Safety Limits</span>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span><span class="o">(</span>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="w">    </span>MAX_BATCH_SIZE,<span class="w">      </span><span class="c1"># 100</span>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">    </span>MAX_INPUT_LENGTH,<span class="w">    </span><span class="c1"># 10,000</span>
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">    </span>REQUEST_RATE_LIMIT,<span class="w">  </span><span class="c1"># 1,000 per minute</span>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="o">)</span>
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="c1"># These are module-level constants</span>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="c1"># Modify before import if needed</span>
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="c1">## Custom Rate Limiting</span>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>ModelServer,<span class="w"> </span>RateLimiter
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="c1"># Custom rate limiter</span>
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ModelServer<span class="o">(</span><span class="nv">model_name</span><span class="o">=</span><span class="s2">"my-model"</span><span class="o">)</span>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>server.rate_limiter<span class="w"> </span><span class="o">=</span><span class="w"> </span>RateLimiter<span class="o">(</span>
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="w">    </span><span class="nv">max_requests</span><span class="o">=</span><span class="m">500</span>,<span class="w">    </span><span class="c1"># Lower limit</span>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="w">    </span><span class="nv">window_seconds</span><span class="o">=</span><span class="m">60</span>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="o">)</span>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="c1">## Model Loading</span>
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a>
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>ModelServer
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a>
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a>class<span class="w"> </span>CustomModelServer<span class="o">(</span>ModelServer<span class="o">)</span>:
+<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="w">    </span>def<span class="w"> </span>load_model<span class="o">(</span>self<span class="o">)</span>:
+<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">        </span><span class="s2">"""Custom model loading logic"""</span>
+<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="w">        </span>import<span class="w"> </span>torch
+<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="w">        </span>self.model<span class="w"> </span><span class="o">=</span><span class="w"> </span>torch.load<span class="o">(</span><span class="s2">"model.pt"</span><span class="o">)</span>
+<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">        </span>logger.info<span class="o">(</span>f<span class="s2">"Loaded custom model: {self.model_name}"</span><span class="o">)</span>
+<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="w">    </span>def<span class="w"> </span>predict<span class="o">(</span>self,<span class="w"> </span>inputs,<span class="w"> </span><span class="nv">parameters</span><span class="o">=</span>None<span class="o">)</span>:
+<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="w">        </span><span class="s2">"""Custom inference logic"""</span>
+<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="w">        </span><span class="c1"># Your inference code here</span>
+<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="w">        </span>with<span class="w"> </span>torch.no_grad<span class="o">()</span>:
+<a href="#__codelineno-0-95" id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="w">            </span><span class="nv">predictions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>self.model<span class="o">(</span>inputs<span class="o">)</span>
+<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span>predictions.tolist<span class="o">()</span>
+<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-98" id="__codelineno-0-98" name="__codelineno-0-98"></a>
+<a href="#__codelineno-0-99" id="__codelineno-0-99" name="__codelineno-0-99"></a><span class="c1">## API Endpoints</span>
+<a href="#__codelineno-0-100" id="__codelineno-0-100" name="__codelineno-0-100"></a>
+<a href="#__codelineno-0-101" id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="c1">### GET /</span>
+<a href="#__codelineno-0-102" id="__codelineno-0-102" name="__codelineno-0-102"></a>
+<a href="#__codelineno-0-103" id="__codelineno-0-103" name="__codelineno-0-103"></a>Service<span class="w"> </span>information<span class="w"> </span>and<span class="w"> </span>available<span class="w"> </span>endpoints.
+<a href="#__codelineno-0-104" id="__codelineno-0-104" name="__codelineno-0-104"></a>
+<a href="#__codelineno-0-105" id="__codelineno-0-105" name="__codelineno-0-105"></a>**Response:**
+<a href="#__codelineno-0-106" id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sb">```</span>json
+<a href="#__codelineno-0-107" id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="o">{</span>
+<a href="#__codelineno-0-108" id="__codelineno-0-108" name="__codelineno-0-108"></a><span class="w">  </span><span class="s2">"message"</span>:<span class="w"> </span><span class="s2">"Codex ML Inference Server"</span>,
+<a href="#__codelineno-0-109" id="__codelineno-0-109" name="__codelineno-0-109"></a><span class="w">  </span><span class="s2">"model"</span>:<span class="w"> </span><span class="s2">"model-name"</span>,
+<a href="#__codelineno-0-110" id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="w">  </span><span class="s2">"endpoints"</span>:<span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-0-111" id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="w">    </span><span class="s2">"health"</span>:<span class="w"> </span><span class="s2">"/health"</span>,
+<a href="#__codelineno-0-112" id="__codelineno-0-112" name="__codelineno-0-112"></a><span class="w">    </span><span class="s2">"predict"</span>:<span class="w"> </span><span class="s2">"/predict (POST)"</span>,
+<a href="#__codelineno-0-113" id="__codelineno-0-113" name="__codelineno-0-113"></a><span class="w">    </span><span class="s2">"metrics"</span>:<span class="w"> </span><span class="s2">"/metrics"</span>
+<a href="#__codelineno-0-114" id="__codelineno-0-114" name="__codelineno-0-114"></a><span class="w">  </span><span class="o">}</span>
+<a href="#__codelineno-0-115" id="__codelineno-0-115" name="__codelineno-0-115"></a><span class="o">}</span>
+<a href="#__codelineno-0-116" id="__codelineno-0-116" name="__codelineno-0-116"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-117" id="__codelineno-0-117" name="__codelineno-0-117"></a>
+<a href="#__codelineno-0-118" id="__codelineno-0-118" name="__codelineno-0-118"></a><span class="c1">### GET /health</span>
+<a href="#__codelineno-0-119" id="__codelineno-0-119" name="__codelineno-0-119"></a>
+<a href="#__codelineno-0-120" id="__codelineno-0-120" name="__codelineno-0-120"></a>Health<span class="w"> </span>check<span class="w"> </span>endpoint.
+<a href="#__codelineno-0-121" id="__codelineno-0-121" name="__codelineno-0-121"></a>
+<a href="#__codelineno-0-122" id="__codelineno-0-122" name="__codelineno-0-122"></a>**Response:**
+<a href="#__codelineno-0-123" id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="sb">```</span>json
+<a href="#__codelineno-0-124" id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="o">{</span>
+<a href="#__codelineno-0-125" id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="w">  </span><span class="s2">"status"</span>:<span class="w"> </span><span class="s2">"healthy"</span>,
+<a href="#__codelineno-0-126" id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">  </span><span class="s2">"model_loaded"</span>:<span class="w"> </span>true,
+<a href="#__codelineno-0-127" id="__codelineno-0-127" name="__codelineno-0-127"></a><span class="w">  </span><span class="s2">"uptime_seconds"</span>:<span class="w"> </span><span class="m">123</span>.45,
+<a href="#__codelineno-0-128" id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="w">  </span><span class="s2">"total_requests"</span>:<span class="w"> </span><span class="m">42</span>
+<a href="#__codelineno-0-129" id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="o">}</span>
+<a href="#__codelineno-0-130" id="__codelineno-0-130" name="__codelineno-0-130"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-131" id="__codelineno-0-131" name="__codelineno-0-131"></a>
+<a href="#__codelineno-0-132" id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="c1">### POST /predict</span>
+<a href="#__codelineno-0-133" id="__codelineno-0-133" name="__codelineno-0-133"></a>
+<a href="#__codelineno-0-134" id="__codelineno-0-134" name="__codelineno-0-134"></a>Inference<span class="w"> </span>endpoint.
+<a href="#__codelineno-0-135" id="__codelineno-0-135" name="__codelineno-0-135"></a>
+<a href="#__codelineno-0-136" id="__codelineno-0-136" name="__codelineno-0-136"></a>**Request:**
+<a href="#__codelineno-0-137" id="__codelineno-0-137" name="__codelineno-0-137"></a><span class="sb">```</span>json
+<a href="#__codelineno-0-138" id="__codelineno-0-138" name="__codelineno-0-138"></a><span class="o">{</span>
+<a href="#__codelineno-0-139" id="__codelineno-0-139" name="__codelineno-0-139"></a><span class="w">  </span><span class="s2">"inputs"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"text1"</span>,<span class="w"> </span><span class="s2">"text2"</span><span class="o">]</span>,
+<a href="#__codelineno-0-140" id="__codelineno-0-140" name="__codelineno-0-140"></a><span class="w">  </span><span class="s2">"parameters"</span>:<span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-0-141" id="__codelineno-0-141" name="__codelineno-0-141"></a><span class="w">    </span><span class="s2">"temperature"</span>:<span class="w"> </span><span class="m">0</span>.7,
+<a href="#__codelineno-0-142" id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="w">    </span><span class="s2">"max_length"</span>:<span class="w"> </span><span class="m">100</span>
+<a href="#__codelineno-0-143" id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="w">  </span><span class="o">}</span>
+<a href="#__codelineno-0-144" id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="o">}</span>
+<a href="#__codelineno-0-145" id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-146" id="__codelineno-0-146" name="__codelineno-0-146"></a>
+<a href="#__codelineno-0-147" id="__codelineno-0-147" name="__codelineno-0-147"></a>**Validation:**
+<a href="#__codelineno-0-148" id="__codelineno-0-148" name="__codelineno-0-148"></a>-<span class="w"> </span><span class="sb">`</span>inputs<span class="sb">`</span>:<span class="w"> </span>Required,<span class="w"> </span>non-empty<span class="w"> </span>list
+<a href="#__codelineno-0-149" id="__codelineno-0-149" name="__codelineno-0-149"></a>-<span class="w"> </span>Max<span class="w"> </span>batch<span class="w"> </span>size:<span class="w"> </span><span class="m">100</span><span class="w"> </span>inputs
+<a href="#__codelineno-0-150" id="__codelineno-0-150" name="__codelineno-0-150"></a>-<span class="w"> </span>Max<span class="w"> </span>input<span class="w"> </span>length:<span class="w"> </span><span class="m">10</span>,000<span class="w"> </span>characters<span class="w"> </span>per<span class="w"> </span>input
+<a href="#__codelineno-0-151" id="__codelineno-0-151" name="__codelineno-0-151"></a>-<span class="w"> </span><span class="sb">`</span>parameters<span class="sb">`</span>:<span class="w"> </span>Optional<span class="w"> </span>dict
+<a href="#__codelineno-0-152" id="__codelineno-0-152" name="__codelineno-0-152"></a>
+<a href="#__codelineno-0-153" id="__codelineno-0-153" name="__codelineno-0-153"></a>**Response:**
+<a href="#__codelineno-0-154" id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="sb">```</span>json
+<a href="#__codelineno-0-155" id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="o">{</span>
+<a href="#__codelineno-0-156" id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="w">  </span><span class="s2">"predictions"</span>:<span class="w"> </span><span class="o">[</span>
+<a href="#__codelineno-0-157" id="__codelineno-0-157" name="__codelineno-0-157"></a><span class="w">    </span><span class="o">{</span><span class="s2">"label"</span>:<span class="w"> </span><span class="s2">"POSITIVE"</span>,<span class="w"> </span><span class="s2">"score"</span>:<span class="w"> </span><span class="m">0</span>.95<span class="o">}</span>,
+<a href="#__codelineno-0-158" id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="w">    </span><span class="o">{</span><span class="s2">"label"</span>:<span class="w"> </span><span class="s2">"NEGATIVE"</span>,<span class="w"> </span><span class="s2">"score"</span>:<span class="w"> </span><span class="m">0</span>.87<span class="o">}</span>
+<a href="#__codelineno-0-159" id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="w">  </span><span class="o">]</span>,
+<a href="#__codelineno-0-160" id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="w">  </span><span class="s2">"model_name"</span>:<span class="w"> </span><span class="s2">"my-model"</span>,
+<a href="#__codelineno-0-161" id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="w">  </span><span class="s2">"inference_time_ms"</span>:<span class="w"> </span><span class="m">42</span>.5,
+<a href="#__codelineno-0-162" id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="w">  </span><span class="s2">"metadata"</span>:<span class="w"> </span><span class="o">{</span>
+<a href="#__codelineno-0-163" id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="w">    </span><span class="s2">"batch_size"</span>:<span class="w"> </span><span class="m">2</span>,
+<a href="#__codelineno-0-164" id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="w">    </span><span class="s2">"total_requests"</span>:<span class="w"> </span><span class="m">43</span>
+<a href="#__codelineno-0-165" id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="w">  </span><span class="o">}</span>
+<a href="#__codelineno-0-166" id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="o">}</span>
+<a href="#__codelineno-0-167" id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-168" id="__codelineno-0-168" name="__codelineno-0-168"></a>
+<a href="#__codelineno-0-169" id="__codelineno-0-169" name="__codelineno-0-169"></a>**Errors:**
+<a href="#__codelineno-0-170" id="__codelineno-0-170" name="__codelineno-0-170"></a>-<span class="w"> </span><span class="sb">`</span><span class="m">400</span><span class="sb">`</span>:<span class="w"> </span>Invalid<span class="w"> </span>input<span class="w"> </span><span class="o">(</span>batch<span class="w"> </span>size,<span class="w"> </span>length<span class="o">)</span>
+<a href="#__codelineno-0-171" id="__codelineno-0-171" name="__codelineno-0-171"></a>-<span class="w"> </span><span class="sb">`</span><span class="m">429</span><span class="sb">`</span>:<span class="w"> </span>Rate<span class="w"> </span>limit<span class="w"> </span>exceeded
+<a href="#__codelineno-0-172" id="__codelineno-0-172" name="__codelineno-0-172"></a>-<span class="w"> </span><span class="sb">`</span><span class="m">500</span><span class="sb">`</span>:<span class="w"> </span>Inference<span class="w"> </span>error
+<a href="#__codelineno-0-173" id="__codelineno-0-173" name="__codelineno-0-173"></a>
+<a href="#__codelineno-0-174" id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="c1">### GET /metrics</span>
+<a href="#__codelineno-0-175" id="__codelineno-0-175" name="__codelineno-0-175"></a>
+<a href="#__codelineno-0-176" id="__codelineno-0-176" name="__codelineno-0-176"></a>Metrics<span class="w"> </span>endpoint.
+<a href="#__codelineno-0-177" id="__codelineno-0-177" name="__codelineno-0-177"></a>
+<a href="#__codelineno-0-178" id="__codelineno-0-178" name="__codelineno-0-178"></a>**Response:**
+<a href="#__codelineno-0-179" id="__codelineno-0-179" name="__codelineno-0-179"></a><span class="sb">```</span>json
+<a href="#__codelineno-0-180" id="__codelineno-0-180" name="__codelineno-0-180"></a><span class="o">{</span>
+<a href="#__codelineno-0-181" id="__codelineno-0-181" name="__codelineno-0-181"></a><span class="w">  </span><span class="s2">"total_requests"</span>:<span class="w"> </span><span class="m">142</span>,
+<a href="#__codelineno-0-182" id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="w">  </span><span class="s2">"uptime_seconds"</span>:<span class="w"> </span><span class="m">3600</span>.5,
+<a href="#__codelineno-0-183" id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="w">  </span><span class="s2">"model_name"</span>:<span class="w"> </span><span class="s2">"my-model"</span>,
+<a href="#__codelineno-0-184" id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="w">  </span><span class="s2">"model_loaded"</span>:<span class="w"> </span><span class="nb">true</span>
+<a href="#__codelineno-0-185" id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="o">}</span>
+<a href="#__codelineno-0-186" id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-187" id="__codelineno-0-187" name="__codelineno-0-187"></a>
+<a href="#__codelineno-0-188" id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="c1">## Rate Limiting</span>
+<a href="#__codelineno-0-189" id="__codelineno-0-189" name="__codelineno-0-189"></a>
+<a href="#__codelineno-0-190" id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="c1">### How It Works</span>
+<a href="#__codelineno-0-191" id="__codelineno-0-191" name="__codelineno-0-191"></a>
+<a href="#__codelineno-0-192" id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-193" id="__codelineno-0-193" name="__codelineno-0-193"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>RateLimiter
+<a href="#__codelineno-0-194" id="__codelineno-0-194" name="__codelineno-0-194"></a>
+<a href="#__codelineno-0-195" id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="nv">limiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>RateLimiter<span class="o">(</span><span class="nv">max_requests</span><span class="o">=</span><span class="m">10</span>,<span class="w"> </span><span class="nv">window_seconds</span><span class="o">=</span><span class="m">60</span><span class="o">)</span>
+<a href="#__codelineno-0-196" id="__codelineno-0-196" name="__codelineno-0-196"></a>
+<a href="#__codelineno-0-197" id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="c1"># Check if request allowed</span>
+<a href="#__codelineno-0-198" id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="k">if</span><span class="w"> </span>limiter.is_allowed<span class="o">(</span><span class="s2">"client_ip_address"</span><span class="o">)</span>:
+<a href="#__codelineno-0-199" id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="w">    </span><span class="c1"># Process request</span>
+<a href="#__codelineno-0-200" id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="w">    </span>pass
+<a href="#__codelineno-0-201" id="__codelineno-0-201" name="__codelineno-0-201"></a><span class="k">else</span>:
+<a href="#__codelineno-0-202" id="__codelineno-0-202" name="__codelineno-0-202"></a><span class="w">    </span><span class="c1"># Return 429 Too Many Requests</span>
+<a href="#__codelineno-0-203" id="__codelineno-0-203" name="__codelineno-0-203"></a><span class="w">    </span>pass
+<a href="#__codelineno-0-204" id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-205" id="__codelineno-0-205" name="__codelineno-0-205"></a>
+<a href="#__codelineno-0-206" id="__codelineno-0-206" name="__codelineno-0-206"></a><span class="c1">## Sliding Window</span>
+<a href="#__codelineno-0-207" id="__codelineno-0-207" name="__codelineno-0-207"></a>
+<a href="#__codelineno-0-208" id="__codelineno-0-208" name="__codelineno-0-208"></a>-<span class="w"> </span>Tracks<span class="w"> </span>requests<span class="w"> </span>per<span class="w"> </span>client<span class="w"> </span><span class="o">(</span>by<span class="w"> </span>IP<span class="o">)</span>
+<a href="#__codelineno-0-209" id="__codelineno-0-209" name="__codelineno-0-209"></a>-<span class="w"> </span>Removes<span class="w"> </span>expired<span class="w"> </span>requests<span class="w"> </span>automatically
+<a href="#__codelineno-0-210" id="__codelineno-0-210" name="__codelineno-0-210"></a>-<span class="w"> </span>Independent<span class="w"> </span>limits<span class="w"> </span>per<span class="w"> </span>client
+<a href="#__codelineno-0-211" id="__codelineno-0-211" name="__codelineno-0-211"></a>-<span class="w"> </span>Default:<span class="w"> </span><span class="m">1000</span><span class="w"> </span>requests<span class="w"> </span>per<span class="w"> </span><span class="m">60</span><span class="w"> </span>seconds
+<a href="#__codelineno-0-212" id="__codelineno-0-212" name="__codelineno-0-212"></a>
+<a href="#__codelineno-0-213" id="__codelineno-0-213" name="__codelineno-0-213"></a><span class="c1">### Bypassing (for testing)</span>
+<a href="#__codelineno-0-214" id="__codelineno-0-214" name="__codelineno-0-214"></a>
+<a href="#__codelineno-0-215" id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-216" id="__codelineno-0-216" name="__codelineno-0-216"></a><span class="c1"># Disable rate limiting for tests</span>
+<a href="#__codelineno-0-217" id="__codelineno-0-217" name="__codelineno-0-217"></a><span class="nv">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>create_app<span class="o">()</span>
+<a href="#__codelineno-0-218" id="__codelineno-0-218" name="__codelineno-0-218"></a>app.middleware_stack<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span>
+<a href="#__codelineno-0-219" id="__codelineno-0-219" name="__codelineno-0-219"></a><span class="w">    </span>m<span class="w"> </span><span class="k">for</span><span class="w"> </span>m<span class="w"> </span><span class="k">in</span><span class="w"> </span>app.middleware_stack
+<a href="#__codelineno-0-220" id="__codelineno-0-220" name="__codelineno-0-220"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="s2">"rate_limit"</span><span class="w"> </span>not<span class="w"> </span><span class="k">in</span><span class="w"> </span>str<span class="o">(</span>m<span class="o">)</span>
+<a href="#__codelineno-0-221" id="__codelineno-0-221" name="__codelineno-0-221"></a><span class="o">]</span>
+<a href="#__codelineno-0-222" id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-223" id="__codelineno-0-223" name="__codelineno-0-223"></a>
+<a href="#__codelineno-0-224" id="__codelineno-0-224" name="__codelineno-0-224"></a><span class="c1">## Input Validation</span>
+<a href="#__codelineno-0-225" id="__codelineno-0-225" name="__codelineno-0-225"></a>
+<a href="#__codelineno-0-226" id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="c1">### Pydantic Models</span>
+<a href="#__codelineno-0-227" id="__codelineno-0-227" name="__codelineno-0-227"></a>
+<a href="#__codelineno-0-228" id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-229" id="__codelineno-0-229" name="__codelineno-0-229"></a>from<span class="w"> </span>pydantic<span class="w"> </span>import<span class="w"> </span>BaseModel,<span class="w"> </span>Field,<span class="w"> </span>validator
+<a href="#__codelineno-0-230" id="__codelineno-0-230" name="__codelineno-0-230"></a>
+<a href="#__codelineno-0-231" id="__codelineno-0-231" name="__codelineno-0-231"></a>class<span class="w"> </span>PredictionRequest<span class="o">(</span>BaseModel<span class="o">)</span>:
+<a href="#__codelineno-0-232" id="__codelineno-0-232" name="__codelineno-0-232"></a><span class="w">    </span>inputs:<span class="w"> </span>List<span class="o">[</span>str<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Field<span class="o">(</span>...,<span class="w"> </span><span class="nv">description</span><span class="o">=</span><span class="s2">"Input texts"</span><span class="o">)</span>
+<a href="#__codelineno-0-233" id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="w">    </span>parameters:<span class="w"> </span>Optional<span class="o">[</span>Dict<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None
+<a href="#__codelineno-0-234" id="__codelineno-0-234" name="__codelineno-0-234"></a>
+<a href="#__codelineno-0-235" id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="w">    </span>@validator<span class="o">(</span><span class="s1">'inputs'</span><span class="o">)</span>
+<a href="#__codelineno-0-236" id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="w">    </span>def<span class="w"> </span>validate_inputs<span class="o">(</span>cls,<span class="w"> </span>v<span class="o">)</span>:
+<a href="#__codelineno-0-237" id="__codelineno-0-237" name="__codelineno-0-237"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>v:
+<a href="#__codelineno-0-238" id="__codelineno-0-238" name="__codelineno-0-238"></a><span class="w">            </span>raise<span class="w"> </span>ValueError<span class="o">(</span><span class="s2">"Inputs cannot be empty"</span><span class="o">)</span>
+<a href="#__codelineno-0-239" id="__codelineno-0-239" name="__codelineno-0-239"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span>len<span class="o">(</span>v<span class="o">)</span><span class="w"> </span>&gt;<span class="w"> </span>MAX_BATCH_SIZE:
+<a href="#__codelineno-0-240" id="__codelineno-0-240" name="__codelineno-0-240"></a><span class="w">            </span>raise<span class="w"> </span>ValueError<span class="o">(</span>f<span class="s2">"Batch size exceeds {MAX_BATCH_SIZE}"</span><span class="o">)</span>
+<a href="#__codelineno-0-241" id="__codelineno-0-241" name="__codelineno-0-241"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span>v
+<a href="#__codelineno-0-242" id="__codelineno-0-242" name="__codelineno-0-242"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-243" id="__codelineno-0-243" name="__codelineno-0-243"></a>
+<a href="#__codelineno-0-244" id="__codelineno-0-244" name="__codelineno-0-244"></a><span class="c1">### Custom Validation</span>
+<a href="#__codelineno-0-245" id="__codelineno-0-245" name="__codelineno-0-245"></a>
+<a href="#__codelineno-0-246" id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-247" id="__codelineno-0-247" name="__codelineno-0-247"></a>class<span class="w"> </span>CustomRequest<span class="o">(</span>PredictionRequest<span class="o">)</span>:
+<a href="#__codelineno-0-248" id="__codelineno-0-248" name="__codelineno-0-248"></a><span class="w">    </span>@validator<span class="o">(</span><span class="s1">'inputs'</span><span class="o">)</span>
+<a href="#__codelineno-0-249" id="__codelineno-0-249" name="__codelineno-0-249"></a><span class="w">    </span>def<span class="w"> </span>validate_language<span class="o">(</span>cls,<span class="w"> </span>v<span class="o">)</span>:
+<a href="#__codelineno-0-250" id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="w">        </span><span class="c1"># Add custom validation</span>
+<a href="#__codelineno-0-251" id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span>text<span class="w"> </span><span class="k">in</span><span class="w"> </span>v:
+<a href="#__codelineno-0-252" id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span>not<span class="w"> </span>text.isascii<span class="o">()</span>:
+<a href="#__codelineno-0-253" id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">                </span>raise<span class="w"> </span>ValueError<span class="o">(</span><span class="s2">"Only ASCII input allowed"</span><span class="o">)</span>
+<a href="#__codelineno-0-254" id="__codelineno-0-254" name="__codelineno-0-254"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span>v
+<a href="#__codelineno-0-255" id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-256" id="__codelineno-0-256" name="__codelineno-0-256"></a>
+<a href="#__codelineno-0-257" id="__codelineno-0-257" name="__codelineno-0-257"></a><span class="c1">## Error Handling</span>
+<a href="#__codelineno-0-258" id="__codelineno-0-258" name="__codelineno-0-258"></a>
+<a href="#__codelineno-0-259" id="__codelineno-0-259" name="__codelineno-0-259"></a><span class="c1">### Common Errors</span>
+<a href="#__codelineno-0-260" id="__codelineno-0-260" name="__codelineno-0-260"></a>
+<a href="#__codelineno-0-261" id="__codelineno-0-261" name="__codelineno-0-261"></a>**Rate<span class="w"> </span>Limit<span class="w"> </span>Exceeded<span class="w"> </span><span class="o">(</span><span class="m">429</span><span class="o">)</span>:**
+<a href="#__codelineno-0-262" id="__codelineno-0-262" name="__codelineno-0-262"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-263" id="__codelineno-0-263" name="__codelineno-0-263"></a>try:
+<a href="#__codelineno-0-264" id="__codelineno-0-264" name="__codelineno-0-264"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>requests.post<span class="o">(</span>url,<span class="w"> </span><span class="nv">json</span><span class="o">=</span>data<span class="o">)</span>
+<a href="#__codelineno-0-265" id="__codelineno-0-265" name="__codelineno-0-265"></a><span class="w">    </span>response.raise_for_status<span class="o">()</span>
+<a href="#__codelineno-0-266" id="__codelineno-0-266" name="__codelineno-0-266"></a>except<span class="w"> </span>requests.HTTPError<span class="w"> </span>as<span class="w"> </span>e:
+<a href="#__codelineno-0-267" id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span>e.response.status_code<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">429</span>:
+<a href="#__codelineno-0-268" id="__codelineno-0-268" name="__codelineno-0-268"></a><span class="w">        </span>print<span class="o">(</span><span class="s2">"Rate limited. Wait before retrying."</span><span class="o">)</span>
+<a href="#__codelineno-0-269" id="__codelineno-0-269" name="__codelineno-0-269"></a><span class="w">        </span>time.sleep<span class="o">(</span><span class="m">60</span><span class="o">)</span><span class="w">  </span><span class="c1"># Wait 1 minute</span>
+<a href="#__codelineno-0-270" id="__codelineno-0-270" name="__codelineno-0-270"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-271" id="__codelineno-0-271" name="__codelineno-0-271"></a>
+<a href="#__codelineno-0-272" id="__codelineno-0-272" name="__codelineno-0-272"></a>**Invalid<span class="w"> </span>Input<span class="w"> </span><span class="o">(</span><span class="m">400</span><span class="o">)</span>:**
+<a href="#__codelineno-0-273" id="__codelineno-0-273" name="__codelineno-0-273"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-274" id="__codelineno-0-274" name="__codelineno-0-274"></a>try:
+<a href="#__codelineno-0-275" id="__codelineno-0-275" name="__codelineno-0-275"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>requests.post<span class="o">(</span>url,<span class="w"> </span><span class="nv">json</span><span class="o">=</span>data<span class="o">)</span>
+<a href="#__codelineno-0-276" id="__codelineno-0-276" name="__codelineno-0-276"></a><span class="w">    </span>response.raise_for_status<span class="o">()</span>
+<a href="#__codelineno-0-277" id="__codelineno-0-277" name="__codelineno-0-277"></a>except<span class="w"> </span>requests.HTTPError<span class="w"> </span>as<span class="w"> </span>e:
+<a href="#__codelineno-0-278" id="__codelineno-0-278" name="__codelineno-0-278"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span>e.response.status_code<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">400</span>:
+<a href="#__codelineno-0-279" id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="w">        </span>print<span class="o">(</span>f<span class="s2">"Invalid input: {e.response.json()['detail']}"</span><span class="o">)</span>
+<a href="#__codelineno-0-280" id="__codelineno-0-280" name="__codelineno-0-280"></a><span class="w">        </span><span class="c1"># Fix input and retry</span>
+<a href="#__codelineno-0-281" id="__codelineno-0-281" name="__codelineno-0-281"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-282" id="__codelineno-0-282" name="__codelineno-0-282"></a>
+<a href="#__codelineno-0-283" id="__codelineno-0-283" name="__codelineno-0-283"></a>**Server<span class="w"> </span>Error<span class="w"> </span><span class="o">(</span><span class="m">500</span><span class="o">)</span>:**
+<a href="#__codelineno-0-284" id="__codelineno-0-284" name="__codelineno-0-284"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-285" id="__codelineno-0-285" name="__codelineno-0-285"></a>try:
+<a href="#__codelineno-0-286" id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>requests.post<span class="o">(</span>url,<span class="w"> </span><span class="nv">json</span><span class="o">=</span>data<span class="o">)</span>
+<a href="#__codelineno-0-287" id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="w">    </span>response.raise_for_status<span class="o">()</span>
+<a href="#__codelineno-0-288" id="__codelineno-0-288" name="__codelineno-0-288"></a>except<span class="w"> </span>requests.HTTPError<span class="w"> </span>as<span class="w"> </span>e:
+<a href="#__codelineno-0-289" id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span>e.response.status_code<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">500</span>:
+<a href="#__codelineno-0-290" id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="w">        </span>print<span class="o">(</span><span class="s2">"Server error. Check server logs."</span><span class="o">)</span>
+<a href="#__codelineno-0-291" id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="w">        </span><span class="c1"># Implement retry with backoff</span>
+<a href="#__codelineno-0-292" id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-293" id="__codelineno-0-293" name="__codelineno-0-293"></a>
+<a href="#__codelineno-0-294" id="__codelineno-0-294" name="__codelineno-0-294"></a><span class="c1">## Production Deployment</span>
+<a href="#__codelineno-0-295" id="__codelineno-0-295" name="__codelineno-0-295"></a>
+<a href="#__codelineno-0-296" id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="c1">### With Gunicorn</span>
+<a href="#__codelineno-0-297" id="__codelineno-0-297" name="__codelineno-0-297"></a>
+<a href="#__codelineno-0-298" id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-299" id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="c1"># Install</span>
+<a href="#__codelineno-0-300" id="__codelineno-0-300" name="__codelineno-0-300"></a>pip<span class="w"> </span>install<span class="w"> </span>gunicorn
+<a href="#__codelineno-0-301" id="__codelineno-0-301" name="__codelineno-0-301"></a>
+<a href="#__codelineno-0-302" id="__codelineno-0-302" name="__codelineno-0-302"></a><span class="c1"># Run with multiple workers</span>
+<a href="#__codelineno-0-303" id="__codelineno-0-303" name="__codelineno-0-303"></a>gunicorn<span class="w"> </span>-w<span class="w"> </span><span class="m">4</span><span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-304" id="__codelineno-0-304" name="__codelineno-0-304"></a><span class="w">  </span>src.codex_ml.serving.inference_server:create_app<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-305" id="__codelineno-0-305" name="__codelineno-0-305"></a><span class="w">  </span>--bind<span class="w"> </span><span class="m">0</span>.0.0.0:8000
+<a href="#__codelineno-0-306" id="__codelineno-0-306" name="__codelineno-0-306"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-307" id="__codelineno-0-307" name="__codelineno-0-307"></a>
+<a href="#__codelineno-0-308" id="__codelineno-0-308" name="__codelineno-0-308"></a><span class="c1">## With Docker</span>
+<a href="#__codelineno-0-309" id="__codelineno-0-309" name="__codelineno-0-309"></a>
+<a href="#__codelineno-0-310" id="__codelineno-0-310" name="__codelineno-0-310"></a><span class="sb">```</span>dockerfile
+<a href="#__codelineno-0-311" id="__codelineno-0-311" name="__codelineno-0-311"></a>FROM<span class="w"> </span>python:3.12-slim
+<a href="#__codelineno-0-312" id="__codelineno-0-312" name="__codelineno-0-312"></a>
+<a href="#__codelineno-0-313" id="__codelineno-0-313" name="__codelineno-0-313"></a>WORKDIR<span class="w"> </span>/app
+<a href="#__codelineno-0-314" id="__codelineno-0-314" name="__codelineno-0-314"></a>COPY<span class="w"> </span>requirements.txt<span class="w"> </span>.
+<a href="#__codelineno-0-315" id="__codelineno-0-315" name="__codelineno-0-315"></a>RUN<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<a href="#__codelineno-0-316" id="__codelineno-0-316" name="__codelineno-0-316"></a>
+<a href="#__codelineno-0-317" id="__codelineno-0-317" name="__codelineno-0-317"></a>COPY<span class="w"> </span>src/<span class="w"> </span>./src/
+<a href="#__codelineno-0-318" id="__codelineno-0-318" name="__codelineno-0-318"></a>EXPOSE<span class="w"> </span><span class="m">8000</span>
+<a href="#__codelineno-0-319" id="__codelineno-0-319" name="__codelineno-0-319"></a>
+<a href="#__codelineno-0-320" id="__codelineno-0-320" name="__codelineno-0-320"></a>CMD<span class="w"> </span><span class="o">[</span><span class="s2">"uvicorn"</span>,<span class="w"> </span><span class="s2">"src.codex_ml.serving.inference_server:create_app"</span>,<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-321" id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="w">     </span><span class="s2">"--factory"</span>,<span class="w"> </span><span class="s2">"--host"</span>,<span class="w"> </span><span class="s2">"0.0.0.0"</span>,<span class="w"> </span><span class="s2">"--port"</span>,<span class="w"> </span><span class="s2">"8000"</span><span class="o">]</span>
+<a href="#__codelineno-0-322" id="__codelineno-0-322" name="__codelineno-0-322"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-323" id="__codelineno-0-323" name="__codelineno-0-323"></a>
+<a href="#__codelineno-0-324" id="__codelineno-0-324" name="__codelineno-0-324"></a><span class="c1">### Environment Variables</span>
+<a href="#__codelineno-0-325" id="__codelineno-0-325" name="__codelineno-0-325"></a>
+<a href="#__codelineno-0-326" id="__codelineno-0-326" name="__codelineno-0-326"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-327" id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="c1"># Set model name</span>
+<a href="#__codelineno-0-328" id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_NAME</span><span class="o">=</span><span class="s2">"production-model-v2"</span>
+<a href="#__codelineno-0-329" id="__codelineno-0-329" name="__codelineno-0-329"></a>
+<a href="#__codelineno-0-330" id="__codelineno-0-330" name="__codelineno-0-330"></a><span class="c1"># Run</span>
+<a href="#__codelineno-0-331" id="__codelineno-0-331" name="__codelineno-0-331"></a>python<span class="w"> </span>src/codex_ml/serving/inference_server.py
+<a href="#__codelineno-0-332" id="__codelineno-0-332" name="__codelineno-0-332"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-333" id="__codelineno-0-333" name="__codelineno-0-333"></a>
+<a href="#__codelineno-0-334" id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="c1">## Monitoring</span>
+<a href="#__codelineno-0-335" id="__codelineno-0-335" name="__codelineno-0-335"></a>
+<a href="#__codelineno-0-336" id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="c1">### Prometheus Metrics (Future)</span>
+<a href="#__codelineno-0-337" id="__codelineno-0-337" name="__codelineno-0-337"></a>
+<a href="#__codelineno-0-338" id="__codelineno-0-338" name="__codelineno-0-338"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-339" id="__codelineno-0-339" name="__codelineno-0-339"></a>from<span class="w"> </span>prometheus_client<span class="w"> </span>import<span class="w"> </span>Counter,<span class="w"> </span>Histogram
+<a href="#__codelineno-0-340" id="__codelineno-0-340" name="__codelineno-0-340"></a>
+<a href="#__codelineno-0-341" id="__codelineno-0-341" name="__codelineno-0-341"></a><span class="nv">request_counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Counter<span class="o">(</span><span class="s1">'requests_total'</span>,<span class="w"> </span><span class="s1">'Total requests'</span><span class="o">)</span>
+<a href="#__codelineno-0-342" id="__codelineno-0-342" name="__codelineno-0-342"></a><span class="nv">latency_histogram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Histogram<span class="o">(</span><span class="s1">'request_latency'</span>,<span class="w"> </span><span class="s1">'Request latency'</span><span class="o">)</span>
+<a href="#__codelineno-0-343" id="__codelineno-0-343" name="__codelineno-0-343"></a>
+<a href="#__codelineno-0-344" id="__codelineno-0-344" name="__codelineno-0-344"></a>@app.post<span class="o">(</span><span class="s2">"/predict"</span><span class="o">)</span>
+<a href="#__codelineno-0-345" id="__codelineno-0-345" name="__codelineno-0-345"></a>async<span class="w"> </span>def<span class="w"> </span>predict<span class="o">(</span>request:<span class="w"> </span>PredictionRequest<span class="o">)</span>:
+<a href="#__codelineno-0-346" id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="w">    </span>request_counter.inc<span class="o">()</span>
+<a href="#__codelineno-0-347" id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="w">    </span>with<span class="w"> </span>latency_histogram.time<span class="o">()</span>:
+<a href="#__codelineno-0-348" id="__codelineno-0-348" name="__codelineno-0-348"></a><span class="w">        </span><span class="c1"># ... inference ...</span>
+<a href="#__codelineno-0-349" id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="w">        </span>pass
+<a href="#__codelineno-0-350" id="__codelineno-0-350" name="__codelineno-0-350"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-351" id="__codelineno-0-351" name="__codelineno-0-351"></a>
+<a href="#__codelineno-0-352" id="__codelineno-0-352" name="__codelineno-0-352"></a><span class="c1">### Logging</span>
+<a href="#__codelineno-0-353" id="__codelineno-0-353" name="__codelineno-0-353"></a>
+<a href="#__codelineno-0-354" id="__codelineno-0-354" name="__codelineno-0-354"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-355" id="__codelineno-0-355" name="__codelineno-0-355"></a>import<span class="w"> </span>logging
+<a href="#__codelineno-0-356" id="__codelineno-0-356" name="__codelineno-0-356"></a>
+<a href="#__codelineno-0-357" id="__codelineno-0-357" name="__codelineno-0-357"></a>logging.basicConfig<span class="o">(</span>
+<a href="#__codelineno-0-358" id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="w">    </span><span class="nv">level</span><span class="o">=</span>logging.INFO,
+<a href="#__codelineno-0-359" id="__codelineno-0-359" name="__codelineno-0-359"></a><span class="w">    </span><span class="nv">format</span><span class="o">=</span><span class="s1">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>
+<a href="#__codelineno-0-360" id="__codelineno-0-360" name="__codelineno-0-360"></a><span class="o">)</span>
+<a href="#__codelineno-0-361" id="__codelineno-0-361" name="__codelineno-0-361"></a>
+<a href="#__codelineno-0-362" id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="c1"># Logs appear in server output</span>
+<a href="#__codelineno-0-363" id="__codelineno-0-363" name="__codelineno-0-363"></a><span class="c1"># INFO - Initialized ModelServer for: my-model</span>
+<a href="#__codelineno-0-364" id="__codelineno-0-364" name="__codelineno-0-364"></a><span class="c1"># INFO - Model loaded successfully</span>
+<a href="#__codelineno-0-365" id="__codelineno-0-365" name="__codelineno-0-365"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-366" id="__codelineno-0-366" name="__codelineno-0-366"></a>
+<a href="#__codelineno-0-367" id="__codelineno-0-367" name="__codelineno-0-367"></a><span class="c1">## Testing</span>
+<a href="#__codelineno-0-368" id="__codelineno-0-368" name="__codelineno-0-368"></a>
+<a href="#__codelineno-0-369" id="__codelineno-0-369" name="__codelineno-0-369"></a><span class="c1">### Unit Tests</span>
+<a href="#__codelineno-0-370" id="__codelineno-0-370" name="__codelineno-0-370"></a>
+<a href="#__codelineno-0-371" id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-372" id="__codelineno-0-372" name="__codelineno-0-372"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>ModelServer,<span class="w"> </span>RateLimiter
+<a href="#__codelineno-0-373" id="__codelineno-0-373" name="__codelineno-0-373"></a>
+<a href="#__codelineno-0-374" id="__codelineno-0-374" name="__codelineno-0-374"></a>def<span class="w"> </span>test_model_server<span class="o">()</span>:
+<a href="#__codelineno-0-375" id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="w">    </span><span class="nv">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ModelServer<span class="o">(</span><span class="s2">"test-model"</span><span class="o">)</span>
+<a href="#__codelineno-0-376" id="__codelineno-0-376" name="__codelineno-0-376"></a><span class="w">    </span>server.load_model<span class="o">()</span>
+<a href="#__codelineno-0-377" id="__codelineno-0-377" name="__codelineno-0-377"></a>
+<a href="#__codelineno-0-378" id="__codelineno-0-378" name="__codelineno-0-378"></a><span class="w">    </span><span class="nv">predictions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>server.predict<span class="o">([</span><span class="s2">"input1"</span>,<span class="w"> </span><span class="s2">"input2"</span><span class="o">])</span>
+<a href="#__codelineno-0-379" id="__codelineno-0-379" name="__codelineno-0-379"></a><span class="w">    </span>assert<span class="w"> </span>len<span class="o">(</span>predictions<span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2</span>
+<a href="#__codelineno-0-380" id="__codelineno-0-380" name="__codelineno-0-380"></a>
+<a href="#__codelineno-0-381" id="__codelineno-0-381" name="__codelineno-0-381"></a>def<span class="w"> </span>test_rate_limiter<span class="o">()</span>:
+<a href="#__codelineno-0-382" id="__codelineno-0-382" name="__codelineno-0-382"></a><span class="w">    </span><span class="nv">limiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>RateLimiter<span class="o">(</span><span class="nv">max_requests</span><span class="o">=</span><span class="m">2</span>,<span class="w"> </span><span class="nv">window_seconds</span><span class="o">=</span><span class="m">60</span><span class="o">)</span>
+<a href="#__codelineno-0-383" id="__codelineno-0-383" name="__codelineno-0-383"></a>
+<a href="#__codelineno-0-384" id="__codelineno-0-384" name="__codelineno-0-384"></a><span class="w">    </span>assert<span class="w"> </span>limiter.is_allowed<span class="o">(</span><span class="s2">"client1"</span><span class="o">)</span><span class="w"> </span>is<span class="w"> </span>True
+<a href="#__codelineno-0-385" id="__codelineno-0-385" name="__codelineno-0-385"></a><span class="w">    </span>assert<span class="w"> </span>limiter.is_allowed<span class="o">(</span><span class="s2">"client1"</span><span class="o">)</span><span class="w"> </span>is<span class="w"> </span>True
+<a href="#__codelineno-0-386" id="__codelineno-0-386" name="__codelineno-0-386"></a><span class="w">    </span>assert<span class="w"> </span>limiter.is_allowed<span class="o">(</span><span class="s2">"client1"</span><span class="o">)</span><span class="w"> </span>is<span class="w"> </span>False<span class="w">  </span><span class="c1"># Exceeded</span>
+<a href="#__codelineno-0-387" id="__codelineno-0-387" name="__codelineno-0-387"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-388" id="__codelineno-0-388" name="__codelineno-0-388"></a>
+<a href="#__codelineno-0-389" id="__codelineno-0-389" name="__codelineno-0-389"></a><span class="c1">### Integration Tests</span>
+<a href="#__codelineno-0-390" id="__codelineno-0-390" name="__codelineno-0-390"></a>
+<a href="#__codelineno-0-391" id="__codelineno-0-391" name="__codelineno-0-391"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-392" id="__codelineno-0-392" name="__codelineno-0-392"></a>from<span class="w"> </span>fastapi.testclient<span class="w"> </span>import<span class="w"> </span>TestClient
+<a href="#__codelineno-0-393" id="__codelineno-0-393" name="__codelineno-0-393"></a>from<span class="w"> </span>src.codex_ml.serving.inference_server<span class="w"> </span>import<span class="w"> </span>create_app
+<a href="#__codelineno-0-394" id="__codelineno-0-394" name="__codelineno-0-394"></a>
+<a href="#__codelineno-0-395" id="__codelineno-0-395" name="__codelineno-0-395"></a><span class="nv">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>TestClient<span class="o">(</span>create_app<span class="o">())</span>
+<a href="#__codelineno-0-396" id="__codelineno-0-396" name="__codelineno-0-396"></a>
+<a href="#__codelineno-0-397" id="__codelineno-0-397" name="__codelineno-0-397"></a>def<span class="w"> </span>test_health<span class="o">()</span>:
+<a href="#__codelineno-0-398" id="__codelineno-0-398" name="__codelineno-0-398"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>client.get<span class="o">(</span><span class="s2">"/health"</span><span class="o">)</span>
+<a href="#__codelineno-0-399" id="__codelineno-0-399" name="__codelineno-0-399"></a><span class="w">    </span>assert<span class="w"> </span>response.status_code<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">200</span>
+<a href="#__codelineno-0-400" id="__codelineno-0-400" name="__codelineno-0-400"></a><span class="w">    </span>assert<span class="w"> </span>response.json<span class="o">()[</span><span class="s2">"status"</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"healthy"</span>
+<a href="#__codelineno-0-401" id="__codelineno-0-401" name="__codelineno-0-401"></a>
+<a href="#__codelineno-0-402" id="__codelineno-0-402" name="__codelineno-0-402"></a>def<span class="w"> </span>test_predict<span class="o">()</span>:
+<a href="#__codelineno-0-403" id="__codelineno-0-403" name="__codelineno-0-403"></a><span class="w">    </span><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="s2">"inputs"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"test input"</span><span class="o">]}</span>
+<a href="#__codelineno-0-404" id="__codelineno-0-404" name="__codelineno-0-404"></a><span class="w">    </span><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>client.post<span class="o">(</span><span class="s2">"/predict"</span>,<span class="w"> </span><span class="nv">json</span><span class="o">=</span>data<span class="o">)</span>
+<a href="#__codelineno-0-405" id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="w">    </span>assert<span class="w"> </span>response.status_code<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">200</span>
+<a href="#__codelineno-0-406" id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="w">    </span>assert<span class="w"> </span><span class="s2">"predictions"</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>response.json<span class="o">()</span>
+<a href="#__codelineno-0-407" id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-408" id="__codelineno-0-408" name="__codelineno-0-408"></a>
+<a href="#__codelineno-0-409" id="__codelineno-0-409" name="__codelineno-0-409"></a><span class="c1">## Best Practices</span>
+<a href="#__codelineno-0-410" id="__codelineno-0-410" name="__codelineno-0-410"></a>
+<a href="#__codelineno-0-411" id="__codelineno-0-411" name="__codelineno-0-411"></a><span class="m">1</span>.<span class="w"> </span>**Always<span class="w"> </span>validate<span class="w"> </span>inputs**
+<a href="#__codelineno-0-412" id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sb">```</span>python
+<a href="#__codelineno-0-413" id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="c1"># Server handles this automatically with Pydantic</span>
+</code></pre></div>
+<ol>
+<li>
+<p><strong>Monitor rate limits</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Check metrics regularly</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total requests: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'total_requests'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Handle errors gracefully</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Request failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Use health checks</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Before making requests</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">health</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/health"</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="k">if</span> <span class="n">health</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"healthy"</span><span class="p">:</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Server unhealthy"</span><span class="p">)</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Batch requests when possible</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Instead of 100 single requests</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">inputs_batch</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"input1"</span><span class="p">,</span> <span class="s2">"input2"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="s2">"input100"</span><span class="p">]</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"inputs"</span><span class="p">:</span> <span class="n">inputs_batch</span><span class="p">})</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h2>
+<p>See <code>tests/codex_ml/test_inference_server.py</code> for comprehensive examples.</p>
+<h2 id="openapi-documentation">OpenAPI Documentation<a class="headerlink" href="#openapi-documentation" title="Permanent link">¶</a></h2>
+<p>Access auto-generated docs:</p>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<p>For issues or questions:
+- Check test suite: <code>tests/codex_ml/test_inference_server.py</code>
+- Review source: <code>src/codex_ml/serving/inference_server.py</code>
+- Check server logs for errors</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+</body>
+</html>
