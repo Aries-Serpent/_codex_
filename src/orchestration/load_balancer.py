@@ -210,7 +210,7 @@ class LoadBalancer:
     """Multi-agent load balancer."""
     
     def __init__(self, max_queue_depth: int = 1000):
-        self._queues: dict[str, list[QueueEntry]] = defaultdict(list)
+        self._queues: dict[str, list[tuple[int, QueueEntry]]] = defaultdict(list)
         self._capacity: dict[str, AgentCapacity] = {}
         self._circuit_breakers: dict[str, CircuitBreaker] = {}
         self._max_queue_depth = max_queue_depth

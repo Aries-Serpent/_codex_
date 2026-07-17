@@ -273,7 +273,7 @@ class RAGMonitor:
         """Get overall health summary."""
         operation_types = set(m.operation_type for m in self._metrics)
 
-        health_summary = {
+        health_summary: dict[str, Any] = {
             "timestamp": time.time(),
             "total_operations": len(self._metrics),
             "total_alerts": len(self._alerts),
