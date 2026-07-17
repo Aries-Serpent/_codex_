@@ -63,14 +63,14 @@ jobs:
             echo "⚠️  No PR number provided, skipping auto-approve trigger"
             exit 0
           fi
-          
+
           echo "Attempting to trigger auto-approve workflow for PR #$PR_NUMBER"
           gh workflow run auto-approve-workflows.yml \
             --repo Aries-Serpent/_codex_ \
             -f approval_source=workflow-execution-gate \
             -f target_pr="$PR_NUMBER" \
             && echo "✓ Auto-approve workflow triggered" || echo "⚠️  Auto-approve workflow trigger skipped (may already be running)"
-          
+
           exit 0
       - name: Summary
         run: |
