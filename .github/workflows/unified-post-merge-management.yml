@@ -1,74 +1,84 @@
 name: Post-Merge Management Suite
-
-on:
+true:
   push:
-    branches: [main]
+    branches:
+    - main
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Post-merge operation'
+        description: Post-merge operation
         required: false
         type: choice
         options:
-          - accountability
-          - ci-status
-          - validation
-          - phase-reporting
-          - all
-        default: 'all'
-
+        - accountability
+        - ci-status
+        - validation
+        - phase-reporting
+        - all
+        default: all
 jobs:
-  # Accountability Reporting (from post-accountability-to-discussion.yml)
   accountability-report:
-    if: github.event.inputs.operation == 'accountability' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'accountability' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Post accountability report
-        run: echo "Posting accountability report to discussion..."
-
-  # CI Status Report (from post-ci-status-to-discussion.yml)
+    - uses: actions/checkout@v5
+    - name: Post accountability report
+      run: echo "Posting accountability report to discussion..."
+    timeout-minutes: 60
   ci-status-report:
-    if: github.event.inputs.operation == 'ci-status' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'ci-status' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Post CI status
-        run: echo "Posting CI status to discussion..."
-
-  # Post-Merge Validation (from post-merge-validation-optimized.yml)
+    - uses: actions/checkout@v5
+    - name: Post CI status
+      run: echo "Posting CI status to discussion..."
+    timeout-minutes: 60
   merge-validation:
-    if: github.event.inputs.operation == 'validation' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'validation' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Run post-merge validation
-        run: echo "Running post-merge validation checks..."
-
-  # Phase Reporting (from post-phase-*-to-discussion.yml)
+    - uses: actions/checkout@v5
+    - name: Run post-merge validation
+      run: echo "Running post-merge validation checks..."
+    timeout-minutes: 60
   phase-reporting:
-    if: github.event.inputs.operation == 'phase-reporting' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'phase-reporting' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [accountability-report, ci-status-report, merge-validation]
+    needs:
+    - accountability-report
+    - ci-status-report
+    - merge-validation
     steps:
-      - uses: actions/checkout@v5
-      - name: Post phase updates
-        run: echo "Posting phase updates to discussion..."
-
+    - uses: actions/checkout@v5
+    - name: Post phase updates
+      run: echo "Posting phase updates to discussion..."
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [accountability-report, ci-status-report, merge-validation, phase-reporting]
+    needs:
+    - accountability-report
+    - ci-status-report
+    - merge-validation
+    - phase-reporting
     steps:
-      - name: Post-merge management complete
-        run: echo "All post-merge operations completed"
+    - name: Post-merge management complete
+      run: echo "All post-merge operations completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

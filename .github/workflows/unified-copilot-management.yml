@@ -1,139 +1,157 @@
 name: Copilot Management Suite
-
-on:
+true:
   schedule:
-    - cron: '*/15 * * * *'  # Every 15 minutes
+  - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Copilot operation'
+        description: Copilot operation
         required: false
         type: choice
         options:
-          - agent-checkin
-          - session-done
-          - vars-bootstrap
-          - automation
-          - issue-triage
-          - self-healing
-          - session-injector
-          - review-responder
-          - session-chain
-          - all
-        default: 'all'
+        - agent-checkin
+        - session-done
+        - vars-bootstrap
+        - automation
+        - issue-triage
+        - self-healing
+        - session-injector
+        - review-responder
+        - session-chain
+        - all
+        default: all
   push:
-    branches: [main]
+    branches:
+    - main
   pull_request_target:
-    types: [opened, synchronize, reopened]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
 jobs:
-  # Agent Check-in (from copilot-agent-checkin.yml)
   agent-checkin:
-    if: github.event.inputs.operation == 'agent-checkin' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'agent-checkin' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Agent check-in
-        run: echo "Copilot agent checking in..."
-
-  # Session Done (from copilot-agent-session-done.yml)
+    - uses: actions/checkout@v5
+    - name: Agent check-in
+      run: echo "Copilot agent checking in..."
+    timeout-minutes: 60
   session-done:
-    if: github.event.inputs.operation == 'session-done' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'session-done' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Mark session complete
-        run: echo "Marking Copilot session as done..."
-
-  # Vars Bootstrap (from copilot-agent-vars-bootstrap.yml)
+    - uses: actions/checkout@v5
+    - name: Mark session complete
+      run: echo "Marking Copilot session as done..."
+    timeout-minutes: 60
   vars-bootstrap:
-    if: github.event.inputs.operation == 'vars-bootstrap' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'vars-bootstrap' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Bootstrap variables
-        run: echo "Bootstrapping agent variables..."
-
-  # Automation (from copilot-automation.yml)
+    - uses: actions/checkout@v5
+    - name: Bootstrap variables
+      run: echo "Bootstrapping agent variables..."
+    timeout-minutes: 60
   automation:
-    if: github.event.inputs.operation == 'automation' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'automation' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [vars-bootstrap]
+    needs:
+    - vars-bootstrap
     steps:
-      - uses: actions/checkout@v5
-      - name: Run Copilot automations
-        run: echo "Executing Copilot automations..."
-
-  # Issue Triage (from copilot-issue-triage.yml)
+    - uses: actions/checkout@v5
+    - name: Run Copilot automations
+      run: echo "Executing Copilot automations..."
+    timeout-minutes: 60
   issue-triage:
-    if: github.event.inputs.operation == 'issue-triage' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'issue-triage' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Triage issues
-        run: echo "Running issue triage automation..."
-
-  # Self-Healing (from copilot-iterative-self-healing.yml)
+    - uses: actions/checkout@v5
+    - name: Triage issues
+      run: echo "Running issue triage automation..."
+    timeout-minutes: 60
   self-healing:
-    if: github.event.inputs.operation == 'self-healing' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'self-healing' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Self-healing checks
-        run: echo "Running iterative self-healing checks..."
-
-  # PR Session Injector (from copilot-pr-session-injector.yml)
+    - uses: actions/checkout@v5
+    - name: Self-healing checks
+      run: echo "Running iterative self-healing checks..."
+    timeout-minutes: 60
   session-injector:
-    if: github.event.inputs.operation == 'session-injector' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'session-injector' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Inject PR session context
-        run: echo "Injecting session context into PR..."
-
-  # Review Responder (from copilot-review-responder.yml)
+    - uses: actions/checkout@v5
+    - name: Inject PR session context
+      run: echo "Injecting session context into PR..."
+    timeout-minutes: 60
   review-responder:
-    if: github.event.inputs.operation == 'review-responder' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'review-responder' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Respond to reviews
-        run: echo "Processing review responses..."
-
-  # Session Chain (from copilot-session-chain.yml)
+    - uses: actions/checkout@v5
+    - name: Respond to reviews
+      run: echo "Processing review responses..."
+    timeout-minutes: 60
   session-chain:
-    if: github.event.inputs.operation == 'session-chain' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'session-chain' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [session-injector, review-responder]
+    needs:
+    - session-injector
+    - review-responder
     steps:
-      - uses: actions/checkout@v5
-      - name: Chain sessions
-        run: echo "Chaining Copilot sessions..."
-
+    - uses: actions/checkout@v5
+    - name: Chain sessions
+      run: echo "Chaining Copilot sessions..."
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [agent-checkin, session-done, vars-bootstrap, automation, issue-triage, self-healing, session-injector, review-responder, session-chain]
+    needs:
+    - agent-checkin
+    - session-done
+    - vars-bootstrap
+    - automation
+    - issue-triage
+    - self-healing
+    - session-injector
+    - review-responder
+    - session-chain
     steps:
-      - name: Copilot management complete
-        run: echo "All Copilot operations completed"
+    - name: Copilot management complete
+      run: echo "All Copilot operations completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

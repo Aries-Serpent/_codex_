@@ -1,90 +1,103 @@
 name: Phase Gates Suite
-
-on:
+true:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+  - cron: 0 * * * *
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Phase gate operation'
+        description: Phase gate operation
         required: false
         type: choice
         options:
-          - phase-8-1-health
-          - phase-8-2-triage
-          - phase-8-3-performance
-          - phase-9-2-cascade
-          - phase-9-3-router
-          - all
-        default: 'all'
+        - phase-8-1-health
+        - phase-8-2-triage
+        - phase-8-3-performance
+        - phase-9-2-cascade
+        - phase-9-3-router
+        - all
+        default: all
   push:
-    branches: [main]
-
+    branches:
+    - main
 jobs:
-  # Phase 8.1 Health Monitor (from phase-8-1-health-monitor.yml & phase-8-1-enhanced-health-monitor.yml)
   phase-8-1-health:
-    if: github.event.inputs.operation == 'phase-8-1-health' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'phase-8-1-health' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Phase 8.1 Health Monitoring
-        run: echo "Running Phase 8.1 health checks..."
-
-  # Phase 8.2 Issue Triage (from phase-8-2-issue-triage.yml)
+    - uses: actions/checkout@v5
+    - name: Phase 8.1 Health Monitoring
+      run: echo "Running Phase 8.1 health checks..."
+    timeout-minutes: 60
   phase-8-2-triage:
-    if: github.event.inputs.operation == 'phase-8-2-triage' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'phase-8-2-triage' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [phase-8-1-health]
+    needs:
+    - phase-8-1-health
     steps:
-      - uses: actions/checkout@v5
-      - name: Phase 8.2 Issue Triage
-        run: echo "Running Phase 8.2 issue triage..."
-
-  # Phase 8.3 Performance Monitor (from phase-8-3-perf-monitor.yml)
+    - uses: actions/checkout@v5
+    - name: Phase 8.2 Issue Triage
+      run: echo "Running Phase 8.2 issue triage..."
+    timeout-minutes: 60
   phase-8-3-performance:
-    if: github.event.inputs.operation == 'phase-8-3-performance' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'phase-8-3-performance' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Phase 8.3 Performance Monitoring
-        run: echo "Running Phase 8.3 performance checks..."
-
-  # Phase 9.2 Cascade (from phase-9-2-cascade.yml)
+    - uses: actions/checkout@v5
+    - name: Phase 8.3 Performance Monitoring
+      run: echo "Running Phase 8.3 performance checks..."
+    timeout-minutes: 60
   phase-9-2-cascade:
-    if: github.event.inputs.operation == 'phase-9-2-cascade' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'phase-9-2-cascade' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [phase-8-1-health, phase-8-2-triage, phase-8-3-performance]
+    needs:
+    - phase-8-1-health
+    - phase-8-2-triage
+    - phase-8-3-performance
     steps:
-      - uses: actions/checkout@v5
-      - name: Phase 9.2 Cascade
-        run: echo "Executing Phase 9.2 cascade operations..."
-
-  # Phase 9.3 Router (from phase-9-3-router.yml)
+    - uses: actions/checkout@v5
+    - name: Phase 9.2 Cascade
+      run: echo "Executing Phase 9.2 cascade operations..."
+    timeout-minutes: 60
   phase-9-3-router:
-    if: github.event.inputs.operation == 'phase-9-3-router' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'phase-9-3-router' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [phase-9-2-cascade]
+    needs:
+    - phase-9-2-cascade
     steps:
-      - uses: actions/checkout@v5
-      - name: Phase 9.3 Router
-        run: echo "Running Phase 9.3 routing logic..."
-
+    - uses: actions/checkout@v5
+    - name: Phase 9.3 Router
+      run: echo "Running Phase 9.3 routing logic..."
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [phase-8-1-health, phase-8-2-triage, phase-8-3-performance, phase-9-2-cascade, phase-9-3-router]
+    needs:
+    - phase-8-1-health
+    - phase-8-2-triage
+    - phase-8-3-performance
+    - phase-9-2-cascade
+    - phase-9-3-router
     steps:
-      - name: Phase gates suite completed
-        run: echo "All phase gate operations completed"
+    - name: Phase gates suite completed
+      run: echo "All phase gate operations completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

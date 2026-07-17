@@ -1,108 +1,122 @@
 name: Documentation Suite
-
-on:
+true:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM
+  - cron: 0 2 * * *
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Documentation operation'
+        description: Documentation operation
         required: false
         type: choice
         options:
-          - freshness-check
-          - refresh-gate
-          - code-alignment
-          - health-check
-          - link-checker
-          - quality-check
-          - all
-        default: 'all'
+        - freshness-check
+        - refresh-gate
+        - code-alignment
+        - health-check
+        - link-checker
+        - quality-check
+        - all
+        default: all
   push:
     paths:
-      - 'docs/**'
-      - '**/*.md'
-    branches: [main]
+    - docs/**
+    - '**/*.md'
+    branches:
+    - main
   pull_request:
     paths:
-      - 'docs/**'
-      - '**/*.md'
-
+    - docs/**
+    - '**/*.md'
 jobs:
-  # Freshness Check (from doc-freshness-check.yml)
   freshness-check:
-    if: github.event.inputs.operation == 'freshness-check' || github.event.inputs.operation == 'all' || contains(github.event_name, 'pull_request')
+    if: github.event.inputs.operation == 'freshness-check' || github.event.inputs.operation
+      == 'all' || contains(github.event_name, 'pull_request')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Check documentation freshness
-        run: echo "Checking doc freshness timestamps..."
-
-  # Refresh Gate (from doc-refresh-gate.yml)
+    - uses: actions/checkout@v5
+    - name: Check documentation freshness
+      run: echo "Checking doc freshness timestamps..."
+    timeout-minutes: 60
   refresh-gate:
-    if: github.event.inputs.operation == 'refresh-gate' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'refresh-gate' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [freshness-check]
+    needs:
+    - freshness-check
     steps:
-      - uses: actions/checkout@v5
-      - name: Validate refresh requirements
-        run: echo "Validating refresh gate requirements..."
-
-  # Code-Doc Alignment (from docs-code-alignment.yml)
+    - uses: actions/checkout@v5
+    - name: Validate refresh requirements
+      run: echo "Validating refresh gate requirements..."
+    timeout-minutes: 60
   code-alignment:
-    if: github.event.inputs.operation == 'code-alignment' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'code-alignment' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Verify code-documentation alignment
-        run: echo "Checking code examples against implementation..."
-
-  # Docs Health (from docs-health.yml)
+    - uses: actions/checkout@v5
+    - name: Verify code-documentation alignment
+      run: echo "Checking code examples against implementation..."
+    timeout-minutes: 60
   health-check:
-    if: github.event.inputs.operation == 'health-check' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'health-check' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Check documentation health
-        run: echo "Running doc health diagnostics..."
-
-  # Link Checker (from documentation-link-checker.yml)
+    - uses: actions/checkout@v5
+    - name: Check documentation health
+      run: echo "Running doc health diagnostics..."
+    timeout-minutes: 60
   link-checker:
-    if: github.event.inputs.operation == 'link-checker' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'link-checker' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Validate documentation links
-        run: echo "Checking for broken links in documentation..."
-
-  # Quality Check (from documentation-quality-check.yml)
+    - uses: actions/checkout@v5
+    - name: Validate documentation links
+      run: echo "Checking for broken links in documentation..."
+    timeout-minutes: 60
   quality-check:
-    if: github.event.inputs.operation == 'quality-check' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'quality-check' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [freshness-check, code-alignment, health-check, link-checker]
+    needs:
+    - freshness-check
+    - code-alignment
+    - health-check
+    - link-checker
     steps:
-      - uses: actions/checkout@v5
-      - name: Assess documentation quality
-        run: echo "Running documentation quality checks..."
-
+    - uses: actions/checkout@v5
+    - name: Assess documentation quality
+      run: echo "Running documentation quality checks..."
+    timeout-minutes: 60
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [freshness-check, refresh-gate, code-alignment, health-check, link-checker, quality-check]
+    needs:
+    - freshness-check
+    - refresh-gate
+    - code-alignment
+    - health-check
+    - link-checker
+    - quality-check
     steps:
-      - name: Documentation suite completed
-        run: echo "All documentation checks completed"
+    - name: Documentation suite completed
+      run: echo "All documentation checks completed"
+    timeout-minutes: 60
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
