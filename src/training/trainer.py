@@ -456,7 +456,7 @@ class Trainer:
 
     def _default_loss(self, outputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
         logits = getattr(outputs, "logits", outputs)
-        return torch.nn.functional.cross_entropy(logits, labels)
+        return torch.nn.functional.cross_entropy(logits, labels)  # type: ignore[attr-defined]
 
     def _compute_metrics(
         self,
@@ -761,7 +761,7 @@ class Trainer:
         """Perform optimizer step with gradient clipping if configured."""
         if cfg.max_grad_norm is not None:
             self.scaler.unscale_(self.simple.optimizer)
-            torch.nn.utils.clip_grad_norm_(self.simple.model.parameters(), cfg.max_grad_norm)
+            torch.nn.utils.clip_grad_norm_(self.simple.model.parameters(), cfg.max_grad_norm)  # type: ignore[attr-defined]
         self.scaler.step(self.simple.optimizer)
         self.scaler.update()
         self._zero_grad()

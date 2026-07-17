@@ -14,8 +14,11 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 import numpy as np
 import pandas as pd
 
-if TYPE_CHECKING:
-    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
+# Optional model imports with fallback None assignments
+ARIMAModel: Any = None
+ProphetModel: Any = None
+EnsembleForecaster: Any = None
+EnsembleConfig: Any = None
 
 # Optional imports - runtime fallbacks
 try:
@@ -24,7 +27,7 @@ try:
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
-    HuberRegressor = None  # type: ignore[assignment]
+    HuberRegressor = None
 
 try:
     from statsmodels.tsa.seasonal import seasonal_decompose
@@ -33,12 +36,9 @@ except ImportError:
     HAS_STATSMODELS = False
 
 try:
-    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel  # type: ignore[assignment]
+    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 except ImportError:
-    ARIMAModel = None  # type: ignore[assignment]
-    ProphetModel = None  # type: ignore[assignment]
-    EnsembleForecaster = None  # type: ignore[assignment]
-    EnsembleConfig = None  # type: ignore[assignment]
+    pass  # Use the None defaults from above
 
 
 @dataclass

@@ -33,6 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
     pass
 
 Params = dict[str, Any]
+ExecuteSql = Callable[..., Any]  # Flexible callable that accepts variable arguments
 
 
 class ArchiveDatabase:
@@ -78,7 +79,7 @@ class ArchiveDatabase:
                 execute(statement)
 
     @contextmanager
-    def _transaction(self) -> Iterator[Callable[[str, Params | None, bool, bool], Any]]:
+    def _transaction(self) -> Iterator[ExecuteSql]:
         """Context manager for database transactions.
 
         Yields a callable that executes SQL statements within a transaction.

@@ -104,7 +104,7 @@ def _ensure_codex_ml_imports() -> None:
             yield
     
     try:
-        from codex_ml.utils.checkpointing import (
+        from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
             dump_rng_state as _dump_rng_state,
             load_rng_state as _load_rng_state,
             load_training_checkpoint as _load_training_checkpoint,
@@ -143,7 +143,7 @@ def _ensure_codex_ml_imports() -> None:
 logger = logging.getLogger(__name__)
 
 try:
-    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
 except (AttributeError, ModuleNotFoundError):
     clip_grad_norm_ = None
 
@@ -186,7 +186,7 @@ except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None
+    manifest_for_paths = None  # type: ignore[assignment]
 
 
 try:  # pragma: no cover - optional model registry
@@ -237,13 +237,13 @@ try:  # pragma: no cover - optional HF trainer helpers
     )
 except (ImportError, AttributeError):  # pragma: no cover - hf trainer not available
 
-    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:
+    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore[misc]
         raise RuntimeError("HuggingFace trainer is unavailable")
 
-    def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:
+    def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore[misc]
         return {}
 
-    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
+    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:  # type: ignore[misc]
         norm = os.fspath(identifier) if isinstance(identifier, os.PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")
@@ -891,7 +891,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             if cfg.max_grad_norm is not None:
                                 if cfg.dtype == "fp16":
                                     scaler.unscale_(optimizer)
-                                clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                                clip_grad_norm_(model.parameters(), cfg.max_grad_norm)  # type: ignore[misc]
                             if cfg.dtype == "fp16":
                                 scaler.step(optimizer)
                                 scaler.update()
