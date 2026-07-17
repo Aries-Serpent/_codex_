@@ -1,0 +1,267 @@
+{
+  "metadata": {
+    "report_title": "Testing Baseline Lane 1 - 2026-07-17",
+    "generated_at": "2026-07-17T05:43:00Z",
+    "commit_sha": "80562fed3eeec52ad4f36e7053cd57a0aca26748",
+    "branch": "copilot/continuing-next-steps",
+    "protocol_version": "1.0",
+    "total_cycles": 15,
+    "cycles_per_workflow": 5
+  },
+  "gate_decision": {
+    "result": "FAIL",
+    "threshold": "50%",
+    "actual_success_rate": "0.0%",
+    "required_gap_closure": "50 percentage points",
+    "action": "Escalate for deeper analysis",
+    "pass": false
+  },
+  "workflows": {
+    "workflow-execution-gate": {
+      "name": "workflow-execution-gate.yml",
+      "cycles_total": 5,
+      "results": {
+        "successful": 0,
+        "failed": 5,
+        "cancelled": 0,
+        "action_required": 0
+      },
+      "success_rate": 0.0,
+      "failure_rate": 100.0,
+      "average_duration_seconds": 0,
+      "runs": [
+        {
+          "cycle": 1,
+          "run_id": 29557076576,
+          "run_number": 8082,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:20:44Z",
+          "commit_sha": "b97e06c1"
+        },
+        {
+          "cycle": 2,
+          "run_id": 29556596465,
+          "run_number": 8081,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:09:12Z",
+          "commit_sha": "d05430c6"
+        },
+        {
+          "cycle": 3,
+          "run_id": 29556322801,
+          "run_number": 8080,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:02:49Z",
+          "commit_sha": "ed05342a"
+        },
+        {
+          "cycle": 4,
+          "run_id": 29556076469,
+          "run_number": 8079,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T04:56:57Z",
+          "commit_sha": "6062f9c2"
+        },
+        {
+          "cycle": 5,
+          "run_id": 29555944380,
+          "run_number": 8078,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T04:53:37Z",
+          "commit_sha": "2d2ef5cc"
+        }
+      ]
+    },
+    "validate": {
+      "name": "validate.yml",
+      "cycles_total": 5,
+      "results": {
+        "successful": 0,
+        "failed": 0,
+        "cancelled": 0,
+        "action_required": 5
+      },
+      "success_rate": 0.0,
+      "failure_rate": 0.0,
+      "action_required_rate": 100.0,
+      "average_duration_seconds": 0,
+      "runs": [
+        {
+          "cycle": 1,
+          "run_id": 29557565410,
+          "run_number": 8003,
+          "status": "completed",
+          "conclusion": "action_required",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:32:09Z",
+          "commit_sha": "80562fed"
+        },
+        {
+          "cycle": 2,
+          "run_id": 29557354845,
+          "run_number": 8002,
+          "status": "completed",
+          "conclusion": "action_required",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:27:17Z",
+          "commit_sha": "9ec0eb67"
+        },
+        {
+          "cycle": 3,
+          "run_id": 29557225654,
+          "run_number": 8001,
+          "status": "completed",
+          "conclusion": "action_required",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:24:16Z",
+          "commit_sha": "d72e85db"
+        },
+        {
+          "cycle": 4,
+          "run_id": 29557135551,
+          "run_number": 8000,
+          "status": "completed",
+          "conclusion": "action_required",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:22:09Z",
+          "commit_sha": "313f2664"
+        },
+        {
+          "cycle": 5,
+          "run_id": 29557071123,
+          "run_number": 7999,
+          "status": "completed",
+          "conclusion": "action_required",
+          "duration_seconds": 0,
+          "created_at": "2026-07-17T05:20:36Z",
+          "commit_sha": "b97e06c1"
+        }
+      ]
+    },
+    "ci": {
+      "name": "ci.yml (legacy)",
+      "cycles_total": 5,
+      "results": {
+        "successful": 0,
+        "failed": 3,
+        "cancelled": 2,
+        "action_required": 0
+      },
+      "success_rate": 0.0,
+      "failure_rate": 60.0,
+      "cancellation_rate": 40.0,
+      "average_duration_seconds": 2483,
+      "note": "Last runs from 2025-11-12, 8+ months old",
+      "runs": [
+        {
+          "cycle": 1,
+          "run_id": 19312667428,
+          "run_number": 326,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 2485,
+          "created_at": "2025-11-12T21:37:04Z",
+          "commit_sha": "78f81fd3"
+        },
+        {
+          "cycle": 2,
+          "run_id": 19312667413,
+          "run_number": 325,
+          "status": "completed",
+          "conclusion": "cancelled",
+          "duration_seconds": 2292,
+          "created_at": "2025-11-12T21:37:04Z",
+          "commit_sha": "78f81fd3"
+        },
+        {
+          "cycle": 3,
+          "run_id": 19312275420,
+          "run_number": 324,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 3803,
+          "created_at": "2025-11-12T21:21:32Z",
+          "commit_sha": "94fb7c32"
+        },
+        {
+          "cycle": 4,
+          "run_id": 19312275412,
+          "run_number": 323,
+          "status": "completed",
+          "conclusion": "cancelled",
+          "duration_seconds": 3782,
+          "created_at": "2025-11-12T21:21:32Z",
+          "commit_sha": "94fb7c32"
+        },
+        {
+          "cycle": 5,
+          "run_id": 19311834750,
+          "run_number": 321,
+          "status": "completed",
+          "conclusion": "failure",
+          "duration_seconds": 51,
+          "created_at": "2025-11-12T21:04:25Z",
+          "commit_sha": "78f85db1"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "total_runs": 15,
+    "successful_runs": 0,
+    "failed_runs": 8,
+    "cancelled_runs": 2,
+    "action_required_runs": 5,
+    "overall_success_rate": 0.0,
+    "failed_percentage": 53.3,
+    "cancelled_percentage": 13.3,
+    "action_required_percentage": 33.3
+  },
+  "recommendations": {
+    "immediate": [
+      "Investigate workflow-execution-gate.yml failures (CRITICAL)",
+      "Clarify validate.yml action_required behavior (HIGH)"
+    ],
+    "short_term": [
+      "Establish success rate targets for Phase B",
+      "Enable continuous workflow monitoring"
+    ],
+    "medium_term": [
+      "Resolve ci.yml status (deprecate or re-enable)",
+      "Implement automated remediation for common failures"
+    ]
+  },
+  "phase_b_targets": {
+    "workflow_execution_gate": {
+      "baseline": 0.0,
+      "target": 75.0,
+      "improvement_needed": 75.0
+    },
+    "validate": {
+      "baseline": 0.0,
+      "target": 80.0,
+      "improvement_needed": 80.0
+    },
+    "ci": {
+      "baseline": 0.0,
+      "target": 70.0,
+      "improvement_needed": 70.0,
+      "note": "Legacy workflow, consider deprecation"
+    },
+    "overall": {
+      "baseline": 0.0,
+      "target": 75.0,
+      "improvement_needed": 75.0
+    }
+  }
+}
