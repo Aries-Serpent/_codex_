@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 pytest.importorskip("mlflow")
@@ -12,8 +14,6 @@ This module provides 100+ tests covering:
 - Checkpoint resumption logic
 - Integration tests with run_training
 """
-
-from __future__ import annotations
 
 import os
 import tempfile

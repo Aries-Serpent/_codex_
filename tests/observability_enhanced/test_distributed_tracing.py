@@ -20,6 +20,7 @@ import time
 import uuid
 from contextlib import contextmanager
 from typing import Any, Dict, List, Optional
+from urllib.parse import urlparse
 
 import pytest
 
@@ -531,7 +532,9 @@ class TestSpanInstrumentation:
                 span.set_attribute("http.status_code", 200)
                 
                 assert span.attributes["http.method"] == method
-                assert "example.com" in span.attributes["http.url"]
+                # Use proper URL parsing for safe validation (not substring matching)
+                parsed_url = urlparse(span.attributes["http.url"])
+                assert parsed_url.netloc == "api.example.com"
                 assert span.attributes["http.status_code"] == 200
     
     def test_cache_operation_spans(self, mock_tracer):

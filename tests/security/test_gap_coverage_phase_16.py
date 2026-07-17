@@ -50,7 +50,8 @@ class TestGapCoverageFileSystemOperations:
                 with pytest.raises(PermissionError):
                     restricted_file.read_text()
             finally:
-                os.chmod(restricted_file, 0o644)
+                # Use secure permissions (owner read/write only)
+                os.chmod(restricted_file, 0o600)
 
     def test_symbolic_link_handling(self):
         """Test handling of symbolic links."""

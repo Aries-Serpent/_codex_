@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 pytest.importorskip("mlflow")
@@ -6,8 +8,6 @@ Test Training Contracts
 
 Test module for training contracts.
 """
-
-from __future__ import annotations
 
 import pytest
 

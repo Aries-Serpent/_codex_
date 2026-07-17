@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 pytest.importorskip("mlflow")
@@ -6,8 +8,6 @@ Comprehensive test suite for codex_ml.training module
 Phase 7A Wave 2 Lane 2.2: ML Training Testing
 Test Categories: Unit (110), Integration (50), Edge Cases (25), Error Handling (15)
 """
-
-from __future__ import annotations
 
 from pathlib import Path
 from unittest.mock import MagicMock, patch
