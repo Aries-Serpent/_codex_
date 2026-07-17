@@ -2,3 +2,5 @@
 {"ts": "2026-07-17T19:48Z", "step": "STEP logs_query", "step_description": "codex_db --query", "error": "db error", "context": "db=/tmp/test.sqlite"}
 {"ts": "2026-07-17T19:49Z", "step": "STEP logs_init", "step_description": "codex_db --init", "error": "boom", "context": "db=/tmp/test.sqlite"}
 {"ts": "2026-07-17T19:49Z", "step": "STEP logs_query", "step_description": "codex_db --query", "error": "db error", "context": "db=/tmp/test.sqlite"}
+{"ts": "2026-07-17T19:53Z", "step": "STEP logs_init", "step_description": "codex_db --init", "error": "boom", "context": "db=/tmp/test.sqlite"}
+{"ts": "2026-07-17T19:53Z", "step": "STEP logs_query", "step_description": "codex_db --query", "error": "db error", "context": "db=/tmp/test.sqlite"}
