@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-17T17:37:00.421652+00:00",
+  "generated_at": "2026-07-17T18:10:41.758483+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4892,
+  "rest_remaining": 5000,
   "graphql_available": true,
-  "graphql_remaining": 4996,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [],
   "branch": "copilot/implementation-custom-agents-plan-campaign",
   "recommendation": "Use REST for data fetches. "
