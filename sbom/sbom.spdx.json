@@ -1,0 +1,746 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "creationInfo": {
+    "created": "2026-07-17T19:11:20Z",
+    "creators": [
+      "Tool: codex-dependency-scanner-1.0"
+    ],
+    "licenseListVersion": "3.22"
+  },
+  "name": "Codex Project Dependency SBOM",
+  "dataLicense": "CC0-1.0",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-typer>=0.12",
+      "name": "typer>=0.12",
+      "version": "0.12",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/typer>=0.12@0.12"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-cryptography>=48.0.1,<50.0.0",
+      "name": "cryptography>=48.0.1,<50.0.0",
+      "version": "48.0.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/cryptography>=48.0.1,<50.0.0@48.0.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-PyJWT>=2.13.0,<3.0.0",
+      "name": "PyJWT>=2.13.0,<3.0.0",
+      "version": "2.13.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/PyJWT>=2.13.0,<3.0.0@2.13.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-wheel>=0.46.2",
+      "name": "wheel>=0.46.2",
+      "version": "0.46.2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/wheel>=0.46.2@0.46.2"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-PyNaCl>=1.5.0,<2.0.0",
+      "name": "PyNaCl>=1.5.0,<2.0.0",
+      "version": "1.5.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/PyNaCl>=1.5.0,<2.0.0@1.5.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pyOpenSSL>=26.0.0,<27.0.0",
+      "name": "pyOpenSSL>=26.0.0,<27.0.0",
+      "version": "26.0.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pyOpenSSL>=26.0.0,<27.0.0@26.0.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-jsonschema>=4.26.0",
+      "name": "jsonschema>=4.26.0",
+      "version": "4.26.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/jsonschema>=4.26.0@4.26.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-psutil>=5.9;",
+      "name": "psutil>=5.9;",
+      "version": "5.9",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/psutil>=5.9;@5.9"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-tomli>=2.0;",
+      "name": "tomli>=2.0;",
+      "version": "2.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/tomli>=2.0;@2.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest>=9.0.3,<10.0.0",
+      "name": "pytest>=9.0.3,<10.0.0",
+      "version": "9.0.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest>=9.0.3,<10.0.0@9.0.3"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_cov==7.1.0",
+      "name": "pytest-cov==7.1.0",
+      "version": "7.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-cov==7.1.0@7.1.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_xdist>=3.5.0,<4.0.0",
+      "name": "pytest-xdist>=3.5.0,<4.0.0",
+      "version": "3.5.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-xdist>=3.5.0,<4.0.0@3.5.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-nox>=2026.4.10,<2027",
+      "name": "nox>=2026.4.10,<2027",
+      "version": "2026.4.10",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/nox>=2026.4.10,<2027@2026.4.10"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-numpy>=2.4.6,<3",
+      "name": "numpy>=2.4.6,<3",
+      "version": "2.4.6",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/numpy>=2.4.6,<3@2.4.6"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-torch>=2.6.1,<3.0.0;",
+      "name": "torch>=2.6.1,<3.0.0;",
+      "version": "2.6.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/torch>=2.6.1,<3.0.0;@2.6.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-transformers>=5.12.1,<6",
+      "name": "transformers>=5.12.1,<6",
+      "version": "5.12.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/transformers>=5.12.1,<6@5.12.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-defusedxml>=0.7.1,<1.0.0",
+      "name": "defusedxml>=0.7.1,<1.0.0",
+      "version": "0.7.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/defusedxml>=0.7.1,<1.0.0@0.7.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pyyaml>=6.0",
+      "name": "pyyaml>=6.0",
+      "version": "6.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pyyaml>=6.0@6.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-jinja2>=3.1.6",
+      "name": "jinja2>=3.1.6",
+      "version": "3.1.6",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/jinja2>=3.1.6@3.1.6"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-certifi>=2026.6.17",
+      "name": "certifi>=2026.6.17",
+      "version": "2026.6.17",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/certifi>=2026.6.17@2026.6.17"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-filelock>=3.29.0",
+      "name": "filelock>=3.29.0",
+      "version": "3.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/filelock>=3.29.0@3.29.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-idna>=3.18",
+      "name": "idna>=3.18",
+      "version": "3.18",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/idna>=3.18@3.18"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-urllib3>=2.7.0",
+      "name": "urllib3>=2.7.0",
+      "version": "2.7.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/urllib3>=2.7.0@2.7.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-requests>=2.33.0",
+      "name": "requests>=2.33.0",
+      "version": "2.33.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/requests>=2.33.0@2.33.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest==9.1.1",
+      "name": "pytest==9.1.1",
+      "version": "9.1.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest==9.1.1@9.1.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_xdist==3.8.0",
+      "name": "pytest-xdist==3.8.0",
+      "version": "3.8.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-xdist==3.8.0@3.8.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_randomly==4.1.0",
+      "name": "pytest-randomly==4.1.0",
+      "version": "4.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-randomly==4.1.0@4.1.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_rerunfailures==16.4",
+      "name": "pytest-rerunfailures==16.4",
+      "version": "16.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-rerunfailures==16.4@16.4"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pytest_timeout==2.4.0",
+      "name": "pytest-timeout==2.4.0",
+      "version": "2.4.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/pytest-timeout==2.4.0@2.4.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-coverage[toml]>=7.15.1,<8",
+      "name": "coverage[toml]>=7.15.1,<8",
+      "version": "7.15.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/coverage[toml]>=7.15.1,<8@7.15.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-hypothesis>=6.152.4",
+      "name": "hypothesis>=6.152.4",
+      "version": "6.152.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/hypothesis>=6.152.4@6.152.4"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-responses==0.26.1",
+      "name": "responses==0.26.1",
+      "version": "0.26.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/responses==0.26.1@0.26.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-slowapi==0.1.9",
+      "name": "slowapi==0.1.9",
+      "version": "0.1.9",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/slowapi==0.1.9@0.1.9"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-hydra_core==1.3.2",
+      "name": "hydra-core==1.3.2",
+      "version": "1.3.2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/hydra-core==1.3.2@1.3.2"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-prometheus_client>=0.19.0",
+      "name": "prometheus-client>=0.19.0",
+      "version": "0.19.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/prometheus-client>=0.19.0@0.19.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-cryptography>=48.0.0,<50.0.0",
+      "name": "cryptography>=48.0.0,<50.0.0",
+      "version": "48.0.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/cryptography>=48.0.0,<50.0.0@48.0.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-sentence_transformers>=5.5.1",
+      "name": "sentence-transformers>=5.5.1",
+      "version": "5.5.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/sentence-transformers>=5.5.1@5.5.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-faiss_cpu>=1.7.4",
+      "name": "faiss-cpu>=1.7.4",
+      "version": "1.7.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/faiss-cpu>=1.7.4@1.7.4"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-openai>=2.40.0",
+      "name": "openai>=2.40.0",
+      "version": "2.40.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "python-package",
+          "referenceLocator": "pkg:python/openai>=2.40.0@2.40.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-pyo3",
+      "name": "pyo3",
+      "version": "0.24.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "rust-package",
+          "referenceLocator": "pkg:rust/pyo3@0.24.1"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-tokio",
+      "name": "tokio",
+      "version": "1.36",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "rust-package",
+          "referenceLocator": "pkg:rust/tokio@1.36"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-serde",
+      "name": "serde",
+      "version": "1.0.197",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "rust-package",
+          "referenceLocator": "pkg:rust/serde@1.0.197"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    },
+    {
+      "SPDXID": "SPDXRef-zstd",
+      "name": "zstd",
+      "version": "0.13.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE_MANAGER",
+          "referenceType": "rust-package",
+          "referenceLocator": "pkg:rust/zstd@0.13.0"
+        }
+      ],
+      "primaryPackagePurpose": "LIBRARY"
+    }
+  ]
+}
