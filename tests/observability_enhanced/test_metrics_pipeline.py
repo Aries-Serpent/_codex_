@@ -20,14 +20,11 @@ Target: Production-ready confidence ≥0.90
 
 from __future__ import annotations
 
-import logging
 import time
 from contextlib import contextmanager
 from typing import Any, Iterator, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-
 
 # ============================================================================
 # FIXTURES AND MOCK IMPLEMENTATIONS

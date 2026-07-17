@@ -3,9 +3,9 @@ Test async state leaks - Pattern 1: Context manager cleanup
 Tests require proper async context managers to prevent state leaks.
 """
 import asyncio
-import pytest
 from contextlib import asynccontextmanager
 
+import pytest
 
 # Global state tracker to detect leaks
 _global_state = {}

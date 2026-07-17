@@ -14,16 +14,11 @@ Target: >80% root cause identification success rate, <1s latency
 
 from __future__ import annotations
 
-import json
 import logging
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timedelta
-from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
 from collections import defaultdict
-import heapq
-
-import numpy as np
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -292,7 +287,6 @@ class BackwardChainer:
         
         visited: Set[str] = set()
         all_paths: List[CausalPath] = []
-        found_root = False
         
         while queue:
             current, depth, path, conf = queue.pop(0)
@@ -314,7 +308,7 @@ class BackwardChainer:
                         confidence=min(conf if path else 0.5, 1.0)
                     ))
                     if path:
-                        found_root = True
+                        pass
                 continue
             
             # Add upstream nodes to queue

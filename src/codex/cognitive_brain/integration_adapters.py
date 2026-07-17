@@ -9,9 +9,8 @@ All adapters produce JSON-compatible output for downstream processing.
 """
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
-from datetime import datetime
 
 from src.codex.cognitive_brain.reasoning_engine import Decision
 

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from codex.monitoring import metrics
 from codex.zendesk.monitoring.mcp_bridge import export_zendesk_metrics
 from codex.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
 from codex.zendesk.quantum import ZendeskQuantumOrchestrator, ZendeskTicket
 from codex.zendesk.rag import ZendeskRAGBridge
 
+from codex.monitoring import metrics
 from mcp.metrics.mcp_metrics import MetricCollector
 
 

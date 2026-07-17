@@ -12,7 +12,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -152,9 +152,8 @@ class IncidentDetector:
         Returns:
             IncidentReport with classification and hypotheses
         """
-        import hashlib
-        from datetime import datetime, timezone
         import uuid
+        from datetime import datetime, timezone
 
         if not incident_id:
             incident_id = str(uuid.uuid4())[:8]

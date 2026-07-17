@@ -2,20 +2,19 @@
 
 import logging
 import time
-from typing import Any, Dict, List, Tuple
-from dataclasses import dataclass
+from typing import Dict, List
 
 import numpy as np
 
-from src.codex.ensemble.types import (
-    CrossValidationResult,
-    CalibrationMetrics,
-    ModelType,
-)
 from src.codex.ensemble.models import (
     HeuristicModel,
     MLModel,
     SymbolicModel,
+)
+from src.codex.ensemble.types import (
+    CalibrationMetrics,
+    CrossValidationResult,
+    ModelType,
 )
 
 logger = logging.getLogger(__name__)

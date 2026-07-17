@@ -4,6 +4,7 @@ Tests for src/services/mcp/lifecycle.py to improve module coverage.
 """
 
 import pytest
+
 pytest.skip("Gap-fill test - infrastructure not fully implemented", allow_module_level=True)
 
 from unittest.mock import AsyncMock, Mock

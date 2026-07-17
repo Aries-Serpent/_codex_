@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import sys
 import math
+import sys
 from pathlib import Path
 
 import pytest
@@ -11,16 +11,14 @@ import pytest
 # Import semantic assertions
 sys.path.insert(0, str(Path(__file__).parent))
 from conftest_semantic_assertions import (
-    assert_positive,
-    assert_non_negative,
+    assert_exception_raised,
     assert_floats_approximately_equal,
     assert_instance_of,
     assert_not_none,
-    assert_exception_raised,
-    assert_zero_boundary,
     assert_numeric_in_range,
+    assert_positive,
+    assert_zero_boundary,
 )
-
 
 # ============================================================================
 # PERPLEXITY TESTS - EDGE CASES AND SEMANTIC ASSERTIONS

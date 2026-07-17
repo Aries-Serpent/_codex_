@@ -20,9 +20,9 @@ from rag.pipelines.embedding import EmbeddingPipeline
 from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval
 from rag.security import (
     sanitize_query,
+    validate_document_id,
     validate_filters,
     validate_metadata,
-    validate_document_id,
 )
 
 logger = logging.getLogger(__name__)

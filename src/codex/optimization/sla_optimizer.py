@@ -11,17 +11,16 @@ Features:
   - Safety margins (<5%) to prevent SLA violations
 """
 
-import time
 import json
 import logging
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Tuple, Optional, NamedTuple
-from enum import Enum
-from datetime import datetime, timedelta
+import time
 from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from scipy.optimize import linprog
 
 # Optional OR-Tools import with graceful fallback
 try:
@@ -284,7 +283,7 @@ class ParetoOptimizer:
         frontier_points = []
 
         # Define uptime levels from conservative to aggressive
-        uptime_levels = np.linspace(0.999, 0.99, min(num_points, len(Tier)))
+        np.linspace(0.999, 0.99, min(num_points, len(Tier)))
         tier_sequence = [Tier.PLATINUM, Tier.GOLD, Tier.SILVER, Tier.BRONZE]
 
         for tier in tier_sequence:

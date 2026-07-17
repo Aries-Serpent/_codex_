@@ -18,8 +18,8 @@ from aries_serpent_core.cognitive.agent_brain_api import (
 )
 from aries_serpent_core.cognitive.brain_interface import (
     AgentBrainInterface,
-    BrainInterface,  # Backward compatibility alias
     AgentContext,
+    BrainInterface,  # Backward compatibility alias
     BrainResponse,
     LearningFeedback,
     PatternMatch,

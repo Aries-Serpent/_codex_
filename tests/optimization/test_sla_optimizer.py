@@ -4,28 +4,20 @@ Comprehensive test suite for SLA optimizer (700-900 LOC).
 Phase 4E Planset 013 - Gate Criteria Verification
 """
 
-import pytest
 import json
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
 
-import numpy as np
+import pytest
 
 from src.codex.optimization.sla_optimizer import (
+    BillingEngine,
+    HeuristicConstraintSolver,
+    ParetoOptimizer,
+    PricingModel,
+    ResourceAllocation,
     SLAOptimizer,
     SLASpec,
-    ResourceAllocation,
-    PricingModel,
-    BillingRecord,
-    TierChange,
     Tier,
-    ResourceType,
-    ConstraintSolver,
-    HeuristicConstraintSolver,
-    ORToolsConstraintSolver,
-    ParetoOptimizer,
     TierManager,
-    BillingEngine,
 )
 
 

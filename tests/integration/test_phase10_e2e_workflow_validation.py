@@ -8,10 +8,10 @@ Tests comprehensive e2e workflows covering:
 - Production deployment scenarios
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+from unittest.mock import Mock
+
+import pytest
 
 
 @pytest.mark.integration

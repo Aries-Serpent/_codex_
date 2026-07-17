@@ -12,15 +12,15 @@ Planset 012 core modules:
 
 # Planset 012 core modules
 try:
-    from .models import ARIMAModel, ProphetModel, EnsembleForecaster, EnsembleConfig
+    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 except ImportError:
     pass
 
 try:
     from .arima_prophet_ensemble import (
+        BottleneckAlert,
         BottleneckPredictor,
         CapexRecommendationEngine,
-        BottleneckAlert,
         CascadingAnalysis,
         ParetoOptimizationResult,
     )

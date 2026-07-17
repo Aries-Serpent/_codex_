@@ -13,12 +13,11 @@ Gate Criterion 4: Auto-scaling triggers accurate
 
 import logging
 import time
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional
-from enum import Enum
-from collections import deque
 import uuid
-
+from collections import deque
+from dataclasses import asdict, dataclass
+from enum import Enum
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -347,14 +346,13 @@ class AutoScaler:
         """
         successful_scales = [e for e in self.scaling_events if e.success]
         
-        avg_scale_duration = 0.0
         if successful_scales:
             durations = []
             for event in successful_scales:
                 if event.action == ScalingAction.SCALE_UP:
                     durations.append(0.0)  # Would need actual timing
             if durations:
-                avg_scale_duration = sum(durations) / len(durations)
+                sum(durations) / len(durations)
         
         return {
             "timestamp": time.time(),

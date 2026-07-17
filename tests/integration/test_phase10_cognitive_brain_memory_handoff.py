@@ -8,9 +8,9 @@ Tests Cognitive Brain memory handoff integration covering:
 - Priority-based memory eviction
 """
 
-import pytest
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
+
+import pytest
 
 
 @pytest.mark.integration

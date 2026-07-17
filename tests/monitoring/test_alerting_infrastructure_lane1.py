@@ -12,16 +12,15 @@ Tests cover:
 - Silence/inhibition rules
 """
 
+import re
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+from unittest.mock import Mock
+
 import pytest
 import yaml
-import json
-import re
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
-from unittest.mock import Mock, MagicMock, patch
-
 
 # ============================================================================
 # Test Data Structures
@@ -163,7 +162,7 @@ class TestAlertRuleParsing:
         """T002: Verify all alert rules have required fields"""
         assert len(parsed_alerts) > 0, "Should have parsed at least one alert rule"
         for alert in parsed_alerts:
-            assert alert.name, f"Alert rule must have a name"
+            assert alert.name, "Alert rule must have a name"
             assert alert.expr, f"Alert rule '{alert.name}' must have an expression"
             assert alert.severity in ['critical', 'warning', 'info'], \
                 f"Alert '{alert.name}' has invalid severity: {alert.severity}"
@@ -582,7 +581,7 @@ class TestIntegrationVerification:
                 # Should have either api_url or url_file
                 has_url = config.get('api_url') or config.get('url_file')
                 assert has_url, "Slack config should have api_url or url_file"
-                assert config.get('channel'), f"Slack config should specify channel"
+                assert config.get('channel'), "Slack config should specify channel"
                 # Note: title is optional; can use default formatting
 
 
@@ -619,7 +618,7 @@ def test_summary_report(parsed_alerts, alertmanager_config):
     print("PHASE 20.0 LANE 1 - ALERTING INFRASTRUCTURE TEST SUMMARY")
     print("="*80)
     
-    print(f"\n📊 Alert Configuration Summary:")
+    print("\n📊 Alert Configuration Summary:")
     print(f"  Total Alert Rules: {len(parsed_alerts)}")
     
     by_severity = {}
@@ -628,15 +627,15 @@ def test_summary_report(parsed_alerts, alertmanager_config):
         by_severity[alert.severity] = by_severity.get(alert.severity, 0) + 1
         by_component[alert.component] = by_component.get(alert.component, 0) + 1
     
-    print(f"  By Severity:")
+    print("  By Severity:")
     for sev, count in sorted(by_severity.items()):
         print(f"    - {sev.capitalize()}: {count}")
     
-    print(f"  By Component:")
+    print("  By Component:")
     for comp, count in sorted(by_component.items()):
         print(f"    - {comp.capitalize()}: {count}")
     
-    print(f"\n📡 Routing Configuration:")
+    print("\n📡 Routing Configuration:")
     receivers = alertmanager_config.get('receivers', [])
     print(f"  Total Receivers: {len(receivers)}")
     
@@ -648,9 +647,9 @@ def test_summary_report(parsed_alerts, alertmanager_config):
     print(f"  Slack Receivers: {slack_count}")
     print(f"  Email Receivers: {email_count}")
     
-    print(f"\n✅ Test Coverage:")
-    print(f"  Total Tests: 30 comprehensive tests")
-    print(f"  Categories: Parsing, Severity, Routing, Escalation, Thresholds,")
-    print(f"              State Management, Templates, Integration, Coverage")
+    print("\n✅ Test Coverage:")
+    print("  Total Tests: 30 comprehensive tests")
+    print("  Categories: Parsing, Severity, Routing, Escalation, Thresholds,")
+    print("              State Management, Templates, Integration, Coverage")
     
     print("\n" + "="*80)

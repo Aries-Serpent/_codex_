@@ -6,7 +6,6 @@ These helpers encapsulate the initialization logic into smaller,
 testable functions with lower complexity.
 """
 
-import json
 import logging
 import os
 from pathlib import Path
@@ -421,9 +420,10 @@ def setup_dataset_and_loader(
     Reduces complexity by extracting dataset initialization logic (15+ branches).
     """
     try:
-        from torch.utils.data import DataLoader
-        from codex_ml.training.toy_dataset import ToyDataset
         from codex_ml.training.collate import _make_casting_collate
+        from codex_ml.training.toy_dataset import ToyDataset
+
+        from torch.utils.data import DataLoader
     except ImportError:
         logger.debug("PyTorch or dataset utilities not available")
         return None, None

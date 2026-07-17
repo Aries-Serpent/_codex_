@@ -13,10 +13,8 @@ Coverage:
 - Inference pipeline setup
 """
 
+
 import pytest
-from typing import Any, Dict, List, Optional
-import tempfile
-import os
 
 
 class TestMLInferenceEntryPoints:
@@ -63,8 +61,8 @@ class TestMLInferenceEntryPoints:
     def test_transformer_model_inference(self):
         """Test transformer model inference setup."""
         try:
-            from transformers import AutoTokenizer, AutoModel
             import torch
+            from transformers import AutoModel, AutoTokenizer
             
             # We'll just test the import and basic setup
             # Not actually loading models to avoid large downloads
@@ -193,8 +191,9 @@ class TestModelRegistry:
     def test_model_registry_initialization(self):
         """Test model registry initialization."""
         try:
-            import torch
             import json
+
+            import torch
             
             class ModelRegistry:
                 def __init__(self):
@@ -259,10 +258,11 @@ class TestModelRegistry:
     def test_model_registry_persistence(self):
         """Test model registry persistence."""
         try:
+            import os
+            import tempfile
+
             import torch
             import torch.nn as nn
-            import tempfile
-            import os
             
             class PersistentModelRegistry:
                 def __init__(self, storage_dir=None):
@@ -329,8 +329,8 @@ class TestRAGPipelineIntegration:
     def test_sentence_transformer_embeddings(self):
         """Test sentence transformer embeddings."""
         try:
-            from sentence_transformers import SentenceTransformer
             import numpy as np
+            from sentence_transformers import SentenceTransformer
             
             # We won't download actual models, just test the API
             assert SentenceTransformer is not None

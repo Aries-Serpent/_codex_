@@ -12,7 +12,6 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from orchestration.healing.incident_detection import IncidentReport
-from orchestration.healing.strategy_generator import RepairStrategy
 
 logger = logging.getLogger(__name__)
 

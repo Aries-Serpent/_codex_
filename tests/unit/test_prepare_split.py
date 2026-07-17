@@ -7,6 +7,7 @@ Test module for prepare split.
 from __future__ import annotations
 
 import pytest
+
 pytest.skip("Placeholder test - infrastructure not fully implemented", allow_module_level=True)
 
 from hhg_logistics.data.prepare import _split_rows

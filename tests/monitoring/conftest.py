@@ -15,7 +15,6 @@ Functions:
 Author: Codex Team
 """
 
-import pytest
 
 # Skip modules if not available (but don't fail test collection)
 try:

@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import pytest
-from codex.monitoring import Histogram, metrics
 from codex.monitoring.otel_metrics import (
     compute_coherence,
     workflow_coherence_score,
     workflow_duration,
     workflow_step_duration,
 )
+
+from codex.monitoring import Histogram, metrics
 
 
 class TestOtelMetricsModule:

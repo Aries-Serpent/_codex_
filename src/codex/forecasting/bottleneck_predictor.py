@@ -4,9 +4,10 @@ Bottleneck prediction with cascading analysis.
 Predicts resource saturation and identifies which bottleneck hits first.
 """
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+
 import numpy as np
 
 

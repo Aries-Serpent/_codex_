@@ -7,14 +7,13 @@ Coordinates model deployment, A/B testing, and monitoring.
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any
-import asyncio
+from typing import Any, Dict, Optional
 
+from .ab_testing_harness import ABTestingHarness, TestConfig
 from .deployment_manager import DeploymentManager, ModelVersion
-from .ab_testing_harness import ABTestingHarness, TestConfig, TestMetrics
-from .monitoring import MonitoringCollector, PerformanceMetrics
+from .monitoring import MonitoringCollector
 
 logger = logging.getLogger(__name__)
 
@@ -126,7 +125,6 @@ class MLDeploymentOrchestrator:
         test_duration_seconds: int = 300,
     ) -> None:
         """Simulate metric collection for testing."""
-        import random
         import numpy as np
         
         logger.info(f"Simulating {test_duration_seconds}s of metric collection...")
@@ -202,7 +200,7 @@ class MLDeploymentOrchestrator:
     def generate_deployment_report(self) -> str:
         """Generate comprehensive deployment report."""
         deployment = self.deployment_mgr.get_deployment_info()
-        active_model = self.deployment_mgr.get_active_model()
+        self.deployment_mgr.get_active_model()
         
         # Enable monitoring
         self.monitoring.enable_opentelemetry("ml-serving")

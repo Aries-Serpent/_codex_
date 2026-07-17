@@ -12,24 +12,23 @@ Validates all 8 gate criteria:
 8. Integration - Plansets 011, 013 integration adapters operational
 """
 
-import pytest
+import time
+from datetime import datetime, timedelta
+
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
-import time
+import pytest
 
-from src.codex.forecasting.models import (
-    ARIMAModel,
-    ProphetModel,
-    EnsembleForecaster,
-    EnsembleConfig,
-)
 from src.codex.forecasting.arima_prophet_ensemble import (
+    BottleneckAlert,
     BottleneckPredictor,
     CapexRecommendationEngine,
-    BottleneckAlert,
-    CascadingAnalysis,
+)
+from src.codex.forecasting.models import (
+    ARIMAModel,
+    EnsembleConfig,
+    EnsembleForecaster,
+    ProphetModel,
 )
 
 

@@ -12,23 +12,23 @@ Modules:
 """
 
 from .anomaly_correlator import (
-    AnomalyCollector,
-    TemporalCorrelator,
-    SpatialCorrelator,
-    MagnitudeCorrelator,
     AlertAggregator,
+    AnomalyCollector,
     CorrelatedAnomaly,
-)
-from .root_cause_engine import (
-    BackwardChainer,
-    RootCauseInference,
-    CausalGraph,
-    CausalLink,
+    MagnitudeCorrelator,
+    SpatialCorrelator,
+    TemporalCorrelator,
 )
 from .fp_suppressor import (
     FalsePositiveClassifier,
     HistoricalTracker,
     SuppressionPolicy,
+)
+from .root_cause_engine import (
+    BackwardChainer,
+    CausalGraph,
+    CausalLink,
+    RootCauseInference,
 )
 
 __all__ = [

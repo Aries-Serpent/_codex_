@@ -13,14 +13,11 @@ And experiment tracking fixtures for MLflow and wandb.
 
 import json
 import logging
-import os
 import subprocess
 import sys
 import tempfile
-from contextlib import contextmanager
 from pathlib import Path
-from typing import Dict, Generator, List, Optional, Tuple
-from unittest.mock import MagicMock, patch
+from typing import Dict, Generator, List, Tuple
 
 import pytest
 
@@ -541,7 +538,7 @@ def export_import_run(mlflow_client_full, parent_experiment):
 
 import ast
 import re
-from typing import Optional, Set, Tuple
+from typing import Tuple
 
 
 class DocstringAnalyzer:
@@ -823,20 +820,20 @@ def all_markdown_files(project_root: Path, docs_dir: Path) -> List[Path]:
 
 # Import training fixtures so they're available to all tests
 from tests.full.training_fixtures import (
-    device,
-    model_config,
-    training_config,
+    checkpoint_dir,
     data_config,
+    device,
+    lr_scheduler,
+    model,
+    model_config,
+    optimizer,
     synthetic_train_dataset,
     synthetic_val_dataset,
     train_dataloader,
-    val_dataloader,
-    model,
-    optimizer,
-    lr_scheduler,
-    checkpoint_dir,
+    training_config,
     training_metrics,
     training_state,
+    val_dataloader,
 )
 
 __all__ = [

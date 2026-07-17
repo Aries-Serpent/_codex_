@@ -19,13 +19,13 @@ Phase: 3 (Weeks 7-10)
 Status: ACTIVE
 """
 
-from .ingest import SecurityIngestor, normalize_finding, deduplicate_findings
-from .clustering import FindingClusterer, build_finding_families
-from .scoring import RiskScorer, plan_waves
-from .wave_executor import WaveExecutor, execute_wave
-from .validation_gates import ValidationGateEngine, run_validation_gates
-from .recurrence_prevention import RecurrencePrevention, generate_suppression_patterns
 from .burndown_intelligence import BurndownTracker, compute_metrics
+from .clustering import FindingClusterer, build_finding_families
+from .ingest import SecurityIngestor, deduplicate_findings, normalize_finding
+from .recurrence_prevention import RecurrencePrevention, generate_suppression_patterns
+from .scoring import RiskScorer, plan_waves
+from .validation_gates import ValidationGateEngine, run_validation_gates
+from .wave_executor import WaveExecutor, execute_wave
 
 __all__ = [
     # S1: Ingest

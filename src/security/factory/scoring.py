@@ -10,10 +10,11 @@ Plans waves for parallel remediation:
 Success metric: Top 50% of wave 1 findings = 80% of total risk
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Tuple
-from enum import Enum
 import math
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List
+
 from .clustering import FindingFamily
 from .ingest import FindingSeverity
 

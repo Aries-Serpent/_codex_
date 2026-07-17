@@ -316,6 +316,7 @@ class TestRAGPerformance:
         """Test performance of batch embedding."""
         try:
             import time
+
             from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
@@ -454,6 +455,7 @@ class TestRAGEdgeCases:
         """Test thread safety of RAG operations."""
         try:
             import threading
+
             from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()

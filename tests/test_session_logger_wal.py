@@ -7,6 +7,7 @@ Test module for session logger wal.
 import sqlite3
 
 import pytest
+
 from codex.logging import session_logger as sl
 
 

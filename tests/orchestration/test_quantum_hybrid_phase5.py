@@ -4,21 +4,22 @@ Phase 5 Shadow Mode Tests - 50+ Tests
 Tests for decision domain mapping, shadow execution, and promotion gates.
 """
 
-import pytest
 import time
+
+import pytest
+
 from orchestration.hybrid.decision_domains import (
     DecisionDomain,
     DecisionDomainMapper,
     RiskLevel,
 )
-from orchestration.hybrid.shadow_mode import (
-    ShadowExecutor,
-    SolverResult,
-    ExecutionStatus,
-)
 from orchestration.hybrid.promotion_gates import (
     PromotionGates,
-    GateStatus,
+)
+from orchestration.hybrid.shadow_mode import (
+    ExecutionStatus,
+    ShadowExecutor,
+    SolverResult,
 )
 
 

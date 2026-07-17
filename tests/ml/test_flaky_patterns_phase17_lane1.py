@@ -10,9 +10,10 @@ Tests include:
 """
 
 import random
-import time
 import threading
-from unittest.mock import patch, MagicMock
+import time
+from unittest.mock import patch
+
 import pytest
 
 

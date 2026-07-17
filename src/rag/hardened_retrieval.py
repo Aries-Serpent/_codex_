@@ -22,17 +22,13 @@ from typing import Any, Optional
 from rag.monitoring import OperationMetric, get_rag_monitor
 from rag.pipelines.embedding import EmbeddingPipeline
 from rag.pipelines.retrieval import (
-    InMemoryVectorStore,
-    PGVectorStoreBackend,
     RetrievalConfig,
     RetrievalPipeline,
     RetrievalResponse,
-    RetrievalResult,
     VectorStoreBackend,
 )
 from rag.resilience import AdaptiveRetryStrategy, RetryConfig
 from rag.timeout_manager import (
-    TimeoutConfig,
     TimeoutManager,
     get_default_timeout_manager,
 )

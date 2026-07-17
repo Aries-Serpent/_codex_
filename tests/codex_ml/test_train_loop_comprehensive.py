@@ -1,4 +1,5 @@
 import pytest
+
 pytest.importorskip("mlflow")
 """
 Comprehensive test suite for codex_ml.train_loop module
@@ -320,7 +321,7 @@ class TestCoerceReasoningConfig:
         config = {"enabled": True, "depth": 5, "max_tokens": 2000}
         result = _coerce_reasoning_config(config)
         if result and hasattr(result, "enabled"):
-            assert result.enabled == True, "Result must not be empty"
+            assert result.enabled, "Result must not be empty"
 
     @pytest.mark.unit
     @pytest.mark.parametrize(
@@ -423,7 +424,7 @@ class TestReasoningRuntime:
         """Test ReasoningRuntime has expected fields."""
         runtime = ReasoningRuntime(enabled=True, depth=3)
         assert hasattr(runtime, "enabled")
-        assert runtime.enabled == True, "enabled is not valid"
+        assert runtime.enabled, "enabled is not valid"
 
     @pytest.mark.unit
     def test_reasoning_runtime_with_defaults(self):

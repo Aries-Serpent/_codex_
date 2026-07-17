@@ -8,9 +8,8 @@ Tests API contracts and service interfaces covering:
 - Backward compatibility
 """
 
+
 import pytest
-from unittest.mock import Mock, patch
-import json
 
 
 @pytest.mark.integration

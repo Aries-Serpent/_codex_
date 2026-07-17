@@ -10,30 +10,24 @@ Test Coverage Targets:
 - Integration tests for full pipeline
 """
 
-import pytest
-import time
-import numpy as np
-from typing import Dict, List, Any
 
+import numpy as np
+import pytest
+
+from src.codex.ensemble.calibration import CalibrationFramework
 from src.codex.ensemble.ensemble_predictor import (
-    EnsemblePredictor,
     EnsembleConfig,
-    WeightedVoter,
-)
-from src.codex.ensemble.types import (
-    ModelType,
-    PredictionType,
-    ModelPrediction,
-    EnsemblePrediction,
+    EnsemblePredictor,
 )
 from src.codex.ensemble.models import (
     HeuristicModel,
     MLModel,
     SymbolicModel,
 )
-from src.codex.ensemble.calibration import CalibrationFramework
 from src.codex.ensemble.prediction_api import PredictionAPI
-
+from src.codex.ensemble.types import (
+    ModelType,
+)
 
 # ============================================================================
 # Test Fixtures

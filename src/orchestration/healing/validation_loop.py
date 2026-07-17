@@ -277,7 +277,6 @@ class ValidationLoop:
         if not validation_report.cascade_detected:
             return None
 
-        import uuid
 
         # Create new incident for cascade
         cascade_incident_id = f"cascade_{validation_report.incident_id}"

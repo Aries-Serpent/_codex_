@@ -99,7 +99,7 @@ class TestSessionLifecycleE2E:
         
         # Verify recovery mechanism
         recovered = {"corrupted": False, "session_id": session_id}
-        assert recovered["corrupted"] == False
+        assert not recovered["corrupted"]
 
     def test_session_cleanup_on_completion(self, tmp_path):
         """E2E: Session resources cleaned up on completion."""
@@ -162,8 +162,8 @@ class TestAPIWorkflowsE2E:
         page2 = {"page": 2, "items": list(range(10, 20)), "has_next": False}
         
         assert len(page1["items"]) == 10
-        assert page1["has_next"] == True
-        assert page2["has_next"] == False
+        assert page1["has_next"]
+        assert not page2["has_next"]
 
     def test_api_authentication_flow(self):
         """E2E: API authentication and token management."""
@@ -291,7 +291,7 @@ class TestCLIIntegrationE2E:
             "workers": 4,
         }
         
-        assert parsed["verbose"] == True
+        assert parsed["verbose"]
         assert parsed["workers"] == 4
 
     def test_cli_config_file_loading(self, tmp_path):

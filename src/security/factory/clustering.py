@@ -10,9 +10,9 @@ Success metric: Family recall >95%, precision >90%
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Set, Tuple, Optional
-from .ingest import NormalizedFinding, FindingSeverity
-import hashlib
+from typing import Dict, List, Optional
+
+from .ingest import FindingSeverity, NormalizedFinding
 
 
 @dataclass

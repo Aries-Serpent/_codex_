@@ -5,11 +5,11 @@ Generates historical charts, forecasts, bottleneck alerts, and recommendations
 with <5s load time.
 """
 
-from typing import Dict, List, Optional
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
+from typing import Dict, List
+
 import numpy as np
-from dataclasses import asdict
 
 
 class DashboardGenerator:
@@ -182,7 +182,7 @@ class DashboardGenerator:
                         metric_data.get('confidence_lower', np.array([])),
                     )
                     dashboard['panels'].append(forecast)
-            except Exception as e:
+            except Exception:
                 # Skip problematic metrics
                 continue
         

@@ -48,7 +48,7 @@ class TestModelInitialization:
     def test_model_has_config(self, model_config: dict[str, Any]) -> None:
         """Test that loaded model has proper configuration."""
         pytest.importorskip("transformers")
-        from transformers import AutoModel, AutoConfig
+        from transformers import AutoConfig, AutoModel
         
         config = AutoConfig.from_pretrained(model_config["model_name"])
         model = AutoModel.from_pretrained(
@@ -108,8 +108,8 @@ class TestInferenceExecution:
         """Test inference on a single text sample."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -143,8 +143,8 @@ class TestInferenceExecution:
         """Test inference on a batch of samples."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -182,8 +182,8 @@ class TestOutputValidation:
         """Test that output tensors have correct shapes."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -219,8 +219,8 @@ class TestOutputValidation:
         """Test that output tensors have correct data types."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -256,8 +256,8 @@ class TestPerformanceProfiling:
         """Test latency for single sample inference."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -297,8 +297,8 @@ class TestPerformanceProfiling:
         """Test throughput (samples/sec) for batch inference."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -346,7 +346,6 @@ class TestMemoryProfiling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         from transformers import AutoModel
-        import torch
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         device = device_info["device"]
@@ -368,9 +367,10 @@ class TestMemoryProfiling:
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
         pytest.importorskip("psutil")
-        from transformers import AutoModel, AutoTokenizer
-        import torch
         import psutil
+
+        import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -411,8 +411,8 @@ class TestErrorHandling:
         """Test handling of empty strings."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -442,8 +442,8 @@ class TestErrorHandling:
         """Test handling of sequences longer than max_seq_length."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -481,8 +481,8 @@ class TestDeviceManagement:
         """Test that model can run on CPU."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])
@@ -513,8 +513,8 @@ class TestDeviceManagement:
         """Test that outputs are on the same device as model."""
         pytest.importorskip("transformers")
         pytest.importorskip("torch")
-        from transformers import AutoModel, AutoTokenizer
         import torch
+        from transformers import AutoModel, AutoTokenizer
         
         model = AutoModel.from_pretrained(model_config["model_name"])
         tokenizer = AutoTokenizer.from_pretrained(model_config["model_name"])

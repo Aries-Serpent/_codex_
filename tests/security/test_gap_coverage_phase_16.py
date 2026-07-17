@@ -20,7 +20,6 @@ import os
 import sys
 import tempfile
 from pathlib import Path
-from unittest import mock
 
 import pytest
 
@@ -194,7 +193,6 @@ class TestGapCoverageErrorHandling:
     def test_traceback_handling(self):
         """Test traceback manipulation."""
         import traceback
-        import sys
         
         try:
             raise ValueError("test error")
@@ -409,10 +407,10 @@ class TestGapCoverageComparisonOperations:
 
     def test_comparison_with_none(self):
         """Test comparison with None."""
-        assert None == None
+        assert None is None
         assert None is None
         assert None != 0
-        assert None != False
+        assert None
         assert None != ""
 
     def test_comparison_with_different_types(self):
@@ -435,7 +433,7 @@ class TestGapCoverageDateTimeOperations:
 
     def test_datetime_creation_variants(self):
         """Test various datetime creation methods."""
-        from datetime import datetime, date, time
+        from datetime import date, datetime, time
         
         d = date(2024, 1, 15)
         assert d.year == 2024
@@ -471,7 +469,7 @@ class TestGapCoverageDateTimeOperations:
     def test_timezone_operations(self):
         """Test timezone operations."""
         try:
-            from datetime import datetime, timezone, timedelta
+            from datetime import datetime, timedelta, timezone
             
             tz = timezone(timedelta(hours=5, minutes=30))
             dt = datetime(2024, 1, 15, 14, 30, tzinfo=tz)

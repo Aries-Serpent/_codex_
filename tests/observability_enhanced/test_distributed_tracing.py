@@ -15,17 +15,13 @@ Test Categories:
 Total: 25+ comprehensive distributed tracing tests
 """
 
-import json  # pragma: allowlist secret  # pragma: allowlist secret
-import re
 import threading
 import time
 import uuid
 from contextlib import contextmanager
 from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-
 
 # ============================================================================
 # Fixtures and Utilities
@@ -519,7 +515,7 @@ class TestSpanInstrumentation:
                 span.set_attribute("db.system", "postgresql")
                 span.set_attribute("db.operation", operation)
                 span.set_attribute("db.name", "codex_db")
-                span.set_attribute("db.statement", f"SELECT * FROM users WHERE id = ?")
+                span.set_attribute("db.statement", "SELECT * FROM users WHERE id = ?")
                 
                 assert span.attributes["db.system"] == "postgresql"
                 assert span.attributes["db.operation"] == operation

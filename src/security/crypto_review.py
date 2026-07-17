@@ -10,11 +10,9 @@ This module provides:
 
 from __future__ import annotations
 
-import hashlib
 import logging
 import os
 import re
-import ssl
 from enum import Enum
 from typing import Optional, Set
 
@@ -143,11 +141,11 @@ class CryptographicReviewer:
         if tls_version == TLSVersion.TLS_12:
             return (
                 True,
-                f"TLS 1.2 is acceptable but TLS 1.3 is recommended for better security.",
+                "TLS 1.2 is acceptable but TLS 1.3 is recommended for better security.",
             )
 
         if tls_version == TLSVersion.TLS_13:
-            return (True, f"TLS 1.3 is excellent. No issues found.")
+            return (True, "TLS 1.3 is excellent. No issues found.")
 
         return (False, f"Unexpected TLS version: {version}")
 

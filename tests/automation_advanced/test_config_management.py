@@ -15,17 +15,11 @@ Comprehensive test suite for configuration management automation including:
 Target: 20+ tests, ≥90% coverage
 """
 
-import pytest  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
-import json
-import yaml
-import tempfile
-import os
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from unittest.mock import Mock, patch, MagicMock
-from dataclasses import dataclass, asdict
 import hashlib
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
+import pytest  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 
 # ============================================================================
 # CONFIGURATION MODELS

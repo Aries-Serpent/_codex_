@@ -6,10 +6,10 @@ Fix: Replaced fcntl.flock() with threading.Lock() for cross-platform compatibili
 import tempfile
 import threading
 import time
-import pytest
-import os
 import uuid
 from pathlib import Path
+
+import pytest
 
 
 class TestFSRaceConditionLocking:

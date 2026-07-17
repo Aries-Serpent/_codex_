@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +167,7 @@ def validate_metadata(metadata: Optional[dict]) -> dict:
     validated_metadata = {}
     for key, value in metadata.items():
         if not isinstance(key, str):
-            raise ValueError(f"Metadata key must be a string")
+            raise ValueError("Metadata key must be a string")
 
         if _contains_code_injection(key):
             logger.warning(f"Potential code injection in metadata key: {key}")

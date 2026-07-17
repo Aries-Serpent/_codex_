@@ -11,15 +11,13 @@ Provides:
 Gate Criterion 3: <5% load variance
 """
 
-import logging
 import hashlib
+import logging
 import time
-from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Tuple
-from enum import Enum
 from collections import defaultdict
-import uuid
-
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -260,7 +258,7 @@ class LoadBalancer:
             return None
         
         # Calculate weighted probability
-        total_weight = sum(node.weight for _, node in healthy_nodes)
+        sum(node.weight for _, node in healthy_nodes)
         
         # Find node with least connections relative to weight
         best_node = min(

@@ -14,19 +14,12 @@ Success criteria: ≥95% pass rate, 0 regressions, ≥8% coverage gain
 from __future__ import annotations
 
 import json
-import logging
-import sys
-import tempfile
 import time
-from datetime import datetime
 from pathlib import Path
-from typing import Any
 from unittest import mock
 
 import pytest
 
-# Core module imports
-from metrics import accuracy, append_ndjson, write_ndjson
 from logging_utils import (
     FallbackMetricsWriter,
     LoggingConfig,
@@ -39,6 +32,8 @@ from logging_utils import (
     shutdown_logging,
 )
 
+# Core module imports
+from metrics import accuracy, append_ndjson, write_ndjson
 
 # ============================================================================
 # PART 1: Core Utility Functions (10 tests)

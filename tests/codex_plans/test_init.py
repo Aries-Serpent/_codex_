@@ -97,6 +97,7 @@ class TestListPlanDocuments:
         """Test with custom base directory."""
         try:
             import tempfile
+
             from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -114,6 +115,7 @@ class TestListPlanDocuments:
         """Test with empty directory."""
         try:
             import tempfile
+
             from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -156,6 +158,7 @@ class TestEdgeCases:
         """Test directory with mixed file types."""
         try:
             import tempfile
+
             from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:

@@ -15,12 +15,11 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any
 
 from codex.monitoring.performance_monitor import (
     PerformanceMonitor,
     SeverityLevel,
-    detect_ci_regression,
 )
 
 
@@ -187,7 +186,6 @@ class GitHubSLAEnforcer:
 def main() -> int:
     """Main entry point for GitHub Actions"""
     import argparse
-    import os
     
     parser = argparse.ArgumentParser(
         description="Performance SLA enforcement for GitHub Actions"

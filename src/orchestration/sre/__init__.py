@@ -6,9 +6,9 @@ Phase 8 implements:
 3. SRE Monitoring: Real-time SLO tracking, anomaly detection, alert routing
 """
 
-from .error_budget import ErrorBudgetSystem, ErrorBudgetReport
 from .canary_drills import CanaryDrillOrchestrator, DrillReport
-from .sre_monitoring import SREMonitor, MonitoringReport
+from .error_budget import ErrorBudgetReport, ErrorBudgetSystem
+from .sre_monitoring import MonitoringReport, SREMonitor
 
 __all__ = [
     "ErrorBudgetSystem",

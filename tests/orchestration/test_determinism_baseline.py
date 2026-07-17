@@ -9,26 +9,23 @@ import json
 import random
 import tempfile
 from pathlib import Path
-from typing import Dict, Any
-from unittest.mock import patch
 
 import pytest
 
+from orchestration.adapters.decision_trace import (
+    DecisionTraceError,
+    DecisionTraceWriter,
+)
 from orchestration.adapters.input_lock import InputLockAdapter, InputLockError
 from orchestration.adapters.seed_control import (
-    SeedControlSystem,
     SeedControlError,
+    SeedControlSystem,
     set_deterministic_seed,
-)
-from orchestration.adapters.decision_trace import (
-    DecisionTraceWriter,
-    DecisionTraceError,
 )
 from orchestration.contracts.lane_manifest import (
     LaneManifestContract,
     LaneManifestError,
 )
-
 
 # ============================================================================
 # INPUT-LOCK TESTS (15 tests)

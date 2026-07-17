@@ -16,12 +16,7 @@ Success criteria:
 
 from __future__ import annotations
 
-import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Callable
-
-import pytest
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Latency Benchmarks

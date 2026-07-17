@@ -7,11 +7,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import tempfile
 from pathlib import Path
-from typing import Generator, Optional
-from unittest.mock import MagicMock, patch
+from typing import Generator
 
 import pytest
 
@@ -338,9 +336,10 @@ def distributed_run_set(mlflow_client_full, parent_experiment):
 def model_registry_run(mlflow_client_full, parent_experiment):
     """Create a run for model registry testing."""
     try:
-        import mlflow
         import tempfile
         from pathlib import Path
+
+        import mlflow
 
         exp_id = parent_experiment["id"]
         run = mlflow_client_full.create_run(

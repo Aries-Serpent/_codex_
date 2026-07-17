@@ -16,10 +16,8 @@ Usage:
 
 from __future__ import annotations
 
-import sys
 import math
 from typing import Any, Callable, Iterable, Optional, Type, Union
-
 
 # ============================================================================
 # NUMERIC ASSERTIONS

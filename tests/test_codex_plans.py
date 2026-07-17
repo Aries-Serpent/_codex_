@@ -384,9 +384,10 @@ class TestCodexPlansModuleExports:
 
     def test_no_unexpected_exports(self):
         """Test that module doesn't export private items."""
-        import codex_plans
         import pathlib
         import typing
+
+        import codex_plans
 
         for attr in dir(codex_plans):
             if not attr.startswith("_"):

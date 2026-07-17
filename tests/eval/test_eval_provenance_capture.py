@@ -37,7 +37,6 @@ def test_evaluation_captures_git_commit_in_provenance(
     def _fake_git_commit():
         return fake_commit
 
-        import codex_ml.utils.provenance as prov_module
 
     monkeypatch.setattr(prov_module, "_git_commit", _fake_git_commit)
 

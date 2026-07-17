@@ -106,7 +106,7 @@ class TestArtifactManagement:
         artifact_size = 4.5 * 1024 * 1024 * 1024
         
         is_valid = artifact_size <= max_artifact_size
-        assert is_valid == True
+        assert is_valid
     
     def test_artifact_compression(self):
         """Compress artifacts before upload"""
@@ -126,7 +126,7 @@ class TestArtifactManagement:
             "available": True
         }
         
-        assert artifact["available"] == True
+        assert artifact["available"]
         assert artifact["id"] is not None
     
     def test_download_artifact_timeout(self):
@@ -195,7 +195,7 @@ class TestRunnerProvisioning:
         runner_labels = ["ubuntu-latest", "python-3.11", "docker"]
         
         matched = all(req in runner_labels for req in job_requires)
-        assert matched == True
+        assert matched
     
     def test_runner_timeout_configuration(self):
         """Configure job timeout on runner"""
@@ -241,7 +241,7 @@ class TestRunnerProvisioning:
         }
         
         is_unhealthy = runner_health["consecutive_failures"] >= 2
-        assert is_unhealthy == True
+        assert is_unhealthy
 
 
 class TestWorkflowExecution:
@@ -268,7 +268,7 @@ class TestWorkflowExecution:
         
         # Should stop on first failure if continue_on_error=False
         should_continue = steps[0]["continue_on_error"]
-        assert should_continue == False
+        assert not should_continue
     
     def test_workflow_conditional_execution(self):
         """Execute steps conditionally"""
@@ -280,7 +280,7 @@ class TestWorkflowExecution:
         
         # Check condition
         can_execute = step["condition"] == "success()"
-        assert can_execute == True
+        assert can_execute
     
     def test_workflow_parallel_jobs(self):
         """Support parallel job execution"""
@@ -352,7 +352,7 @@ class TestWorkflowMonitoring:
         }
         
         is_running = workflow_run["conclusion"] is None
-        assert is_running == True
+        assert is_running
     
     def test_workflow_completion_detection(self):
         """Detect workflow completion"""
@@ -363,7 +363,7 @@ class TestWorkflowMonitoring:
         }
         
         is_complete = run["status"] == "completed"
-        assert is_complete == True
+        assert is_complete
     
     def test_workflow_failure_detection(self):
         """Detect workflow failures"""
@@ -373,7 +373,7 @@ class TestWorkflowMonitoring:
         }
         
         is_failed = run["conclusion"] == "failure"
-        assert is_failed == True
+        assert is_failed
     
     def test_workflow_performance_metrics(self):
         """Collect workflow performance metrics"""
@@ -417,7 +417,7 @@ class TestCIIntegration:
             "all_passed": True
         }
         
-        assert pr_check["all_passed"] == True
+        assert pr_check["all_passed"]
     
     def test_ci_failure_notification(self):
         """CI notifies on failures"""
@@ -427,7 +427,7 @@ class TestCIIntegration:
             "notification_sent": True
         }
         
-        assert failure_event["notification_sent"] == True
+        assert failure_event["notification_sent"]
     
     def test_ci_retry_logic(self):
         """Implement CI retry logic for transient failures"""
@@ -444,7 +444,7 @@ class TestCIIntegration:
         commit_message = "[skip ci] Documentation update"
         
         should_skip = "[skip ci]" in commit_message or "[ci skip]" in commit_message
-        assert should_skip == True
+        assert should_skip
 
 
 class TestIntegrationTestSuite:
@@ -501,7 +501,7 @@ class TestErrorRecovery:
         }
         
         is_transient = error["retryable"]
-        assert is_transient == True
+        assert is_transient
     
     def test_permanent_error_detection(self):
         """Detect permanent errors"""
@@ -512,7 +512,7 @@ class TestErrorRecovery:
         }
         
         is_permanent = not error["retryable"]
-        assert is_permanent == True
+        assert is_permanent
     
     def test_graceful_degradation(self):
         """Support graceful degradation on partial failure"""
@@ -548,7 +548,7 @@ class TestInfrastructureCompliance:
             "secrets_rotated": True
         }
         
-        assert secret_handling["secrets_in_logs"] == False
+        assert not secret_handling["secrets_in_logs"]
     
     def test_resource_quota_compliance(self):
         """Verify resource quotas honored"""

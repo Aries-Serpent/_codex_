@@ -7,7 +7,6 @@ Results are advisory only - no production impact.
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import time
 from dataclasses import dataclass, field

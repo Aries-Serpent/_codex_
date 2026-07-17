@@ -3,7 +3,7 @@
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 import numpy as np
 
@@ -432,7 +432,7 @@ class SymbolicModel(BaseModel):
                 if not (feature_value == threshold):
                     return False
             elif operator == "in":
-                if not (str(feature_value).lower() in [str(t).lower() for t in threshold]):
+                if str(feature_value).lower() not in [str(t).lower() for t in threshold]:
                     return False
             elif operator == "not_in":
                 if str(feature_value).lower() in [str(t).lower() for t in threshold]:

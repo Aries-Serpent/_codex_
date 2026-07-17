@@ -7,12 +7,10 @@ import json
 import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Any, Generator
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Database Fixtures  # pragma: allowlist secret  # pragma: allowlist secret
@@ -207,8 +205,8 @@ def github_webhook_payload() -> str:
 
 def _compute_hmac_signature(payload: str, secret: str) -> str:
     """Compute HMAC-SHA256 signature for webhook verification."""
-    import hmac
     import hashlib
+    import hmac
 
     return "sha256=" + hmac.new(
         secret.encode(), payload.encode(), hashlib.sha256

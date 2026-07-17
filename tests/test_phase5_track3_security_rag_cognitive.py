@@ -14,13 +14,11 @@ Date: 2026-07-10
 Status: Production
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock, PropertyMock
-from typing import Any, Dict, List, Optional
-import json
 import hashlib
 import uuid
+from unittest.mock import Mock
 
+import pytest
 
 # ============================================================================
 # TEST CLASS 1: SECURITY MODULE COVERAGE

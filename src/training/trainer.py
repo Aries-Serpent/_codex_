@@ -120,7 +120,6 @@ from ..logging_utils import (  # noqa: E402
     shutdown_logging,
 )
 from ..metrics import append_ndjson  # noqa: E402
-
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402
 

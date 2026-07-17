@@ -46,7 +46,7 @@ class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret
             "restored-key": None,
             "cache_hit": False
         }
-        assert cache_meta["cache_hit"] == False
+        assert not cache_meta["cache_hit"]
         assert cache_meta["restored-key"] is None
     
     def test_l1_cache_invalidation(self):
@@ -61,7 +61,7 @@ class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret
             should_invalidate.get("runner_changed", False) or
             should_invalidate.get("branch_changed", False)
         )
-        assert cache_valid == False
+        assert not cache_valid
     
     def test_l1_cache_size_limits(self):
         """Enforce artifact cache size limits"""
@@ -80,7 +80,7 @@ class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret
             datetime.datetime.now() - cache_created > 
             datetime.timedelta(days=cache_ttl_days)
         )
-        assert is_expired == False
+        assert not is_expired
     
     def test_l1_cache_restore_keys_fallback(self):
         """Multiple restore keys for artifact cache"""
@@ -139,7 +139,7 @@ class TestL2DependencyCache:
         new_hash = "6512bd43d9caa6e02c990b0a82652dca"
         
         changed = old_hash != new_hash
-        assert changed == True
+        assert changed
     
     def test_l2_cache_hit_rate_tracking(self):
         """Track L2 cache hit rate over time"""
@@ -161,7 +161,7 @@ class TestL2DependencyCache:
         }
         
         should_clear = any(v.get("changed", False) for v in deps.values())
-        assert should_clear == True
+        assert should_clear
     
     def test_l2_cache_gc_cleanup(self):
         """Garbage collect old dependency caches"""
@@ -227,7 +227,7 @@ class TestL3BuildOutputCache:
         
         # Only rebuild changed sources
         should_rebuild = True
-        assert should_rebuild == True
+        assert should_rebuild
     
     def test_l3_cache_key_collision_detection(self):
         """Detect cache key collisions"""
@@ -238,8 +238,8 @@ class TestL3BuildOutputCache:
         collision = key1 == key2
         no_collision = key1 != key3
         
-        assert collision == True
-        assert no_collision == True
+        assert collision
+        assert no_collision
     
     def test_l3_cache_eviction_policy(self):
         """Implement LRU eviction for L3 cache"""
@@ -305,7 +305,7 @@ class TestL4RAGModelCache:
         }
         
         is_stale = (time.time() - cache_entry["timestamp"]) / (24 * 60 * 60) > cache_entry["ttl_days"]
-        assert is_stale == True
+        assert is_stale
     
     def test_l4_hallucination_detection(self):
         """Detect potentially hallucinated outputs"""
@@ -313,7 +313,7 @@ class TestL4RAGModelCache:
         confidence_score = 0.45  # Low confidence
         
         is_unreliable = confidence_score < 0.5
-        assert is_unreliable == True
+        assert is_unreliable
     
     def test_l4_cache_privacy_isolation(self):
         """Ensure cache privacy for sensitive data"""
@@ -321,7 +321,7 @@ class TestL4RAGModelCache:
         
         # Should not cache sensitive queries
         should_cache = "password" not in sensitive_query.lower()
-        assert should_cache == False
+        assert not should_cache
 
 
 class TestCacheCoordination:
@@ -348,7 +348,7 @@ class TestCacheCoordination:
         }
         
         # L1 invalidation affects all
-        assert layer_invalidation["L1"]["L4"] == True
+        assert layer_invalidation["L1"]["L4"]
     
     def test_cache_hit_statistics_aggregation(self):
         """Aggregate cache hit statistics across layers"""

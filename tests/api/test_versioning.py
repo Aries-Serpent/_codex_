@@ -9,7 +9,6 @@ Phase: 16.1 - API Contract Testing
 Tests: 10+
 """
 
-import json
 import re
 from pathlib import Path
 

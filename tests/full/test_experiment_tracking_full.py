@@ -6,12 +6,9 @@ Covers advanced MLflow and wandb features at production scale.
 
 from __future__ import annotations
 
-import json
-import os
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -21,18 +18,18 @@ sys.path.insert(0, str(full_test_dir))
 
 try:
     from experiment_fixtures import (
+        artifact_run,
+        child_experiment,
+        child_run,
+        distributed_run_set,
+        export_import_run,
         mlflow_client_full,
         mlflow_tracking_uri_full,
-        parent_experiment,
-        child_experiment,
-        parent_run,
-        child_run,
-        multi_metric_run,
-        artifact_run,
-        sweep_run_set,
-        distributed_run_set,
         model_registry_run,
-        export_import_run,
+        multi_metric_run,
+        parent_experiment,
+        parent_run,
+        sweep_run_set,
     )
 except ImportError:
     # Fixtures will be loaded by pytest discovery
@@ -446,8 +443,9 @@ class TestPerformanceTracking:
     def test_metric_logging_performance(self, mlflow_client_full, parent_experiment):
         """Test performance of logging many metrics."""
         try:
-            import mlflow
             import time
+
+            import mlflow
 
             exp_id = parent_experiment["id"]
             run = mlflow_client_full.create_run(experiment_id=exp_id)
@@ -471,8 +469,9 @@ class TestPerformanceTracking:
     def test_run_query_performance(self, mlflow_client_full, parent_experiment):
         """Test performance of querying runs."""
         try:
-            import mlflow
             import time
+
+            import mlflow
 
             exp_id = parent_experiment["id"]
 

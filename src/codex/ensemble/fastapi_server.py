@@ -1,17 +1,16 @@
 """FastAPI server for real-time ensemble predictions."""
 
-import asyncio
 import logging
 import time
-from typing import Any, Dict, List, Optional
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel, Field
 import uvicorn
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 
-from src.codex.ensemble.ensemble_predictor import EnsemblePredictor, EnsembleConfig
+from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
 from src.codex.ensemble.types import PredictionType
 
 logger = logging.getLogger(__name__)
@@ -128,7 +127,7 @@ class PredictionAPIServer:
         @app.post("/predict", response_model=PredictionResponse)
         async def predict_endpoint(request: PredictionRequest) -> PredictionResponse:
             """Make a single prediction."""
-            start_time = time.time()
+            time.time()
 
             try:
                 self.total_requests += 1

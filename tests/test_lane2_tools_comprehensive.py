@@ -344,7 +344,7 @@ class TestToolsEdgeCases:
     def test_tools_reimport_safe(self):
         """Test that reimporting tools is safe."""
         import sys
-        from tools import schema_diff as diff1
+
         
         if "tools.schema_diff" in sys.modules:
             del sys.modules["tools.schema_diff"]

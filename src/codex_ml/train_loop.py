@@ -80,9 +80,8 @@ try:
 except (ImportError, AttributeError):
     attach_reasoning_adapters = None
     _HAS_REASONING_ADAPTERS = False
-from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
 from codex_ml.monitoring.data_drift import DataDriftDetector as _DataDriftDetector
-from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
+from codex_ml.training.dp_config import DifferentialPrivacyConfig
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 from codex_ml.utils.checksum import sha256sum
 

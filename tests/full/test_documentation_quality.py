@@ -20,8 +20,6 @@ Test Categories:
 
 import ast
 import re
-from pathlib import Path
-from typing import List
 
 import pytest
 

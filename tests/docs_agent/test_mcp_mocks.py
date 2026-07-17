@@ -28,7 +28,7 @@ class TestSearchCodeMocks:
         response = mock_mcp_tools.SearchCodeMockGenerator.generate_response("auth")
         assert response['total_count'] > 0
         assert len(response['items']) == 10
-        assert response['incomplete_results'] == False
+        assert not response['incomplete_results']
     
     def test_generate_response_custom_limit(self):
         """Test response with custom result limit"""

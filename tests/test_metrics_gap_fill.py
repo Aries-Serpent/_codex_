@@ -8,11 +8,6 @@ Test Coverage Target: +15pp increase (23% → 38%)
 
 from __future__ import annotations
 
-from typing import Any
-from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 class TestMetricsModule:
     """Gap-fill test suite targeting metrics module functions."""
@@ -32,9 +27,9 @@ class TestMetricsModule:
         """
         from codex_ml.metrics import (
             compute_bleu,
-            compute_rouge,
             compute_meteor,
             compute_perplexity,
+            compute_rouge,
         )
         
         assert callable(compute_bleu)

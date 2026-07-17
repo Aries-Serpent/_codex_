@@ -372,6 +372,7 @@ class TestMainFunction:
         """Test that main function exists and is async."""
         try:
             import asyncio
+
             from agents.autonomous_runner import main
 
             assert asyncio.iscoroutinefunction(main), "Condition must be true"
@@ -392,6 +393,7 @@ class TestMainFunction:
         """Test that main reads from environment variables."""
         try:
             import os
+
             from agents.autonomous_runner import main
 
             with (

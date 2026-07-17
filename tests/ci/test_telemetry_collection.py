@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 #             assert required.issubset(, "Condition must be true"
 #                 result.keys()

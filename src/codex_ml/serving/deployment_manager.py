@@ -4,14 +4,14 @@ Deployment Manager for ML Models - Phase 18 Lane B
 Manages model deployment, versioning, and rollback procedures.
 """
 
+import hashlib
 import json
 import logging
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, Any
-import hashlib
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

@@ -9,18 +9,15 @@ Tests validate:
   - Resilience under failure conditions
 """
 
-import json
 import pytest
-from typing import Any
 
-from src.orchestration.routing_v2 import EnhancedRouter, AgentLoad, AgentHealth
-from src.orchestration.tracing import HandoffTracer, TraceContext, SpanStatus
 from src.orchestration.load_balancer import LoadBalancer, TaskPriority
+from src.orchestration.routing_v2 import AgentHealth, AgentLoad, EnhancedRouter
 from src.orchestration.simulation import (
-    SimulationEngine,
     ScenarioBuilder,
-    WorkloadProfile,
+    SimulationEngine,
 )
+from src.orchestration.tracing import HandoffTracer, SpanStatus, TraceContext
 
 
 class TestEnhancedRouting:

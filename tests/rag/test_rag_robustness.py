@@ -6,25 +6,19 @@ Authority: D-tier autonomous
 Target Reliability: 99%+
 """
 
-import asyncio
 import time
 import unittest
-from unittest.mock import MagicMock, patch
 
 from rag.hardened_embedding import HardenedEmbeddingPipeline
-from rag.hardened_retrieval import HardenedRetrievalPipeline
-from rag.monitoring import OperationMetric, RAGMonitor, get_rag_monitor
+from rag.monitoring import OperationMetric, RAGMonitor
 from rag.monitoring import set_rag_monitor as set_monitor
 from rag.pipelines.embedding import EmbeddingConfig
-from rag.pipelines.retrieval import RetrievalConfig
 from rag.resilience import (
-    AdaptiveRetryStrategy,
     FailureType,
     RetryConfig,
     RetryStrategy,
 )
 from rag.timeout_manager import (
-    CircuitBreakerState,
     CircuitState,
     TimeoutConfig,
     TimeoutManager,

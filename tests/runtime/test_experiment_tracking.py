@@ -7,10 +7,7 @@ from __future__ import annotations
 
 import os
 import sys
-import tempfile
 from pathlib import Path
-from typing import Optional
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -23,14 +20,14 @@ try:
         mlflow_client,
         mlflow_experiment,
         mlflow_run,
-        mlflow_tracking_uri,
-        temp_mlflow_dir,
-        wandb_config,
-        wandb_mock,
         mlflow_tracker_instance,
-        wandb_logger_instance,
+        mlflow_tracking_uri,
         mock_mlflow_tracking_context,
         mock_wandb_tracking_context,
+        temp_mlflow_dir,
+        wandb_config,
+        wandb_logger_instance,
+        wandb_mock,
     )
 except ImportError:
     # Fixtures will be loaded by pytest discovery

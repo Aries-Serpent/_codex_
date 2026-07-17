@@ -14,12 +14,8 @@ This test suite covers:
 
 from __future__ import annotations
 
-import importlib
-import importlib.machinery
-import importlib.util
 import sys
 from pathlib import Path
-from typing import Any
 from unittest import mock
 
 import pytest
@@ -133,7 +129,7 @@ class TestPathManagement:
     def test_module_initialization_path_setup(self) -> None:
         """Test that module properly sets up sys.path."""
         # Verify the module loads without errors
-        from cli import PROJECT_ROOT, CLI_PACKAGE_PATH
+        from cli import CLI_PACKAGE_PATH, PROJECT_ROOT
         
         assert isinstance(PROJECT_ROOT, Path)
         assert isinstance(CLI_PACKAGE_PATH, Path)

@@ -9,10 +9,10 @@ Tracks metrics and provides adaptive feedback:
 Success metric: Accurate ETA within ±1 week
 """
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from datetime import datetime, timedelta
 import statistics
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List
 
 
 @dataclass

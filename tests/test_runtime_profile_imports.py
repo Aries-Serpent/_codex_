@@ -18,9 +18,7 @@ Coverage:
 - Monitoring (prometheus-client, psutil, evidently)
 """
 
-import sys
 import pytest
-from typing import Any
 
 
 class TestDataProcessingDependencies:
@@ -54,9 +52,9 @@ class TestDataProcessingDependencies:
     def test_scikit_learn_import(self):
         """Test scikit-learn import and basic functionality."""
         try:
+            import numpy as np
             from sklearn import __version__
             from sklearn.preprocessing import StandardScaler
-            import numpy as np
             
             # Test scaler
             scaler = StandardScaler()
@@ -84,8 +82,7 @@ class TestMLInferenceDependencies:
     def test_transformers_import(self):
         """Test transformers import and basic functionality."""
         try:
-            from transformers import __version__
-            from transformers import AutoTokenizer
+            from transformers import AutoTokenizer, __version__
             # Verify we can access tokenizers
             assert AutoTokenizer is not None
         except ImportError as e:
@@ -94,8 +91,7 @@ class TestMLInferenceDependencies:
     def test_datasets_import(self):
         """Test datasets import and basic functionality."""
         try:
-            from datasets import __version__
-            from datasets import DatasetDict, Dataset
+            from datasets import Dataset, DatasetDict, __version__
             assert DatasetDict is not None
             assert Dataset is not None
         except ImportError as e:
@@ -108,8 +104,7 @@ class TestMLTrainingDependencies:
     def test_accelerate_import(self):
         """Test accelerate import."""
         try:
-            from accelerate import __version__
-            from accelerate import Accelerator
+            from accelerate import Accelerator, __version__
             assert Accelerator is not None
         except ImportError as e:
             pytest.skip(f"accelerate not installed: {e}")
@@ -117,8 +112,7 @@ class TestMLTrainingDependencies:
     def test_peft_import(self):
         """Test peft import."""
         try:
-            from peft import __version__
-            from peft import get_peft_model
+            from peft import __version__, get_peft_model
             assert get_peft_model is not None
         except ImportError as e:
             pytest.skip(f"peft not installed: {e}")
@@ -398,8 +392,9 @@ class TestRuntimeProfileComputeCapabilities:
     def test_torch_tensor_operations(self):
         """Test torch tensor operations."""
         try:
-            import torch
             import numpy as np
+
+            import torch
             
             # Test tensor creation and operations
             a = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
@@ -414,8 +409,8 @@ class TestRuntimeProfileComputeCapabilities:
     def test_pandas_dataframe_operations(self):
         """Test pandas dataframe operations."""
         try:
-            import pandas as pd
             import numpy as np
+            import pandas as pd
             
             # Create test data
             df = pd.DataFrame({

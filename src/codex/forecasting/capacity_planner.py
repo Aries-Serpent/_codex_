@@ -5,15 +5,16 @@ Provides multi-horizon forecasting (7-day, 30-day, 90-day) with trend analysis
 and anomaly-resistant fitting.
 """
 
-from typing import Dict, List, Tuple, Optional
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List, Optional
+
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
 
 # Optional imports
 try:
-    from sklearn.linear_model import LinearRegression, HuberRegressor
+    from sklearn.linear_model import HuberRegressor, LinearRegression
     from sklearn.preprocessing import PolynomialFeatures
     HAS_SKLEARN = True
 except ImportError:
@@ -27,7 +28,7 @@ except ImportError:
     HAS_STATSMODELS = False
 
 try:
-    from .models import ARIMAModel, ProphetModel, EnsembleForecaster, EnsembleConfig
+    from .models import ARIMAModel, EnsembleConfig, EnsembleForecaster, ProphetModel
 except ImportError:
     ARIMAModel = None
     ProphetModel = None
@@ -85,7 +86,7 @@ class TrendAnalyzer:
         # Linear trend (Huber regression - robust to outliers)
         huber = HuberRegressor(max_iter=1000, epsilon=1.35)
         huber.fit(x, ts_data)
-        linear_pred = huber.predict(x)
+        huber.predict(x)
         linear_r2 = huber.score(x, ts_data)
         
         # Polynomial trend (degree 2)
@@ -93,7 +94,7 @@ class TrendAnalyzer:
         x_poly = poly_features.fit_transform(x)
         huber_poly = HuberRegressor(max_iter=1000, epsilon=1.35)
         huber_poly.fit(x_poly, ts_data)
-        poly_pred = huber_poly.predict(x_poly)
+        huber_poly.predict(x_poly)
         poly_r2 = huber_poly.score(x_poly, ts_data)
         
         # Detect seasonality

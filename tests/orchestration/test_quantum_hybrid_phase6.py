@@ -4,20 +4,18 @@ Phase 6 Canary Promotion Tests - 50+ Tests
 Tests for cohort routing, SLA monitoring, and canary promotion.
 """
 
-import pytest
-import time
-from orchestration.hybrid.cohort_routing import (
-    CohortRouter,
-    CohortRisk,
-)
-from orchestration.hybrid.sla_monitor import (
-    SLAMonitor,
-    SLAMetric,
-    ComplianceStatus,
-)
 from orchestration.hybrid.canary_promotion import (
     CanaryPromoter,
     CanaryStage,
+)
+from orchestration.hybrid.cohort_routing import (
+    CohortRisk,
+    CohortRouter,
+)
+from orchestration.hybrid.sla_monitor import (
+    ComplianceStatus,
+    SLAMetric,
+    SLAMonitor,
 )
 
 

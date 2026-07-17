@@ -4,6 +4,7 @@ Tests for src/services/github/client.py to improve coverage from 7.41% → 25%+
 """
 
 import pytest
+
 pytest.skip("Gap-fill test - infrastructure not fully implemented", allow_module_level=True)
 
 from unittest.mock import patch

@@ -16,11 +16,9 @@ Phase: 16.3 - Continuous Security Scanning
 Tests: 25+ comprehensive tests
 """
 
-import json
 import re
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import pytest
 

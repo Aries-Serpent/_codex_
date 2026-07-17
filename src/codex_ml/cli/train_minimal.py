@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 from codex.logging.adapter import get_default_logger
-
 from codex_ml.cli import utils as cli_utils  # type: ignore[attr-defined]
 from codex_ml.logging.experiment import ExperimentTracker
 

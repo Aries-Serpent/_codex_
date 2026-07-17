@@ -167,7 +167,7 @@ def test_stable_status():
     assert report["coverage_metrics"]["overall_percent"] == 34.63
     assert report["escalation_recommendation"] == "stable"
     assert report["escalation_agent"] == "none"
-    assert report["blocks_merge"] == False
+    assert not report["blocks_merge"]
     
     logger.info("  ✅ Coverage stable at 34.63%")
     logger.info("  ✅ No escalation needed")
@@ -183,7 +183,7 @@ def test_yellow_alert_regression():
     assert report["coverage_metrics"]["overall_percent"] == 34.13  # -0.5%
     assert report["escalation_recommendation"] == "yellow_alert"
     assert report["escalation_agent"] == "unified-coverage-agent"
-    assert report["blocks_merge"] == False
+    assert not report["blocks_merge"]
     
     logger.info("  ✅ Coverage dropped to 34.13% (-0.5%)")
     logger.info("  ✅ Escalation Level: YELLOW ALERT")
@@ -200,7 +200,7 @@ def test_orange_alert_regression():
     assert report["coverage_metrics"]["overall_percent"] == 32.83  # -1.8%
     assert report["escalation_recommendation"] == "orange_alert"
     assert report["escalation_agent"] == "ci-emergency-response-agent"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Coverage dropped to 32.83% (-1.8%)")
     logger.info("  ✅ Escalation Level: ORANGE ALERT")
@@ -217,7 +217,7 @@ def test_red_alert_critical():
     assert report["coverage_metrics"]["overall_percent"] == 30.63  # -4.0%
     assert report["escalation_recommendation"] == "red_alert_critical"
     assert report["escalation_agent"] == "@mbaetiong"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Coverage dropped to 30.63% (-4.0%)")
     logger.info("  ✅ Escalation Level: RED ALERT (CRITICAL)")
@@ -234,7 +234,7 @@ def test_tier_1_loss():
     assert report["module_tiers"]["tier_1"]["coverage"] == 91.6  # Loss of 1%
     assert report["escalation_recommendation"] == "red_alert_critical"
     assert report["escalation_agent"] == "@mbaetiong"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Tier 1 Security coverage: 91.6% (loss of 1%)")
     logger.info("  ✅ Escalation Level: RED ALERT")
@@ -251,7 +251,7 @@ def test_flaky_tests_detection():
     assert report["quality_metrics"]["test_flakiness_percent"] == 1.2
     assert report["escalation_recommendation"] == "quality_metric_failure"
     assert report["escalation_agent"] == "autonomous-test-healer-agent"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Test flakiness: 1.2% (exceeds 0.5% threshold)")
     logger.info("  ✅ Escalation Level: QUALITY_METRIC_FAILURE")
@@ -268,7 +268,7 @@ def test_non_deterministic_tests():
     assert report["quality_metrics"]["test_determinism_percent"] == 99.5
     assert report["escalation_recommendation"] == "quality_metric_failure"
     assert report["escalation_agent"] == "ci-testing-agent"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Test determinism: 99.5% (below 100% requirement)")
     logger.info("  ✅ Escalation Level: QUALITY_METRIC_FAILURE")
@@ -285,7 +285,7 @@ def test_test_count_regression():
     assert report["test_statistics"]["total_tests"] == 2450  # Below 2467
     assert report["escalation_recommendation"] == "test_count_regression"
     assert report["escalation_agent"] == "ci-testing-agent"
-    assert report["blocks_merge"] == True
+    assert report["blocks_merge"]
     
     logger.info("  ✅ Test count: 2,450 (below 2,467 minimum)")
     logger.info("  ✅ Escalation Level: TEST_COUNT_REGRESSION")

@@ -5,12 +5,13 @@ Implements lightweight ARIMA and Prophet-like models without external dependenci
 plus a weighted ensemble voting mechanism for robust forecasting.
 """
 
-from typing import Tuple, Optional, Dict, Any
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import timedelta
+from typing import Any, Dict, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from abc import ABC, abstractmethod
 
 
 @dataclass
@@ -89,14 +90,14 @@ class ARIMAModel(BaseForecaster):
         n = len(ts_data)
         
         # Check if differencing needed
-        diff_data = np.diff(ts_data)
+        np.diff(ts_data)
         mean_abs_diff_original = np.mean(np.abs(ts_data[:-1] - ts_data[1:]))
         
         # Check for trend
         has_trend = np.abs(ts_data[-1] - ts_data[0]) / n > mean_abs_diff_original * 0.5
         
         # Detect seasonal period
-        seasonal_period = self._detect_seasonality(ts_data)
+        self._detect_seasonality(ts_data)
         
         # Simple order detection
         p = 1 if has_trend else 0
@@ -418,7 +419,7 @@ class ProphetModel(BaseForecaster):
         # Seasonal component
         seasonal = np.zeros_like(t, dtype=float)
         if self.seasonal_params and 'seasonal' in self.seasonal_params:
-            period = self.seasonal_params.get('period', 12)
+            self.seasonal_params.get('period', 12)
             seasonal_factors = self.seasonal_params['seasonal']
             
             for i, val in enumerate(t):
@@ -445,7 +446,7 @@ class ProphetModel(BaseForecaster):
         future_dates = [last_date + timedelta(days=freq*i) for i in range(1, periods+1)]
         
         # Create future dataframe
-        future = pd.DataFrame({'ds': future_dates})
+        pd.DataFrame({'ds': future_dates})
         
         # Get training data length
         t_train = np.arange(len(self.df))

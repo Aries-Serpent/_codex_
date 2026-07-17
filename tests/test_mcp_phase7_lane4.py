@@ -14,13 +14,8 @@ Total: 30 integration tests
 
 from __future__ import annotations
 
-import asyncio
-import json
 import time
-from collections.abc import AsyncGenerator
-from dataclasses import dataclass
-from typing import Any, Optional
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock
 
 import pytest
 

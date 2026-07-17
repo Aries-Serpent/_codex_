@@ -1347,7 +1347,6 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         captured_body["body"] = body
         return {"id": "DC_1", "url": "https://u"}
 
-        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
     f = tmp_path / "update.md"
@@ -1376,7 +1375,6 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
         captured["session_id"] = session_id
         return {"id": "DC_s", "url": "https://u/s"}
 
-        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
     f = tmp_path / "summary.md"
@@ -1406,7 +1404,6 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
         captured["body"] = body
         return {"id": "DC_c", "url": "https://u/c"}
 
-        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
     f = tmp_path / "chain.md"

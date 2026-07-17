@@ -9,12 +9,12 @@ Tracks: execution status, time, success/failure, rollback trigger
 Success metric: Wave completion time <2x sequential
 """
 
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Callable
-from enum import Enum
 from datetime import datetime
-import asyncio
-from concurrent.futures import ThreadPoolExecutor, Future
+from enum import Enum
+from typing import Callable, Dict, List, Optional
+
 from .scoring import ScoredFamily, WavePlan
 
 

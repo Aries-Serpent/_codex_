@@ -14,14 +14,12 @@ Target: >85% correlation accuracy, <500ms latency per anomaly
 
 from __future__ import annotations
 
-import json
 import logging
-from dataclasses import dataclass, field, asdict
+from collections import defaultdict
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
-from collections import defaultdict
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 
@@ -206,7 +204,7 @@ class TemporalCorrelator:
                 # Calculate temporal confidence based on time distribution
                 time_spans = [(group[k].timestamp - group[k-1].timestamp).total_seconds() 
                               for k in range(1, len(group))]
-                avg_spacing = np.mean(time_spans) if time_spans else 0
+                np.mean(time_spans) if time_spans else 0
                 max_spacing = np.max(time_spans) if time_spans else self.window_ms / 1000
                 
                 # Confidence: anomalies closer together = higher confidence

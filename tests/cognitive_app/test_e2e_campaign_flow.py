@@ -16,13 +16,7 @@ Test scenarios:
 
 from __future__ import annotations
 
-import asyncio
-import time
-from datetime import datetime, timezone
-from typing import Any
-
 import pytest
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # E2E Campaign Simulation Tests

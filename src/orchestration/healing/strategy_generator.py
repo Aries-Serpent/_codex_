@@ -16,7 +16,6 @@ from typing import Any, Dict, List, Optional
 from orchestration.healing.incident_detection import (
     FailureType,
     IncidentReport,
-    Severity,
 )
 
 logger = logging.getLogger(__name__)
@@ -113,7 +112,6 @@ class StrategyGenerator:
         Returns:
             List of RepairStrategy sorted by success probability
         """
-        import uuid
 
         strategies = []
 

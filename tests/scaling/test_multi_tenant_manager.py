@@ -12,27 +12,29 @@ Tests all 8 gate criteria:
 8. Reasoning depth (+3-4 AAIS points)
 """
 
-import pytest
 import time
-from datetime import datetime
-from typing import Dict
 
-from src.codex.scaling.multi_tenant_manager import (
-    TenantManager, AccessLevel, AuditEventType, ResourceQuota
-)
-from src.codex.scaling.failover_manager import (
-    FailoverManager, RegionConfig, HealthStatus
-)
-from src.codex.scaling.load_balancer import (
-    LoadBalancer, LoadBalancerConfig, BackendNode, BackendState
-)
-from src.codex.scaling.auto_scaler import (
-    AutoScaler, ScalingTrigger, ScalingAction
-)
+import pytest
+
+from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
 from src.codex.scaling.cost_allocator import (
-    CostAllocator, CostAllocationConfig, InstancePricing, InstanceType
+    CostAllocationConfig,
+    CostAllocator,
+    InstancePricing,
+    InstanceType,
 )
-
+from src.codex.scaling.failover_manager import FailoverManager, HealthStatus, RegionConfig
+from src.codex.scaling.load_balancer import (
+    BackendNode,
+    BackendState,
+    LoadBalancer,
+    LoadBalancerConfig,
+)
+from src.codex.scaling.multi_tenant_manager import (
+    AccessLevel,
+    AuditEventType,
+    TenantManager,
+)
 
 # ============================================================================
 # GATE CRITERION 1: Zero Cross-Tenant Data Leaks

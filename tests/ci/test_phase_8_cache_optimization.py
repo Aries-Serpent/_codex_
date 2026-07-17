@@ -15,14 +15,11 @@ Unit tests verify:
 - Retention policy compliance
 """
 
-import json
-import pytest
-from pathlib import Path
 from aries_serpent_core.ci.cache_manager import (
-    CacheManager,
-    CacheType,
     CacheConfig,
     CacheHealth,
+    CacheManager,
+    CacheType,
 )
 
 

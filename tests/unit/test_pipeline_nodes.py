@@ -7,6 +7,7 @@ Test module for pipeline nodes.
 from __future__ import annotations
 
 import pytest
+
 pytest.skip("Placeholder test - infrastructure not fully implemented", allow_module_level=True)
 
 from pathlib import Path

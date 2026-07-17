@@ -240,7 +240,7 @@ class TestMCPBridge:
         """Test calling unknown tool"""
         result = sample_bridge.call_tool('unknown_tool', {})
         
-        assert result['success'] == False
+        assert not result['success']
         assert 'error' in result
 
 
@@ -325,12 +325,12 @@ class TestStatistics:
         stats = indexer.get_statistics()
         
         assert stats['total_records'] == 5
-        assert stats['index_built'] == False
+        assert not stats['index_built']
         
         # Build index
         indexer.build_index()
         stats = indexer.get_statistics()
-        assert stats['index_built'] == True
+        assert stats['index_built']
 
 
 if __name__ == "__main__":

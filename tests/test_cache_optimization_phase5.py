@@ -5,11 +5,9 @@ PHASE 5 TRACK 5: Comprehensive benchmarking to validate 20-30% latency
 reduction and 15%+ hit rate improvement.
 """
 
-import pytest
 import time
-import random
-import string
-from typing import Dict, Any
+
+import pytest
 
 
 class TestL1CacheBatchOperations:
@@ -91,8 +89,8 @@ class TestCacheOptimizationAnalysis:
     def test_optimization_analyzer(self):
         """Test optimization analyzer identifies improvements."""
         from aries_serpent_core.cache.optimization_analysis import (
-            CacheOptimizationAnalyzer,
             CacheLayerMetrics,
+            CacheOptimizationAnalyzer,
         )
         
         analyzer = CacheOptimizationAnalyzer()
@@ -287,11 +285,11 @@ class TestUnifiedCacheOrchestrator:
     
     def test_cache_promotion_l2_to_l1(self):
         """Test cache promotion from L2 to L1 (with local fallback)."""
+        from aries_serpent_core.cache.knowledge_cache_l3 import L3KnowledgeCache
+        from aries_serpent_core.cache.model_cache_l4 import L4ModelCache
         from aries_serpent_core.cache.orchestrator import UnifiedCacheOrchestrator
         from aries_serpent_core.cache.request_cache import L1RequestCache
         from aries_serpent_core.cache.session_cache_l2 import L2SessionCache
-        from aries_serpent_core.cache.knowledge_cache_l3 import L3KnowledgeCache
-        from aries_serpent_core.cache.model_cache_l4 import L4ModelCache
         
         l1 = L1RequestCache()
         l2 = L2SessionCache(enable_local_fallback=True)

@@ -18,11 +18,9 @@ Test Coverage:
 """
 
 import os
-import sys
 import tempfile
 import warnings
 from pathlib import Path
-from typing import Optional
 
 import pytest
 
@@ -192,13 +190,14 @@ class TestRuntimeProfileInstallation:
         """Verify that runtime profile dependencies are installed."""
         # Try importing key runtime dependencies
         try:
+            import fastapi
+            import numpy
+            import pandas
+            import ray
+            import sklearn
+
             import torch
             import transformers
-            import sklearn
-            import pandas
-            import numpy
-            import fastapi
-            import ray
         except ImportError as e:
             pytest.fail(f"Runtime profile not fully installed: {e}")
 
@@ -326,7 +325,6 @@ class TestTransformersModelLoading:
     @pytest.mark.timeout(120)
     def test_small_model_tokenizer_loading(self, temp_model_cache):
         """Test loading a small pre-trained tokenizer."""
-        import transformers
         from transformers import AutoTokenizer
         
         model_name = "distilbert-base-uncased"
@@ -341,7 +339,6 @@ class TestTransformersModelLoading:
     @pytest.mark.timeout(120)
     def test_small_model_loading(self, temp_model_cache):
         """Test loading a small pre-trained model."""
-        import transformers
         from transformers import AutoModel, AutoTokenizer
         
         model_name = "distilbert-base-uncased"
@@ -362,8 +359,7 @@ class TestTransformersModelLoading:
         self, temp_model_cache, synthetic_text_data
     ):
         """Test model inference on synthetic text data."""
-        import transformers
-        from transformers import AutoTokenizer, AutoModel
+        from transformers import AutoModel, AutoTokenizer
         
         model_name = "distilbert-base-uncased"
         
@@ -411,9 +407,9 @@ class TestScikitLearnImportAndFunctionality:
 
     def test_sklearn_pipeline_creation(self, synthetic_numerical_data):
         """Test creating and using a scikit-learn pipeline."""
-        from sklearn.preprocessing import StandardScaler
-        from sklearn.pipeline import Pipeline
         from sklearn.linear_model import LogisticRegression
+        from sklearn.pipeline import Pipeline
+        from sklearn.preprocessing import StandardScaler
         
         X, y = synthetic_numerical_data
         
@@ -433,8 +429,8 @@ class TestScikitLearnImportAndFunctionality:
 
     def test_sklearn_cross_validation(self, synthetic_numerical_data):
         """Test scikit-learn cross-validation functionality."""
-        from sklearn.model_selection import cross_val_score
         from sklearn.ensemble import RandomForestClassifier
+        from sklearn.model_selection import cross_val_score
         
         X, y = synthetic_numerical_data
         
@@ -484,6 +480,7 @@ class TestDependencyConflictDetection:
     def test_numpy_torch_compatibility(self):
         """Test compatibility between numpy and torch."""
         import numpy as np
+
         import torch
         
         # Create numpy array and convert to torch
@@ -495,8 +492,8 @@ class TestDependencyConflictDetection:
 
     def test_pandas_numpy_compatibility(self):
         """Test compatibility between pandas and numpy."""
-        import pandas as pd
         import numpy as np
+        import pandas as pd
         
         # Create dataframe from numpy
         data = np.random.randn(5, 3)
@@ -507,8 +504,8 @@ class TestDependencyConflictDetection:
 
     def test_sklearn_numpy_compatibility(self):
         """Test compatibility between scikit-learn and numpy."""
-        from sklearn.preprocessing import StandardScaler
         import numpy as np
+        from sklearn.preprocessing import StandardScaler
         
         # Create data and scale it
         X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])

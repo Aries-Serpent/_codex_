@@ -10,9 +10,9 @@ Success metric: >99% pass rate on gates
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Callable
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Callable, Dict, List, Optional
 
 
 class GateStatus(str, Enum):

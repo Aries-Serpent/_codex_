@@ -2,8 +2,9 @@
 #         assert target.read_bytes() == b"logger.info('sample')\n", "Condition must be true"
 #         assert empty.read_bytes() == b"", "Condition must be true"
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 
 class TestPattern30MergeReadiness:

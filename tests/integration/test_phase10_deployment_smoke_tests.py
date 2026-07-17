@@ -8,9 +8,8 @@ Tests production deployment scenarios covering:
 - Production health monitoring
 """
 
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime
 
 
 @pytest.mark.integration

@@ -1,13 +1,14 @@
 """Model diversity validation and ensemble evaluation."""
 
 import logging
-from typing import Dict, List, Any, Tuple
-import numpy as np
-from scipy.stats import spearmanr, pearsonr
 from dataclasses import dataclass
+from typing import Any, Dict, List, Tuple
 
-from src.codex.ensemble.ensemble_predictor import EnsemblePredictor, EnsembleConfig
-from src.codex.ensemble.types import ModelType, EnsemblePrediction
+import numpy as np
+from scipy.stats import pearsonr, spearmanr
+
+from src.codex.ensemble.ensemble_predictor import EnsembleConfig, EnsemblePredictor
+from src.codex.ensemble.types import ModelType
 
 logger = logging.getLogger(__name__)
 
@@ -139,17 +140,17 @@ class DiversityValidator:
         print("\n" + "=" * 70)
         print("MODEL DIVERSITY ANALYSIS")
         print("=" * 70)
-        print(f"\nPearson Correlations:")
+        print("\nPearson Correlations:")
         print(f"  Heuristic ↔ ML:        {metrics.pearson_heuristic_ml:+.4f}")
         print(f"  ML ↔ Symbolic:         {metrics.pearson_ml_symbolic:+.4f}")
         print(f"  Heuristic ↔ Symbolic:  {metrics.pearson_heuristic_symbolic:+.4f}")
         print(f"  Average:               {metrics.avg_pearson_correlation:.4f}")
-        print(f"\nSpearman Correlations:")
+        print("\nSpearman Correlations:")
         print(f"  Heuristic ↔ ML:        {metrics.spearman_heuristic_ml:+.4f}")
         print(f"  ML ↔ Symbolic:         {metrics.spearman_ml_symbolic:+.4f}")
         print(f"  Heuristic ↔ Symbolic:  {metrics.spearman_heuristic_symbolic:+.4f}")
         print(f"  Average:               {metrics.avg_spearman_correlation:.4f}")
-        print(f"\nDiversity Metrics:")
+        print("\nDiversity Metrics:")
         print(f"  Diversity Score:       {metrics.diversity_score:.4f} (1 = perfect diversity)")
         print(f"  Acceptable (<0.6):     {'✓ PASS' if metrics.diversity_acceptable else '✗ FAIL'}")
         print("=" * 70 + "\n")
@@ -334,34 +335,34 @@ class EnsembleEvaluator:
         print("ENSEMBLE EVALUATION REPORT")
         print("=" * 70)
 
-        print(f"\nAccuracy Metrics:")
+        print("\nAccuracy Metrics:")
         print(f"  Ensemble Accuracy:          {result.ensemble_accuracy:.4f}")
         print(f"  Best Single Model:          {result.best_single_model_accuracy:.4f}")
         print(f"  Improvement:                {result.accuracy_improvement:+.4f} (Gate: ≥0.03)")
         print(f"  Status:                     {'✓ PASS' if result.improvement_meets_gate else '✗ FAIL'}")
 
-        print(f"\nModel Accuracies:")
+        print("\nModel Accuracies:")
         for model_name, accuracy in result.model_accuracies.items():
             print(f"  {model_name:20s}: {accuracy:.4f}")
 
-        print(f"\nF1 Score:")
+        print("\nF1 Score:")
         print(f"  F1 Score:                   {result.median_f1_score:.4f} (Gate: >0.90)")
         print(f"  Status:                     {'✓ PASS' if result.f1_meets_gate else '✗ FAIL'}")
 
-        print(f"\nLatency Metrics:")
+        print("\nLatency Metrics:")
         print(f"  p99 Latency:                {result.median_p99_latency_ms:.2f}ms (Gate: <200ms)")
         print(f"  Status:                     {'✓ PASS' if result.p99_latency_meets_gate else '✗ FAIL'}")
 
-        print(f"\nCalibration Metrics:")
+        print("\nCalibration Metrics:")
         print(f"  Mean Confidence:            {result.calibration_metrics['mean_confidence']:.4f}")
         print(f"  Confidence Calibration:     {result.calibration_metrics['calibration_error']:.4f}")
         print(f"  Escalation Rate:            {result.calibration_metrics['escalation_rate']:.2%}")
 
-        print(f"\nFalse Positive Rate:")
+        print("\nFalse Positive Rate:")
         print(f"  FP Rate:                    {result.false_positive_rate:.4f} (Gate: <5%)")
         print(f"  Status:                     {'✓ PASS' if result.false_positive_acceptable else '✗ FAIL'}")
 
-        print(f"\nModel Diversity:")
+        print("\nModel Diversity:")
         print(f"  Diversity Score:            {result.diversity_metrics.diversity_score:.4f}")
         print(f"  Avg Pearson Corr:           {result.diversity_metrics.avg_pearson_correlation:.4f}")
         print(f"  Status:                     {'✓ PASS' if result.diversity_acceptable else '✗ FAIL'}")
