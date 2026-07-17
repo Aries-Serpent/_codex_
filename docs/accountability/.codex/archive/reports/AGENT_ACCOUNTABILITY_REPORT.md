@@ -12,11 +12,12 @@
 - ✅ Security findings acknowledged and assessed
 
 ### Agents Used
-- None (direct agent execution)
+- [x] `general-purpose`
 
 ### Commits This Session
 1. `e95ef160`: fix(lint): Apply ruff auto-fixes for import sorting and formatting
 2. `60e8c882`: docs(accountability): Update CHANGELOG and AGENT_ACCOUNTABILITY_REPORT for CI rescue session
+3. `07c5241f`: docs(req-4): Update archived AGENT_ACCOUNTABILITY_REPORT with CI rescue session entry
 
 ---
 

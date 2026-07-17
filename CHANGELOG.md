@@ -1,12 +1,13 @@
 ## [Unreleased]
 
 ### Fixed (CI rescue — 2026-07-16T23:59Z — Ruff/mypy fixes + WEC awareness)
-- Applied ruff auto-fixes: import sorting and formatting across 323 files
+- Applied ruff auto-fixes: import sorting and formatting across 323 files (commit `e95ef160`)
 - Verified mypy baseline compliance: 390 errors detected, baseline enforcement active
 - Ran auto-fix-common-issues script: no new issues found, all patterns compliant
 - Confirmed WEC (Workflow Execution Checklist) requirements met
 - Security findings reviewed: 4 CRITICAL, 4 HIGH, 2 MEDIUM (informational, remediation tracking initiated)
 - Reply to 7 blocking CI rescue comments with commit SHAs (format, testing, governance)
+- Updated compliance files: archived and main accountability reports (commit `60e8c882`, `07c5241f`)
 
 ### Fixed (PR merge readiness — 2026-07-16T23:37Z)
 - Verified PR #5328 compliance: REQ-4/REQ-5 confirmed in session (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md both updated)
