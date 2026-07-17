@@ -58,7 +58,7 @@ jobs:
             echo "⚠️  No PR number provided, skipping auto-approve trigger"
             exit 0
           fi
-          
+
           gh workflow run auto-approve-workflows.yml \
             --repo Aries-Serpent/_codex_ \
             -f approval_source=workflow-execution-gate \

@@ -3,14 +3,14 @@ name: Agent Token Delegation
 on:
   pull_request:
     types:
-    - opened
-    - edited
-    - reopened
-    - ready_for_review
-    - closed
+      - opened
+      - edited
+      - reopened
+      - ready_for_review
+      - closed
   pull_request_review:
     types:
-    - submitted
+      - submitted
   workflow_dispatch:
     inputs:
       pr_number:
