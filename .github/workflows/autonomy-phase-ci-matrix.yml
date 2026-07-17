@@ -69,7 +69,7 @@ jobs:
     steps:
 
       - name: Cache test results (Layer 3)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .pytest_cache/
           key: ${{ runner.os }}-${{ github.workflow }}-pytest-${{ hashFiles('tests/autonomy/**/*.py', 'pyproject.toml') }}

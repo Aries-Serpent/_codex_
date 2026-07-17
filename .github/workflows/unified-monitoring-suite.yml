@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Maturity Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check repository maturity
         run: |
           echo "Running maturity check..."
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Performance Benchmarks
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run benchmarks
         run: |
           echo "Running performance benchmarks..."
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cache Health Monitor
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check cache health
         run: |
           echo "Monitoring cache health..."
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cache Validation
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Validate caches
         run: |
           echo "Validating caches..."
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Cache Pruning
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Prune old caches
         run: |
           echo "Pruning cache..."
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     name: WEC Enforcement
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Enforce WEC standards
         run: |
           echo "Enforcing workflow execution standards..."
@@ -144,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     name: API Documentation
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build API documentation
         run: |
           echo "Building API documentation..."
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Dependency Scan
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Scan dependencies
         run: |
           echo "Scanning dependencies..."
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Approval Gate
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check approval status
         run: |
           echo "Checking approval status..."
@@ -186,7 +186,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Import Linting
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Lint imports
         run: |
           echo "Linting imports..."
@@ -200,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Template Linting
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Lint templates
         run: |
           echo "Linting templates..."
@@ -214,7 +214,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Workflow Compliance
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check workflow compliance
         run: |
           echo "Checking workflow compliance..."
@@ -228,7 +228,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Manifest Drift Guard
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Guard against manifest drift
         run: |
           echo "Checking for manifest drift..."
