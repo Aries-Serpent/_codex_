@@ -40,12 +40,12 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
       with:
         persist-credentials: false
         fetch-depth: 1
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
       with:
         cache: pip
         python-version: 3.12.13
@@ -56,7 +56,7 @@ jobs:
           }}
         PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
         ISSUE_OVERRIDE: ${{ inputs.issue_numbers }}
-        run: "set -euo pipefail\n\n# If explicit list provided, use it directly\nif\
+      run: "set -euo pipefail\n\n# If explicit list provided, use it directly\nif\
         \ [[ -n \"${ISSUE_OVERRIDE:-}\" ]]; then\n  echo \"issues=${ISSUE_OVERRIDE}\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"source=manual-override\" >> \"$GITHUB_OUTPUT\"\
         \n  echo \"\u2139\uFE0F  Using manual issue override: ${ISSUE_OVERRIDE}\"\n\
@@ -93,7 +93,7 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ISSUES: ${{ steps.extract.outputs.issues }}
-        run: "set -euo pipefail\n\nif [[ -z \"${ISSUES:-}\" ]]; then\n  echo \"\u2705\
+      run: "set -euo pipefail\n\nif [[ -z \"${ISSUES:-}\" ]]; then\n  echo \"\u2705\
         \ No issue references found \u2014 nothing to verify\"\n  echo '## \U0001F50D\
         \ Issue Resolution Gate' >> \"$GITHUB_STEP_SUMMARY\"\n  echo '' >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo '> \u2139\uFE0F No issue/PR references found in PR body \u2014 gate\
@@ -109,7 +109,7 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         ISSUES: ${{ steps.extract.outputs.issues }}
-        run: "mkdir -p /tmp/issue-resolution-reports\nif [[ -n \"${ISSUES:-}\" ]]; then\n\
+      run: "mkdir -p /tmp/issue-resolution-reports\nif [[ -n \"${ISSUES:-}\" ]]; then\n\
         \  # shellcheck disable=SC2086\n  python scripts/ci/verify_issue_resolution.py\
         \ \\\n    --issues ${ISSUES} \\\n    --repo \"${{ github.repository }}\" \\\
         \n    --output-json /tmp/issue-resolution-reports/report.json \\\n    --allow-in-progress\
@@ -117,7 +117,7 @@ jobs:
         fi\n"
     - name: Upload resolution report
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
       with:
         name: issue-resolution-report
         path: /tmp/issue-resolution-reports/

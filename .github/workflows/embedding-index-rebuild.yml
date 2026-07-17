@@ -19,12 +19,11 @@ jobs:
       timeout_minutes: 15
       matrix_count: 1
       pushes_to_ghcr: false
-      permissions:
+    permissions:
       contents: read
       pull-requests: write
-      secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+    secrets:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 30
   rebuild:
     name: Rebuild FAISS Embedding Index
@@ -35,16 +34,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        persist-credentials: false
-        fetch-depth: 1
+          persist-credentials: false
+          fetch-depth: 1
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
         id: resolve-target
         uses: ./.github/actions/resolve-push-target
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: 3.12.13
-        cache: pip
+          python-version: 3.12.13
+          cache: pip
       - name: Check RAG index freshness
         id: freshness
         run: |-

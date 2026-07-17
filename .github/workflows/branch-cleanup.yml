@@ -63,60 +63,73 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: 🐍 Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
       with:
         python-version: 3.12.13
         cache: 'pip'
     - name: 🌿 Run branch cleanup
       id: cleanup
       env:
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
-          github.token }}
+        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         INPUT_PREFIXES: ${{ inputs.prefixes }}
         INPUT_STALE_DAYS: ${{ inputs.stale_days || 30 }}
-        run: "# Build argument list using an array to avoid SC2089/SC2090\nARGS=()\n\
-        \n# Strategy flags\n# On schedule: always delete merged + by-prefix (safe\
-        \ defaults)\nif [ \"${{ github.event_name }}\" = \"schedule\" ]; then\n  ARGS+=(--delete-merged\
-        \ --delete-by-prefix)\n  ARGS+=(--prefixes \"copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/\"\
-        )\n  ARGS+=(--execute)\nelse\n  # Manual dispatch — respect inputs\n  [ \"\
-        ${{ inputs.delete_merged }}\" = \"true\" ]     && ARGS+=(--delete-merged)\n\
-        \  [ \"${{ inputs.delete_stale }}\"  = \"true\" ]     && ARGS+=(--delete-stale\
-        \ --stale-days \"$INPUT_STALE_DAYS\")\n  [ \"${{ inputs.delete_by_prefix }}\"\
-        \ = \"true\" ]  && ARGS+=(--delete-by-prefix --prefixes \"$INPUT_PREFIXES\"\
-        )\n  [ \"${{ inputs.dry_run }}\" != \"true\" ]          && ARGS+=(--execute)\n\
-        fi\n\nARGS+=(--json-output /tmp/branch_cleanup_report.json --github-summary)\n\
-        \necho \"Running: python scripts/ci/branch_cleanup.py ${ARGS[*]}\"\npython\
-        \ scripts/ci/branch_cleanup.py \"${ARGS[@]}\"\n"
-    - name: 📋 Post issue report (optional)
-      if: 'inputs.post_issue == ''true'' && always()
+        INPUT_DELETE_MERGED: ${{ inputs.delete_merged }}
+        INPUT_DELETE_STALE: ${{ inputs.delete_stale }}
+        INPUT_DELETE_BY_PREFIX: ${{ inputs.delete_by_prefix }}
+        INPUT_DRY_RUN: ${{ inputs.dry_run }}
+      run: |
+        # Build argument list using an array to avoid SC2089/SC2090
+        ARGS=()
 
-        '
+        # Strategy flags
+        # On schedule: always delete merged + by-prefix (safe defaults)
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          ARGS+=(--delete-merged --delete-by-prefix)
+          ARGS+=(--prefixes "copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/")
+          ARGS+=(--execute)
+        else
+          # Manual dispatch — respect inputs
+          [ "${INPUT_DELETE_MERGED:-false}" = "true" ]     && ARGS+=(--delete-merged)
+          [ "${INPUT_DELETE_STALE:-false}" = "true" ]     && ARGS+=(--delete-stale --stale-days "$INPUT_STALE_DAYS")
+          [ "${INPUT_DELETE_BY_PREFIX:-false}" = "true" ]  && ARGS+=(--delete-by-prefix --prefixes "$INPUT_PREFIXES")
+          [ "${INPUT_DRY_RUN:-true}" != "true" ]          && ARGS+=(--execute)
+        fi
+
+        ARGS+=(--json-output /tmp/branch_cleanup_report.json --github-summary)
+
+        echo "Running: python scripts/ci/branch_cleanup.py ${ARGS[*]}"
+        python scripts/ci/branch_cleanup.py "${ARGS[@]}"
+    - name: 📋 Post issue report (optional)
+      if: inputs.post_issue == 'true' && always()
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        run: "if [ ! -f /tmp/branch_cleanup_report.json ]; then\n  echo \"No report\
-        \ file found — skipping issue creation\"\n  exit 0\nfi\n\n# Build issue body\
-        \ from JSON report\nTIMESTAMP=$(python3 -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
-        \ print(d['timestamp'][:19]+'Z')\" 2>/dev/null || echo \"unknown\")\nTO_DEL=$(python3\
-        \ -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
-        \ print(d['summary']['to_delete'])\" 2>/dev/null || echo \"?\")\nDELETED=$(python3\
-        \ -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
-        \ print(d['summary']['deleted'])\" 2>/dev/null || echo \"?\")\nSTALE=$(python3\
-        \ -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
-        \ print(d['summary']['stale_warn'])\" 2>/dev/null || echo \"?\")\nDRY_RUN=$(python3\
-        \ -c \"import json; d=json.load(open('/tmp/branch_cleanup_report.json'));\
-        \ print(d.get('dry_run', True))\" 2>/dev/null || echo \"True\")\n\nMODE=\"\
-        Dry-run\"\n[ \"${DRY_RUN}\" = \"False\" ] && MODE=\"Execute\"\n\n# Build body\
-        \ using printf to avoid multiline YAML indentation issues\nBODY=$(printf '##\
-        \ Branch Cleanup Report — %s\\n\\nMode: %s\\nEligible for deletion: %s\\nActually\
-        \ deleted: %s\\nStale (needs review): %s\\n\\nSee workflow run for full log.\\\
-        n\\n_Auto-generated by branch-cleanup.yml_' \\\n  \"${TIMESTAMP}\" \"${MODE}\"\
-        \ \"${TO_DEL}\" \"${DELETED}\" \"${STALE}\")\n\ngh issue create \\\n  --repo\
-        \ \"${{ github.repository }}\" \\\n  --title \"\U0001F33F Branch Cleanup Report\
-        \ — ${TIMESTAMP} (${MODE})\" \\\n  --body \"${BODY}\" \\\n  --label \"maintenance\"\
-        \ \\\n  || echo \"⚠️  Could not create issue (label may not exist) — continuing\"\
-        \n"
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      run: |
+        if [ ! -f /tmp/branch_cleanup_report.json ]; then
+          echo "No report file found — skipping issue creation"
+          exit 0
+        fi
+
+        # Build issue body from JSON report
+        TIMESTAMP=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['timestamp'][:19]+'Z')" 2>/dev/null || echo "unknown")
+        TO_DEL=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['to_delete'])" 2>/dev/null || echo "?")
+        DELETED=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['deleted'])" 2>/dev/null || echo "?")
+        STALE=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['stale_warn'])" 2>/dev/null || echo "?")
+        DRY_RUN=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d.get('dry_run', True))" 2>/dev/null || echo "True")
+
+        MODE="Dry-run"
+        [ "${DRY_RUN}" = "False" ] && MODE="Execute"
+
+        # Build body using printf to avoid multiline YAML indentation issues
+        BODY=$(printf '## Branch Cleanup Report — %s\n\nMode: %s\nEligible for deletion: %s\nActually deleted: %s\nStale (needs review): %s\n\nSee workflow run for full log.\n\n_Auto-generated by branch-cleanup.yml_' \
+          "${TIMESTAMP}" "${MODE}" "${TO_DEL}" "${DELETED}" "${STALE}")
+
+        gh issue create \
+          --repo "${{ github.repository }}" \
+          --title "🌿 Branch Cleanup Report — ${TIMESTAMP} (${MODE})" \
+          --body "${BODY}" \
+          --label "maintenance" \
+          || echo "⚠️  Could not create issue (label may not exist) — continuing"
     - name: 📦 Upload JSON report as artifact
       if: always()
       uses: actions/upload-artifact@v5
