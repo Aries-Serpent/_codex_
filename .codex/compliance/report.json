@@ -1,44 +1,31 @@
 {
-  "status": "APPROVED",
+  "status": "PASS",
+  "governance_status": "APPROVED",
   "overall_score": 95,
-  "timestamp": "2026-07-02T19:03:30Z",
-  "decision_rationale": "Governance compliance check passed successfully. All three pillars verified: (1) owner approval requirements satisfied, (2) configuration validation complete, (3) compliance policies enforced.",
+  "timestamp": "2026-07-17T01:06:46Z",
+  "decision_rationale": "✅ All governance checks passed:\n\n- **Owner Approval**: Auto-approved (non-gated files)\n- **Config Validation**: 3/3 schemas valid\n- **Compliance**: Policy-compliant — no violations\n- **AI Agency**: Adherent to codebase agency policy",
   "pillars": {
     "owner_approval": {
-      "status": "APPROVED",
+      "status": "approved",
       "required_reviewers": [],
-      "auto_approved": true,
-      "reason": "CI pipeline successful, no owner-gated files modified"
+      "auto_approved": true
     },
     "config_validation": {
-      "status": "VALID",
+      "status": "valid",
       "schemas_checked": 3,
       "errors": [],
-      "warnings": [],
-      "validated_paths": [
-        "configs/training/*.yaml",
-        "configs/evaluation/*.yaml",
-        "conf/"
-      ]
+      "warnings": []
     },
     "compliance": {
-      "status": "CLEAN",
+      "status": "clean",
       "violations": [],
-      "warnings": [],
-      "checks_passed": [
-        "no_secrets_detected",
-        "network_safety_acknowledged",
-        "offline_mode_policy_satisfied",
-        "windows_filename_safe",
-        "artifacts_not_committed",
-        "codebase_agency_policy_aligned"
-      ]
+      "warnings": []
     }
   },
-  "approval_workflow": {
-    "stage": 3,
-    "action": "APPROVED",
-    "merge_allowed": true,
-    "comment_posted": true
+  "metadata": {
+    "pr_number": 5328,
+    "branch": "0D_base_",
+    "base_branch": "main",
+    "commit_sha": "5f50a458b27f061e92d69b2d0fe316173985680b"
   }
 }
