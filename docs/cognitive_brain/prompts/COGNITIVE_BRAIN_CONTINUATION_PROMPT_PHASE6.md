@@ -1,6 +1,6 @@
 # Cognitive Brain Continuation Prompt — Phase 6 Production Graduation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version:** 6.2.0
 > **Created:** 2026-02-19 (Session 39)

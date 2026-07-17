@@ -1,6 +1,6 @@
 # ADR-20260304: Second D_CAPABLE Agent Promotion — `workflow-ci-fixer`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T19:04:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
@@ -86,7 +86,7 @@ suitability was independently confirmed in ADR-20260303 before this promotion.
 
 **Promote `workflow-ci-fixer` from `autonomy_model: E` to `autonomy_model: D_CAPABLE`.**
 
-Changes applied in `AGENT_REGISTRY.yaml` (v0.2.1 v0.2.1):
+Changes applied in `AGENT_REGISTRY.yaml` (v0.2.0 v0.2.0):
 
 ```yaml
 # Before
@@ -151,6 +151,6 @@ The `handoff_protocol` remains `structured` — no other existing fields change.
 - **Observation**: 2-sprint clean observation of `ci-testing-agent` (PR #3494) completed
 - **Follow-up**: `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` — Priority 2
 - **Predecessor ADR**: `ADR-20260303-first-d-capable-promotion.md`
-- **Registry version**: v0.2.1 v0.2.1 (patch increment)
+- **Registry version**: v0.2.0 v0.2.0 (patch increment)
 - **Change log**: PR #3494 (this PR)
 - **Next review**: Third D_CAPABLE candidate after 2-sprint observation of `workflow-ci-fixer`

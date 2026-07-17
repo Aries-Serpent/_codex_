@@ -1,6 +1,6 @@
-# Codex Repository File Mapping (v0.2.1)
+# Codex Repository File Mapping (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -65,7 +65,7 @@ tests/
 ### Audit Pipeline Files
 ```
 .copilot-space/
- workflow.yaml # Pipeline configuration (v0.2.1)
+ workflow.yaml # Pipeline configuration (v0.2.0)
 
 scripts/space_traversal/
  audit_runner.py # Main orchestrator (S1-S7)
@@ -105,7 +105,7 @@ docs/
  api/ # API reference (auto-generated)
  architecture/ # Architecture diagrams
  diagrams/
- audit_pipeline_v0.2.1.mmd # Audit pipeline flowchart
+ audit_pipeline_v0.2.0.mmd # Audit pipeline flowchart
  architecture.mmd # System architecture
 ```
 

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/CODE_REVIEW_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Code Review Guidelines - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2653,7 +2653,7 @@
 <h1 id="code-review-guidelines">Code Review Guidelines<a class="headerlink" href="#code-review-guidelines" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-07-08<br/>
+<p><strong>Last Updated</strong>: 2026-07-08
 <strong>Version</strong>: 1.0.0</p>
 <p>Code reviews are critical for maintaining code quality, sharing knowledge, and fostering collaboration. This guide helps reviewers and contributors make the code review process smooth and productive.</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2853,18 +2853,18 @@
 </code></pre></div>
 <h3 id="receiving-feedback">Receiving Feedback<a class="headerlink" href="#receiving-feedback" title="Permanent link">¶</a></h3>
 <p><strong>Do</strong>:
--  Read all feedback carefully
--  Ask clarifying questions
--  Respond to all comments (even if just saying "Done")
--  Make requested changes
--  Acknowledge good suggestions
--  Push fixes and re-request review</p>
+- Read all feedback carefully
+- Ask clarifying questions
+- Respond to all comments (even if just saying "Done")
+- Make requested changes
+- Acknowledge good suggestions
+- Push fixes and re-request review</p>
 <p><strong>Don't</strong>:
--  Ignore feedback
--  Dismiss suggestions without explanation
--  Argue about subjective preferences
--  Make excuses
--  Push new features while being reviewed</p>
+- Ignore feedback
+- Dismiss suggestions without explanation
+- Argue about subjective preferences
+- Make excuses
+- Push new features while being reviewed</p>
 <h3 id="responding-to-feedback">Responding to Feedback<a class="headerlink" href="#responding-to-feedback" title="Permanent link">¶</a></h3>
 <p><strong>To disagreement</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a> Good:
@@ -2905,7 +2905,7 @@
 <ol>
 <li><strong>First</strong>: Check if review is requested (you should have seen notification)</li>
 <li><strong>After 3 days</strong>: Leave a friendly comment
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Friendly ping! Would appreciate feedback when available. 😊
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Friendly ping! Would appreciate feedback when available. 
 </code></pre></div></li>
 <li><strong>After 1 week</strong>: Ask in discussions or mention a maintainer</li>
 <li><strong>Never</strong>: Get angry or demanding</li>
@@ -3010,23 +3010,23 @@
 <a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>Here's our docstring style:
 <a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>```python
 <a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>def process_data(items: list[dict], batch_size: int = 32) -&gt; Iterator[list]:
-<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a>    \"\"\"Process items in batches.
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a> \"\"\"Process items in batches.
 <a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>
-<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a>    Args:
-<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a>        items: List of data items to process
-<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a>        batch_size: Number of items per batch (default: 32)
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a> Args:
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a> items: List of data items to process
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a> batch_size: Number of items per batch (default: 32)
 <a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a>
-<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a>    Returns:
-<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a>        Iterator of batches
+<a href="#__codelineno-19-17" id="__codelineno-19-17" name="__codelineno-19-17"></a> Returns:
+<a href="#__codelineno-19-18" id="__codelineno-19-18" name="__codelineno-19-18"></a> Iterator of batches
 <a href="#__codelineno-19-19" id="__codelineno-19-19" name="__codelineno-19-19"></a>
-<a href="#__codelineno-19-20" id="__codelineno-19-20" name="__codelineno-19-20"></a>    Raises:
-<a href="#__codelineno-19-21" id="__codelineno-19-21" name="__codelineno-19-21"></a>        ValueError: If batch_size is not positive
+<a href="#__codelineno-19-20" id="__codelineno-19-20" name="__codelineno-19-20"></a> Raises:
+<a href="#__codelineno-19-21" id="__codelineno-19-21" name="__codelineno-19-21"></a> ValueError: If batch_size is not positive
 <a href="#__codelineno-19-22" id="__codelineno-19-22" name="__codelineno-19-22"></a>
-<a href="#__codelineno-19-23" id="__codelineno-19-23" name="__codelineno-19-23"></a>    Example:
-<a href="#__codelineno-19-24" id="__codelineno-19-24" name="__codelineno-19-24"></a>        &gt;&gt;&gt; data = [{'id': 1}, {'id': 2}]
-<a href="#__codelineno-19-25" id="__codelineno-19-25" name="__codelineno-19-25"></a>        &gt;&gt;&gt; for batch in process_data(data, batch_size=1):
-<a href="#__codelineno-19-26" id="__codelineno-19-26" name="__codelineno-19-26"></a>        ...     print(batch)
-<a href="#__codelineno-19-27" id="__codelineno-19-27" name="__codelineno-19-27"></a>    \"\"\"
+<a href="#__codelineno-19-23" id="__codelineno-19-23" name="__codelineno-19-23"></a> Example:
+<a href="#__codelineno-19-24" id="__codelineno-19-24" name="__codelineno-19-24"></a> &gt;&gt;&gt; data = [{'id': 1}, {'id': 2}]
+<a href="#__codelineno-19-25" id="__codelineno-19-25" name="__codelineno-19-25"></a> &gt;&gt;&gt; for batch in process_data(data, batch_size=1):
+<a href="#__codelineno-19-26" id="__codelineno-19-26" name="__codelineno-19-26"></a> ... print(batch)
+<a href="#__codelineno-19-27" id="__codelineno-19-27" name="__codelineno-19-27"></a> \"\"\"
 </code></pre></div></p>
 <h3 id="style-violations">Style Violations<a class="headerlink" href="#style-violations" title="Permanent link">¶</a></h3>
 <p>** Don't**:
@@ -3054,7 +3054,7 @@
 <a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>Could you add a check like:
 <a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>\`\`\`python
 <a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>if user_id is None:
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>    raise ValueError("user_id is required")
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a> raise ValueError("user_id is required")
 <a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>\`\`\`
 <a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>
 <a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a>Or if None is acceptable, what should happen?
@@ -3070,12 +3070,12 @@
 <a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>\`\`\`python
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a><span class="gh"># Current approach (O(n²)):</span>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>for item in items:
-<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>    if item in other_list:  # O(n) search
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a> if item in other_list: # O(n) search
 <a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>
 <a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a><span class="gh"># Faster approach (O(n)):</span>
 <a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>other_set = set(other_list)
 <a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a>for item in items:
-<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>    if item in other_set:  # O(1) lookup
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a> if item in other_set: # O(1) lookup
 <a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>\`\`\`
 <a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>
 <a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a>If performance isn't a concern here, feel free to leave as-is.
@@ -3126,11 +3126,11 @@
 <hr/>
 <h2 id="questions">Questions?<a class="headerlink" href="#questions" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>"How strict should I be?"</strong> → Focus on critical issues, suggest others</li>
-<li><strong>"How long should reviews take?"</strong> → 5-30 min for most PRs</li>
-<li><strong>"What if I disagree?"</strong> → Discuss respectfully, don't block without reason</li>
-<li><strong>"How do I handle criticism?"</strong> → View it as opportunity to learn</li>
-<li><strong>"What if someone is rude?"</strong> → Report to conduct@aries-serpent.dev</li>
+<li><strong>"How strict should I be?"</strong> Focus on critical issues, suggest others</li>
+<li><strong>"How long should reviews take?"</strong> 5-30 min for most PRs</li>
+<li><strong>"What if I disagree?"</strong> Discuss respectfully, don't block without reason</li>
+<li><strong>"How do I handle criticism?"</strong> View it as opportunity to learn</li>
+<li><strong>"What if someone is rude?"</strong> Report to conduct@aries-serpent.dev</li>
 </ul>
 <p>Happy reviewing! </p>
 </article>
@@ -3162,6 +3162,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

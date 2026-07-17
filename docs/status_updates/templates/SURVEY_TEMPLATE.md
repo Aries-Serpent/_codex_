@@ -1,7 +1,7 @@
 <!-- Use this as a writer's guide when constructing Codex survey prompts/output -->
 # Repo Survey — <branch> & PR <PR> — <YYYY-MM-DD> (UTC)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 

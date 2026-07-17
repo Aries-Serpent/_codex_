@@ -1,6 +1,6 @@
 # [Prompt Template]: Intent Validation & Plan of Action Approval Gate
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -92,7 +92,7 @@
 - Offline-first remains the default; deep web search is for research only (no network in runtime paths).
 - Local gates (nox tests/lint/typecheck/docs/security) are canonical; CI changes out-of-scope.
 - PR #2201 will merge or rebase to 0D_base_ before Iteration 1 to avoid drift.
-- Scoring rubric: audit v0.2.1 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
+- Scoring rubric: audit v0.2.0 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
 - Minimum coverage thresholds for new/updated modules this cycle: 95% lines/branches for Iterations 1–2; later target 96–99%.
 - Dependency policy for pip-audit findings: fix where feasible; fail on High/Critical; warn-only + JSON artifact for others with documented allowlist and expiry.
 

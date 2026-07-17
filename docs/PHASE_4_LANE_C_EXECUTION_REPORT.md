@@ -1,6 +1,6 @@
 # Phase 4 Lane C Execution Report — Security Hardening & Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Authority:** D-tier autonomous (@mbaetiong standing approval)
 **Execution Date:** 2026-07-09 to 2026-07-18
@@ -214,7 +214,7 @@ Baseline scan: .secrets.baseline (maintained)
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/gitleaks/gitleaks
- rev: v0.2.1
+ rev: v0.2.0
  hooks:
  - id: gitleaks
  stages: [commit]

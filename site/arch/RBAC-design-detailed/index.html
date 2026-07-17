@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/RBAC-design-detailed/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>RBAC Design &amp; Implementation - Detailed - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2697,8 +2697,8 @@
 <h1 id="rbac-design-implementation-detailed">RBAC Design &amp; Implementation - Detailed<a class="headerlink" href="#rbac-design-implementation-detailed" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Production Ready<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Status:</strong> Production Ready
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-08
 </strong>Author:** Phase 12 WS3 Documentation Team</p>
 <hr/>
@@ -2719,16 +2719,16 @@
 <p>Every permission check that fails raises <code>PermissionDeniedError</code>. There is no silent success or default allow behavior. All access control decisions are explicit and audited.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># BAD: Silent failure</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">if</span> <span class="n">check_permission</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    <span class="n">execute</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> <span class="n">execute</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># If check fails, nothing happens (dangerous!)</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># GOOD: Explicit enforcement</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="n">execute</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> <span class="n">execute</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="k">except</span> <span class="n">PermissionDeniedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="n">log_security_event</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> <span class="n">log_security_event</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
 </code></pre></div>
 <h3 id="delegation-to-authz-layer">Delegation to Authz Layer<a class="headerlink" href="#delegation-to-authz-layer" title="Permanent link">¶</a></h3>
 <p>The RBAC module (<code>src/codex/governance/rbac.py</code>) delegates all enforcement to the lower-level authz primitives in <code>src/codex/authz/</code>:</p>
@@ -2739,13 +2739,13 @@
 </ul>
 <p>This separation ensures RBAC adds Codex domain knowledge on top of battle-tested authz primitives.</p>
 <h3 id="immutable-permission-matrix">Immutable Permission Matrix<a class="headerlink" href="#immutable-permission-matrix" title="Permanent link">¶</a></h3>
-<p>The role→permission mapping is defined as a single source-of-truth Python dictionary:</p>
+<p>The rolepermission mapping is defined as a single source-of-truth Python dictionary:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">_ROLE_PERMISSION_MATRIX</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="n">ResourceType</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">Action</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>        <span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">:</span> <span class="p">{</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span> <span class="n">Action</span><span class="o">.</span><span class="n">READ</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        <span class="o">...</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="p">},</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="o">...</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">:</span> <span class="p">{</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span> <span class="n">Action</span><span class="o">.</span><span class="n">READ</span><span class="p">,</span> <span class="o">...</span><span class="p">},</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="o">...</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="p">},</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="o">...</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">}</span>
 </code></pre></div>
 <p>This dictionary is:
@@ -2757,144 +2757,144 @@
 <hr/>
 <h2 id="role-hierarchy">Role Hierarchy<a class="headerlink" href="#role-hierarchy" title="Permanent link">¶</a></h2>
 <h3 id="visual-hierarchy">Visual Hierarchy<a class="headerlink" href="#visual-hierarchy" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>                          system_admin
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>                          (God mode)
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>                              |
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>                    agent_operator (Broad control)
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>                     /    |    \
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    ci_operator   [shared]   security_reviewer
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>                     \    |    /
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>                      doc_maintainer
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>                          |
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>                    agent_reader (Narrow read)
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>                          |
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>                       guest (Minimal)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a> system_admin
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> (God mode)
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> |
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> agent_operator (Broad control)
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> / | \
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> ci_operator [shared] security_reviewer
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> \ | /
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> doc_maintainer
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> |
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> agent_reader (Narrow read)
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> |
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> guest (Minimal)
 </code></pre></div>
 <h3 id="role-details">Role Details<a class="headerlink" href="#role-details" title="Permanent link">¶</a></h3>
 <h4 id="system-admin">System Admin<a class="headerlink" href="#system-admin" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Purpose:        Full control and governance
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>Permission:     All actions on all resources
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>Audit Trail:    Every action logged and reviewable
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Purpose: Full control and governance
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>Permission: All actions on all resources
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>Audit Trail: Every action logged and reviewable
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>Use Cases:
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>  - Emergency access
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>  - Role assignments
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>  - Governance decisions
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>  - Compliance audits
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> - Emergency access
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> - Role assignments
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> - Governance decisions
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> - Compliance audits
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>Typical Users:
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>  - Platform administrators (1-2 people)
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>  - Governance leads
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>  - On-call incident commanders
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> - Platform administrators (1-2 people)
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> - Governance leads
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> - On-call incident commanders
 </code></pre></div>
 <h4 id="agent-operator">Agent Operator<a class="headerlink" href="#agent-operator" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Purpose:        Deploy and manage agents
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Permission:     Create, read, update, execute agents/workflows
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>Audit Trail:    Deployment audited, code changes tracked
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Purpose: Deploy and manage agents
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Permission: Create, read, update, execute agents/workflows
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>Audit Trail: Deployment audited, code changes tracked
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>Use Cases:
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>  - Deploy new agent versions
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>  - Configure agent parameters
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>  - Update agent workflows
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>  - Execute agents in production
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> - Deploy new agent versions
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> - Configure agent parameters
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> - Update agent workflows
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> - Execute agents in production
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>Typical Users:
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>  - ML/Data engineering teams
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>  - Agent platform team
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>  - Workflow managers
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> - ML/Data engineering teams
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> - Agent platform team
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> - Workflow managers
 </code></pre></div>
 <h4 id="ci-operator">CI Operator<a class="headerlink" href="#ci-operator" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Purpose:        Manage CI/CD pipelines
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Permission:     Execute workflows, approve CI gates
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Audit Trail:    Workflow runs tracked, approvals logged
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Purpose: Manage CI/CD pipelines
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Permission: Execute workflows, approve CI gates
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Audit Trail: Workflow runs tracked, approvals logged
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Use Cases:
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>  - Trigger CI workflows
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>  - Approve build gates
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>  - Manage release pipelines
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> - Trigger CI workflows
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> - Approve build gates
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> - Manage release pipelines
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>Typical Users:
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>  - DevOps engineers
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>  - Release managers
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>  - CI/CD automation
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> - DevOps engineers
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> - Release managers
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> - CI/CD automation
 </code></pre></div>
 <h4 id="security-reviewer">Security Reviewer<a class="headerlink" href="#security-reviewer" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Purpose:        Review security-sensitive changes
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Permission:     Approve code/secret/workflow changes
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Audit Trail:    Every approval logged with reason
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Purpose: Review security-sensitive changes
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Permission: Approve code/secret/workflow changes
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Audit Trail: Every approval logged with reason
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>Use Cases:
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>  - Security code reviews
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>  - Secret rotation approvals
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>  - Workflow security validation
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> - Security code reviews
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> - Secret rotation approvals
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> - Workflow security validation
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>Typical Users:
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>  - Security engineers
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>  - Compliance officers
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>  - Security architects
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> - Security engineers
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> - Compliance officers
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> - Security architects
 </code></pre></div>
 <h4 id="doc-maintainer">Doc Maintainer<a class="headerlink" href="#doc-maintainer" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Purpose:        Create and manage documentation
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Permission:     Full control over docs, read-only elsewhere
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>Audit Trail:    All documentation changes tracked
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Purpose: Create and manage documentation
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Permission: Full control over docs, read-only elsewhere
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>Audit Trail: All documentation changes tracked
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>Use Cases:
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>  - Update documentation
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>  - Create runbooks
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>  - Maintain API docs
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> - Update documentation
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> - Create runbooks
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> - Maintain API docs
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>Typical Users:
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>  - Technical writers
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>  - Documentation team
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>  - Knowledge managers
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> - Technical writers
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> - Documentation team
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> - Knowledge managers
 </code></pre></div>
 <h4 id="agent-reader">Agent Reader<a class="headerlink" href="#agent-reader" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Purpose:        Read-only agent access
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Permission:     Read agents, workflows, code, docs, reports
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Audit Trail:    All reads logged (queryable later)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Purpose: Read-only agent access
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Permission: Read agents, workflows, code, docs, reports
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Audit Trail: All reads logged (queryable later)
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>Use Cases:
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>  - Monitor agent deployments
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>  - Audit agent usage
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>  - Analyze agent logs
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> - Monitor agent deployments
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> - Audit agent usage
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> - Analyze agent logs
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>Typical Users:
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>  - Auditors
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  - Compliance teams
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>  - Read-only analysts
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> - Auditors
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> - Compliance teams
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> - Read-only analysts
 </code></pre></div>
 <h4 id="guest">Guest<a class="headerlink" href="#guest" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Purpose:        Minimal external access
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Permission:     Read public docs and reports only
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Audit Trail:    All guest access tracked
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Purpose: Minimal external access
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Permission: Read public docs and reports only
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Audit Trail: All guest access tracked
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>Use Cases:
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>  - Public documentation access
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>  - Performance report viewing
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  - General information access
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> - Public documentation access
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> - Performance report viewing
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> - General information access
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>Typical Users:
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  - External stakeholders
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  - Public API users
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>  - Unauthenticated access
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> - External stakeholders
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> - Public API users
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> - Unauthenticated access
 </code></pre></div>
 <hr/>
 <h2 id="permission-matrix">Permission Matrix<a class="headerlink" href="#permission-matrix" title="Permanent link">¶</a></h2>
 <h3 id="complete-matrix-rows-roles-columns-resources-actions">Complete Matrix (Rows = Roles, Columns = Resources × Actions)<a class="headerlink" href="#complete-matrix-rows-roles-columns-resources-actions" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>                    AGENTS          WORKFLOWS        SECRETS       DOCS
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Role                C R U D E A      C R U D E A      C R U D E A   C R U D E A
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>system_admin                                           
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>agent_operator         ×  ×         ×  ×      ×  × × × ×   ×  × × × ×
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>ci_operator         ×  × ×  ×      ×  × ×        × × × × × ×   ×  × × × ×
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>security_reviewer   ×  × × × ×      ×  × × ×       ×  × × ×    ×  × × × ×
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>doc_maintainer      ×  × × × ×      ×  × × × ×      × × × × × ×       × ×
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>agent_reader        ×  × × × ×      ×  × × × ×      × × × × × ×   ×  × × × ×
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>guest               × × × × × ×      × × × × × ×      × × × × × ×   ×  × × × ×
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a> AGENTS WORKFLOWS SECRETS DOCS
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Role C R U D E A C R U D E A C R U D E A C R U D E A
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>system_admin 
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>agent_operator × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>ci_operator × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>security_reviewer × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>doc_maintainer × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>agent_reader × × × × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>guest × × × × × × × × × × × × × × × × × × × × × × ×
 <a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>                    CODE            REPORTS          ROLES         AUDIT_LOGS
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>Role                C R U D E A      C R U D E A      C R U D E A   C R U D E A
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>system_admin            ×           × ×          ×    ×  × × × ×
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>agent_operator      ×   × × ×        × × × ×      ×  × × × ×   ×  × × × ×
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>ci_operator         ×  × × × ×        × × × ×      ×  × × × ×   ×  × × × ×
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>security_reviewer   ×   × × ×      ×  × × × ×      ×  × × × ×   ×  × × × ×
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>doc_maintainer      ×  × × × ×      ×  × × × ×      ×  × × × ×   × × × × × ×
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>agent_reader        ×  × × × ×      ×  × × × ×      ×  × × × ×   × × × × × ×
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>guest               × × × × × ×      ×  × × × ×      × × × × × ×   × × × × × ×
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> CODE REPORTS ROLES AUDIT_LOGS
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>Role C R U D E A C R U D E A C R U D E A C R U D E A
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>system_admin × × × × × × × × ×
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>agent_operator × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>ci_operator × × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>security_reviewer × × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>doc_maintainer × × × × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>agent_reader × × × × × × × × × × × × × × × × × × × × ×
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>guest × × × × × × × × × × × × × × × × × × × × × × ×
 <a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>
 <a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>Legend: C=Create, R=Read, U=Update, D=Delete, E=Execute, A=Approve, ×=Denied
 </code></pre></div>
@@ -2914,87 +2914,87 @@
 <hr/>
 <h2 id="resource-types">Resource Types<a class="headerlink" href="#resource-types" title="Permanent link">¶</a></h2>
 <h3 id="agents">agents<a class="headerlink" href="#agents" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Purpose:    Agent definitions, instances, and configurations
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>Actions:    CREATE (define), READ (query), UPDATE (reconfigure), 
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>            DELETE (deprecate), EXECUTE (run), APPROVE (production)
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Scope:      Agent metadata, parameters, deployment status
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Purpose: Agent definitions, instances, and configurations
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>Actions: CREATE (define), READ (query), UPDATE (reconfigure), 
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> DELETE (deprecate), EXECUTE (run), APPROVE (production)
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Scope: Agent metadata, parameters, deployment status
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>Examples:
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>  - AgentDefinition (name, version, description)
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>  - AgentInstance (deployed agent, current state)
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>  - AgentConfig (parameters, environment)
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> - AgentDefinition (name, version, description)
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> - AgentInstance (deployed agent, current state)
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> - AgentConfig (parameters, environment)
 </code></pre></div>
 <h3 id="workflows">workflows<a class="headerlink" href="#workflows" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Purpose:    CI/CD workflows, approval workflows, automation
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>Actions:    CREATE (define), READ (view), UPDATE (modify), 
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>            DELETE (remove), EXECUTE (run), APPROVE (gate)
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Scope:      Workflow definitions, execution history
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Purpose: CI/CD workflows, approval workflows, automation
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>Actions: CREATE (define), READ (view), UPDATE (modify), 
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> DELETE (remove), EXECUTE (run), APPROVE (gate)
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Scope: Workflow definitions, execution history
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>Examples:
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>  - CI workflow (build, test, deploy)
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>  - Approval workflow (request → decision)
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>  - Automation workflow (scheduled task)
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> - CI workflow (build, test, deploy)
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> - Approval workflow (request decision)
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> - Automation workflow (scheduled task)
 </code></pre></div>
 <h3 id="secrets">secrets<a class="headerlink" href="#secrets" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Purpose:    Credentials, keys, sensitive configuration
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>Actions:    CREATE (new secret), READ (retrieve), UPDATE (rotate), 
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>            DELETE (revoke), APPROVE (rotation)
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>Scope:      Secret metadata only (never values in logs)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>Purpose: Credentials, keys, sensitive configuration
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>Actions: CREATE (new secret), READ (retrieve), UPDATE (rotate), 
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> DELETE (revoke), APPROVE (rotation)
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>Scope: Secret metadata only (never values in logs)
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>Examples:
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>  - API keys
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>  - Database credentials
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>  - SSL certificates
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>  - Encryption keys
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> - API keys
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> - Database credentials
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> - SSL certificates
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> - Encryption keys
 </code></pre></div>
 <h3 id="docs">docs<a class="headerlink" href="#docs" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Purpose:    Documentation, runbooks, knowledge base
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>Actions:    CREATE (new doc), READ (view), UPDATE (edit), DELETE (remove)
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>Scope:      All documentation types
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Purpose: Documentation, runbooks, knowledge base
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>Actions: CREATE (new doc), READ (view), UPDATE (edit), DELETE (remove)
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>Scope: All documentation types
 <a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>Examples:
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>  - Architecture documentation
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>  - Security runbooks
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>  - API documentation
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>  - Operational guides
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> - Architecture documentation
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> - Security runbooks
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> - API documentation
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> - Operational guides
 </code></pre></div>
 <h3 id="code">code<a class="headerlink" href="#code" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Purpose:    Source code, infrastructure as code, configurations
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>Actions:    CREATE (new file), READ (view), UPDATE (modify), DELETE (remove), 
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>            APPROVE (security review)
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>Scope:      Code repository contents
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Purpose: Source code, infrastructure as code, configurations
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>Actions: CREATE (new file), READ (view), UPDATE (modify), DELETE (remove), 
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> APPROVE (security review)
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>Scope: Code repository contents
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>Examples:
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>  - Python source code
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>  - Terraform configurations
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>  - Docker files
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>  - Configuration files
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> - Python source code
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> - Terraform configurations
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> - Docker files
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> - Configuration files
 </code></pre></div>
 <h3 id="reports">reports<a class="headerlink" href="#reports" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>Purpose:    Generated reports, analytics, dashboards
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>Actions:    CREATE (generate), READ (view), UPDATE (refresh), DELETE (archive)
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>Scope:      Report data only
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>Purpose: Generated reports, analytics, dashboards
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>Actions: CREATE (generate), READ (view), UPDATE (refresh), DELETE (archive)
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>Scope: Report data only
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>Examples:
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>  - Deployment reports
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>  - Security audit reports
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>  - Performance metrics
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>  - Compliance dashboards
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> - Deployment reports
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> - Security audit reports
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> - Performance metrics
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> - Compliance dashboards
 </code></pre></div>
 <h3 id="roles">roles<a class="headerlink" href="#roles" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>Purpose:    Role definitions, assignments, permissions
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>Actions:    CREATE (new role), READ (view roles), UPDATE (modify), 
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>            DELETE (remove), ASSIGN (assign to user)
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>Scope:      Role metadata only
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>Purpose: Role definitions, assignments, permissions
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>Actions: CREATE (new role), READ (view roles), UPDATE (modify), 
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a> DELETE (remove), ASSIGN (assign to user)
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>Scope: Role metadata only
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>Examples:
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>  - Role definitions
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>  - Role assignments
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>  - Permission updates
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>  - Role deprecation
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a> - Role definitions
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> - Role assignments
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> - Permission updates
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> - Role deprecation
 </code></pre></div>
 <h3 id="audit_logs">audit_logs<a class="headerlink" href="#audit_logs" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>Purpose:    Audit trail, compliance records, activity logs
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>Actions:    READ (query logs), no write access
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>Scope:      Read-only access to all audit events
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>Purpose: Audit trail, compliance records, activity logs
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>Actions: READ (query logs), no write access
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>Scope: Read-only access to all audit events
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>Examples:
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>  - Permission checks
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>  - Action executions
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>  - Approval decisions
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>  - Security events
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> - Permission checks
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> - Action executions
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> - Approval decisions
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> - Security events
 </code></pre></div>
 <hr/>
 <h2 id="access-control-patterns">Access Control Patterns<a class="headerlink" href="#access-control-patterns" title="Permanent link">¶</a></h2>
@@ -3005,276 +3005,276 @@
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>
 <a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="c1"># Check if user has permission</span>
 <a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="n">has_permission</span> <span class="o">=</span> <span class="n">enforcer</span><span class="o">.</span><span class="n">has_permission</span><span class="p">(</span>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>    <span class="n">user_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>    <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>    <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">EXECUTE</span><span class="p">,</span>
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>    <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a> <span class="n">user_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a> <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a> <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">EXECUTE</span><span class="p">,</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a> <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span>
 <a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="p">)</span>
 <a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>
 <a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a><span class="k">if</span> <span class="n">has_permission</span><span class="p">:</span>
-<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Alice can execute agents"</span><span class="p">)</span>
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Alice can execute agents"</span><span class="p">)</span>
 <a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Alice cannot execute agents"</span><span class="p">)</span>
+<a href="#__codelineno-19-16" id="__codelineno-19-16" name="__codelineno-19-16"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Alice cannot execute agents"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="pattern-2-enforce-with-exception-handling">Pattern 2: Enforce with Exception Handling<a class="headerlink" href="#pattern-2-enforce-with-exception-handling" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kn">from</span> <span class="nn">codex.governance.rbac</span> <span class="kn">import</span> <span class="n">PermissionDeniedError</span>
 <a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>    <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>        <span class="n">user_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>        <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">,</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>        <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>        <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">WORKFLOWS</span><span class="p">,</span>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>        <span class="n">resource_id</span><span class="o">=</span><span class="s2">"deploy_prod_workflow"</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>    <span class="p">)</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>    <span class="c1"># Permission granted, proceed with action</span>
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>    <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">"deploy_prod_workflow"</span><span class="p">)</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a> <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a> <span class="n">user_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">,</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a> <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">APPROVE</span><span class="p">,</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a> <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">WORKFLOWS</span><span class="p">,</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a> <span class="n">resource_id</span><span class="o">=</span><span class="s2">"deploy_prod_workflow"</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a> <span class="p">)</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a> <span class="c1"># Permission granted, proceed with action</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a> <span class="n">execute_workflow</span><span class="p">(</span><span class="s2">"deploy_prod_workflow"</span><span class="p">)</span>
 <a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a>
 <a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="k">except</span> <span class="n">PermissionDeniedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>        <span class="sa">f</span><span class="s2">"Permission denied: user=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">, "</span>
-<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a>        <span class="sa">f</span><span class="s2">"action=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">action</span><span class="si">}</span><span class="s2">, resource=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a>    <span class="p">)</span>
-<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>    <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a> <span class="sa">f</span><span class="s2">"Permission denied: user=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">, "</span>
+<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a> <span class="sa">f</span><span class="s2">"action=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">action</span><span class="si">}</span><span class="s2">, resource=</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a> <span class="p">)</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a> <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
 </code></pre></div>
 <h3 id="pattern-3-audit-action-with-context">Pattern 3: Audit Action with Context<a class="headerlink" href="#pattern-3-audit-action-with-context" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="n">enforcer</span><span class="o">.</span><span class="n">audit_action</span><span class="p">(</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>    <span class="n">user_id</span><span class="o">=</span><span class="s2">"charlie"</span><span class="p">,</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>    <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a>    <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>    <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">,</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">resource_id</span><span class="o">=</span><span class="s2">"new_agent_v2.1"</span><span class="p">,</span>
-<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>        <span class="s2">"agent_name"</span><span class="p">:</span> <span class="s2">"DataProcessor"</span><span class="p">,</span>
-<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>        <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.1.0"</span><span class="p">,</span>
-<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a>        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Q3 campaign model"</span><span class="p">,</span>
-<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a>        <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span>
-<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>    <span class="p">}</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a> <span class="n">user_id</span><span class="o">=</span><span class="s2">"charlie"</span><span class="p">,</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a> <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a> <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a> <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">,</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> <span class="n">resource_id</span><span class="o">=</span><span class="s2">"new_agent_v2.1"</span><span class="p">,</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a> <span class="s2">"agent_name"</span><span class="p">:</span> <span class="s2">"DataProcessor"</span><span class="p">,</span>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a> <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.1.0"</span><span class="p">,</span>
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a> <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Q3 campaign model"</span><span class="p">,</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span>
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a> <span class="p">}</span>
 <a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="pattern-4-role-based-conditional-logic">Pattern 4: Role-Based Conditional Logic<a class="headerlink" href="#pattern-4-role-based-conditional-logic" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kn">from</span> <span class="nn">codex.governance.rbac</span> <span class="kn">import</span> <span class="n">CodexRole</span>
 <a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>
 <a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="k">def</span> <span class="nf">get_visible_agents</span><span class="p">(</span><span class="n">user_roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Agent</span><span class="p">]:</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">    </span><span class="sd">"""Return agents visible to user based on role."""</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w"> </span><span class="sd">"""Return agents visible to user based on role."""</span>
 <a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>        <span class="c1"># Admins see all agents</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>        <span class="k">return</span> <span class="n">get_all_agents</span><span class="p">()</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a> <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a> <span class="c1"># Admins see all agents</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a> <span class="k">return</span> <span class="n">get_all_agents</span><span class="p">()</span>
 <a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="k">elif</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>        <span class="c1"># Operators see all agents they can manage</span>
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>        <span class="k">return</span> <span class="n">get_operators_agents</span><span class="p">()</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a> <span class="k">elif</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a> <span class="c1"># Operators see all agents they can manage</span>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a> <span class="k">return</span> <span class="n">get_operators_agents</span><span class="p">()</span>
 <a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>
-<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>    <span class="k">elif</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_READER</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
-<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a>        <span class="c1"># Readers see published agents only</span>
-<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>        <span class="k">return</span> <span class="n">get_published_agents</span><span class="p">()</span>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a> <span class="k">elif</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_READER</span> <span class="ow">in</span> <span class="n">user_roles</span><span class="p">:</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a> <span class="c1"># Readers see published agents only</span>
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a> <span class="k">return</span> <span class="n">get_published_agents</span><span class="p">()</span>
 <a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a>
-<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a>    <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a>        <span class="c1"># Guests see public agents only</span>
-<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a>        <span class="k">return</span> <span class="n">get_public_agents</span><span class="p">()</span>
+<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a> <span class="c1"># Guests see public agents only</span>
+<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a> <span class="k">return</span> <span class="n">get_public_agents</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="pattern-5-multi-role-authorization">Pattern 5: Multi-Role Authorization<a class="headerlink" href="#pattern-5-multi-role-authorization" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="k">def</span> <span class="nf">can_deploy_to_production</span><span class="p">(</span><span class="n">user_roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w">    </span><span class="sd">"""Check if user has multi-role permission for prod deployment."""</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w"> </span><span class="sd">"""Check if user has multi-role permission for prod deployment."""</span>
 <a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>    <span class="c1"># Must have AGENT_OPERATOR for deployment</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>    <span class="n">has_deploy_perm</span> <span class="o">=</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a> <span class="c1"># Must have AGENT_OPERATOR for deployment</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a> <span class="n">has_deploy_perm</span> <span class="o">=</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span>
 <a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>    <span class="c1"># Must have either CI_OPERATOR or SECURITY_REVIEWER for approval</span>
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>    <span class="n">has_approval_perm</span> <span class="o">=</span> <span class="p">(</span>
-<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>        <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span> <span class="ow">or</span> 
-<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>        <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">user_roles</span>
-<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a>    <span class="p">)</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a> <span class="c1"># Must have either CI_OPERATOR or SECURITY_REVIEWER for approval</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a> <span class="n">has_approval_perm</span> <span class="o">=</span> <span class="p">(</span>
+<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span> <span class="ow">in</span> <span class="n">user_roles</span> <span class="ow">or</span> 
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">user_roles</span>
+<a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a> <span class="p">)</span>
 <a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a>
-<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a>    <span class="k">return</span> <span class="n">has_deploy_perm</span> <span class="ow">and</span> <span class="n">has_approval_perm</span>
+<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a> <span class="k">return</span> <span class="n">has_deploy_perm</span> <span class="ow">and</span> <span class="n">has_approval_perm</span>
 </code></pre></div>
 <hr/>
 <h2 id="enforcement-engine">Enforcement Engine<a class="headerlink" href="#enforcement-engine" title="Permanent link">¶</a></h2>
 <h3 id="rbacenforcer-class">RBACEnforcer Class<a class="headerlink" href="#rbacenforcer-class" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="k">class</span> <span class="nc">RBACEnforcer</span><span class="p">:</span>
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="sd">    High-level RBAC enforcement for Codex operations.</span>
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="sd"> High-level RBAC enforcement for Codex operations.</span>
 <a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="sd">    Design:</span>
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="sd">    -------</span>
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="sd">    - Wraps authz layer primitives (PermissionValidator, RoleManager, AuditLogger)</span>
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="sd">    - Adds Codex domain knowledge (roles, resources, actions)</span>
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="sd">    - Enforces zero-tolerance for unauthorized actions</span>
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="sd">    - Full audit trail of all decisions</span>
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="sd">    """</span>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="sd"> Design:</span>
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="sd"> -------</span>
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="sd"> - Wraps authz layer primitives (PermissionValidator, RoleManager, AuditLogger)</span>
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="sd"> - Adds Codex domain knowledge (roles, resources, actions)</span>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="sd"> - Enforces zero-tolerance for unauthorized actions</span>
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="sd"> - Full audit trail of all decisions</span>
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="sd"> """</span>
 <a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>
-<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audit_logger</span><span class="p">:</span> <span class="n">AuditLogger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a><span class="w">        </span><span class="sd">"""Initialize with optional audit logger."""</span>
-<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">PermissionValidator</span><span class="p">()</span>
-<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">role_manager</span> <span class="o">=</span> <span class="n">RoleManager</span><span class="p">()</span>
-<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">audit_logger</span> <span class="o">=</span> <span class="n">audit_logger</span> <span class="ow">or</span> <span class="n">AuditLogger</span><span class="p">()</span>
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audit_logger</span><span class="p">:</span> <span class="n">AuditLogger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a><span class="w"> </span><span class="sd">"""Initialize with optional audit logger."""</span>
+<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">PermissionValidator</span><span class="p">()</span>
+<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a> <span class="bp">self</span><span class="o">.</span><span class="n">role_manager</span> <span class="o">=</span> <span class="n">RoleManager</span><span class="p">()</span>
+<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a> <span class="bp">self</span><span class="o">.</span><span class="n">audit_logger</span> <span class="o">=</span> <span class="n">audit_logger</span> <span class="ow">or</span> <span class="n">AuditLogger</span><span class="p">()</span>
 <a href="#__codelineno-24-18" id="__codelineno-24-18" name="__codelineno-24-18"></a>
-<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a>    <span class="k">def</span> <span class="nf">has_permission</span><span class="p">(</span>
-<a href="#__codelineno-24-20" id="__codelineno-24-20" name="__codelineno-24-20"></a>        <span class="bp">self</span><span class="p">,</span> 
-<a href="#__codelineno-24-21" id="__codelineno-24-21" name="__codelineno-24-21"></a>        <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-24-22" id="__codelineno-24-22" name="__codelineno-24-22"></a>        <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
-<a href="#__codelineno-24-23" id="__codelineno-24-23" name="__codelineno-24-23"></a>        <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
-<a href="#__codelineno-24-24" id="__codelineno-24-24" name="__codelineno-24-24"></a>        <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span>
-<a href="#__codelineno-24-25" id="__codelineno-24-25" name="__codelineno-24-25"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-24-26" id="__codelineno-24-26" name="__codelineno-24-26"></a><span class="w">        </span><span class="sd">"""Check if user has permission without raising exception."""</span>
-<a href="#__codelineno-24-27" id="__codelineno-24-27" name="__codelineno-24-27"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
+<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a> <span class="k">def</span> <span class="nf">has_permission</span><span class="p">(</span>
+<a href="#__codelineno-24-20" id="__codelineno-24-20" name="__codelineno-24-20"></a> <span class="bp">self</span><span class="p">,</span> 
+<a href="#__codelineno-24-21" id="__codelineno-24-21" name="__codelineno-24-21"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-24-22" id="__codelineno-24-22" name="__codelineno-24-22"></a> <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
+<a href="#__codelineno-24-23" id="__codelineno-24-23" name="__codelineno-24-23"></a> <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
+<a href="#__codelineno-24-24" id="__codelineno-24-24" name="__codelineno-24-24"></a> <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span>
+<a href="#__codelineno-24-25" id="__codelineno-24-25" name="__codelineno-24-25"></a> <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a href="#__codelineno-24-26" id="__codelineno-24-26" name="__codelineno-24-26"></a><span class="w"> </span><span class="sd">"""Check if user has permission without raising exception."""</span>
+<a href="#__codelineno-24-27" id="__codelineno-24-27" name="__codelineno-24-27"></a> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
 <a href="#__codelineno-24-28" id="__codelineno-24-28" name="__codelineno-24-28"></a>
-<a href="#__codelineno-24-29" id="__codelineno-24-29" name="__codelineno-24-29"></a>    <span class="k">def</span> <span class="nf">enforce_action</span><span class="p">(</span>
-<a href="#__codelineno-24-30" id="__codelineno-24-30" name="__codelineno-24-30"></a>        <span class="bp">self</span><span class="p">,</span>
-<a href="#__codelineno-24-31" id="__codelineno-24-31" name="__codelineno-24-31"></a>        <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-24-32" id="__codelineno-24-32" name="__codelineno-24-32"></a>        <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
-<a href="#__codelineno-24-33" id="__codelineno-24-33" name="__codelineno-24-33"></a>        <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
-<a href="#__codelineno-24-34" id="__codelineno-24-34" name="__codelineno-24-34"></a>        <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span><span class="p">,</span>
-<a href="#__codelineno-24-35" id="__codelineno-24-35" name="__codelineno-24-35"></a>        <span class="n">resource_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a href="#__codelineno-24-36" id="__codelineno-24-36" name="__codelineno-24-36"></a>        <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-<a href="#__codelineno-24-37" id="__codelineno-24-37" name="__codelineno-24-37"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-24-38" id="__codelineno-24-38" name="__codelineno-24-38"></a><span class="w">        </span><span class="sd">"""Enforce action or raise PermissionDeniedError."""</span>
-<a href="#__codelineno-24-39" id="__codelineno-24-39" name="__codelineno-24-39"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_permission</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
-<a href="#__codelineno-24-40" id="__codelineno-24-40" name="__codelineno-24-40"></a>            <span class="k">raise</span> <span class="n">PermissionDeniedError</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
+<a href="#__codelineno-24-29" id="__codelineno-24-29" name="__codelineno-24-29"></a> <span class="k">def</span> <span class="nf">enforce_action</span><span class="p">(</span>
+<a href="#__codelineno-24-30" id="__codelineno-24-30" name="__codelineno-24-30"></a> <span class="bp">self</span><span class="p">,</span>
+<a href="#__codelineno-24-31" id="__codelineno-24-31" name="__codelineno-24-31"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-24-32" id="__codelineno-24-32" name="__codelineno-24-32"></a> <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
+<a href="#__codelineno-24-33" id="__codelineno-24-33" name="__codelineno-24-33"></a> <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
+<a href="#__codelineno-24-34" id="__codelineno-24-34" name="__codelineno-24-34"></a> <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span><span class="p">,</span>
+<a href="#__codelineno-24-35" id="__codelineno-24-35" name="__codelineno-24-35"></a> <span class="n">resource_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-24-36" id="__codelineno-24-36" name="__codelineno-24-36"></a> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-24-37" id="__codelineno-24-37" name="__codelineno-24-37"></a> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-24-38" id="__codelineno-24-38" name="__codelineno-24-38"></a><span class="w"> </span><span class="sd">"""Enforce action or raise PermissionDeniedError."""</span>
+<a href="#__codelineno-24-39" id="__codelineno-24-39" name="__codelineno-24-39"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_permission</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<a href="#__codelineno-24-40" id="__codelineno-24-40" name="__codelineno-24-40"></a> <span class="k">raise</span> <span class="n">PermissionDeniedError</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
 <a href="#__codelineno-24-41" id="__codelineno-24-41" name="__codelineno-24-41"></a>
-<a href="#__codelineno-24-42" id="__codelineno-24-42" name="__codelineno-24-42"></a>        <span class="c1"># Log the action</span>
-<a href="#__codelineno-24-43" id="__codelineno-24-43" name="__codelineno-24-43"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">audit_logger</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span>
-<a href="#__codelineno-24-44" id="__codelineno-24-44" name="__codelineno-24-44"></a>            <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
-<a href="#__codelineno-24-45" id="__codelineno-24-45" name="__codelineno-24-45"></a>            <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-24-46" id="__codelineno-24-46" name="__codelineno-24-46"></a>            <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-24-47" id="__codelineno-24-47" name="__codelineno-24-47"></a>            <span class="n">resource</span><span class="o">=</span><span class="n">resource</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-24-48" id="__codelineno-24-48" name="__codelineno-24-48"></a>            <span class="n">resource_id</span><span class="o">=</span><span class="n">resource_id</span><span class="p">,</span>
-<a href="#__codelineno-24-49" id="__codelineno-24-49" name="__codelineno-24-49"></a>            <span class="n">context</span><span class="o">=</span><span class="n">context</span> <span class="ow">or</span> <span class="p">{}</span>
-<a href="#__codelineno-24-50" id="__codelineno-24-50" name="__codelineno-24-50"></a>        <span class="p">)</span>
+<a href="#__codelineno-24-42" id="__codelineno-24-42" name="__codelineno-24-42"></a> <span class="c1"># Log the action</span>
+<a href="#__codelineno-24-43" id="__codelineno-24-43" name="__codelineno-24-43"></a> <span class="bp">self</span><span class="o">.</span><span class="n">audit_logger</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span>
+<a href="#__codelineno-24-44" id="__codelineno-24-44" name="__codelineno-24-44"></a> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+<a href="#__codelineno-24-45" id="__codelineno-24-45" name="__codelineno-24-45"></a> <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-24-46" id="__codelineno-24-46" name="__codelineno-24-46"></a> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-24-47" id="__codelineno-24-47" name="__codelineno-24-47"></a> <span class="n">resource</span><span class="o">=</span><span class="n">resource</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-24-48" id="__codelineno-24-48" name="__codelineno-24-48"></a> <span class="n">resource_id</span><span class="o">=</span><span class="n">resource_id</span><span class="p">,</span>
+<a href="#__codelineno-24-49" id="__codelineno-24-49" name="__codelineno-24-49"></a> <span class="n">context</span><span class="o">=</span><span class="n">context</span> <span class="ow">or</span> <span class="p">{}</span>
+<a href="#__codelineno-24-50" id="__codelineno-24-50" name="__codelineno-24-50"></a> <span class="p">)</span>
 <a href="#__codelineno-24-51" id="__codelineno-24-51" name="__codelineno-24-51"></a>
-<a href="#__codelineno-24-52" id="__codelineno-24-52" name="__codelineno-24-52"></a>    <span class="k">def</span> <span class="nf">get_user_permissions</span><span class="p">(</span>
-<a href="#__codelineno-24-53" id="__codelineno-24-53" name="__codelineno-24-53"></a>        <span class="bp">self</span><span class="p">,</span>
-<a href="#__codelineno-24-54" id="__codelineno-24-54" name="__codelineno-24-54"></a>        <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-24-55" id="__codelineno-24-55" name="__codelineno-24-55"></a>        <span class="n">roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">]</span>
-<a href="#__codelineno-24-56" id="__codelineno-24-56" name="__codelineno-24-56"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResourceType</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">Action</span><span class="p">]]:</span>
-<a href="#__codelineno-24-57" id="__codelineno-24-57" name="__codelineno-24-57"></a><span class="w">        </span><span class="sd">"""Get all permissions for user's roles."""</span>
-<a href="#__codelineno-24-58" id="__codelineno-24-58" name="__codelineno-24-58"></a>        <span class="n">permissions</span> <span class="o">=</span> <span class="p">{}</span>
-<a href="#__codelineno-24-59" id="__codelineno-24-59" name="__codelineno-24-59"></a>        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
-<a href="#__codelineno-24-60" id="__codelineno-24-60" name="__codelineno-24-60"></a>            <span class="k">for</span> <span class="n">resource</span><span class="p">,</span> <span class="n">actions</span> <span class="ow">in</span> <span class="n">_ROLE_PERMISSION_MATRIX</span><span class="p">[</span><span class="n">role</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-24-61" id="__codelineno-24-61" name="__codelineno-24-61"></a>                <span class="k">if</span> <span class="n">resource</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">permissions</span><span class="p">:</span>
-<a href="#__codelineno-24-62" id="__codelineno-24-62" name="__codelineno-24-62"></a>                    <span class="n">permissions</span><span class="p">[</span><span class="n">resource</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<a href="#__codelineno-24-63" id="__codelineno-24-63" name="__codelineno-24-63"></a>                <span class="n">permissions</span><span class="p">[</span><span class="n">resource</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
-<a href="#__codelineno-24-64" id="__codelineno-24-64" name="__codelineno-24-64"></a>        <span class="k">return</span> <span class="n">permissions</span>
+<a href="#__codelineno-24-52" id="__codelineno-24-52" name="__codelineno-24-52"></a> <span class="k">def</span> <span class="nf">get_user_permissions</span><span class="p">(</span>
+<a href="#__codelineno-24-53" id="__codelineno-24-53" name="__codelineno-24-53"></a> <span class="bp">self</span><span class="p">,</span>
+<a href="#__codelineno-24-54" id="__codelineno-24-54" name="__codelineno-24-54"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-24-55" id="__codelineno-24-55" name="__codelineno-24-55"></a> <span class="n">roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">]</span>
+<a href="#__codelineno-24-56" id="__codelineno-24-56" name="__codelineno-24-56"></a> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResourceType</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">Action</span><span class="p">]]:</span>
+<a href="#__codelineno-24-57" id="__codelineno-24-57" name="__codelineno-24-57"></a><span class="w"> </span><span class="sd">"""Get all permissions for user's roles."""</span>
+<a href="#__codelineno-24-58" id="__codelineno-24-58" name="__codelineno-24-58"></a> <span class="n">permissions</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-24-59" id="__codelineno-24-59" name="__codelineno-24-59"></a> <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+<a href="#__codelineno-24-60" id="__codelineno-24-60" name="__codelineno-24-60"></a> <span class="k">for</span> <span class="n">resource</span><span class="p">,</span> <span class="n">actions</span> <span class="ow">in</span> <span class="n">_ROLE_PERMISSION_MATRIX</span><span class="p">[</span><span class="n">role</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-24-61" id="__codelineno-24-61" name="__codelineno-24-61"></a> <span class="k">if</span> <span class="n">resource</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">permissions</span><span class="p">:</span>
+<a href="#__codelineno-24-62" id="__codelineno-24-62" name="__codelineno-24-62"></a> <span class="n">permissions</span><span class="p">[</span><span class="n">resource</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a href="#__codelineno-24-63" id="__codelineno-24-63" name="__codelineno-24-63"></a> <span class="n">permissions</span><span class="p">[</span><span class="n">resource</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+<a href="#__codelineno-24-64" id="__codelineno-24-64" name="__codelineno-24-64"></a> <span class="k">return</span> <span class="n">permissions</span>
 </code></pre></div>
 <h3 id="permission-validation">Permission Validation<a class="headerlink" href="#permission-validation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="k">def</span> <span class="nf">validate_permission</span><span class="p">(</span>
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>    <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>    <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>    <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a> <span class="n">role</span><span class="p">:</span> <span class="n">CodexRole</span><span class="p">,</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a> <span class="n">action</span><span class="p">:</span> <span class="n">Action</span><span class="p">,</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a> <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="w">    </span><span class="sd">"""Check if role can perform action on resource."""</span>
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="w"> </span><span class="sd">"""Check if role can perform action on resource."""</span>
 <a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>
-<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>    <span class="c1"># Get role's permissions from matrix</span>
-<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>    <span class="n">role_perms</span> <span class="o">=</span> <span class="n">_ROLE_PERMISSION_MATRIX</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="p">{})</span>
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a> <span class="c1"># Get role's permissions from matrix</span>
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a> <span class="n">role_perms</span> <span class="o">=</span> <span class="n">_ROLE_PERMISSION_MATRIX</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="p">{})</span>
 <a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>
-<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a>    <span class="c1"># Get resource's allowed actions</span>
-<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>    <span class="n">resource_actions</span> <span class="o">=</span> <span class="n">role_perms</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a> <span class="c1"># Get resource's allowed actions</span>
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a> <span class="n">resource_actions</span> <span class="o">=</span> <span class="n">role_perms</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
 <a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>
-<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>    <span class="c1"># Check if action is allowed</span>
-<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a>    <span class="k">return</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">resource_actions</span>
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a> <span class="c1"># Check if action is allowed</span>
+<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a> <span class="k">return</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">resource_actions</span>
 </code></pre></div>
 <h3 id="audit-logging">Audit Logging<a class="headerlink" href="#audit-logging" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="k">class</span> <span class="nc">AuditLogger</span><span class="p">:</span>
-<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="w">    </span><span class="sd">"""Log all RBAC decisions for compliance."""</span>
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="w"> </span><span class="sd">"""Log all RBAC decisions for compliance."""</span>
 <a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>    <span class="k">def</span> <span class="nf">log_action</span><span class="p">(</span>
-<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>        <span class="bp">self</span><span class="p">,</span>
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>        <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>        <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>        <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a>        <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>        <span class="n">resource_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a>        <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a>        <span class="n">result</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"allowed"</span>
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a><span class="w">        </span><span class="sd">"""Log RBAC decision."""</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a> <span class="k">def</span> <span class="nf">log_action</span><span class="p">(</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> <span class="bp">self</span><span class="p">,</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a> <span class="n">resource</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a> <span class="n">resource_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a> <span class="n">result</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"allowed"</span>
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a><span class="w"> </span><span class="sd">"""Log RBAC decision."""</span>
 <a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a>
-<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>        <span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a>            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
-<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a>            <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
-<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a>            <span class="s2">"role"</span><span class="p">:</span> <span class="n">role</span><span class="p">,</span>
-<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a>            <span class="s2">"action"</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span>
-<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a>            <span class="s2">"resource"</span><span class="p">:</span> <span class="n">resource</span><span class="p">,</span>
-<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a>            <span class="s2">"resource_id"</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">,</span>
-<a href="#__codelineno-26-23" id="__codelineno-26-23" name="__codelineno-26-23"></a>            <span class="s2">"context"</span><span class="p">:</span> <span class="n">context</span> <span class="ow">or</span> <span class="p">{},</span>
-<a href="#__codelineno-26-24" id="__codelineno-26-24" name="__codelineno-26-24"></a>            <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span>
-<a href="#__codelineno-26-25" id="__codelineno-26-25" name="__codelineno-26-25"></a>        <span class="p">}</span>
+<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a> <span class="n">event</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a> <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a> <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a> <span class="s2">"role"</span><span class="p">:</span> <span class="n">role</span><span class="p">,</span>
+<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a> <span class="s2">"action"</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span>
+<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a> <span class="s2">"resource"</span><span class="p">:</span> <span class="n">resource</span><span class="p">,</span>
+<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a> <span class="s2">"resource_id"</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">,</span>
+<a href="#__codelineno-26-23" id="__codelineno-26-23" name="__codelineno-26-23"></a> <span class="s2">"context"</span><span class="p">:</span> <span class="n">context</span> <span class="ow">or</span> <span class="p">{},</span>
+<a href="#__codelineno-26-24" id="__codelineno-26-24" name="__codelineno-26-24"></a> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span>
+<a href="#__codelineno-26-25" id="__codelineno-26-25" name="__codelineno-26-25"></a> <span class="p">}</span>
 <a href="#__codelineno-26-26" id="__codelineno-26-26" name="__codelineno-26-26"></a>
-<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a>        <span class="c1"># Log to audit trail (database, file, centralized logging)</span>
-<a href="#__codelineno-26-28" id="__codelineno-26-28" name="__codelineno-26-28"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">insert_audit_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a> <span class="c1"># Log to audit trail (database, file, centralized logging)</span>
+<a href="#__codelineno-26-28" id="__codelineno-26-28" name="__codelineno-26-28"></a> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">insert_audit_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="scope-management">Scope Management<a class="headerlink" href="#scope-management" title="Permanent link">¶</a></h2>
 <h3 id="scope-types">Scope Types<a class="headerlink" href="#scope-types" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="k">class</span> <span class="nc">TokenScope</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="w">    </span><span class="sd">"""Fine-grained permissions within a token."""</span>
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="w"> </span><span class="sd">"""Fine-grained permissions within a token."""</span>
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>    <span class="c1"># Agent scopes</span>
-<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>    <span class="n">API_AGENTS_READ</span> <span class="o">=</span> <span class="s2">"api:agents:read"</span>
-<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>    <span class="n">API_AGENTS_WRITE</span> <span class="o">=</span> <span class="s2">"api:agents:write"</span>
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>    <span class="n">API_AGENTS_EXEC</span> <span class="o">=</span> <span class="s2">"api:agents:exec"</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a> <span class="c1"># Agent scopes</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a> <span class="n">API_AGENTS_READ</span> <span class="o">=</span> <span class="s2">"api:agents:read"</span>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a> <span class="n">API_AGENTS_WRITE</span> <span class="o">=</span> <span class="s2">"api:agents:write"</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> <span class="n">API_AGENTS_EXEC</span> <span class="o">=</span> <span class="s2">"api:agents:exec"</span>
 <a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a>    <span class="c1"># Workflow scopes</span>
-<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a>    <span class="n">API_WORKFLOWS_READ</span> <span class="o">=</span> <span class="s2">"api:workflows:read"</span>
-<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a>    <span class="n">API_WORKFLOWS_EXEC</span> <span class="o">=</span> <span class="s2">"api:workflows:exec"</span>
-<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>    <span class="n">API_WORKFLOWS_APPROVE</span> <span class="o">=</span> <span class="s2">"api:workflows:approve"</span>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a> <span class="c1"># Workflow scopes</span>
+<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a> <span class="n">API_WORKFLOWS_READ</span> <span class="o">=</span> <span class="s2">"api:workflows:read"</span>
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a> <span class="n">API_WORKFLOWS_EXEC</span> <span class="o">=</span> <span class="s2">"api:workflows:exec"</span>
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a> <span class="n">API_WORKFLOWS_APPROVE</span> <span class="o">=</span> <span class="s2">"api:workflows:approve"</span>
 <a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>
-<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a>    <span class="c1"># Secret scopes</span>
-<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a>    <span class="n">API_SECRETS_READ</span> <span class="o">=</span> <span class="s2">"api:secrets:read"</span>
-<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>    <span class="n">API_SECRETS_ROTATE</span> <span class="o">=</span> <span class="s2">"api:secrets:rotate"</span>
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a> <span class="c1"># Secret scopes</span>
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a> <span class="n">API_SECRETS_READ</span> <span class="o">=</span> <span class="s2">"api:secrets:read"</span>
+<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a> <span class="n">API_SECRETS_ROTATE</span> <span class="o">=</span> <span class="s2">"api:secrets:rotate"</span>
 <a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a>
-<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a>    <span class="c1"># Governance scopes</span>
-<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a>    <span class="n">GOVERNANCE_APPROVE</span> <span class="o">=</span> <span class="s2">"governance:approve"</span>
-<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a>    <span class="n">GOVERNANCE_AUDIT</span> <span class="o">=</span> <span class="s2">"governance:audit"</span>
+<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a> <span class="c1"># Governance scopes</span>
+<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a> <span class="n">GOVERNANCE_APPROVE</span> <span class="o">=</span> <span class="s2">"governance:approve"</span>
+<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a> <span class="n">GOVERNANCE_AUDIT</span> <span class="o">=</span> <span class="s2">"governance:audit"</span>
 </code></pre></div>
 <h3 id="scope-based-access-control">Scope-Based Access Control<a class="headerlink" href="#scope-based-access-control" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="k">def</span> <span class="nf">check_token_scope</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">required_scope</span><span class="p">:</span> <span class="n">TokenScope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="w">    </span><span class="sd">"""Check if token has required scope."""</span>
+<a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="w"> </span><span class="sd">"""Check if token has required scope."""</span>
 <a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a>
-<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>    <span class="c1"># Decode and validate token</span>
-<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a>    <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a> <span class="c1"># Decode and validate token</span>
+<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a> <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s2">"RS256"</span><span class="p">])</span>
 <a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a>
-<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a>    <span class="c1"># Get scopes from token</span>
-<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a>    <span class="n">token_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a> <span class="c1"># Get scopes from token</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a> <span class="n">token_scopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scopes"</span><span class="p">,</span> <span class="p">[])</span>
 <a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a>
-<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a>    <span class="c1"># Check if required scope is present</span>
-<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a>    <span class="k">return</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">token_scopes</span>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a> <span class="c1"># Check if required scope is present</span>
+<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a> <span class="k">return</span> <span class="n">required_scope</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">token_scopes</span>
 </code></pre></div>
 <h3 id="scope-assignment-during-token-issue">Scope Assignment During Token Issue<a class="headerlink" href="#scope-assignment-during-token-issue" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="k">def</span> <span class="nf">issue_token</span><span class="p">(</span>
-<a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a>    <span class="n">roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">],</span>
-<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a>    <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a> <span class="n">roles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CodexRole</span><span class="p">],</span>
+<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a> <span class="n">resource</span><span class="p">:</span> <span class="n">ResourceType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="w">    </span><span class="sd">"""Issue JWT token with appropriate scopes."""</span>
+<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="w"> </span><span class="sd">"""Issue JWT token with appropriate scopes."""</span>
 <a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a>
-<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a>    <span class="n">scopes</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a> <span class="n">scopes</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a>
-<a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a>    <span class="c1"># Add scopes based on roles</span>
-<a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a>    <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
-<a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a>        <span class="n">scopes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-<a href="#__codelineno-29-13" id="__codelineno-29-13" name="__codelineno-29-13"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_READ</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-29-14" id="__codelineno-29-14" name="__codelineno-29-14"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_WRITE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-29-15" id="__codelineno-29-15" name="__codelineno-29-15"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_EXEC</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-29-16" id="__codelineno-29-16" name="__codelineno-29-16"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_WORKFLOWS_EXEC</span><span class="o">.</span><span class="n">value</span>
-<a href="#__codelineno-29-17" id="__codelineno-29-17" name="__codelineno-29-17"></a>        <span class="p">])</span>
+<a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a> <span class="c1"># Add scopes based on roles</span>
+<a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a> <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+<a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a> <span class="n">scopes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+<a href="#__codelineno-29-13" id="__codelineno-29-13" name="__codelineno-29-13"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_READ</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-29-14" id="__codelineno-29-14" name="__codelineno-29-14"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_WRITE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-29-15" id="__codelineno-29-15" name="__codelineno-29-15"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_AGENTS_EXEC</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-29-16" id="__codelineno-29-16" name="__codelineno-29-16"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_WORKFLOWS_EXEC</span><span class="o">.</span><span class="n">value</span>
+<a href="#__codelineno-29-17" id="__codelineno-29-17" name="__codelineno-29-17"></a> <span class="p">])</span>
 <a href="#__codelineno-29-18" id="__codelineno-29-18" name="__codelineno-29-18"></a>
-<a href="#__codelineno-29-19" id="__codelineno-29-19" name="__codelineno-29-19"></a>    <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
-<a href="#__codelineno-29-20" id="__codelineno-29-20" name="__codelineno-29-20"></a>        <span class="n">scopes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-<a href="#__codelineno-29-21" id="__codelineno-29-21" name="__codelineno-29-21"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_WORKFLOWS_APPROVE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a href="#__codelineno-29-22" id="__codelineno-29-22" name="__codelineno-29-22"></a>            <span class="n">TokenScope</span><span class="o">.</span><span class="n">GOVERNANCE_APPROVE</span><span class="o">.</span><span class="n">value</span>
-<a href="#__codelineno-29-23" id="__codelineno-29-23" name="__codelineno-29-23"></a>        <span class="p">])</span>
+<a href="#__codelineno-29-19" id="__codelineno-29-19" name="__codelineno-29-19"></a> <span class="k">if</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">:</span>
+<a href="#__codelineno-29-20" id="__codelineno-29-20" name="__codelineno-29-20"></a> <span class="n">scopes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+<a href="#__codelineno-29-21" id="__codelineno-29-21" name="__codelineno-29-21"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">API_WORKFLOWS_APPROVE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a href="#__codelineno-29-22" id="__codelineno-29-22" name="__codelineno-29-22"></a> <span class="n">TokenScope</span><span class="o">.</span><span class="n">GOVERNANCE_APPROVE</span><span class="o">.</span><span class="n">value</span>
+<a href="#__codelineno-29-23" id="__codelineno-29-23" name="__codelineno-29-23"></a> <span class="p">])</span>
 <a href="#__codelineno-29-24" id="__codelineno-29-24" name="__codelineno-29-24"></a>
-<a href="#__codelineno-29-25" id="__codelineno-29-25" name="__codelineno-29-25"></a>    <span class="c1"># Create JWT with scopes</span>
-<a href="#__codelineno-29-26" id="__codelineno-29-26" name="__codelineno-29-26"></a>    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-29-27" id="__codelineno-29-27" name="__codelineno-29-27"></a>        <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
-<a href="#__codelineno-29-28" id="__codelineno-29-28" name="__codelineno-29-28"></a>        <span class="s2">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">],</span>
-<a href="#__codelineno-29-29" id="__codelineno-29-29" name="__codelineno-29-29"></a>        <span class="s2">"scopes"</span><span class="p">:</span> <span class="n">scopes</span><span class="p">,</span>
-<a href="#__codelineno-29-30" id="__codelineno-29-30" name="__codelineno-29-30"></a>        <span class="s2">"exp"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">900</span>
-<a href="#__codelineno-29-31" id="__codelineno-29-31" name="__codelineno-29-31"></a>    <span class="p">}</span>
+<a href="#__codelineno-29-25" id="__codelineno-29-25" name="__codelineno-29-25"></a> <span class="c1"># Create JWT with scopes</span>
+<a href="#__codelineno-29-26" id="__codelineno-29-26" name="__codelineno-29-26"></a> <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-29-27" id="__codelineno-29-27" name="__codelineno-29-27"></a> <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+<a href="#__codelineno-29-28" id="__codelineno-29-28" name="__codelineno-29-28"></a> <span class="s2">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roles</span><span class="p">],</span>
+<a href="#__codelineno-29-29" id="__codelineno-29-29" name="__codelineno-29-29"></a> <span class="s2">"scopes"</span><span class="p">:</span> <span class="n">scopes</span><span class="p">,</span>
+<a href="#__codelineno-29-30" id="__codelineno-29-30" name="__codelineno-29-30"></a> <span class="s2">"exp"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">900</span>
+<a href="#__codelineno-29-31" id="__codelineno-29-31" name="__codelineno-29-31"></a> <span class="p">}</span>
 <a href="#__codelineno-29-32" id="__codelineno-29-32" name="__codelineno-29-32"></a>
-<a href="#__codelineno-29-33" id="__codelineno-29-33" name="__codelineno-29-33"></a>    <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">"RS256"</span><span class="p">)</span>
+<a href="#__codelineno-29-33" id="__codelineno-29-33" name="__codelineno-29-33"></a> <span class="k">return</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">"RS256"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
@@ -3285,51 +3285,51 @@
 <p><strong>BAD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="c1"># Don't check permissions manually</span>
 <a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a><span class="k">if</span> <span class="n">user_role</span> <span class="o">==</span> <span class="s2">"admin"</span><span class="p">:</span>
-<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a>    <span class="n">delete_agent</span><span class="p">(</span><span class="n">agent_id</span><span class="p">)</span>
+<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a> <span class="n">delete_agent</span><span class="p">(</span><span class="n">agent_id</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="2-include-context-in-logs">2. Include Context in Logs<a class="headerlink" href="#2-include-context-in-logs" title="Permanent link">¶</a></h3>
 <p><strong>GOOD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a><span class="n">enforcer</span><span class="o">.</span><span class="n">audit_action</span><span class="p">(</span>
-<a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a>    <span class="n">user_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-32-3" id="__codelineno-32-3" name="__codelineno-32-3"></a>    <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
-<a href="#__codelineno-32-4" id="__codelineno-32-4" name="__codelineno-32-4"></a>    <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span>
-<a href="#__codelineno-32-5" id="__codelineno-32-5" name="__codelineno-32-5"></a>    <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">,</span>
-<a href="#__codelineno-32-6" id="__codelineno-32-6" name="__codelineno-32-6"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"agent_name"</span><span class="p">:</span> <span class="s2">"DataProcessor"</span><span class="p">,</span> <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.1.0"</span><span class="p">}</span>
+<a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a> <span class="n">user_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-32-3" id="__codelineno-32-3" name="__codelineno-32-3"></a> <span class="n">role</span><span class="o">=</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
+<a href="#__codelineno-32-4" id="__codelineno-32-4" name="__codelineno-32-4"></a> <span class="n">action</span><span class="o">=</span><span class="n">Action</span><span class="o">.</span><span class="n">CREATE</span><span class="p">,</span>
+<a href="#__codelineno-32-5" id="__codelineno-32-5" name="__codelineno-32-5"></a> <span class="n">resource</span><span class="o">=</span><span class="n">ResourceType</span><span class="o">.</span><span class="n">AGENTS</span><span class="p">,</span>
+<a href="#__codelineno-32-6" id="__codelineno-32-6" name="__codelineno-32-6"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"agent_name"</span><span class="p">:</span> <span class="s2">"DataProcessor"</span><span class="p">,</span> <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.1.0"</span><span class="p">}</span>
 <a href="#__codelineno-32-7" id="__codelineno-32-7" name="__codelineno-32-7"></a><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>BAD:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2"> created agent"</span><span class="p">)</span>  <span class="c1"># No context</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2"> created agent"</span><span class="p">)</span> <span class="c1"># No context</span>
 </code></pre></div></p>
 <h3 id="3-fail-safely">3. Fail Safely<a class="headerlink" href="#3-fail-safely" title="Permanent link">¶</a></h3>
 <p><strong>GOOD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-34-1" id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>    <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a>    <span class="n">execute_privileged_action</span><span class="p">()</span>
+<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a> <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a> <span class="n">execute_privileged_action</span><span class="p">()</span>
 <a href="#__codelineno-34-4" id="__codelineno-34-4" name="__codelineno-34-4"></a><span class="k">except</span> <span class="n">PermissionDeniedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unauthorized: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a>    <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
+<a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unauthorized: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a> <span class="k">return</span> <span class="mi">403</span><span class="n">_FORBIDDEN</span>
 </code></pre></div></p>
 <p><strong>BAD:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># No error handling</span>
-<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a><span class="n">execute_privileged_action</span><span class="p">()</span>   <span class="c1"># Could proceed without permission</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="c1"># No error handling</span>
+<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a><span class="n">execute_privileged_action</span><span class="p">()</span> <span class="c1"># Could proceed without permission</span>
 </code></pre></div></p>
 <h3 id="4-document-role-requirements">4. Document Role Requirements<a class="headerlink" href="#4-document-role-requirements" title="Permanent link">¶</a></h3>
 <p><strong>GOOD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a><span class="k">def</span> <span class="nf">deploy_agent</span><span class="p">(</span><span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a><span class="sd">    Deploy agent to production.</span>
+<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a><span class="sd"> Deploy agent to production.</span>
 <a href="#__codelineno-36-4" id="__codelineno-36-4" name="__codelineno-36-4"></a>
-<a href="#__codelineno-36-5" id="__codelineno-36-5" name="__codelineno-36-5"></a><span class="sd">    Requires:</span>
-<a href="#__codelineno-36-6" id="__codelineno-36-6" name="__codelineno-36-6"></a><span class="sd">        - CodexRole.AGENT_OPERATOR (execute permission on agents)</span>
-<a href="#__codelineno-36-7" id="__codelineno-36-7" name="__codelineno-36-7"></a><span class="sd">        - CodexRole.SECURITY_REVIEWER or system_admin (approval)</span>
-<a href="#__codelineno-36-8" id="__codelineno-36-8" name="__codelineno-36-8"></a><span class="sd">        - Successful approval workflow</span>
-<a href="#__codelineno-36-9" id="__codelineno-36-9" name="__codelineno-36-9"></a><span class="sd">    """</span>
-<a href="#__codelineno-36-10" id="__codelineno-36-10" name="__codelineno-36-10"></a>    <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<a href="#__codelineno-36-5" id="__codelineno-36-5" name="__codelineno-36-5"></a><span class="sd"> Requires:</span>
+<a href="#__codelineno-36-6" id="__codelineno-36-6" name="__codelineno-36-6"></a><span class="sd"> - CodexRole.AGENT_OPERATOR (execute permission on agents)</span>
+<a href="#__codelineno-36-7" id="__codelineno-36-7" name="__codelineno-36-7"></a><span class="sd"> - CodexRole.SECURITY_REVIEWER or system_admin (approval)</span>
+<a href="#__codelineno-36-8" id="__codelineno-36-8" name="__codelineno-36-8"></a><span class="sd"> - Successful approval workflow</span>
+<a href="#__codelineno-36-9" id="__codelineno-36-9" name="__codelineno-36-9"></a><span class="sd"> """</span>
+<a href="#__codelineno-36-10" id="__codelineno-36-10" name="__codelineno-36-10"></a> <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>BAD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-37-1" id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="k">def</span> <span class="nf">deploy_agent</span><span class="p">(</span><span class="n">agent_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a><span class="w">    </span><span class="sd">"""Deploy agent."""</span>  <span class="c1"># No role requirements documented</span>
-<a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a>    <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a><span class="w"> </span><span class="sd">"""Deploy agent."""</span> <span class="c1"># No role requirements documented</span>
+<a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a> <span class="n">enforcer</span><span class="o">.</span><span class="n">enforce_action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="5-use-least-privilege-for-api-tokens">5. Use Least Privilege for API Tokens<a class="headerlink" href="#5-use-least-privilege-for-api-tokens" title="Permanent link">¶</a></h3>
 <p><strong>GOOD:</strong>
@@ -3339,18 +3339,18 @@
 </code></pre></div></p>
 <p><strong>BAD:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-39-1" id="__codelineno-39-1" name="__codelineno-39-1"></a><span class="c1"># Service account with admin token</span>
-<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="n">token</span> <span class="o">=</span> <span class="n">issue_admin_token</span><span class="p">()</span>  <span class="c1"># Overly privileged</span>
+<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="n">token</span> <span class="o">=</span> <span class="n">issue_admin_token</span><span class="p">()</span> <span class="c1"># Overly privileged</span>
 </code></pre></div></p>
 <h3 id="6-regular-permission-audits">6. Regular Permission Audits<a class="headerlink" href="#6-regular-permission-audits" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a><span class="c1"># Quarterly audit of all role assignments</span>
 <a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a><span class="k">def</span> <span class="nf">audit_role_assignments</span><span class="p">():</span>
-<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="w">    </span><span class="sd">"""Audit all user role assignments."""</span>
-<a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a>    <span class="n">users</span> <span class="o">=</span> <span class="n">get_all_users</span><span class="p">()</span>
-<a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a>    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
-<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a>        <span class="n">roles</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_roles</span><span class="p">()</span>
-<a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a>        <span class="n">permissions</span> <span class="o">=</span> <span class="n">enforcer</span><span class="o">.</span><span class="n">get_user_permissions</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">roles</span><span class="p">)</span>
-<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a>        <span class="c1"># Compare against expected permissions</span>
-<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a>        <span class="c1"># Flag any unexpected assignments</span>
+<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="w"> </span><span class="sd">"""Audit all user role assignments."""</span>
+<a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a> <span class="n">users</span> <span class="o">=</span> <span class="n">get_all_users</span><span class="p">()</span>
+<a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a> <span class="n">roles</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_roles</span><span class="p">()</span>
+<a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a> <span class="n">permissions</span> <span class="o">=</span> <span class="n">enforcer</span><span class="o">.</span><span class="n">get_user_permissions</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">roles</span><span class="p">)</span>
+<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a> <span class="c1"># Compare against expected permissions</span>
+<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a> <span class="c1"># Flag any unexpected assignments</span>
 </code></pre></div>
 <hr/>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
@@ -3362,7 +3362,7 @@
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-08
-</strong>Version:<strong> 1.0.0<br/>
+</strong>Version:<strong> 1.0.0
 </strong>Status:** Production Ready</p>
 </article>
 </div>
@@ -3393,6 +3393,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ENVIRONMENT_VARIABLES_FAQ/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Environment Variables FAQ - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2594,14 +2594,14 @@
 <h3 id="q-do-i-need-to-set-all-8-environment-variables">Q: Do I need to set all 8 environment variables?<a class="headerlink" href="#q-do-i-need-to-set-all-8-environment-variables" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> No! All have safe localhost defaults. Set only what you customize.</p>
 <ul>
-<li><strong>CODEX_REDIS_HOST</strong> → defaults to <code>localhost</code></li>
-<li><strong>CODEX_OLLAMA_HOST</strong> → defaults to <code>http://localhost:11434</code></li>
-<li><strong>CODEX_MASTER_ADDR</strong> → defaults to <code>localhost</code></li>
-<li><strong>CODEX_MASTER_PORT</strong> → defaults to <code>5000</code></li>
-<li><strong>CODEX_INFERENCE_SERVICE_HOST</strong> → defaults to <code>localhost</code></li>
-<li><strong>CODEX_INFERENCE_SERVICE_PORT</strong> → defaults to <code>8000</code></li>
-<li><strong>CODEX_TRUSTED_HOSTS</strong> → defaults to <code>localhost,127.0.0.1</code></li>
-<li><strong>CODEX_LOCAL_LOOPBACK</strong> → defaults to <code>true</code> (development mode)</li>
+<li><strong>CODEX_REDIS_HOST</strong> defaults to <code>localhost</code></li>
+<li><strong>CODEX_OLLAMA_HOST</strong> defaults to <code>http://localhost:11434</code></li>
+<li><strong>CODEX_MASTER_ADDR</strong> defaults to <code>localhost</code></li>
+<li><strong>CODEX_MASTER_PORT</strong> defaults to <code>5000</code></li>
+<li><strong>CODEX_INFERENCE_SERVICE_HOST</strong> defaults to <code>localhost</code></li>
+<li><strong>CODEX_INFERENCE_SERVICE_PORT</strong> defaults to <code>8000</code></li>
+<li><strong>CODEX_TRUSTED_HOSTS</strong> defaults to <code>localhost,127.0.0.1</code></li>
+<li><strong>CODEX_LOCAL_LOOPBACK</strong> defaults to <code>true</code> (development mode)</li>
 </ul>
 <h3 id="q-can-i-mix-environment-variables-and-code-defaults">Q: Can I mix environment variables and code defaults?<a class="headerlink" href="#q-can-i-mix-environment-variables-and-code-defaults" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Yes! Each variable falls back to hardcoded default if not set. Example:</p>
@@ -2614,18 +2614,18 @@
 <li>Don't put passwords/tokens here</li>
 <li>These are just hostnames and port numbers</li>
 <li>Safe to include in git repos</li>
-<li>Can be public in GitHub Settings → Variables</li>
+<li>Can be public in GitHub Settings Variables</li>
 </ul>
 <h3 id="q-how-are-these-deployed">Q: How are these deployed?<a class="headerlink" href="#q-how-are-these-deployed" title="Permanent link">¶</a></h3>
-<p><strong>A:</strong> Via GitHub Settings → Variables (repository-level configuration).</p>
+<p><strong>A:</strong> Via GitHub Settings Variables (repository-level configuration).</p>
 <p>Steps:
-1. Go to Settings → Variables
+1. Go to Settings Variables
 2. Add each CODEX_* variable
 3. GitHub Actions automatically injects them into workflows
 4. Applications read them via <code>os.getenv('CODEX_*')</code></p>
 <h3 id="q-can-these-be-different-per-branch">Q: Can these be different per branch?<a class="headerlink" href="#q-can-these-be-different-per-branch" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Yes, via GitHub Environments:
-1. Settings → Environments
+1. Settings Environments
 2. Create environment (dev, staging, production)
 3. Set environment-specific variables
 4. Reference in workflows: <code>environment: name: production</code></p>
@@ -2943,8 +2943,8 @@
 <li><strong>Configuration Issues:</strong> See <code>docs/docs/quickstart/QUICKSTART_BY_PROFILE.md</code></li>
 <li><strong>Deployment Questions:</strong> See <code>docs/KUBERNETES_DEPLOYMENT.md</code> or <code>docs/DOCKER_SETUP.md</code></li>
 <li><strong>Metrics/Adoption:</strong> See <code>docs/ONBOARDING_METRICS_DASHBOARD.md</code></li>
-<li><strong>Community:</strong> GitHub Discussions → <code>Environment Configuration</code></li>
-<li><strong>Bugs:</strong> GitHub Issues → tag <code>env-var-config</code></li>
+<li><strong>Community:</strong> GitHub Discussions <code>Environment Configuration</code></li>
+<li><strong>Bugs:</strong> GitHub Issues tag <code>env-var-config</code></li>
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-08
@@ -2979,6 +2979,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

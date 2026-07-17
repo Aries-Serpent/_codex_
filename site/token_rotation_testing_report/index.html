@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/token_rotation_testing_report/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Token Rotation Testing Report - Phase 11.Y - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2300,7 +2300,7 @@
 <a class="md-nav__link" href="#critical-discovery-import-bug">
 <span class="md-ellipsis">
       
-        Critical Discovery: Import Bug →
+        Critical Discovery: Import Bug
       
     </span>
 </a>
@@ -2688,10 +2688,10 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
-<p><strong>Status</strong>:  <strong>CRITICAL BUG FIXED</strong> - Testing Phase Successful<br/>
-<strong>Date</strong>: 2026-01-17<br/>
-<strong>Phase</strong>: 11.Y - Token Rotation Testing (High Priority)<br/>
-<strong>Duration</strong>: ~45 minutes<br/>
+<p><strong>Status</strong>: <strong>CRITICAL BUG FIXED</strong> - Testing Phase Successful
+<strong>Date</strong>: 2026-01-17
+<strong>Phase</strong>: 11.Y - Token Rotation Testing (High Priority)
+<strong>Duration</strong>: ~45 minutes
 <strong>Outcome</strong>: Discovered and fixed blocking bug, validated script architecture</p>
 <hr/>
 <h2 id="testing-objectives">Testing Objectives<a class="headerlink" href="#testing-objectives" title="Permanent link">¶</a></h2>
@@ -2703,7 +2703,7 @@
 <li>Security review of secret handling</li>
 <li>Document testing procedures</li>
 </ol>
-<h3 id="critical-discovery-import-bug">Critical Discovery: Import Bug →<a class="headerlink" href="#critical-discovery-import-bug" title="Permanent link">¶</a></h3>
+<h3 id="critical-discovery-import-bug">Critical Discovery: Import Bug<a class="headerlink" href="#critical-discovery-import-bug" title="Permanent link">¶</a></h3>
 <p><strong>During testing, discovered a CRITICAL BUG that prevented JWT rotation from working at all.</strong></p>
 <hr/>
 <h2 id="iteration-1-discovery-results">Iteration 1: Discovery Results<a class="headerlink" href="#iteration-1-discovery-results" title="Permanent link">¶</a></h2>
@@ -2723,19 +2723,19 @@
 - <code>TOKEN_SECRET_KEY</code>: Current JWT secret
 - <code>FORCE_ROTATION</code>: Force rotation flag</p>
 <p><strong>Command-Line Options</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w">              </span><span class="c1"># Rotate secret</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--verify<span class="w">     </span><span class="c1"># Verify rotation  </span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--rollback<span class="w">   </span><span class="c1"># Rollback to backup</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span><span class="c1"># Rotate secret</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--verify<span class="w"> </span><span class="c1"># Verify rotation </span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--rollback<span class="w"> </span><span class="c1"># Rollback to backup</span>
 </code></pre></div></p>
 <p><strong>Backup Location</strong>: <code>.codex/secrets/backups/</code></p>
 <p><strong>CRITICAL BUG FOUND</strong> :
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a># Line 74 - WRONG IMPORT
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2  # Does not exist!
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2 # Does not exist!
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a># Line 101 - Usage
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>kdf = PBKDF2(  # NameError when executed
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    algorithm=hashes.SHA256(),
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    ...
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>kdf = PBKDF2( # NameError when executed
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> algorithm=hashes.SHA256(),
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> ...
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>)
 </code></pre></div></p>
 <p><strong>Impact</strong>: Script completely non-functional. Cannot be imported or executed. This is a <strong>blocking bug</strong> for all JWT rotation operations.</p>
@@ -2748,16 +2748,16 @@
 - Validation and health checks
 - Downstream system synchronization</p>
 <p><strong>Command-Line Options</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--backup<span class="w">          </span><span class="c1"># Backup current secrets</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--rotate<span class="w">          </span><span class="c1"># Rotate secrets</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--validate<span class="w">        </span><span class="c1"># Validate configuration</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--backup<span class="w"> </span><span class="c1"># Backup current secrets</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--rotate<span class="w"> </span><span class="c1"># Rotate secrets</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--validate<span class="w"> </span><span class="c1"># Validate configuration</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>python<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--sync-downstream<span class="w"> </span><span class="c1"># Sync to dependent systems</span>
 </code></pre></div></p>
 <p><strong>Environment Variables</strong>:
 - <code>GITHUB_TOKEN</code>: GitHub API token (required)
 - <code>CODEX_MASTER_KEY</code>: Master encryption key (required)
 - <code>GITHUB_REPOSITORY</code>: Repository name (optional, auto-detected)</p>
-<p><strong>Status</strong>:  No import issues found, imports successfully</p>
+<p><strong>Status</strong>: No import issues found, imports successfully</p>
 <h3 id="3-automated-secrets-manager-scriptsphase10automated_secrets_managerpy-206-kb">3. Automated Secrets Manager (<code>scripts/phase10/automated_secrets_manager.py</code> - 20.6 KB)<a class="headerlink" href="#3-automated-secrets-manager-scriptsphase10automated_secrets_managerpy-206-kb" title="Permanent link">¶</a></h3>
 <p><strong>Purpose</strong>: Programmatic secret injection for Copilot Agents</p>
 <p><strong>Class</strong>: <code>GitHubSecretsManager</code></p>
@@ -2784,7 +2784,7 @@
 - <code>--method api</code>: Direct GitHub REST API (requires PyNaCl)
 - <code>--method cli</code>: GitHub CLI (<code>gh</code> command)
 - <code>--method auto</code>: Try API first, fallback to CLI (default)</p>
-<p><strong>Status</strong>:  Imports successfully, gracefully handles missing dependencies</p>
+<p><strong>Status</strong>: Imports successfully, gracefully handles missing dependencies</p>
 <hr/>
 <h2 id="iteration-2-bug-fix-implementation">Iteration 2: Bug Fix Implementation<a class="headerlink" href="#iteration-2-bug-fix-implementation" title="Permanent link">¶</a></h2>
 <h3 id="problem-analysis">Problem Analysis<a class="headerlink" href="#problem-analysis" title="Permanent link">¶</a></h3>
@@ -2802,23 +2802,23 @@
 <h3 id="fix-applied">Fix Applied<a class="headerlink" href="#fix-applied" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>scripts/rotate_jwt_secret.py</code></p>
 <p><strong>Change 1</strong> (Line 74):
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1">#  BEFORE</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># BEFORE</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.kdf.pbkdf2</span> <span class="kn">import</span> <span class="n">PBKDF2</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1">#  AFTER</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># AFTER</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.kdf.pbkdf2</span> <span class="kn">import</span> <span class="n">PBKDF2HMAC</span>
 </code></pre></div></p>
 <p><strong>Change 2</strong> (Line 101):
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>#  BEFORE
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a># BEFORE
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>kdf = PBKDF2(
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    algorithm=hashes.SHA256(),
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    ...
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> algorithm=hashes.SHA256(),
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> ...
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>)
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>#  AFTER
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a># AFTER
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>kdf = PBKDF2HMAC(
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    algorithm=hashes.SHA256(),
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    ...
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> algorithm=hashes.SHA256(),
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> ...
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>)
 </code></pre></div></p>
 <p><strong>Verification</strong>:
@@ -2836,12 +2836,12 @@
 <h3 id="script-import-validation">Script Import Validation<a class="headerlink" href="#script-import-validation" title="Permanent link">¶</a></h3>
 <p>All three scripts now import successfully:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a># Tested imports
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>from github import Github                         OK
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>from cryptography.fernet import Fernet           OK
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>from cryptography.hazmat.primitives import hashes   OK
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC   OK (FIXED)
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>from nacl import encoding, public                OK
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>import requests                                   OK
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>from github import Github OK
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>from cryptography.fernet import Fernet OK
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>from cryptography.hazmat.primitives import hashes OK
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC OK (FIXED)
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>from nacl import encoding, public OK
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>import requests OK
 </code></pre></div>
 <h2 id="dependency-verification">Dependency Verification<a class="headerlink" href="#dependency-verification" title="Permanent link">¶</a></h2>
 <table>
@@ -2910,9 +2910,9 @@
 <ol>
 <li>** Document Required Permissions**: document GitHub token scopes needed</li>
 <li>** Backup Encryption**: Ensure backup directory <code>.codex/secrets/backups/</code> is in <code>.gitignore</code></li>
-<li><strong>⏰ Rotation Frequency</strong>: Establish clear rotation schedule (currently monthly via cron)</li>
+<li>** Rotation Frequency**: Establish clear rotation schedule (currently monthly via cron)</li>
 <li>** Audit Logging**: Consider adding structured logging for compliance</li>
-<li><strong>🧪 Dry-Run Testing</strong>: Add explicit <code>--dry-run</code> flag to all scripts</li>
+<li>** Dry-Run Testing**: Add explicit <code>--dry-run</code> flag to all scripts</li>
 </ol>
 <hr/>
 <h2 id="iteration-4-testing-procedures-documented">Iteration 4: Testing Procedures Documented<a class="headerlink" href="#iteration-4-testing-procedures-documented" title="Permanent link">¶</a></h2>
@@ -2930,26 +2930,26 @@
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--help
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># Expected: Help message displayed</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Status:  PASS (after bug fix)</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Status: PASS (after bug fix)</span>
 </code></pre></div>
 <h2 id="test-2-secrets-sync-validation">Test 2: Secrets Sync Validation<a class="headerlink" href="#test-2-secrets-sync-validation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Validate secrets configuration</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--validate
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c1"># Expected: Validation results or error about missing secrets</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="c1"># Status: ⏸️ REQUIRES GITHUB_TOKEN with repo scope (deferred to production)</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="c1"># Status: REQUIRES GITHUB_TOKEN with repo scope (deferred to production)</span>
 </code></pre></div>
 <h2 id="test-3-automated-secrets-manager-verification">Test 3: Automated Secrets Manager Verification<a class="headerlink" href="#test-3-automated-secrets-manager-verification" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Verify a secret exists (read-only test)</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>python3<span class="w"> </span>scripts/phase10/automated_secrets_manager.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">  </span>--action<span class="w"> </span>verify<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">  </span>--name<span class="w"> </span>CODEX_MASTER_KEY
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span>--action<span class="w"> </span>verify<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w"> </span>--name<span class="w"> </span>CODEX_MASTER_KEY
 <a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="c1"># Expected: Success if secret exists, error if not</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="c1"># Status: ⏸️ REQUIRES valid GITHUB_TOKEN (deferred to production)</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="c1"># Status: REQUIRES valid GITHUB_TOKEN (deferred to production)</span>
 </code></pre></div>
 <h2 id="production-testing-workflow-with-authorization">Production Testing Workflow (WITH AUTHORIZATION)<a class="headerlink" href="#production-testing-workflow-with-authorization" title="Permanent link">¶</a></h2>
-<p><strong>️ IMPORTANT</strong>: Only execute with explicit human approval from mbaetiong</p>
+<p>** IMPORTANT**: Only execute with explicit human approval from mbaetiong</p>
 <h3 id="pre-flight-checklist">Pre-Flight Checklist<a class="headerlink" href="#pre-flight-checklist" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Verify <code>CODEX_MASTER_KEY</code> is set and valid</li>
@@ -3041,10 +3041,10 @@
 - <strong>Secret Exposure</strong>: All secrets encrypted, never logged in plaintext
 - <strong>Unauthorized Access</strong>: Requires both <code>CODEX_MASTER_KEY</code> and <code>GITHUB_TOKEN</code>
 - <strong>Data Loss</strong>: Encrypted backups prevent secret loss</p>
-<p><strong>Medium Risk (Acceptable)</strong> ️:
+<p><strong>Medium Risk (Acceptable)</strong> :
 - <strong>Backup Directory</strong>: Ensure <code>.codex/secrets/backups/</code> in <code>.gitignore</code> (should verify)
 - <strong>Token Permissions</strong>: Overly permissive <code>GITHUB_TOKEN</code> could be abused (use minimal scopes)</p>
-<p><strong>Low Risk (Noted)</strong> ℹ️:
+<p><strong>Low Risk (Noted)</strong> ℹ:
 - <strong>Dependency Vulnerabilities</strong>: Keep cryptography, PyGithub updated
 - <strong>Key Derivation</strong>: 100k iterations adequate but could increase to 200k+</p>
 <h3 id="security-recommendations_1">Security Recommendations<a class="headerlink" href="#security-recommendations_1" title="Permanent link">¶</a></h3>
@@ -3122,7 +3122,7 @@
 </ol>
 <h4 id="issues-found-fixed">Issues Found &amp; Fixed<a class="headerlink" href="#issues-found-fixed" title="Permanent link">¶</a></h4>
 <ol>
-<li><strong>CRITICAL</strong>: PBKDF2 import bug <strong>→ FIXED</strong></li>
+<li><strong>CRITICAL</strong>: PBKDF2 import bug ** FIXED**</li>
 <li>Scripts now functional and ready for testing</li>
 </ol>
 <h4 id="recommendations-for-production">Recommendations for Production<a class="headerlink" href="#recommendations-for-production" title="Permanent link">¶</a></h4>
@@ -3178,18 +3178,18 @@
 </ol>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<p><strong>Phase 11.Y Status</strong>:  <strong>COMPLETE</strong></p>
+<p><strong>Phase 11.Y Status</strong>: <strong>COMPLETE</strong></p>
 <p>Despite discovering a critical blocking bug, the testing phase was <strong>highly successful</strong>:
--  Identified and fixed bug preventing JWT rotation
--  Validated script architecture and security
--  Documented comprehensive testing procedures
--  Provided actionable recommendations
--  All scripts now functional and ready for production testing</p>
+- Identified and fixed bug preventing JWT rotation
+- Validated script architecture and security
+- Documented comprehensive testing procedures
+- Provided actionable recommendations
+- All scripts now functional and ready for production testing</p>
 <p><strong>The token rotation infrastructure is sound, secure, and ready for production use</strong> after fixing the import bug.</p>
 <hr/>
-<p><strong>Report Generated</strong>: 2026-01-17<br/>
-<strong>Testing Duration</strong>: ~45 minutes<br/>
-<strong>Status</strong>:  PHASE COMPLETE<br/>
+<p><strong>Report Generated</strong>: 2026-01-17
+<strong>Testing Duration</strong>: ~45 minutes
+<strong>Status</strong>: PHASE COMPLETE
 <strong>Next Phase</strong>: 11.X - Documentation Quality</p>
 </article>
 </div>
@@ -3220,6 +3220,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

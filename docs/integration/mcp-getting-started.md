@@ -1,6 +1,6 @@
 # MCP Integration Getting Started Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Consolidated guide to Model Context Protocol (MCP) integration and usage
 > **Level**: Beginner to Intermediate | **Prerequisites**: Basic GitHub knowledge

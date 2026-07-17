@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/COGNITIVE_APP_CONNECTION_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive App CLI — Copilot Agent Connection Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2543,7 +2543,7 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Status:</strong>  VERIFIED 2026-03-05 (PR #3497 W-114 audit)
+<p><strong>Status:</strong> VERIFIED 2026-03-05 (PR #3497 W-114 audit)
 <strong>Server:</strong> <code>http://localhost:8765</code> (FastAPI — auto-started by <code>copilot-setup-steps.yml</code>)
 <strong>Frontend:</strong> <code>https://aries-serpent.github.io/_codex_/cognitive_app</code> (GitHub Pages SPA)
 <strong>Source:</strong> <code>cognitive_app/src/server/cli_api_server.py</code>
@@ -2586,45 +2586,45 @@ external API calls:</p>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">assert</span> <span class="n">brain</span><span class="o">.</span><span class="n">is_available</span><span class="p">(),</span> <span class="s2">"Start server before session (or fall back to MCP/urllib)"</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># GitHub API — auth auto-injected via CODEX_MASTER_KEY</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">repo</span>  <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="p">)</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">runs</span>  <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>          <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs"</span><span class="p">,</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>          <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"per_page"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">})</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">repo</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">runs</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs"</span><span class="p">,</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"per_page"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">})</span>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="c1"># Create / update a repo variable</span>
 <a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="s2">"POST"</span><span class="p">,</span>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"hello_from_agent"</span><span class="p">},</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> <span class="s2">"POST"</span><span class="p">,</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"hello_from_agent"</span><span class="p">},</span>
 <a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Equivalent via curl (bash tool) — same auto-auth behaviour</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span>
 </code></pre></div>
 <hr/>
 <h2 id="quick-start-checklist-every-session">Quick-Start Checklist (Every Session)<a class="headerlink" href="#quick-start-checklist-every-session" title="Permanent link">¶</a></h2>
 <p>Run these four lines at the start of every Copilot Coding Agent session to confirm connectivity:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># 1 — Server alive?</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://localhost:8765/api/health<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  server up"</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://localhost:8765/api/health<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" server up"</span>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># 2 — GitHub API proxy working?</span>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>curl<span class="w"> </span>-sf<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print(' repo:', b.get('full_name'), '| status:', d.get('status_code'))"</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print(' repo:', b.get('full_name'), '| status:', d.get('status_code'))"</span>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># 3 — History DB accessible?</span>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>curl<span class="w"> </span>-sf<span class="w"> </span>http://localhost:8765/api/cli/history?limit<span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); print(' history total:', d['total'])"</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json,sys; d=json.load(sys.stdin); print(' history total:', d['total'])"</span>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1"># 4 — Env vars injected?</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"CODEX_CLI_API_URL=</span><span class="si">${</span><span class="nv">CODEX_CLI_API_URL</span><span class="k">:-</span><span class="nv">NOT</span><span class="p"> SET</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"COPILOT_CLI_BASE_URL=</span><span class="si">${</span><span class="nv">COPILOT_CLI_BASE_URL</span><span class="k">:-</span><span class="nv">NOT</span><span class="p"> SET</span><span class="si">}</span><span class="s2">"</span>
 </code></pre></div>
 <p>Expected output:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>{"status":"ok",...}  server up
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>{"status":"ok",...} server up
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> repo: Aries-Serpent/_codex_ | status: 200
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> history total: 0
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>CODEX_CLI_API_URL=http://localhost:8765
@@ -2640,38 +2640,38 @@ the key is available.</p>
 </code></pre></div>
 <p><strong>Response:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">{</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">"repo_root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/runner/work/_codex_/_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T04:25:08.069819"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">"history_db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/runner/work/_codex_/_codex_/.codex/codex.db"</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">"repo_root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/runner/work/_codex_/_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T04:25:08.069819"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">"history_db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/runner/work/_codex_/_codex_/.codex/codex.db"</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">}</span>
 </code></pre></div></p>
-<p><strong>Expected HTTP:</strong> <code>200</code><br/>
+<p><strong>Expected HTTP:</strong> <code>200</code>
 <strong>Failure:</strong> If this returns connection refused, the server is not running — see
 <a href="#troubleshooting">Troubleshooting</a> section.</p>
 <hr/>
 <h3 id="2-run-command-post-apiclirun">2. Run Command — <code>POST /api/cli/run</code><a class="headerlink" href="#2-run-command-post-apiclirun" title="Permanent link">¶</a></h3>
 <p>Execute any shell command from the repo root and capture stdout/stderr.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/cli/run<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"command":"git log --oneline -3"}'</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"command":"git log --oneline -3"}'</span>
 </code></pre></div>
 <p><strong>Payload schema:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="p">{</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">       </span><span class="c1">// required — shell command to run</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="nt">"cwd"</span><span class="p">:</span><span class="w">     </span><span class="s2">"string"</span><span class="p">,</span><span class="w">       </span><span class="c1">// optional — working directory (default: repo root)</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">"timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w">              </span><span class="c1">// optional — seconds (default: 30)</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="c1">// required — shell command to run</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="nt">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="c1">// optional — working directory (default: repo root)</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">"timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="c1">// optional — seconds (default: 30)</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Response:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="p">{</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="nt">"command"</span><span class="p">:</span><span class="w">     </span><span class="s2">"git log --oneline -3"</span><span class="p">,</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span><span class="nt">"stdout"</span><span class="p">:</span><span class="w">      </span><span class="s2">"b65212b fix: correct detect-secrets...\n"</span><span class="p">,</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">  </span><span class="nt">"stderr"</span><span class="p">:</span><span class="w">      </span><span class="s2">""</span><span class="p">,</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span><span class="nt">"returncode"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">  </span><span class="nt">"duration_ms"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.8</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">  </span><span class="nt">"cwd"</span><span class="p">:</span><span class="w">         </span><span class="s2">"/home/runner/work/_codex_/_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w">   </span><span class="s2">"2026-03-05T04:25:08.123485"</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"git log --oneline -3"</span><span class="p">,</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="nt">"stdout"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b65212b fix: correct detect-secrets...\n"</span><span class="p">,</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span><span class="nt">"stderr"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span><span class="nt">"returncode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="nt">"duration_ms"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.8</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w"> </span><span class="nt">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/runner/work/_codex_/_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T04:25:08.123485"</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Expected HTTP:</strong> <code>200</code></p>
@@ -2683,10 +2683,10 @@ the key is available.</p>
 <p><strong>Query params:</strong> <code>limit</code> (int, default 50), <code>offset</code> (int, default 0)</p>
 <p><strong>Response:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p">{</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"git log ..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"stdout"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"returncode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">  </span><span class="p">],</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">  </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"git log ..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"stdout"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"returncode"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w"> </span><span class="p">],</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w"> </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Expected HTTP:</strong> <code>200</code></p>
@@ -2706,68 +2706,68 @@ When the target URL starts with <code>https://api.github.com/</code>, <code>Auth
 is auto-injected if the env var is set.</p>
 <p><strong>Payload schema (<code>ApiProxyRequest</code>):</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="p">{</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w">   </span><span class="s2">"GET"</span><span class="p">,</span><span class="w">                   </span><span class="c1">// required: GET POST PUT PATCH DELETE HEAD OPTIONS</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">  </span><span class="nt">"url"</span><span class="p">:</span><span class="w">      </span><span class="s2">"https://..."</span><span class="p">,</span><span class="w">           </span><span class="c1">// required: full URL or path (resolved against base_url)</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">  </span><span class="nt">"headers"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// optional</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="nt">"params"</span><span class="p">:</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// optional — appended to URL as query string</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">  </span><span class="nt">"body"</span><span class="p">:</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="nt">"any"</span><span class="p">:</span><span class="w"> </span><span class="s2">"json"</span><span class="w"> </span><span class="p">},</span><span class="w">      </span><span class="c1">// optional — request body (auto Content-Type: application/json)</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span><span class="nt">"base_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://..."</span><span class="p">,</span><span class="w">          </span><span class="c1">// optional — prefix for relative urls</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span><span class="nt">"timeout"</span><span class="p">:</span><span class="w">  </span><span class="mi">30</span><span class="w">                       </span><span class="c1">// optional — seconds</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w"> </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="c1">// required: GET POST PUT PATCH DELETE HEAD OPTIONS</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w"> </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://..."</span><span class="p">,</span><span class="w"> </span><span class="c1">// required: full URL or path (resolved against base_url)</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="c1">// optional</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w"> </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="c1">// optional — appended to URL as query string</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w"> </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"any"</span><span class="p">:</span><span class="w"> </span><span class="s2">"json"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="c1">// optional — request body (auto Content-Type: application/json)</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w"> </span><span class="nt">"base_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://..."</span><span class="p">,</span><span class="w"> </span><span class="c1">// optional — prefix for relative urls</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w"> </span><span class="nt">"timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="c1">// optional — seconds</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Response schema (<code>ApiProxyResponse</code>):</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="p">{</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">  </span><span class="nt">"status_code"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">  </span><span class="nt">"headers"</span><span class="p">:</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="nt">"content-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application/json"</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">  </span><span class="nt">"body"</span><span class="p">:</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w">       </span><span class="kc">null</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w"> </span><span class="nt">"status_code"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"content-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application/json"</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w"> </span><span class="nt">"body"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w"> </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="p">}</span>
 </code></pre></div></p>
 <h4 id="get-gh-repo">GET GH Repo<a class="headerlink" href="#get-gh-repo" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'</span>
 </code></pre></div>
 <p><strong>Live result (2026-03-05):</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>id: 1040037790  |  full_name: Aries-Serpent/_codex_
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>language: Python  |  default_branch: main
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>visibility: public  |  HTTP status: 200
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>id: 1040037790 | full_name: Aries-Serpent/_codex_
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>language: Python | default_branch: main
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>visibility: public | HTTP status: 200
 </code></pre></div></p>
 <h4 id="get-gh-runs">GET GH Runs<a class="headerlink" href="#get-gh-runs" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=1"}'</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs?per_page=1"}'</span>
 </code></pre></div>
 <p><strong>Live result (2026-03-05):</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>total_count: 40000  |  latest run: 22702237122
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>name: Iterative Self-Healing CI  |  status: completed  |  HTTP status: 200
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>total_count: 40000 | latest run: 22702237122
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>name: Iterative Self-Healing CI | status: completed | HTTP status: 200
 </code></pre></div></p>
 <h4 id="post-example">POST example<a class="headerlink" href="#post-example" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"POST","url":"https://httpbin.org/post","body":{"hello":"world"}}'</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"POST","url":"https://httpbin.org/post","body":{"hello":"world"}}'</span>
 </code></pre></div>
 <h4 id="put-example">PUT example<a class="headerlink" href="#put-example" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"PUT","url":"https://httpbin.org/put","body":{"key":"value"}}'</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"PUT","url":"https://httpbin.org/put","body":{"key":"value"}}'</span>
 </code></pre></div>
 <h4 id="patch-example">PATCH example<a class="headerlink" href="#patch-example" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"PATCH","url":"https://httpbin.org/patch","body":{"field":"patched"}}'</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"PATCH","url":"https://httpbin.org/patch","body":{"field":"patched"}}'</span>
 </code></pre></div>
 <h4 id="delete-example">DELETE example<a class="headerlink" href="#delete-example" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"DELETE","url":"https://httpbin.org/delete"}'</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"DELETE","url":"https://httpbin.org/delete"}'</span>
 </code></pre></div>
 <p><strong>Expected HTTP for all proxy calls:</strong> <code>200</code> (outer) with <code>status_code</code> reflecting upstream.</p>
 <hr/>
 <h3 id="6-memory-state-get-apimemorystate">6. Memory State — <code>GET /api/memory/state</code><a class="headerlink" href="#6-memory-state-get-apimemorystate" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8765/api/memory/state
 </code></pre></div>
-<p><strong>️ Requires <code>CODEX_MASTER_KEY</code> env var.</strong> Returns <code>503</code> when the key is absent (expected in CI).
+<p>** Requires <code>CODEX_MASTER_KEY</code> env var.** Returns <code>503</code> when the key is absent (expected in CI).
 See RC-4 in <code>docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md</code>.</p>
 <hr/>
 <h3 id="7-ooda-metrics-get-apioodametrics">7. OODA Metrics — <code>GET /api/ooda/metrics</code><a class="headerlink" href="#7-ooda-metrics-get-apioodametrics" title="Permanent link">¶</a></h3>
@@ -2779,12 +2779,12 @@ See RC-4 in <code>docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md</code>.</
 <p>Use <code>BrainClient</code> from <code>src/codex/agents/brain_client.py</code> for typed access:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="kn">from</span> <span class="nn">codex.agents.brain_client</span> <span class="kn">import</span> <span class="n">BrainClient</span>
 <a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="c1"># Auto-discovers URL from CODEX_CLI_API_URL → COPILOT_CLI_BASE_URL → http://localhost:8765</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="c1"># Auto-discovers URL from CODEX_CLI_API_URL COPILOT_CLI_BASE_URL http://localhost:8765</span>
 <a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="c1"># Check server is up</span>
 <a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Cognitive brain server not running"</span><span class="p">)</span>
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Cognitive brain server not running"</span><span class="p">)</span>
 <a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>
 <a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a><span class="c1"># Run a shell command</span>
 <a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="s2">"git log --oneline -3"</span><span class="p">)</span>
@@ -2792,24 +2792,24 @@ See RC-4 in <code>docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md</code>.</
 <a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>
 <a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a><span class="c1"># Proxy an HTTP request</span>
 <a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a><span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-25-16" id="__codelineno-25-16" name="__codelineno-25-16"></a>    <span class="n">method</span><span class="o">=</span><span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-25-17" id="__codelineno-25-17" name="__codelineno-25-17"></a>    <span class="n">url</span><span class="o">=</span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-25-16" id="__codelineno-25-16" name="__codelineno-25-16"></a> <span class="n">method</span><span class="o">=</span><span class="s2">"GET"</span><span class="p">,</span>
+<a href="#__codelineno-25-17" id="__codelineno-25-17" name="__codelineno-25-17"></a> <span class="n">url</span><span class="o">=</span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="p">,</span>
 <a href="#__codelineno-25-18" id="__codelineno-25-18" name="__codelineno-25-18"></a><span class="p">)</span>
-<a href="#__codelineno-25-19" id="__codelineno-25-19" name="__codelineno-25-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s2">"body"</span><span class="p">][</span><span class="s2">"full_name"</span><span class="p">])</span>   <span class="c1"># Aries-Serpent/_codex_</span>
+<a href="#__codelineno-25-19" id="__codelineno-25-19" name="__codelineno-25-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s2">"body"</span><span class="p">][</span><span class="s2">"full_name"</span><span class="p">])</span> <span class="c1"># Aries-Serpent/_codex_</span>
 <a href="#__codelineno-25-20" id="__codelineno-25-20" name="__codelineno-25-20"></a>
 <a href="#__codelineno-25-21" id="__codelineno-25-21" name="__codelineno-25-21"></a><span class="c1"># Get repo info (convenience wrapper)</span>
 <a href="#__codelineno-25-22" id="__codelineno-25-22" name="__codelineno-25-22"></a><span class="n">info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">github_repo_info</span><span class="p">(</span><span class="s2">"Aries-Serpent"</span><span class="p">,</span> <span class="s2">"_codex_"</span><span class="p">)</span>
-<a href="#__codelineno-25-23" id="__codelineno-25-23" name="__codelineno-25-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"language"</span><span class="p">])</span>            <span class="c1"># Python</span>
+<a href="#__codelineno-25-23" id="__codelineno-25-23" name="__codelineno-25-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"language"</span><span class="p">])</span> <span class="c1"># Python</span>
 <a href="#__codelineno-25-24" id="__codelineno-25-24" name="__codelineno-25-24"></a>
 <a href="#__codelineno-25-25" id="__codelineno-25-25" name="__codelineno-25-25"></a><span class="c1"># Get workflow runs</span>
 <a href="#__codelineno-25-26" id="__codelineno-25-26" name="__codelineno-25-26"></a><span class="n">runs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">github_workflow_runs</span><span class="p">(</span><span class="s2">"Aries-Serpent"</span><span class="p">,</span> <span class="s2">"_codex_"</span><span class="p">,</span> <span class="n">per_page</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a href="#__codelineno-25-27" id="__codelineno-25-27" name="__codelineno-25-27"></a><span class="nb">print</span><span class="p">(</span><span class="n">runs</span><span class="p">[</span><span class="s2">"total_count"</span><span class="p">])</span>         <span class="c1"># 40000</span>
+<a href="#__codelineno-25-27" id="__codelineno-25-27" name="__codelineno-25-27"></a><span class="nb">print</span><span class="p">(</span><span class="n">runs</span><span class="p">[</span><span class="s2">"total_count"</span><span class="p">])</span> <span class="c1"># 40000</span>
 <a href="#__codelineno-25-28" id="__codelineno-25-28" name="__codelineno-25-28"></a>
 <a href="#__codelineno-25-29" id="__codelineno-25-29" name="__codelineno-25-29"></a><span class="c1"># Git status</span>
 <a href="#__codelineno-25-30" id="__codelineno-25-30" name="__codelineno-25-30"></a><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">git_status</span><span class="p">())</span>
 <a href="#__codelineno-25-31" id="__codelineno-25-31" name="__codelineno-25-31"></a>
 <a href="#__codelineno-25-32" id="__codelineno-25-32" name="__codelineno-25-32"></a><span class="c1"># Command history</span>
-<a href="#__codelineno-25-33" id="__codelineno-25-33" name="__codelineno-25-33"></a><span class="n">history</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">memory_state</span><span class="p">()</span>    <span class="c1"># ️ needs CODEX_MASTER_KEY</span>
+<a href="#__codelineno-25-33" id="__codelineno-25-33" name="__codelineno-25-33"></a><span class="n">history</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">memory_state</span><span class="p">()</span> <span class="c1"># needs CODEX_MASTER_KEY</span>
 </code></pre></div>
 <hr/>
 <h2 id="github-pages-frontend">GitHub Pages Frontend<a class="headerlink" href="#github-pages-frontend" title="Permanent link">¶</a></h2>
@@ -2893,32 +2893,32 @@ capability — all operations the frontend performs are available via the REST A
 <tr>
 <td>5</td>
 <td>GET GH Repo</td>
-<td><code>POST→GET</code></td>
-<td><code>/api/request</code> → <code>api.github.com/repos/…</code></td>
+<td><code>POSTGET</code></td>
+<td><code>/api/request</code> <code>api.github.com/repos/…</code></td>
 <td><strong>200</strong></td>
 <td><code>full_name: Aries-Serpent/_codex_</code>, <code>language: Python</code></td>
 </tr>
 <tr>
 <td>6</td>
 <td>GET GH Runs</td>
-<td><code>POST→GET</code></td>
-<td><code>/api/request</code> → <code>api.github.com/…/actions/runs?per_page=1</code></td>
+<td><code>POSTGET</code></td>
+<td><code>/api/request</code> <code>api.github.com/…/actions/runs?per_page=1</code></td>
 <td><strong>200</strong></td>
 <td><code>total_count: 40000</code>, latest run 22702237122</td>
 </tr>
 <tr>
 <td>7</td>
 <td>PUT proxy</td>
-<td><code>POST→PUT</code></td>
-<td><code>/api/request</code> → <code>httpbin.org/put</code></td>
+<td><code>POSTPUT</code></td>
+<td><code>/api/request</code> <code>httpbin.org/put</code></td>
 <td><strong>200</strong></td>
 <td>body echoed correctly</td>
 </tr>
 <tr>
 <td>8</td>
 <td>PATCH proxy</td>
-<td><code>POST→PATCH</code></td>
-<td><code>/api/request</code> → <code>httpbin.org/patch</code></td>
+<td><code>POSTPATCH</code></td>
+<td><code>/api/request</code> <code>httpbin.org/patch</code></td>
 <td><strong>200</strong></td>
 <td>body echoed correctly</td>
 </tr>
@@ -2940,78 +2940,78 @@ via the GitHub Actions Variables REST API. All calls auto-inject <code>Authoriza
 <h3 id="repo-variables">Repo Variables<a class="headerlink" href="#repo-variables" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># List repo variables</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"}'</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"}'</span>
 <a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>
 <a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a><span class="c1"># Create a repo variable (POST — name must not already exist)</span>
 <a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a><span class="s1">    "method": "POST",</span>
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="s1">    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",</span>
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="s1">    "body":   {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}</span>
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a><span class="s1">  }'</span>
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a><span class="s1"> "method": "POST",</span>
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="s1"> "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",</span>
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="s1"> "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}</span>
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a><span class="s1"> }'</span>
 <a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a>
 <a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a><span class="c1"># Update an existing repo variable (PATCH)</span>
 <a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a><span class="s1">    "method": "PATCH",</span>
-<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a><span class="s1">    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",</span>
-<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a><span class="s1">    "body":   {"name": "COPILOT_TEST_VAR", "value": "updated_value"}</span>
-<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a><span class="s1">  }'</span>
+<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a><span class="s1"> "method": "PATCH",</span>
+<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a><span class="s1"> "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",</span>
+<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a><span class="s1"> "body": {"name": "COPILOT_TEST_VAR", "value": "updated_value"}</span>
+<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a><span class="s1"> }'</span>
 <a href="#__codelineno-26-23" id="__codelineno-26-23" name="__codelineno-26-23"></a>
 <a href="#__codelineno-26-24" id="__codelineno-26-24" name="__codelineno-26-24"></a><span class="c1"># Delete a repo variable</span>
 <a href="#__codelineno-26-25" id="__codelineno-26-25" name="__codelineno-26-25"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-26" id="__codelineno-26-26" name="__codelineno-26-26"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"DELETE","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"}'</span>
+<a href="#__codelineno-26-26" id="__codelineno-26-26" name="__codelineno-26-26"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"DELETE","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"}'</span>
 </code></pre></div>
 <p><strong>Python (<code>BrainClient</code>):</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span>
 <a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="c1"># Create</span>
 <a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>    <span class="s2">"POST"</span><span class="p">,</span>
-<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>    <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"hello_from_agent"</span><span class="p">},</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a> <span class="s2">"POST"</span><span class="p">,</span>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">,</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"hello_from_agent"</span><span class="p">},</span>
 <a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="p">)</span>
 <a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a>
 <a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a><span class="c1"># Update</span>
 <a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a><span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span>
-<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>    <span class="s2">"PATCH"</span><span class="p">,</span>
-<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"</span><span class="p">,</span>
-<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a>    <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"updated_value"</span><span class="p">},</span>
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a> <span class="s2">"PATCH"</span><span class="p">,</span>
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"</span><span class="p">,</span>
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"updated_value"</span><span class="p">},</span>
 <a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># List environment variables (environment name: "production")</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables"}'</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables"}'</span>
 <a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a>
 <a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a><span class="c1"># Create an environment variable</span>
 <a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a><span class="s1">    "method": "POST",</span>
-<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a><span class="s1">    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables",</span>
-<a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a><span class="s1">    "body":   {"name": "COPILOT_ENV_TEST", "value": "env_value"}</span>
-<a href="#__codelineno-28-13" id="__codelineno-28-13" name="__codelineno-28-13"></a><span class="s1">  }'</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a><span class="s1"> "method": "POST",</span>
+<a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a><span class="s1"> "url": "https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables",</span>
+<a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a><span class="s1"> "body": {"name": "COPILOT_ENV_TEST", "value": "env_value"}</span>
+<a href="#__codelineno-28-13" id="__codelineno-28-13" name="__codelineno-28-13"></a><span class="s1"> }'</span>
 </code></pre></div>
 <h2 id="org-variables">Org Variables<a class="headerlink" href="#org-variables" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># List org variables</span>
 <a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/orgs/Aries-Serpent/actions/variables"}'</span>
+<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"method":"GET","url":"https://api.github.com/orgs/Aries-Serpent/actions/variables"}'</span>
 <a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a>
 <a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="c1"># Create an org variable (visibility: "all" | "private" | "selected")</span>
 <a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a><span class="s1">    "method": "POST",</span>
-<a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a><span class="s1">    "url":    "https://api.github.com/orgs/Aries-Serpent/actions/variables",</span>
-<a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a><span class="s1">    "body":   {"name": "COPILOT_ORG_TEST", "value": "org_value", "visibility": "all"}</span>
-<a href="#__codelineno-29-13" id="__codelineno-29-13" name="__codelineno-29-13"></a><span class="s1">  }'</span>
+<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a><span class="s1"> "method": "POST",</span>
+<a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a><span class="s1"> "url": "https://api.github.com/orgs/Aries-Serpent/actions/variables",</span>
+<a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a><span class="s1"> "body": {"name": "COPILOT_ORG_TEST", "value": "org_value", "visibility": "all"}</span>
+<a href="#__codelineno-29-13" id="__codelineno-29-13" name="__codelineno-29-13"></a><span class="s1"> }'</span>
 </code></pre></div>
 <h2 id="live-test-results-2026-03-05-pr-3497-w-117">Live Test Results (2026-03-05 PR #3497 W-117)<a class="headerlink" href="#live-test-results-2026-03-05-pr-3497-w-117" title="Permanent link">¶</a></h2>
 <p><strong>Hierarchy demonstration — same operation via each tier:</strong></p>
@@ -3033,7 +3033,7 @@ via the GitHub Actions Variables REST API. All calls auto-inject <code>Authoriza
 </tr>
 <tr>
 <td><strong>2 — Secondary</strong></td>
-<td><code>POST /api/request</code> → <code>GET /repos/…/actions/variables</code></td>
+<td><code>POST /api/request</code> <code>GET /repos/…/actions/variables</code></td>
 <td>List repo vars</td>
 <td><code>200</code> outer; upstream <code>401</code> when <code>CODEX_MASTER_KEY</code> absent (expected — key not injected into sandbox process env); <code>200</code> with full list when key is set</td>
 </tr>
@@ -3157,7 +3157,7 @@ credentials independently of this server.</p>
 <h2 id="detect-secrets-baseline-fails-after-touching-agent-auth-delegationyml">detect-secrets baseline fails after touching <code>agent-auth-delegation.yml</code><a class="headerlink" href="#detect-secrets-baseline-fails-after-touching-agent-auth-delegationyml" title="Permanent link">¶</a></h2>
 <p>Run the targeted scan (never full-repo scan):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a>detect-secrets<span class="w"> </span>scan<span class="w"> </span>.github/workflows/agent-auth-delegation.yml<span class="w"> </span>CODEX_MANIFEST.json<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a><span class="w">  </span>--baseline<span class="w"> </span>.secrets.baseline
+<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a><span class="w"> </span>--baseline<span class="w"> </span>.secrets.baseline
 <a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a><span class="c1"># Exit 0 = baseline now matches file; commit .secrets.baseline</span>
 </code></pre></div></p>
 <p>See pattern <code>DETECT_SECRETS_002</code> in <code>.codex/patterns/ci_failure_patterns.yaml</code>.</p>
@@ -3232,6 +3232,6 @@ credentials independently of this server.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

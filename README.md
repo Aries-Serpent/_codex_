@@ -1,9 +1,9 @@
 # `_codex_` (codex-ml)
-> **v0.2.1 Production Release** - Level 4 MLOps Certified ML platform with 1,247 tests, 90.2% coverage, 0 CVEs, and 145 active autonomous agents.
+> **v0.2.0 Production Release** - Level 4 MLOps Certified ML platform with 1,247 tests, 90.2% coverage, 0 CVEs, and 145 active autonomous agents.
 
-**Production Ready**: We are releasing v0.2.1 as a fully production-certified MLOps platform. All core systems are stable and battle-tested. This release represents 100% production readiness with continuous autonomous maintenance and zero known security vulnerabilities. Phase 3 release featuring improved workflow compliance, SBOM updates, and enhanced documentation.
+**Production Ready**: We are releasing v0.2.0 as a fully production-certified MLOps platform. All core systems are stable and battle-tested. This release represents 100% production readiness with continuous autonomous maintenance and zero known security vulnerabilities. Phase 3 release featuring improved workflow compliance, SBOM updates, and enhanced documentation.
 
-** Latest Release**: [v0.2.1](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1) | ** Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.2.1/_codex_.v0.2.1.zip)
+** Latest Release**: [v0.2.0](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.0) | ** Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.2.0/_codex_.v0.2.0.zip)
 
 ![Version](https://img.shields.io/badge/version-0.2.1-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-1247-brightgreen)
@@ -20,7 +20,7 @@
 
 **Gap Analysis Status:** 47/47 Items Complete (100%)
 
-**Latest Milestone:** v0.2.1 Production Release (2026-07-11)
+**Latest Milestone:** v0.2.0 Production Release (2026-07-11)
 **Release Quality:** 90.2% coverage | 1,247 tests | 0 CVEs | 4 certification gates
 **Phase 3 Improvements:** Workflow compliance (99.5%), SBOM updates, production deployment verification
 **Phase 4 Security:** CodeQL blocker resolved with API-only workflow validation (2026-07-14)
@@ -146,7 +146,7 @@ Codex ML uses a **3-profile packaging strategy** for flexible deployment:
 python3 -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 
-# Install from PyPI (v0.2.1)
+# Install from PyPI (v0.2.0)
 pip install aries-serpent-ml==0.2.1
 
 # Or install a specific profile

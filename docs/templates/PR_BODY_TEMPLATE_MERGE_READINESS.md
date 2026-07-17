@@ -1,6 +1,6 @@
 # PR Body Template — Merge Readiness Preparation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Location:** Use this as a reference when creating new PRs to ensure all required sections are present.
 **Status:** Mandatory for PRs targeting 100% merge readiness

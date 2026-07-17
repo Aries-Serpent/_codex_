@@ -1,6 +1,6 @@
 # Agent Accountability Report — Landing Page
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Phase 2.3 Complete** — Accountability report migration from monolithic (4.1MB) to chunked (32×12KB) format.
 

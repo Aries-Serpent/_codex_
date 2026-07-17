@@ -1,8 +1,8 @@
 # Security & Compliance Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**_codex_ v0.2.1 | Enterprise Security Strategy**
+**_codex_ v0.2.0 | Enterprise Security Strategy**
 
 > **Version:** 1.0.0
 > **Last Updated: 2026-07-11

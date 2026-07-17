@@ -1,6 +1,6 @@
 # Legacy Code Migration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -64,7 +64,7 @@ Since `hydra-core>=1.3.2` is now explicitly required in `pyproject.toml`, the fa
 - Graceful degradation during development
 - No breaking changes
 
-**Option B: Remove Fallback (Future v0.2.1)**
+**Option B: Remove Fallback (Future v0.2.0)**
 - Cleaner codebase
 - Breaking change for any external users relying on fallback
 - Requires major version bump
@@ -125,7 +125,7 @@ pytest tests/ -k "hydra or config" -v
 - Fallback imports provide development flexibility
 - No breaking changes
 
-### Future (v0.2.1)
+### Future (v0.2.0)
 - Consider removing config_legacy/ directory
 - Consider removing yaml_legacy/ directory
 - Major version bump for breaking change

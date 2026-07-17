@@ -1,23 +1,23 @@
 # Changelog
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 All notable changes to this project will be documented in this file.
 
 ## [0.2.1] — 2026-07-11
 
 ### Release Summary
-**Phase 3 Release:** Production deployment verification and documentation updates for v0.2.1.
+**Phase 3 Release:** Production deployment verification and documentation updates for v0.2.0.
 
 - **Status:** Production Release
 - **Authority:** @mbaetiong (Full autonomous deployment authority)
 - **Timestamp:** 2026-07-11T07:56:48Z
-- **Tag:** v0.2.1
+- **Tag:** v0.2.0
 - **Distribution:** PyPI + GitHub Releases
 
 ### Added
 - **Phase 3 Execution**: Tag & Release cycle complete with GitHub Pages documentation updates
-- **Documentation**: Comprehensive changelog and version information for v0.2.1
+- **Documentation**: Comprehensive changelog and version information for v0.2.0
 - **GitHub Pages**: Updated version badges, installation links, and release information
 - **Distribution Quality Assurance**: Verification of PyPI packages and GitHub Releases
 
@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - **Documentation Links**: All broken links resolved and validated
 - **Version References**: Updated all version references across documentation (0.1.0 0.2.1)
-- **Installation Examples**: Updated pip install commands with v0.2.1 references
+- **Installation Examples**: Updated pip install commands with v0.2.0 references
 - **Release Metadata**: Updated GitHub Pages configuration with new release information
 
 ### Release Verification
@@ -46,24 +46,24 @@ All notable changes to this project will be documented in this file.
 ## [0.1.1] — 2026-07-10
 
 ### Release Summary
-**Patch Release:** Patch version bump from v0.2.1 to v0.2.1 for incremental updates and improvements.
+**Patch Release:** Patch version bump from v0.2.0 to v0.2.0 for incremental updates and improvements.
 
 - **Status:** Production Release
 - **Authority:** @mbaetiong (Full autonomous deployment authority)
 - **Timestamp:** 2026-07-10T20:59:08Z
-- **Tag:** v0.2.1 (replaces immutable v0.2.1)
+- **Tag:** v0.2.0 (replaces immutable v0.2.0)
 - **Distribution:** PyPI + GitHub Releases
 
 ### Fixed
-- **build:** Version constraint update v0.2.1 v0.2.1 (pyproject.toml)
+- **build:** Version constraint update v0.2.0 v0.2.0 (pyproject.toml)
 - **release:** Post-merge release automation configured with 4-step deployment process (tag, GitHub release, PyPI publish, community announcement)
 
 ### Updated
-- **docs:** Post-merge execution brief for v0.2.1 release cycle
-- **accountability:** Session context for v0.2.1 deployment recorded
+- **docs:** Post-merge execution brief for v0.2.0 release cycle
+- **accountability:** Session context for v0.2.0 deployment recorded
 
 ### Release Verification
-- All 32 certification gates passed (inherited from v0.2.1-final)
+- All 32 certification gates passed (inherited from v0.2.0-final)
 - Production readiness score: 100/100
 - Zero new vulnerabilities introduced
 - Full backward compatibility maintained
@@ -251,7 +251,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-10-26
 
 ### Added
-- **Operational templates (v0.2.1):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
+- **Operational templates (v0.2.0):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
  - Files: `docs/templates/Migration_PythonFileRelocation.md`, `docs/templates/Migration_CLIHardening.md`, `docs/templates/Planning_IntentValidation.md`, `docs/templates/README.md`
  - Include role-gated workflows, `[PLACEHOLDER: …]` customization prompts, and cross-references to runtime shims (`sitecustomize.py`), CLI modules, and pytest suites.
 - **Documentation:** Extended `docs/README.md` with usage triggers and a handoff checklist for the templates, and refreshed `docs/CONTRIBUTING.md` with a role-based workflow plus a task-to-template mapping table.

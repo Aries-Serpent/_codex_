@@ -1,6 +1,6 @@
 # MCP Documentation Template Application - Execution Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date**: 2026-01-23T11:45:00Z
 **Task**: Apply 6-section physics-aligned template to all MCP documentation

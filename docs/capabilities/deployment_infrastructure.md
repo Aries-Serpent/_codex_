@@ -1,6 +1,6 @@
 # Deployment Infrastructure
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -199,11 +199,11 @@ helm install codex-ml ./charts/codex-ml \
  --namespace codex \
  --create-namespace \
  --set replicaCount=3 \
- --set image.tag=v0.2.1
+ --set image.tag=v0.2.0
 
 # Upgrade with rollback capability
 helm upgrade codex-ml ./charts/codex-ml \
- --set image.tag=v0.2.1 \
+ --set image.tag=v0.2.0 \
  --wait --timeout=5m
 
 # Rollback if needed

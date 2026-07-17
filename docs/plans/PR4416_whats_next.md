@@ -1,6 +1,6 @@
 # PR #4416 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **PR:** [#4416 — Resolve 58 CodeQL alerts, pin action tags to SHA, permissions, mypy baseline 130124 (S952)](https://github.com/Aries-Serpent/_codex_/pull/4416)
 > **Session:** S952 | **Date:2026-07-13

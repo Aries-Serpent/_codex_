@@ -1,6 +1,6 @@
 # Repository Secrets and Variables Inventory
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-03T22:09:48Z | Author: mbaetiong
 ## Table of Contents

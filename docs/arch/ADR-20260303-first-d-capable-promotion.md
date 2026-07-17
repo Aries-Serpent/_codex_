@@ -1,6 +1,6 @@
 # ADR-20260303: First D_CAPABLE Agent Promotion — `ci-testing-agent`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T02:25:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
@@ -116,6 +116,6 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 ## 8. Provenance & Compliance
 - **Gate**: `e-to-d-transition-gate.yml` — score 5/5 at time of promotion
 - **Follow-up**: `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` — Priority 2
-- **Registry version**: v0.2.1 v0.2.1 (patch increment for D_CAPABLE field change)
+- **Registry version**: v0.2.0 v0.2.0 (patch increment for D_CAPABLE field change)
 - **Change log**: PR #3494 (this PR)
 - **Next review**: Promote second D_CAPABLE agent after 2-sprint observation period

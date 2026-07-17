@@ -1,6 +1,6 @@
-# Migration Guide: v1.3.x to v0.2.1
+# Migration Guide: v1.3.x to v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,7 +12,7 @@
 
 ## Overview
 
-Upgrade your audit pipeline from v1.3.x to v0.2.1 to gain:
+Upgrade your audit pipeline from v1.3.x to v0.2.0 to gain:
 -  **Coverage Augmentation**: Accurate test scoring using actual coverage data
 -  **Token-Similarity Detection**: Better duplication detection using content analysis
 -  **Enhanced Reporting**: Daily status updates and improved reports
@@ -22,23 +22,23 @@ Upgrade your audit pipeline from v1.3.x to v0.2.1 to gain:
 
 ## Breaking Changes
 
-**None**  - v0.2.1 is fully backward compatible with v1.3.x
+**None**  - v0.2.0 is fully backward compatible with v1.3.x
 
 You can upgrade immediately and your existing configurations will continue to work.
 
 ---
 
-## What's New in v0.2.1
+## What's New in v0.2.0
 
 ### Feature 1: Coverage Augmentation
 
 Enhance test scores with actual code coverage percentages.
 
-**Before v0.2.1**:
+**Before v0.2.0**:
 - Test scores based on file count heuristics
 - No visibility into actual test coverage
 
-**After v0.2.1**:
+**After v0.2.0**:
 - Test scores reflect actual coverage percentages
 - `coverage_map.json` provides detailed coverage data
 - Scores = `max(baseline_heuristic, actual_coverage_percent)`
@@ -47,11 +47,11 @@ Enhance test scores with actual code coverage percentages.
 
 Advanced content-based duplication detection.
 
-**Before v0.2.1**:
+**Before v0.2.0**:
 - Duplication based on filename stems only
 - Limited accuracy for actual code duplication
 
-**After v0.2.1**:
+**After v0.2.0**:
 - Content-aware duplication using Jaccard similarity
 - Configurable sensitivity threshold
 - Deterministic and scalable with bounded comparisons
@@ -60,10 +60,10 @@ Advanced content-based duplication detection.
 
 Improved audit reports and status tracking.
 
-**Before v0.2.1**:
+**Before v0.2.0**:
 - Basic capability reports
 
-**After v0.2.1**:
+**After v0.2.0**:
 - Daily status issue body generation
 - Template-based rendering
 - Hash verification for reliability
@@ -72,16 +72,16 @@ Improved audit reports and status tracking.
 
 ## Migration Steps
 
-### Step 1: Update to v0.2.1
+### Step 1: Update to v0.2.0
 
 ```bash
 # Pull latest changes
 git checkout main
 git pull origin main
 
-# Verify v0.2.1 is available
+# Verify v0.2.0 is available
 python scripts/space_traversal/audit_runner.py --version
-# Should show v0.2.1 or confirm modules exist
+# Should show v0.2.0 or confirm modules exist
 ```
 
 ## Step 2: Backup Existing Results (Recommended)
@@ -102,22 +102,22 @@ cp workflow.yaml workflow.yaml.v1.3.backup
 cat workflow.yaml
 
 # Note your current settings
-# You don't need to change anything yet - v0.2.1 is backward compatible
+# You don't need to change anything yet - v0.2.0 is backward compatible
 ```
 
-## Step 4: Test v0.2.1 (Without New Features)
+## Step 4: Test v0.2.0 (Without New Features)
 
 Run audit with your existing configuration:
 
 ```bash
-# Run audit (v0.2.1 with backward compatibility)
+# Run audit (v0.2.0 with backward compatibility)
 make space-audit
 
 # Verify it works
 ls -lh audit_artifacts/capabilities_scored.json
 ```
 
- **At this point, you're running v0.2.1 with full backward compatibility**
+ **At this point, you're running v0.2.0 with full backward compatibility**
 
 ---
 
@@ -268,7 +268,7 @@ mv workflow.yaml.v1.3.backup workflow.yaml
 **Option 3: Revert Code**
 
 ```bash
-# Check out previous commit (if you pulled v0.2.1)
+# Check out previous commit (if you pulled v0.2.0)
 git log --oneline | grep "v1.3"
 git checkout <v1.3-commit-hash>
 ```
@@ -297,7 +297,7 @@ python scripts/space_traversal/audit_runner.py run --verbose
 - Ensure coverage.xml exists: `ls -lh coverage.xml`
 - Check xml_patterns match your file location
 - Verify coverage has data: `grep "line-rate" coverage.xml`
-- See [Troubleshooting Guide](./Troubleshooting_v0.2.1.md)
+- See [Troubleshooting Guide](./Troubleshooting_v0.2.0.md)
 
 ### Issue: Scores decreased significantly
 
@@ -313,7 +313,7 @@ python scripts/space_traversal/audit_runner.py run --verbose
 **If you disagree with new scores**:
 - Lower token-similarity threshold (more lenient)
 - Disable coverage augmentation temporarily
-- See [Configuration Guide](./Configuration_v0.2.1.md)
+- See [Configuration Guide](./Configuration_v0.2.0.md)
 
 ---
 
@@ -350,7 +350,7 @@ After migration, verify:
    - See [Performance Tuning](./Performance_Tuning.md)
 
 4. **Communicate Changes**:
-   - Inform team of v0.2.1 upgrade
+   - Inform team of v0.2.0 upgrade
    - Explain score changes if significant
    - Share new capability insights
 
@@ -360,11 +360,11 @@ After migration, verify:
 
 ### Q: Do I have to enable the new features?
 
-**A**: No. v0.2.1 is fully backward compatible. New features are opt-in.
+**A**: No. v0.2.0 is fully backward compatible. New features are opt-in.
 
 ### Q: Will my scores change?
 
-**A**: Not unless you enable the new features. With default settings, v0.2.1 behaves like v1.3.x.
+**A**: Not unless you enable the new features. With default settings, v0.2.0 behaves like v1.3.x.
 
 ### Q: Can I enable coverage without token-similarity?
 
@@ -374,14 +374,14 @@ After migration, verify:
 
 **A**: Coverage augmentation will be skipped automatically. No errors will occur.
 
-### Q: Is v0.2.1 slower than v1.3.x?
+### Q: Is v0.2.0 slower than v1.3.x?
 
 **A**: With default settings, no. Token-similarity can be slower for large codebases, but it's opt-in. See [Performance Tuning](./Performance_Tuning.md).
 
-### Q: Can I gradually roll out v0.2.1?
+### Q: Can I gradually roll out v0.2.0?
 
 **A**: Yes. Recommended approach:
-1. Upgrade to v0.2.1 (backward compatible)
+1. Upgrade to v0.2.0 (backward compatible)
 2. Test with existing configuration
 3. Enable coverage augmentation
 4. Enable token-similarity
@@ -391,9 +391,9 @@ After migration, verify:
 
 ## Getting Help
 
-- **Configuration**: See [Configuration Guide](./Configuration_v0.2.1.md)
-- **Issues**: See [Troubleshooting Guide](./Troubleshooting_v0.2.1.md)
-- **API**: See [API Reference](./API_Reference_v0.2.1.md)
+- **Configuration**: See [Configuration Guide](./Configuration_v0.2.0.md)
+- **Issues**: See [Troubleshooting Guide](./Troubleshooting_v0.2.0.md)
+- **API**: See [API Reference](./API_Reference_v0.2.0.md)
 - **Integrations**: See [Integration Examples](./Integration_Examples.md)
 - **Performance**: See [Performance Tuning](./Performance_Tuning.md)
 
@@ -401,7 +401,7 @@ After migration, verify:
 
 ## Summary
 
-v0.2.1 migration is **easy and safe**:
+v0.2.0 migration is **easy and safe**:
 -  Fully backward compatible
 -  No breaking changes
 -  New features are opt-in

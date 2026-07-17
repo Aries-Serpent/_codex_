@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/pr_reports/PR-2151_Comprehensive_Error_Log/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>PR #2151 Review Complete - Comprehensive Analysis - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2300,7 +2300,7 @@
 <a class="md-nav__link" href="#critical-issues-identified-7-errors-4-remaining">
 <span class="md-ellipsis">
       
-        Critical Issues Identified (7 Errors → 4 Remaining)
+        Critical Issues Identified (7 Errors 4 Remaining)
       
     </span>
 </a>
@@ -2362,43 +2362,35 @@
 <ul>
 <li><a href="#executive-summary">Executive Summary</a></li>
 <li><a href="#key-findings">Key Findings</a></li>
-<li><a href="#critical-issues-identified-7-errors--4-remaining">Critical Issues Identified (7 Errors → 4 Remaining)</a></li>
+<li><a href="#critical-issues-identified-7-errors--4-remaining">Critical Issues Identified (7 Errors 4 Remaining)</a></li>
 <li><a href="#quality-metrics-assessment">Quality Metrics Assessment</a></li>
 <li><a href="#detailed-error-log">Detailed Error Log</a></li>
-<li><a href="#error-category-1-syntax--parsing-issues">Error Category 1: Syntax &amp; Parsing Issues</a><ul>
+<li><a href="#error-category-1-syntax--parsing-issues">Error Category 1: Syntax &amp; Parsing Issues</a></li>
 <li><a href="#err-2151-001-component_gapsjson-version-consistency">ERR-2151-001: component_gaps.json Version Consistency</a></li>
 <li><a href="#err-2151-002-manifestjson-schema-validation">ERR-2151-002: manifest.json Schema Validation</a></li>
-</ul>
-</li>
-<li><a href="#error-category-2-logic--runtime-issues">Error Category 2: Logic &amp; Runtime Issues</a><ul>
-<li><a href="#err-2151-003-metrics-cross-reference-validation--fixed">~~ERR-2151-003: Metrics Cross-Reference Validation~~  FIXED</a></li>
-<li><a href="#err-2151-004-checkpoint-reference-validation--fixed">~~ERR-2151-004: Checkpoint Reference Validation~~  FIXED</a></li>
-<li><a href="#err-2151-005-tokenization-cache-invalidation--fixed">~~ERR-2151-005: Tokenization Cache Invalidation~~  FIXED</a></li>
+<li><a href="#error-category-2-logic--runtime-issues">Error Category 2: Logic &amp; Runtime Issues</a></li>
+<li><a href="#err-2151-003-metrics-cross-reference-validation--fixed">~~ERR-2151-003: Metrics Cross-Reference Validation~~ FIXED</a></li>
+<li><a href="#err-2151-004-checkpoint-reference-validation--fixed">~~ERR-2151-004: Checkpoint Reference Validation~~ FIXED</a></li>
+<li><a href="#err-2151-005-tokenization-cache-invalidation--fixed">~~ERR-2151-005: Tokenization Cache Invalidation~~ FIXED</a></li>
 <li><a href="#err-2151-006-training-pipeline-integration">ERR-2151-006: Training Pipeline Integration</a></li>
-</ul>
-</li>
 <li><a href="#in-srccodex_mltrainingpipelinepy">In src/codex_ml/training/pipeline.py</a></li>
-<li><a href="#err-2151-007-data-migration-compatibility--fixed">~~ERR-2151-007: Data Migration Compatibility~~  FIXED</a></li>
-<li><a href="#error-category-3-code-quality-issues">Error Category 3: Code Quality Issues</a><ul>
+<li><a href="#err-2151-007-data-migration-compatibility--fixed">~~ERR-2151-007: Data Migration Compatibility~~ FIXED</a></li>
+<li><a href="#error-category-3-code-quality-issues">Error Category 3: Code Quality Issues</a></li>
 <li><a href="#duplicate-code-detection">Duplicate Code Detection</a></li>
 <li><a href="#missing-documentation">Missing Documentation</a></li>
 <li><a href="#missing-type-hints">Missing Type Hints</a></li>
 <li><a href="#dead-code">Dead Code</a></li>
 <li><a href="#unused-imports">Unused Imports</a></li>
-</ul>
-</li>
-<li><a href="#error-category-4-test-coverage-gaps">Error Category 4: Test Coverage Gaps</a><ul>
+<li><a href="#error-category-4-test-coverage-gaps">Error Category 4: Test Coverage Gaps</a></li>
 <li><a href="#critical-coverage-gaps">Critical Coverage Gaps</a></li>
 <li><a href="#module-coverage-summary">Module Coverage Summary</a></li>
 <li><a href="#required-test-implementation">Required Test Implementation</a></li>
-</ul>
-</li>
 <li><a href="#high-priority-issues-to-address">High Priority Issues to Address</a></li>
-<li><a href="#issue-1-data-migration-compatibility--critical">Issue 1: Data Migration Compatibility ️ CRITICAL</a></li>
-<li><a href="#issue-2-missing-test-coverage-for-new-modules--critical">Issue 2: Missing Test Coverage for New Modules ️ CRITICAL</a></li>
-<li><a href="#issue-3-type-safety-deficiencies--high">Issue 3: Type Safety Deficiencies ️ HIGH</a></li>
-<li><a href="#issue-4-documentation-gaps--medium-partially-complete">Issue 4: Documentation Gaps ️ MEDIUM (PARTIALLY COMPLETE)</a></li>
-<li><a href="#issue-5-code-complexity-issues--medium">Issue 5: Code Complexity Issues ️ MEDIUM</a></li>
+<li><a href="#issue-1-data-migration-compatibility--critical">Issue 1: Data Migration Compatibility CRITICAL</a></li>
+<li><a href="#issue-2-missing-test-coverage-for-new-modules--critical">Issue 2: Missing Test Coverage for New Modules CRITICAL</a></li>
+<li><a href="#issue-3-type-safety-deficiencies--high">Issue 3: Type Safety Deficiencies HIGH</a></li>
+<li><a href="#issue-4-documentation-gaps--medium-partially-complete">Issue 4: Documentation Gaps MEDIUM (PARTIALLY COMPLETE)</a></li>
+<li><a href="#issue-5-code-complexity-issues--medium">Issue 5: Code Complexity Issues MEDIUM</a></li>
 <li><a href="#performance-analysis">Performance Analysis</a></li>
 <li><a href="#performance-issues-identified">Performance Issues Identified</a></li>
 <li><a href="#optimization-recommendations">Optimization Recommendations</a></li>
@@ -2449,21 +2441,21 @@
 </ul>
 <p>**Last Updated: 2026-06-22</p>
 <p><strong>Review Date:2026-07-13
-</strong>Branch:<strong> <code>0D_base_</code><br/>
-</strong>Repository:<strong> Aries-Serpent/<em>codex</em><br/>
+</strong>Branch:<strong> <code>0D_base_</code>
+</strong>Repository:<strong> Aries-Serpent/<em>codex</em>
 </strong>Reviewer:** Automated PR Review System</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
-<p><strong>Pull Request Status:</strong> ️ <strong>CONDITIONAL APPROVAL</strong> - Some issues remain, significant progress made</p>
+<p><strong>Pull Request Status:</strong> <strong>CONDITIONAL APPROVAL</strong> - Some issues remain, significant progress made</p>
 <p><strong>Current Codebase Quality Score: 97.2%</strong> (Target: ≥99% | Gap: -1.8% | <strong>Improved from 94.6%</strong>)</p>
 <p>**Progress Update 2026-07-13
--  Data migration utilities with v1→v2→v3 support and CLI tool
--  Checkpoint schema versioning upgraded to v2.0 with compatibility warnings
--  Tokenization cache with TTL, expiration, and invalidation
--  Metrics validation framework with error handling
--  65 comprehensive tests across 4 new test suites
--  Full type hints and Google-style docstrings for all new modules
--  Security scan passed (0 vulnerabilities)</p>
+- Data migration utilities with v1v2v3 support and CLI tool
+- Checkpoint schema versioning upgraded to v2.0 with compatibility warnings
+- Tokenization cache with TTL, expiration, and invalidation
+- Metrics validation framework with error handling
+- 65 comprehensive tests across 4 new test suites
+- Full type hints and Google-style docstrings for all new modules
+- Security scan passed (0 vulnerabilities)</p>
 <p><strong>Critical Discovery:</strong> Several files referenced in the error log don't exist in the codebase:
 - <code>src/training/distributed_troubleshooting.py</code> - only docs exist
 - <code>tools/verification_tool.py</code> - doesn't exist
@@ -2471,7 +2463,7 @@
 <p>This comprehensive review originally identified 7 critical errors. <strong>4 of 7 have been resolved</strong> with production-ready implementations and comprehensive test coverage.</p>
 <hr/>
 <h2 id="key-findings">Key Findings<a class="headerlink" href="#key-findings" title="Permanent link">¶</a></h2>
-<h3 id="critical-issues-identified-7-errors-4-remaining">Critical Issues Identified (7 Errors → 4 Remaining)<a class="headerlink" href="#critical-issues-identified-7-errors-4-remaining" title="Permanent link">¶</a></h3>
+<h3 id="critical-issues-identified-7-errors-4-remaining">Critical Issues Identified (7 Errors 4 Remaining)<a class="headerlink" href="#critical-issues-identified-7-errors-4-remaining" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2558,21 +2550,21 @@
 <td><strong>Overall Code Quality</strong></td>
 <td>96.8%</td>
 <td>≥99%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-2.2%</td>
 </tr>
 <tr>
 <td><strong>Test Coverage</strong></td>
 <td>94.2%</td>
 <td>≥98%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-3.8%</td>
 </tr>
 <tr>
 <td><strong>Documentation</strong></td>
 <td>92.5%</td>
 <td>≥97%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-4.5%</td>
 </tr>
 <tr>
@@ -2586,28 +2578,28 @@
 <td><strong>Linting Score</strong></td>
 <td>97.1%</td>
 <td>≥99%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-1.9%</td>
 </tr>
 <tr>
 <td><strong>Security Score</strong></td>
 <td>98.5%</td>
 <td>≥99%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-0.5%</td>
 </tr>
 <tr>
 <td><strong>Complexity Score</strong></td>
 <td>93.6%</td>
 <td>≥97%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-3.4%</td>
 </tr>
 <tr>
 <td><strong>Performance Score</strong></td>
 <td>95.8%</td>
 <td>≥98%</td>
-<td>️ BELOW</td>
+<td>BELOW</td>
 <td>-2.2%</td>
 </tr>
 </tbody>
@@ -2616,23 +2608,23 @@
 <h2 id="detailed-error-log">Detailed Error Log<a class="headerlink" href="#detailed-error-log" title="Permanent link">¶</a></h2>
 <h3 id="error-category-1-syntax-parsing-issues">Error Category 1: Syntax &amp; Parsing Issues<a class="headerlink" href="#error-category-1-syntax-parsing-issues" title="Permanent link">¶</a></h3>
 <h4 id="err-2151-001-component_gapsjson-version-consistency">ERR-2151-001: component_gaps.json Version Consistency<a class="headerlink" href="#err-2151-001-component_gapsjson-version-consistency" title="Permanent link">¶</a></h4>
-<p><strong>File:</strong> <code>audit_artifacts/component_gaps.json</code><br/>
-<strong>Line:</strong> 178 (version field)<br/>
+<p><strong>File:</strong> <code>audit_artifacts/component_gaps.json</code>
+<strong>Line:</strong> 178 (version field)
 <strong>Severity:</strong> MEDIUM</p>
-<p><strong>Description:</strong><br/>
+<p><strong>Description:</strong>
 New vector-stores entry requires cross-reference validation against actual codebase implementation. The version increment to 1.4.0 needs consistency verification across all related manifest files.</p>
 <p><strong>Current State:</strong>
 <code>json
 {
-  "id": "vector-stores",
-  "zero_components": [
-    "functionality",
-    "safeguards"
-  ],
-  "primary_deficit": {
-    "component": "functionality",
-    "value": 0.0
-  }
+ "id": "vector-stores",
+ "zero_components": [
+ "functionality",
+ "safeguards"
+ ],
+ "primary_deficit": {
+ "component": "functionality",
+ "value": 0.0
+ }
 }</code>text</p>
 <p><strong>Required Action:</strong>
 - Verify vector-stores implementation exists in codebase
@@ -2642,9 +2634,9 @@ New vector-stores entry requires cross-reference validation against actual codeb
 <p><strong>Impact:</strong> High - Audit trail integrity depends on accurate component tracking</p>
 <hr/>
 <h4 id="err-2151-002-manifestjson-schema-validation">ERR-2151-002: manifest.json Schema Validation<a class="headerlink" href="#err-2151-002-manifestjson-schema-validation" title="Permanent link">¶</a></h4>
-<p><strong>File:</strong> <code>assets/manifest.json</code><br/>
+<p><strong>File:</strong> <code>assets/manifest.json</code>
 <strong>Severity:</strong> LOW</p>
-<p><strong>Description:</strong><br/>
+<p><strong>Description:</strong>
 Schema structure validation pending to ensure all audit artifacts conform to expected format and version compatibility.</p>
 <p><strong>Required Action:</strong>
 - Run schema validation against <code>schemas/manifest.schema.json</code> (if exists)
@@ -2654,11 +2646,11 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 <p><strong>Impact:</strong> Medium - Affects file integrity verification</p>
 <hr/>
 <h3 id="error-category-2-logic-runtime-issues">Error Category 2: Logic &amp; Runtime Issues<a class="headerlink" href="#error-category-2-logic-runtime-issues" title="Permanent link">¶</a></h3>
-<h4 id="err-2151-003-metrics-cross-reference-validation-fixed">~~ERR-2151-003: Metrics Cross-Reference Validation~~  FIXED<a class="headerlink" href="#err-2151-003-metrics-cross-reference-validation-fixed" title="Permanent link">¶</a></h4>
-<p><strong>Component:</strong> Metrics System<br/>
-<strong>Severity:</strong> MEDIUM<br/>
+<h4 id="err-2151-003-metrics-cross-reference-validation-fixed">~~ERR-2151-003: Metrics Cross-Reference Validation~~ FIXED<a class="headerlink" href="#err-2151-003-metrics-cross-reference-validation-fixed" title="Permanent link">¶</a></h4>
+<p><strong>Component:</strong> Metrics System
+<strong>Severity:</strong> MEDIUM
 <strong>Status:</strong> ~~RESOLVED - Implementation Complete~~</p>
-<p>~~<strong>Description:</strong>~~<br/>
+<p>~~<strong>Description:</strong>~~
 ~~Missing cross-reference validation between metric definitions and their implementations.~~</p>
 <p><strong>Implementation Complete:</strong>
 - ~~ Created <code>src/codex_ml/metrics/validation.py</code>~~
@@ -2667,11 +2659,11 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 - ~~ Added helper functions: <code>validate_metric_exists()</code> and <code>get_all_registered_metrics()</code>~~
 - ~~ Full type hints and comprehensive docstrings~~</p>
 <hr/>
-<h4 id="err-2151-004-checkpoint-reference-validation-fixed">~~ERR-2151-004: Checkpoint Reference Validation~~  FIXED<a class="headerlink" href="#err-2151-004-checkpoint-reference-validation-fixed" title="Permanent link">¶</a></h4>
-<p><strong>Component:</strong> Checkpoint Management<br/>
-<strong>Severity:</strong> MEDIUM<br/>
+<h4 id="err-2151-004-checkpoint-reference-validation-fixed">~~ERR-2151-004: Checkpoint Reference Validation~~ FIXED<a class="headerlink" href="#err-2151-004-checkpoint-reference-validation-fixed" title="Permanent link">¶</a></h4>
+<p><strong>Component:</strong> Checkpoint Management
+<strong>Severity:</strong> MEDIUM
 <strong>Status:</strong> ~~RESOLVED - Implementation Complete~~</p>
-<p>~~<strong>Description:</strong>~~<br/>
+<p>~~<strong>Description:</strong>~~
 ~~Reference validation missing - Schema version not explicitly versioned in checkpoint metadata.~~</p>
 <p><strong>Implementation Complete:</strong>
 - ~~ Updated <code>src/codex_ml/checkpointing/checkpoint_core.py</code>~~
@@ -2681,11 +2673,11 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 - ~~ Ensures forward/backward compatibility tracking~~
 ```text</p>
 <hr/>
-<h4 id="err-2151-005-tokenization-cache-invalidation-fixed">~~ERR-2151-005: Tokenization Cache Invalidation~~  FIXED<a class="headerlink" href="#err-2151-005-tokenization-cache-invalidation-fixed" title="Permanent link">¶</a></h4>
-<p><strong>Component:</strong> Tokenization Cache Handler<br/>
-<strong>Severity:</strong> LOW<br/>
+<h4 id="err-2151-005-tokenization-cache-invalidation-fixed">~~ERR-2151-005: Tokenization Cache Invalidation~~ FIXED<a class="headerlink" href="#err-2151-005-tokenization-cache-invalidation-fixed" title="Permanent link">¶</a></h4>
+<p><strong>Component:</strong> Tokenization Cache Handler 
+<strong>Severity:</strong> LOW 
 <strong>Status:</strong> ~~RESOLVED - Implementation Complete~~</p>
-<p>~~<strong>Description:</strong>~~<br/>
+<p>~~<strong>Description:</strong>~~ 
 ~~Cache handler gaps - Missing TTL configuration and cache invalidation strategy.~~</p>
 <p><strong>Implementation Complete:</strong>
 - ~~ Created <code>src/codex_ml/tokenization/cache.py</code>~~
@@ -2698,9 +2690,9 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 - ~~ Full type hints and comprehensive docstrings~~</p>
 <hr/>
 <h4 id="err-2151-006-training-pipeline-integration">ERR-2151-006: Training Pipeline Integration<a class="headerlink" href="#err-2151-006-training-pipeline-integration" title="Permanent link">¶</a></h4>
-<p><strong>Component:</strong> Training Pipeline<br/>
+<p><strong>Component:</strong> Training Pipeline 
 <strong>Severity:</strong> MEDIUM</p>
-<p><strong>Description:</strong><br/>
+<p><strong>Description:</strong> 
 Pipeline sequencing undefined - Distributed workflow dependencies unclear.</p>
 <p><strong>Root Cause:</strong>
 - No explicit dependency declaration between pipeline stages
@@ -2714,77 +2706,88 @@ Document pipeline flow and dependencies:</p>
 Training Pipeline Execution Flow:</p>
 <ol>
 <li>
-<p>Data Loading Stage
-   └─&gt; Depends on: tokenizer initialization
-   └─&gt; Outputs: processed datasets</p>
+<p>Data Loading Stage</p>
+<blockquote>
+<p>Depends on: tokenizer initialization
+Outputs: processed datasets</p>
+</blockquote>
 </li>
 <li>
-<p>Model Initialization Stage
-   └─&gt; Depends on: configuration validation
-   └─&gt; Outputs: initialized model</p>
+<p>Model Initialization Stage</p>
+<blockquote>
+<p>Depends on: configuration validation
+Outputs: initialized model</p>
+</blockquote>
 </li>
 <li>
-<p>Distributed Setup Stage (if applicable)
-   └─&gt; Depends on: model initialization
-   └─&gt; Outputs: distributed training context</p>
+<p>Distributed Setup Stage (if applicable)</p>
+<blockquote>
+<p>Depends on: model initialization
+Outputs: distributed training context</p>
+</blockquote>
 </li>
 <li>
-<p>Training Loop Stage
-   └─&gt; Depends on: data loading, model init, distributed setup
-   └─&gt; Outputs: trained model checkpoints</p>
+<p>Training Loop Stage</p>
+<blockquote>
+<p>Depends on: data loading, model init, distributed setup
+Outputs: trained model checkpoints</p>
+</blockquote>
 </li>
 <li>
-<p>Evaluation Stage
-   └─&gt; Depends on: training completion
-   └─&gt; Outputs: evaluation metrics</p>
+<p>Evaluation Stage</p>
+<blockquote>
+<p>Depends on: training completion
+Outputs: evaluation metrics</p>
+</blockquote>
 </li>
 <li>
-<p>Checkpoint Saving Stage
-   └─&gt; Depends on: training/evaluation
-   └─&gt; Outputs: final model checkpoint
+<p>Checkpoint Saving Stage</p>
+<blockquote>
+<p>Depends on: training/evaluation
+Outputs: final model checkpoint
 """</p>
+</blockquote>
 </li>
 </ol>
 <p>class TrainingPipeline:
-    STAGE_ORDER = [
-        'data_loading',
-        'model_init',
-        'distributed_setup',
-        'training_loop',
-        'evaluation',
-        'checkpoint_save'
-    ]</p>
-<div class="highlight"><pre><span></span><code>STAGE_DEPENDENCIES = {
-    'data_loading': ['tokenizer_init'],
-    'model_init': ['config_validate'],
-    'distributed_setup': ['model_init'],
-    'training_loop': ['data_loading', 'model_init', 'distributed_setup'],
-    'evaluation': ['training_loop'],
-    'checkpoint_save': ['training_loop', 'evaluation']
-}
-</code></pre></div>
-<p>```text</p>
+ STAGE_ORDER = [
+ 'data_loading',
+ 'model_init',
+ 'distributed_setup',
+ 'training_loop',
+ 'evaluation',
+ 'checkpoint_save'
+ ]</p>
+<p>STAGE_DEPENDENCIES = {
+ 'data_loading': ['tokenizer_init'],
+ 'model_init': ['config_validate'],
+ 'distributed_setup': ['model_init'],
+ 'training_loop': ['data_loading', 'model_init', 'distributed_setup'],
+ 'evaluation': ['training_loop'],
+ 'checkpoint_save': ['training_loop', 'evaluation']
+ }
+```text</p>
 <hr/>
-<h2 id="err-2151-007-data-migration-compatibility-fixed">~~ERR-2151-007: Data Migration Compatibility~~  FIXED<a class="headerlink" href="#err-2151-007-data-migration-compatibility-fixed" title="Permanent link">¶</a></h2>
-<p><strong>Component:</strong> Data Management<br/>
-<strong>Severity:</strong> MEDIUM<br/>
+<h2 id="err-2151-007-data-migration-compatibility-fixed">~~ERR-2151-007: Data Migration Compatibility~~ FIXED<a class="headerlink" href="#err-2151-007-data-migration-compatibility-fixed" title="Permanent link">¶</a></h2>
+<p><strong>Component:</strong> Data Management 
+<strong>Severity:</strong> MEDIUM 
 <strong>Status:</strong> ~~RESOLVED - Implementation Complete~~</p>
-<p>~~<strong>Description:</strong>~~<br/>
+<p>~~<strong>Description:</strong>~~ 
 ~~Backward compatibility broken - Legacy assignment mappings removed without migration path.~~</p>
 <p><strong>Implementation Complete:</strong>
 - ~~ Created <code>src/codex_ml/data/migration.py</code> with <code>AssignmentMappingMigration</code> class~~
-- ~~ Implemented v1→v2 migration: <code>migrate_v1_to_v2()</code>~~
-- ~~ Implemented v2→v3 migration: <code>migrate_v2_to_v3()</code>~~
+- ~~ Implemented v1v2 migration: <code>migrate_v1_to_v2()</code>~~
+- ~~ Implemented v2v3 migration: <code>migrate_v2_to_v3()</code>~~
 - ~~ Added <code>load_assignment_mappings()</code> with auto-migration support~~
 - ~~ Deprecation warnings for legacy formats (v1, v2)~~
 - ~~ Created CLI tool <code>src/codex_ml/cli/migrate_data.py</code>~~
-- ~~ Support for auto-detect version, explicit migrations, and two-step v1→v3~~
+- ~~ Support for auto-detect version, explicit migrations, and two-step v1v3~~
 - ~~ Full type hints and comprehensive docstrings~~</p>
 <hr/>
 <h3 id="error-category-3-code-quality-issues">Error Category 3: Code Quality Issues<a class="headerlink" href="#error-category-3-code-quality-issues" title="Permanent link">¶</a></h3>
 <h4 id="duplicate-code-detection">Duplicate Code Detection<a class="headerlink" href="#duplicate-code-detection" title="Permanent link">¶</a></h4>
-<p><strong>Total Instances:</strong> 3<br/>
-<strong>Total Lines:</strong> 72<br/>
+<p><strong>Total Instances:</strong> 3 
+<strong>Total Lines:</strong> 72 
 <strong>Locations:</strong> checkpoint/, training/</p>
 <p><strong>Details:</strong></p>
 <ol>
@@ -2810,7 +2813,7 @@ Training Pipeline Execution Flow:</p>
 <li><strong>Action:</strong> Move to <code>src/codex_ml/data/preprocessing.py</code></li>
 </ol>
 <h4 id="missing-documentation">Missing Documentation<a class="headerlink" href="#missing-documentation" title="Permanent link">¶</a></h4>
-<p><strong>Total Files:</strong> 5<br/>
+<p><strong>Total Files:</strong> 5 
 <strong>Severity:</strong> MEDIUM</p>
 <p>Files lacking complete docstrings:</p>
 <ol>
@@ -2850,32 +2853,33 @@ Training Pipeline Execution Flow:</p>
 Add comprehensive documentation following Google style guide:</p>
 <p>```python
 def function_name(param1: Type1, param2: Type2) -&gt; ReturnType:
-    """
-    Short one-line description.</p>
-<div class="highlight"><pre><span></span><code>Longer description explaining the function's behavior,
-use cases, and any important notes.
-
-Args:
-    param1: Description of param1
-    param2: Description of param2
-
-Returns:
-    Description of return value
-
-Raises:
-    ValueError: When param1 is invalid
-    RuntimeError: When operation fails
-
-Examples:
-    &gt;&gt;&gt; result = function_name("value", 42)
-    &gt;&gt;&gt; print(result)
-    expected output
-"""
-# implementation
-</code></pre></div>
-<p>```text</p>
+ """
+ Short one-line description.</p>
+<p>Longer description explaining the function's behavior,
+ use cases, and any important notes.</p>
+<p>Args:
+ param1: Description of param1
+ param2: Description of param2</p>
+<p>Returns:
+ Description of return value</p>
+<p>Raises:
+ ValueError: When param1 is invalid
+ RuntimeError: When operation fails</p>
+<p>Examples:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>result = function_name("value", 42)
+print(result)
+ expected output
+ """
+ # implementation
+```text</p>
+</blockquote>
+</blockquote>
+</blockquote>
 <h4 id="missing-type-hints">Missing Type Hints<a class="headerlink" href="#missing-type-hints" title="Permanent link">¶</a></h4>
-<p><strong>Total Locations:</strong> 45 missing type annotations across 8 modules<br/>
+<p><strong>Total Locations:</strong> 45 missing type annotations across 8 modules 
 <strong>Severity:</strong> MEDIUM</p>
 <p><strong>Breakdown by Module:</strong></p>
 <table>
@@ -2939,16 +2943,16 @@ Add complete type hint coverage targeting 100%:</p>
 from typing import Dict, List, Optional, Union, Any, Tuple
 from pathlib import Path</p>
 <p>def process_data(
-    input_path: Path,
-    config: Dict[str, Any],
-    batch_size: int = 32,
-    enable_cache: bool = True
+ input_path: Path,
+ config: Dict[str, Any],
+ batch_size: int = 32,
+ enable_cache: bool = True
 ) -&gt; Tuple[List[Dict[str, Any]], int]:
-    """Process data with full type annotations."""
-    results: List[Dict[str, Any]] = []
-    total_processed: int = 0
-    # ... implementation
-    return results, total_processed
+ """Process data with full type annotations."""
+ results: List[Dict[str, Any]] = []
+ total_processed: int = 0
+ # ... implementation
+ return results, total_processed
 ```text</p>
 <h4 id="dead-code">Dead Code<a class="headerlink" href="#dead-code" title="Permanent link">¶</a></h4>
 <p><strong>Total Files:</strong> 2 stub test files identified for removal</p>
@@ -2958,7 +2962,7 @@ from pathlib import Path</p>
 </ol>
 <p><strong>Action:</strong> Already completed - files removed in previous commits</p>
 <h4 id="unused-imports">Unused Imports<a class="headerlink" href="#unused-imports" title="Permanent link">¶</a></h4>
-<p><strong>Total Locations:</strong> 4<br/>
+<p><strong>Total Locations:</strong> 4 
 <strong>Severity:</strong> LOW</p>
 <ol>
 <li><code>src/training/data_utils.py:3</code> - <code>from typing import Optional</code> (unused)</li>
@@ -3007,7 +3011,7 @@ Run <code>ruff check --select F401</code> and remove unused imports</p>
 <td>data/loader_enhanced.py</td>
 <td>45%</td>
 <td>90%+</td>
-<td>️ NEEDS_WORK</td>
+<td>NEEDS_WORK</td>
 <td>~10 tests</td>
 </tr>
 </tbody>
@@ -3028,14 +3032,14 @@ Run <code>ruff check --select F401</code> and remove unused imports</p>
 <td>checkpoint</td>
 <td>92.1%</td>
 <td>95%+</td>
-<td>️ NEEDS_WORK</td>
+<td>NEEDS_WORK</td>
 <td>-2.9%</td>
 </tr>
 <tr>
 <td>tokenization</td>
 <td>95.3%</td>
 <td>98%+</td>
-<td>️ NEEDS_WORK</td>
+<td>NEEDS_WORK</td>
 <td>-2.7%</td>
 </tr>
 <tr>
@@ -3049,158 +3053,140 @@ Run <code>ruff check --select F401</code> and remove unused imports</p>
 <td>evaluation</td>
 <td>91.4%</td>
 <td>95%+</td>
-<td>️ NEEDS_WORK</td>
+<td>NEEDS_WORK</td>
 <td>-3.6%</td>
 </tr>
 </tbody>
 </table>
 <h4 id="required-test-implementation">Required Test Implementation<a class="headerlink" href="#required-test-implementation" title="Permanent link">¶</a></h4>
-<p><strong>1. tests/training/test_distributed_troubleshooting.py</strong> (NEW - 0 → 95%+)</p>
+<p><strong>1. tests/training/test_distributed_troubleshooting.py</strong> (NEW - 0 95%+)</p>
 <p>```python
 """Test suite for distributed training troubleshooting."""
 import pytest
 from codex_ml.training.distributed_troubleshooting import (
-    troubleshoot_training,
-    check_distributed_setup,
-    diagnose_communication_issues
+ troubleshoot_training,
+ check_distributed_setup,
+ diagnose_communication_issues
 )</p>
 <p>class TestDistributedTroubleshooting:
-    """Test distributed troubleshooting utilities."""</p>
-<div class="highlight"><pre><span></span><code>def test_troubleshoot_training_success(self):
-    """Test successful troubleshooting run."""
-    result = troubleshoot_training(rank=0, world_size=1)
-    assert result.status == "healthy"
-    assert len(result.issues) == 0
-
-def test_troubleshoot_training_communication_failure(self):
-    """Test detection of communication issues."""
-    result = troubleshoot_training(rank=0, world_size=4)
-    # Mock communication failure
-    assert result.status == "unhealthy"
-    assert "communication" in [i.category for i in result.issues]
-
-def test_check_distributed_setup_valid(self):
-    """Test distributed setup validation."""
-    is_valid = check_distributed_setup()
-    assert isinstance(is_valid, bool)
-
-def test_diagnose_communication_issues(self):
-    """Test communication diagnostics."""
-    issues = diagnose_communication_issues()
-    assert isinstance(issues, list)
-
-# Add 20+ more tests for full coverage
-</code></pre></div>
-<p>```text</p>
-<p><strong>2. tests/tools/test_data_drift_check.py</strong> (NEW - 0 → 85%+)</p>
+ """Test distributed troubleshooting utilities."""</p>
+<p>def test_troubleshoot_training_success(self):
+ """Test successful troubleshooting run."""
+ result = troubleshoot_training(rank=0, world_size=1)
+ assert result.status == "healthy"
+ assert len(result.issues) == 0</p>
+<p>def test_troubleshoot_training_communication_failure(self):
+ """Test detection of communication issues."""
+ result = troubleshoot_training(rank=0, world_size=4)
+ # Mock communication failure
+ assert result.status == "unhealthy"
+ assert "communication" in [i.category for i in result.issues]</p>
+<p>def test_check_distributed_setup_valid(self):
+ """Test distributed setup validation."""
+ is_valid = check_distributed_setup()
+ assert isinstance(is_valid, bool)</p>
+<p>def test_diagnose_communication_issues(self):
+ """Test communication diagnostics."""
+ issues = diagnose_communication_issues()
+ assert isinstance(issues, list)</p>
+<p># Add 20+ more tests for full coverage
+```text</p>
+<p><strong>2. tests/tools/test_data_drift_check.py</strong> (NEW - 0 85%+)</p>
 <p>```python
 """Test suite for data drift detection."""
 import pytest
 import numpy as np
 from tools.data_drift_check import check_drift, DriftDetector</p>
 <p>class TestDataDriftCheck:
-    """Test data drift detection functionality."""</p>
-<div class="highlight"><pre><span></span><code>def test_check_drift_no_drift(self):
-    """Test drift detection with no drift."""
-    baseline = np.random.normal(0, 1, 1000)
-    current = np.random.normal(0, 1, 1000)
-    result = check_drift(baseline, current)
-    assert not result.has_drift
-
-def test_check_drift_with_drift(self):
-    """Test drift detection with significant drift."""
-    baseline = np.random.normal(0, 1, 1000)
-    current = np.random.normal(5, 1, 1000)  # Shifted mean
-    result = check_drift(baseline, current)
-    assert result.has_drift
-
-def test_drift_detector_initialization(self):
-    """Test DriftDetector initialization."""
-    detector = DriftDetector(threshold=0.05)
-    assert detector.threshold == 0.05
-
-# Add 10+ more tests for full coverage
-</code></pre></div>
-<p>```text</p>
-<p><strong>3. tests/tools/test_verification_tool.py</strong> (NEW - 0 → 85%+)</p>
+ """Test data drift detection functionality."""</p>
+<p>def test_check_drift_no_drift(self):
+ """Test drift detection with no drift."""
+ baseline = np.random.normal(0, 1, 1000)
+ current = np.random.normal(0, 1, 1000)
+ result = check_drift(baseline, current)
+ assert not result.has_drift</p>
+<p>def test_check_drift_with_drift(self):
+ """Test drift detection with significant drift."""
+ baseline = np.random.normal(0, 1, 1000)
+ current = np.random.normal(5, 1, 1000) # Shifted mean
+ result = check_drift(baseline, current)
+ assert result.has_drift</p>
+<p>def test_drift_detector_initialization(self):
+ """Test DriftDetector initialization."""
+ detector = DriftDetector(threshold=0.05)
+ assert detector.threshold == 0.05</p>
+<p># Add 10+ more tests for full coverage
+```text</p>
+<p><strong>3. tests/tools/test_verification_tool.py</strong> (NEW - 0 85%+)</p>
 <p>```python
 """Test suite for verification utilities."""
 import pytest
 from pathlib import Path
 from tools.verification_tool import verify_setup, VerificationResult</p>
 <p>class TestVerificationTool:
-    """Test verification tool functionality."""</p>
-<div class="highlight"><pre><span></span><code>def test_verify_setup_success(self, tmp_path):
-    """Test successful verification."""
-    result = verify_setup(tmp_path)
-    assert isinstance(result, VerificationResult)
-    assert result.passed
-
-def test_verify_setup_missing_files(self, tmp_path):
-    """Test verification with missing required files."""
-    result = verify_setup(tmp_path)
-    assert not result.passed
-    assert "missing files" in result.errors
-
-# Add 10+ more tests for full coverage
-</code></pre></div>
-<p>```text</p>
-<p><strong>4. tests/data/test_loader_enhanced.py</strong> (ENHANCE - 45% → 90%+)</p>
+ """Test verification tool functionality."""</p>
+<p>def test_verify_setup_success(self, tmp_path):
+ """Test successful verification."""
+ result = verify_setup(tmp_path)
+ assert isinstance(result, VerificationResult)
+ assert result.passed</p>
+<p>def test_verify_setup_missing_files(self, tmp_path):
+ """Test verification with missing required files."""
+ result = verify_setup(tmp_path)
+ assert not result.passed
+ assert "missing files" in result.errors</p>
+<p># Add 10+ more tests for full coverage
+```text</p>
+<p><strong>4. tests/data/test_loader_enhanced.py</strong> (ENHANCE - 45% 90%+)</p>
 <p>```python
 """Enhanced test suite for data loader."""
 import pytest
 from pathlib import Path
 from codex_ml.data.loader_enhanced import load_and_validate</p>
 <p>class TestLoaderEnhanced:
-    """Test enhanced data loader functionality."""</p>
-<div class="highlight"><pre><span></span><code># Existing tests at 45% coverage
-
-# NEW: Add edge case tests
-def test_load_and_validate_empty_file(self, tmp_path):
-    """Test loading empty file."""
-    empty_file = tmp_path / "empty.json"
-    empty_file.write_text("")
-    with pytest.raises(ValueError, match="empty"):
-        load_and_validate(empty_file)
-
-def test_load_and_validate_malformed_json(self, tmp_path):
-    """Test loading malformed JSON."""
-    bad_json = tmp_path / "bad.json"
-    bad_json.write_text("{invalid json")
-    with pytest.raises(ValueError, match="invalid"):
-        load_and_validate(bad_json)
-
-def test_load_and_validate_large_file(self, tmp_path):
-    """Test loading large file with memory constraints."""
-    # Test large file handling
-    pass
-
-def test_load_and_validate_concurrent_access(self, tmp_path):
-    """Test concurrent file access."""
-    # Test thread safety
-    pass
-
-# Add 6+ more tests to reach 90%+
-</code></pre></div>
-<p>```text</p>
+ """Test enhanced data loader functionality."""</p>
+<p># Existing tests at 45% coverage</p>
+<p># NEW: Add edge case tests
+ def test_load_and_validate_empty_file(self, tmp_path):
+ """Test loading empty file."""
+ empty_file = tmp_path / "empty.json"
+ empty_file.write_text("")
+ with pytest.raises(ValueError, match="empty"):
+ load_and_validate(empty_file)</p>
+<p>def test_load_and_validate_malformed_json(self, tmp_path):
+ """Test loading malformed JSON."""
+ bad_json = tmp_path / "bad.json"
+ bad_json.write_text("{invalid json")
+ with pytest.raises(ValueError, match="invalid"):
+ load_and_validate(bad_json)</p>
+<p>def test_load_and_validate_large_file(self, tmp_path):
+ """Test loading large file with memory constraints."""
+ # Test large file handling
+ pass</p>
+<p>def test_load_and_validate_concurrent_access(self, tmp_path):
+ """Test concurrent file access."""
+ # Test thread safety
+ pass</p>
+<p># Add 6+ more tests to reach 90%+
+```text</p>
 <hr/>
 <h2 id="high-priority-issues-to-address">High Priority Issues to Address<a class="headerlink" href="#high-priority-issues-to-address" title="Permanent link">¶</a></h2>
-<h3 id="issue-1-data-migration-compatibility-critical">Issue 1: Data Migration Compatibility ️ CRITICAL<a class="headerlink" href="#issue-1-data-migration-compatibility-critical" title="Permanent link">¶</a></h3>
+<h3 id="issue-1-data-migration-compatibility-critical">Issue 1: Data Migration Compatibility CRITICAL<a class="headerlink" href="#issue-1-data-migration-compatibility-critical" title="Permanent link">¶</a></h3>
 <p><strong>Files Affected:</strong>
 - <code>data/assignment_mappings_v1.json</code> (DELETED)
 - <code>data/assignment_mappings_v2.json</code> (DELETED)</p>
 <p><strong>Breaking Changes:</strong>
 Removal of legacy mapping files without backward compatibility layer will break existing workflows that reference these files.</p>
 <p><strong>Action Required:</strong>
-1.  Create data migration utility (<code>src/codex_ml/data/migration.py</code>)
-2.  Add compatibility layer in data loader
-3.  Add deprecation warnings to legacy file access (PENDING)
-4.  Document migration path in CHANGELOG.md (PENDING)
-5.  Create migration CLI tool (PENDING)</p>
+1. Create data migration utility (<code>src/codex_ml/data/migration.py</code>)
+2. Add compatibility layer in data loader
+3. Add deprecation warnings to legacy file access (PENDING)
+4. Document migration path in CHANGELOG.md (PENDING)
+5. Create migration CLI tool (PENDING)</p>
 <p><strong>Timeline:</strong> Must complete before merge</p>
 <p><strong>Risk:</strong> HIGH - Breaking change affects production workflows</p>
 <hr/>
-<h3 id="issue-2-missing-test-coverage-for-new-modules-critical">Issue 2: Missing Test Coverage for New Modules ️ CRITICAL<a class="headerlink" href="#issue-2-missing-test-coverage-for-new-modules-critical" title="Permanent link">¶</a></h3>
+<h3 id="issue-2-missing-test-coverage-for-new-modules-critical">Issue 2: Missing Test Coverage for New Modules CRITICAL<a class="headerlink" href="#issue-2-missing-test-coverage-for-new-modules-critical" title="Permanent link">¶</a></h3>
 <p><strong>Files Affected:</strong>
 - <code>training/distributed_troubleshooting.py</code> (0% coverage)
 - <code>tools/data_drift_check.py</code> (0% coverage)
@@ -3208,15 +3194,15 @@ Removal of legacy mapping files without backward compatibility layer will break 
 <p><strong>Finding:</strong>
 Three new critical modules have 0% test coverage, creating significant risk for production deployment.</p>
 <p><strong>Action Required:</strong>
-1.  Implement comprehensive unit test suite for <code>distributed_troubleshooting.py</code> (TARGET: 95%+ coverage, ~25 tests)
-2.  Implement test suite for <code>data_drift_check.py</code> (TARGET: 85%+ coverage, ~15 tests)
-3.  Implement test suite for <code>verification_tool.py</code> (TARGET: 85%+ coverage, ~12 tests)
-4.  Add integration tests for workflow scenarios
-5.  Configure coverage thresholds in <code>pytest.ini</code> or <code>.coveragerc</code></p>
+1. Implement comprehensive unit test suite for <code>distributed_troubleshooting.py</code> (TARGET: 95%+ coverage, ~25 tests)
+2. Implement test suite for <code>data_drift_check.py</code> (TARGET: 85%+ coverage, ~15 tests)
+3. Implement test suite for <code>verification_tool.py</code> (TARGET: 85%+ coverage, ~12 tests)
+4. Add integration tests for workflow scenarios
+5. Configure coverage thresholds in <code>pytest.ini</code> or <code>.coveragerc</code></p>
 <p><strong>Timeline:</strong> Must complete before merge</p>
 <p><strong>Risk:</strong> CRITICAL - Untested code cannot be safely deployed</p>
 <hr/>
-<h3 id="issue-3-type-safety-deficiencies-high">Issue 3: Type Safety Deficiencies ️ HIGH<a class="headerlink" href="#issue-3-type-safety-deficiencies-high" title="Permanent link">¶</a></h3>
+<h3 id="issue-3-type-safety-deficiencies-high">Issue 3: Type Safety Deficiencies HIGH<a class="headerlink" href="#issue-3-type-safety-deficiencies-high" title="Permanent link">¶</a></h3>
 <p><strong>Location:</strong> 45 missing type hints across 8 files</p>
 <p><strong>Impact:</strong>
 - Reduced IDE support and autocomplete functionality
@@ -3297,35 +3283,35 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 1. ~~ Add type hints to all function signatures~~ (Complete for new modules)
 2. ~~ Add type hints to class attributes~~ (Complete for new modules)
 3. ~~ Import necessary typing modules (Dict, List, Optional, etc.)~~ (Complete for new modules)
-4.  Run <code>mypy</code> to validate type correctness
-5.  Update CI to enforce type hint coverage</p>
+4. Run <code>mypy</code> to validate type correctness
+5. Update CI to enforce type hint coverage</p>
 <p><strong>Timeline:</strong> Should complete before merge</p>
 <p><strong>Estimated Effort:</strong> 4-6 hours total (reduced from 8-10 hours due to completed work)</p>
 <hr/>
-<h3 id="issue-4-documentation-gaps-medium-partially-complete">Issue 4: Documentation Gaps ️ MEDIUM (PARTIALLY COMPLETE)<a class="headerlink" href="#issue-4-documentation-gaps-medium-partially-complete" title="Permanent link">¶</a></h3>
+<h3 id="issue-4-documentation-gaps-medium-partially-complete">Issue 4: Documentation Gaps MEDIUM (PARTIALLY COMPLETE)<a class="headerlink" href="#issue-4-documentation-gaps-medium-partially-complete" title="Permanent link">¶</a></h3>
 <p><strong>Missing Elements:</strong>
-- ~~3 files without module docstrings~~ → 3 files still need docstrings (new modules complete)
-- ~~12 functions lacking complete documentation~~ → Some complete, others remain
-- ~~5 utilities without usage examples~~ → New modules have examples, others remain
+- ~~3 files without module docstrings~~ 3 files still need docstrings (new modules complete)
+- ~~12 functions lacking complete documentation~~ Some complete, others remain
+- ~~5 utilities without usage examples~~ New modules have examples, others remain
 - 8 functions missing return type documentation</p>
 <p><strong>Files Requiring Documentation:</strong></p>
 <ol>
-<li><strong><code>src/training/distributed_troubleshooting.py</code></strong>  File doesn't exist in codebase</li>
+<li><strong><code>src/training/distributed_troubleshooting.py</code></strong> File doesn't exist in codebase</li>
 <li>Missing: Module docstring</li>
 <li>Missing: 3 function docstrings</li>
 <li>
 <p>Missing: Usage examples</p>
 </li>
 <li>
-<p>~~<strong><code>tools/data_drift_check.py</code></strong>~~  COMPLETE</p>
+<p>~~<strong><code>tools/data_drift_check.py</code></strong>~~ COMPLETE</p>
 </li>
-<li>~~Missing: Module docstring~~  Has comprehensive module docstring</li>
-<li>~~Missing: 2 class docstrings~~  Functions have full docstrings</li>
+<li>~~Missing: Module docstring~~ Has comprehensive module docstring</li>
+<li>~~Missing: 2 class docstrings~~ Functions have full docstrings</li>
 <li>
-<p>~~Missing: Method documentation~~  All parameters documented</p>
+<p>~~Missing: Method documentation~~ All parameters documented</p>
 </li>
 <li>
-<p><strong><code>tools/verification_tool.py</code></strong>  File doesn't exist</p>
+<p><strong><code>tools/verification_tool.py</code></strong> File doesn't exist</p>
 </li>
 <li>Missing: Complete function documentation</li>
 <li>Missing: Parameter descriptions</li>
@@ -3355,11 +3341,11 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 2. ~~ Add module-level docstrings with overview and examples~~ (Complete for new modules)
 3. ~~ Add function/method docstrings with Args/Returns/Raises~~ (Complete for new modules)
 4. ~~ Add usage examples to key functions~~ (Complete for new modules)
-5.  Generate API documentation with <code>sphinx</code> or <code>mkdocs</code></p>
+5. Generate API documentation with <code>sphinx</code> or <code>mkdocs</code></p>
 <p><strong>Timeline:</strong> Should complete before merge</p>
 <p><strong>Estimated Effort:</strong> 3-4 hours total (reduced from 6-8 hours)</p>
 <hr/>
-<h3 id="issue-5-code-complexity-issues-medium">Issue 5: Code Complexity Issues ️ MEDIUM<a class="headerlink" href="#issue-5-code-complexity-issues-medium" title="Permanent link">¶</a></h3>
+<h3 id="issue-5-code-complexity-issues-medium">Issue 5: Code Complexity Issues MEDIUM<a class="headerlink" href="#issue-5-code-complexity-issues-medium" title="Permanent link">¶</a></h3>
 <p><strong>High Complexity Functions Identified:</strong></p>
 <table>
 <thead>
@@ -3392,39 +3378,37 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 </tbody>
 </table>
 <p><strong>Action Required:</strong></p>
-<p><strong>1. Refactor <code>troubleshoot_training()</code> (Complexity 14 → ≤10)</strong></p>
+<p><strong>1. Refactor <code>troubleshoot_training()</code> (Complexity 14 ≤10)</strong></p>
 <p>Before:
 <code>text
 def troubleshoot_training(rank, world_size, model, optimizer):
-    # 14 decision points - too complex
-    if rank == 0:
-        if world_size &gt; 1:
-            if check_distributed():
-                if verify_nccl():
-                    # ... more nested logic</code>text</p>
+ # 14 decision points - too complex
+ if rank == 0:
+ if world_size &gt; 1:
+ if check_distributed():
+ if verify_nccl():
+ # ... more nested logic</code>text</p>
 <p>After:
 ```python
 def troubleshoot_training(rank, world_size, model, optimizer):
-    """Troubleshoot training setup - refactored for clarity."""
-    checks = [
-        check_distributed_init,
-        check_nccl_availability,
-        check_model_placement,
-        check_optimizer_state,
-    ]</p>
-<div class="highlight"><pre><span></span><code>results = []
-for check in checks:
-    result = check(rank, world_size, model, optimizer)
-    results.append(result)
-    if not result.passed:
-        break
-
-return TroubleshootingResult(results)
-</code></pre></div>
-<p>```text</p>
-<p><strong>2. Refactor <code>load_and_validate()</code> (Complexity 11 → ≤10)</strong></p>
+ """Troubleshoot training setup - refactored for clarity."""
+ checks = [
+ check_distributed_init,
+ check_nccl_availability,
+ check_model_placement,
+ check_optimizer_state,
+ ]</p>
+<p>results = []
+ for check in checks:
+ result = check(rank, world_size, model, optimizer)
+ results.append(result)
+ if not result.passed:
+ break</p>
+<p>return TroubleshootingResult(results)
+```text</p>
+<p><strong>2. Refactor <code>load_and_validate()</code> (Complexity 11 ≤10)</strong></p>
 <p>Extract validation logic into separate functions.</p>
-<p><strong>3. Refactor <code>check_drift()</code> (Complexity 12 → ≤10)</strong></p>
+<p><strong>3. Refactor <code>check_drift()</code> (Complexity 12 ≤10)</strong></p>
 <p>Split statistical tests into separate methods.</p>
 <p><strong>Timeline:</strong> Should complete before merge</p>
 <p><strong>Estimated Effort:</strong> 4-6 hours total</p>
@@ -3471,66 +3455,64 @@ return TroubleshootingResult(results)
 </table>
 <p><strong>Total Performance Gap:</strong> 545ms across 3 components</p>
 <h3 id="optimization-recommendations">Optimization Recommendations<a class="headerlink" href="#optimization-recommendations" title="Permanent link">¶</a></h3>
-<p><strong>1. Cache Handler Initialization (145ms → &lt;100ms)</strong></p>
+<p><strong>1. Cache Handler Initialization (145ms &lt;100ms)</strong></p>
 <p>```python</p>
 <h1 id="current-lazy-loading-creates-initialization-overhead">Current: Lazy loading creates initialization overhead<a class="headerlink" href="#current-lazy-loading-creates-initialization-overhead" title="Permanent link">¶</a></h1>
 <p>class CacheHandler:
-    def <strong>init</strong>(self):
-        self.cache = self._load_cache()  # 145ms
-        self.config = self._load_config()  # Synchronous</p>
+ def <strong>init</strong>(self):
+ self.cache = self._load_cache() # 145ms
+ self.config = self._load_config() # Synchronous</p>
 <h1 id="optimized-use-lazy-properties">Optimized: Use lazy properties<a class="headerlink" href="#optimized-use-lazy-properties" title="Permanent link">¶</a></h1>
 <p>class CacheHandler:
-    def <strong>init</strong>(self):
-        self._cache = None
-        self._config = None</p>
-<div class="highlight"><pre><span></span><code>@property
-def cache(self):
-    if self._cache is None:
-        self._cache = self._load_cache()
-    return self._cache
-
-@property
-def config(self):
-    if self._config is None:
-        self._config = self._load_config()
-    return self._config
-</code></pre></div>
-<p>```text</p>
-<p><strong>2. Data Loader First Load (2.3s → &lt;2.0s)</strong></p>
+ def <strong>init</strong>(self):
+ self._cache = None
+ self._config = None</p>
+<p>@property
+ def cache(self):
+ if self._cache is None:
+ self._cache = self._load_cache()
+ return self._cache</p>
+<p>@property
+ def config(self):
+ if self._config is None:
+ self._config = self._load_config()
+ return self._config
+```text</p>
+<p><strong>2. Data Loader First Load (2.3s &lt;2.0s)</strong></p>
 <p>```python</p>
 <h1 id="optimization-parallelize-file-reading-and-preprocessing">Optimization: Parallelize file reading and preprocessing<a class="headerlink" href="#optimization-parallelize-file-reading-and-preprocessing" title="Permanent link">¶</a></h1>
 <p>from concurrent.futures import ThreadPoolExecutor</p>
 <p>def load_and_validate(paths):
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = [executor.submit(load_file, p) for p in paths]
-        results = [f.result() for f in futures]
-    return results
+ with ThreadPoolExecutor(max_workers=4) as executor:
+ futures = [executor.submit(load_file, p) for p in paths]
+ results = [f.result() for f in futures]
+ return results
 ```text</p>
-<p><strong>3. Validation Tool Execution (1.2s → &lt;1.0s)</strong></p>
+<p><strong>3. Validation Tool Execution (1.2s &lt;1.0s)</strong></p>
 <p>```python</p>
 <h1 id="optimization-cache-validation-results">Optimization: Cache validation results<a class="headerlink" href="#optimization-cache-validation-results" title="Permanent link">¶</a></h1>
 <p>import functools</p>
 <p>@functools.lru_cache(maxsize=128)
 def validate_schema(schema_hash, data_hash):
-    # Cached validation
-    pass
+ # Cached validation
+ pass
 ```text</p>
 <hr/>
 <h2 id="test-execution-results">Test Execution Results<a class="headerlink" href="#test-execution-results" title="Permanent link">¶</a></h2>
 <h3 id="test-summary">Test Summary<a class="headerlink" href="#test-summary" title="Permanent link">¶</a></h3>
 <p><code>text
 Total Tests: 1,262 (+15 new tests)
-Passed:      1,213 (96.1% → 96.1%)
-Failed:      28   (2.2%)
-Skipped:     21   (1.7%)</code>text</p>
-<p><strong>NEW:  Added comprehensive test suite for data_drift_check.py</strong> (15 tests, 85%+ coverage achieved)</p>
+Passed: 1,213 (96.1% 96.1%)
+Failed: 28 (2.2%)
+Skipped: 21 (1.7%)</code>text</p>
+<p><strong>NEW: Added comprehensive test suite for data_drift_check.py</strong> (15 tests, 85%+ coverage achieved)</p>
 <h3 id="failing-test-suites">Failing Test Suites<a class="headerlink" href="#failing-test-suites" title="Permanent link">¶</a></h3>
-<p><strong>1. ~~training/test_distributed_troubleshooting.py: 12 failures~~</strong>  File doesn't exist - aspirational
+<p><strong>1. ~~training/test_distributed_troubleshooting.py: 12 failures~~</strong> File doesn't exist - aspirational
 <code>text
 N/A - Module src/training/distributed_troubleshooting.py doesn't exist in codebase</code>text</p>
 <p><strong>Root Cause:</strong> Module not implemented yet
 <strong>Action:</strong> Need to determine if this module should be created or is misdocumented</p>
-<p><strong>2. ~~tools/test_data_drift_check.py: 8 failures~~</strong>  FIXED - Now passing (15 tests)
+<p><strong>2. ~~tools/test_data_drift_check.py: 8 failures~~</strong> FIXED - Now passing (15 tests)
 <code>text
  All 15 tests passing
 - test_drift_score_no_drift
@@ -3569,10 +3551,10 @@ FAILED test_load_and_validate_large_file - MemoryError
 <strong>Action:</strong> Enhance existing tests and fix edge cases</p>
 <h3 id="linting-results">Linting Results<a class="headerlink" href="#linting-results" title="Permanent link">¶</a></h3>
 <p><code>text
-Total Issues:  34
-Errors:        0
-Warnings:      12 (primarily type hints)
-Info:          22</code>text</p>
+Total Issues: 34
+Errors: 0
+Warnings: 12 (primarily type hints)
+Info: 22</code>text</p>
 <p><strong>Warning Breakdown:</strong>
 - 12 missing type hints
 - 4 unused imports
@@ -3596,36 +3578,33 @@ Info:          22</code>text</p>
 <p>```python</p>
 <h1 id="current">Current<a class="headerlink" href="#current" title="Permanent link">¶</a></h1>
 <p>def load_and_validate(path):
-    with open(path) as f:  # No path validation
-        data = json.load(f)</p>
+ with open(path) as f: # No path validation
+ data = json.load(f)</p>
 <h1 id="recommended">Recommended<a class="headerlink" href="#recommended" title="Permanent link">¶</a></h1>
 <p>def load_and_validate(path: Path):
-    # Validate path
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {path}")</p>
-<div class="highlight"><pre><span></span><code>if not path.is_file():
-    raise ValueError(f"Path is not a file: {path}")
-
-# Prevent path traversal
-resolved = path.resolve()
-if not str(resolved).startswith(str(ALLOWED_DATA_DIR)):
-    raise SecurityError(f"Path outside allowed directory: {path}")
-
-with open(resolved) as f:
-    data = json.load(f)
-</code></pre></div>
-<p>```text</p>
+ # Validate path
+ if not path.exists():
+ raise FileNotFoundError(f"File not found: {path}")</p>
+<p>if not path.is_file():
+ raise ValueError(f"Path is not a file: {path}")</p>
+<p># Prevent path traversal
+ resolved = path.resolve()
+ if not str(resolved).startswith(str(ALLOWED_DATA_DIR)):
+ raise SecurityError(f"Path outside allowed directory: {path}")</p>
+<p>with open(resolved) as f:
+ data = json.load(f)
+```text</p>
 <p><strong>2. Error Message Sanitization (LOW severity)</strong></p>
 <p><strong>File:</strong> <code>tools/data_drift_check.py:145</code>
 <strong>Issue:</strong> Error messages may leak sensitive file paths</p>
 <p>```text</p>
 <h1 id="current_1">Current<a class="headerlink" href="#current_1" title="Permanent link">¶</a></h1>
 <p>except Exception as e:
-    print(f"Error loading {file_path}: {e}")</p>
+ print(f"Error loading {file_path}: {e}")</p>
 <h1 id="recommended_1">Recommended<a class="headerlink" href="#recommended_1" title="Permanent link">¶</a></h1>
 <p>except Exception as e:
-    logger.error("Error loading data file", exc_info=True)
-    # Don't print full path in production
+ logger.error("Error loading data file", exc_info=True)
+ # Don't print full path in production
 ```text</p>
 <p><strong>3. Configuration Path Validation (LOW severity)</strong></p>
 <p><strong>File:</strong> <code>src/training/config.py:67</code>
@@ -3634,14 +3613,12 @@ with open(resolved) as f:
 <h1 id="add-validation">Add validation<a class="headerlink" href="#add-validation" title="Permanent link">¶</a></h1>
 <p>from pathlib import Path</p>
 <p>def load_config(config_path: Path):
-    if not config_path.suffix in ['.yaml', '.yml', '.json']:
-        raise ValueError("Invalid config file type")</p>
-<div class="highlight"><pre><span></span><code>if not config_path.exists():
-    raise FileNotFoundError(f"Config not found")
-
-# Load config
-</code></pre></div>
-<p>```text</p>
+ if not config_path.suffix in ['.yaml', '.yml', '.json']:
+ raise ValueError("Invalid config file type")</p>
+<p>if not config_path.exists():
+ raise FileNotFoundError(f"Config not found")</p>
+<p># Load config
+```text</p>
 <hr/>
 <h2 id="pre-merge-validation-status">Pre-Merge Validation Status<a class="headerlink" href="#pre-merge-validation-status" title="Permanent link">¶</a></h2>
 <table>
@@ -3660,22 +3637,22 @@ with open(resolved) as f:
 </tr>
 <tr>
 <td><strong>All Tests Pass</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>28 failures identified (see Test Execution Results)</td>
 </tr>
 <tr>
 <td><strong>Type Checking</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>45 type hint warnings (see Issue 3)</td>
 </tr>
 <tr>
 <td><strong>Documentation</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>5 files incomplete (see Issue 4)</td>
 </tr>
 <tr>
 <td><strong>Linting</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>12 style issues (see Linting Results)</td>
 </tr>
 <tr>
@@ -3685,12 +3662,12 @@ with open(resolved) as f:
 </tr>
 <tr>
 <td><strong>Performance</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>3 slow operations (see Performance Analysis)</td>
 </tr>
 <tr>
 <td><strong>Coverage</strong></td>
-<td>️ PARTIAL</td>
+<td>PARTIAL</td>
 <td>3 files at 0% coverage (see Issue 2)</td>
 </tr>
 </tbody>
@@ -3699,7 +3676,7 @@ with open(resolved) as f:
 <h2 id="critical-requirements-for-merge">Critical Requirements for Merge<a class="headerlink" href="#critical-requirements-for-merge" title="Permanent link">¶</a></h2>
 <p><strong>MUST FIX BEFORE MERGE:</strong></p>
 <ol>
-<li>~~️ <strong>Add unit tests for critical modules</strong> (LARGELY COMPLETE)~~</li>
+<li>~~ <strong>Add unit tests for critical modules</strong> (LARGELY COMPLETE)~~</li>
 <li>~~<strong>Target:</strong> 95%+ coverage~~</li>
 <li>~~<strong>Effort:</strong> Completed~~</li>
 <li>~~<strong>Priority:</strong> CRITICAL~~</li>
@@ -3762,7 +3739,7 @@ with open(resolved) as f:
 - Documentation improvements for existing code</p>
 <hr/>
 <h2 id="merge-recommendation">Merge Recommendation<a class="headerlink" href="#merge-recommendation" title="Permanent link">¶</a></h2>
-<p><strong>Status:  CONDITIONAL APPROVAL</strong></p>
+<p><strong>Status: CONDITIONAL APPROVAL</strong></p>
 <p><strong>Current Score: 94.6% | Target: 99%+</strong></p>
 <h3 id="merge-decision">Merge Decision<a class="headerlink" href="#merge-decision" title="Permanent link">¶</a></h3>
 <p>** CANNOT MERGE IN CURRENT STATE**</p>
@@ -3789,7 +3766,7 @@ with open(resolved) as f:
 - Implement tests for <code>distributed_troubleshooting.py</code> (95%+ coverage)
 - Implement tests for <code>data_drift_check.py</code> (85%+ coverage)
 - Implement tests for <code>verification_tool.py</code> (85%+ coverage)
-- Enhance tests for <code>loader_enhanced.py</code> (45% → 90%+)</p>
+- Enhance tests for <code>loader_enhanced.py</code> (45% 90%+)</p>
 <p><strong>Day 2-3: Data Migration &amp; Versioning</strong>
 - Create data migration utility
 - Add compatibility layer
@@ -3857,97 +3834,97 @@ with open(resolved) as f:
 <h2 id="appendices">Appendices<a class="headerlink" href="#appendices" title="Permanent link">¶</a></h2>
 <h3 id="appendix-a-complete-test-coverage-report">Appendix A: Complete Test Coverage Report<a class="headerlink" href="#appendix-a-complete-test-coverage-report" title="Permanent link">¶</a></h3>
 <p>```text
-Module                                    Stmts   Miss  Cover</p>
+Module Stmts Miss Cover</p>
 <hr/>
-<p>src/training/distributed_troubleshooting    127    127     0%
-tools/data_drift_check                       95     95     0%
-tools/verification_tool                      78     78     0%
-src/data/loader_enhanced                    156     86    45%
-src/training/checkpoint_manager             234     18   92.1%
-src/tokenization/cache                      145      7   95.3%
-src/training/functional_training            412     47   88.7%
-src/evaluation/metrics                      183     16   91.4%</p>
+<p>src/training/distributed_troubleshooting 127 127 0%
+tools/data_drift_check 95 95 0%
+tools/verification_tool 78 78 0%
+src/data/loader_enhanced 156 86 45%
+src/training/checkpoint_manager 234 18 92.1%
+src/tokenization/cache 145 7 95.3%
+src/training/functional_training 412 47 88.7%
+src/evaluation/metrics 183 16 91.4%</p>
 <hr/>
-<p>TOTAL                                      1430    474   66.9%
+<p>TOTAL 1430 474 66.9%
 ```text</p>
 <h3 id="appendix-b-detailed-linting-report">Appendix B: Detailed Linting Report<a class="headerlink" href="#appendix-b-detailed-linting-report" title="Permanent link">¶</a></h3>
 <p>```text
 ruff check --output-format=grouped</p>
 <p>Warnings (12):
-  F401: Unused import
-    - src/training/data_utils.py:3
-    - tools/data_drift_check.py:8
-    - src/data/loader_enhanced.py:12
-    - tools/verification_tool.py:5</p>
+ F401: Unused import
+ - src/training/data_utils.py:3
+ - tools/data_drift_check.py:8
+ - src/data/loader_enhanced.py:12
+ - tools/verification_tool.py:5</p>
 <p>D103: Missing docstring in public function
-    - src/training/distributed_troubleshooting.py:45
-    - src/training/distributed_troubleshooting.py:78
-    - src/training/distributed_troubleshooting.py:112</p>
+ - src/training/distributed_troubleshooting.py:45
+ - src/training/distributed_troubleshooting.py:78
+ - src/training/distributed_troubleshooting.py:112</p>
 <p>ANN001: Missing type annotation for function argument
-    - [45 locations - see Issue 3]</p>
+ - [45 locations - see Issue 3]</p>
 <p>Info (22):
-  E501: Line too long (&gt;100 characters)
-    - src/training/functional_training.py:156
-    - src/data/loader_enhanced.py:89
-    - tools/data_drift_check.py:145
+ E501: Line too long (&gt;100 characters)
+ - src/training/functional_training.py:156
+ - src/data/loader_enhanced.py:89
+ - tools/data_drift_check.py:145
 ```text</p>
 <h3 id="appendix-c-performance-profiling-results">Appendix C: Performance Profiling Results<a class="headerlink" href="#appendix-c-performance-profiling-results" title="Permanent link">¶</a></h3>
 <p>```text
 Cache Handler Initialization:
-  Total time: 145ms
-  Breakdown:
-    - Config loading: 85ms (58%)
-    - Cache index building: 45ms (31%)
-    - Metadata parsing: 15ms (11%)</p>
+ Total time: 145ms
+ Breakdown:
+ - Config loading: 85ms (58%)
+ - Cache index building: 45ms (31%)
+ - Metadata parsing: 15ms (11%)</p>
 <p>Data Loader First Load:
-  Total time: 2.3s
-  Breakdown:
-    - File I/O: 1.2s (52%)
-    - JSON parsing: 0.7s (30%)
-    - Validation: 0.4s (18%)</p>
+ Total time: 2.3s
+ Breakdown:
+ - File I/O: 1.2s (52%)
+ - JSON parsing: 0.7s (30%)
+ - Validation: 0.4s (18%)</p>
 <p>Validation Tool Execution:
-  Total time: 1.2s
-  Breakdown:
-    - Schema loading: 0.5s (42%)
-    - Validation logic: 0.5s (42%)
-    - Report generation: 0.2s (16%)
+ Total time: 1.2s
+ Breakdown:
+ - Schema loading: 0.5s (42%)
+ - Validation logic: 0.5s (42%)
+ - Report generation: 0.2s (16%)
 ```text</p>
 <hr/>
 <p><strong>Document Generated:2026-07-13
 </strong>Last Updated: 2026-07-11
-<strong>Review System Version:</strong> 2.1.0<br/>
-<strong>Analysis Tools:</strong> pylint, mypy, ruff, pytest-cov, radon<br/>
+<strong>Review System Version:</strong> 2.1.0
+<strong>Analysis Tools:</strong> pylint, mypy, ruff, pytest-cov, radon
 <strong>Implementation Status:</strong> Phase 1 Critical Fixes Complete (4/7 errors resolved)</p>
 <hr/>
 <h2 id="final-implementation-summary-2025-11-08">Final Implementation Summary (2025-11-08)<a class="headerlink" href="#final-implementation-summary-2025-11-08" title="Permanent link">¶</a></h2>
 <h3 id="what-was-successfully-implemented">What Was Successfully Implemented<a class="headerlink" href="#what-was-successfully-implemented" title="Permanent link">¶</a></h3>
-<p><strong>1. Data Migration System</strong> (<code>src/codex_ml/data/migration.py</code>) 
-- Full v1→v2→v3 migration pipeline
+<p><strong>1. Data Migration System</strong> (<code>src/codex_ml/data/migration.py</code>)
+- Full v1v2v3 migration pipeline
 - Auto-detection of file versions
 - Backward compatibility with deprecation warnings
 - CLI tool for manual migrations (<code>src/codex_ml/cli/migrate_data.py</code>)
 - 18 comprehensive tests (95%+ coverage)
 - Solves ERR-2151-007</p>
-<p><strong>2. Checkpoint Schema Versioning</strong> (<code>src/codex_ml/checkpointing/checkpoint_core.py</code>) 
+<p><strong>2. Checkpoint Schema Versioning</strong> (<code>src/codex_ml/checkpointing/checkpoint_core.py</code>)
 - Upgraded from v1 to v2.0 schema
 - Added <code>_schema_version</code> and <code>_created_at</code> metadata
 - Version mismatch warnings on load
 - Forward/backward compatibility tracking
 - Solves ERR-2151-004</p>
-<p><strong>3. Tokenization Cache</strong> (<code>src/codex_ml/tokenization/cache.py</code>) 
+<p><strong>3. Tokenization Cache</strong> (<code>src/codex_ml/tokenization/cache.py</code>)
 - TTL-based cache with configurable expiration (default 24h)
 - Cache key derived from text + config hash
 - Automatic and manual invalidation
 - Statistics tracking and global instance management
 - 21 comprehensive tests (95%+ coverage)
 - Solves ERR-2151-005</p>
-<p><strong>4. Metrics Validation Framework</strong> (<code>src/codex_ml/metrics/validation.py</code>) 
+<p><strong>4. Metrics Validation Framework</strong> (<code>src/codex_ml/metrics/validation.py</code>)
 - Registry validation function
 - Metric existence checking
 - Custom MetricValidationError exception
 - 11 comprehensive tests (90%+ coverage)
 - Solves ERR-2151-003</p>
-<p><strong>5. Data Drift Detection Tests</strong> (<code>tests/tools/test_data_drift_check.py</code>) 
+<p><strong>5. Data Drift Detection Tests</strong> (<code>tests/tools/test_data_drift_check.py</code>)
 - 15 tests covering all scenarios
 - Edge cases, CLI, error handling
 - 85%+ coverage achieved</p>
@@ -3968,7 +3945,7 @@ Cache Handler Initialization:
 <td>94.6%</td>
 <td>97.2%</td>
 <td>99%</td>
-<td>️ Close</td>
+<td>Close</td>
 </tr>
 <tr>
 <td><strong>Test Coverage (new code)</strong></td>
@@ -4003,7 +3980,7 @@ Cache Handler Initialization:
 <td>7</td>
 <td>3</td>
 <td>0</td>
-<td>️ 4 Resolved</td>
+<td>4 Resolved</td>
 </tr>
 </tbody>
 </table>
@@ -4030,18 +4007,18 @@ Cache Handler Initialization:
 3. <code>src/codex_ml/data/loader_enhanced.py</code> - File doesn't exist (many loaders exist, unclear which to enhance)</p>
 <p><strong>Conclusion:</strong> These appear to be aspirational features in the original error log that don't correspond to actual code. Implementation focused on solutions for code that actually exists and critical errors that could be resolved.</p>
 <h3 id="merge-readiness-assessment">Merge Readiness Assessment<a class="headerlink" href="#merge-readiness-assessment" title="Permanent link">¶</a></h3>
-<p><strong>Status: READY FOR REVIEW</strong> ️</p>
+<p><strong>Status: READY FOR REVIEW</strong></p>
 <p><strong>Strengths:</strong>
--  4 critical errors completely resolved with production-ready implementations
--  65 comprehensive tests added (95%+ coverage for new code)
--  Full type hints and documentation for all new modules
--  Security scan passed (0 vulnerabilities)
--  Backward compatibility maintained
--  Quality improved from 94.6% to 97.2%</p>
+- 4 critical errors completely resolved with production-ready implementations
+- 65 comprehensive tests added (95%+ coverage for new code)
+- Full type hints and documentation for all new modules
+- Security scan passed (0 vulnerabilities)
+- Backward compatibility maintained
+- Quality improved from 94.6% to 97.2%</p>
 <p><strong>Remaining Gaps:</strong>
-- ️ 3 critical errors remain (ERR-2151-001, ERR-2151-002, ERR-2151-006)
-- ️ Quality score 97.2% vs target 99% (gap: -1.8%)
-- ️ Some referenced files don't exist in codebase</p>
+- 3 critical errors remain (ERR-2151-001, ERR-2151-002, ERR-2151-006)
+- Quality score 97.2% vs target 99% (gap: -1.8%)
+- Some referenced files don't exist in codebase</p>
 <p><strong>Recommendation:</strong>
 This PR delivers significant value with production-ready implementations of data migration, schema versioning, caching, and validation. The remaining gaps are primarily related to files that don't exist in the codebase. Recommend merging these improvements and addressing remaining issues in separate PRs focused on existing code.</p>
 </article>
@@ -4073,6 +4050,6 @@ This PR delivers significant value with production-ready implementations of data
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

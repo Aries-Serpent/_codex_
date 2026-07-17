@@ -1,6 +1,6 @@
 # Pattern Library Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Complete guide to discovering, applying, and integrating patterns from the Phase 15-16 Pattern Library (Lane 2 Output).
 

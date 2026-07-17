@@ -1,6 +1,6 @@
 # API Reference Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,13 +12,13 @@ This document provides comprehensive API reference for all Codex ML modules acro
 
 ---
 
-## 10 Stable Public APIs (v0.2.1)
+## 10 Stable Public APIs (v0.2.0)
 
 **These APIs are production-ready and backward-compatible across all v0.1.x releases.**
 
 ### 1⃣ PromptSanitizer (Safety)
 **Module:** `codex_ml.safety.prompt_sanitizer`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Sanitizes user prompts to prevent injection attacks.
 
@@ -33,7 +33,7 @@ is_safe = sanitizer.is_safe(user_input)
 
 ### 2⃣ Config (Configuration)
 **Module:** `codex_ml.config`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Configuration management with Hydra + OmegaConf.
 
@@ -46,7 +46,7 @@ training_cfg = config.get('training')
 
 ### 3⃣ Planner (Cognitive Brain)
 **Module:** `cognitive_brain`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 OODA loop orchestrator for deterministic planning.
 
@@ -60,7 +60,7 @@ decision = planner.execute()
 
 ### 4⃣ MemoryManager (Cognitive Brain)
 **Module:** `cognitive_brain`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Pattern-based memory with STM/LTM hierarchy.
 
@@ -74,7 +74,7 @@ retrieved = memory.recall_pattern(...)
 
 ### 5⃣ ModelServer (Serving)
 **Module:** `codex_ml.serving`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Ray Serve integration for production inference.
 
@@ -88,7 +88,7 @@ result = server.infer(input_data)
 
 ### 6⃣ CLI Main (Command-Line Interface)
 **Module:** `codex_ml.cli`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Typer-based CLI for training, eval, and serving.
 
@@ -105,7 +105,7 @@ exit_code = main(['train', '--config', 'config.yaml'])
 
 ### 7⃣ ObservationData (Cognitive Brain)
 **Module:** `cognitive_brain`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Data class representing observations in OODA loop.
 
@@ -121,7 +121,7 @@ obs = ObservationData(
 
 ### 8⃣ Decision (Cognitive Brain)
 **Module:** `cognitive_brain`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Decision result from OODA Orient/Decide phase.
 
@@ -137,7 +137,7 @@ decision = Decision(
 
 ### 9⃣ NetworkPolicy (Safety)
 **Module:** `codex_ml.safety.network_policy`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Enforce network access policies (fail-closed by default).
 
@@ -152,7 +152,7 @@ except PolicyViolationError as e:
 
 ### PatternSet (Cognitive Brain)
 **Module:** `cognitive_brain`
-**Status:** Stable | **Since:** v0.2.1
+**Status:** Stable | **Since:** v0.2.0
 
 Collection of learned patterns for decision-making.
 

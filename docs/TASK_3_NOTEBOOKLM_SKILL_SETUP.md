@@ -1,5 +1,5 @@
 # Task 3: Configure Agentic Troubleshooting Skill
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 # NotebookLM Claude Code Integration Guide

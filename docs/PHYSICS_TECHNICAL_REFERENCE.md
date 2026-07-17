@@ -1,6 +1,6 @@
 # Advanced Physics Implementation - Technical Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -442,7 +442,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 
 ## Changelog
 
-### v0.2.1 (2025-12-12) - Code Review Fixes
+### v0.2.0 (2025-12-12) - Code Review Fixes
 - Fixed local maxima detection in EMFieldRouter
 - Added epsilon to prevent division by zero in WavePropagator
 - Optimized FluidFlowScheduler from O(n²) to O(n)
@@ -452,7 +452,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 - Added missing test cases
 - Improved documentation examples
 
-### v0.2.1 (2025-12-12) - Initial Release
+### v0.2.0 (2025-12-12) - Initial Release
 - Implemented all 6 physics paradigms
 - Created AdvancedPhysicsOrchestrator
 - Built PhysicsGuidedDeveloperOrchestrator

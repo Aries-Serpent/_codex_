@@ -1,6 +1,6 @@
 # INTEGRATION GUIDE: quantum-compliance-tuning-agent (Phase 4.5)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status**: **CONFIRMED ACTIVE** as of 2026-07-01
 **Version**: 1.0.0-phase4.5

@@ -1,6 +1,6 @@
 # Comprehensive Pull Request Template - Checkbox Checklist Style
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -807,7 +807,7 @@
 **PR Author:** @[username]
 **Date Submitted:** YYYY-MM-DD
 **Target Branch:** [e.g., main, develop]
-**Target Release:** [e.g., v0.2.1]
+**Target Release:** [e.g., v0.2.0]
 
 ---
 

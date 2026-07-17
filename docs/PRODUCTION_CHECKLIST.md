@@ -1,6 +1,6 @@
-# Production Checklist - Aries-Serpent v0.2.1
+# Production Checklist - Aries-Serpent v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Document Type:** Operations & Deployment Verification
 **Audience:** DevOps Engineers, Release Managers, Operations Teams

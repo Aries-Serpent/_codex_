@@ -1,6 +1,6 @@
 # PR Merge Readiness Framework — Complete Implementation Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status:** PRODUCTION READY
 **Implementation Date:** 2026-06-25
@@ -206,7 +206,7 @@ Turn 3 (Gates 3–10): Security checks, final verification Score: 100/100
 
 ```
 
- PR Merge Readiness Framework (v0.2.1) 
+ PR Merge Readiness Framework (v0.2.0) 
 
  
  

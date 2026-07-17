@@ -1,7 +1,7 @@
 {
   "phase": "PHASE_2",
   "task": "Release Packaging - Final Security Scan",
-  "version": "v0.2.1",
+  "version": "v0.2.0",
   "timestamp": "2026-07-11T07:52:35Z",
   "status": "COMPLETED",
   "results": {
@@ -55,7 +55,7 @@
     "status": "APPROVED",
     "decision": "PROCEED_TO_RELEASE",
     "next_steps": [
-      "Create v0.2.1 release tag",
+      "Create v0.2.0 release tag",
       "Publish wheel to PyPI",
       "Publish source distribution to PyPI",
       "Generate release notes",

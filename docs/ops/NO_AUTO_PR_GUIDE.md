@@ -1,6 +1,6 @@
 # GitHub Copilot No-Auto-PR Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Effective:** 2026-03 (GitHub change)
 > **Status:** Codebase fully adapted (PR #3661 / S173)

@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3494
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 # First D_CAPABLE Promotion + AUTO_PROMOTE_TIER_ENABLED Write Path
 
@@ -18,7 +18,7 @@
 | Work Item | Deliverable | Status |
 |-----------|-------------|--------|
 | W-096a | ADR-20260303-first-d-capable-promotion.md — criteria + decision | Done |
-| W-096b | AGENT_REGISTRY.yaml v0.2.1 — `ci-testing-agent` promoted to `D_CAPABLE` | Done |
+| W-096b | AGENT_REGISTRY.yaml v0.2.0 — `ci-testing-agent` promoted to `D_CAPABLE` | Done |
 | W-096c | `auto_promote_tier.py` — `AUTO_PROMOTE_TIER_ENABLED` guard + write path | Done |
 | W-096d | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 1 | Done |
 | W-096e | This status file — cognitive brain continuity | Done |
@@ -42,7 +42,7 @@ graph TB
  end
 
  subgraph AGENTS["Agent State"]
- REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
+ REG["AGENT_REGISTRY.yaml v0.2.0\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
  GATES["ED Gate: 5/5 (unchanged)\nC2: MANIFEST fresh"]
  end
 
@@ -215,7 +215,7 @@ Should print App ID, installation ID, and permissions.
 | Item | Description | Status |
 |------|-------------|--------|
 | W-096a | ADR-20260303-first-d-capable-promotion.md | |
-| W-096b | AGENT_REGISTRY.yaml v0.2.1 — ci-testing-agent D_CAPABLE | |
+| W-096b | AGENT_REGISTRY.yaml v0.2.0 — ci-testing-agent D_CAPABLE | |
 | W-096c | auto_promote_tier.py — guard + write path | |
 | W-096d | CODEX_MANIFEST.json refreshed | |
 | W-097a | CODEX_MANIFEST.json EOF newline | |
@@ -227,7 +227,7 @@ Should print App ID, installation ID, and permissions.
 | W-100 | test_auto_promote_tier.py ruff lint fix | |
 | W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | |
 | W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | | <!-- pragma: allowlist secret -->
-| W-104a | AGENT_REGISTRY.yaml v0.2.1 — workflow-ci-fixer D_CAPABLE | |
+| W-104a | AGENT_REGISTRY.yaml v0.2.0 — workflow-ci-fixer D_CAPABLE | |
 | W-104b | ADR-20260304-second-d-capable-promotion.md | |
 | W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 2 + .secrets.baseline updated | | <!-- pragma: allowlist secret -->
 | W-104d | Status / follow-up prompt updated (P2 COMPLETE) | |
@@ -280,7 +280,7 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
 | `ci-emergency-response-agent` | PARTIAL (no structured handoff) | none | unranked | Not promoted |
 | `workflow-ci-fixer` | GROUNDED | structured | 13 | **PROMOTED** |
 
-**Registry changes (v0.2.1 v0.2.1):**
+**Registry changes (v0.2.0 v0.2.0):**
 - `workflow-ci-fixer`: `enforcement_tier` PARTIAL GROUNDED, `autonomy_model` E D_CAPABLE
 - `has_tests: true`, `has_docs: true`, `violations_30d: 0` added
 - ADR: `docs/arch/ADR-20260304-second-d-capable-promotion.md` created

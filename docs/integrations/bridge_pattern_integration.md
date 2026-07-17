@@ -4,7 +4,7 @@ Got it—here’s a clean, **bridge-pattern blueprint** that lets **Codex** and 
 
 # Bridge Pattern: Codex (shared tools) Copilot
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 

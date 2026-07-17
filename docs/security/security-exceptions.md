@@ -1,6 +1,6 @@
 # Security Scan Exceptions and Intentional As-Is Code Registry
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22
 **Purpose**: Document all intentionally left as-is code with security scan findings

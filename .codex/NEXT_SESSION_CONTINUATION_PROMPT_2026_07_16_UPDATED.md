@@ -16,14 +16,14 @@
 
 ### What the Repository Tags Show (Actual State)
 - **v0.2.2**: Released 3 days ago (2026-07-13) — `deployed-v0.2.2` exists
-- **v0.2.1**: Released 5 days ago (2026-07-11) — `deployed-v0.2.1` exists
+- **v0.2.0**: Released 5 days ago (2026-07-11) — `deployed-v0.2.0` exists
 - **v0.2.0**: Implied released 6-7 days ago (2026-07-09 to 2026-07-10)
 
 ### Implication
 **Phase 9 BLOCKING gate decision AND Phase 10 production release have ALREADY COMPLETED**
 - Phase 9 gates: ✅ ALL 4 must have passed (otherwise v0.2.0 wouldn't be deployed)
 - Phase 10 v0.2.0 release: ✅ COMPLETE
-- v0.2.1 release: ✅ COMPLETE (likely patch/hotfix)
+- v0.2.0 release: ✅ COMPLETE (likely patch/hotfix)
 - v0.2.2 release: ✅ COMPLETE (likely GA stable or production hardening)
 
 ---
@@ -42,7 +42,7 @@
    - Check: `.codex/PHASE_10_EXECUTION_REPORT_*.md`
    - Look for: v0.2.0 Alpha/Beta/GA deployment timeline
 
-3. **What are v0.2.1 and v0.2.2?**
+3. **What are v0.2.0 and v0.2.2?**
    - Check: GitHub releases page or `CHANGELOG.md`
    - Understand: Are they patches, features, or GA hardening?
 
@@ -84,15 +84,15 @@ git tag -l "v0.2.*" --format='%(refname:short) %(creatordate:short)' --sort=-ver
 tail -100 docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | grep -A 5 "v0.2"
 ```
 
-### Step 3: Understand v0.2.1 and v0.2.2 (5 min)
+### Step 3: Understand v0.2.0 and v0.2.2 (5 min)
 ```
 Check: CHANGELOG.md
-  - What features/fixes in v0.2.1?
+  - What features/fixes in v0.2.0?
   - What features/fixes in v0.2.2?
   - Is v0.2.2 GA stable or production hardening?
 
 Check: GitHub releases
-  - Release notes for v0.2.0, v0.2.1, v0.2.2
+  - Release notes for v0.2.0, v0.2.0, v0.2.2
   - Deployment timeline (Alpha→Beta→GA)
   - Any critical issues or rollbacks?
 ```
@@ -132,7 +132,7 @@ Depending on Step 4 findings:
 ### Priority 1 — MUST READ FIRST
 1. `.codex/PHASE_9_GATE_DECISION_*.md` — Did Phase 9 gates pass? Critical for understanding if Phase 10 was approved.
 2. `.codex/PHASE_10_EXECUTION_REPORT_*.md` — Did v0.2.0 release complete? Timeline and status.
-3. `CHANGELOG.md` — What changed in v0.2.0, v0.2.1, v0.2.2?
+3. `CHANGELOG.md` — What changed in v0.2.0, v0.2.0, v0.2.2?
 
 ### Priority 2 — REFERENCE
 4. `.codex/NEXT_SESSION_CONTINUATION_PROMPT_*.md` (if dated 2026-07-19 or later) — What comes after Phase 10?
@@ -153,7 +153,7 @@ Based on tag dates (working backwards from now: 2026-07-16T15:10Z):
 | Date | Event | Phase |
 |------|-------|-------|
 | ~2026-07-09 to 2026-07-10 | v0.2.0 released (Alpha/Beta start) | Phase 10 |
-| ~2026-07-11 | v0.2.1 released (patch/fixes) | Phase 10+ |
+| ~2026-07-11 | v0.2.0 released (patch/fixes) | Phase 10+ |
 | ~2026-07-13 | v0.2.2 released (GA stable/production) | Phase 10+ |
 | 2026-07-16T14:54Z | This session: Phase 8 & 9 orchestration documented | Phase 8-9 |
 | 2026-07-16T15:10Z | Tag context provided: v0.2.2 already deployed | **NOW** |
@@ -171,7 +171,7 @@ Based on tag dates (working backwards from now: 2026-07-16T15:10Z):
 **For Next Session**:
 - ✅ Assume Phase 9 gates ALL passed (v0.2.2 deployed is evidence)
 - ✅ Assume Phase 10 v0.2.0 release completed successfully (v0.2.2 deployed is evidence)
-- ✅ Assume v0.2.1/v0.2.2 are production hardening/stabilization (not rollbacks)
+- ✅ Assume v0.2.0/v0.2.2 are production hardening/stabilization (not rollbacks)
 - ✅ Assume Phases 7-10 campaign is COMPLETE
 
 **Do NOT Assume**:
@@ -214,7 +214,7 @@ NEXT: Continue from Phase 11 or create Phase 11 brief
 **Next Session (2026-07-17+)**:
 - ❓ Verify Phase 9 gate decision (confirm all gates passed)
 - ❓ Understand Phase 10 v0.2.0 release (confirm completion)
-- ❓ Identify v0.2.1 and v0.2.2 changes (understand status)
+- ❓ Identify v0.2.0 and v0.2.2 changes (understand status)
 - ❓ Determine current phase (Phase 11-14 or new campaign?)
 - ✅ Plan next actions based on findings
 
@@ -249,7 +249,7 @@ NEXT: Continue from Phase 11 or create Phase 11 brief
 **Session is successful when**:
 - ✅ Phase 9 gate decision status confirmed (all 4 gates clear)
 - ✅ Phase 10 v0.2.0 release status confirmed (successfully deployed)
-- ✅ v0.2.1 and v0.2.2 purposes understood (features/fixes/hardening?)
+- ✅ v0.2.0 and v0.2.2 purposes understood (features/fixes/hardening?)
 - ✅ Current phase identified (Phase 11, new campaign, or monitoring?)
 - ✅ Next actions planned with clear objectives and timeline
 - ✅ AGENT_ACCOUNTABILITY_REPORT.md updated with latest session

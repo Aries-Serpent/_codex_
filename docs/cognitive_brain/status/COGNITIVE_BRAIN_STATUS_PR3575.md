@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3575 (CI Failure Triage + Auto-Fix Mechanism)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-03-14T04:45Z
 **PR:** #3575 — fix: CI failures — Python 3.113.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution

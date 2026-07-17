@@ -1,6 +1,6 @@
 # Agent & Workflow Consolidation Planset — S174
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -191,7 +191,7 @@ be **deprecated** in the registry and their `.md` files replaced with tombstone 
 
 | Agent | Purpose |
 |-------|---------|
-| `ci-testing-agent.md` | Primary CI debugger (v0.2.1) |
+| `ci-testing-agent.md` | Primary CI debugger (v0.2.0) |
 | `ci-auto-healer-agent.md` | Auto-fix CI failures |
 | `ci-emergency-response-agent.md` | Emergency CI fixes |
 | `ci-resilience-emergency-response-agent.md` | Resilience fixes |
@@ -202,7 +202,7 @@ be **deprecated** in the registry and their `.md` files replaced with tombstone 
 | `ci-docker-build-healer.md` | Docker build fixes |
 | `ci-parameter-mismatch-healer.md` | Parameter mismatch |
 
-**Action:** Audit each against `ci-testing-agent.md` v0.2.1. Deprecate those whose
+**Action:** Audit each against `ci-testing-agent.md` v0.2.0. Deprecate those whose
 capabilities are fully covered. Keep specialized ones (Docker, ImportError, Log Retrieval).
 
 ---

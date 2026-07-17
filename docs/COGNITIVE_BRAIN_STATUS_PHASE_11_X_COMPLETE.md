@@ -1,6 +1,6 @@
 # Cognitive Brain Status Update - Phase 11.x Complete + PR #2858 Resolution
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date**: 2026-01-16
 **Session**: PR #2858 Code Review & CI Failure Resolution

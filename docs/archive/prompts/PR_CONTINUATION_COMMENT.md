@@ -1,5 +1,5 @@
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 @copilot Continue the cognitive brain enhancement workflow by addressing the next phase objectives. This is a multi-phase continuation building on successful Phase 11.0 workflow CI fixes.
 

@@ -1,6 +1,6 @@
 # PR Lifecycle — 0D_base_ Branch
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version:** 2.3.0
 > **Date:2026-07-13
@@ -894,7 +894,7 @@ push and enables the newly approved workflow.
 
 | State | GitHub Label | WEC Gate | Copilot Sessions | Required Checks |
 |-------|-------------|----------|-----------------|----------------|
-| **Draft** | `[Draft]` badge | Pre-approval phase | Not started | Only always-required run |
+
 | **Open (pre-check)** | No badge; `Open` | Pre-approval until WEC items checked | Not started | Always-required + GitHub-managed |
 | **Open (WEC approved)** | `Open` | Specific workflows approved via WEC | Active after agent-auth | All approved workflows + required |
 | **Open (FF approved)** | `Open` | FF checkbox ticked + WEC items checked | Active | FF job fires; files promoted to main |

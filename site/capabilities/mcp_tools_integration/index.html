@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/mcp_tools_integration/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>MCP Tools Integration - Comprehensive Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2473,7 +2473,7 @@
 <li><strong>Plugin System</strong>: Dynamic tool loading and extension</li>
 </ol>
 <h3 id="tool-lifecycle">Tool Lifecycle<a class="headerlink" href="#tool-lifecycle" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Registration → Discovery → Validation → Invocation → Result → Cleanup
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Registration Discovery Validation Invocation Result Cleanup
 </code></pre></div>
 <h2 id="mcp-server-usage">MCP Server Usage<a class="headerlink" href="#mcp-server-usage" title="Permanent link">¶</a></h2>
 <h3 id="server-setup-example">Server Setup Example<a class="headerlink" href="#server-setup-example" title="Permanent link">¶</a></h3>
@@ -2484,34 +2484,34 @@
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"health"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Health check"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">ToolCategory</span><span class="o">.</span><span class="n">UTILITY</span><span class="p">)</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">def</span> <span class="nf">health_check</span><span class="p">():</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"healthy"</span><span class="p">}</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"healthy"</span><span class="p">}</span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"query"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Execute query"</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">requires_auth</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_query</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="c1"># Validation safeguards</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="k">if</span> <span class="s2">"DROP"</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Destructive queries not allowed"</span><span class="p">)</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="n">limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c1"># Bounded safeguard</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> <span class="c1"># Validation safeguards</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> <span class="k">if</span> <span class="s2">"DROP"</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Destructive queries not allowed"</span><span class="p">)</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="n">limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1"># Bounded safeguard</span>
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2"> LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"rows"</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)}</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2"> LIMIT </span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"rows"</span><span class="p">:</span> <span class="n">results</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)}</span>
 </code></pre></div>
 <h2 id="mcp-client-usage">MCP Client Usage<a class="headerlink" href="#mcp-client-usage" title="Permanent link">¶</a></h2>
 <h3 id="client-example">Client Example<a class="headerlink" href="#client-example" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>import httpx
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>class MCPClient:
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        self.base_url = base_url
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>        self.client = httpx.AsyncClient(base_url=base_url)
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> self.base_url = base_url
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> self.client = httpx.AsyncClient(base_url=base_url)
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    async def invoke_tool(self, tool_name, parameters, auth_token=None):
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>        headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>        response = await self.client.post(
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>            "/tools/invoke",
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>            json={"tool_name": tool_name, "parameters": parameters},
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>            headers=headers
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>        )
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>        return response.json()
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> async def invoke_tool(self, tool_name, parameters, auth_token=None):
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> response = await self.client.post(
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> "/tools/invoke",
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> json={"tool_name": tool_name, "parameters": parameters},
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> headers=headers
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> )
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> return response.json()
 </code></pre></div>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h2>
 <p>Comprehensive tests available in <code>tests/mcp/test_tools_integration.py</code>:</p>
@@ -2539,21 +2539,21 @@
 </ul>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nt">mcp</span><span class="p">:</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">tools</span><span class="p">:</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="nt">max_tools</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="nt">default_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="nt">max_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="nt">require_auth_default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span><span class="nt">tools</span><span class="p">:</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="nt">max_tools</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span><span class="nt">default_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w"> </span><span class="nt">max_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="nt">require_auth_default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <h2 id="expanding-coverage">Expanding Coverage<a class="headerlink" href="#expanding-coverage" title="Permanent link">¶</a></h2>
 <h3 id="add-new-tools">Add New Tools<a class="headerlink" href="#add-new-tools" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nd">@tool</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"custom_analysis"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">ToolCategory</span><span class="o">.</span><span class="n">DATA_PROCESSING</span><span class="p">)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">custom_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">analysis_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="c1"># Validation</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Data size exceeds maximum"</span><span class="p">)</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="c1"># Processing with safeguards</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"result"</span><span class="p">:</span> <span class="n">processed_data</span><span class="p">}</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> <span class="c1"># Validation</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Data size exceeds maximum"</span><span class="p">)</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="c1"># Processing with safeguards</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"result"</span><span class="p">:</span> <span class="n">processed_data</span><span class="p">}</span>
 </code></pre></div>
 <h3 id="plugin-development">Plugin Development<a class="headerlink" href="#plugin-development" title="Permanent link">¶</a></h3>
 <ul>
@@ -2575,9 +2575,9 @@
 <li><strong>Logging</strong>: Structured audit logs</li>
 </ul>
 <hr/>
-<p><strong>Version</strong>: 1.0<br/>
-<strong>Keywords</strong>: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards<br/>
-<strong>Test Coverage</strong>: Comprehensive integration tests<br/>
+<p><strong>Version</strong>: 1.0
+<strong>Keywords</strong>: mcp, tools, integration, registry, discovery, invocation, plugins, tooling, api, validation, safeguards
+<strong>Test Coverage</strong>: Comprehensive integration tests
 <strong>Status</strong>: Production-ready</p>
 </article>
 </div>
@@ -2608,6 +2608,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

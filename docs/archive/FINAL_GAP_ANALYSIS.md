@@ -1,6 +1,6 @@
 # Comprehensive Gap Analysis - Final Iteration
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -285,7 +285,7 @@ Minor enhancement opportunity:
 - [x] Evaluation metrics functional
 - [x] Plugin system working
 - [x] Storage connectors implemented
-- [x] Audit pipeline v0.2.1 operational
+- [x] Audit pipeline v0.2.0 operational
 
 ### Quality Assurance:
 - [x] All tests passing

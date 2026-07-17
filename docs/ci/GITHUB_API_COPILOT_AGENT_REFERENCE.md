@@ -1,6 +1,6 @@
 # GitHub API Reference for Copilot Coding agent
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Scope:** Aries-Serpent/_codex_ repository
 > **Audience:** GitHub Copilot Coding agent (Web UI)

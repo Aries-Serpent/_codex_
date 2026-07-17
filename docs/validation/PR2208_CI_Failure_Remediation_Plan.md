@@ -1,6 +1,6 @@
 # [Report]: CI Failure Remediation Plan — Job 55143949728
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Summary
 Coverage session failed during collection (15 errors) due to:

@@ -1,6 +1,6 @@
 # PR #4425 #4427 — Session Diagram
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing S966 Review Thread Remediation<br/>PR #4427 · Head: e874bbe<br/>All 11 unresolved review comments, Fix: scan_all.py trusted-command whitelist<br/>github_api_trickle.py split argv<br/>verify_living_files.py PR-number parameterization'}}%%

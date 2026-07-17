@@ -1,8 +1,7 @@
 # Advanced Security
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Status**: Placeholder document - under construction
 
 ## Overview
 

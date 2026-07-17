@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_11_X_FOLLOWUP_GITHUB_FOCUS/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 11.x Follow-Up Plan - GitHub-First Focus - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2340,7 +2340,7 @@
 <a class="md-nav__link" href="#time-estimate">
 <span class="md-ellipsis">
       
-        ⏱️ Time Estimate
+        Time Estimate
       
     </span>
 </a>
@@ -2549,7 +2549,7 @@
 <a class="md-nav__link" href="#phase-12x-deferred">
 <span class="md-ellipsis">
       
-        Phase 12.x: ⏸️ DEFERRED
+        Phase 12.x: DEFERRED
       
     </span>
 </a>
@@ -2568,8 +2568,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Date</strong>: 2026-01-15<br/>
-<strong>Status</strong>:  <strong>Phase 11.x Priority 1 COMPLETE - All Security Alerts Resolved</strong><br/>
+<p><strong>Date</strong>: 2026-01-15
+<strong>Status</strong>: <strong>Phase 11.x Priority 1 COMPLETE - All Security Alerts Resolved</strong>
 <strong>Next</strong>: GitHub-focused enhancements and integrations</p>
 <hr/>
 <h2 id="phase-11x-priority-1-final-status">Phase 11.x Priority 1 - Final Status<a class="headerlink" href="#phase-11x-priority-1-final-status" title="Permanent link">¶</a></h2>
@@ -2593,14 +2593,14 @@
 - [x] Cognitive brain update (14KB)
 - [x] Production deployment guide</p>
 <hr/>
-<h2 id="phase-11x-priority-2-github-actions-workflow-automation-complete">Phase 11.x Priority 2 - GitHub Actions &amp; Workflow Automation  COMPLETE<a class="headerlink" href="#phase-11x-priority-2-github-actions-workflow-automation-complete" title="Permanent link">¶</a></h2>
+<h2 id="phase-11x-priority-2-github-actions-workflow-automation-complete">Phase 11.x Priority 2 - GitHub Actions &amp; Workflow Automation COMPLETE<a class="headerlink" href="#phase-11x-priority-2-github-actions-workflow-automation-complete" title="Permanent link">¶</a></h2>
 <p><strong>Focus</strong>: GitHub-owned services and integrations ONLY</p>
 <h3 id="objectives">Objectives<a class="headerlink" href="#objectives" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>GitHub Actions Workflows</strong> - Automated authentication operations </li>
-<li><strong>GitHub Secrets Integration</strong> - Secure credential management </li>
-<li><strong>GitHub API Automation</strong> - User/team provisioning </li>
-<li><strong>Repository Operations</strong> - Automated access control </li>
+<li><strong>GitHub Actions Workflows</strong> - Automated authentication operations</li>
+<li><strong>GitHub Secrets Integration</strong> - Secure credential management</li>
+<li><strong>GitHub API Automation</strong> - User/team provisioning</li>
+<li><strong>Repository Operations</strong> - Automated access control</li>
 </ol>
 <h3 id="tasks">Tasks<a class="headerlink" href="#tasks" title="Permanent link">¶</a></h3>
 <h4 id="task-1-github-actions-workflow-templates">Task 1: GitHub Actions Workflow Templates<a class="headerlink" href="#task-1-github-actions-workflow-templates" title="Permanent link">¶</a></h4>
@@ -2650,24 +2650,36 @@
 - Codex auth module</p>
 <p><strong>Diagram</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Scheduled/Manual, GitHub Auth Manager'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    Trigger[Scheduled/Manual] --&gt; Agent[GitHub Auth Manager]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    Agent --&gt; CheckMFA[Check MFA Status]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    Agent --&gt; RotateTokens[Rotate JWT Secrets]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    Agent --&gt; SyncSecrets[Sync to GitHub Secrets]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    CheckMFA --&gt; Enforce[Enforce Policies]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    RotateTokens --&gt; Update[Update Repos]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    SyncSecrets --&gt; Verify[Verify Sync]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    Enforce --&gt; Report[Generate Report]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    Update --&gt; Report
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    Verify --&gt; Report
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    Report --&gt; Notify[GitHub Notifications]
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    Trigger[Scheduled/Manual] --&gt; Agent[GitHub Auth Manager]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    Agent --&gt; CheckMFA[Check MFA Status]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    Agent --&gt; RotateTokens[Rotate JWT Secrets]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    Agent --&gt; SyncSecrets[Sync to GitHub Secrets]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    CheckMFA --&gt; Enforce[Enforce Policies]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    RotateTokens --&gt; Update[Update Repos]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    SyncSecrets --&gt; Verify[Verify Sync]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    Enforce --&gt; Report[Generate Report]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    Update --&gt; Report
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    Verify --&gt; Report
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    Report --&gt; Notify[GitHub Notifications]
 </code></pre></div></p>
 <p><strong>Files</strong>:
 - <code>.github/agents/github-auth-manager/</code>
-  - <code>agent.py</code> - Main agent logic
-  - <code>config.yaml</code> - Agent configuration
-  - <code>README.md</code> - Agent documentation</p>
+ - <code>agent.py</code> - Main agent logic
+ - <code>config.yaml</code> - Agent configuration
+ - <code>README.md</code> - Agent documentation</p>
 <h4 id="agent-2-github-security-enforcer">Agent 2: GitHub Security Enforcer<a class="headerlink" href="#agent-2-github-security-enforcer" title="Permanent link">¶</a></h4>
 <p><strong>Purpose</strong>: Enforce security policies via GitHub APIs</p>
 <p><strong>Capabilities</strong>:
@@ -2682,26 +2694,40 @@
 - Compliance reporting</p>
 <p><strong>Diagram</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Daily Scan, Security Enforcer'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>graph TD
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    Schedule[Daily Scan] --&gt; Agent[Security Enforcer]
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    Agent --&gt; ScanRepos[Scan All Repos]
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    Agent --&gt; CheckUsers[Check User MFA]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    Agent --&gt; ValidateTokens[Validate Tokens]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    ScanRepos --&gt; Issues{Issues Found?}
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    CheckUsers --&gt; Issues
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    ValidateTokens --&gt; Issues
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    Issues --&gt;|Yes| Remediate[Auto-Remediate]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    Issues --&gt;|No| ReportOK[Success Report]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    Remediate --&gt; Verify[Verify Fix]
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    Verify --&gt; ReportFixed[Remediation Report]
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    ReportOK --&gt; GH[GitHub Issues]
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    ReportFixed --&gt; GH
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>graph TD
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    Schedule[Daily Scan] --&gt; Agent[Security Enforcer]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    Agent --&gt; ScanRepos[Scan All Repos]
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    Agent --&gt; CheckUsers[Check User MFA]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    Agent --&gt; ValidateTokens[Validate Tokens]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    ScanRepos --&gt; Issues{Issues Found?}
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    CheckUsers --&gt; Issues
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    ValidateTokens --&gt; Issues
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    Issues --&gt;|Yes| Remediate[Auto-Remediate]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    Issues --&gt;|No| ReportOK[Success Report]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    Remediate --&gt; Verify[Verify Fix]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    Verify --&gt; ReportFixed[Remediation Report]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    ReportOK --&gt; GH[GitHub Issues]
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>    ReportFixed --&gt; GH
 </code></pre></div></p>
 <p><strong>Files</strong>:
 - <code>.github/agents/github-security-enforcer/</code>
-  - <code>agent.py</code> - Enforcement logic
-  - <code>policies.yaml</code> - Security policies
-  - <code>README.md</code> - Documentation</p>
+ - <code>agent.py</code> - Enforcement logic
+ - <code>policies.yaml</code> - Security policies
+ - <code>README.md</code> - Documentation</p>
 <h4 id="agent-3-github-workflow-optimizer">Agent 3: GitHub Workflow Optimizer<a class="headerlink" href="#agent-3-github-workflow-optimizer" title="Permanent link">¶</a></h4>
 <p><strong>Purpose</strong>: Optimize GitHub Actions workflows for auth</p>
 <p><strong>Capabilities</strong>:
@@ -2716,10 +2742,10 @@
 - Performance monitoring</p>
 <p><strong>Files</strong>:
 - <code>.github/agents/github-workflow-optimizer/</code>
-  - <code>agent.py</code> - Optimization logic
-  - <code>metrics.yaml</code> - Performance metrics
-  - <code>README.md</code> - Documentation</p>
-<h3 id="success-criteria-all-met">Success Criteria  ALL MET<a class="headerlink" href="#success-criteria-all-met" title="Permanent link">¶</a></h3>
+ - <code>agent.py</code> - Optimization logic
+ - <code>metrics.yaml</code> - Performance metrics
+ - <code>README.md</code> - Documentation</p>
+<h3 id="success-criteria-all-met">Success Criteria ALL MET<a class="headerlink" href="#success-criteria-all-met" title="Permanent link">¶</a></h3>
 <p><strong>Phase 11.x Priority 2 Complete</strong>:
 - [x] 7 GitHub Actions workflows created (auth-token-rotation, auth-mfa-enrollment, auth-oauth-app-sync, auth-compliance-report, auth-secret-rotation, plus 2 existing)
 - [x] GitHub Secrets integration functional (rotate_jwt_secret.py, github_secrets_sync.py)
@@ -2729,7 +2755,7 @@
 - [x] All workflows validated (syntax correct, ready for testing)
 - [x] Documentation complete with READMEs and config files
 - [x] Zero external dependencies (GitHub-only services)</p>
-<h3 id="time-estimate">⏱️ Time Estimate<a class="headerlink" href="#time-estimate" title="Permanent link">¶</a></h3>
+<h3 id="time-estimate">Time Estimate<a class="headerlink" href="#time-estimate" title="Permanent link">¶</a></h3>
 <p><strong>Phase 11.x Priority 2</strong>: 8-10 hours</p>
 <p><strong>Breakdown</strong>:
 - GitHub Actions workflows: 2-3 hours
@@ -2740,7 +2766,7 @@
 - Testing and documentation: 1-2 hours</p>
 <hr/>
 <h2 id="phase-12x-external-integrations-deferred">Phase 12.x - External Integrations (DEFERRED)<a class="headerlink" href="#phase-12x-external-integrations-deferred" title="Permanent link">¶</a></h2>
-<p><strong>Status</strong>: ⏸️ <strong>NOT STARTED - Future Phase</strong></p>
+<p><strong>Status</strong>: <strong>NOT STARTED - Future Phase</strong></p>
 <p><strong>Note</strong>: Per requirements, external integrations are explicitly deferred to Phase 12+</p>
 <h3 id="deferred-features">Deferred Features<a class="headerlink" href="#deferred-features" title="Permanent link">¶</a></h3>
 <p><strong>Third-Party OAuth</strong>:
@@ -2955,35 +2981,35 @@
 - Strengthened security posture</p>
 <hr/>
 <h2 id="status-summary">Status Summary<a class="headerlink" href="#status-summary" title="Permanent link">¶</a></h2>
-<h3 id="phase-11x-priority-1-complete">Phase 11.x Priority 1:  COMPLETE<a class="headerlink" href="#phase-11x-priority-1-complete" title="Permanent link">¶</a></h3>
+<h3 id="phase-11x-priority-1-complete">Phase 11.x Priority 1: COMPLETE<a class="headerlink" href="#phase-11x-priority-1-complete" title="Permanent link">¶</a></h3>
 <ul>
-<li>Core implementation: </li>
-<li>Testing:  (100% pass rate)</li>
-<li>Security:  (0 vulnerabilities)</li>
-<li>Code review:  (32/32 addressed)</li>
-<li>CodeQL alerts:  (4/4 resolved)</li>
-<li>Documentation: </li>
-<li>Examples:  (secured with warnings)</li>
+<li>Core implementation:</li>
+<li>Testing: (100% pass rate)</li>
+<li>Security: (0 vulnerabilities)</li>
+<li>Code review: (32/32 addressed)</li>
+<li>CodeQL alerts: (4/4 resolved)</li>
+<li>Documentation:</li>
+<li>Examples: (secured with warnings)</li>
 </ul>
-<h3 id="phase-11x-priority-2-complete">Phase 11.x Priority 2:  COMPLETE<a class="headerlink" href="#phase-11x-priority-2-complete" title="Permanent link">¶</a></h3>
+<h3 id="phase-11x-priority-2-complete">Phase 11.x Priority 2: COMPLETE<a class="headerlink" href="#phase-11x-priority-2-complete" title="Permanent link">¶</a></h3>
 <ul>
-<li>GitHub Actions workflows:  (7 workflows created)</li>
-<li>GitHub Secrets integration:  (2 scripts, full functionality)</li>
-<li>GitHub API automation:  (6 scripts, 1,595 lines)</li>
-<li>Copilot agents:  (3 agents fully implemented)</li>
-<li>Promptsets:  (Used for implementation)</li>
+<li>GitHub Actions workflows: (7 workflows created)</li>
+<li>GitHub Secrets integration: (2 scripts, full functionality)</li>
+<li>GitHub API automation: (6 scripts, 1,595 lines)</li>
+<li>Copilot agents: (3 agents fully implemented)</li>
+<li>Promptsets: (Used for implementation)</li>
 <li>Time spent: ~10 hours (as estimated)</li>
 </ul>
-<h3 id="phase-12x-deferred">Phase 12.x: ⏸️ DEFERRED<a class="headerlink" href="#phase-12x-deferred" title="Permanent link">¶</a></h3>
+<h3 id="phase-12x-deferred">Phase 12.x: DEFERRED<a class="headerlink" href="#phase-12x-deferred" title="Permanent link">¶</a></h3>
 <ul>
 <li>External integrations postponed per requirements</li>
 <li>Focus remains on GitHub-owned services</li>
 <li>Clear scope boundary maintained</li>
 </ul>
 <hr/>
-<p><strong>Document Version</strong>: 2.0<br/>
-<strong>Last Updated</strong>: 2026-01-15 20:45 UTC<br/>
-<strong>Status</strong>: Phase 11.x COMPLETE (Priorities 1 &amp; 2)<br/>
+<p><strong>Document Version</strong>: 2.0
+<strong>Last Updated</strong>: 2026-01-15 20:45 UTC
+<strong>Status</strong>: Phase 11.x COMPLETE (Priorities 1 &amp; 2)
 <strong>Maintained By</strong>: GitHub Copilot + Team</p>
 </article>
 </div>
@@ -3014,6 +3040,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Cognitive Brain Status - Phase 14 Complete Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: V14.3
 **Created**: 2026-01-18

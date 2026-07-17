@@ -1,6 +1,6 @@
 # Integration Examples
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: 1.4.0
 **Last Updated**: 2026-06-22
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This guide shows how to integrate the audit pipeline v0.2.1 with:
+This guide shows how to integrate the audit pipeline v0.2.0 with:
 - CI/CD systems (GitHub Actions, GitLab CI, Jenkins)
 - Pre-commit hooks
 - Monitoring tools (MLflow, Slack, Prometheus)
@@ -329,7 +329,7 @@ def notify_slack():
  "type": "header",
  "text": {
  "type": "plain_text",
- "text": " Audit Pipeline v0.2.1 Results"
+ "text": " Audit Pipeline v0.2.0 Results"
  }
  },
  {
@@ -551,7 +551,7 @@ if __name__ == "__main__":
 
 ## See Also
 
-- [Configuration Guide](./Configuration_v0.2.1.md) - Configuration options
+- [Configuration Guide](./Configuration_v0.2.0.md) - Configuration options
 - [Migration Guide](./Migration_v1.3_to_v1.4.md) - Upgrading from v1.3.x
-- [API Reference](./API_Reference_v0.2.1.md) - Module documentation
+- [API Reference](./API_Reference_v0.2.0.md) - Module documentation
 - [Performance Tuning](./Performance_Tuning.md) - Optimization strategies

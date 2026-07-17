@@ -1,6 +1,6 @@
 # Phase 3: Autonomy Architecture
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status**: Active quick-wins plan  
 **Updated**: 2026-05-08  

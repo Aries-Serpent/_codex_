@@ -1,6 +1,6 @@
 # Workflow Token Patterns Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide provides standardized token usage patterns for GitHub Actions workflows. All 209 workflows should follow these patterns to ensure consistent, secure authentication and proper API access levels.
 

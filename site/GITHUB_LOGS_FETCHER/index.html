@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/GITHUB_LOGS_FETCHER/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GitHub Actions Log Fetcher - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2606,12 +2606,12 @@
 <ol>
 <li>
 <p><strong>GitHub Token</strong>: Set the <code>GITHUB_TOKEN</code> environment variable:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span><span class="s2">"ghp_your_token_here"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_TOKEN</span><span class="o">=</span><span class="s2">"ghp_your_token_here"</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Dependencies</strong>: Ensure required packages are installed:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>httpx<span class="w"> </span>pydantic<span class="w"> </span>fastapi
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>httpx<span class="w"> </span>pydantic<span class="w"> </span>fastapi
 </code></pre></div></p>
 </li>
 </ol>
@@ -2655,25 +2655,25 @@
 </code></pre></div>
 <h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">¶</a></h2>
 <p><strong>Get Check Run Logs</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
 </code></pre></div></p>
 <p><strong>Get Job Logs</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
 </code></pre></div></p>
 <p><strong>List Check Runs</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$GITHUB_TOKEN</span><span class="s2">"</span>
 </code></pre></div></p>
 <h3 id="api-response-format">API Response Format<a class="headerlink" href="#api-response-format" title="Permanent link">¶</a></h3>
 <p><strong>Check Run Logs Response:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p">{</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="nt">"check_run_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">59990656344</span><span class="p">,</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nt">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aries-Serpent"</span><span class="p">,</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">  </span><span class="nt">"repo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span><span class="nt">"check_run_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Coverage"</span><span class="p">,</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">  </span><span class="nt">"check_run_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"completed"</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">  </span><span class="nt">"check_run_conclusion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="nt">"check_run_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/Aries-Serpent/_codex_/runs/59990656344"</span><span class="p">,</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">  </span><span class="nt">"logs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-10T12:00:00Z Starting job...\n..."</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="nt">"check_run_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">59990656344</span><span class="p">,</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="nt">"owner"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aries-Serpent"</span><span class="p">,</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="nt">"repo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span><span class="nt">"check_run_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test Coverage"</span><span class="p">,</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w"> </span><span class="nt">"check_run_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"completed"</span><span class="p">,</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w"> </span><span class="nt">"check_run_conclusion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w"> </span><span class="nt">"check_run_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/Aries-Serpent/_codex_/runs/59990656344"</span><span class="p">,</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w"> </span><span class="nt">"logs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2024-01-10T12:00:00Z Starting job...\n..."</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="3-mcp-usage">3. MCP Usage<a class="headerlink" href="#3-mcp-usage" title="Permanent link">¶</a></h3>
@@ -2682,26 +2682,26 @@
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a># Fetch check run logs
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>result = fetch_check_run_logs({
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    "owner": "Aries-Serpent",
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    "repo": "_codex_",
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    "check_run_id": 59990656344
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> "owner": "Aries-Serpent",
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> "repo": "_codex_",
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> "check_run_id": 59990656344
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>})
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>if result["success"]:
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    print(result["logs"])
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> print(result["logs"])
 <a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>else:
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    print(f"Error: {result['error']}")
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> print(f"Error: {result['error']}")
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a># List check runs
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>result = list_check_runs({
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>    "owner": "Aries-Serpent",
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>    "repo": "_codex_",
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>    "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d", &lt;!-- pragma: allowlist secret --&gt;
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>    "status": "completed"
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> "owner": "Aries-Serpent",
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> "repo": "_codex_",
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d", &lt;!-- pragma: allowlist secret --&gt;
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> "status": "completed"
 <a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>})
 <a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>
 <a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>for run in result["check_runs"]:
-<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>    print(f"{run['id']}: {run['name']} - {run['conclusion']}")
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a> print(f"{run['id']}: {run['name']} - {run['conclusion']}")
 </code></pre></div>
 <h2 id="ai-agent-integration">AI Agent Integration<a class="headerlink" href="#ai-agent-integration" title="Permanent link">¶</a></h2>
 <p>The MCP tools can be registered with AI agents for autonomous log fetching:</p>
@@ -2709,34 +2709,32 @@
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="c1"># Register tools with your MCP server</span>
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="k">for</span> <span class="n">tool_name</span><span class="p">,</span> <span class="n">tool_config</span> <span class="ow">in</span> <span class="n">GITHUB_LOGS_TOOLS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">mcp_server</span><span class="o">.</span><span class="n">register_tool</span><span class="p">(</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="n">name</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        <span class="n">description</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        <span class="n">function</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"function"</span><span class="p">],</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>        <span class="n">schema</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"schema"</span><span class="p">]</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="p">)</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="n">mcp_server</span><span class="o">.</span><span class="n">register_tool</span><span class="p">(</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="n">name</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="n">description</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="n">function</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"function"</span><span class="p">],</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">schema</span><span class="o">=</span><span class="n">tool_config</span><span class="p">[</span><span class="s2">"schema"</span><span class="p">]</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="p">)</span>
 </code></pre></div>
 <h2 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">¶</a></h2>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>┌─────────────────┐
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>│   GitHub API    │
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>└────────┬────────┘
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>         │
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>┌────────▼─────────────────────────────────┐
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>│  services/github/client.py               │
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>│  - GitHubClient (async)                  │
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>│  - GitHubClientSync (sync wrapper)       │
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>│  - Check run methods                     │
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>│  - Job log methods                       │
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>└────────┬─────────────────────────────────┘
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>         │
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>         ├───────────────┬─────────────────┬
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>         │               │                 │
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>┌────────▼──────┐ ┌──────▼──────┐  ┌──────▼────────┐
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>│  CLI Interface │ │ API Endpoints│  │  MCP Tools    │
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>│  cli_github    │ │  api/github  │  │  mcp/tools/   │
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>│  _logs.py      │ │  _logs.py    │  │  github_logs  │
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>└────────────────┘ └──────────────┘  └───────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a> GitHub API 
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> services/github/client.py 
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> - GitHubClient (async) 
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> - GitHubClientSync (sync wrapper) 
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> - Check run methods 
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> - Job log methods 
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> CLI Interface API Endpoints MCP Tools 
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> cli_github api/github mcp/tools/ 
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> _logs.py _logs.py github_logs 
 </code></pre></div>
 <h3 id="files-createdmodified">Files Created/Modified<a class="headerlink" href="#files-createdmodified" title="Permanent link">¶</a></h3>
 <ol>
@@ -2780,8 +2778,8 @@
 <p>The GitHub client automatically tracks rate limits and includes retry logic with exponential backoff.</p>
 <h2 id="target-use-case-fetching-specific-commit-check-logs">Target Use Case: Fetching Specific Commit Check Logs<a class="headerlink" href="#target-use-case-fetching-specific-commit-check-logs" title="Permanent link">¶</a></h2>
 <p>To fetch logs from the specific commit mentioned in the requirements:</p>
-<p><strong>Commit</strong>: <code>b6b52590b9551c4d29b90ea122d885ef83cd0d8d</code><br/>
-<strong>Check Run ID</strong>: <code>59990656344</code><br/>
+<p><strong>Commit</strong>: <code>b6b52590b9551c4d29b90ea122d885ef83cd0d8d</code>
+<strong>Check Run ID</strong>: <code>59990656344</code>
 <strong>Repository</strong>: <code>Aries-Serpent/_codex_</code></p>
 <h3 id="cli-method">CLI Method<a class="headerlink" href="#cli-method" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>codex<span class="w"> </span>github-logs<span class="w"> </span>check-run<span class="w"> </span>Aries-Serpent<span class="w"> </span>_codex_<span class="w"> </span><span class="m">59990656344</span>
@@ -2793,9 +2791,9 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">mcp.tools.github_logs</span> <span class="kn">import</span> <span class="n">fetch_check_run_logs</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">fetch_check_run_logs</span><span class="p">({</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    <span class="s2">"check_run_id"</span><span class="p">:</span> <span class="mi">59990656344</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="s2">"repo"</span><span class="p">:</span> <span class="s2">"_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> <span class="s2">"check_run_id"</span><span class="p">:</span> <span class="mi">59990656344</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="p">})</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"logs"</span><span class="p">])</span>
 </code></pre></div>
@@ -2807,25 +2805,25 @@
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="k">def</span> <span class="nf">github_client</span><span class="p">():</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>    <span class="k">return</span> <span class="n">GitHubClientSync</span><span class="p">()</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> <span class="k">return</span> <span class="n">GitHubClientSync</span><span class="p">()</span>
 <a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="k">def</span> <span class="nf">test_get_check_run</span><span class="p">(</span><span class="n">github_client</span><span class="p">):</span>
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>    <span class="n">check_run</span> <span class="o">=</span> <span class="n">github_client</span><span class="o">.</span><span class="n">get_check_run</span><span class="p">(</span>
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>        <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>        <span class="s2">"_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>        <span class="mi">59990656344</span>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>    <span class="p">)</span>
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>    <span class="k">assert</span> <span class="n">check_run</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">59990656344</span>
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>    <span class="k">assert</span> <span class="n">check_run</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a> <span class="n">check_run</span> <span class="o">=</span> <span class="n">github_client</span><span class="o">.</span><span class="n">get_check_run</span><span class="p">(</span>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a> <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a> <span class="s2">"_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a> <span class="mi">59990656344</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> <span class="p">)</span>
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a> <span class="k">assert</span> <span class="n">check_run</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">59990656344</span>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a> <span class="k">assert</span> <span class="n">check_run</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>
 <a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="k">def</span> <span class="nf">test_get_check_run_logs</span><span class="p">(</span><span class="n">github_client</span><span class="p">):</span>
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>    <span class="n">logs</span> <span class="o">=</span> <span class="n">github_client</span><span class="o">.</span><span class="n">get_check_run_logs</span><span class="p">(</span>
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>        <span class="s2">"_codex_"</span><span class="p">,</span>
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>        <span class="mi">59990656344</span>
-<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>    <span class="p">)</span>
-<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a> <span class="n">logs</span> <span class="o">=</span> <span class="n">github_client</span><span class="o">.</span><span class="n">get_check_run_logs</span><span class="p">(</span>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a> <span class="s2">"Aries-Serpent"</span><span class="p">,</span>
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a> <span class="s2">"_codex_"</span><span class="p">,</span>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a> <span class="mi">59990656344</span>
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a> <span class="p">)</span>
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a> <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a> <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </code></pre></div>
 <h3 id="integration-tests">Integration Tests<a class="headerlink" href="#integration-tests" title="Permanent link">¶</a></h3>
 <p>Test CLI commands:
@@ -2857,13 +2855,13 @@
 </ul>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">¶</a></h3>
-<p><strong>Problem</strong>: <code>GitHub authentication failed</code><br/>
+<p><strong>Problem</strong>: <code>GitHub authentication failed</code>
 <strong>Solution</strong>: Ensure <code>GITHUB_TOKEN</code> is set and valid</p>
-<p><strong>Problem</strong>: <code>check run logs not found</code><br/>
+<p><strong>Problem</strong>: <code>check run logs not found</code>
 <strong>Solution</strong>: Check runs may not have associated logs if they haven't run yet or logs have expired</p>
-<p><strong>Problem</strong>: <code>Rate limit exceeded</code><br/>
+<p><strong>Problem</strong>: <code>Rate limit exceeded</code>
 <strong>Solution</strong>: Wait for rate limit reset or use authenticated requests (higher limit)</p>
-<p><strong>Problem</strong>: <code>Module not found: httpx</code><br/>
+<p><strong>Problem</strong>: <code>Module not found: httpx</code>
 <strong>Solution</strong>: Install dependencies: <code>pip install httpx pydantic</code></p>
 <h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>For issues or questions:
@@ -2901,6 +2899,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

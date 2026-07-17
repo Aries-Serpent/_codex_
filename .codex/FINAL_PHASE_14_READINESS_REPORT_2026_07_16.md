@@ -54,7 +54,7 @@ All Phase 13 workstreams (WS1-4) have completed or are executing on schedule. Ph
 - **Status:** ✅ **COMPLETE ORCHESTRATION** (3 master docs committed)
 - **Specialist Agents Routed:** 6 D-CAPABLE agents (ci-testing, ci-emergency-response, performance-monitor, workflow-management, documentation-consolidator, ci-optimization)
 - **Timeline:** 6 weeks (2026-07-24 → 2026-08-25)
-- **Target:** v0.2.1 GA deployment (100% users, 0 critical bugs, <0.05% error rate)
+- **Target:** v0.2.0 GA deployment (100% users, 0 critical bugs, <0.05% error rate)
 - **Key Deliverables:** Feature implementation, canary (10% users), A/B testing (p<0.05), gradual rollout, feature flags, 6-month roadmap, CD pipeline
 - **Success Criteria:** 9 must-pass objectives including GA deployment, SLA maintained ≥99.9%, team trained on CD model
 - **Authorization:** ✅ Ready for @mbaetiong confirmation
@@ -97,7 +97,7 @@ All Phase 13 workstreams (WS1-4) have completed or are executing on schedule. Ph
 | **2026-07-31** | Feature final, roadmap | Read replicas | MFA planning | Checkpoint 1 | T+1w checkpoint |
 | **2026-08-07** | Canary 10% live | Zero-trust live | SIEM deploy | Checkpoint 2 | T+2w checkpoint |
 | **2026-08-14** | A/B testing live | Cache optim | Secrets auto | Checkpoint 3 | T+3w checkpoint |
-| **2026-08-25** | **v0.2.1 GA** | — | — | Checkpoint 4 | WS1 complete |
+| **2026-08-25** | **v0.2.0 GA** | — | — | Checkpoint 4 | WS1 complete |
 | **2026-09-04** | — | **Infra GA** | — | Checkpoint 5 | WS2 complete |
 | **2026-09-18** | — | — | **Security GA** | Checkpoint 6 | **Phase 14 complete** |
 
@@ -165,7 +165,7 @@ All Phase 13 workstreams (WS1-4) have completed or are executing on schedule. Ph
 ## 🎯 PHASE 14 SUCCESS CRITERIA
 
 **Feature Delivery (WS1) — 6 weeks:**
-- ✅ v0.2.1 deployed to 100% users (gradual rollout)
+- ✅ v0.2.0 deployed to 100% users (gradual rollout)
 - ✅ Feature flags operational (enable/disable without redeployment)
 - ✅ A/B testing validated (2-week experiment, p<0.05 statistical significance)
 - ✅ Canary procedures validated end-to-end (0 critical incidents)
@@ -286,7 +286,7 @@ All Phase 13 workstreams (WS1-4) have completed or are executing on schedule. Ph
 **Phase 13 to Phase 14 Transition:**
 - Security posture: 9.4/10 → 9.6+/10 target (WS3)
 - Cost optimization: $74,520/year annual savings (WS2)
-- Feature delivery: v0.2.0 → v0.2.1 GA (WS1)
+- Feature delivery: v0.2.0 → v0.2.0 GA (WS1)
 - Operations: Temporary (Phase 12) → Permanent (Phase 13 WS4)
 - Scalability: 32 instances → 60+ days capacity (WS2)
 

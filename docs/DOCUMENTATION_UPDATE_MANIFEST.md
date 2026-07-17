@@ -1,6 +1,6 @@
 # Documentation Update Manifest
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## 2025-12-23 - Security Infrastructure Implementation
 

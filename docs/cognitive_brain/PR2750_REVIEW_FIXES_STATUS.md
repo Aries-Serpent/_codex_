@@ -1,6 +1,6 @@
 # PR #2750 Review Fixes & Self-Healing Status
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:2026-07-13
 **Branch:** `copilot/sub-pr-2750-yet-again`

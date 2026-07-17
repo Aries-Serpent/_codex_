@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/phase4_DESIGN/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 4 Design: Bayesian Networks, Fuzzy Logic &amp; Active Learning - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2577,39 +2577,39 @@ each behind a feature flag defaulting to <strong>false</strong> to ensure zero p
 compliance screening by capturing conditional dependencies between risk factors.</p>
 <h3 id="design">Design<a class="headerlink" href="#design" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>src/cognitive_brain/analytics/bayesian.py
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    └── BayesianAssessor
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>        ├── from_json(path)          — Load CPD network from JSON
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        ├── from_dict(network)       — Build from pre-loaded dict
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        ├── posterior(evidence, node) — P(node | evidence) via enumeration
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        └── adjust_scores(base, ev)  — Blend quantum scores with Bayesian posterior
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> BayesianAssessor
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> from_json(path) — Load CPD network from JSON
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> from_dict(network) — Build from pre-loaded dict
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> posterior(evidence, node) — P(node | evidence) via enumeration
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> adjust_scores(base, ev) — Blend quantum scores with Bayesian posterior
 </code></pre></div>
 <h3 id="network-schema-networksjson">Network Schema (<code>networks/*.json</code>)<a class="headerlink" href="#network-schema-networksjson" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">      </span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"risk_level"</span><span class="p">,</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">      </span><span class="nt">"parents"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">      </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"low"</span><span class="p">,</span><span class="w"> </span><span class="s2">"medium"</span><span class="p">,</span><span class="w"> </span><span class="s2">"high"</span><span class="p">],</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">      </span><span class="nt">"probs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">""</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"low"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="nt">"medium"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="nt">"high"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}}</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">      </span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"decision"</span><span class="p">,</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">      </span><span class="nt">"parents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"risk_level"</span><span class="p">],</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">      </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"approve"</span><span class="p">,</span><span class="w"> </span><span class="s2">"reject"</span><span class="p">,</span><span class="w"> </span><span class="s2">"conditional"</span><span class="p">],</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">      </span><span class="nt">"probs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">        </span><span class="nt">"low"</span><span class="p">:</span><span class="w">    </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.80</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">},</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">        </span><span class="nt">"medium"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.40</span><span class="p">},</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">        </span><span class="nt">"high"</span><span class="p">:</span><span class="w">   </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.10</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.60</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">}</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">  </span><span class="p">]</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"risk_level"</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="nt">"parents"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"low"</span><span class="p">,</span><span class="w"> </span><span class="s2">"medium"</span><span class="p">,</span><span class="w"> </span><span class="s2">"high"</span><span class="p">],</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w"> </span><span class="nt">"probs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">""</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"low"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="nt">"medium"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="nt">"high"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}}</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w"> </span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"decision"</span><span class="p">,</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w"> </span><span class="nt">"parents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"risk_level"</span><span class="p">],</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w"> </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"approve"</span><span class="p">,</span><span class="w"> </span><span class="s2">"reject"</span><span class="p">,</span><span class="w"> </span><span class="s2">"conditional"</span><span class="p">],</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="nt">"probs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w"> </span><span class="nt">"low"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.80</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.15</span><span class="p">},</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w"> </span><span class="nt">"medium"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.40</span><span class="p">},</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w"> </span><span class="nt">"high"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"approve"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.10</span><span class="p">,</span><span class="w"> </span><span class="nt">"reject"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.60</span><span class="p">,</span><span class="w"> </span><span class="nt">"conditional"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.30</span><span class="p">}</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w"> </span><span class="p">]</span>
 <a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="integration-point">Integration Point<a class="headerlink" href="#integration-point" title="Permanent link">¶</a></h3>
 <p>In <code>QuantumComplianceAssessor._assess_with_superposition()</code>, after <code>evaluate_parallel()</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">if</span> <span class="n">_bayesian_mode_enabled</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_bayesian'</span><span class="p">):</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">evidence</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"risk_level"</span><span class="p">:</span> <span class="n">audit_result</span><span class="o">.</span><span class="n">risk_level</span><span class="p">}</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bayesian</span><span class="o">.</span><span class="n">adjust_scores</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">evidence</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="n">evidence</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"risk_level"</span><span class="p">:</span> <span class="n">audit_result</span><span class="o">.</span><span class="n">risk_level</span><span class="p">}</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bayesian</span><span class="o">.</span><span class="n">adjust_scores</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">evidence</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="blending-formula">Blending Formula<a class="headerlink" href="#blending-formula" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>adjusted[k] = (1 - α) × quantum_score[k] + α × bayesian_posterior[k]
@@ -2622,12 +2622,12 @@ compliance screening by capturing conditional dependencies between risk factors.
 compliance cases by replacing hard thresholds with gradual membership functions.</p>
 <h3 id="design_1">Design<a class="headerlink" href="#design_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>src/cognitive_brain/analytics/fuzzy.py
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    ├── trimf(x, a, b, c)              — Triangular membership function
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    ├── trapmf(x, a, b, c, d)          — Trapezoidal membership function
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    └── FuzzyEngine
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        ├── default()                  — Pre-configured for compliance patterns
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        ├── evaluate(score, impact, cost) → FuzzyResult
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>        └── fuzzy_blend(crisp, ...)    — Override near-boundary decisions
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> trimf(x, a, b, c) — Triangular membership function
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> trapmf(x, a, b, c, d) — Trapezoidal membership function
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> FuzzyEngine
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> default() — Pre-configured for compliance patterns
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> evaluate(score, impact, cost) FuzzyResult
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> fuzzy_blend(crisp, ...) — Override near-boundary decisions
 </code></pre></div>
 <h3 id="membership-sets">Membership Sets<a class="headerlink" href="#membership-sets" title="Permanent link">¶</a></h3>
 <table>
@@ -2685,10 +2685,10 @@ compliance cases by replacing hard thresholds with gradual membership functions.
 </tbody>
 </table>
 <h3 id="inference-rules-mamdani">Inference Rules (Mamdani)<a class="headerlink" href="#inference-rules-mamdani" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Rule 1: score_high ∧ impact_high → APPROVE
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Rule 2: score_medium ∧ impact_high → MONITOR
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Rule 3: score_medium ∧ impact_low ∧ cost_low → CONDITIONAL
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Rule 4: score_low → REJECT
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Rule 1: score_high ∧ impact_high APPROVE
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Rule 2: score_medium ∧ impact_high MONITOR
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Rule 3: score_medium ∧ impact_low ∧ cost_low CONDITIONAL
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Rule 4: score_low REJECT
 </code></pre></div>
 <h3 id="key-boundary-coverage">Key Boundary Coverage<a class="headerlink" href="#key-boundary-coverage" title="Permanent link">¶</a></h3>
 <p>Patterns with highest false-negative risk (confirmed from Phase 1 analysis):</p>
@@ -2725,13 +2725,13 @@ compliance cases by replacing hard thresholds with gradual membership functions.
 false-positive reduction by focusing expert review on uncertain predictions.</p>
 <h3 id="design_2">Design<a class="headerlink" href="#design_2" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>src/cognitive_brain/active_learning/hook.py
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    └── ActiveLearningHook
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>        ├── record_if_uncertain(audit, assessment) → bool
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>        ├── get_queue(status=None) → [UncertainSample]
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>        ├── mark_reviewed(audit_id, accepted) → bool
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        ├── clear_queue() → int
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        ├── pending_count: int
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>        └── total_count: int
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> ActiveLearningHook
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> record_if_uncertain(audit, assessment) bool
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> get_queue(status=None) [UncertainSample]
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> mark_reviewed(audit_id, accepted) bool
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> clear_queue() int
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> pending_count: int
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> total_count: int
 </code></pre></div>
 <h3 id="uncertainty-threshold">Uncertainty Threshold<a class="headerlink" href="#uncertainty-threshold" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>uncertainty = 1.0 - confidence
@@ -2739,17 +2739,17 @@ false-positive reduction by focusing expert review on uncertain predictions.</p>
 </code></pre></div>
 <h3 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>assess_compliance()
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    → low confidence (&lt; 0.70)?
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>        → Yes: hook.record_if_uncertain() → queued for human review
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>        → No: proceed normally
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> low confidence (&lt; 0.70)?
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> Yes: hook.record_if_uncertain() queued for human review
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> No: proceed normally
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>Human expert reviews queue:
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    → hook.mark_reviewed(audit_id, accepted=True/False)
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> hook.mark_reviewed(audit_id, accepted=True/False)
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>Fine-tuning cycle (future):
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    → Export rejected samples as new ground truth
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    → Re-train scoring function weights
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    → Measure FP reduction vs baseline
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> Export rejected samples as new ground truth
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> Re-train scoring function weights
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> Measure FP reduction vs baseline
 </code></pre></div>
 <hr/>
 <h2 id="4-classical-baseline-reproducibility">4. Classical Baseline Reproducibility<a class="headerlink" href="#4-classical-baseline-reproducibility" title="Permanent link">¶</a></h2>
@@ -2768,7 +2768,7 @@ false-positive reduction by focusing expert review on uncertain predictions.</p>
 <h2 id="5-scalability-validation-plan">5. Scalability Validation Plan<a class="headerlink" href="#5-scalability-validation-plan" title="Permanent link">¶</a></h2>
 <h3 id="multi-seed-scalability-test">Multi-seed Scalability Test<a class="headerlink" href="#multi-seed-scalability-test" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>src:<span class="nv">$PYTHONPATH</span><span class="w"> </span>python<span class="w"> </span>src/cognitive_brain/experiments/exp1b_revalidation.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span>--multi-seed<span class="w"> </span>--scenarios<span class="w"> </span><span class="m">200</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span>--multi-seed<span class="w"> </span>--scenarios<span class="w"> </span><span class="m">200</span>
 </code></pre></div>
 <p><strong>Actual validation results (200 scenarios × 5 seeds):</strong></p>
 <table>
@@ -2820,43 +2820,43 @@ false-positive reduction by focusing expert review on uncertain predictions.</p>
 </tbody>
 </table>
 <p><strong>Interpretation:</strong>
-- Primary benchmark (seed=42, 110 GT scenarios): <strong>100% accuracy, k₁ ≤ 0.35</strong> 
+- Primary benchmark (seed=42, 110 GT scenarios): <strong>100% accuracy, k₁ ≤ 0.35</strong>
 - Cross-seed generalisation (200 scenarios): <strong>91–94% accuracy</strong> — above the 84% production minimum
 - k₁ increase at scale is expected: k₁ was optimised for the 110 GT scenario set; timing
-  variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
-- Coherence ≥ 0.650 maintained across all seeds 
-- No errors, no crashes, no memory leaks </p>
+ variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
+- Coherence ≥ 0.650 maintained across all seeds
+- No errors, no crashes, no memory leaks</p>
 <p><strong>Success criteria update:</strong>
-- Primary benchmark accuracy: 100% 
-- Cross-seed accuracy: ≥84% (production minimum) 
-- System stability: no errors across 5 seeds </p>
+- Primary benchmark accuracy: 100%
+- Cross-seed accuracy: ≥84% (production minimum)
+- System stability: no errors across 5 seeds</p>
 <hr/>
 <h2 id="6-hmac-key-management">6. HMAC Key Management<a class="headerlink" href="#6-hmac-key-management" title="Permanent link">¶</a></h2>
 <p>See <code>docs/ops/HMAC_rotation.md</code> for the complete KMS rotation runbook.</p>
 <p><strong>Summary:</strong>
-- Development: empty key → SHA-256 fallback chain (safe, not tamper-proof)
+- Development: empty key SHA-256 fallback chain (safe, not tamper-proof)
 - Staging: 180-day rotation via Secrets Manager
 - Production: 90-day automatic KMS rotation + WORM persistence</p>
 <p><strong>Environment variable</strong>: <code>CODEX_AUDIT_HMAC_KEY</code> — inject via KMS, never commit.</p>
 <hr/>
 <h2 id="phase-4-file-map">Phase 4 File Map<a class="headerlink" href="#phase-4-file-map" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>New files:
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>├── src/cognitive_brain/analytics/
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>│   ├── __init__.py
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>│   ├── bayesian.py              — Bayesian Networks PoC
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>│   └── fuzzy.py                 — Fuzzy Logic PoC
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>├── src/cognitive_brain/active_learning/
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>│   ├── __init__.py
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>│   └── hook.py                  — Active Learning hook (staging only)
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>├── tests/cognitive_brain/analytics/
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>│   ├── __init__.py
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>│   ├── test_bayesian.py         — 19 tests
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>│   └── test_fuzzy.py            — 21 tests
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>├── audit_artifacts/
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>│   └── baselines/
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>│       └── phase2_phase3.json   — Reproducibility baseline
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>└── docs/ops/
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    └── HMAC_rotation.md         — KMS rotation runbook
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> src/cognitive_brain/analytics/
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> __init__.py
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> bayesian.py — Bayesian Networks PoC
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> fuzzy.py — Fuzzy Logic PoC
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> src/cognitive_brain/active_learning/
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> __init__.py
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> hook.py — Active Learning hook (staging only)
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> tests/cognitive_brain/analytics/
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> __init__.py
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> test_bayesian.py — 19 tests
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> test_fuzzy.py — 21 tests
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> audit_artifacts/
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> baselines/
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> phase2_phase3.json — Reproducibility baseline
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> docs/ops/
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> HMAC_rotation.md — KMS rotation runbook
 </code></pre></div>
 <hr/>
 <h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
@@ -2900,6 +2900,6 @@ false-positive reduction by focusing expert review on uncertain predictions.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

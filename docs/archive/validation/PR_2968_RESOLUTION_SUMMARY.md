@@ -1,6 +1,6 @@
 # PR #2968 - CI/CD Failure Resolution Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:2026-07-13
 **Branch:** copilot/sub-pr-2968

@@ -1,6 +1,6 @@
 # Concurrent Workflow Monitoring & Cherry-Pick Process — Reproducibility Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Session:** S146 | **PR:** #3615 | **Date:2026-07-13
 > **CLI tool:** `scripts/ci/monitor_run.py`

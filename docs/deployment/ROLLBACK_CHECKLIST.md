@@ -1,12 +1,12 @@
 # Rollback Checklist - Release Deployment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status Indicator**: **EMERGENCY** | **WARNING** | **NORMAL**
 
 **Current Time**: [To be filled during rollback]
-**Release Version**: [e.g., v0.2.1]
-**Target Rollback Version**: [e.g., v0.2.1]
+**Release Version**: [e.g., v0.2.0]
+**Target Rollback Version**: [e.g., v0.2.0]
 
 ---
 
@@ -86,7 +86,7 @@ START
 
 - [ ] **Alternative mitigation explored**
  - Workaround available: Yes / No (if yes, describe: `___`)
- - Can wait for v0.2.1 patch: Yes / No
+ - Can wait for v0.2.0 patch: Yes / No
  - Requires immediate action: Yes / No
 
 ### Decision Documentation
@@ -203,17 +203,17 @@ EOF
 
 ```bash
 # Delete local tag (if exists)
-git tag -d v0.2.1 || true
+git tag -d v0.2.0 || true
 
 # Delete remote tag
-git push origin --delete v0.2.1
+git push origin --delete v0.2.0
 
 # Verify deletion
-git tag | grep v0.2.1
+git tag | grep v0.2.0
 
 # Expected: No output (tag deleted)
 
-echo " Release tag v0.2.1 deleted"
+echo " Release tag v0.2.0 deleted"
 ```
 
 ### Step 5: Restore Previous Version (2 min)
@@ -222,7 +222,7 @@ echo " Release tag v0.2.1 deleted"
 
 ```bash
 # Identify previous stable version
-PREVIOUS_VERSION="v0.2.1"
+PREVIOUS_VERSION="v0.2.0"
 
 # If not already tagged and released
 git tag -a ${PREVIOUS_VERSION} \
@@ -235,7 +235,7 @@ git push origin ${PREVIOUS_VERSION}
 sleep 5 # Wait for PyPI to index
 pip index versions codex-ml | head -3
 
-# Expected output shows v0.2.1 as latest (not yanked)
+# Expected output shows v0.2.0 as latest (not yanked)
 
 echo " Previous version ${PREVIOUS_VERSION} restored as latest"
 ```
@@ -265,7 +265,7 @@ curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
 # "yanked": true
 # }
 
-echo " PyPI correctly shows v0.2.1 as latest, v0.2.1 as yanked"
+echo " PyPI correctly shows v0.2.0 as latest, v0.2.0 as yanked"
 ```
 
 ### Step 7: Notify Users (2 min)
@@ -275,30 +275,30 @@ echo " PyPI correctly shows v0.2.1 as latest, v0.2.1 as yanked"
 Create GitHub release documenting the rollback:
 
 ```bash
-gh release create rollback-v0.2.1 \
+gh release create rollback-v0.2.0 \
  --notes "
-## Release Rollback: v0.2.1
+## Release Rollback: v0.2.0
 
 **Status**: Yanked from PyPI 
 **Timestamp**: $(date -Iseconds) 
 **Reason**: [COPY FROM PRE-ROLLBACK VERIFICATION]
 
 ### Action Required
-- **If you installed v0.2.1**: 
+- **If you installed v0.2.0**: 
  \`\`\`bash
  pip install --upgrade codex-ml
- # This will downgrade to v0.2.1
+ # This will downgrade to v0.2.0
  \`\`\`
 
 - **If you haven't installed yet**:
- Skip v0.2.1 and install latest stable version.
+ Skip v0.2.0 and install latest stable version.
 
 ### Root Cause
 [To be filled after incident investigation]
 
 ### Fix Timeline
-- **Next patch release (v0.2.1)**: Expected [DATE]
-- **Next minor release (v0.2.1)**: Expected [DATE]
+- **Next patch release (v0.2.0)**: Expected [DATE]
+- **Next minor release (v0.2.0)**: Expected [DATE]
 
 ### Impact
 - **Users affected**: ~[N] (based on download stats)
@@ -360,11 +360,11 @@ echo " All profiles verified"
 ### Verify PyPI State
 
 ```bash
-# Confirm v0.2.1 is latest
+# Confirm v0.2.0 is latest
 pip index versions codex-ml | head -1
-# Should show v0.2.1
+# Should show v0.2.0
 
-# Confirm v0.2.1 is yanked
+# Confirm v0.2.0 is yanked
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 # Should show true
 
@@ -375,7 +375,7 @@ echo " PyPI state verified"
 
 ```bash
 # Confirm tag deleted
-git tag | grep v0.2.1
+git tag | grep v0.2.0
 # Should show no output
 
 # Confirm release marked with rollback tag
@@ -402,11 +402,11 @@ curl -s "https://pypistats.org/api/packages/codex-ml/recent?period=day" | jq .da
 ### Template 1: Internal Team Notification
 
 ```
-Subject: ROLLBACK INITIATED: codex-ml v0.2.1
+Subject: ROLLBACK INITIATED: codex-ml v0.2.0
 
 Team,
 
-A critical issue was discovered in v0.2.1 and a rollback is underway.
+A critical issue was discovered in v0.2.0 and a rollback is underway.
 
 **Issue**: [Brief description]
 **Severity**: Critical / High / Medium
@@ -414,15 +414,15 @@ A critical issue was discovered in v0.2.1 and a rollback is underway.
 **Rollback Time**: ~5 minutes
 
 **Actions Taken**:
- v0.2.1 marked as yanked on PyPI
+ v0.2.0 marked as yanked on PyPI
  Release tag deleted
- v0.2.1 restored as latest
+ v0.2.0 restored as latest
  Users notified via GitHub release
 
 **Next Steps**:
 [ ] Investigate root cause (ETA: [TIME])
 [ ] Develop fix (ETA: [TIME])
-[ ] Release v0.2.1 patch (ETA: [TIME])
+[ ] Release v0.2.0 patch (ETA: [TIME])
 
 **Standby**: Incident channel for updates.
 
@@ -434,7 +434,7 @@ A critical issue was discovered in v0.2.1 and a rollback is underway.
 ```
 ## Immediate Action: Please upgrade to stable version
 
-**Status**: v0.2.1 has been recalled from PyPI
+**Status**: v0.2.0 has been recalled from PyPI
 
 If you installed `codex-ml==0.1.0` in the last 2 hours, please run:
 
@@ -442,15 +442,15 @@ If you installed `codex-ml==0.1.0` in the last 2 hours, please run:
 pip install --upgrade codex-ml
 ```
 
-This will downgrade you to v0.2.1 (last stable release).
+This will downgrade you to v0.2.0 (last stable release).
 
 **What happened?**
 - Issue: [Specific problem that affects users]
-- Impact: [What breaks when using v0.2.1]
+- Impact: [What breaks when using v0.2.0]
 - Workaround: [Is there a workaround? If so, describe]
 
 **Fix timeline?**
-- v0.2.1 patch: Expected [DATE]
+- v0.2.0 patch: Expected [DATE]
 - Root cause analysis: Complete by [DATE]
 
 **Questions?**
@@ -462,16 +462,16 @@ We apologize for the inconvenience.
 ### Template 3: Executive Summary
 
 ```
-INCIDENT REPORT: v0.2.1 Release Rollback
+INCIDENT REPORT: v0.2.0 Release Rollback
 
 EXECUTIVE SUMMARY:
-v0.2.1 was released and subsequently rolled back due to [ISSUE].
+v0.2.0 was released and subsequently rolled back due to [ISSUE].
 
 TIMELINE:
-- 15:30: v0.2.1 released to PyPI
+- 15:30: v0.2.0 released to PyPI
 - 15:42: Issue detected in smoke tests
 - 15:47: Rollback decision made
-- 15:52: v0.2.1 yanked, v0.2.1 restored
+- 15:52: v0.2.0 yanked, v0.2.0 restored
 - 16:00: All verification complete
 
 IMPACT:
@@ -503,7 +503,7 @@ BUSINESS IMPACT:
 ### Post-Mortem Meeting
 
 1. **Gather facts** (15 min)
- - What was released? `v0.2.1`
+ - What was released? `v0.2.0`
  - When did issue occur? `[TIME]`
  - How long to detect? `[DURATION]`
  - How long to rollback? `[DURATION]`
@@ -528,17 +528,17 @@ BUSINESS IMPACT:
 
 ### Post-Mortem Document
 
-Create `.codex/incidents/rollback-v0.2.1-postmortem.md`:
+Create `.codex/incidents/rollback-v0.2.0-postmortem.md`:
 
 ```markdown
-# Post-Mortem: v0.2.1 Release Rollback
+# Post-Mortem: v0.2.0 Release Rollback
 
 **Date**: 2026-07-07 
 **Duration**: 15 minutes (detection + rollback) 
 **Severity**: P1 Critical
 
 ## Summary
-v0.2.1 failed immediately after release due to [ISSUE].
+v0.2.0 failed immediately after release due to [ISSUE].
 Rollback completed in [TIME] minutes.
 
 ## Timeline
@@ -611,16 +611,16 @@ curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 
 ```bash
 # Delete local tag
-git tag -d v0.2.1
+git tag -d v0.2.0
 
 # Delete remote tag
-git push origin --delete v0.2.1
+git push origin --delete v0.2.0
 
 # Create new tag
-git tag -a v0.2.1 -m "Release v0.2.1"
+git tag -a v0.2.0 -m "Release v0.2.0"
 
 # Push tag
-git push origin v0.2.1
+git push origin v0.2.0
 ```
 
 ### Testing Previous Version

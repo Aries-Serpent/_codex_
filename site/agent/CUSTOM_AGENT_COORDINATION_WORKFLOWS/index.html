@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/CUSTOM_AGENT_COORDINATION_WORKFLOWS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Agent Workflow Coordination Diagrams - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2387,10 +2387,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Document:</strong> Mermaid Workflow Diagrams for Multi-Agent Orchestration<br/>
-<strong>Version:</strong> 1.0.0<br/>
-<strong>Generated:</strong> 2026-06-26<br/>
-<strong>Purpose:</strong> Visual reference for agent coordination patterns, decision flows, and parallel execution models  </p>
+<p><strong>Document:</strong> Mermaid Workflow Diagrams for Multi-Agent Orchestration
+<strong>Version:</strong> 1.0.0
+<strong>Generated:</strong> 2026-06-26
+<strong>Purpose:</strong> Visual reference for agent coordination patterns, decision flows, and parallel execution models</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2407,430 +2407,569 @@
 <hr/>
 <h2 id="overall-system-architecture">Overall System Architecture<a class="headerlink" href="#overall-system-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>graph TB
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    subgraph "Copilot Agents"
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>        Orchestrator[" Orchestrator&lt;br/&gt;(coordinator)"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        subgraph "Domain Specialists"
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>            CICD[" CI/CD&lt;br/&gt;auto-healer&lt;br/&gt;ci-testing"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>            Testing["🧪 Testing&lt;br/&gt;coverage&lt;br/&gt;alignment"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>            Docs[" Docs&lt;br/&gt;consolidation&lt;br/&gt;freshness"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>            Security[" Security&lt;br/&gt;scanning&lt;br/&gt;remediation"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>            Config[" Config&lt;br/&gt;validation&lt;br/&gt;migration"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        end
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    end
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    subgraph "Execution Environment"
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        Repository["📦 Repository&lt;br/&gt;(codebase)"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        GitHub[" GitHub API&lt;br/&gt;(events, workflows)"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        Results[" Results&lt;br/&gt;(artifacts)"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    end
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    Orchestrator --&gt;|selects &amp; delegates| CICD
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    Orchestrator --&gt;|selects &amp; delegates| Testing
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    Orchestrator --&gt;|selects &amp; delegates| Docs
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    Orchestrator --&gt;|selects &amp; delegates| Security
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    Orchestrator --&gt;|selects &amp; delegates| Config
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    CICD --&gt;|reads/writes| Repository
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    CICD --&gt;|queries/triggers| GitHub
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    Testing --&gt;|reads/writes| Repository
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    Testing --&gt;|queries| GitHub
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    Docs --&gt;|reads/writes| Repository
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    Security --&gt;|reads/writes| Repository
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    Config --&gt;|reads/writes| Repository
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    CICD --&gt;|produces| Results
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    Testing --&gt;|produces| Results
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    Docs --&gt;|produces| Results
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    Security --&gt;|produces| Results
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    Config --&gt;|produces| Results
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    GitHub --&gt;|events| Orchestrator
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    Results --&gt;|feedback| Orchestrator
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> subgraph "Copilot Agents"
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Orchestrator[" Orchestrator&lt;br/&gt;(coordinator)"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> subgraph "Domain Specialists"
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> CICD[" CI/CD&lt;br/&gt;auto-healer&lt;br/&gt;ci-testing"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Testing[" Testing&lt;br/&gt;coverage&lt;br/&gt;alignment"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Docs[" Docs&lt;br/&gt;consolidation&lt;br/&gt;freshness"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> Security[" Security&lt;br/&gt;scanning&lt;br/&gt;remediation"]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> Config[" Config&lt;br/&gt;validation&lt;br/&gt;migration"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> end
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> end
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> subgraph "Execution Environment"
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> Repository[" Repository&lt;br/&gt;(codebase)"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> GitHub[" GitHub API&lt;br/&gt;(events, workflows)"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> Results[" Results&lt;br/&gt;(artifacts)"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> end
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> Orchestrator --&gt;|selects &amp; delegates| CICD
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> Orchestrator --&gt;|selects &amp; delegates| Testing
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> Orchestrator --&gt;|selects &amp; delegates| Docs
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> Orchestrator --&gt;|selects &amp; delegates| Security
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> Orchestrator --&gt;|selects &amp; delegates| Config
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> CICD --&gt;|reads/writes| Repository
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> CICD --&gt;|queries/triggers| GitHub
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> Testing --&gt;|reads/writes| Repository
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> Testing --&gt;|queries| GitHub
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> Docs --&gt;|reads/writes| Repository
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> Security --&gt;|reads/writes| Repository
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> Config --&gt;|reads/writes| Repository
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> CICD --&gt;|produces| Results
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> Testing --&gt;|produces| Results
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> Docs --&gt;|produces| Results
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> Security --&gt;|produces| Results
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a> Config --&gt;|produces| Results
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> GitHub --&gt;|events| Orchestrator
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> Results --&gt;|feedback| Orchestrator
 </code></pre></div>
 <hr/>
 <h2 id="agent-selection-decision-tree">Agent Selection Decision Tree<a class="headerlink" href="#agent-selection-decision-tree" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>graph TD
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    A[" Task Received"] --&gt; B["🏷️ Classify Domain"]
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    B --&gt; C{Domain Type?}
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    C --&gt;|CI/CD| D[" CI/CD Triage"]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    C --&gt;|Testing| E[" Testing Triage"]
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    C --&gt;|Docs| F[" Docs Triage"]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    C --&gt;|Security| G[" Security Triage"]
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    C --&gt;|Config| H[" Config Triage"]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    D --&gt; D1{Issue Type?}
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    D1 --&gt;|Workflow Syntax| D1A["➡️ workflow-ci-fixer"]
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    D1 --&gt;|Test Failure| D1B["➡️ ci-testing-agent"]
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    D1 --&gt;|Known Pattern| D1C["➡️ ci-auto-healer-agent"]
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    D1 --&gt;|Blocking Issue| D1D["➡️ ci-emergency-response-agent"]
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    E --&gt; E1{Issue Type?}
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    E1 --&gt;|Coverage Gap| E1A["➡️ unified-coverage-agent"]
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    E1 --&gt;|Failing Tests| E1B["➡️ autonomous-test-healer-agent"]
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    E1 --&gt;|Flaky Tests| E1C["➡️ fragile-test-guardian"]
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    E1 --&gt;|API Changed| E1D["➡️ test-alignment-fixer"]
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    F --&gt; F1{Issue Type?}
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    F1 --&gt;|Structure| F1A["➡️ unified-doc-agent"]
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    F1 --&gt;|Link Health| F1B["➡️ link-validator-agent"]
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    F1 --&gt;|Freshness| F1C["➡️ doc-freshness-checker"]
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>    F1 --&gt;|Terminology| F1D["➡️ terminology-consistency-agent"]
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>    G --&gt; G1{Issue Type?}
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>    G1 --&gt;|CodeQL Alert| G1A["➡️ codeql-alert-resolution-agent"]
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>    G1 --&gt;|Secret Found| G1B["➡️ secret-detection-agent"]
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    G1 --&gt;|Vuln Check| G1C["➡️ dependency-vulnerability-scanner"]
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>    G1 --&gt;|Full Audit| G1D["➡️ unified-security-scanner"]
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    H --&gt; H1{Issue Type?}
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>    H1 --&gt;|Validate| H1A["➡️ config-validator"]
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>    H1 --&gt;|Migrate| H1B["➡️ config-migration-assistant"]
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>    H1 --&gt;|PyTorch| H1C["➡️ meta-tensor-validator"]
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> A[" Task Received"] --&gt; B[" Classify Domain"]
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> B --&gt; C{Domain Type?}
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> C --&gt;|CI/CD| D[" CI/CD Triage"]
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> C --&gt;|Testing| E[" Testing Triage"]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> C --&gt;|Docs| F[" Docs Triage"]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> C --&gt;|Security| G[" Security Triage"]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> C --&gt;|Config| H[" Config Triage"]
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> D --&gt; D1{Issue Type?}
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> D1 --&gt;|Workflow Syntax| D1A[" workflow-ci-fixer"]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> D1 --&gt;|Test Failure| D1B[" ci-testing-agent"]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> D1 --&gt;|Known Pattern| D1C[" ci-auto-healer-agent"]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> D1 --&gt;|Blocking Issue| D1D[" ci-emergency-response-agent"]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> E --&gt; E1{Issue Type?}
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> E1 --&gt;|Coverage Gap| E1A[" unified-coverage-agent"]
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> E1 --&gt;|Failing Tests| E1B[" autonomous-test-healer-agent"]
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> E1 --&gt;|Flaky Tests| E1C[" fragile-test-guardian"]
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a> E1 --&gt;|API Changed| E1D[" test-alignment-fixer"]
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a> F --&gt; F1{Issue Type?}
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a> F1 --&gt;|Structure| F1A[" unified-doc-agent"]
 <a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>    D1A --&gt; I[" Single Agent&lt;br/&gt;or Delegate"]
-<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>    D1B --&gt; I
-<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>    D1C --&gt; I
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>    D1D --&gt; I
-<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a>    E1A --&gt; I
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>    E1B --&gt; I
-<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>    E1C --&gt; I
-<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>    E1D --&gt; I
-<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a>    F1A --&gt; I
-<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a>    F1B --&gt; I
-<a href="#__codelineno-1-51" id="__codelineno-1-51" name="__codelineno-1-51"></a>    F1C --&gt; I
-<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a>    F1D --&gt; I
-<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a>    G1A --&gt; I
-<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a>    G1B --&gt; I
-<a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a>    G1C --&gt; I
-<a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a>    G1D --&gt; I
-<a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a>    H1A --&gt; I
-<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a>    H1B --&gt; I
-<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a>    H1C --&gt; I
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a> F1 --&gt;|Link Health| F1B[" link-validator-agent"]
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>
+<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a> F1 --&gt;|Freshness| F1C[" doc-freshness-checker"]
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>
+<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a> F1 --&gt;|Terminology| F1D[" terminology-consistency-agent"]
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>
+<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a> G --&gt; G1{Issue Type?}
+<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>
+<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a> G1 --&gt;|CodeQL Alert| G1A[" codeql-alert-resolution-agent"]
+<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a>
+<a href="#__codelineno-1-51" id="__codelineno-1-51" name="__codelineno-1-51"></a> G1 --&gt;|Secret Found| G1B[" secret-detection-agent"]
+<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a>
+<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a> G1 --&gt;|Vuln Check| G1C[" dependency-vulnerability-scanner"]
+<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a>
+<a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a> G1 --&gt;|Full Audit| G1D[" unified-security-scanner"]
+<a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a>
+<a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a> H --&gt; H1{Issue Type?}
+<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a>
+<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a> H1 --&gt;|Validate| H1A[" config-validator"]
 <a href="#__codelineno-1-60" id="__codelineno-1-60" name="__codelineno-1-60"></a>
-<a href="#__codelineno-1-61" id="__codelineno-1-61" name="__codelineno-1-61"></a>    I --&gt; J{Parallel&lt;br/&gt;Viable?}
+<a href="#__codelineno-1-61" id="__codelineno-1-61" name="__codelineno-1-61"></a> H1 --&gt;|Migrate| H1B[" config-migration-assistant"]
 <a href="#__codelineno-1-62" id="__codelineno-1-62" name="__codelineno-1-62"></a>
-<a href="#__codelineno-1-63" id="__codelineno-1-63" name="__codelineno-1-63"></a>    J --&gt;|No| K["🔁 Sequential&lt;br/&gt;Execution"]
-<a href="#__codelineno-1-64" id="__codelineno-1-64" name="__codelineno-1-64"></a>    J --&gt;|Yes| L[" Parallel&lt;br/&gt;Delegation&lt;br/&gt;2-4 agents"]
-<a href="#__codelineno-1-65" id="__codelineno-1-65" name="__codelineno-1-65"></a>
-<a href="#__codelineno-1-66" id="__codelineno-1-66" name="__codelineno-1-66"></a>    K --&gt; M[" Collect Results"]
-<a href="#__codelineno-1-67" id="__codelineno-1-67" name="__codelineno-1-67"></a>    L --&gt; M
+<a href="#__codelineno-1-63" id="__codelineno-1-63" name="__codelineno-1-63"></a> H1 --&gt;|PyTorch| H1C[" meta-tensor-validator"]
+<a href="#__codelineno-1-64" id="__codelineno-1-64" name="__codelineno-1-64"></a>
+<a href="#__codelineno-1-65" id="__codelineno-1-65" name="__codelineno-1-65"></a> D1A --&gt; I[" Single Agent&lt;br/&gt;or Delegate"]
+<a href="#__codelineno-1-66" id="__codelineno-1-66" name="__codelineno-1-66"></a>
+<a href="#__codelineno-1-67" id="__codelineno-1-67" name="__codelineno-1-67"></a> D1B --&gt; I
 <a href="#__codelineno-1-68" id="__codelineno-1-68" name="__codelineno-1-68"></a>
-<a href="#__codelineno-1-69" id="__codelineno-1-69" name="__codelineno-1-69"></a>    M --&gt; N["✔️ Verify &amp; Merge"]
-<a href="#__codelineno-1-70" id="__codelineno-1-70" name="__codelineno-1-70"></a>    N --&gt; O[" Task Complete"]
+<a href="#__codelineno-1-69" id="__codelineno-1-69" name="__codelineno-1-69"></a> D1C --&gt; I
+<a href="#__codelineno-1-70" id="__codelineno-1-70" name="__codelineno-1-70"></a>
+<a href="#__codelineno-1-71" id="__codelineno-1-71" name="__codelineno-1-71"></a> D1D --&gt; I
+<a href="#__codelineno-1-72" id="__codelineno-1-72" name="__codelineno-1-72"></a>
+<a href="#__codelineno-1-73" id="__codelineno-1-73" name="__codelineno-1-73"></a> E1A --&gt; I
+<a href="#__codelineno-1-74" id="__codelineno-1-74" name="__codelineno-1-74"></a>
+<a href="#__codelineno-1-75" id="__codelineno-1-75" name="__codelineno-1-75"></a> E1B --&gt; I
+<a href="#__codelineno-1-76" id="__codelineno-1-76" name="__codelineno-1-76"></a>
+<a href="#__codelineno-1-77" id="__codelineno-1-77" name="__codelineno-1-77"></a> E1C --&gt; I
+<a href="#__codelineno-1-78" id="__codelineno-1-78" name="__codelineno-1-78"></a>
+<a href="#__codelineno-1-79" id="__codelineno-1-79" name="__codelineno-1-79"></a> E1D --&gt; I
+<a href="#__codelineno-1-80" id="__codelineno-1-80" name="__codelineno-1-80"></a>
+<a href="#__codelineno-1-81" id="__codelineno-1-81" name="__codelineno-1-81"></a> F1A --&gt; I
+<a href="#__codelineno-1-82" id="__codelineno-1-82" name="__codelineno-1-82"></a>
+<a href="#__codelineno-1-83" id="__codelineno-1-83" name="__codelineno-1-83"></a> F1B --&gt; I
+<a href="#__codelineno-1-84" id="__codelineno-1-84" name="__codelineno-1-84"></a>
+<a href="#__codelineno-1-85" id="__codelineno-1-85" name="__codelineno-1-85"></a> F1C --&gt; I
+<a href="#__codelineno-1-86" id="__codelineno-1-86" name="__codelineno-1-86"></a>
+<a href="#__codelineno-1-87" id="__codelineno-1-87" name="__codelineno-1-87"></a> F1D --&gt; I
+<a href="#__codelineno-1-88" id="__codelineno-1-88" name="__codelineno-1-88"></a>
+<a href="#__codelineno-1-89" id="__codelineno-1-89" name="__codelineno-1-89"></a> G1A --&gt; I
+<a href="#__codelineno-1-90" id="__codelineno-1-90" name="__codelineno-1-90"></a>
+<a href="#__codelineno-1-91" id="__codelineno-1-91" name="__codelineno-1-91"></a> G1B --&gt; I
+<a href="#__codelineno-1-92" id="__codelineno-1-92" name="__codelineno-1-92"></a>
+<a href="#__codelineno-1-93" id="__codelineno-1-93" name="__codelineno-1-93"></a> G1C --&gt; I
+<a href="#__codelineno-1-94" id="__codelineno-1-94" name="__codelineno-1-94"></a>
+<a href="#__codelineno-1-95" id="__codelineno-1-95" name="__codelineno-1-95"></a> G1D --&gt; I
+<a href="#__codelineno-1-96" id="__codelineno-1-96" name="__codelineno-1-96"></a>
+<a href="#__codelineno-1-97" id="__codelineno-1-97" name="__codelineno-1-97"></a> H1A --&gt; I
+<a href="#__codelineno-1-98" id="__codelineno-1-98" name="__codelineno-1-98"></a>
+<a href="#__codelineno-1-99" id="__codelineno-1-99" name="__codelineno-1-99"></a> H1B --&gt; I
+<a href="#__codelineno-1-100" id="__codelineno-1-100" name="__codelineno-1-100"></a>
+<a href="#__codelineno-1-101" id="__codelineno-1-101" name="__codelineno-1-101"></a> H1C --&gt; I
+<a href="#__codelineno-1-102" id="__codelineno-1-102" name="__codelineno-1-102"></a>
+<a href="#__codelineno-1-103" id="__codelineno-1-103" name="__codelineno-1-103"></a> I --&gt; J{Parallel&lt;br/&gt;Viable?}
+<a href="#__codelineno-1-104" id="__codelineno-1-104" name="__codelineno-1-104"></a>
+<a href="#__codelineno-1-105" id="__codelineno-1-105" name="__codelineno-1-105"></a> J --&gt;|No| K[" Sequential&lt;br/&gt;Execution"]
+<a href="#__codelineno-1-106" id="__codelineno-1-106" name="__codelineno-1-106"></a>
+<a href="#__codelineno-1-107" id="__codelineno-1-107" name="__codelineno-1-107"></a> J --&gt;|Yes| L[" Parallel&lt;br/&gt;Delegation&lt;br/&gt;2-4 agents"]
+<a href="#__codelineno-1-108" id="__codelineno-1-108" name="__codelineno-1-108"></a>
+<a href="#__codelineno-1-109" id="__codelineno-1-109" name="__codelineno-1-109"></a> K --&gt; M[" Collect Results"]
+<a href="#__codelineno-1-110" id="__codelineno-1-110" name="__codelineno-1-110"></a>
+<a href="#__codelineno-1-111" id="__codelineno-1-111" name="__codelineno-1-111"></a> L --&gt; M
+<a href="#__codelineno-1-112" id="__codelineno-1-112" name="__codelineno-1-112"></a>
+<a href="#__codelineno-1-113" id="__codelineno-1-113" name="__codelineno-1-113"></a> M --&gt; N[" Verify &amp; Merge"]
+<a href="#__codelineno-1-114" id="__codelineno-1-114" name="__codelineno-1-114"></a>
+<a href="#__codelineno-1-115" id="__codelineno-1-115" name="__codelineno-1-115"></a> N --&gt; O[" Task Complete"]
 </code></pre></div>
 <hr/>
 <h2 id="cicd-failure-resolution-cascade">CI/CD Failure Resolution Cascade<a class="headerlink" href="#cicd-failure-resolution-cascade" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>graph TD
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    A[" CI Failure Detected"] --&gt; B[" Get Workflow Logs"]
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    B --&gt; C{"Parse Logs&lt;br/&gt;for Pattern"}
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    C --&gt;|Syntax Error| C1[" workflow-ci-fixer"]
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    C --&gt;|Test Failure| C2["🧪 ci-testing-agent"]
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    C --&gt;|Known Pattern| C3[" ci-auto-healer-agent"]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    C --&gt;|Build Error| C4["🔨 CI Docker Build&lt;br/&gt;Healer"]
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    C --&gt;|Unknown| C5[" ci-triage-pipeline-agent"]
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    C1 --&gt; D[" Fix Type 1"]
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    C2 --&gt; D
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    C3 --&gt; D
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    C4 --&gt; D
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    C5 --&gt; E[" Classify&lt;br/&gt;&amp; Recommend"]
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    E --&gt; C
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    D --&gt; F[" Fix Applied"]
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>    F --&gt; G[" Re-run CI"]
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>    G --&gt; H{Result?}
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    H --&gt;|Pass| I[" Resolved"]
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    H --&gt;|Fail| J{"Same&lt;br/&gt;Error?"}
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> A[" CI Failure Detected"] --&gt; B[" Get Workflow Logs"]
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> B --&gt; C{"Parse Logs&lt;br/&gt;for Pattern"}
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> C --&gt;|Syntax Error| C1[" workflow-ci-fixer"]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> C --&gt;|Test Failure| C2[" ci-testing-agent"]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> C --&gt;|Known Pattern| C3[" ci-auto-healer-agent"]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> C --&gt;|Build Error| C4[" CI Docker Build&lt;br/&gt;Healer"]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> C --&gt;|Unknown| C5[" ci-triage-pipeline-agent"]
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> C1 --&gt; D[" Fix Type 1"]
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> C2 --&gt; D
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> C3 --&gt; D
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> C4 --&gt; D
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> C5 --&gt; E[" Classify&lt;br/&gt;&amp; Recommend"]
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> E --&gt; C
 <a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    J --&gt;|Yes| K[" Escalate&lt;br/&gt;to Human"]
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>    J --&gt;|No| B
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>    I --&gt; L[" Log Resolution"]
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>    K --&gt; L
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>    L --&gt; M[" Complete"]
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> D --&gt; F[" Fix Applied"]
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> F --&gt; G[" Re-run CI"]
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a> G --&gt; H{Result?}
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a> H --&gt;|Pass| I[" Resolved"]
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a> H --&gt;|Fail| J{"Same&lt;br/&gt;Error?"}
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a> J --&gt;|Yes| K[" Escalate&lt;br/&gt;to Human"]
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a> J --&gt;|No| B
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a>
+<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a> I --&gt; L[" Log Resolution"]
+<a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a>
+<a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a> K --&gt; L
+<a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a>
+<a href="#__codelineno-2-47" id="__codelineno-2-47" name="__codelineno-2-47"></a> L --&gt; M[" Complete"]
 </code></pre></div>
 <hr/>
 <h2 id="testing-coverage-audit-workflow">Testing &amp; Coverage Audit Workflow<a class="headerlink" href="#testing-coverage-audit-workflow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>graph TD
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    A[" Testing Audit&lt;br/&gt;Initiated"] --&gt; B[" Collect Metrics"]
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    B --&gt; C[" Failing Tests?"]
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    B --&gt; D["️ Flaky Tests?"]
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    B --&gt; E["📉 Coverage Gaps?"]
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    C --&gt;|Yes| C1["➡️ autonomous-test-healer-agent"]
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    C --&gt;|No| C2["Skip"]
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> A[" Testing Audit&lt;br/&gt;Initiated"] --&gt; B[" Collect Metrics"]
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> B --&gt; C[" Failing Tests?"]
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> B --&gt; D[" Flaky Tests?"]
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> B --&gt; E[" Coverage Gaps?"]
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    D --&gt;|Yes| D1["➡️ fragile-test-guardian"]
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    D --&gt;|No| D2["Skip"]
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    E --&gt;|Yes| E1["➡️ unified-coverage-agent"]
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    E --&gt;|No| E2["Skip"]
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> C --&gt;|Yes| C1[" autonomous-test-healer-agent"]
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> C --&gt;|No| C2["Skip"]
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> D --&gt;|Yes| D1[" fragile-test-guardian"]
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    C1 -.-&gt;|parallel| X[" All agents&lt;br/&gt;execute"]
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    D1 -.-&gt;|parallel| X
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    E1 -.-&gt;|parallel| X
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    C2 -.-&gt;|skip| X
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    D2 -.-&gt;|skip| X
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    E2 -.-&gt;|skip| X
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    X --&gt; F[" Wait for&lt;br/&gt;Results"]
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    F --&gt; G[" Merge Results"]
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    G --&gt; H[" New Metrics"]
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> D --&gt;|No| D2["Skip"]
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> E --&gt;|Yes| E1[" unified-coverage-agent"]
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> E --&gt;|No| E2["Skip"]
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> C1 -.-&gt;|parallel| X[" All agents&lt;br/&gt;execute"]
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> D1 -.-&gt;|parallel| X
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> E1 -.-&gt;|parallel| X
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> C2 -.-&gt;|skip| X
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> D2 -.-&gt;|skip| X
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a> E2 -.-&gt;|skip| X
 <a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    H --&gt; I{All Criteria&lt;br/&gt;Met?}
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a> X --&gt; F[" Wait for&lt;br/&gt;Results"]
 <a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>    I --&gt;|Yes| J[" Add Edge&lt;br/&gt;Cases"]
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    I --&gt;|No| K[" Escalate&lt;br/&gt;Failures"]
-<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>
-<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>    J --&gt; L["➡️ test-enhancement-agent"]
-<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>    K --&gt; M[" Human&lt;br/&gt;Review"]
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a> F --&gt; G[" Merge Results"]
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a> G --&gt; H[" New Metrics"]
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a> H --&gt; I{All Criteria&lt;br/&gt;Met?}
 <a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>
-<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>    L --&gt; N[" Audit&lt;br/&gt;Complete"]
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>    M --&gt; N
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a> I --&gt;|Yes| J[" Add Edge&lt;br/&gt;Cases"]
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>
+<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a> I --&gt;|No| K[" Escalate&lt;br/&gt;Failures"]
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>
+<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a> J --&gt; L[" test-enhancement-agent"]
+<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a>
+<a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a> K --&gt; M[" Human&lt;br/&gt;Review"]
+<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a>
+<a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a> L --&gt; N[" Audit&lt;br/&gt;Complete"]
+<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a>
+<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a> M --&gt; N
 </code></pre></div>
 <hr/>
 <h2 id="documentation-audit-workflow">Documentation Audit Workflow<a class="headerlink" href="#documentation-audit-workflow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>graph TD
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    A[" Documentation&lt;br/&gt;Audit"] --&gt; B{Scope?}
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    B --&gt;|Structural| B1["➡️ unified-doc-agent"]
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    B --&gt;|Links| B2["➡️ link-validator-agent"]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    B --&gt;|Freshness| B3["➡️ doc-freshness-checker"]
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    B --&gt;|Terminology| B4["➡️ terminology-consistency-agent"]
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    B --&gt;|All| B5["➡️ unified-doc-agent&lt;br/&gt;+ specialists"]
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    B1 -.-&gt;|parallel if All| B5
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    B2 -.-&gt;|parallel if All| B5
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    B3 -.-&gt;|parallel if All| B5
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    B4 -.-&gt;|parallel if All| B5
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> A[" Documentation&lt;br/&gt;Audit"] --&gt; B{Scope?}
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> B --&gt;|Structural| B1[" unified-doc-agent"]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> B --&gt;|Links| B2[" link-validator-agent"]
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> B --&gt;|Freshness| B3[" doc-freshness-checker"]
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> B --&gt;|Terminology| B4[" terminology-consistency-agent"]
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> B --&gt;|All| B5[" unified-doc-agent&lt;br/&gt;+ specialists"]
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    B5 --&gt; C[" Agents Execute"]
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    C --&gt; D[" Collect Findings"]
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    D --&gt; E[" Merge Reports"]
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    E --&gt; F["️ Issues Found?"]
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>    F --&gt;|None| G[" Docs Healthy"]
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    F --&gt;|Yes| H[" Auto-fix&lt;br/&gt;Issues"]
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> B1 -.-&gt;|parallel if All| B5
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> B2 -.-&gt;|parallel if All| B5
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> B3 -.-&gt;|parallel if All| B5
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> B4 -.-&gt;|parallel if All| B5
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> B5 --&gt; C[" Agents Execute"]
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> C --&gt; D[" Collect Findings"]
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> D --&gt; E[" Merge Reports"]
 <a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    H --&gt; I[" Generate&lt;br/&gt;Report"]
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a> E --&gt; F[" Issues Found?"]
 <a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>    I --&gt; J["️ Human&lt;br/&gt;Review"]
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> F --&gt;|None| G[" Docs Healthy"]
 <a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>    J --&gt; K[" Audit&lt;br/&gt;Complete"]
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>    G --&gt; K
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> F --&gt;|Yes| H[" Auto-fix&lt;br/&gt;Issues"]
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> H --&gt; I[" Generate&lt;br/&gt;Report"]
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a> I --&gt; J[" Human&lt;br/&gt;Review"]
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a> J --&gt; K[" Audit&lt;br/&gt;Complete"]
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a> G --&gt; K
 </code></pre></div>
 <hr/>
 <h2 id="security-scanning-remediation">Security Scanning &amp; Remediation<a class="headerlink" href="#security-scanning-remediation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>graph TD
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>    A[" Security&lt;br/&gt;Scan"] --&gt; B{Scan Type?}
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    B --&gt;|CodeQL| B1["➡️ codeql-alert-resolution-agent"]
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    B --&gt;|GHAS| B2["➡️ code-scanning-remediation-agent"]
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    B --&gt;|Dependencies| B3["➡️ dependency-vulnerability-scanner"]
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    B --&gt;|Secrets| B4["➡️ secret-detection-agent"]
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    B --&gt;|Full| B5["➡️ unified-security-scanner"]
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    B1 -.-&gt;|parallel if Full| B5
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    B2 -.-&gt;|parallel if Full| B5
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    B3 -.-&gt;|parallel if Full| B5
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    B4 -.-&gt;|parallel if Full| B5
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> A[" Security&lt;br/&gt;Scan"] --&gt; B{Scan Type?}
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> B --&gt;|CodeQL| B1[" codeql-alert-resolution-agent"]
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> B --&gt;|GHAS| B2[" code-scanning-remediation-agent"]
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> B --&gt;|Dependencies| B3[" dependency-vulnerability-scanner"]
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> B --&gt;|Secrets| B4[" secret-detection-agent"]
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> B --&gt;|Full| B5[" unified-security-scanner"]
 <a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    B5 --&gt; C[" Agents&lt;br/&gt;Execute"]
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    C --&gt; D[" Aggregate&lt;br/&gt;Findings"]
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>    D --&gt; E{Severity?}
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>    E --&gt;|Critical| E1[" Auto-fix&lt;br/&gt;Enabled"]
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>    E --&gt;|High| E2[" Review&lt;br/&gt;&amp; Fix"]
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>    E --&gt;|Medium| E3[" Queue&lt;br/&gt;for Review"]
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>    E --&gt;|Low| E4[" Log&lt;br/&gt;&amp; Monitor"]
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> B1 -.-&gt;|parallel if Full| B5
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> B2 -.-&gt;|parallel if Full| B5
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> B3 -.-&gt;|parallel if Full| B5
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> B4 -.-&gt;|parallel if Full| B5
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> B5 --&gt; C[" Agents&lt;br/&gt;Execute"]
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> C --&gt; D[" Aggregate&lt;br/&gt;Findings"]
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> D --&gt; E{Severity?}
 <a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>    E1 --&gt; F["➡️ Remediation&lt;br/&gt;Agent"]
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>    E2 --&gt; F
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>    E3 --&gt; G["️ Human&lt;br/&gt;Review"]
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>    E4 --&gt; H[" Complete"]
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a>
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>    F --&gt; I[" Verify&lt;br/&gt;Fix"]
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>    I --&gt; J{Fix&lt;br/&gt;Valid?}
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>    J --&gt;|Yes| H
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>    J --&gt;|No| G
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> E --&gt;|Critical| E1[" Auto-fix&lt;br/&gt;Enabled"]
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a> E --&gt;|High| E2[" Review&lt;br/&gt;&amp; Fix"]
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a> E --&gt;|Medium| E3[" Queue&lt;br/&gt;for Review"]
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a> E --&gt;|Low| E4[" Log&lt;br/&gt;&amp; Monitor"]
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a> E1 --&gt; F[" Remediation&lt;br/&gt;Agent"]
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a> E2 --&gt; F
 <a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a>
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>    G --&gt; K[" Manual&lt;br/&gt;Remediation"]
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>    K --&gt; H
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> E3 --&gt; G[" Human&lt;br/&gt;Review"]
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a> E4 --&gt; H[" Complete"]
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a>
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a> F --&gt; I[" Verify&lt;br/&gt;Fix"]
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a> I --&gt; J{Fix&lt;br/&gt;Valid?}
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a>
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a> J --&gt;|Yes| H
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a>
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a> J --&gt;|No| G
+<a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a>
+<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a> G --&gt; K[" Manual&lt;br/&gt;Remediation"]
+<a href="#__codelineno-5-51" id="__codelineno-5-51" name="__codelineno-5-51"></a>
+<a href="#__codelineno-5-52" id="__codelineno-5-52" name="__codelineno-5-52"></a> K --&gt; H
 </code></pre></div>
 <hr/>
 <h2 id="multi-lane-parallel-execution">Multi-Lane Parallel Execution<a class="headerlink" href="#multi-lane-parallel-execution" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>graph LR
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    A[" Primary&lt;br/&gt;Agent"] --&gt;|delegate| B[" Lane 1"]
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    A --&gt;|delegate| C[" Lane 2"]
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    A --&gt;|delegate| D[" Lane 3"]
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    A --&gt;|delegate| E[" Lane 4"]
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> A[" Primary&lt;br/&gt;Agent"] --&gt;|delegate| B[" Lane 1"]
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> A --&gt;|delegate| C[" Lane 2"]
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    B --&gt;|exec| B1["Agent-A&lt;br/&gt;Work"]
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    C --&gt;|exec| C1["Agent-B&lt;br/&gt;Work"]
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    D --&gt;|exec| D1["Agent-C&lt;br/&gt;Work"]
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>    E --&gt;|exec| E1["Agent-D&lt;br/&gt;Work"]
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>    B1 --&gt; B2[" Result-A"]
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    C1 --&gt; C2[" Result-B"]
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>    D1 --&gt; D2[" Result-C"]
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    E1 --&gt; E2[" Result-D"]
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> A --&gt;|delegate| D[" Lane 3"]
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> A --&gt;|delegate| E[" Lane 4"]
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> B --&gt;|exec| B1["Agent-A&lt;br/&gt;Work"]
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a> C --&gt;|exec| C1["Agent-B&lt;br/&gt;Work"]
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a> D --&gt;|exec| D1["Agent-C&lt;br/&gt;Work"]
 <a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>    B2 -.-&gt;|merge| F[" Consolidate&lt;br/&gt;Results"]
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>    C2 -.-&gt;|merge| F
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>    D2 -.-&gt;|merge| F
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    E2 -.-&gt;|merge| F
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>    F --&gt; G["✔️ Verify&lt;br/&gt;Consistency"]
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>    G --&gt; H{Conflicts?}
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>    H --&gt;|No| I[" Return&lt;br/&gt;Merged Result"]
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>    H --&gt;|Yes| J[" Resolve&lt;br/&gt;Conflicts"]
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>    J --&gt; I
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> E --&gt;|exec| E1["Agent-D&lt;br/&gt;Work"]
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a> B1 --&gt; B2[" Result-A"]
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> C1 --&gt; C2[" Result-B"]
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a> D1 --&gt; D2[" Result-C"]
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> E1 --&gt; E2[" Result-D"]
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> B2 -.-&gt;|merge| F[" Consolidate&lt;br/&gt;Results"]
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a> C2 -.-&gt;|merge| F
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a> D2 -.-&gt;|merge| F
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a> E2 -.-&gt;|merge| F
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a> F --&gt; G[" Verify&lt;br/&gt;Consistency"]
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a> G --&gt; H{Conflicts?}
+<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a>
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a> H --&gt;|No| I[" Return&lt;br/&gt;Merged Result"]
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a>
+<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a> H --&gt;|Yes| J[" Resolve&lt;br/&gt;Conflicts"]
+<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a>
+<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a> J --&gt; I
 </code></pre></div>
 <hr/>
 <h2 id="session-lifecycle">Session Lifecycle<a class="headerlink" href="#session-lifecycle" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>graph TD
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    A[" Session Start"] --&gt; B[" Load Context&lt;br/&gt;&amp; Priors"]
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    B --&gt; C[" Identify Tasks&lt;br/&gt;in Backlog"]
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    C --&gt; D["🏗️ Build&lt;br/&gt;Execution Plan"]
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    D --&gt; E[" Plan&lt;br/&gt;Review"]
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    E --&gt; F{"Approve&lt;br/&gt;Plan?"}
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    F --&gt;|No| G[" Revise Plan"]
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    G --&gt; E
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> A[" Session Start"] --&gt; B[" Load Context&lt;br/&gt;&amp; Priors"]
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> B --&gt; C[" Identify Tasks&lt;br/&gt;in Backlog"]
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> C --&gt; D[" Build&lt;br/&gt;Execution Plan"]
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> D --&gt; E[" Plan&lt;br/&gt;Review"]
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> E --&gt; F{"Approve&lt;br/&gt;Plan?"}
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> F --&gt;|No| G[" Revise Plan"]
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    F --&gt;|Yes| H[" Execute&lt;br/&gt;Phase 1"]
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> G --&gt; E
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>    H --&gt; I[" Collect&lt;br/&gt;Results"]
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> F --&gt;|Yes| H[" Execute&lt;br/&gt;Phase 1"]
 <a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>    I --&gt; J{"More&lt;br/&gt;Work?"}
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> H --&gt; I[" Collect&lt;br/&gt;Results"]
 <a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>
-<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>    J --&gt;|Yes| K["🔁 Cycle:&lt;br/&gt;Phase N+1"]
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>    K --&gt; H
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>
-<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>    J --&gt;|No| L[" Generate&lt;br/&gt;Summary"]
-<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>
-<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>    L --&gt; M["💾 Archive&lt;br/&gt;Artifacts"]
-<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>
-<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>    M --&gt; N[" Session&lt;br/&gt;Complete"]
-<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a>
-<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>    style A fill:#90EE90
-<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>    style N fill:#FFB6C6
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a> I --&gt; J{"More&lt;br/&gt;Work?"}
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a> J --&gt;|Yes| K[" Cycle:&lt;br/&gt;Phase N+1"]
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> K --&gt; H
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a> J --&gt;|No| L[" Generate&lt;br/&gt;Summary"]
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a> L --&gt; M[" Archive&lt;br/&gt;Artifacts"]
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a> M --&gt; N[" Session&lt;br/&gt;Complete"]
+<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>
+<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a> style A fill:#90EE90
+<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a> style N fill:#FFB6C6
 </code></pre></div>
 <hr/>
 <h2 id="agentic-autonomy-loop">Agentic Autonomy Loop<a class="headerlink" href="#agentic-autonomy-loop" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>graph TD
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    A["⏰ Session Time&lt;br/&gt;Available?"] --&gt;|Yes| B[" Identify&lt;br/&gt;Open Lane"]
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    A --&gt;|No| END["🏁 Session End"]
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> A[" Session Time&lt;br/&gt;Available?"] --&gt;|Yes| B[" Identify&lt;br/&gt;Open Lane"]
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    B --&gt; C{Lane&lt;br/&gt;Available?}
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> A --&gt;|No| END[" Session End"]
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    C --&gt;|No| D[" Wait for&lt;br/&gt;Completion"]
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    D --&gt;|Timeout| A
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    D --&gt;|Ready| B
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> B --&gt; C{Lane&lt;br/&gt;Available?}
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> C --&gt;|No| D[" Wait for&lt;br/&gt;Completion"]
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    C --&gt;|Yes| E[" Find Next&lt;br/&gt;Task"]
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> D --&gt;|Timeout| A
 <a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    E --&gt; F{Task&lt;br/&gt;Found?}
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> D --&gt;|Ready| B
 <a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    F --&gt;|No| A
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    F --&gt;|Yes| G[" Select&lt;br/&gt;Best Agent"]
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    G --&gt; H["📤 Delegate&lt;br/&gt;Work"]
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>    H --&gt; I[" Await&lt;br/&gt;Result"]
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>    I --&gt; J{Result&lt;br/&gt;Success?}
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>    J --&gt;|No| K[" Escalate&lt;br/&gt;or Retry"]
-<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>    J --&gt;|Yes| L[" Accept&lt;br/&gt;Result"]
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> C --&gt;|Yes| E[" Find Next&lt;br/&gt;Task"]
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> E --&gt; F{Task&lt;br/&gt;Found?}
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> F --&gt;|No| A
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> F --&gt;|Yes| G[" Select&lt;br/&gt;Best Agent"]
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a> G --&gt; H[" Delegate&lt;br/&gt;Work"]
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a> H --&gt; I[" Await&lt;br/&gt;Result"]
 <a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>    K --&gt; M{Can&lt;br/&gt;Retry?}
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>    M --&gt;|Yes| G
-<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>    M --&gt;|No| N[" Log&lt;br/&gt;Failure"]
-<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>    N --&gt; A
-<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a>
-<a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>    L --&gt; O[" Check&lt;br/&gt;Session Time"]
-<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a>
-<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a>    O --&gt;|Time Left| A
-<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a>    O --&gt;|Time Up| END
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a> I --&gt; J{Result&lt;br/&gt;Success?}
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a> J --&gt;|No| K[" Escalate&lt;br/&gt;or Retry"]
+<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>
+<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a> J --&gt;|Yes| L[" Accept&lt;br/&gt;Result"]
+<a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>
+<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a> K --&gt; M{Can&lt;br/&gt;Retry?}
+<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a>
+<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a> M --&gt;|Yes| G
 <a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a>
-<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a>    style A fill:#87CEEB
-<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a>    style E fill:#87CEEB
-<a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a>    style G fill:#DDA0DD
-<a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a>    style H fill:#F0E68C
-<a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a>    style L fill:#90EE90
-<a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a>    style END fill:#FFB6C6
+<a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a> M --&gt;|No| N[" Log&lt;br/&gt;Failure"]
+<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a>
+<a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a> N --&gt; A
+<a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a>
+<a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a> L --&gt; O[" Check&lt;br/&gt;Session Time"]
+<a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a>
+<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a> O --&gt;|Time Left| A
+<a href="#__codelineno-8-44" id="__codelineno-8-44" name="__codelineno-8-44"></a>
+<a href="#__codelineno-8-45" id="__codelineno-8-45" name="__codelineno-8-45"></a> O --&gt;|Time Up| END
+<a href="#__codelineno-8-46" id="__codelineno-8-46" name="__codelineno-8-46"></a>
+<a href="#__codelineno-8-47" id="__codelineno-8-47" name="__codelineno-8-47"></a> style A fill:#87CEEB
+<a href="#__codelineno-8-48" id="__codelineno-8-48" name="__codelineno-8-48"></a> style E fill:#87CEEB
+<a href="#__codelineno-8-49" id="__codelineno-8-49" name="__codelineno-8-49"></a> style G fill:#DDA0DD
+<a href="#__codelineno-8-50" id="__codelineno-8-50" name="__codelineno-8-50"></a> style H fill:#F0E68C
+<a href="#__codelineno-8-51" id="__codelineno-8-51" name="__codelineno-8-51"></a> style L fill:#90EE90
+<a href="#__codelineno-8-52" id="__codelineno-8-52" name="__codelineno-8-52"></a> style END fill:#FFB6C6
 </code></pre></div>
 <hr/>
 <h2 id="full-agentic-autonomy-pattern">Full Agentic Autonomy Pattern<a class="headerlink" href="#full-agentic-autonomy-pattern" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>graph TB
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    A[" Session Start&lt;br/&gt;Full Autonomy"] --&gt; B[" Load Task&lt;br/&gt;Backlog"]
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    B --&gt; C["🏃 Phase 1:&lt;br/&gt;Initial Sweep"]
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    C --&gt;|Lane 1| C1["Agent-A"]
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    C --&gt;|Lane 2| C2["Agent-B"]
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    C --&gt;|Lane 3| C3["Agent-C"]
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    C --&gt;|Lane 4| C4["Agent-D"]
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> A[" Session Start&lt;br/&gt;Full Autonomy"] --&gt; B[" Load Task&lt;br/&gt;Backlog"]
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> B --&gt; C[" Phase 1:&lt;br/&gt;Initial Sweep"]
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> C --&gt;|Lane 1| C1["Agent-A"]
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> C --&gt;|Lane 2| C2["Agent-B"]
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    C1 -.-&gt;|result| X[" Collect&lt;br/&gt;Results"]
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    C2 -.-&gt;|result| X
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    C3 -.-&gt;|result| X
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    C4 -.-&gt;|result| X
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>    X --&gt; Y[" Merge &amp;&lt;br/&gt;Validate"]
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>    Y --&gt; Z[" Assess&lt;br/&gt;State"]
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> C --&gt;|Lane 3| C3["Agent-C"]
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> C --&gt;|Lane 4| C4["Agent-D"]
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> C1 -.-&gt;|result| X[" Collect&lt;br/&gt;Results"]
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> C2 -.-&gt;|result| X
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> C3 -.-&gt;|result| X
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> C4 -.-&gt;|result| X
 <a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>    Z --&gt;|More work| AA[" Phase 2:&lt;br/&gt;Secondary Tasks"]
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>    Z --&gt;|Done| AB[" Complete"]
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>    AA --&gt;|Lane 1| AA1["Agent-A2"]
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>    AA --&gt;|Lane 2| AA2["Agent-B2"]
-<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>    AA --&gt;|Lane 3| AA3["Agent-C2"]
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>
-<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a>    AA1 -.-&gt;|result| AY[" Collect&lt;br/&gt;Phase 2"]
-<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a>    AA2 -.-&gt;|result| AY
-<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>    AA3 -.-&gt;|result| AY
-<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a>
-<a href="#__codelineno-9-31" id="__codelineno-9-31" name="__codelineno-9-31"></a>    AY --&gt; AZ[" Merge &amp;&lt;br/&gt;Validate"]
-<a href="#__codelineno-9-32" id="__codelineno-9-32" name="__codelineno-9-32"></a>    AZ --&gt; BAA[" Assess&lt;br/&gt;State"]
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> X --&gt; Y[" Merge &amp;&lt;br/&gt;Validate"]
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> Y --&gt; Z[" Assess&lt;br/&gt;State"]
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a> Z --&gt;|More work| AA[" Phase 2:&lt;br/&gt;Secondary Tasks"]
+<a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a> Z --&gt;|Done| AB[" Complete"]
+<a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a>
+<a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a> AA --&gt;|Lane 1| AA1["Agent-A2"]
+<a href="#__codelineno-9-29" id="__codelineno-9-29" name="__codelineno-9-29"></a>
+<a href="#__codelineno-9-30" id="__codelineno-9-30" name="__codelineno-9-30"></a> AA --&gt;|Lane 2| AA2["Agent-B2"]
+<a href="#__codelineno-9-31" id="__codelineno-9-31" name="__codelineno-9-31"></a>
+<a href="#__codelineno-9-32" id="__codelineno-9-32" name="__codelineno-9-32"></a> AA --&gt;|Lane 3| AA3["Agent-C2"]
 <a href="#__codelineno-9-33" id="__codelineno-9-33" name="__codelineno-9-33"></a>
-<a href="#__codelineno-9-34" id="__codelineno-9-34" name="__codelineno-9-34"></a>    BAA --&gt;|More work| BB[" Phase N:&lt;br/&gt;Final Push"]
-<a href="#__codelineno-9-35" id="__codelineno-9-35" name="__codelineno-9-35"></a>    BAA --&gt;|Done| AB
-<a href="#__codelineno-9-36" id="__codelineno-9-36" name="__codelineno-9-36"></a>
-<a href="#__codelineno-9-37" id="__codelineno-9-37" name="__codelineno-9-37"></a>    BB --&gt; BC[" Execute&lt;br/&gt;Remaining"]
-<a href="#__codelineno-9-38" id="__codelineno-9-38" name="__codelineno-9-38"></a>    BC --&gt; BD[" Complete"]
-<a href="#__codelineno-9-39" id="__codelineno-9-39" name="__codelineno-9-39"></a>    BD --&gt; AB
-<a href="#__codelineno-9-40" id="__codelineno-9-40" name="__codelineno-9-40"></a>
-<a href="#__codelineno-9-41" id="__codelineno-9-41" name="__codelineno-9-41"></a>    AB --&gt; AC["💾 Archive&lt;br/&gt;Artifacts"]
-<a href="#__codelineno-9-42" id="__codelineno-9-42" name="__codelineno-9-42"></a>    AC --&gt; AD["🎉 Session&lt;br/&gt;Success"]
+<a href="#__codelineno-9-34" id="__codelineno-9-34" name="__codelineno-9-34"></a> AA1 -.-&gt;|result| AY[" Collect&lt;br/&gt;Phase 2"]
+<a href="#__codelineno-9-35" id="__codelineno-9-35" name="__codelineno-9-35"></a> AA2 -.-&gt;|result| AY
+<a href="#__codelineno-9-36" id="__codelineno-9-36" name="__codelineno-9-36"></a> AA3 -.-&gt;|result| AY
+<a href="#__codelineno-9-37" id="__codelineno-9-37" name="__codelineno-9-37"></a>
+<a href="#__codelineno-9-38" id="__codelineno-9-38" name="__codelineno-9-38"></a> AY --&gt; AZ[" Merge &amp;&lt;br/&gt;Validate"]
+<a href="#__codelineno-9-39" id="__codelineno-9-39" name="__codelineno-9-39"></a>
+<a href="#__codelineno-9-40" id="__codelineno-9-40" name="__codelineno-9-40"></a> AZ --&gt; BAA[" Assess&lt;br/&gt;State"]
+<a href="#__codelineno-9-41" id="__codelineno-9-41" name="__codelineno-9-41"></a>
+<a href="#__codelineno-9-42" id="__codelineno-9-42" name="__codelineno-9-42"></a> BAA --&gt;|More work| BB[" Phase N:&lt;br/&gt;Final Push"]
+<a href="#__codelineno-9-43" id="__codelineno-9-43" name="__codelineno-9-43"></a>
+<a href="#__codelineno-9-44" id="__codelineno-9-44" name="__codelineno-9-44"></a> BAA --&gt;|Done| AB
+<a href="#__codelineno-9-45" id="__codelineno-9-45" name="__codelineno-9-45"></a>
+<a href="#__codelineno-9-46" id="__codelineno-9-46" name="__codelineno-9-46"></a> BB --&gt; BC[" Execute&lt;br/&gt;Remaining"]
+<a href="#__codelineno-9-47" id="__codelineno-9-47" name="__codelineno-9-47"></a>
+<a href="#__codelineno-9-48" id="__codelineno-9-48" name="__codelineno-9-48"></a> BC --&gt; BD[" Complete"]
+<a href="#__codelineno-9-49" id="__codelineno-9-49" name="__codelineno-9-49"></a>
+<a href="#__codelineno-9-50" id="__codelineno-9-50" name="__codelineno-9-50"></a> BD --&gt; AB
+<a href="#__codelineno-9-51" id="__codelineno-9-51" name="__codelineno-9-51"></a>
+<a href="#__codelineno-9-52" id="__codelineno-9-52" name="__codelineno-9-52"></a> AB --&gt; AC[" Archive&lt;br/&gt;Artifacts"]
+<a href="#__codelineno-9-53" id="__codelineno-9-53" name="__codelineno-9-53"></a>
+<a href="#__codelineno-9-54" id="__codelineno-9-54" name="__codelineno-9-54"></a> AC --&gt; AD[" Session&lt;br/&gt;Success"]
 </code></pre></div>
 <hr/>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">¶</a></h2>
@@ -2869,6 +3008,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

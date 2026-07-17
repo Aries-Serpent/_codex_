@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260302-e-to-d-transition-gate/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>ADR-20260302: E→D Transition Finite State Machine Gate - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>ADR-20260302: ED Transition Finite State Machine Gate - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              ADR-20260302: E→D Transition Finite State Machine Gate
+              ADR-20260302: ED Transition Finite State Machine Gate
             
           </span>
 </div>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2369,7 +2369,7 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="adr-20260302-ed-transition-finite-state-machine-gate">ADR-20260302: E→D Transition Finite State Machine Gate<a class="headerlink" href="#adr-20260302-ed-transition-finite-state-machine-gate" title="Permanent link">¶</a></h1>
+<h1 id="adr-20260302-ed-transition-finite-state-machine-gate">ADR-20260302: ED Transition Finite State Machine Gate<a class="headerlink" href="#adr-20260302-ed-transition-finite-state-machine-gate" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
@@ -2385,7 +2385,7 @@ Related PRs: #3447</p>
 </ul>
 <p>Premature promotion to D_CAPABLE without verifying that the enforcement
 infrastructure is in place could allow unvalidated autonomous actions.
-The Soft→GROUNDED plan requires a formal gate that blocks E→D transitions
+The SoftGROUNDED plan requires a formal gate that blocks ED transitions
 until all prerequisite conditions are satisfied.</p>
 <h2 id="2-problem-statement">2. Problem Statement<a class="headerlink" href="#2-problem-statement" title="Permanent link">¶</a></h2>
 <p>Design a CI-enforced gate that prevents any agent from being assigned
@@ -2433,7 +2433,7 @@ infrastructure conditions are met.</p>
 <p>The gate evaluates all 5 conditions and reports a score (0–5).
 Transition is only permitted when score = 5/5.</p>
 <p>Current state:
-- Score: 5/5  (all conditions satisfied)
+- Score: 5/5 (all conditions satisfied)
 - <code>d_capable_agents</code>: 0 (no agents promoted yet)
 - <code>transition_active</code>: false (gate is ready but no D_CAPABLE assignments made)</p>
 <p>The workflow runs as a Tier-2 canary (<code>core.warning()</code>) during the
@@ -2514,20 +2514,20 @@ confirming zero false positives over 2 sprints.</p>
 <h3 id="risks-mitigations">Risks &amp; Mitigations<a class="headerlink" href="#risks-mitigations" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Risk</strong>: Threshold values become stale as agent count grows.
-  <strong>Mitigation</strong>: Thresholds are defined as constants in the workflow script;
-  review during quarterly governance audits.</li>
+ <strong>Mitigation</strong>: Thresholds are defined as constants in the workflow script;
+ review during quarterly governance audits.</li>
 <li><strong>Risk</strong>: False positive blocks after Tier-1 promotion.
-  <strong>Mitigation</strong>: 2-sprint observation period before promotion; rollback to
-  Tier-2 documented in the workflow header.</li>
+ <strong>Mitigation</strong>: 2-sprint observation period before promotion; rollback to
+ Tier-2 documented in the workflow header.</li>
 <li><strong>Risk</strong>: Gate bypassed by editing workflow file directly.
-  <strong>Mitigation</strong>: <code>.github/CODEOWNERS</code> requires <code>@Aries-Serpent/owners</code> review
-  for all governance workflow changes.</li>
+ <strong>Mitigation</strong>: <code>.github/CODEOWNERS</code> requires <code>@Aries-Serpent/owners</code> review
+ for all governance workflow changes.</li>
 </ul>
 <h2 id="7-provenance-compliance">7. Provenance &amp; Compliance<a class="headerlink" href="#7-provenance-compliance" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Workflow</strong>: <code>.github/workflows/e-to-d-transition-gate.yml</code> (Tier-2 canary)</li>
 <li><strong>Conditions</strong>: C1–C5 defined in <code>orchestrator_routing.py</code> and gate script</li>
-<li><strong>Current score</strong>: 5/5 </li>
+<li><strong>Current score</strong>: 5/5</li>
 <li><strong>Promotion path</strong>: Tier-1 after 2-sprint observation (TASK 4 in follow-up)</li>
 <li><strong>Change log</strong>: PR #3447 merged to main</li>
 </ul>
@@ -2560,6 +2560,6 @@ confirming zero false positives over 2 sprints.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

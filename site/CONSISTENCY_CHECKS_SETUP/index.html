@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/CONSISTENCY_CHECKS_SETUP/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Consistency Checks Setup Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2725,7 +2725,7 @@ the <strong>repository root</strong> directory unless otherwise specified.</p>
 </ol>
 <p><strong>Sample output:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a> Running Pre-Commit Consistency Checks
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>════════════════════════════════════════════════════════════════════
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>[1/5] Scanning for secrets...
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> No secrets detected
@@ -2743,7 +2743,7 @@ the <strong>repository root</strong> directory unless otherwise specified.</p>
 <a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>[5/5] Validating YAML files...
 <a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> YAML validation OK (3 files)
 <a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>════════════════════════════════════════════════════════════════════
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>
 <a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> All pre-commit checks passed!
 </code></pre></div>
 <p><strong>To bypass the hook (not recommended):</strong></p>
@@ -2772,17 +2772,17 @@ the <strong>repository root</strong> directory unless otherwise specified.</p>
 </ul>
 <p><strong>To disable a rule:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p">{</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">"MD025"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="nt">"MD025"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="cross-reference-patterns">Cross-Reference Patterns<a class="headerlink" href="#cross-reference-patterns" title="Permanent link">¶</a></h3>
 <p>The checker validates these link patterns (shown as code examples):</p>
 <p><strong>Internal file links:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>[<span class="nt">text</span>](<span class="na">docs/file.md</span>)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>&lt;!-- TODO: Add real link: text --&gt;
 </code></pre></div>
 Relative path within repository</p>
 <p><strong>Anchor references:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>[<span class="nt">text</span>](<span class="na">docs/file.md#anchor</span>)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>&lt;!-- TODO: Add real link: text --&gt;
 </code></pre></div>
 Link to specific section</p>
 <p><strong>Relative paths:</strong>
@@ -2809,7 +2809,7 @@ From repository root</p>
 <p>All documents must follow:</p>
 <ol>
 <li>First heading is H1 (<code>#</code>)</li>
-<li>No hierarchy jumps (H1 → H3 invalid, must use H2)</li>
+<li>No hierarchy jumps (H1 H3 invalid, must use H2)</li>
 <li>Consistent nesting within documents</li>
 <li>Unique headings within sections (MD024)</li>
 </ol>
@@ -2930,8 +2930,8 @@ The checker reports external links as warnings. To ignore them:</p>
 </ol>
 <p><strong>PR Annotations:</strong></p>
 <ul>
-<li>Errors appear as  annotations on PR</li>
-<li>Warnings appear as ️ (external links)</li>
+<li>Errors appear as annotations on PR</li>
+<li>Warnings appear as (external links)</li>
 <li>PR comments with detailed issues</li>
 </ul>
 <p><strong>Artifacts:</strong></p>
@@ -2943,7 +2943,7 @@ The checker reports external links as warnings. To ignore them:</p>
 <p>For merging PRs:</p>
 <ul>
 <li>All consistency checks must pass</li>
-<li>️ Warnings do not block merge</li>
+<li>Warnings do not block merge</li>
 <li>External link warnings are informational</li>
 </ul>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
@@ -3001,8 +3001,8 @@ The checker reports external links as warnings. To ignore them:</p>
 <h2 id="disable-github-actions-workflow">Disable GitHub Actions workflow<a class="headerlink" href="#disable-github-actions-workflow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># In ../.github/workflows/consistency-checks.yml</span>
 <a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w">  </span><span class="c1"># No branches trigger it</span>
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="w"> </span><span class="nt">push</span><span class="p">:</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="w"> </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w"> </span><span class="c1"># No branches trigger it</span>
 </code></pre></div>
 <h2 id="reporting-issues">Reporting Issues<a class="headerlink" href="#reporting-issues" title="Permanent link">¶</a></h2>
 <p>If you encounter problems:</p>
@@ -3025,7 +3025,7 @@ The checker reports external links as warnings. To ignore them:</p>
 <h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>For questions or issues:</p>
 <ul>
-<li>📧 Contact: @mbaetiong</li>
+<li>Contact: @mbaetiong</li>
 <li>Issues: Create GitHub issue with label <code>documentation</code></li>
 <li>Logs: Check GitHub Actions workflow runs for details</li>
 </ul>
@@ -3058,6 +3058,6 @@ The checker reports external links as warnings. To ignore them:</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

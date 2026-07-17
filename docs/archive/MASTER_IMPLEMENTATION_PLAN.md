@@ -1,6 +1,6 @@
 # Master Implementation Plan - Comprehensive Gap Resolution
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -138,7 +138,7 @@ This document consolidates ALL unimplemented plans harvested from:
 | Task | Priority | Effort | Status |
 |------|----------|--------|--------|
 | Performance benchmarking suite | MEDIUM | 3 iterations | EXISTS (scripts/benchmarks/) |
-| Integration tests for audit_runner v0.2.1 | MEDIUM | DONE | COMPLETE |
+| Integration tests for audit_runner v0.2.0 | MEDIUM | DONE | COMPLETE |
 | Add edge case tests for 80%+ coverage | MEDIUM | DONE | COMPLETE |
 | Golden baseline tests for regression prevention | MEDIUM | DONE | COMPLETE |
 

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ARCHITECTURE_PHASE_15_16/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 15-16 Architecture Documentation - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2532,72 +2532,84 @@
 <h2 id="system-architecture-overview">System Architecture Overview<a class="headerlink" href="#system-architecture-overview" title="Permanent link">¶</a></h2>
 <p>The Phase 15-16 system represents a unified ML platform with three major subsystems:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>graph TB
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    subgraph "Phase 15-16 Unified System"
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>        subgraph "Client Layer"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>            CLI[CLI Interface&lt;br/&gt;Commands: train, eval, serve, ingest]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>            SDK[Python SDK&lt;br/&gt;Direct API Access]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>            WebUI[Web UI&lt;br/&gt;Cognitive App]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        end
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        subgraph "API Gateway Layer"
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>            APIGateway["FastAPI Application&lt;br/&gt;Rate Limiting &amp; Auth&lt;br/&gt;Request/Response Schema Validation"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        end
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        subgraph "Decision Engine"
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>            DecisionAPI["Decision API&lt;br/&gt;POST /api/decisions/submit&lt;br/&gt;GET /api/decisions/{id}"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>            DecisionStorage["Decision Store&lt;br/&gt;Audit Trail&lt;br/&gt;Versioning"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        end
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        subgraph "Memory System"
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>            MemoryAPI["Memory API&lt;br/&gt;POST /api/memory/store&lt;br/&gt;GET /api/memory/retrieve&lt;br/&gt;POST /api/memory/stm-push"]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>            STM["Short-Term Memory&lt;br/&gt;Session Context&lt;br/&gt;Active Patterns"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>            LTM["Long-Term Memory&lt;br/&gt;Pattern Library&lt;br/&gt;Historical Decisions"]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>            PatternDB["Pattern Database&lt;br/&gt;40+ Patterns&lt;br/&gt;Lane 2 Output"]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        end
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        subgraph "Workflow Orchestration"
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>            WorkflowAPI["Workflow API&lt;br/&gt;GET /api/workflows/status&lt;br/&gt;POST /api/workflows/gate-check&lt;br/&gt;GET /api/workflows/rate-limit"]
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>            WorkflowEngine["Workflow Engine&lt;br/&gt;CI/CD Integration&lt;br/&gt;Async Processing"]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        end
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        subgraph "Analytics &amp; Monitoring"
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>            MemoryStats["Memory Stats&lt;br/&gt;GET /api/memory/stats&lt;br/&gt;Usage Metrics"]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>            Telemetry["Telemetry Collector&lt;br/&gt;Performance Tracking&lt;br/&gt;Error Reporting"]
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>        end
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>        subgraph "Storage Layer"
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>            SQLite["SQLite Database&lt;br/&gt;Decisions&lt;br/&gt;Memory&lt;br/&gt;Patterns"]
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>            Cache["Redis/Memory Cache&lt;br/&gt;STM Cache&lt;br/&gt;Hot Patterns"]
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>        end
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    end
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    CLI --&gt; APIGateway
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    SDK --&gt; APIGateway
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    WebUI --&gt; APIGateway
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    APIGateway --&gt; DecisionAPI
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    APIGateway --&gt; MemoryAPI
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    APIGateway --&gt; WorkflowAPI
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    APIGateway --&gt; MemoryStats
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Phase 15-16 Unified System"
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        subgraph "Client Layer"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>            CLI[CLI Interface&lt;br/&gt;Commands: train, eval, serve, ingest]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>            SDK[Python SDK&lt;br/&gt;Direct API Access]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>            WebUI[Web UI&lt;br/&gt;Cognitive App]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        end
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        subgraph "API Gateway Layer"
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>            APIGateway["FastAPI Application&lt;br/&gt;Rate Limiting &amp; Auth&lt;br/&gt;Request/Response Schema Validation"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        end
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        subgraph "Decision Engine"
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>            DecisionAPI["Decision API&lt;br/&gt;POST /api/decisions/submit&lt;br/&gt;GET /api/decisions/{id}"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>            DecisionStorage["Decision Store&lt;br/&gt;Audit Trail&lt;br/&gt;Versioning"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        end
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        subgraph "Memory System"
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>            MemoryAPI["Memory API&lt;br/&gt;POST /api/memory/store&lt;br/&gt;GET /api/memory/retrieve&lt;br/&gt;POST /api/memory/stm-push"]
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>            STM["Short-Term Memory&lt;br/&gt;Session Context&lt;br/&gt;Active Patterns"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>            LTM["Long-Term Memory&lt;br/&gt;Pattern Library&lt;br/&gt;Historical Decisions"]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>            PatternDB["Pattern Database&lt;br/&gt;40+ Patterns&lt;br/&gt;Lane 2 Output"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        end
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>        subgraph "Workflow Orchestration"
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>            WorkflowAPI["Workflow API&lt;br/&gt;GET /api/workflows/status&lt;br/&gt;POST /api/workflows/gate-check&lt;br/&gt;GET /api/workflows/rate-limit"]
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>            WorkflowEngine["Workflow Engine&lt;br/&gt;CI/CD Integration&lt;br/&gt;Async Processing"]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        end
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        subgraph "Analytics &amp; Monitoring"
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>            MemoryStats["Memory Stats&lt;br/&gt;GET /api/memory/stats&lt;br/&gt;Usage Metrics"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>            Telemetry["Telemetry Collector&lt;br/&gt;Performance Tracking&lt;br/&gt;Error Reporting"]
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        end
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>        subgraph "Storage Layer"
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>            SQLite["SQLite Database&lt;br/&gt;Decisions&lt;br/&gt;Memory&lt;br/&gt;Patterns"]
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>            Cache["Redis/Memory Cache&lt;br/&gt;STM Cache&lt;br/&gt;Hot Patterns"]
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>        end
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    end
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    CLI --&gt; APIGateway
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    SDK --&gt; APIGateway
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    WebUI --&gt; APIGateway
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    APIGateway --&gt; DecisionAPI
 <a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    DecisionAPI --&gt; DecisionStorage
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    DecisionStorage --&gt; SQLite
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    MemoryAPI --&gt; STM
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>    MemoryAPI --&gt; LTM
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    STM --&gt; Cache
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    LTM --&gt; PatternDB
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    PatternDB --&gt; SQLite
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    WorkflowAPI --&gt; WorkflowEngine
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>
-<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    MemoryStats --&gt; Telemetry
-<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    Telemetry --&gt; SQLite
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    APIGateway --&gt; MemoryAPI
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    APIGateway --&gt; WorkflowAPI
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>    APIGateway --&gt; MemoryStats
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    DecisionAPI --&gt; DecisionStorage
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>    DecisionStorage --&gt; SQLite
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    MemoryAPI --&gt; STM
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    MemoryAPI --&gt; LTM
 <a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>
-<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>    style APIGateway fill:#ff9999
-<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>    style DecisionAPI fill:#99ccff
-<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>    style MemoryAPI fill:#99ff99
-<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>    style WorkflowAPI fill:#ffcc99
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>    STM --&gt; Cache
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>    LTM --&gt; PatternDB
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>    PatternDB --&gt; SQLite
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>    WorkflowAPI --&gt; WorkflowEngine
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>    MemoryStats --&gt; Telemetry
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>    Telemetry --&gt; SQLite
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>    style APIGateway fill:#ff9999
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a>    style DecisionAPI fill:#99ccff
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>    style MemoryAPI fill:#99ff99
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a>    style WorkflowAPI fill:#ffcc99
 </code></pre></div>
 <hr/>
 <h2 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">¶</a></h2>
@@ -2904,120 +2916,142 @@
 <h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h2>
 <h3 id="decision-recording-flow">Decision Recording Flow<a class="headerlink" href="#decision-recording-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>sequenceDiagram
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>    participant Client
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    participant APIGateway
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    participant DecisionAPI
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    participant SQLite
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    participant Telemetry
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>    Client-&gt;&gt;APIGateway: POST /api/decisions/submit
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    APIGateway-&gt;&gt;APIGateway: Validate request schema
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>    APIGateway-&gt;&gt;DecisionAPI: Route to handler
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>    DecisionAPI-&gt;&gt;SQLite: Insert decision record
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>    SQLite--&gt;&gt;DecisionAPI: Return inserted ID
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>    DecisionAPI-&gt;&gt;Telemetry: Log decision event
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>    Telemetry--&gt;&gt;Telemetry: Update metrics
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>    DecisionAPI--&gt;&gt;APIGateway: Return 201 Created
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>    APIGateway--&gt;&gt;Client: Return response
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    participant Client
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    participant APIGateway
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    participant DecisionAPI
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    participant SQLite
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    participant Telemetry
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    Client-&gt;&gt;APIGateway: POST /api/decisions/submit
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>    APIGateway-&gt;&gt;APIGateway: Validate request schema
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>    APIGateway-&gt;&gt;DecisionAPI: Route to handler
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>    DecisionAPI-&gt;&gt;SQLite: Insert decision record
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>    SQLite--&gt;&gt;DecisionAPI: Return inserted ID
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>    DecisionAPI-&gt;&gt;Telemetry: Log decision event
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>    Telemetry--&gt;&gt;Telemetry: Update metrics
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>    DecisionAPI--&gt;&gt;APIGateway: Return 201 Created
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>    APIGateway--&gt;&gt;Client: Return response
 </code></pre></div>
 <h3 id="memory-retrieval-flow">Memory Retrieval Flow<a class="headerlink" href="#memory-retrieval-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>sequenceDiagram
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>    participant Client
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>    participant APIGateway
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>    participant MemoryAPI
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>    participant Cache as Redis Cache
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>    participant LTM as LTM Database
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    participant Telemetry
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>    Client-&gt;&gt;APIGateway: GET /api/memory/retrieve?lane_name=security
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>    APIGateway-&gt;&gt;MemoryAPI: Route request
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>    MemoryAPI-&gt;&gt;Cache: Check hot patterns
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>    alt Cache hit
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>        Cache--&gt;&gt;MemoryAPI: Return cached patterns
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>    else Cache miss
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>        MemoryAPI-&gt;&gt;LTM: Query pattern database
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>        LTM--&gt;&gt;MemoryAPI: Return patterns
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>        MemoryAPI-&gt;&gt;Cache: Update cache
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>    end
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>    MemoryAPI-&gt;&gt;Telemetry: Increment usage_count
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>    MemoryAPI--&gt;&gt;APIGateway: Return patterns
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>    APIGateway--&gt;&gt;Client: Return response
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>    participant Client
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>    participant APIGateway
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>    participant MemoryAPI
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>    participant Cache as Redis Cache
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    participant LTM as LTM Database
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>    participant Telemetry
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>    Client-&gt;&gt;APIGateway: GET /api/memory/retrieve?lane_name=security
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>    APIGateway-&gt;&gt;MemoryAPI: Route request
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>    MemoryAPI-&gt;&gt;Cache: Check hot patterns
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>    alt Cache hit
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>        Cache--&gt;&gt;MemoryAPI: Return cached patterns
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>    else Cache miss
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>        MemoryAPI-&gt;&gt;LTM: Query pattern database
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        LTM--&gt;&gt;MemoryAPI: Return patterns
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>        MemoryAPI-&gt;&gt;Cache: Update cache
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>    end
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>    MemoryAPI-&gt;&gt;Telemetry: Increment usage_count
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>
+<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>    MemoryAPI--&gt;&gt;APIGateway: Return patterns
+<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a>
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a>    APIGateway--&gt;&gt;Client: Return response
 </code></pre></div>
 <h3 id="workflow-gate-check-flow">Workflow Gate Check Flow<a class="headerlink" href="#workflow-gate-check-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>sequenceDiagram
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>    participant Client
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    participant APIGateway
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    participant WorkflowAPI
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>    participant Checkers["Gate Checkers&lt;br/&gt;Tests|Links|Security|Lint"]
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>    participant Results
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>    Client-&gt;&gt;APIGateway: POST /api/workflows/gate-check
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>    APIGateway-&gt;&gt;WorkflowAPI: Route request
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>    WorkflowAPI-&gt;&gt;Checkers: Run all checks in parallel
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>    Checkers-&gt;&gt;Checkers: Execute tests
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>    Checkers-&gt;&gt;Checkers: Validate links
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    Checkers-&gt;&gt;Checkers: Run security scan
-<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>    Checkers-&gt;&gt;Checkers: Run linter
-<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a>    Checkers--&gt;&gt;WorkflowAPI: Return results
-<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>    WorkflowAPI-&gt;&gt;Results: Aggregate results
-<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a>    Results-&gt;&gt;Results: Determine gate_passed
-<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a>    Results--&gt;&gt;APIGateway: Return gate status
-<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>    APIGateway--&gt;&gt;Client: Return response
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    participant Client
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    participant APIGateway
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>    participant WorkflowAPI
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>    participant Checkers["Gate Checkers&lt;br/&gt;Tests|Links|Security|Lint"]
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>    participant Results
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>    Client-&gt;&gt;APIGateway: POST /api/workflows/gate-check
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>    APIGateway-&gt;&gt;WorkflowAPI: Route request
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>    WorkflowAPI-&gt;&gt;Checkers: Run all checks in parallel
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>    Checkers-&gt;&gt;Checkers: Execute tests
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    Checkers-&gt;&gt;Checkers: Validate links
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>    Checkers-&gt;&gt;Checkers: Run security scan
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a>    Checkers-&gt;&gt;Checkers: Run linter
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a>    Checkers--&gt;&gt;WorkflowAPI: Return results
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a>    WorkflowAPI-&gt;&gt;Results: Aggregate results
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>    Results-&gt;&gt;Results: Determine gate_passed
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a>    Results--&gt;&gt;APIGateway: Return gate status
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a>
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a>    APIGateway--&gt;&gt;Client: Return response
 </code></pre></div>
 <hr/>
 <h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="containerized-deployment">Containerized Deployment<a class="headerlink" href="#containerized-deployment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>graph TB
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>    subgraph "Container Orchestration"
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>        subgraph "Production K8s Cluster"
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>            LB["Load Balancer&lt;br/&gt;HTTPS/TLS"]
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>            subgraph "API Pods (3 replicas)"
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>                API1["FastAPI Pod 1&lt;br/&gt;Port 8000"]
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>                API2["FastAPI Pod 2&lt;br/&gt;Port 8000"]
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>                API3["FastAPI Pod 3&lt;br/&gt;Port 8000"]
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>            end
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>            subgraph "Worker Pods (2 replicas)"
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>                Worker1["Worker Pod 1&lt;br/&gt;Pattern Processing"]
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>                Worker2["Worker Pod 2&lt;br/&gt;Decision Recording"]
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>            end
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>            subgraph "Storage Layer"
-<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>                PVC["PersistentVolume&lt;br/&gt;SQLite Database&lt;br/&gt;Pattern Library"]
-<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>            end
-<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>
-<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>            subgraph "Cache Layer"
-<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a>                Redis["Redis StatefulSet&lt;br/&gt;STM Cache&lt;br/&gt;Session Cache"]
-<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a>            end
-<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>
-<a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a>            CM["ConfigMap&lt;br/&gt;API Settings&lt;br/&gt;Rate Limits"]
-<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a>            Secrets["Secrets&lt;br/&gt;API Keys&lt;br/&gt;DB Credentials"]
-<a href="#__codelineno-18-27" id="__codelineno-18-27" name="__codelineno-18-27"></a>        end
-<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a>    end
-<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a>
-<a href="#__codelineno-18-30" id="__codelineno-18-30" name="__codelineno-18-30"></a>    LB --&gt; API1
-<a href="#__codelineno-18-31" id="__codelineno-18-31" name="__codelineno-18-31"></a>    LB --&gt; API2
-<a href="#__codelineno-18-32" id="__codelineno-18-32" name="__codelineno-18-32"></a>    LB --&gt; API3
-<a href="#__codelineno-18-33" id="__codelineno-18-33" name="__codelineno-18-33"></a>
-<a href="#__codelineno-18-34" id="__codelineno-18-34" name="__codelineno-18-34"></a>    API1 --&gt; Redis
-<a href="#__codelineno-18-35" id="__codelineno-18-35" name="__codelineno-18-35"></a>    API2 --&gt; Redis
-<a href="#__codelineno-18-36" id="__codelineno-18-36" name="__codelineno-18-36"></a>    API3 --&gt; Redis
-<a href="#__codelineno-18-37" id="__codelineno-18-37" name="__codelineno-18-37"></a>
-<a href="#__codelineno-18-38" id="__codelineno-18-38" name="__codelineno-18-38"></a>    API1 --&gt; PVC
-<a href="#__codelineno-18-39" id="__codelineno-18-39" name="__codelineno-18-39"></a>    API2 --&gt; PVC
-<a href="#__codelineno-18-40" id="__codelineno-18-40" name="__codelineno-18-40"></a>    API3 --&gt; PVC
-<a href="#__codelineno-18-41" id="__codelineno-18-41" name="__codelineno-18-41"></a>
-<a href="#__codelineno-18-42" id="__codelineno-18-42" name="__codelineno-18-42"></a>    Worker1 --&gt; PVC
-<a href="#__codelineno-18-43" id="__codelineno-18-43" name="__codelineno-18-43"></a>    Worker2 --&gt; PVC
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>    subgraph "Container Orchestration"
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>        subgraph "Production K8s Cluster"
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>            LB["Load Balancer&lt;br/&gt;HTTPS/TLS"]
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>            subgraph "API Pods (3 replicas)"
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>                API1["FastAPI Pod 1&lt;br/&gt;Port 8000"]
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>                API2["FastAPI Pod 2&lt;br/&gt;Port 8000"]
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>                API3["FastAPI Pod 3&lt;br/&gt;Port 8000"]
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>            end
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>            subgraph "Worker Pods (2 replicas)"
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>                Worker1["Worker Pod 1&lt;br/&gt;Pattern Processing"]
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>                Worker2["Worker Pod 2&lt;br/&gt;Decision Recording"]
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>            end
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>
+<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>            subgraph "Storage Layer"
+<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>                PVC["PersistentVolume&lt;br/&gt;SQLite Database&lt;br/&gt;Pattern Library"]
+<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>            end
+<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>
+<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a>            subgraph "Cache Layer"
+<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a>                Redis["Redis StatefulSet&lt;br/&gt;STM Cache&lt;br/&gt;Session Cache"]
+<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>            end
+<a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a>
+<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a>            CM["ConfigMap&lt;br/&gt;API Settings&lt;br/&gt;Rate Limits"]
+<a href="#__codelineno-18-27" id="__codelineno-18-27" name="__codelineno-18-27"></a>            Secrets["Secrets&lt;br/&gt;API Keys&lt;br/&gt;DB Credentials"]
+<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a>        end
+<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a>    end
+<a href="#__codelineno-18-30" id="__codelineno-18-30" name="__codelineno-18-30"></a>
+<a href="#__codelineno-18-31" id="__codelineno-18-31" name="__codelineno-18-31"></a>    LB --&gt; API1
+<a href="#__codelineno-18-32" id="__codelineno-18-32" name="__codelineno-18-32"></a>
+<a href="#__codelineno-18-33" id="__codelineno-18-33" name="__codelineno-18-33"></a>    LB --&gt; API2
+<a href="#__codelineno-18-34" id="__codelineno-18-34" name="__codelineno-18-34"></a>
+<a href="#__codelineno-18-35" id="__codelineno-18-35" name="__codelineno-18-35"></a>    LB --&gt; API3
+<a href="#__codelineno-18-36" id="__codelineno-18-36" name="__codelineno-18-36"></a>
+<a href="#__codelineno-18-37" id="__codelineno-18-37" name="__codelineno-18-37"></a>    API1 --&gt; Redis
+<a href="#__codelineno-18-38" id="__codelineno-18-38" name="__codelineno-18-38"></a>
+<a href="#__codelineno-18-39" id="__codelineno-18-39" name="__codelineno-18-39"></a>    API2 --&gt; Redis
+<a href="#__codelineno-18-40" id="__codelineno-18-40" name="__codelineno-18-40"></a>
+<a href="#__codelineno-18-41" id="__codelineno-18-41" name="__codelineno-18-41"></a>    API3 --&gt; Redis
+<a href="#__codelineno-18-42" id="__codelineno-18-42" name="__codelineno-18-42"></a>
+<a href="#__codelineno-18-43" id="__codelineno-18-43" name="__codelineno-18-43"></a>    API1 --&gt; PVC
 <a href="#__codelineno-18-44" id="__codelineno-18-44" name="__codelineno-18-44"></a>
-<a href="#__codelineno-18-45" id="__codelineno-18-45" name="__codelineno-18-45"></a>    CM -.-&gt; API1
-<a href="#__codelineno-18-46" id="__codelineno-18-46" name="__codelineno-18-46"></a>    CM -.-&gt; API2
-<a href="#__codelineno-18-47" id="__codelineno-18-47" name="__codelineno-18-47"></a>    CM -.-&gt; API3
+<a href="#__codelineno-18-45" id="__codelineno-18-45" name="__codelineno-18-45"></a>    API2 --&gt; PVC
+<a href="#__codelineno-18-46" id="__codelineno-18-46" name="__codelineno-18-46"></a>
+<a href="#__codelineno-18-47" id="__codelineno-18-47" name="__codelineno-18-47"></a>    API3 --&gt; PVC
 <a href="#__codelineno-18-48" id="__codelineno-18-48" name="__codelineno-18-48"></a>
-<a href="#__codelineno-18-49" id="__codelineno-18-49" name="__codelineno-18-49"></a>    Secrets -.-&gt; API1
-<a href="#__codelineno-18-50" id="__codelineno-18-50" name="__codelineno-18-50"></a>    Secrets -.-&gt; API2
-<a href="#__codelineno-18-51" id="__codelineno-18-51" name="__codelineno-18-51"></a>    Secrets -.-&gt; API3
+<a href="#__codelineno-18-49" id="__codelineno-18-49" name="__codelineno-18-49"></a>    Worker1 --&gt; PVC
+<a href="#__codelineno-18-50" id="__codelineno-18-50" name="__codelineno-18-50"></a>
+<a href="#__codelineno-18-51" id="__codelineno-18-51" name="__codelineno-18-51"></a>    Worker2 --&gt; PVC
+<a href="#__codelineno-18-52" id="__codelineno-18-52" name="__codelineno-18-52"></a>
+<a href="#__codelineno-18-53" id="__codelineno-18-53" name="__codelineno-18-53"></a>    CM -.-&gt; API1
+<a href="#__codelineno-18-54" id="__codelineno-18-54" name="__codelineno-18-54"></a>    CM -.-&gt; API2
+<a href="#__codelineno-18-55" id="__codelineno-18-55" name="__codelineno-18-55"></a>    CM -.-&gt; API3
+<a href="#__codelineno-18-56" id="__codelineno-18-56" name="__codelineno-18-56"></a>
+<a href="#__codelineno-18-57" id="__codelineno-18-57" name="__codelineno-18-57"></a>    Secrets -.-&gt; API1
+<a href="#__codelineno-18-58" id="__codelineno-18-58" name="__codelineno-18-58"></a>    Secrets -.-&gt; API2
+<a href="#__codelineno-18-59" id="__codelineno-18-59" name="__codelineno-18-59"></a>    Secrets -.-&gt; API3
 </code></pre></div>
 <h3 id="development-deployment">Development Deployment<a class="headerlink" href="#development-deployment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Local development</span>
@@ -3169,6 +3203,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

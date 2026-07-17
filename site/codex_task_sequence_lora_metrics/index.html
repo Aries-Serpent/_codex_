@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/codex_task_sequence_lora_metrics/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex Sequential Execution Block: LoRA Integration, Metrics, Security, Packaging, Reproducibility - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2340,47 +2340,49 @@
 1.4 Assert no cost-incurring automation (<code>.github/workflows</code>, remote telemetry) will be enabled. Abort if automation files are staged.</p>
 <h2 id="phase-2-search-mapping">Phase 2 — Search &amp; Mapping<a class="headerlink" href="#phase-2-search-mapping" title="Permanent link">¶</a></h2>
 <p>2.1 Enumerate candidate modules/scripts for each requirement:
-    - LoRA CLI + docs/tests → <code>src/codex_cli/</code>, <code>training/</code>, <code>docs/guides</code>, <code>tests/</code>.
-    - Metrics registry/aggregator → <code>codex_ml/eval</code>, <code>analysis/metrics</code>, <code>tools/</code>, <code>scripts/</code>.
-    - Secret scanning gates → <code>noxfile.py</code>, <code>requirements-dev.txt</code>, <code>docs/modules/safety.md</code>.
-    - Packaging + Docker → root <code>pyproject.toml</code>/<code>setup.cfg</code>, <code>Dockerfile*</code>, <code>docs/runbook*</code>.
-    - Reproducibility → <code>docs/repro*</code>, <code>training/</code>, <code>codex_utils/environment</code>.
-    Persist findings to <code>logs/codex_tasks/mapping.json</code>.
+ - LoRA CLI + docs/tests <code>src/codex_cli/</code>, <code>training/</code>, <code>docs/guides</code>, <code>tests/</code>.
+ - Metrics registry/aggregator <code>codex_ml/eval</code>, <code>analysis/metrics</code>, <code>tools/</code>, <code>scripts/</code>.
+ - Secret scanning gates <code>noxfile.py</code>, <code>requirements-dev.txt</code>, <code>docs/modules/safety.md</code>.
+ - Packaging + Docker root <code>pyproject.toml</code>/<code>setup.cfg</code>, <code>Dockerfile*</code>, <code>docs/runbook*</code>.
+ - Reproducibility <code>docs/repro*</code>, <code>training/</code>, <code>codex_utils/environment</code>.
+ Persist findings to <code>logs/codex_tasks/mapping.json</code>.
 2.2 For each module, compare current purpose with task requirements and document adaptation viability notes (<code>logs/codex_tasks/adaptation_notes.json</code>).
 2.3 Identify related tooling (Hydra configs, scripts, templates) that could be reused. Record path, description, and reuse strategy.</p>
 <h2 id="phase-3-best-effort-construction">Phase 3 — Best-Effort Construction<a class="headerlink" href="#phase-3-best-effort-construction" title="Permanent link">¶</a></h2>
 <p>3.1 LoRA CLI &amp; docs/tests
-    a. Modify CLI (Typer) to expose LoRA parameters (<code>lora_r</code>, <code>lora_alpha</code>, <code>lora_dropout</code>, <code>target_modules</code>).
-    b. Update model loading to consume CLI-specified LoRA settings and ensure defaults disable LoRA gracefully.
-    c. Extend docs with CLI usage examples and add pytest covering CLI parameter plumbing.
+ a. Modify CLI (Typer) to expose LoRA parameters (<code>lora_r</code>, <code>lora_alpha</code>, <code>lora_dropout</code>, <code>target_modules</code>).
+ b. Update model loading to consume CLI-specified LoRA settings and ensure defaults disable LoRA gracefully.
+ c. Extend docs with CLI usage examples and add pytest covering CLI parameter plumbing.
 3.2 Metrics registry &amp; aggregator
-    a. Create registry module supporting registration and computation of metrics (accuracy, precision, recall, F1).
-    b. Implement NDJSON → aggregated NDJSON/CSV scripts under <code>tools/</code> with CLI entry points.
-    c. Integrate registry with evaluator configuration and add unit tests.
-    d. Update docs with metric registration/aggregation instructions.
+ a. Create registry module supporting registration and computation of metrics (accuracy, precision, recall, F1).
+ b. Implement NDJSON aggregated NDJSON/CSV scripts under <code>tools/</code> with CLI entry points.
+ c. Integrate registry with evaluator configuration and add unit tests.
+ d. Update docs with metric registration/aggregation instructions.
 3.3 Secret scanning gates
-    a. Update <code>noxfile.py</code> (gates session) to run <code>detect-secrets</code> and <code>bandit</code> with offline-only flags.
-    b. Record scan baselines/config (e.g., <code>.secrets.baseline</code>) without enabling GitHub Actions.
-    c. Document workflow in safety guide and add gating tests.
+ a. Update <code>noxfile.py</code> (gates session) to run <code>detect-secrets</code> and <code>bandit</code> with offline-only flags.
+ b. Record scan baselines/config (e.g., <code>.secrets.baseline</code>) without enabling GitHub Actions.
+ c. Document workflow in safety guide and add gating tests.
 3.4 Packaging &amp; Docker
-    a. Ensure <code>pyproject.toml</code>/<code>setup.cfg</code> defines CLI entry points and pinned dependency metadata.
-    b. Implement hardened <code>Dockerfile</code> following docs (non-root, multi-stage, offline wheels).
-    c. Update runbook with packaging and deployment instructions; add smoke test script for container build.
+ a. Ensure <code>pyproject.toml</code>/<code>setup.cfg</code> defines CLI entry points and pinned dependency metadata.
+ b. Implement hardened <code>Dockerfile</code> following docs (non-root, multi-stage, offline wheels).
+ c. Update runbook with packaging and deployment instructions; add smoke test script for container build.
 3.5 Reproducibility improvements
-    a. Capture runtime environment (OS, Python, CUDA, package hashes) during training/eval runs.
-    b. Enforce lockfile installation (<code>uv.lock</code>/<code>requirements-lock.txt</code>) in tooling (nox sessions/Makefile).
-    c. Document deterministic settings (seeds, torch deterministic flags, dataset checksums) and add validation tests.
-    d. Emit reproducibility manifest per run.
-    Execute sub-steps sequentially, recording successes in change log before considering pruning.</p>
+ a. Capture runtime environment (OS, Python, CUDA, package hashes) during training/eval runs.
+ b. Enforce lockfile installation (<code>uv.lock</code>/<code>requirements-lock.txt</code>) in tooling (nox sessions/Makefile).
+ c. Document deterministic settings (seeds, torch deterministic flags, dataset checksums) and add validation tests.
+ d. Emit reproducibility manifest per run.
+ Execute sub-steps sequentially, recording successes in change log before considering pruning.</p>
 <h2 id="phase-4-controlled-pruning">Phase 4 — Controlled Pruning<a class="headerlink" href="#phase-4-controlled-pruning" title="Permanent link">¶</a></h2>
 <p>4.1 For any sub-step where best-effort implementation fails, document exhaustive rationale in <code>reports/codex_tasks/pruning_report.md</code> (include explored paths and blockers).
 4.2 Cross-reference pruning decisions with adaptation notes to avoid duplicate effort.
 4.3 Tag deferred work in-code using explicit <code>NotImplementedError</code> or doc TODOs referencing pruning report.</p>
 <h2 id="phase-5-error-capture">Phase 5 — Error Capture<a class="headerlink" href="#phase-5-error-capture" title="Permanent link">¶</a></h2>
-<p>5.1 Wrap each numbered step in structured try/except. On failure, append research question to <code>logs/codex_tasks/error_captures.ndjson</code> using the format:
-    &gt; Question from ChatGPT @codex {{timestamp}}:
-    &gt; While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE] Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?
+<p>5.1 Wrap each numbered step in structured try/except. On failure, append research question to <code>logs/codex_tasks/error_captures.ndjson</code> using the format:</p>
+<blockquote>
+<p>Question from ChatGPT @codex {{timestamp}}:
+While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE] Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?
 5.2 After logging, continue if subsequent steps remain safe; otherwise halt with non-zero exit code.</p>
+</blockquote>
 <h2 id="phase-6-finalization">Phase 6 — Finalization<a class="headerlink" href="#phase-6-finalization" title="Permanent link">¶</a></h2>
 <p>6.1 Summarise completed actions, outstanding gaps, and follow-up recommendations in <code>reports/codex_tasks/final_summary.md</code>.
 6.2 Run local tests (<code>nox -s tests</code>, <code>nox -s gates</code>) if environment permits; store outputs in <code>logs/codex_tasks/test_results.json</code>.
@@ -2415,6 +2417,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

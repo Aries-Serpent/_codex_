@@ -1,6 +1,6 @@
 # Session Completion Summary - PR #2750
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:2026-07-13
 **Branch:** `copilot/sub-pr-2750-one-more-time`

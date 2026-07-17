@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3607 (Phase 5 CI Robustness — S138)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-03-17T08:38Z
 **PR:** #3607 — `0D_base` — CI workflow robustness, PR comment upsert race-safety, reviewer fix batch

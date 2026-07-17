@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/config_consolidation_guide/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Configuration Consolidation Guide (D4) - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2563,35 +2563,35 @@
 <p>This guide documents the unified configuration structure for the Codex ML project. All configurations have been consolidated under the <code>configs/</code> directory with a clear, hierarchical structure that supports both development and production use cases.</p>
 <h2 id="directory-structure">Directory Structure<a class="headerlink" href="#directory-structure" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>configs/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── __init__.py              # Package marker
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── README.md                # Configuration overview
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── CONFIGURATION_STRUCTURE.md  # This file
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── base/                    # Base configurations (defaults)
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   ├── training.yaml
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   ├── model.yaml
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   ├── data.yaml
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   ├── tracking.yaml
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   ├── validation.yaml
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│   ├── reproducibility.yaml
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│   └── ... (other base configs)
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>├── production/              # Production overrides
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   ├── tracking.yaml
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   ├── features.yaml
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│   ├── data_validation.yaml
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│   ├── evaluation.yaml
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│   ├── training.yaml
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│   └── monitoring.yaml
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>├── development/             # Development overrides
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│   ├── minimal_train.yaml
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>│   ├── minimal_eval.yaml
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>│   └── minimal.yaml
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>├── experiments/             # Experiment-specific configs
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>│   ├── default.yaml
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>│   ├── sweep.yaml
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>│   └── basic.yaml
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>├── hydra/                   # Hydra-specific configs
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>│   └── config.yaml          # Main Hydra configuration
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>└── ... (other config directories)
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> __init__.py # Package marker
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> README.md # Configuration overview
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> CONFIGURATION_STRUCTURE.md # This file
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> base/ # Base configurations (defaults)
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> training.yaml
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> model.yaml
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> data.yaml
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> tracking.yaml
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> validation.yaml
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> reproducibility.yaml
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> ... (other base configs)
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> production/ # Production overrides
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> tracking.yaml
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> features.yaml
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> data_validation.yaml
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> evaluation.yaml
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> training.yaml
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> monitoring.yaml
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> development/ # Development overrides
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> minimal_train.yaml
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> minimal_eval.yaml
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> minimal.yaml
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> experiments/ # Experiment-specific configs
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> default.yaml
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> sweep.yaml
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> basic.yaml
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> hydra/ # Hydra-specific configs
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> config.yaml # Main Hydra configuration
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> ... (other config directories)
 </code></pre></div>
 <h2 id="unified-configuration-access">Unified Configuration Access<a class="headerlink" href="#unified-configuration-access" title="Permanent link">¶</a></h2>
 <h3 id="using-python-api">Using Python API<a class="headerlink" href="#using-python-api" title="Permanent link">¶</a></h3>
@@ -2621,7 +2621,7 @@
 <p>The following directories were consolidated into <code>configs/</code>:</p>
 <ul>
 <li><code>conf/</code> - Legacy Hydra configurations</li>
-<li><code>config/</code> - Legacy application configurations  </li>
+<li><code>config/</code> - Legacy application configurations</li>
 </ul>
 <p>These directories are preserved for backward compatibility during the transition period but should not be used for new configurations.</p>
 <h3 id="migration-steps">Migration Steps<a class="headerlink" href="#migration-steps" title="Permanent link">¶</a></h3>
@@ -2650,29 +2650,29 @@
 <h3 id="2-follow-hydra-conventions">2. Follow Hydra Conventions<a class="headerlink" href="#2-follow-hydra-conventions" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># configs/base/training.yaml</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-4</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w"> </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-4</span>
 </code></pre></div>
 <h2 id="3-use-composition">3. Use Composition<a class="headerlink" href="#3-use-composition" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># configs/hydra/config.yaml</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/training</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/model</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/data</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/training</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/model</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base/data</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">development</span><span class="w">  </span><span class="c1"># Override via CLI: env=production</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">development</span><span class="w"> </span><span class="c1"># Override via CLI: env=production</span>
 </code></pre></div>
 <h2 id="4-document-your-configs">4. Document Your Configs<a class="headerlink" href="#4-document-your-configs" title="Permanent link">¶</a></h2>
 <p>Add comments explaining non-obvious parameters:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">  </span><span class="c1"># Number of training epochs</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w">  </span><span class="c1"># Batch size per GPU</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">  </span><span class="c1"># Effective batch = 32 * 4 = 128</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"> </span><span class="c1"># Number of training epochs</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w"> </span><span class="c1"># Batch size per GPU</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"> </span><span class="c1"># Effective batch = 32 * 4 = 128</span>
 </code></pre></div>
 <h2 id="hydra-integration">Hydra Integration<a class="headerlink" href="#hydra-integration" title="Permanent link">¶</a></h2>
 <h3 id="search-paths">Search Paths<a class="headerlink" href="#search-paths" title="Permanent link">¶</a></h3>
@@ -2683,20 +2683,20 @@
 </ol>
 <h3 id="output-directories">Output Directories<a class="headerlink" href="#output-directories" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nt">hydra</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">sweep</span><span class="p">:</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">    </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">    </span><span class="nt">subdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${hydra.job.num}</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">sweep</span><span class="p">:</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="nt">subdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${hydra.job.num}</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="issue-config-not-found">Issue: "Config not found"<a class="headerlink" href="#issue-config-not-found" title="Permanent link">¶</a></h3>
 <p><strong>Solution</strong>: Ensure you're referencing configs relative to the <code>configs/</code> directory:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1">#  Wrong</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Wrong</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">get_config</span><span class="p">(</span><span class="s2">"training.yaml"</span><span class="p">)</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1">#  Correct</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="n">get_config</span><span class="p">(</span><span class="s2">"base/training"</span><span class="p">)</span>  <span class="c1"># No .yaml extension needed</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Correct</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="n">get_config</span><span class="p">(</span><span class="s2">"base/training"</span><span class="p">)</span> <span class="c1"># No .yaml extension needed</span>
 </code></pre></div>
 <h2 id="issue-hydra-initialization-error">Issue: "Hydra initialization error"<a class="headerlink" href="#issue-hydra-initialization-error" title="Permanent link">¶</a></h2>
 <p><strong>Solution</strong>: Make sure <code>hydra-core</code> and <code>omegaconf</code> are installed:</p>
@@ -2704,10 +2704,10 @@
 </code></pre></div>
 <h3 id="issue-config-override-not-working">Issue: "Config override not working"<a class="headerlink" href="#issue-config-override-not-working" title="Permanent link">¶</a></h3>
 <p><strong>Solution</strong>: Use proper Hydra override syntax:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1">#  Wrong</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Wrong</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>python<span class="w"> </span>train.py<span class="w"> </span>--epochs<span class="o">=</span><span class="m">100</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1">#  Correct</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Correct</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>python<span class="w"> </span>train.py<span class="w"> </span>training.epochs<span class="o">=</span><span class="m">100</span>
 </code></pre></div>
 <h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h2>
@@ -2725,18 +2725,18 @@
 <h3 id="implementation-date">Implementation Date<a class="headerlink" href="#implementation-date" title="Permanent link">¶</a></h3>
 <p>2026-07-13</p>
 <h3 id="deliverables-completed">Deliverables Completed<a class="headerlink" href="#deliverables-completed" title="Permanent link">¶</a></h3>
-<p>Migration script (<code>scripts/migrate_configs.py</code>)<br/>
- Unified config structure under <code>configs/</code><br/>
- Hydra configuration (<code>configs/hydra/config.yaml</code>)<br/>
- Python API for config loading (<code>codex_ml.config.get_config</code>, <code>load_yaml</code>)<br/>
- Documentation (this file)<br/>
- Verification tests  </p>
+<p>Migration script (<code>scripts/migrate_configs.py</code>)
+ Unified config structure under <code>configs/</code>
+ Hydra configuration (<code>configs/hydra/config.yaml</code>)
+ Python API for config loading (<code>codex_ml.config.get_config</code>, <code>load_yaml</code>)
+ Documentation (this file)
+ Verification tests</p>
 <h3 id="verification-status">Verification Status<a class="headerlink" href="#verification-status" title="Permanent link">¶</a></h3>
-<p>All directory structures in place<br/>
- Migration script tested (dry-run and execute)<br/>
- Config loading functions verified<br/>
- YAML parsing validated<br/>
- Backward compatibility maintained  </p>
+<p>All directory structures in place
+ Migration script tested (dry-run and execute)
+ Config loading functions verified
+ YAML parsing validated
+ Backward compatibility maintained</p>
 <h3 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h3>
 <ol>
 <li>Phase 1: Config consolidation complete</li>
@@ -2779,6 +2779,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

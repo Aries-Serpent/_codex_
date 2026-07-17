@@ -1,6 +1,6 @@
 # Local Development Environment Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version**: 1.0.0
 > **Last Updated**: 2026-06-22
@@ -532,7 +532,7 @@ repos:
  - id: flake8
 
  - repo: https://github.com/pre-commit/pre-commit-hooks
- rev: v0.2.1
+ rev: v0.2.0
  hooks:
  - id: trailing-whitespace
  - id: end-of-file-fixer

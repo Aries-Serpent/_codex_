@@ -23,7 +23,7 @@
 
 ## 🔐 HANDOFF MANIFESTS (Per-Workstream)
 
-### WS1A: v0.2.1 Feature Implementation
+### WS1A: v0.2.0 Feature Implementation
 **Lead Agent:** `ci-testing-agent`  
 **Authority:** @mbaetiong D-tier autonomous
 
@@ -36,16 +36,16 @@
   "task_id": "PHASE_14_WS1A",
   "handoff_timestamp": "2026-07-16T20:55:58Z",
   "operating_model": "D_CAPABLE",
-  "task_description": "Execute v0.2.1 feature implementation with comprehensive validation",
+  "task_description": "Execute v0.2.0 feature implementation with comprehensive validation",
   "objectives": [
-    "Finalize v0.2.1 feature set from Phase 13 WS3 roadmap",
+    "Finalize v0.2.0 feature set from Phase 13 WS3 roadmap",
     "Execute code review & security validation pipeline",
     "Deploy to staging and validate all tests pass",
     "Generate feature flag definitions for all new features",
     "Draft comprehensive release notes"
   ],
   "success_criteria": {
-    "feature_completeness": "All v0.2.1 features implemented and documented",
+    "feature_completeness": "All v0.2.0 features implemented and documented",
     "test_coverage": "100% test pass rate in staging",
     "bug_threshold": "0 critical/high severity bugs discovered",
     "feature_flags": "Unleash configuration complete for all features",
@@ -95,9 +95,9 @@
   "task_id": "PHASE_14_WS1B",
   "handoff_timestamp": "2026-07-31T20:10Z",
   "operating_model": "D_CAPABLE",
-  "task_description": "Deploy v0.2.1 to 10% production users and validate deployment procedures",
+  "task_description": "Deploy v0.2.0 to 10% production users and validate deployment procedures",
   "objectives": [
-    "Deploy v0.2.1 to canary (10% of users) with zero deployment errors",
+    "Deploy v0.2.0 to canary (10% of users) with zero deployment errors",
     "Establish real-time monitoring dashboard (error rate, latency, resource usage)",
     "Collect telemetry & metrics throughout 1-week observation window",
     "Execute end-to-end rollback procedure validation (test without actual rollback)",
@@ -287,16 +287,16 @@
   "task_id": "PHASE_14_WS1E",
   "handoff_timestamp": "2026-07-24T20:10Z",
   "operating_model": "D_CAPABLE",
-  "task_description": "Create 6-month release calendar and roadmap (v0.2.1 → v0.2.5)",
+  "task_description": "Create 6-month release calendar and roadmap (v0.2.0 → v0.2.5)",
   "objectives": [
-    "Define feature batches for each 2-week release cycle (v0.2.1 through v0.2.5)",
+    "Define feature batches for each 2-week release cycle (v0.2.0 through v0.2.5)",
     "Align release schedule with Phase 13 WS2 infrastructure capacity forecast",
     "Document release validation gates (security, performance, compliance)",
     "Create release communication procedures & stakeholder notification templates",
     "Establish governance for release approval & decision authority"
   ],
   "success_criteria": {
-    "roadmap_coverage": "6-month roadmap published (v0.2.1 complete by week 6)",
+    "roadmap_coverage": "6-month roadmap published (v0.2.0 complete by week 6)",
     "release_cycles": "2-week cycles defined with feature batches",
     "infrastructure_alignment": "Schedule aligns with WS2 capacity forecast",
     "release_gates": "Security, performance, and compliance gates documented",
@@ -304,7 +304,7 @@
   },
   "checkpoint_1": {
     "date": "2026-07-31T20:10Z",
-    "deliverable": "Release Calendar & Roadmap (6-month, v0.2.1-v0.2.5)",
+    "deliverable": "Release Calendar & Roadmap (6-month, v0.2.0-v0.2.5)",
     "file": ".codex/PHASE_14_WS1_RELEASE_CALENDAR_ROADMAP_2026_08_25.md"
   },
   "tier1_gates": [
@@ -327,7 +327,7 @@
   },
   "context": {
     "version_schedule": {
-      "v0.2.1": "2026-08-25 (Phase 14 WS1)",
+      "v0.2.0": "2026-08-25 (Phase 14 WS1)",
       "v0.2.2": "2026-09-08",
       "v0.2.3": "2026-09-22",
       "v0.2.4": "2026-10-06",

@@ -1,6 +1,6 @@
 # Comprehensive Documentation Verification Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -195,7 +195,7 @@ This report provides a comprehensive verification of all documentation, agent fi
 ### 3.1 Mermaid Diagrams
 **Found**: 2 .mmd files
 - `docs/diagrams/architecture.mmd`
-- `docs/diagrams/audit_pipeline_v0.2.1.mmd`
+- `docs/diagrams/audit_pipeline_v0.2.0.mmd`
 
 **Status**: Limited standalone .mmd files, diagrams likely embedded in markdown
 

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/API_DOCUMENTATION_GAPS/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>API Documentation Gaps Analysis - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2545,8 +2545,8 @@
 <h1 id="api-documentation-gaps-analysis">API Documentation Gaps Analysis<a class="headerlink" href="#api-documentation-gaps-analysis" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Phase 3 Complete - Gap Identification<br/>
-<strong>Campaign:</strong> WS1 API Documentation Expansion<br/>
+<p><strong>Status:</strong> Phase 3 Complete - Gap Identification
+<strong>Campaign:</strong> WS1 API Documentation Expansion
 <strong>Date:</strong> 2026-07-08</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2685,78 +2685,72 @@
 </li>
 <li>
 <p><strong>cli_rag.py</strong> ⭐ MEDIUM</p>
-<ul>
+</li>
 <li>Signatures: 10 (8 functions, 2 classes)</li>
 <li>Purpose: RAG CLI operations</li>
 <li>Gap: 100% undocumented</li>
 <li>Effort: 1 hour</li>
-<li>Impact: User-facing RAG</li>
-</ul>
+<li>
+<p>Impact: User-facing RAG</p>
 </li>
 <li>
 <p><strong>cli_zendesk.py</strong> ⭐ MEDIUM</p>
-<ul>
+</li>
 <li>Signatures: 9 (9 functions)</li>
 <li>Purpose: Zendesk integration CLI</li>
 <li>Gap: 100% undocumented</li>
 <li>Effort: 1 hour</li>
-<li>Impact: Customer support integration</li>
-</ul>
+<li>
+<p>Impact: Customer support integration</p>
 </li>
 <li>
 <p><strong>quantum_orchestrator/orchestrator.py</strong> (Additional 50+ deeper methods)</p>
-<ul>
+</li>
 <li>Physics-inspired operations: 50+</li>
 <li>Gap: ~85% undocumented</li>
 <li>Effort: 4-5 hours</li>
 <li>Impact: Core orchestration</li>
-</ul>
-</li>
 </ol>
 <h4 id="tier-2-medium-priority">Tier 2 (Medium Priority)<a class="headerlink" href="#tier-2-medium-priority" title="Permanent link">¶</a></h4>
 <ol>
-<li>
-<p><strong>cognitive/ml/validation.py</strong> (Additional 35+ methods)</p>
-<ul>
+<li><strong>cognitive/ml/validation.py</strong> (Additional 35+ methods)</li>
 <li>Validation operations: 35+</li>
 <li>Gap: ~71% undocumented</li>
 <li>Effort: 3-4 hours</li>
-<li>Impact: Model quality assurance</li>
-</ul>
+<li>
+<p>Impact: Model quality assurance</p>
 </li>
 <li>
 <p><strong>cognitive/ml/integration.py</strong> (Additional 11+ methods)</p>
-<ul>
+</li>
 <li>Integration methods: 11+</li>
 <li>Gap: ~73% undocumented</li>
 <li>Effort: 2-3 hours</li>
-<li>Impact: ML pipeline integration</li>
-</ul>
+<li>
+<p>Impact: ML pipeline integration</p>
 </li>
 <li>
 <p><strong>cognitive/workflow_optimizer.py</strong> (Additional 20+ methods)</p>
-<ul>
+</li>
 <li>Workflow methods: 20+</li>
 <li>Gap: ~47% undocumented</li>
 <li>Effort: 2-3 hours</li>
-<li>Impact: Execution planning</li>
-</ul>
+<li>
+<p>Impact: Execution planning</p>
 </li>
 <li>
 <p><strong>governance/approval_service.py</strong> (Additional 18+ methods)</p>
-<ul>
+</li>
 <li>RBAC methods: 18+</li>
 <li>Gap: ~75% undocumented</li>
 <li>Effort: 2-3 hours</li>
 <li>Impact: Access control</li>
-</ul>
-</li>
 </ol>
 <h4 id="tier-3-lower-priority">Tier 3 (Lower Priority)<a class="headerlink" href="#tier-3-lower-priority" title="Permanent link">¶</a></h4>
 <p>17-20. Other supporting modules
-    - Combined signatures: ~50+
-    - Gap: ~80% undocumented
-    - Effort: 2-3 hours total</p>
+ - Combined signatures: ~50+
+ - Gap: ~80% undocumented
+ - Effort: 2-3 hours total</p>
 <hr/>
 <h2 id="gap-analysis-by-category">Gap Analysis by Category<a class="headerlink" href="#gap-analysis-by-category" title="Permanent link">¶</a></h2>
 <h3 id="by-signature-type">By Signature Type<a class="headerlink" href="#by-signature-type" title="Permanent link">¶</a></h3>
@@ -2983,7 +2977,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Total Quick Win Effort:</strong> 2 hours<br/>
+<p><strong>Total Quick Win Effort:</strong> 2 hours
 <strong>Impact:</strong> +12 functions documented (2% coverage gain)</p>
 <hr/>
 <h2 id="recommended-documentation-order">Recommended Documentation Order<a class="headerlink" href="#recommended-documentation-order" title="Permanent link">¶</a></h2>
@@ -2993,19 +2987,19 @@
 <li><code>agent_brain_api.py</code> (1 hour)</li>
 <li><code>accountability_autoupdate.py</code> (1 hour)</li>
 </ol>
-<p><strong>Expected Result:</strong> +75 signatures, 15% coverage → 32%+</p>
+<p><strong>Expected Result:</strong> +75 signatures, 15% coverage 32%+</p>
 <h3 id="phase-3b-next-3-4-hours-ml-storage">Phase 3B (Next 3-4 hours) — ML &amp; Storage<a class="headerlink" href="#phase-3b-next-3-4-hours-ml-storage" title="Permanent link">¶</a></h3>
 <ol>
 <li>ML validation extensions (2 hours)</li>
 <li>Storage/Archive completions (2 hours)</li>
 </ol>
-<p><strong>Expected Result:</strong> +128 signatures, 32% → 55%+</p>
+<p><strong>Expected Result:</strong> +128 signatures, 32% 55%+</p>
 <h3 id="phase-3c-next-2-3-hours-integration-governance">Phase 3C (Next 2-3 hours) — Integration &amp; Governance<a class="headerlink" href="#phase-3c-next-2-3-hours-integration-governance" title="Permanent link">¶</a></h3>
 <ol>
 <li>Integration function completions (2 hours)</li>
 <li>Governance/Approval details (1 hour)</li>
 </ol>
-<p><strong>Expected Result:</strong> +85 signatures, 55% → 80%+</p>
+<p><strong>Expected Result:</strong> +85 signatures, 55% 80%+</p>
 <h3 id="phase-4-final-2-hours-polish-index">Phase 4 (Final 2 hours) — Polish &amp; Index<a class="headerlink" href="#phase-4-final-2-hours-polish-index" title="Permanent link">¶</a></h3>
 <ol>
 <li>Cross-reference validation</li>
@@ -3063,7 +3057,7 @@
 <p><strong>Target (Phase 3 Complete):</strong>
 - 20/20 modules have docs (100%)
 - 200+ signatures documented (35%+)
-- 20%+ API coverage achieved </p>
+- 20%+ API coverage achieved</p>
 <p><strong>Phase 4 Goals:</strong>
 - All 20 modules complete (100%)
 - Cross-references validated
@@ -3109,8 +3103,8 @@
 </table>
 <p><strong>Total Estimated Effort:</strong> 18-22 hours to 100% (but 20%+ achievable in 8-10 hours)</p>
 <hr/>
-<p><strong>Generated:</strong> 2026-07-08<br/>
-<strong>Campaign:</strong> WS1 API Documentation Expansion<br/>
+<p><strong>Generated:</strong> 2026-07-08
+<strong>Campaign:</strong> WS1 API Documentation Expansion
 <strong>Phase:</strong> 3 - Gap Analysis Complete</p>
 </article>
 </div>
@@ -3141,6 +3135,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

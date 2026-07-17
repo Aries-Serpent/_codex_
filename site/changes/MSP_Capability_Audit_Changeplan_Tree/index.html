@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/changes/MSP_Capability_Audit_Changeplan_Tree/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>[Change Plan]: MSP Capability-Audit — File/Folder Tree and Scope - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2285,41 +2285,41 @@ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5</p>
 <p>Legend: [NEW] create | [UPDATE] modify | [REFACTOR] structural/logic change
 <code>text
 Repository-root
-├─ .copilot-space/
-│  └─ [UPDATE] workflow.yaml
-├─ .github/
-│  ├─ workflows/
-│  │  └─ [NEW] capability-audit.yml
-│  └─ docs/
-│     └─ [NEW] Copilot_Audit_InstructionEnhancement.md
-├─ scripts/
-│  └─ space_traversal/
-│     ├─ [UPDATE] audit_runner.py
-│     ├─ [NEW] validators.py
-│     └─ detectors/
-│        └─ (no change; optional new detectors as needed)
-├─ templates/
-│  └─ audit/
-│     └─ [UPDATE] capability_matrix.md.j2
-├─ audit_artifacts/ (runtime outputs; not committed)
-│  ├─ [UPDATE] gaps.json (extended schema)
-│  ├─ [NEW] component_gaps.json
-│  └─ capabilities_*.json (existing)
-├─ reports/
-│  └─ [UPDATE] capability_matrix_&lt;ts&gt;.md (rendered with missing_patterns and ZERO markers)
-├─ docs/
-│  ├─ remediation/
-│  │  ├─ [NEW] README.md
-│  │  ├─ [NEW] components.md
-│  │  ├─ [NEW] detectors.md
-│  │  └─ [NEW] policy.md
-│  ├─ validation/
-│  │  └─ [NEW] Gaps_Coverage_Checklist_And_Scripts.md
-│  └─ changes/
-│     ├─ [NEW] MSP_Capability_Audit_Changeplan_Tree.md (this file)
-│     └─ [NEW] MSP_Capability_Audit_File_Map.md
-├─ [UPDATE] space.mk
-└─ [UPDATE] audit_run_manifest.json (runtime) — now includes missing_detectors in metadata</code>text
+ .copilot-space/
+ [UPDATE] workflow.yaml
+ .github/
+ workflows/
+ [NEW] capability-audit.yml
+ docs/
+ [NEW] Copilot_Audit_InstructionEnhancement.md
+ scripts/
+ space_traversal/
+ [UPDATE] audit_runner.py
+ [NEW] validators.py
+ detectors/
+ (no change; optional new detectors as needed)
+ templates/
+ audit/
+ [UPDATE] capability_matrix.md.j2
+ audit_artifacts/ (runtime outputs; not committed)
+ [UPDATE] gaps.json (extended schema)
+ [NEW] component_gaps.json
+ capabilities_*.json (existing)
+ reports/
+ [UPDATE] capability_matrix_&lt;ts&gt;.md (rendered with missing_patterns and ZERO markers)
+ docs/
+ remediation/
+ [NEW] README.md
+ [NEW] components.md
+ [NEW] detectors.md
+ [NEW] policy.md
+ validation/
+ [NEW] Gaps_Coverage_Checklist_And_Scripts.md
+ changes/
+ [NEW] MSP_Capability_Audit_Changeplan_Tree.md (this file)
+ [NEW] MSP_Capability_Audit_File_Map.md
+ [UPDATE] space.mk
+ [UPDATE] audit_run_manifest.json (runtime) — now includes missing_detectors in metadata</code>text
 Scope alignment with your selections:
 - Baseline: artifact-based with first-run bootstrap
 - Gating: hard-fail on low maturity AND generate PR summary text; fail on missing-detector
@@ -2355,6 +2355,6 @@ Scope alignment with your selections:
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

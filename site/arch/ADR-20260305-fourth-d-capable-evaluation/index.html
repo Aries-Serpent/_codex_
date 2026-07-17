@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260305-fourth-d-capable-evaluation/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260305: Fourth D_CAPABLE Agent Evaluation — workflow-health-monitor Designated - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2353,7 +2353,7 @@ Predecessor ADR: ADR-20260304-rust-error-validator-d-capable-promotion.md</p>
 </blockquote>
 <h2 id="1-context">1. Context<a class="headerlink" href="#1-context" title="Permanent link">¶</a></h2>
 <p><code>rust-error-validator</code> was promoted to D_CAPABLE in PR #3495 and is now in a 30-day
-post-promotion observation window (2026-03-04 → 2026-04-03, tracked by
+post-promotion observation window (2026-03-04 2026-04-03, tracked by
 <code>rust-error-validator-observation.yml</code>). The current D_CAPABLE roster is:</p>
 <table>
 <thead>
@@ -2506,9 +2506,9 @@ post-promotion observation window (2026-03-04 → 2026-04-03, tracked by
 <tr>
 <td>C8 rank</td>
 <td>≤ 20</td>
-<td><strong>NOT SET → assigned 21</strong></td>
+<td><strong>NOT SET assigned 21</strong></td>
 <td>Assigned in this ADR (see §4)</td>
-<td>️</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -2518,7 +2518,7 @@ is used as primary agent in chain validation tests (lines 80, 88, 91–93, 100, 
 sequences.</p>
 <p><strong>C6 evidence:</strong> <code>.github/agents/workflow-health-monitor.agent.md</code> exists (v0.2.1,
 2026-02-05, "Production Ready" status annotation).</p>
-<p><strong>Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved  (see §5); promotion PENDING C4 only.</strong></p>
+<p><strong>Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved (see §5); promotion PENDING C4 only.</strong></p>
 <hr/>
 <h3 id="candidate-b-owner-approval-guard">Candidate B: <code>owner-approval-guard</code><a class="headerlink" href="#candidate-b-owner-approval-guard" title="Permanent link">¶</a></h3>
 <table>
@@ -2599,21 +2599,21 @@ over <code>owner-approval-guard</code> for the following reasons:</p>
 <ol>
 <li>
 <p><strong>Broader handoff network (3 vs 2):</strong> <code>ci-health-alert-agent</code> as a third handoff source
-   directly integrates with the existing D_CAPABLE CI pipeline (<code>ci-testing-agent</code> rank 1,
-   <code>workflow-ci-fixer</code> rank 13). This creates a coherent automated CI response chain.</p>
+ directly integrates with the existing D_CAPABLE CI pipeline (<code>ci-testing-agent</code> rank 1,
+ <code>workflow-ci-fixer</code> rank 13). This creates a coherent automated CI response chain.</p>
 </li>
 <li>
 <p><strong>Orchestration chain test coverage:</strong> The agent is used as a <em>primary</em> agent in chain
-   execution tests (<code>test_agent_orchestration.py</code>), demonstrating it has been tested in
-   orchestrated multi-agent scenarios — the exact context where D_CAPABLE autonomy matters.</p>
+ execution tests (<code>test_agent_orchestration.py</code>), demonstrating it has been tested in
+ orchestrated multi-agent scenarios — the exact context where D_CAPABLE autonomy matters.</p>
 </li>
 <li>
 <p><strong>CI-adjacent role:</strong> A monitoring agent running alongside <code>ci-testing-agent</code> and
-   <code>workflow-ci-fixer</code> at D_CAPABLE level creates a complete self-healing CI triad.</p>
+ <code>workflow-ci-fixer</code> at D_CAPABLE level creates a complete self-healing CI triad.</p>
 </li>
 <li>
 <p><strong><code>batch_scan_enabled: true</code>:</strong> Signals the agent is designed for high-frequency batch
-   execution — consistent with top-20 activation frequency.</p>
+ execution — consistent with top-20 activation frequency.</p>
 </li>
 </ol>
 <hr/>
@@ -2643,7 +2643,7 @@ With three D_CAPABLE agents established, the fourth promotion may relax C8 from 
 <td>C4 <code>violations_30d</code> observation</td>
 <td>copilot-swe-agent</td>
 <td>Monitor 30-day observation window; confirm 0</td>
-<td>2026-03-05 → 2026-04-04</td>
+<td>2026-03-05 2026-04-04</td>
 <td>ONGOING</td>
 </tr>
 <tr>
@@ -2669,7 +2669,7 @@ With three D_CAPABLE agents established, the fourth promotion may relax C8 from 
 <tr>
 <td><code>workflow-health-monitor</code></td>
 <td><strong>DESIGNATED</strong> (4th candidate)</td>
-<td>C4 observation window only (→ 2026-04-04)</td>
+<td>C4 observation window only ( 2026-04-04)</td>
 </tr>
 <tr>
 <td><code>owner-approval-guard</code></td>
@@ -2692,7 +2692,7 @@ With three D_CAPABLE agents established, the fourth promotion may relax C8 from 
 <tr>
 <td>copilot-swe-agent</td>
 <td>Monitor 30-day observation for <code>workflow-health-monitor</code></td>
-<td>Ongoing → 2026-04-04</td>
+<td>Ongoing 2026-04-04</td>
 </tr>
 <tr>
 <td>copilot-swe-agent</td>
@@ -2737,6 +2737,6 @@ With three D_CAPABLE agents established, the fourth promotion may relax C8 from 
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

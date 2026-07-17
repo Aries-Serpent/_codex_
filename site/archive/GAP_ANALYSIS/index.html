@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/GAP_ANALYSIS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Comprehensive Gap Analysis and Status Report - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2465,8 +2465,8 @@
 <h1 id="comprehensive-gap-analysis-and-status-report">Comprehensive Gap Analysis and Status Report<a class="headerlink" href="#comprehensive-gap-analysis-and-status-report" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Date</strong>: 2025-12-16<br/>
-<strong>Branch</strong>: copilot/sub-pr-2459-again<br/>
+<p><strong>Date</strong>: 2025-12-16
+<strong>Branch</strong>: copilot/sub-pr-2459-again
 <strong>Previous PR</strong>: #2459 (0 d base)</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This report documents the changes made to address PR feedback, fix CI failures, and identify remaining gaps and risks in the codebase.</p>
@@ -2476,10 +2476,10 @@
 <p><strong>Issue</strong>: Hardcoded values in workflows create maintenance burden and could become outdated.</p>
 <p><strong>Changes</strong>:
 1. <strong>wiki-assemble.yml</strong>:
-   - Moved hardcoded repository name to <code>${{ github.repository }}</code> context variable
-   - Added dynamic version extraction from <code>pyproject.toml</code>
-   - Installed <code>toml</code>/<code>tomli</code> for Python version compatibility
-   - All generation steps now use environment variables</p>
+ - Moved hardcoded repository name to <code>${{ github.repository }}</code> context variable
+ - Added dynamic version extraction from <code>pyproject.toml</code>
+ - Installed <code>toml</code>/<code>tomli</code> for Python version compatibility
+ - All generation steps now use environment variables</p>
 <ol>
 <li><strong>self-healing-feedback-loop.yml</strong>:</li>
 <li>Moved 70+ hardcoded expected capabilities to <code>.copilot-space/workflow.yaml</code></li>
@@ -2500,14 +2500,12 @@
 <li>
 <p><strong>coverage_report.yml</strong>:</p>
 </li>
-<li>Pinned all dependency versions for reproducible builds:<ul>
+<li>Pinned all dependency versions for reproducible builds:</li>
 <li>pytest==8.3.*</li>
 <li>coverage==7.6.*</li>
 <li>jsonschema==4.23.*</li>
 <li>pyyaml==6.0.*</li>
 <li>weasyprint==62.*</li>
-</ul>
-</li>
 </ol>
 <p><strong>Impact</strong>: Improved maintainability, reduced technical debt, centralized configuration management.</p>
 <h3 id="2-ci-failure-fixes">2. CI Failure Fixes<a class="headerlink" href="#2-ci-failure-fixes" title="Permanent link">¶</a></h3>
@@ -2530,8 +2528,8 @@
 - Tests expect different CLI structure than implemented</p>
 <p><strong>Status</strong>: These are pre-existing issues not introduced by this PR.</p>
 <h4 id="b-coverage-threshold-failure">b. Coverage Threshold Failure<a class="headerlink" href="#b-coverage-threshold-failure" title="Permanent link">¶</a></h4>
-<p><strong>Current</strong>: 15.9% coverage<br/>
-<strong>Threshold</strong>: 90%<br/>
+<p><strong>Current</strong>: 15.9% coverage
+<strong>Threshold</strong>: 90%
 <strong>Gap</strong>: 74.1 percentage points</p>
 <p><strong>Status</strong>: Pre-existing issue. Coverage has been low for some time and requires broader effort to address.</p>
 <h2 id="codebase-analysis-gaps-risks-and-incomplete-implementations">Codebase Analysis: Gaps, Risks, and Incomplete Implementations<a class="headerlink" href="#codebase-analysis-gaps-risks-and-incomplete-implementations" title="Permanent link">¶</a></h2>
@@ -2648,14 +2646,14 @@
 <p>Dependency version pinning in coverage_report.yml
  Configuration externalization (secrets not hardcoded)</p>
 <h3 id="remaining">Remaining<a class="headerlink" href="#remaining" title="Permanent link">¶</a></h3>
-<p>️ Review webhook security (currently disabled in workflow.yaml)
-️ Audit secret scanning configuration
-️ Review workflow permissions</p>
+<p>Review webhook security (currently disabled in workflow.yaml)
+ Audit secret scanning configuration
+ Review workflow permissions</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
 <h3 id="immediate-this-pr">Immediate (This PR)<a class="headerlink" href="#immediate-this-pr" title="Permanent link">¶</a></h3>
 <ol>
 <li>Format code with Black</li>
-<li>Address workflow configuration feedback  </li>
+<li>Address workflow configuration feedback</li>
 <li>Pin dependency versions</li>
 <li>Document remaining gaps (this report)</li>
 </ol>
@@ -2756,6 +2754,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

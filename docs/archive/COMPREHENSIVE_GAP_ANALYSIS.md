@@ -1,6 +1,6 @@
 # Comprehensive Gap Analysis and Improvement Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -68,7 +68,7 @@ This document provides a comprehensive analysis of remaining gaps, incomplete im
 
 ### Current State
 - **MLOps Maturity**: Level 4 Certified (100/100 score)
-- **Audit Pipeline**: v0.2.1 operational
+- **Audit Pipeline**: v0.2.0 operational
 - **Test Coverage**: 1,208+ test files, 72% coverage
 - **Documentation**: 693 markdown files
 - **Scripts**: 195 Python scripts
@@ -332,7 +332,7 @@ Updated `codex_gap_registry.yaml` to reflect:
  - **Recommendation**: Create tests before implementing stubs
 
 2. **Integration Tests for New Features**
- - **Gap**: audit_runner v0.2.1 features need integration tests
+ - **Gap**: audit_runner v0.2.0 features need integration tests
  - **Priority**: MEDIUM
  - **Recommendation**: Add tests for:
  - Trend aggregation

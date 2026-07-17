@@ -1,6 +1,6 @@
 # Secrets Rotation Runbook — `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Document**: `docs/ops/secrets_rotation_runbook.md`
 > **Version**: 1.0 (P10-06 — S96 2026-06-22)

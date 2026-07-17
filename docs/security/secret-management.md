@@ -1,6 +1,6 @@
 # Secret Management Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Comprehensive guide to managing secrets securely across development, staging, and production
 > **Level**: Intermediate | **Prerequisites**: Basic security knowledge

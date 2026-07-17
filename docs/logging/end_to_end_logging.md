@@ -1,6 +1,6 @@
 # End-to-End Logging
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide describes the environment variables and the startmessageend logging pattern.
 

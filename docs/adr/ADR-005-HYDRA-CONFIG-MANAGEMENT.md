@@ -1,6 +1,6 @@
 # ADR-005: Configuration Management via Hydra
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status:** Accepted
 **Date:** 2026-07-10

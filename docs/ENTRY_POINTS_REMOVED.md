@@ -1,6 +1,6 @@
 # Entry Points Removed or Commented Out
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This document explains why 22 entry points are commented out in `pyproject.toml` and which profiles will enable them.
 

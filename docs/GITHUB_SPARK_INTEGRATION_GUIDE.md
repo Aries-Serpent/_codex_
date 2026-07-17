@@ -1,6 +1,6 @@
 # GitHub Spark Integration Guide for _Codex_ Cognitive Brain
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Purpose**: Comprehensive guide for developing GitHub Spark applications that integrate with the _Codex_ backend for advanced code generation and cognitive brain demonstrations.
 >
@@ -1663,7 +1663,7 @@ pip install mangum
 
 ## Changelog
 
-### v0.2.1 (2026-01-04)
+### v0.2.0 (2026-01-04)
 - Initial release of GitHub Spark Integration Guide
 - Complete promptset plan (Phase 1-5)
 - Implementation examples (TypeScript + React)

@@ -1,6 +1,6 @@
 # Shared Utilities Extraction & Consolidation — Phase 2.2
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:** 2026-07-01  
 **Phase:** Phase 5 - Utility Consolidation  

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/mcp_security_safeguards/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>MCP Security Safeguards - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2581,168 +2581,166 @@
 - <strong>Audit Logging</strong>: Track security-relevant operations</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <h3 id="security-layers">Security Layers<a class="headerlink" href="#security-layers" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│   Confirmation Layer                │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   (User prompts for sensitive ops)  │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>              │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>              ▼
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   Validation Layer                  │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   (Input sanitization &amp; bounds)     │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>              │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>              ▼
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   Execution Layer                   │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   (Dry-run mode, safe execution)    │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>              │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>              ▼
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│   Audit Layer                       │
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│   (Security logging &amp; monitoring)   │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Confirmation Layer 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (User prompts for sensitive ops) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Validation Layer 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> (Input sanitization &amp; bounds) 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Execution Layer 
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> (Dry-run mode, safe execution) 
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> Audit Layer 
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> (Security logging &amp; monitoring) 
 </code></pre></div>
 <h2 id="implementation-patterns">Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Permanent link">¶</a></h2>
 <h3 id="confirmation-prompts">Confirmation Prompts<a class="headerlink" href="#confirmation-prompts" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span> <span class="nf">confirm_action</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">details</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""Prompt user for confirmation of sensitive operation."""</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"️  About to perform: </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Details: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="sd">"""Prompt user for confirmation of sensitive operation."""</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" About to perform: </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Details: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">response</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Proceed? (yes/no): "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="k">return</span> <span class="n">response</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">]</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">response</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Proceed? (yes/no): "</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> <span class="k">return</span> <span class="n">response</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">]</span>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="k">if</span> <span class="n">confirm_action</span><span class="p">(</span><span class="s2">"delete_database"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"database"</span><span class="p">:</span> <span class="s2">"production"</span><span class="p">}):</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">delete_database</span><span class="p">()</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="n">delete_database</span><span class="p">()</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Operation cancelled"</span><span class="p">)</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Operation cancelled"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="dry-run-mode">Dry-Run Mode<a class="headerlink" href="#dry-run-mode" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">class</span> <span class="nc">Operation</span><span class="p">:</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="n">dry_run</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="n">dry_run</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">        </span><span class="sd">"""Execute command with dry-run support."""</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would execute: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"executed"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"would_have"</span><span class="p">:</span> <span class="n">command</span><span class="p">}</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Executing: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">actually_execute</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"executed"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="sd">"""Execute command with dry-run support."""</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would execute: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"executed"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"would_have"</span><span class="p">:</span> <span class="n">command</span><span class="p">}</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Executing: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">actually_execute</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"executed"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="n">op</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">(</span><span class="n">dry_run</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"rm -rf /data"</span><span class="p">)</span>  <span class="c1"># Safe, just previews</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"rm -rf /data"</span><span class="p">)</span> <span class="c1"># Safe, just previews</span>
 </code></pre></div>
 <h2 id="input-sanitization">Input Sanitization<a class="headerlink" href="#input-sanitization" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">re</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">def</span> <span class="nf">sanitize_input</span><span class="p">(</span><span class="n">user_input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="sd">"""Sanitize user input to prevent injection attacks."""</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="c1"># Bounds check</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Input exceeds max length </span><span class="si">{</span><span class="n">max_length</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="sd">"""Sanitize user input to prevent injection attacks."""</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="c1"># Bounds check</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Input exceeds max length </span><span class="si">{</span><span class="n">max_length</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="c1"># Remove control characters</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[\x00-\x1f\x7f-\x9f]'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">user_input</span><span class="p">)</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> <span class="c1"># Remove control characters</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[\x00-\x1f\x7f-\x9f]'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">user_input</span><span class="p">)</span>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="c1"># Remove potentially dangerous patterns</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="n">dangerous_patterns</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="sa">r</span><span class="s1">'&lt;script'</span><span class="p">,</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="sa">r</span><span class="s1">'javascript:'</span><span class="p">,</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="sa">r</span><span class="s1">'on\w+\s*='</span><span class="p">,</span>  <span class="c1"># Event handlers</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>        <span class="sa">r</span><span class="s1">'eval\s*\('</span><span class="p">,</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>        <span class="sa">r</span><span class="s1">'exec\s*\('</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    <span class="p">]</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="c1"># Remove potentially dangerous patterns</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="n">dangerous_patterns</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="sa">r</span><span class="s1">'&lt;script'</span><span class="p">,</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> <span class="sa">r</span><span class="s1">'javascript:'</span><span class="p">,</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="sa">r</span><span class="s1">'on\w+\s*='</span><span class="p">,</span> <span class="c1"># Event handlers</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> <span class="sa">r</span><span class="s1">'eval\s*\('</span><span class="p">,</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> <span class="sa">r</span><span class="s1">'exec\s*\('</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> <span class="p">]</span>
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">dangerous_patterns</span><span class="p">:</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">sanitized</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dangerous pattern detected: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">dangerous_patterns</span><span class="p">:</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">sanitized</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dangerous pattern detected: </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    <span class="k">return</span> <span class="n">sanitized</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> <span class="k">return</span> <span class="n">sanitized</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 <a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>
 <a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="n">safe_input</span> <span class="o">=</span> <span class="n">sanitize_input</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="n">process</span><span class="p">(</span><span class="n">safe_input</span><span class="p">)</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a> <span class="n">safe_input</span> <span class="o">=</span> <span class="n">sanitize_input</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> <span class="n">process</span><span class="p">(</span><span class="n">safe_input</span><span class="p">)</span>
 <a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid input: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid input: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="bounds-checking">Bounds Checking<a class="headerlink" href="#bounds-checking" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="k">def</span> <span class="nf">validate_bounds</span><span class="p">(</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">min_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">max_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"value"</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">min_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="n">max_val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"value"</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="sd">"""Validate value is within bounds."""</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="k">if</span> <span class="n">min_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">min_val</span><span class="p">:</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be &gt;= </span><span class="si">{</span><span class="n">min_val</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="sd">"""Validate value is within bounds."""</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="k">if</span> <span class="n">min_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">min_val</span><span class="p">:</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be &gt;= </span><span class="si">{</span><span class="n">min_val</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="k">if</span> <span class="n">max_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">max_val</span><span class="p">:</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be &lt;= </span><span class="si">{</span><span class="n">max_val</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="k">if</span> <span class="n">max_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">max_val</span><span class="p">:</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be &lt;= </span><span class="si">{</span><span class="n">max_val</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="k">def</span> <span class="nf">set_timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="n">validate_bounds</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"timeout"</span><span class="p">)</span>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    <span class="c1"># Safe to proceed</span>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="n">config</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">seconds</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> <span class="n">validate_bounds</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"timeout"</span><span class="p">)</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> <span class="c1"># Safe to proceed</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> <span class="n">config</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">seconds</span>
 </code></pre></div>
 <h2 id="safe-failure-with-rollback">Safe Failure with Rollback<a class="headerlink" href="#safe-failure-with-rollback" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">class</span> <span class="nc">Transaction</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="sd">"""Context manager for safe operations with rollback."""</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="sd">"""Context manager for safe operations with rollback."""</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">operations</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">committed</span> <span class="o">=</span> <span class="kc">False</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">committed</span> <span class="o">=</span> <span class="kc">False</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="k">def</span> <span class="nf">add_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">rollback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">        </span><span class="sd">"""Add operation with rollback function."""</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">rollback</span><span class="p">))</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="k">def</span> <span class="nf">add_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">rollback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="sd">"""Add operation with rollback function."""</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">rollback</span><span class="p">))</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="sd">"""Execute all operations."""</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>        <span class="n">executed</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>            <span class="k">for</span> <span class="n">op</span><span class="p">,</span> <span class="n">rollback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>                <span class="n">op</span><span class="p">()</span>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>                <span class="n">executed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">rollback</span><span class="p">))</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>            <span class="c1"># Rollback in reverse order</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>            <span class="k">for</span> <span class="n">op</span><span class="p">,</span> <span class="n">rollback</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">executed</span><span class="p">):</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>                <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>                    <span class="n">rollback</span><span class="p">()</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">rb_error</span><span class="p">:</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rollback error: </span><span class="si">{</span><span class="n">rb_error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>            <span class="k">raise</span> <span class="n">e</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="sd">"""Execute all operations."""</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="n">executed</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> <span class="k">for</span> <span class="n">op</span><span class="p">,</span> <span class="n">rollback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operations</span><span class="p">:</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> <span class="n">op</span><span class="p">()</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> <span class="n">executed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">rollback</span><span class="p">))</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> <span class="c1"># Rollback in reverse order</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> <span class="k">for</span> <span class="n">op</span><span class="p">,</span> <span class="n">rollback</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">executed</span><span class="p">):</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> <span class="n">rollback</span><span class="p">()</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">rb_error</span><span class="p">:</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rollback error: </span><span class="si">{</span><span class="n">rb_error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> <span class="k">raise</span> <span class="n">e</span>
 <a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a>        <span class="k">return</span> <span class="bp">self</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a> <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a> <span class="k">return</span> <span class="bp">self</span>
 <a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a>
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a>    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>        <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">committed</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a> <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a> <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a> <span class="bp">self</span><span class="o">.</span><span class="n">committed</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a> <span class="k">return</span> <span class="kc">False</span>
 <a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>
 <a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="k">with</span> <span class="n">Transaction</span><span class="p">()</span> <span class="k">as</span> <span class="n">txn</span><span class="p">:</span>
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>    <span class="n">txn</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span>
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a>        <span class="n">op</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">create_user</span><span class="p">(</span><span class="s2">"alice"</span><span class="p">),</span>
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a>        <span class="n">rollback</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">delete_user</span><span class="p">(</span><span class="s2">"alice"</span><span class="p">)</span>
-<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a>    <span class="p">)</span>
-<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a>    <span class="n">txn</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span>
-<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a>        <span class="n">op</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">send_email</span><span class="p">(</span><span class="s2">"alice@example.com"</span><span class="p">),</span>
-<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a>        <span class="n">rollback</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>  <span class="c1"># Email can't be unsent</span>
-<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a>    <span class="p">)</span>
-<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a>    <span class="n">txn</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a> <span class="n">txn</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a> <span class="n">op</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">create_user</span><span class="p">(</span><span class="s2">"alice"</span><span class="p">),</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a> <span class="n">rollback</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">delete_user</span><span class="p">(</span><span class="s2">"alice"</span><span class="p">)</span>
+<a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a> <span class="p">)</span>
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a> <span class="n">txn</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span>
+<a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a> <span class="n">op</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">send_email</span><span class="p">(</span><span class="s2">"alice@example.com"</span><span class="p">),</span>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a> <span class="n">rollback</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span> <span class="c1"># Email can't be unsent</span>
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a> <span class="p">)</span>
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a> <span class="n">txn</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h2>
 <h3 id="example-1-secure-file-operations">Example 1: Secure File Operations<a class="headerlink" href="#example-1-secure-file-operations" title="Permanent link">¶</a></h3>
@@ -2750,33 +2748,33 @@
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="k">def</span> <span class="nf">safe_delete_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">confirm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="sd">"""Safely delete file with safeguards."""</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="c1"># Sanitize path</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="sd">"""Safely delete file with safeguards."""</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="c1"># Sanitize path</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="c1"># Bounds check: prevent deleting outside allowed directories</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>    <span class="n">allowed_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp"</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/var/data"</span><span class="p">)]</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">allowed</span><span class="p">)</span> <span class="k">for</span> <span class="n">allowed</span> <span class="ow">in</span> <span class="n">allowed_dirs</span><span class="p">):</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> not in allowed directories"</span><span class="p">)</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> <span class="c1"># Bounds check: prevent deleting outside allowed directories</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> <span class="n">allowed_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp"</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/var/data"</span><span class="p">)]</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">allowed</span><span class="p">)</span> <span class="k">for</span> <span class="n">allowed</span> <span class="ow">in</span> <span class="n">allowed_dirs</span><span class="p">):</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> not in allowed directories"</span><span class="p">)</span>
 <a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>    <span class="c1"># Confirmation</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="k">if</span> <span class="n">confirm</span><span class="p">:</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">confirm_action</span><span class="p">(</span><span class="s2">"delete_file"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)}):</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deletion cancelled"</span><span class="p">)</span>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>            <span class="k">return</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a> <span class="c1"># Confirmation</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a> <span class="k">if</span> <span class="n">confirm</span><span class="p">:</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">confirm_action</span><span class="p">(</span><span class="s2">"delete_file"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)}):</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Deletion cancelled"</span><span class="p">)</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a> <span class="k">return</span>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    <span class="c1"># Dry-run mode</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>    <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would delete: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>        <span class="k">return</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> <span class="c1"># Dry-run mode</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would delete: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a> <span class="k">return</span>
 <a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>    <span class="c1"># Execute with error handling</span>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Deleted: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Failed to delete </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>        <span class="k">raise</span>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> <span class="c1"># Execute with error handling</span>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Deleted: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Failed to delete </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a> <span class="k">raise</span>
 </code></pre></div>
 <h3 id="example-2-secure-api-endpoint">Example 2: Secure API Endpoint<a class="headerlink" href="#example-2-secure-api-endpoint" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Header</span>
@@ -2785,65 +2783,65 @@
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="k">class</span> <span class="nc">SecureRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">'user_id'</span><span class="p">)</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    <span class="k">def</span> <span class="nf">validate_user_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">        </span><span class="sd">"""Sanitize user ID."""</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">isalnum</span><span class="p">():</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'user_id must be alphanumeric'</span><span class="p">)</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'user_id too long'</span><span class="p">)</span>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>        <span class="k">return</span> <span class="n">v</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> <span class="nd">@validator</span><span class="p">(</span><span class="s1">'user_id'</span><span class="p">)</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="k">def</span> <span class="nf">validate_user_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w"> </span><span class="sd">"""Sanitize user ID."""</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">isalnum</span><span class="p">():</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'user_id must be alphanumeric'</span><span class="p">)</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'user_id too long'</span><span class="p">)</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a> <span class="k">return</span> <span class="n">v</span>
 <a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">'action'</span><span class="p">)</span>
-<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>    <span class="k">def</span> <span class="nf">validate_action</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="w">        </span><span class="sd">"""Validate action against whitelist."""</span>
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a>        <span class="n">allowed</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'read'</span><span class="p">,</span> <span class="s1">'write'</span><span class="p">,</span> <span class="s1">'update'</span><span class="p">,</span> <span class="s1">'delete'</span><span class="p">]</span>
-<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>        <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
-<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'action must be one of </span><span class="si">{</span><span class="n">allowed</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>        <span class="k">return</span> <span class="n">v</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a> <span class="nd">@validator</span><span class="p">(</span><span class="s1">'action'</span><span class="p">)</span>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a> <span class="k">def</span> <span class="nf">validate_action</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="w"> </span><span class="sd">"""Validate action against whitelist."""</span>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a> <span class="n">allowed</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'read'</span><span class="p">,</span> <span class="s1">'write'</span><span class="p">,</span> <span class="s1">'update'</span><span class="p">,</span> <span class="s1">'delete'</span><span class="p">]</span>
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a> <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'action must be one of </span><span class="si">{</span><span class="n">allowed</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a> <span class="k">return</span> <span class="n">v</span>
 <a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>
 <a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/api/execute"</span><span class="p">)</span>
 <a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_action</span><span class="p">(</span>
-<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>    <span class="n">request</span><span class="p">:</span> <span class="n">SecureRequest</span><span class="p">,</span>
-<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>    <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">"X-API-Key"</span><span class="p">),</span>
-<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a> <span class="n">request</span><span class="p">:</span> <span class="n">SecureRequest</span><span class="p">,</span>
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a> <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Header</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">"X-API-Key"</span><span class="p">),</span>
+<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a><span class="p">):</span>
-<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a><span class="w">    </span><span class="sd">"""Execute action with security safeguards."""</span>
-<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>    <span class="c1"># Validate API key</span>
-<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_api_key</span><span class="p">(</span><span class="n">api_key</span><span class="p">):</span>
-<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a>        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"Invalid API key"</span><span class="p">)</span>
+<a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a><span class="w"> </span><span class="sd">"""Execute action with security safeguards."""</span>
+<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a> <span class="c1"># Validate API key</span>
+<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_api_key</span><span class="p">(</span><span class="n">api_key</span><span class="p">):</span>
+<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a> <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"Invalid API key"</span><span class="p">)</span>
 <a href="#__codelineno-7-38" id="__codelineno-7-38" name="__codelineno-7-38"></a>
-<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a>    <span class="c1"># Audit log</span>
-<a href="#__codelineno-7-40" id="__codelineno-7-40" name="__codelineno-7-40"></a>    <span class="n">log_security_event</span><span class="p">(</span>
-<a href="#__codelineno-7-41" id="__codelineno-7-41" name="__codelineno-7-41"></a>        <span class="s2">"api_request"</span><span class="p">,</span>
-<a href="#__codelineno-7-42" id="__codelineno-7-42" name="__codelineno-7-42"></a>        <span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>
-<a href="#__codelineno-7-43" id="__codelineno-7-43" name="__codelineno-7-43"></a>        <span class="n">action</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
-<a href="#__codelineno-7-44" id="__codelineno-7-44" name="__codelineno-7-44"></a>        <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span>
-<a href="#__codelineno-7-45" id="__codelineno-7-45" name="__codelineno-7-45"></a>    <span class="p">)</span>
+<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a> <span class="c1"># Audit log</span>
+<a href="#__codelineno-7-40" id="__codelineno-7-40" name="__codelineno-7-40"></a> <span class="n">log_security_event</span><span class="p">(</span>
+<a href="#__codelineno-7-41" id="__codelineno-7-41" name="__codelineno-7-41"></a> <span class="s2">"api_request"</span><span class="p">,</span>
+<a href="#__codelineno-7-42" id="__codelineno-7-42" name="__codelineno-7-42"></a> <span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>
+<a href="#__codelineno-7-43" id="__codelineno-7-43" name="__codelineno-7-43"></a> <span class="n">action</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+<a href="#__codelineno-7-44" id="__codelineno-7-44" name="__codelineno-7-44"></a> <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span>
+<a href="#__codelineno-7-45" id="__codelineno-7-45" name="__codelineno-7-45"></a> <span class="p">)</span>
 <a href="#__codelineno-7-46" id="__codelineno-7-46" name="__codelineno-7-46"></a>
-<a href="#__codelineno-7-47" id="__codelineno-7-47" name="__codelineno-7-47"></a>    <span class="c1"># Dry-run mode</span>
-<a href="#__codelineno-7-48" id="__codelineno-7-48" name="__codelineno-7-48"></a>    <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-7-49" id="__codelineno-7-49" name="__codelineno-7-49"></a>        <span class="k">return</span> <span class="p">{</span>
-<a href="#__codelineno-7-50" id="__codelineno-7-50" name="__codelineno-7-50"></a>            <span class="s2">"executed"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-7-51" id="__codelineno-7-51" name="__codelineno-7-51"></a>            <span class="s2">"would_perform"</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
-<a href="#__codelineno-7-52" id="__codelineno-7-52" name="__codelineno-7-52"></a>            <span class="s2">"parameters"</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span>
-<a href="#__codelineno-7-53" id="__codelineno-7-53" name="__codelineno-7-53"></a>        <span class="p">}</span>
+<a href="#__codelineno-7-47" id="__codelineno-7-47" name="__codelineno-7-47"></a> <span class="c1"># Dry-run mode</span>
+<a href="#__codelineno-7-48" id="__codelineno-7-48" name="__codelineno-7-48"></a> <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-7-49" id="__codelineno-7-49" name="__codelineno-7-49"></a> <span class="k">return</span> <span class="p">{</span>
+<a href="#__codelineno-7-50" id="__codelineno-7-50" name="__codelineno-7-50"></a> <span class="s2">"executed"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-7-51" id="__codelineno-7-51" name="__codelineno-7-51"></a> <span class="s2">"would_perform"</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+<a href="#__codelineno-7-52" id="__codelineno-7-52" name="__codelineno-7-52"></a> <span class="s2">"parameters"</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span>
+<a href="#__codelineno-7-53" id="__codelineno-7-53" name="__codelineno-7-53"></a> <span class="p">}</span>
 <a href="#__codelineno-7-54" id="__codelineno-7-54" name="__codelineno-7-54"></a>
-<a href="#__codelineno-7-55" id="__codelineno-7-55" name="__codelineno-7-55"></a>    <span class="c1"># Execute with safeguards</span>
-<a href="#__codelineno-7-56" id="__codelineno-7-56" name="__codelineno-7-56"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-7-57" id="__codelineno-7-57" name="__codelineno-7-57"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">execute_with_timeout</span><span class="p">(</span>
-<a href="#__codelineno-7-58" id="__codelineno-7-58" name="__codelineno-7-58"></a>            <span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
-<a href="#__codelineno-7-59" id="__codelineno-7-59" name="__codelineno-7-59"></a>            <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
-<a href="#__codelineno-7-60" id="__codelineno-7-60" name="__codelineno-7-60"></a>            <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">30</span>
-<a href="#__codelineno-7-61" id="__codelineno-7-61" name="__codelineno-7-61"></a>        <span class="p">)</span>
-<a href="#__codelineno-7-62" id="__codelineno-7-62" name="__codelineno-7-62"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"success"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
-<a href="#__codelineno-7-63" id="__codelineno-7-63" name="__codelineno-7-63"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-7-64" id="__codelineno-7-64" name="__codelineno-7-64"></a>        <span class="n">log_security_event</span><span class="p">(</span><span class="s2">"api_error"</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-<a href="#__codelineno-7-65" id="__codelineno-7-65" name="__codelineno-7-65"></a>        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+<a href="#__codelineno-7-55" id="__codelineno-7-55" name="__codelineno-7-55"></a> <span class="c1"># Execute with safeguards</span>
+<a href="#__codelineno-7-56" id="__codelineno-7-56" name="__codelineno-7-56"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-7-57" id="__codelineno-7-57" name="__codelineno-7-57"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">execute_with_timeout</span><span class="p">(</span>
+<a href="#__codelineno-7-58" id="__codelineno-7-58" name="__codelineno-7-58"></a> <span class="n">request</span><span class="o">.</span><span class="n">action</span><span class="p">,</span>
+<a href="#__codelineno-7-59" id="__codelineno-7-59" name="__codelineno-7-59"></a> <span class="n">request</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+<a href="#__codelineno-7-60" id="__codelineno-7-60" name="__codelineno-7-60"></a> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">30</span>
+<a href="#__codelineno-7-61" id="__codelineno-7-61" name="__codelineno-7-61"></a> <span class="p">)</span>
+<a href="#__codelineno-7-62" id="__codelineno-7-62" name="__codelineno-7-62"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"success"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+<a href="#__codelineno-7-63" id="__codelineno-7-63" name="__codelineno-7-63"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-7-64" id="__codelineno-7-64" name="__codelineno-7-64"></a> <span class="n">log_security_event</span><span class="p">(</span><span class="s2">"api_error"</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+<a href="#__codelineno-7-65" id="__codelineno-7-65" name="__codelineno-7-65"></a> <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 </code></pre></div>
 <h3 id="example-3-database-operations-with-safeguards">Example 3: Database Operations with Safeguards<a class="headerlink" href="#example-3-database-operations-with-safeguards" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">import</span> <span class="nn">sqlite3</span>
@@ -2851,44 +2849,44 @@
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="nd">@contextmanager</span>
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="k">def</span> <span class="nf">safe_db_transaction</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="sd">"""Database transaction with rollback on error."""</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="n">conn</span><span class="o">.</span><span class="n">isolation_level</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Auto-commit off</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="sd">"""Database transaction with rollback on error."""</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">conn</span><span class="o">.</span><span class="n">isolation_level</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Auto-commit off</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"BEGIN"</span><span class="p">)</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"BEGIN"</span><span class="p">)</span>
 <a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>        <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>            <span class="c1"># In dry-run, collect queries but don't commit</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>            <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>            <span class="n">original_execute</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="c1"># In dry-run, collect queries but don't commit</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> <span class="n">original_execute</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span>
 <a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>            <span class="k">def</span> <span class="nf">tracked_execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>                <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>                <span class="k">return</span> <span class="n">original_execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> <span class="k">def</span> <span class="nf">tracked_execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> <span class="k">return</span> <span class="n">original_execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a>
-<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span> <span class="o">=</span> <span class="n">tracked_execute</span>
+<a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span> <span class="o">=</span> <span class="n">tracked_execute</span>
 <a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a>
-<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a>        <span class="k">yield</span> <span class="n">cursor</span>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a> <span class="k">yield</span> <span class="n">cursor</span>
 <a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a>
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a>        <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a>            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"ROLLBACK"</span><span class="p">)</span>
-<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would execute </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span><span class="si">}</span><span class="s2"> queries"</span><span class="p">)</span>
-<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a>        <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a>            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"COMMIT"</span><span class="p">)</span>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a> <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"ROLLBACK"</span><span class="p">)</span>
+<a href="#__codelineno-8-29" id="__codelineno-8-29" name="__codelineno-8-29"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] Would execute </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span><span class="si">}</span><span class="s2"> queries"</span><span class="p">)</span>
+<a href="#__codelineno-8-30" id="__codelineno-8-30" name="__codelineno-8-30"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-8-31" id="__codelineno-8-31" name="__codelineno-8-31"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"COMMIT"</span><span class="p">)</span>
 <a href="#__codelineno-8-32" id="__codelineno-8-32" name="__codelineno-8-32"></a>
-<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"ROLLBACK"</span><span class="p">)</span>
-<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transaction rolled back: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a>        <span class="k">raise</span>
+<a href="#__codelineno-8-33" id="__codelineno-8-33" name="__codelineno-8-33"></a> <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-8-34" id="__codelineno-8-34" name="__codelineno-8-34"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"ROLLBACK"</span><span class="p">)</span>
+<a href="#__codelineno-8-35" id="__codelineno-8-35" name="__codelineno-8-35"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Transaction rolled back: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-8-36" id="__codelineno-8-36" name="__codelineno-8-36"></a> <span class="k">raise</span>
 <a href="#__codelineno-8-37" id="__codelineno-8-37" name="__codelineno-8-37"></a>
-<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a>    <span class="k">finally</span><span class="p">:</span>
-<a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a>        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<a href="#__codelineno-8-38" id="__codelineno-8-38" name="__codelineno-8-38"></a> <span class="k">finally</span><span class="p">:</span>
+<a href="#__codelineno-8-39" id="__codelineno-8-39" name="__codelineno-8-39"></a> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <a href="#__codelineno-8-40" id="__codelineno-8-40" name="__codelineno-8-40"></a>
 <a href="#__codelineno-8-41" id="__codelineno-8-41" name="__codelineno-8-41"></a><span class="c1"># Usage</span>
 <a href="#__codelineno-8-42" id="__codelineno-8-42" name="__codelineno-8-42"></a><span class="k">with</span> <span class="n">safe_db_transaction</span><span class="p">(</span><span class="s2">"data.db"</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a>    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"UPDATE users SET role = ? WHERE id = ?"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"admin"</span><span class="p">,</span> <span class="mi">123</span><span class="p">))</span>
+<a href="#__codelineno-8-43" id="__codelineno-8-43" name="__codelineno-8-43"></a> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"UPDATE users SET role = ? WHERE id = ?"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"admin"</span><span class="p">,</span> <span class="mi">123</span><span class="p">))</span>
 </code></pre></div>
 <h2 id="integration-with-audit-pipeline">Integration with Audit Pipeline<a class="headerlink" href="#integration-with-audit-pipeline" title="Permanent link">¶</a></h2>
 <h3 id="detection-command">Detection Command<a class="headerlink" href="#detection-command" title="Permanent link">¶</a></h3>
@@ -2903,10 +2901,10 @@
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1"># Run detector</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="n">file_index</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="s2">"files"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>        <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="s2">"src/services/api.py"</span><span class="p">},</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>        <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="s2">"src/utils/security.py"</span><span class="p">}</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    <span class="p">]</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="s2">"files"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="s2">"src/services/api.py"</span><span class="p">},</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="s2">"src/utils/security.py"</span><span class="p">}</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="p">]</span>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="p">}</span>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
 <a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="n">result</span> <span class="o">=</span> <span class="n">mcp_security_safeguards</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">file_index</span><span class="p">)</span>
@@ -2941,21 +2939,21 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">sys</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="k">def</span> <span class="nf">confirm_action</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">auto_yes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="k">if</span> <span class="n">auto_yes</span> <span class="ow">or</span> <span class="s2">"--yes"</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        <span class="k">return</span> <span class="kc">True</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    <span class="k">return</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Confirm </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">? (yes/no): "</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"yes"</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="k">if</span> <span class="n">auto_yes</span> <span class="ow">or</span> <span class="s2">"--yes"</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="k">return</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Confirm </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">? (yes/no): "</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"yes"</span>
 </code></pre></div></p>
 <h3 id="issue-dry-run-not-preventing-side-effects">Issue: Dry-Run Not Preventing Side Effects<a class="headerlink" href="#issue-dry-run-not-preventing-side-effects" title="Permanent link">¶</a></h3>
 <p><strong>Solution</strong>: Check dry-run flag at lowest level
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="k">class</span> <span class="nc">DBConnection</span><span class="p">:</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="n">dry_run</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="n">dry_run</span>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>            <span class="k">return</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>        <span class="c1"># Actually execute</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[DRY-RUN] </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="k">return</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="c1"># Actually execute</span>
 </code></pre></div></p>
 <h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h2>
 <ul>
@@ -2966,14 +2964,14 @@
 <h2 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">¶</a></h2>
 <h3 id="security-metrics">Security Metrics<a class="headerlink" href="#security-metrics" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">security_events</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>    <span class="s2">"sanitization_blocks"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="s2">"confirmation_denials"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="s2">"dry_run_executions"</span><span class="p">:</span> <span class="mi">0</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> <span class="s2">"sanitization_blocks"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="s2">"confirmation_denials"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="s2">"dry_run_executions"</span><span class="p">:</span> <span class="mi">0</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="p">}</span>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="k">def</span> <span class="nf">log_security_event</span><span class="p">(</span><span class="n">event_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">details</span><span class="p">):</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>    <span class="n">security_events</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">security_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event_type</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Security event: </span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">details</span><span class="p">)</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="n">security_events</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">security_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event_type</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Security event: </span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">details</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="related-capabilities">Related Capabilities<a class="headerlink" href="#related-capabilities" title="Permanent link">¶</a></h2>
 <ul>
@@ -2991,7 +2989,7 @@
 <li><strong>Audit Logging</strong>: Track all security events</li>
 </ol>
 <hr/>
-<p><strong>Last Updated</strong>: 2025-12-09<br/>
+<p><strong>Last Updated</strong>: 2025-12-09
 <strong>Capability ID</strong>: mcp-security-safeguards</p>
 </article>
 </div>
@@ -3022,6 +3020,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

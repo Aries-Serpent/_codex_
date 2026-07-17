@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/COMPONENT_DEPENDENCIES/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Component Dependencies - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2443,303 +2443,336 @@
 <h1 id="component-dependencies">Component Dependencies<a class="headerlink" href="#component-dependencies" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-01-20<br/>
-<strong>Version</strong>: v0.2.1<br/>
+<p><strong>Last Updated</strong>: 2026-01-20
+<strong>Version</strong>: v0.2.1
 <strong>Total Components</strong>: 57 modules across 5 layers</p>
 <hr/>
 <h2 id="dependency-graph-overview">Dependency Graph Overview<a class="headerlink" href="#dependency-graph-overview" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Component Dependencies&lt;br/&gt;Module Relationships'}, 'theme': 'base'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph L1["Layer 1: Interface"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        CLI["cli"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        API["api"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    end
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    subgraph L2["Layer 2: ML Platform"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        TRAIN["train"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        EVAL["eval"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        SERVE["serve"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    end
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    subgraph L3["Layer 3: Data Pipeline"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        INGEST["ingest"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        RAG["rag"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        TRANSFORM["transform"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    end
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    subgraph L4["Layer 4: Infrastructure"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        CONFIG["config"]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        DB["db"]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        CACHE["cache"]
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        MONITOR["monitor"]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        LOG["logging"]
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    end
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    subgraph L5["Layer 5: Integration"]
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        GH["github"]
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        ZD["zendesk"]
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        CLOUD["cloud"]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>        AUTH["auth"]
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    end
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    %% Interface depends on ML Platform
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    CLI --&gt; TRAIN
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    CLI --&gt; EVAL
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    CLI --&gt; SERVE
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    API --&gt; TRAIN
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    API --&gt; EVAL
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    API --&gt; SERVE
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph L1["Layer 1: Interface"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> CLI["cli"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> API["api"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> end
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> subgraph L2["Layer 2: ML Platform"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> TRAIN["train"]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> EVAL["eval"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> SERVE["serve"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> end
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> subgraph L3["Layer 3: Data Pipeline"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> INGEST["ingest"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> RAG["rag"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> TRANSFORM["transform"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> end
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> subgraph L4["Layer 4: Infrastructure"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> CONFIG["config"]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> DB["db"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> CACHE["cache"]
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> MONITOR["monitor"]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> LOG["logging"]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> end
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> subgraph L5["Layer 5: Integration"]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> GH["github"]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> ZD["zendesk"]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> CLOUD["cloud"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> AUTH["auth"]
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> end
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> %% Interface depends on ML Platform
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> CLI --&gt; TRAIN
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> CLI --&gt; EVAL
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> CLI --&gt; SERVE
 <a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    %% ML Platform depends on Data Pipeline
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    TRAIN --&gt; INGEST
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    TRAIN --&gt; RAG
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    TRAIN --&gt; TRANSFORM
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    EVAL --&gt; RAG
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    EVAL --&gt; TRANSFORM
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    SERVE --&gt; RAG
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    %% Data Pipeline depends on Infrastructure
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    INGEST --&gt; CONFIG
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    INGEST --&gt; DB
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>    INGEST --&gt; LOG
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    RAG --&gt; CONFIG
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    RAG --&gt; DB
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    RAG --&gt; CACHE
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>    RAG --&gt; LOG
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    TRANSFORM --&gt; CONFIG
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    TRANSFORM --&gt; LOG
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> API --&gt; TRAIN
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> API --&gt; EVAL
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> API --&gt; SERVE
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> %% ML Platform depends on Data Pipeline
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a> TRAIN --&gt; INGEST
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a> TRAIN --&gt; RAG
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a> TRAIN --&gt; TRANSFORM
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a> EVAL --&gt; RAG
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> EVAL --&gt; TRANSFORM
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a> SERVE --&gt; RAG
 <a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    %% ML Platform depends on Infrastructure
-<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    TRAIN --&gt; CONFIG
-<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>    TRAIN --&gt; DB
-<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>    TRAIN --&gt; CACHE
-<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>    TRAIN --&gt; MONITOR
-<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>    TRAIN --&gt; LOG
-<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>    EVAL --&gt; CONFIG
-<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>    EVAL --&gt; DB
-<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>    EVAL --&gt; MONITOR
-<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>    EVAL --&gt; LOG
-<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>    SERVE --&gt; CONFIG
-<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>    SERVE --&gt; CACHE
-<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>    SERVE --&gt; MONITOR
-<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>    SERVE --&gt; LOG
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a> %% Data Pipeline depends on Infrastructure
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a> INGEST --&gt; CONFIG
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a> INGEST --&gt; DB
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a> INGEST --&gt; LOG
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a> RAG --&gt; CONFIG
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a> RAG --&gt; DB
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a> RAG --&gt; CACHE
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a> RAG --&gt; LOG
 <a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>
-<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a>    %% Integration depends on everything
-<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>    GH -.audit.-&gt; MONITOR
-<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a>    ZD -.audit.-&gt; MONITOR
-<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a>    CLOUD -.backup.-&gt; DB
-<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a>    CLOUD -.backup.-&gt; CACHE
-<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a>    AUTH -.secures.-&gt; API
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a> TRANSFORM --&gt; CONFIG
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a> TRANSFORM --&gt; LOG
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a>
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a> %% ML Platform depends on Infrastructure
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a> TRAIN --&gt; CONFIG
 <a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a>
-<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a>    %% Infrastructure internal deps
-<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a>    LOG --&gt; DB
-<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a>    MONITOR --&gt; LOG
-<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a>    CACHE --&gt; CONFIG
-<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a>
-<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a>    %% Styling
-<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a>    style L1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a>    style L2 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a>    style L3 fill:#fef3c7,stroke:#d97706,stroke-width:2px
-<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a>    style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2px
-<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a>    style L5 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a> TRAIN --&gt; DB
+<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a>
+<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a> TRAIN --&gt; CACHE
+<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a>
+<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a> TRAIN --&gt; MONITOR
+<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a>
+<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a> TRAIN --&gt; LOG
+<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a>
+<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a> EVAL --&gt; CONFIG
+<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a>
+<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a> EVAL --&gt; DB
 <a href="#__codelineno-0-95" id="__codelineno-0-95" name="__codelineno-0-95"></a>
-<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a>    style CLI fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a>    style API fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-98" id="__codelineno-0-98" name="__codelineno-0-98"></a>    style TRAIN fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-99" id="__codelineno-0-99" name="__codelineno-0-99"></a>    style EVAL fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-100" id="__codelineno-0-100" name="__codelineno-0-100"></a>    style SERVE fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-101" id="__codelineno-0-101" name="__codelineno-0-101"></a>    style INGEST fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-102" id="__codelineno-0-102" name="__codelineno-0-102"></a>    style RAG fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-103" id="__codelineno-0-103" name="__codelineno-0-103"></a>    style TRANSFORM fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-104" id="__codelineno-0-104" name="__codelineno-0-104"></a>    style CONFIG fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-105" id="__codelineno-0-105" name="__codelineno-0-105"></a>    style DB fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-106" id="__codelineno-0-106" name="__codelineno-0-106"></a>    style CACHE fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-107" id="__codelineno-0-107" name="__codelineno-0-107"></a>    style MONITOR fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-108" id="__codelineno-0-108" name="__codelineno-0-108"></a>    style LOG fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-109" id="__codelineno-0-109" name="__codelineno-0-109"></a>    style GH fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-110" id="__codelineno-0-110" name="__codelineno-0-110"></a>    style ZD fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-111" id="__codelineno-0-111" name="__codelineno-0-111"></a>    style CLOUD fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-<a href="#__codelineno-0-112" id="__codelineno-0-112" name="__codelineno-0-112"></a>    style AUTH fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a> EVAL --&gt; MONITOR
+<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a>
+<a href="#__codelineno-0-98" id="__codelineno-0-98" name="__codelineno-0-98"></a> EVAL --&gt; LOG
+<a href="#__codelineno-0-99" id="__codelineno-0-99" name="__codelineno-0-99"></a>
+<a href="#__codelineno-0-100" id="__codelineno-0-100" name="__codelineno-0-100"></a> SERVE --&gt; CONFIG
+<a href="#__codelineno-0-101" id="__codelineno-0-101" name="__codelineno-0-101"></a>
+<a href="#__codelineno-0-102" id="__codelineno-0-102" name="__codelineno-0-102"></a> SERVE --&gt; CACHE
+<a href="#__codelineno-0-103" id="__codelineno-0-103" name="__codelineno-0-103"></a>
+<a href="#__codelineno-0-104" id="__codelineno-0-104" name="__codelineno-0-104"></a> SERVE --&gt; MONITOR
+<a href="#__codelineno-0-105" id="__codelineno-0-105" name="__codelineno-0-105"></a>
+<a href="#__codelineno-0-106" id="__codelineno-0-106" name="__codelineno-0-106"></a> SERVE --&gt; LOG
+<a href="#__codelineno-0-107" id="__codelineno-0-107" name="__codelineno-0-107"></a>
+<a href="#__codelineno-0-108" id="__codelineno-0-108" name="__codelineno-0-108"></a> %% Integration depends on everything
+<a href="#__codelineno-0-109" id="__codelineno-0-109" name="__codelineno-0-109"></a> GH -.audit.-&gt; MONITOR
+<a href="#__codelineno-0-110" id="__codelineno-0-110" name="__codelineno-0-110"></a> ZD -.audit.-&gt; MONITOR
+<a href="#__codelineno-0-111" id="__codelineno-0-111" name="__codelineno-0-111"></a> CLOUD -.backup.-&gt; DB
+<a href="#__codelineno-0-112" id="__codelineno-0-112" name="__codelineno-0-112"></a> CLOUD -.backup.-&gt; CACHE
+<a href="#__codelineno-0-113" id="__codelineno-0-113" name="__codelineno-0-113"></a> AUTH -.secures.-&gt; API
+<a href="#__codelineno-0-114" id="__codelineno-0-114" name="__codelineno-0-114"></a>
+<a href="#__codelineno-0-115" id="__codelineno-0-115" name="__codelineno-0-115"></a> %% Infrastructure internal deps
+<a href="#__codelineno-0-116" id="__codelineno-0-116" name="__codelineno-0-116"></a> LOG --&gt; DB
+<a href="#__codelineno-0-117" id="__codelineno-0-117" name="__codelineno-0-117"></a>
+<a href="#__codelineno-0-118" id="__codelineno-0-118" name="__codelineno-0-118"></a> MONITOR --&gt; LOG
+<a href="#__codelineno-0-119" id="__codelineno-0-119" name="__codelineno-0-119"></a>
+<a href="#__codelineno-0-120" id="__codelineno-0-120" name="__codelineno-0-120"></a> CACHE --&gt; CONFIG
+<a href="#__codelineno-0-121" id="__codelineno-0-121" name="__codelineno-0-121"></a>
+<a href="#__codelineno-0-122" id="__codelineno-0-122" name="__codelineno-0-122"></a> %% Styling
+<a href="#__codelineno-0-123" id="__codelineno-0-123" name="__codelineno-0-123"></a> style L1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+<a href="#__codelineno-0-124" id="__codelineno-0-124" name="__codelineno-0-124"></a> style L2 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+<a href="#__codelineno-0-125" id="__codelineno-0-125" name="__codelineno-0-125"></a> style L3 fill:#fef3c7,stroke:#d97706,stroke-width:2px
+<a href="#__codelineno-0-126" id="__codelineno-0-126" name="__codelineno-0-126"></a> style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2px
+<a href="#__codelineno-0-127" id="__codelineno-0-127" name="__codelineno-0-127"></a> style L5 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-128" id="__codelineno-0-128" name="__codelineno-0-128"></a>
+<a href="#__codelineno-0-129" id="__codelineno-0-129" name="__codelineno-0-129"></a> style CLI fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-130" id="__codelineno-0-130" name="__codelineno-0-130"></a> style API fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-131" id="__codelineno-0-131" name="__codelineno-0-131"></a> style TRAIN fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-132" id="__codelineno-0-132" name="__codelineno-0-132"></a> style EVAL fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-133" id="__codelineno-0-133" name="__codelineno-0-133"></a> style SERVE fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-134" id="__codelineno-0-134" name="__codelineno-0-134"></a> style INGEST fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-135" id="__codelineno-0-135" name="__codelineno-0-135"></a> style RAG fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-136" id="__codelineno-0-136" name="__codelineno-0-136"></a> style TRANSFORM fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-137" id="__codelineno-0-137" name="__codelineno-0-137"></a> style CONFIG fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-138" id="__codelineno-0-138" name="__codelineno-0-138"></a> style DB fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-139" id="__codelineno-0-139" name="__codelineno-0-139"></a> style CACHE fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-140" id="__codelineno-0-140" name="__codelineno-0-140"></a> style MONITOR fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-141" id="__codelineno-0-141" name="__codelineno-0-141"></a> style LOG fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-142" id="__codelineno-0-142" name="__codelineno-0-142"></a> style GH fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-143" id="__codelineno-0-143" name="__codelineno-0-143"></a> style ZD fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-144" id="__codelineno-0-144" name="__codelineno-0-144"></a> style CLOUD fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+<a href="#__codelineno-0-145" id="__codelineno-0-145" name="__codelineno-0-145"></a> style AUTH fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
 </code></pre></div>
 <hr/>
 <h2 id="dependency-analysis">Dependency Analysis<a class="headerlink" href="#dependency-analysis" title="Permanent link">¶</a></h2>
 <h3 id="core-dependencies-foundation">Core Dependencies (Foundation)<a class="headerlink" href="#core-dependencies-foundation" title="Permanent link">¶</a></h3>
 <p><strong>Layer 4 (Infrastructure)</strong> - No external dependencies
-- <code>config</code> ← Hydra, OmegaConf
-- <code>db</code> ← SQLite/PostgreSQL
-- <code>cache</code> ← Redis/Memcached
-- <code>monitor</code> ← Prometheus, Grafana
-- <code>logging</code> ← Python logging</p>
+- <code>config</code> Hydra, OmegaConf
+- <code>db</code> SQLite/PostgreSQL
+- <code>cache</code> Redis/Memcached
+- <code>monitor</code> Prometheus, Grafana
+- <code>logging</code> Python logging</p>
 <p><strong>Layer 3 (Data)</strong> - Depends on Layer 4
-- <code>ingest</code> → config, db, logging
-- <code>rag</code> → config, db, cache, logging
-- <code>transform</code> → config, logging</p>
+- <code>ingest</code> config, db, logging
+- <code>rag</code> config, db, cache, logging
+- <code>transform</code> config, logging</p>
 <p><strong>Layer 2 (ML)</strong> - Depends on Layer 3 &amp; 4
-- <code>train</code> → ingest, rag, transform, config, db, cache, monitor, logging
-- <code>eval</code> → rag, transform, config, db, monitor, logging
-- <code>serve</code> → rag, config, cache, monitor, logging</p>
+- <code>train</code> ingest, rag, transform, config, db, cache, monitor, logging
+- <code>eval</code> rag, transform, config, db, monitor, logging
+- <code>serve</code> rag, config, cache, monitor, logging</p>
 <p><strong>Layer 1 (Interface)</strong> - Depends on Layer 2
-- <code>cli</code> → train, eval, serve
-- <code>api</code> → train, eval, serve</p>
+- <code>cli</code> train, eval, serve
+- <code>api</code> train, eval, serve</p>
 <p><strong>Layer 5 (Integration)</strong> - Cross-cutting
-- <code>github</code> → monitor, any layer (async)
-- <code>zendesk</code> → monitor, logging (async)
-- <code>cloud</code> → db, cache (backup)
-- <code>auth</code> → api, config (security)</p>
+- <code>github</code> monitor, any layer (async)
+- <code>zendesk</code> monitor, logging (async)
+- <code>cloud</code> db, cache (backup)
+- <code>auth</code> api, config (security)</p>
 <hr/>
 <h2 id="module-inventory-by-layer">Module Inventory by Layer<a class="headerlink" href="#module-inventory-by-layer" title="Permanent link">¶</a></h2>
 <h3 id="layer-1-interface-2-modules">Layer 1: Interface (2 modules)<a class="headerlink" href="#layer-1-interface-2-modules" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>cli/              - Command-line interface
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>  ├── cli.py      - Main CLI dispatcher
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>  ├── commands/   - Command handlers
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>  └── config_cli/ - Config management
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>cli/ - Command-line interface
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> cli.py - Main CLI dispatcher
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> commands/ - Command handlers
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> config_cli/ - Config management
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>api/              - REST API
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>  ├── api.py      - FastAPI app
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>  ├── routes/     - Endpoint handlers
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>  └── schemas/    - Request/response models
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>api/ - REST API
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> api.py - FastAPI app
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> routes/ - Endpoint handlers
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> schemas/ - Request/response models
 </code></pre></div>
 <h3 id="layer-2-ml-platform-3-modules">Layer 2: ML Platform (3 modules)<a class="headerlink" href="#layer-2-ml-platform-3-modules" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>train/            - Training engine
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>  ├── trainer.py  - Main trainer
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>  ├── loop.py     - Training loop
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>  └── checkpoint/ - Model checkpointing
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>train/ - Training engine
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> trainer.py - Main trainer
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> loop.py - Training loop
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> checkpoint/ - Model checkpointing
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>eval/             - Evaluation engine
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>  ├── evaluator.py - Metrics computation
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>  └── metrics/    - Metric definitions
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>eval/ - Evaluation engine
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> evaluator.py - Metrics computation
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> metrics/ - Metric definitions
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>serve/            - Serving/inference
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>  ├── server.py   - Inference server
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>  ├── predict.py  - Prediction pipeline
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>  └── batching/   - Batch prediction
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>serve/ - Serving/inference
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> server.py - Inference server
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> predict.py - Prediction pipeline
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> batching/ - Batch prediction
 </code></pre></div>
 <h3 id="layer-3-data-pipeline-3-modules">Layer 3: Data Pipeline (3 modules)<a class="headerlink" href="#layer-3-data-pipeline-3-modules" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>ingest/           - Code ingestion
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>  ├── parser.py   - File parsing
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>  ├── ast_gen.py  - AST generation
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>  └── tokenizer/  - Tokenization
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>ingest/ - Code ingestion
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> parser.py - File parsing
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> ast_gen.py - AST generation
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> tokenizer/ - Tokenization
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>rag/              - RAG system
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>  ├── indexer.py  - Vector indexing
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>  ├── retriever.py - Semantic search
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>  └── ranker.py   - Result ranking
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>rag/ - RAG system
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> indexer.py - Vector indexing
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> retriever.py - Semantic search
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> ranker.py - Result ranking
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>transform/        - Data transformation
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>  ├── preprocessor.py - Data prep
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>  ├── formatter.py    - Format conversion
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>  └── extractor.py    - Feature extraction
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>transform/ - Data transformation
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> preprocessor.py - Data prep
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> formatter.py - Format conversion
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> extractor.py - Feature extraction
 </code></pre></div>
 <h3 id="layer-4-infrastructure-4-modules">Layer 4: Infrastructure (4 modules)<a class="headerlink" href="#layer-4-infrastructure-4-modules" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>config/           - Configuration
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>  ├── loader.py   - Hydra loading
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>  ├── validator.py - Schema validation
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>  └── secrets.py  - Secret management
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>config/ - Configuration
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> loader.py - Hydra loading
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> validator.py - Schema validation
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> secrets.py - Secret management
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>db/               - Database layer
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>  ├── session.py  - SQLite/PostgreSQL
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>  ├── models.py   - ORM models
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>  └── migrations/ - Database migrations
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>db/ - Database layer
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> session.py - SQLite/PostgreSQL
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> models.py - ORM models
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> migrations/ - Database migrations
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>cache/            - Caching layer
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>  ├── redis.py    - Redis client
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>  ├── memcached.py- Memcached client
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>  └── local.py    - Local cache
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>cache/ - Caching layer
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> redis.py - Redis client
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> memcached.py- Memcached client
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> local.py - Local cache
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>monitor/          - Monitoring
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>  ├── metrics.py  - Metrics collection
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>  ├── health.py   - Health checks
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>  └── alerts.py   - Alert engine
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>monitor/ - Monitoring
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> metrics.py - Metrics collection
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> health.py - Health checks
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> alerts.py - Alert engine
 <a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>logging/          - Structured logging
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>  ├── logger.py   - Log setup
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>  ├── formatters/ - Log formatting
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>  └── handlers/   - Log handlers
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>logging/ - Structured logging
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> logger.py - Log setup
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> formatters/ - Log formatting
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> handlers/ - Log handlers
 </code></pre></div>
 <h3 id="layer-5-integration-4-modules">Layer 5: Integration (4 modules)<a class="headerlink" href="#layer-5-integration-4-modules" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>github/           - GitHub integration
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>  ├── client.py   - GitHub API wrapper
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>  ├── pr.py       - PR operations
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>  └── workflows/  - Workflow triggers
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>github/ - GitHub integration
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> client.py - GitHub API wrapper
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> pr.py - PR operations
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> workflows/ - Workflow triggers
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>zendesk/          - Zendesk integration
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>  ├── client.py   - Zendesk API wrapper
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>  ├── tickets.py  - Ticket operations
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>  └── sync.py     - CRM synchronization
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>zendesk/ - Zendesk integration
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> client.py - Zendesk API wrapper
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> tickets.py - Ticket operations
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> sync.py - CRM synchronization
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>cloud/            - Cloud storage
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>  ├── s3.py       - AWS S3 integration
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>  ├── gcs.py      - Google Cloud
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>  └── azure.py    - Azure integration
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>cloud/ - Cloud storage
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> s3.py - AWS S3 integration
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> gcs.py - Google Cloud
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> azure.py - Azure integration
 <a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>auth/             - Authentication
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>  ├── oauth.py    - OAuth2/GitHub
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>  ├── jwt.py      - JWT tokens
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>  └── rbac.py     - Role-based access
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>auth/ - Authentication
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> oauth.py - OAuth2/GitHub
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> jwt.py - JWT tokens
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> rbac.py - Role-based access
 </code></pre></div>
 <hr/>
 <h2 id="dependency-patterns">Dependency Patterns<a class="headerlink" href="#dependency-patterns" title="Permanent link">¶</a></h2>
 <h3 id="pattern-1-config-injection">Pattern 1: Config Injection<a class="headerlink" href="#pattern-1-config-injection" title="Permanent link">¶</a></h3>
 <p>All modules depend on <code>config</code> for settings:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Any Module
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>  ├── Get config from config module
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>  ├── Validate schema
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>  ├── Apply defaults
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>  └── Use configuration
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> Get config from config module
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> Validate schema
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> Apply defaults
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> Use configuration
 </code></pre></div></p>
 <h3 id="pattern-2-logging-throughout">Pattern 2: Logging Throughout<a class="headerlink" href="#pattern-2-logging-throughout" title="Permanent link">¶</a></h3>
 <p>All modules use <code>logging</code> for observability:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Any Module
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>  ├── Create logger instance
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>  ├── Log at key decision points
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>  ├── Include context
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>  └── Send to configured handlers
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> Create logger instance
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> Log at key decision points
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> Include context
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> Send to configured handlers
 </code></pre></div></p>
 <h3 id="pattern-3-monitoring-integration">Pattern 3: Monitoring Integration<a class="headerlink" href="#pattern-3-monitoring-integration" title="Permanent link">¶</a></h3>
 <p>ML Platform modules report metrics:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>train/eval/serve
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>  ├── During execution
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>  ├── Emit metrics to monitor
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>  ├── Track timing
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>  └── Report errors
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> During execution
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> Emit metrics to monitor
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> Track timing
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> Report errors
 </code></pre></div></p>
 <h3 id="pattern-4-database-persistence">Pattern 4: Database Persistence<a class="headerlink" href="#pattern-4-database-persistence" title="Permanent link">¶</a></h3>
 <p>Data operations use <code>db</code> for storage:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>ingest/rag/transform
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  ├── Prepare data
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  ├── Store in database
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  ├── Query when needed
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>  └── Maintain indexes
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> Prepare data
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Store in database
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> Query when needed
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> Maintain indexes
 </code></pre></div></p>
 <h3 id="pattern-5-cache-acceleration">Pattern 5: Cache Acceleration<a class="headerlink" href="#pattern-5-cache-acceleration" title="Permanent link">¶</a></h3>
 <p>High-frequency operations use <code>cache</code>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>rag (retrieval)
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>  ├── Check cache for similar queries
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>  ├── Return cached result if hit
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>  ├── Fall back to DB/compute if miss
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>  └── Cache result for future use
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> Check cache for similar queries
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> Return cached result if hit
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> Fall back to DB/compute if miss
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> Cache result for future use
 </code></pre></div></p>
 <hr/>
 <h2 id="critical-path-analysis">Critical Path Analysis<a class="headerlink" href="#critical-path-analysis" title="Permanent link">¶</a></h2>
 <p><strong>Longest dependency chain</strong> (for any request):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>CLI Command
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>  → train (L2)
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    → ingest (L3)
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>      → config (L4)  [critical path]
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>      → db (L4)
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>      → logging (L4) ← all serialize to DB
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> train (L2)
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> ingest (L3)
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> config (L4) [critical path]
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> db (L4)
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> logging (L4) all serialize to DB
 </code></pre></div>
 <p><strong>Slowest I/O dependencies</strong>:
-1. <code>ingest</code> → <code>db</code> (file I/O + SQL queries)
-2. <code>rag</code> → <code>db</code> (large vector searches)
-3. <code>serve</code> → <code>cache</code> (fallback if cache miss)
-4. <code>monitor</code> → <code>db</code> (append-only logs)</p>
+1. <code>ingest</code> <code>db</code> (file I/O + SQL queries)
+2. <code>rag</code> <code>db</code> (large vector searches)
+3. <code>serve</code> <code>cache</code> (fallback if cache miss)
+4. <code>monitor</code> <code>db</code> (append-only logs)</p>
 <hr/>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
 <ul>
-<li>👉 See <a href="../5_LAYER_ARCHITECTURE/">5-Layer Architecture</a> for layer structure</li>
-<li>👉 See module-specific docs for detailed component architectures</li>
-<li>👉 Review source code for performance optimization patterns</li>
+<li>See <a href="../5_LAYER_ARCHITECTURE/">5-Layer Architecture</a> for layer structure</li>
+<li>See module-specific docs for detailed component architectures</li>
+<li>Review source code for performance optimization patterns</li>
 </ul>
 <hr/>
 <p><strong>Related Documentation</strong>:
@@ -2774,6 +2807,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

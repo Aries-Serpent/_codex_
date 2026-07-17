@@ -1,6 +1,6 @@
 # PR #4366 — What's Next (Comprehensive)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test
 **Branch:** `copilot/fix-import-path-inconsistency`

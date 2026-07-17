@@ -192,7 +192,7 @@ IF total demand > 100%:
 | **T+1 week** | 2026-07-31T20:10Z | Planning complete | Feature set finalized | Read replicas deployed | SIEM deployment started | `.codex/PHASE_14_CHECKPOINT_1_2026_07_31.md` |
 | **T+2 weeks** | 2026-08-07T20:10Z | Canary live | 10% canary rollout | Zero-trust enforcement | MFA enforcement | `.codex/PHASE_14_CHECKPOINT_2_2026_08_07.md` |
 | **T+3 weeks** | 2026-08-14T20:10Z | A/B testing | A/B testing live | Cache optimization | Secrets rotation | `.codex/PHASE_14_CHECKPOINT_3_2026_08_14.md` |
-| **T+6 weeks** | 2026-08-25T20:10Z | WS1 complete | **v0.2.1 GA (100%)** | Replica read-only | — | `.codex/PHASE_14_CHECKPOINT_4_2026_08_25.md` |
+| **T+6 weeks** | 2026-08-25T20:10Z | WS1 complete | **v0.2.0 GA (100%)** | Replica read-only | — | `.codex/PHASE_14_CHECKPOINT_4_2026_08_25.md` |
 | **T+8 weeks** | 2026-09-18T20:10Z | All complete | — | **Infrastructure GA** | **Security GA** | `.codex/PHASE_14_FINAL_REPORT_2026_09_18.md` |
 
 ### Checkpoint Data Collection Template
@@ -255,7 +255,7 @@ next_checkpoint: "2026-08-07T20:10Z"
 **Option A: Feature Expansion (v0.2.2+ continuous rollout)**
 - Continuous feature deployment with canary + A/B testing framework
 - Estimated duration: 12 weeks (Q3-Q4 2026)
-- Dependencies: WS1 v0.2.1 GA complete, infrastructure stable
+- Dependencies: WS1 v0.2.0 GA complete, infrastructure stable
 - Complexity: MEDIUM
 - Value: HIGH (revenue impact from new features)
 
@@ -271,7 +271,7 @@ next_checkpoint: "2026-08-07T20:10Z"
 - Real-time user behavior analytics
 - Predictive resource capacity planning
 - Estimated duration: 10 weeks (Q4 2026)
-- Dependencies: v0.2.1 GA with telemetry, infrastructure stable
+- Dependencies: v0.2.0 GA with telemetry, infrastructure stable
 - Complexity: MEDIUM
 - Value: MEDIUM (operational intelligence)
 
@@ -294,7 +294,7 @@ next_checkpoint: "2026-08-07T20:10Z"
 **Authority:** @mbaetiong D-tier autonomous
 **Activation Date:** [TBD based on Phase 14 completion]
 **Duration:** [8-20 weeks depending on scope option]
-**Production Status:** v0.2.1 GA (Phase 14 complete)
+**Production Status:** v0.2.0 GA (Phase 14 complete)
 
 ## Selected Scope
 [ ] Option A: Feature Expansion
@@ -304,7 +304,7 @@ next_checkpoint: "2026-08-07T20:10Z"
 [ ] Hybrid (specify combination): ___________
 
 ## Key Dependencies from Phase 14
-- [ ] v0.2.1 GA deployment complete (WS1)
+- [ ] v0.2.0 GA deployment complete (WS1)
 - [ ] Infrastructure GA with multi-region support (WS2)
 - [ ] Security MFA + WAF + SIEM operational (WS3)
 - [ ] 99.9%+ uptime maintained throughout Phase 14

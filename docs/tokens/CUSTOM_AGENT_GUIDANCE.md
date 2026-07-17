@@ -1,6 +1,6 @@
 # CUSTOM_AGENT_TOKEN_GUIDANCE.md
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Token Requirements and Implementation Guide for Custom Agents**
 

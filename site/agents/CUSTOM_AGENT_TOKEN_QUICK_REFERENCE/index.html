@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agents/CUSTOM_AGENT_TOKEN_QUICK_REFERENCE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2330,11 +2330,11 @@
 <a class="md-nav__link" href="#common-errors-solutions">
 <span class="md-ellipsis">
       
-        🐛 Common Errors &amp; Solutions
+        Common Errors &amp; Solutions
       
     </span>
 </a>
-<nav aria-label="🐛 Common Errors &amp; Solutions" class="md-nav">
+<nav aria-label="Common Errors &amp; Solutions" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#error-1-403-forbidden-insufficient-scope">
@@ -2522,7 +2522,7 @@
 <a class="md-nav__link" href="#support">
 <span class="md-ellipsis">
       
-        📞 Support
+        Support
       
     </span>
 </a>
@@ -2669,15 +2669,15 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">scripts.ci._token_resolver</span> <span class="kn">import</span> <span class="n">get_token</span><span class="p">,</span> <span class="n">validate_scope</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">class</span> <span class="nc">EmergencyAgent</span><span class="p">:</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        <span class="c1"># MUST use Level 3 - NO FALLBACK</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> <span class="c1"># MUST use Level 3 - NO FALLBACK</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY unavailable - agent cannot operate"</span><span class="p">)</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Emergency operations require Level 3 token"</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY unavailable - agent cannot operate"</span><span class="p">)</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Emergency operations require Level 3 token"</span><span class="p">)</span>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'workflow'</span><span class="p">,</span> <span class="s1">'actions:write'</span><span class="p">])</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'workflow'</span><span class="p">,</span> <span class="s1">'actions:write'</span><span class="p">])</span>
 </code></pre></div>
 <p><strong>Characteristics</strong>:
 - No fallback to lower token levels
@@ -2691,22 +2691,22 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">scripts.ci._token_resolver</span> <span class="kn">import</span> <span class="n">get_token</span><span class="p">,</span> <span class="n">validate_scope</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">class</span> <span class="nc">HealerAgent</span><span class="p">:</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        <span class="c1"># Try Level 2 first</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="c1"># Try Level 2 first</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>            <span class="c1"># Fallback to Level 1 if elevated unavailable</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Level 2 token unavailable, using standard token"</span><span class="p">)</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="c1"># Fallback to Level 1 if elevated unavailable</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Level 2 token unavailable, using standard token"</span><span class="p">)</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>        <span class="c1"># Validate available scopes</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        <span class="n">required_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'contents:write'</span><span class="p">]</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>            <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">required_scopes</span><span class="p">)</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="k">except</span> <span class="n">InsufficientScopeError</span><span class="p">:</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Token has insufficient scopes"</span><span class="p">)</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>            <span class="k">raise</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> <span class="c1"># Validate available scopes</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="n">required_scopes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'contents:write'</span><span class="p">]</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">required_scopes</span><span class="p">)</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="k">except</span> <span class="n">InsufficientScopeError</span><span class="p">:</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Token has insufficient scopes"</span><span class="p">)</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> <span class="k">raise</span>
 </code></pre></div>
 <p><strong>Characteristics</strong>:
 - Attempts Level 2 (CODEX_BACKUP_TOKEN) first
@@ -2720,34 +2720,34 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">scripts.ci._token_resolver</span> <span class="kn">import</span> <span class="n">get_token</span><span class="p">,</span> <span class="n">validate_scope</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">class</span> <span class="nc">SecurityScannerAgent</span><span class="p">:</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Security scanning requires elevated token"</span><span class="p">)</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Security scanning requires elevated token"</span><span class="p">)</span>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="c1"># Validate multiple scope categories</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="n">required_scopes</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>            <span class="s1">'repo'</span><span class="p">,</span>                <span class="c1"># Repository access</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>            <span class="s1">'security_events'</span><span class="p">,</span>     <span class="c1"># Security scanning</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>            <span class="s1">'contents:read'</span>        <span class="c1"># Read source files</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>        <span class="p">]</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="c1"># Validate multiple scope categories</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="n">required_scopes</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="s1">'repo'</span><span class="p">,</span> <span class="c1"># Repository access</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="s1">'security_events'</span><span class="p">,</span> <span class="c1"># Security scanning</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="s1">'contents:read'</span> <span class="c1"># Read source files</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> <span class="p">]</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>        <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">required_scopes</span><span class="p">)</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> <span class="n">validate_scope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">required_scopes</span><span class="p">)</span>
 <a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    <span class="k">def</span> <span class="nf">scan_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">        </span><span class="sd">"""Execute comprehensive security scan."""</span>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>            <span class="c1"># Multiple API calls with different scopes</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>            <span class="n">alerts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_codeql_alerts</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>            <span class="n">secrets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_secret_alerts</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_results</span><span class="p">(</span><span class="n">alerts</span><span class="p">,</span> <span class="n">secrets</span><span class="p">)</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span><span class="p">:</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Insufficient scope for scanning"</span><span class="p">)</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>            <span class="k">raise</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> <span class="k">def</span> <span class="nf">scan_repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="sd">"""Execute comprehensive security scan."""</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> <span class="c1"># Multiple API calls with different scopes</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> <span class="n">alerts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_codeql_alerts</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> <span class="n">secrets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_secret_alerts</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate_results</span><span class="p">(</span><span class="n">alerts</span><span class="p">,</span> <span class="n">secrets</span><span class="p">)</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">403</span><span class="p">:</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Insufficient scope for scanning"</span><span class="p">)</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> <span class="k">raise</span>
 </code></pre></div>
 <p><strong>Characteristics</strong>:
 - Validates multiple scopes upfront
@@ -2762,43 +2762,43 @@
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">scripts.ci._hidden_scripts</span> <span class="kn">import</span> <span class="n">execute_hidden_script</span><span class="p">,</span> <span class="n">retrieve_hidden_script</span>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">class</span> <span class="nc">SecretDetectionAgent</span><span class="p">:</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Secret detection requires elevated token"</span><span class="p">)</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Secret detection requires elevated token"</span><span class="p">)</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="k">def</span> <span class="nf">detect_and_remediate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">        </span><span class="sd">"""Execute stored detection pattern."""</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> <span class="k">def</span> <span class="nf">detect_and_remediate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w"> </span><span class="sd">"""Execute stored detection pattern."""</span>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="c1"># Retrieve pattern from secure storage</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>        <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>            <span class="n">script_id</span><span class="o">=</span><span class="s2">"secret_detection_v2"</span><span class="p">,</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>            <span class="n">version</span><span class="o">=</span><span class="s2">"latest"</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="p">)</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="c1"># Retrieve pattern from secure storage</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="n">script_id</span><span class="o">=</span><span class="s2">"secret_detection_v2"</span><span class="p">,</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"latest"</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="p">)</span>
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>        <span class="c1"># Execute in sandbox</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">execute_hidden_script</span><span class="p">(</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>            <span class="n">script_id</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>            <span class="n">environment</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>                <span class="s2">"GITHUB_TOKEN"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>                <span class="s2">"REPO"</span><span class="p">:</span> <span class="n">repo</span><span class="p">,</span>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>                <span class="s2">"DETECT_MODE"</span><span class="p">:</span> <span class="s2">"aggressive"</span>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>            <span class="p">},</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>            <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">120000</span><span class="p">,</span>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>            <span class="n">audit_log</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Emit audit trail</span>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>        <span class="p">)</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> <span class="c1"># Execute in sandbox</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">execute_hidden_script</span><span class="p">(</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> <span class="n">script_id</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> <span class="n">environment</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> <span class="s2">"GITHUB_TOKEN"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> <span class="s2">"REPO"</span><span class="p">:</span> <span class="n">repo</span><span class="p">,</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> <span class="s2">"DETECT_MODE"</span><span class="p">:</span> <span class="s2">"aggressive"</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> <span class="p">},</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">120000</span><span class="p">,</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a> <span class="n">audit_log</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Emit audit trail</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> <span class="p">)</span>
 <a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>        <span class="c1"># Log result (metadata only, no secrets)</span>
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>            <span class="s2">"secret_scan_complete"</span><span class="p">,</span>
-<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>            <span class="n">extra</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>                <span class="s2">"repo"</span><span class="p">:</span> <span class="n">repo</span><span class="p">,</span>
-<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>                <span class="s2">"found"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"secret_count"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>                <span class="s2">"remediated"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"remediated_count"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>            <span class="p">}</span>
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>        <span class="p">)</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> <span class="c1"># Log result (metadata only, no secrets)</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> <span class="s2">"secret_scan_complete"</span><span class="p">,</span>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a> <span class="n">extra</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a> <span class="s2">"repo"</span><span class="p">:</span> <span class="n">repo</span><span class="p">,</span>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a> <span class="s2">"found"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"secret_count"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a> <span class="s2">"remediated"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"remediated_count"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a> <span class="p">}</span>
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a> <span class="p">)</span>
 <a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a>
-<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>        <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a> <span class="k">return</span> <span class="n">result</span>
 </code></pre></div>
 <p><strong>Characteristics</strong>:
 - Retrieves patterns from encrypted storage
@@ -2807,7 +2807,7 @@
 - Includes audit logging
 - Validates checksum before execution</p>
 <hr/>
-<h2 id="common-errors-solutions">🐛 Common Errors &amp; Solutions<a class="headerlink" href="#common-errors-solutions" title="Permanent link">¶</a></h2>
+<h2 id="common-errors-solutions">Common Errors &amp; Solutions<a class="headerlink" href="#common-errors-solutions" title="Permanent link">¶</a></h2>
 <h3 id="error-1-403-forbidden-insufficient-scope">Error 1: "403 Forbidden - Insufficient Scope"<a class="headerlink" href="#error-1-403-forbidden-insufficient-scope" title="Permanent link">¶</a></h3>
 <p><strong>Symptoms</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>HTTPError: 403 Forbidden
@@ -2818,14 +2818,14 @@
 - Token doesn't have required scope
 - Org-level operation on repo token</p>
 <p><strong>Solution</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1">#  Fix: Use get_token(required_elevated=True)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Fix: Use get_token(required_elevated=True)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="n">validate_scope</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'workflow'</span><span class="p">])</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="c1"># Handle if elevated unavailable</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Scope requires elevated token - cannot continue"</span><span class="p">)</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Elevated token required"</span><span class="p">)</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Scope requires elevated token - cannot continue"</span><span class="p">)</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Elevated token required"</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Prevention</strong>:
 - Always validate scopes upfront: <code>validate_scope(token, required_scopes)</code>
@@ -2843,22 +2843,22 @@
 - Token malformed or corrupted</p>
 <p><strong>Solution</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Token not found"</span><span class="p">)</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Token not found"</span><span class="p">)</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="k">except</span> <span class="n">TokenNotFoundError</span><span class="p">:</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY not available in environment"</span><span class="p">)</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Token retrieval failed"</span><span class="p">)</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY not available in environment"</span><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Token retrieval failed"</span><span class="p">)</span>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="c1"># Verify token is valid</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://api.github.com/user"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://api.github.com/user"</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Token invalid or expired"</span><span class="p">)</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>    <span class="k">raise</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Token invalid or expired"</span><span class="p">)</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> <span class="k">raise</span>
 </code></pre></div></p>
 <p><strong>Prevention</strong>:
 - Check token is properly loaded: <code>get_token()</code> should not return None
@@ -2879,24 +2879,24 @@
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="kn">import</span> <span class="nn">requests</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="k">def</span> <span class="nf">api_call_with_retry</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">    </span><span class="sd">"""Make API call with rate limit backoff."""</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span><span class="sd">"""Make API call with rate limit backoff."""</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">429</span><span class="p">:</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>                <span class="c1"># Extract wait time from headers</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>                <span class="n">retry_after</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Retry-After'</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rate limited, waiting </span><span class="si">{</span><span class="n">retry_after</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_after</span><span class="p">)</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>                <span class="k">continue</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>            <span class="k">raise</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span><span class="p">):</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">429</span><span class="p">:</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="c1"># Extract wait time from headers</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> <span class="n">retry_after</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'Retry-After'</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rate limited, waiting </span><span class="si">{</span><span class="n">retry_after</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_after</span><span class="p">)</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> <span class="k">continue</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> <span class="k">raise</span>
 <a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max retries exceeded for </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max retries exceeded for </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Prevention</strong>:
 - Implement rate limit backoff (wait and retry)
@@ -2917,22 +2917,22 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">scripts.ci._hidden_scripts</span> <span class="kn">import</span> <span class="n">execute_hidden_script</span><span class="p">,</span> <span class="n">retrieve_hidden_script</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        <span class="n">script_id</span><span class="o">=</span><span class="s2">"pattern_detection"</span><span class="p">,</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="n">version</span><span class="o">=</span><span class="s2">"latest"</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="n">script_id</span><span class="o">=</span><span class="s2">"pattern_detection"</span><span class="p">,</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"latest"</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="p">)</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">except</span> <span class="n">ChecksumError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Script integrity check failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="c1"># Fallback to explicit version</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>        <span class="n">script_id</span><span class="o">=</span><span class="s2">"pattern_detection"</span><span class="p">,</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>        <span class="n">version</span><span class="o">=</span><span class="s2">"2.1.0"</span>  <span class="c1"># Use known good version</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    <span class="p">)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Script integrity check failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="c1"># Fallback to explicit version</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="n">pattern</span> <span class="o">=</span> <span class="n">retrieve_hidden_script</span><span class="p">(</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> <span class="n">script_id</span><span class="o">=</span><span class="s2">"pattern_detection"</span><span class="p">,</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"2.1.0"</span> <span class="c1"># Use known good version</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> <span class="p">)</span>
 <a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="n">result</span> <span class="o">=</span> <span class="n">execute_hidden_script</span><span class="p">(</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    <span class="n">script_id</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    <span class="n">environment</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>    <span class="n">validate_checksum</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Validate before execute</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="n">script_id</span><span class="o">=</span><span class="n">pattern</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="n">environment</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">},</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="n">validate_checksum</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Validate before execute</span>
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Prevention</strong>:
@@ -2953,17 +2953,17 @@
 <p><strong>Solution</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Get token with explicit scope requirements</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">required_scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'security_events'</span><span class="p">]</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="n">required_scopes</span><span class="o">=</span><span class="p">[</span><span class="s1">'repo'</span><span class="p">,</span> <span class="s1">'security_events'</span><span class="p">]</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="p">)</span>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>    <span class="c1"># Try alternative approach with reduced scope</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Security scope unavailable - limited functionality"</span><span class="p">)</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="c1"># Try alternative approach with reduced scope</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Security scope unavailable - limited functionality"</span><span class="p">)</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Unable to acquire token with required scopes"</span><span class="p">)</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Unable to acquire token with required scopes"</span><span class="p">)</span>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="c1"># Validate before proceeding</span>
 <a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="n">validate_scope</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="p">[</span><span class="s1">'security_events'</span><span class="p">])</span>
@@ -2984,20 +2984,20 @@
 <p><strong>Solution</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># For Emergency agents (no fallback)</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY required"</span><span class="p">)</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"CODEX_MASTER_KEY required"</span><span class="p">)</span>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"Emergency agent disabled - CODEX_MASTER_KEY unavailable"</span><span class="p">)</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>    <span class="c1"># Alert human operator</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    <span class="n">emit_alert</span><span class="p">(</span><span class="s2">"EMERGENCY_AGENT_DISABLED"</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"critical"</span><span class="p">)</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>    <span class="k">raise</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">"Emergency agent disabled - CODEX_MASTER_KEY unavailable"</span><span class="p">)</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> <span class="c1"># Alert human operator</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> <span class="n">emit_alert</span><span class="p">(</span><span class="s2">"EMERGENCY_AGENT_DISABLED"</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"critical"</span><span class="p">)</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> <span class="k">raise</span>
 <a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>
 <a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="c1"># For Non-Emergency agents (with fallback)</span>
 <a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Elevated token unavailable, degrading to standard"</span><span class="p">)</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Elevated token unavailable, degrading to standard"</span><span class="p">)</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Prevention</strong>:
 - Monitor token availability
@@ -3191,8 +3191,8 @@
 <h2 id="quick-start-for-new-agent-development">Quick Start for New Agent Development<a class="headerlink" href="#quick-start-for-new-agent-development" title="Permanent link">¶</a></h2>
 <h3 id="step-1-choose-token-level">Step 1: Choose Token Level<a class="headerlink" href="#step-1-choose-token-level" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>Is this an emergency operation?
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>  → YES: Use Level 3 (CODEX_MASTER_KEY)
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>  → NO: Use Level 2 (CODEX_BACKUP_TOKEN)
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> YES: Use Level 3 (CODEX_MASTER_KEY)
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> NO: Use Level 2 (CODEX_BACKUP_TOKEN)
 </code></pre></div>
 <h3 id="step-2-define-required-scopes">Step 2: Define Required Scopes<a class="headerlink" href="#step-2-define-required-scopes" title="Permanent link">¶</a></h3>
 <p>List all API scopes needed by this agent.</p>
@@ -3203,12 +3203,12 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Level 3: Emergency (Pattern A)</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Level 3 required"</span><span class="p">)</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Level 3 required"</span><span class="p">)</span>
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="c1"># Level 2: Standard (Pattern B)</span>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>    <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> <span class="n">token</span> <span class="o">=</span> <span class="n">get_token</span><span class="p">(</span><span class="n">required_elevated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="step-4-validate-scopes">Step 4: Validate Scopes<a class="headerlink" href="#step-4-validate-scopes" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="n">validate_scope</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">REQUIRED_SCOPES</span><span class="p">)</span>
@@ -3223,7 +3223,7 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a>pytest<span class="w"> </span>tests/agents/test_&lt;agent_name&gt;_token.py
 </code></pre></div>
 <hr/>
-<h2 id="support">📞 Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <p>For questions about token requirements:
 - Check AGENT_REGISTRY.yaml for your agent
 - Review TOKEN_HIERARCHY_GUIDE.md for detailed specs
@@ -3259,6 +3259,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

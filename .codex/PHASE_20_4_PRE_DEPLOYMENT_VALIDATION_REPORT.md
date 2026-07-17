@@ -94,7 +94,7 @@ Pre-deployment validation confirms:
 ├── ✅ plans/ (2 plansets, current)
 ├── ✅ SBOM/ (3 profiles, signed)
 ├── ✅ reports/ (comprehensive, organized)
-└── ✅ distributions/ (v0.2.1 ready)
+└── ✅ distributions/ (v0.2.0 ready)
 ```
 
 **Documentation Completeness**: ✅ **100% CURRENT & ORGANIZED**
@@ -287,7 +287,7 @@ Critical Path: 45 minutes (Lane 2: Monitoring)
 
 ### Deliverables & Artifacts
 - [x] SBOM files (3 profiles: core, runtime, full)
-- [x] Distribution packages (v0.2.1 ready)
+- [x] Distribution packages (v0.2.0 ready)
 - [x] Release notes (staged)
 - [x] Archive of prior phases (organized)
 - [x] Compliance reports (current)

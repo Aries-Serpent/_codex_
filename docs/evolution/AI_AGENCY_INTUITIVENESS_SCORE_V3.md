@@ -1,6 +1,6 @@
 # AI Agency Intuitiveness Score V3.0 — Cognitive Codebase Assessment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -52,7 +52,7 @@ The _codex_ codebase achieves **Level 4 AI Functional System** maturity with dem
 - +200 tests (13001500+), marshmallow 4.x migration, transformers 5.2 compat
 - +54 specialized agents deployed (RAGIndexer facade, MSPClient.request)
 - +48 CVEs remediated (security posture: Elite)
-- +Knowledge graph v0.2.1 (20 nodes, 12 patterns, 10 edges)
+- +Knowledge graph v0.2.0 (20 nodes, 12 patterns, 10 edges)
 - +Great-expectations made optional — dependency conflict resolution pattern
 - +CI auto-fix patterns P-011 (getattr-compat-guard), P-012 (facade-class-testability)
 
@@ -151,7 +151,7 @@ The Global Strategy Layer translates mission into strategic objectives.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| Unified Roadmap | `docs/ROADMAP.md` (v0.2.1) | Current |
+| Unified Roadmap | `docs/ROADMAP.md` (v0.2.0) | Current |
 | Evolution Timeline | `docs/evolution/EVOLUTION_TIMELINE.md` | Active |
 | Planset Registry | `docs/evolution/PLANSET_REGISTRY.md` | Complete |
 | Phase Planning (1-18) | `.codex/plans/` (95 files) | Comprehensive |

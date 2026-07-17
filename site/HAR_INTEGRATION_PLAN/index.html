@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/HAR_INTEGRATION_PLAN/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>HAR File Integration &amp; Web Function Caching Plan - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2830,37 +2830,33 @@
 <hr/>
 <h2 id="technical-architecture">Technical Architecture<a class="headerlink" href="#technical-architecture" title="Permanent link">¶</a></h2>
 <h3 id="component-overview">Component Overview<a class="headerlink" href="#component-overview" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│                     Codex ML System                          │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─────────────────────────────────────────────────────────────┤
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│                                                               │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  ┌──────────────┐      ┌──────────────┐      ┌───────────┐ │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│  │   Audit      │      │  Dashboard   │      │  GitHub   │ │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│  │   Runner     │─────▶│  Generator   │─────▶│    API    │ │
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  └──────────────┘      └──────────────┘      └───────────┘ │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│         │                      │                     │       │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│         │                      ▼                     │       │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│         │            ┌──────────────────┐           │       │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│         │            │   HAR Recorder   │           │       │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│         │            └──────────────────┘           │       │
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│         │                      │                     │       │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│         ▼                      ▼                     ▼       │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│  ┌────────────────────────────────────────────────────────┐ │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│  │              HAR Cache Storage Layer                   │ │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│  │  - Request/Response Cache                              │ │
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│  │  - Session Recording                                   │ │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│  │  - Playback Engine                                     │ │
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│  └────────────────────────────────────────────────────────┘ │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>│                      │                                       │
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>│                      ▼                                       │
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>│  ┌────────────────────────────────────────────────────────┐ │
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>│  │          audit_artifacts/                              │ │
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>│  │          ├── audit_session.har                         │ │
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>│  │          ├── dashboard_assets.har                      │ │
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>│  │          └── github_api_cache.har                      │ │
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>│  └────────────────────────────────────────────────────────┘ │
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>│                                                               │
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>└─────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Codex ML System 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Audit Dashboard GitHub 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Runner Generator API 
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> HAR Recorder 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> HAR Cache Storage Layer 
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> - Request/Response Cache 
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> - Session Recording 
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> - Playback Engine 
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> audit_artifacts/ 
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> audit_session.har 
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> dashboard_assets.har 
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> github_api_cache.har 
 </code></pre></div>
 <h3 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">¶</a></h3>
 <ol>
@@ -2910,95 +2906,95 @@
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="kn">import</span> <span class="nn">gzip</span>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="k">class</span> <span class="nc">HARRecorder</span><span class="p">:</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="sd">"""Record HTTP requests/responses in HAR format."""</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="sd">"""Record HTTP requests/responses in HAR format."""</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">pages</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> <span class="bp">self</span><span class="o">.</span><span class="n">pages</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    <span class="k">def</span> <span class="nf">record_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">timing</span><span class="p">):</span>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="sd">        Record a single HTTP transaction.</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> <span class="k">def</span> <span class="nf">record_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">timing</span><span class="p">):</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="sd"> Record a single HTTP transaction.</span>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="sd">        TODO: Implementation needed</span>
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="sd">        - Parse request object (method, URL, headers, body)</span>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="sd">        - Parse response object (status, headers, body, size)</span>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="sd">        - Record timing information (send, wait, receive)</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="sd">        - Format as HAR entry and append to self.entries</span>
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="sd">        - Link to appropriate page in self.pages</span>
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a><span class="sd">        """</span>
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="sd"> TODO: Implementation needed</span>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="sd"> - Parse request object (method, URL, headers, body)</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="sd"> - Parse response object (status, headers, body, size)</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="sd"> - Record timing information (send, wait, receive)</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="sd"> - Format as HAR entry and append to self.entries</span>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="sd"> - Link to appropriate page in self.pages</span>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="sd">        Save HAR file to disk.</span>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a><span class="sd"> Save HAR file to disk.</span>
 <a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="sd">        TODO: Implementation needed</span>
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="sd">        - Construct HAR JSON structure with version, creator, pages, entries</span>
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="sd">        - Write to self.output_path with proper formatting</span>
-<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="sd">        - Consider compression for large HAR files</span>
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="sd">        - Validate HAR format before saving</span>
-<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="sd">        """</span>
-<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="sd"> TODO: Implementation needed</span>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="sd"> - Construct HAR JSON structure with version, creator, pages, entries</span>
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="sd"> - Write to self.output_path with proper formatting</span>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="sd"> - Consider compression for large HAR files</span>
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="sd"> - Validate HAR format before saving</span>
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>
 <a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a><span class="k">class</span> <span class="nc">HARCache</span><span class="p">:</span>
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a><span class="w">    </span><span class="sd">"""Cache HTTP responses using HAR format."""</span>
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a><span class="w"> </span><span class="sd">"""Cache HTTP responses using HAR format."""</span>
 <a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>
-<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">=</span> <span class="n">cache_dir</span>
-<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">=</span> <span class="n">cache_dir</span>
+<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-1-51" id="__codelineno-1-51" name="__codelineno-1-51"></a>
-<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a><span class="sd">        Retrieve cached response.</span>
+<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a><span class="sd"> Retrieve cached response.</span>
 <a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a>
-<a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a><span class="sd">        TODO: Implementation needed</span>
-<a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a><span class="sd">        - Generate cache key from URL and method</span>
-<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a><span class="sd">        - Check self.index for entry existence</span>
-<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a><span class="sd">        - Verify cache entry hasn't expired</span>
-<a href="#__codelineno-1-60" id="__codelineno-1-60" name="__codelineno-1-60"></a><span class="sd">        - Load and return cached response data</span>
-<a href="#__codelineno-1-61" id="__codelineno-1-61" name="__codelineno-1-61"></a><span class="sd">        """</span>
-<a href="#__codelineno-1-62" id="__codelineno-1-62" name="__codelineno-1-62"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a><span class="sd"> TODO: Implementation needed</span>
+<a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a><span class="sd"> - Generate cache key from URL and method</span>
+<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a><span class="sd"> - Check self.index for entry existence</span>
+<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a><span class="sd"> - Verify cache entry hasn't expired</span>
+<a href="#__codelineno-1-60" id="__codelineno-1-60" name="__codelineno-1-60"></a><span class="sd"> - Load and return cached response data</span>
+<a href="#__codelineno-1-61" id="__codelineno-1-61" name="__codelineno-1-61"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-62" id="__codelineno-1-62" name="__codelineno-1-62"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-63" id="__codelineno-1-63" name="__codelineno-1-63"></a>
-<a href="#__codelineno-1-64" id="__codelineno-1-64" name="__codelineno-1-64"></a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">):</span>
-<a href="#__codelineno-1-65" id="__codelineno-1-65" name="__codelineno-1-65"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-1-66" id="__codelineno-1-66" name="__codelineno-1-66"></a><span class="sd">        Store response in cache.</span>
+<a href="#__codelineno-1-64" id="__codelineno-1-64" name="__codelineno-1-64"></a> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">):</span>
+<a href="#__codelineno-1-65" id="__codelineno-1-65" name="__codelineno-1-65"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-66" id="__codelineno-1-66" name="__codelineno-1-66"></a><span class="sd"> Store response in cache.</span>
 <a href="#__codelineno-1-67" id="__codelineno-1-67" name="__codelineno-1-67"></a>
-<a href="#__codelineno-1-68" id="__codelineno-1-68" name="__codelineno-1-68"></a><span class="sd">        TODO: Implementation needed</span>
-<a href="#__codelineno-1-69" id="__codelineno-1-69" name="__codelineno-1-69"></a><span class="sd">        - Generate cache key from URL and method</span>
-<a href="#__codelineno-1-70" id="__codelineno-1-70" name="__codelineno-1-70"></a><span class="sd">        - Store response data with expiration timestamp</span>
-<a href="#__codelineno-1-71" id="__codelineno-1-71" name="__codelineno-1-71"></a><span class="sd">        - Update self.index with cache entry metadata</span>
-<a href="#__codelineno-1-72" id="__codelineno-1-72" name="__codelineno-1-72"></a><span class="sd">        - Consider size limits and eviction policies</span>
-<a href="#__codelineno-1-73" id="__codelineno-1-73" name="__codelineno-1-73"></a><span class="sd">        """</span>
-<a href="#__codelineno-1-74" id="__codelineno-1-74" name="__codelineno-1-74"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-68" id="__codelineno-1-68" name="__codelineno-1-68"></a><span class="sd"> TODO: Implementation needed</span>
+<a href="#__codelineno-1-69" id="__codelineno-1-69" name="__codelineno-1-69"></a><span class="sd"> - Generate cache key from URL and method</span>
+<a href="#__codelineno-1-70" id="__codelineno-1-70" name="__codelineno-1-70"></a><span class="sd"> - Store response data with expiration timestamp</span>
+<a href="#__codelineno-1-71" id="__codelineno-1-71" name="__codelineno-1-71"></a><span class="sd"> - Update self.index with cache entry metadata</span>
+<a href="#__codelineno-1-72" id="__codelineno-1-72" name="__codelineno-1-72"></a><span class="sd"> - Consider size limits and eviction policies</span>
+<a href="#__codelineno-1-73" id="__codelineno-1-73" name="__codelineno-1-73"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-74" id="__codelineno-1-74" name="__codelineno-1-74"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-75" id="__codelineno-1-75" name="__codelineno-1-75"></a>
-<a href="#__codelineno-1-76" id="__codelineno-1-76" name="__codelineno-1-76"></a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"*"</span><span class="p">):</span>
-<a href="#__codelineno-1-77" id="__codelineno-1-77" name="__codelineno-1-77"></a><span class="w">        </span><span class="sd">"""</span>
-<a href="#__codelineno-1-78" id="__codelineno-1-78" name="__codelineno-1-78"></a><span class="sd">        Clear cache entries matching pattern.</span>
+<a href="#__codelineno-1-76" id="__codelineno-1-76" name="__codelineno-1-76"></a> <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"*"</span><span class="p">):</span>
+<a href="#__codelineno-1-77" id="__codelineno-1-77" name="__codelineno-1-77"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-78" id="__codelineno-1-78" name="__codelineno-1-78"></a><span class="sd"> Clear cache entries matching pattern.</span>
 <a href="#__codelineno-1-79" id="__codelineno-1-79" name="__codelineno-1-79"></a>
-<a href="#__codelineno-1-80" id="__codelineno-1-80" name="__codelineno-1-80"></a><span class="sd">        TODO: Implementation needed</span>
-<a href="#__codelineno-1-81" id="__codelineno-1-81" name="__codelineno-1-81"></a><span class="sd">        - Support glob patterns for URL matching</span>
-<a href="#__codelineno-1-82" id="__codelineno-1-82" name="__codelineno-1-82"></a><span class="sd">        - Remove matching entries from cache directory</span>
-<a href="#__codelineno-1-83" id="__codelineno-1-83" name="__codelineno-1-83"></a><span class="sd">        - Update self.index to reflect deletions</span>
-<a href="#__codelineno-1-84" id="__codelineno-1-84" name="__codelineno-1-84"></a><span class="sd">        - Log cleared entries for debugging</span>
-<a href="#__codelineno-1-85" id="__codelineno-1-85" name="__codelineno-1-85"></a><span class="sd">        """</span>
-<a href="#__codelineno-1-86" id="__codelineno-1-86" name="__codelineno-1-86"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-80" id="__codelineno-1-80" name="__codelineno-1-80"></a><span class="sd"> TODO: Implementation needed</span>
+<a href="#__codelineno-1-81" id="__codelineno-1-81" name="__codelineno-1-81"></a><span class="sd"> - Support glob patterns for URL matching</span>
+<a href="#__codelineno-1-82" id="__codelineno-1-82" name="__codelineno-1-82"></a><span class="sd"> - Remove matching entries from cache directory</span>
+<a href="#__codelineno-1-83" id="__codelineno-1-83" name="__codelineno-1-83"></a><span class="sd"> - Update self.index to reflect deletions</span>
+<a href="#__codelineno-1-84" id="__codelineno-1-84" name="__codelineno-1-84"></a><span class="sd"> - Log cleared entries for debugging</span>
+<a href="#__codelineno-1-85" id="__codelineno-1-85" name="__codelineno-1-85"></a><span class="sd"> """</span>
+<a href="#__codelineno-1-86" id="__codelineno-1-86" name="__codelineno-1-86"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-87" id="__codelineno-1-87" name="__codelineno-1-87"></a>
 <a href="#__codelineno-1-88" id="__codelineno-1-88" name="__codelineno-1-88"></a><span class="k">class</span> <span class="nc">HARPlayer</span><span class="p">:</span>
-<a href="#__codelineno-1-89" id="__codelineno-1-89" name="__codelineno-1-89"></a><span class="w">    </span><span class="sd">"""Replay HTTP requests from HAR file."""</span>
+<a href="#__codelineno-1-89" id="__codelineno-1-89" name="__codelineno-1-89"></a><span class="w"> </span><span class="sd">"""Replay HTTP requests from HAR file."""</span>
 <a href="#__codelineno-1-90" id="__codelineno-1-90" name="__codelineno-1-90"></a>
-<a href="#__codelineno-1-91" id="__codelineno-1-91" name="__codelineno-1-91"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">har_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<a href="#__codelineno-1-92" id="__codelineno-1-92" name="__codelineno-1-92"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">har_file</span> <span class="o">=</span> <span class="n">har_file</span>
-<a href="#__codelineno-1-93" id="__codelineno-1-93" name="__codelineno-1-93"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">har_data</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-1-91" id="__codelineno-1-91" name="__codelineno-1-91"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">har_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<a href="#__codelineno-1-92" id="__codelineno-1-92" name="__codelineno-1-92"></a> <span class="bp">self</span><span class="o">.</span><span class="n">har_file</span> <span class="o">=</span> <span class="n">har_file</span>
+<a href="#__codelineno-1-93" id="__codelineno-1-93" name="__codelineno-1-93"></a> <span class="bp">self</span><span class="o">.</span><span class="n">har_data</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-1-94" id="__codelineno-1-94" name="__codelineno-1-94"></a>
-<a href="#__codelineno-1-95" id="__codelineno-1-95" name="__codelineno-1-95"></a>    <span class="k">def</span> <span class="nf">find_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<a href="#__codelineno-1-96" id="__codelineno-1-96" name="__codelineno-1-96"></a><span class="w">        </span><span class="sd">"""Find matching response in HAR."""</span>
-<a href="#__codelineno-1-97" id="__codelineno-1-97" name="__codelineno-1-97"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-95" id="__codelineno-1-95" name="__codelineno-1-95"></a> <span class="k">def</span> <span class="nf">find_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"GET"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<a href="#__codelineno-1-96" id="__codelineno-1-96" name="__codelineno-1-96"></a><span class="w"> </span><span class="sd">"""Find matching response in HAR."""</span>
+<a href="#__codelineno-1-97" id="__codelineno-1-97" name="__codelineno-1-97"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-98" id="__codelineno-1-98" name="__codelineno-1-98"></a>
-<a href="#__codelineno-1-99" id="__codelineno-1-99" name="__codelineno-1-99"></a>    <span class="k">def</span> <span class="nf">serve_mock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">):</span>
-<a href="#__codelineno-1-100" id="__codelineno-1-100" name="__codelineno-1-100"></a><span class="w">        </span><span class="sd">"""Start mock HTTP server from HAR."""</span>
-<a href="#__codelineno-1-101" id="__codelineno-1-101" name="__codelineno-1-101"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-99" id="__codelineno-1-99" name="__codelineno-1-99"></a> <span class="k">def</span> <span class="nf">serve_mock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">):</span>
+<a href="#__codelineno-1-100" id="__codelineno-1-100" name="__codelineno-1-100"></a><span class="w"> </span><span class="sd">"""Start mock HTTP server from HAR."""</span>
+<a href="#__codelineno-1-101" id="__codelineno-1-101" name="__codelineno-1-101"></a> <span class="k">pass</span>
 </code></pre></div>
 <h4 id="12-create-tests">1.2 Create Tests<a class="headerlink" href="#12-create-tests" title="Permanent link">¶</a></h4>
 <p><strong>File</strong>: <code>tests/space_traversal/test_har_utils.py</code></p>
@@ -3023,34 +3019,34 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">har_utils</span> <span class="kn">import</span> <span class="n">HARRecorder</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">def</span> <span class="nf">run_full</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="c1"># Initialize HAR recorder</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="n">output_path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/audit_session.har"</span><span class="p">)</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="c1"># Initialize HAR recorder</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">output_path</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/audit_session.har"</span><span class="p">)</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="p">)</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="c1"># Wrap HTTP calls</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="k">with</span> <span class="n">har_recorder</span><span class="o">.</span><span class="n">recording</span><span class="p">():</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="c1"># ... existing audit code ...</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        <span class="k">pass</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="c1"># Wrap HTTP calls</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="k">with</span> <span class="n">har_recorder</span><span class="o">.</span><span class="n">recording</span><span class="p">():</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="c1"># ... existing audit code ...</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">har_recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="n">har_recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </code></pre></div>
 <h4 id="22-add-har-to-dashboard-generator">2.2 Add HAR to Dashboard Generator<a class="headerlink" href="#22-add-har-to-dashboard-generator" title="Permanent link">¶</a></h4>
 <p>Modify <code>scripts/generate_audit_dashboard.py</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">har_utils</span> <span class="kn">import</span> <span class="n">HARCache</span><span class="p">,</span> <span class="n">HARRecorder</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="k">def</span> <span class="nf">generate_with_har_caching</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">reports</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="sd">"""Generate dashboard with HAR-cached assets."""</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="sd">"""Generate dashboard with HAR-cached assets."""</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/.har_cache"</span><span class="p">))</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/.har_cache"</span><span class="p">))</span>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="c1"># Cache external resources (CDNs, fonts, etc.)</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="c1"># Generate self-contained HTML with embedded assets</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="c1"># Cache external resources (CDNs, fonts, etc.)</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> <span class="c1"># Generate self-contained HTML with embedded assets</span>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="c1"># Record generation process</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/dashboard_generation.har"</span><span class="p">)</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="p">)</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> <span class="c1"># Record generation process</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/dashboard_generation.har"</span><span class="p">)</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="p">)</span>
 </code></pre></div>
 <h4 id="23-github-api-caching">2.3 GitHub API Caching<a class="headerlink" href="#23-github-api-caching" title="Permanent link">¶</a></h4>
 <p><strong>File</strong>: <code>scripts/space_traversal/github_har_cache.py</code></p>
@@ -3063,27 +3059,27 @@
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="kn">import</span> <span class="nn">httpx</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="k">class</span> <span class="nc">GitHubHARClient</span><span class="p">:</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">    </span><span class="sd">"""GitHub API client with HAR caching."""</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w"> </span><span class="sd">"""GitHub API client with HAR caching."""</span>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cache_ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">):</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/github_api"</span><span class="p">))</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cache_ttl</span> <span class="o">=</span> <span class="n">cache_ttl</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cache_ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">):</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/github_api"</span><span class="p">))</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> <span class="bp">self</span><span class="o">.</span><span class="n">cache_ttl</span> <span class="o">=</span> <span class="n">cache_ttl</span>
 <a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">        </span><span class="sd">"""GET request with HAR caching."""</span>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>        <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>            <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">)</span>
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>            <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>                <span class="k">return</span> <span class="n">cached</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w"> </span><span class="sd">"""GET request with HAR caching."""</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> <span class="k">if</span> <span class="n">use_cache</span><span class="p">:</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">)</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> <span class="k">return</span> <span class="n">cached</span>
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"token </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
 <a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>        <span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_ttl</span><span class="p">)</span>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> <span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_ttl</span><span class="p">)</span>
 <a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="phase-3-dashboard-enhancement-pre-commit-9-12">Phase 3: Dashboard Enhancement (Pre-commit 9-12)<a class="headerlink" href="#phase-3-dashboard-enhancement-pre-commit-9-12" title="Permanent link">¶</a></h3>
 <h4 id="31-add-har-viewer-to-dashboard">3.1 Add HAR Viewer to Dashboard<a class="headerlink" href="#31-add-har-viewer-to-dashboard" title="Permanent link">¶</a></h4>
@@ -3097,24 +3093,24 @@
 <h4 id="32-har-export-feature">3.2 HAR Export Feature<a class="headerlink" href="#32-har-export-feature" title="Permanent link">¶</a></h4>
 <p>Add button to export current dashboard session as HAR:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">exportSessionAsHAR</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">har</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">        </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">            </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">"1.2"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">            </span><span class="nx">creator</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">                </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Audit Dashboard"</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">                </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">"1.0.0"</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">            </span><span class="p">},</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">            </span><span class="nx">pages</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">            </span><span class="nx">entries</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">                </span><span class="c1">// All dashboard API calls</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">                </span><span class="c1">// All resource loads</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">                </span><span class="c1">// All interactive selections</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">            </span><span class="p">]</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">        </span><span class="p">}</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p">};</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">har</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nx">log</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">"1.2"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nx">creator</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Audit Dashboard"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">"1.0.0"</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nx">pages</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nx">entries</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="c1">// All dashboard API calls</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="c1">// All resource loads</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="c1">// All interactive selections</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="p">]</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="p">};</span>
 <a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">    </span><span class="c1">// Download HAR file</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">    </span><span class="nx">downloadFile</span><span class="p">(</span><span class="s1">'dashboard_session.har'</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">har</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">));</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w"> </span><span class="c1">// Download HAR file</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w"> </span><span class="nx">downloadFile</span><span class="p">(</span><span class="s1">'dashboard_session.har'</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">har</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">));</span>
 <a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="phase-4-testing-optimization-pre-commit-13-16">Phase 4: Testing &amp; Optimization (Pre-commit 13-16)<a class="headerlink" href="#phase-4-testing-optimization-pre-commit-13-16" title="Permanent link">¶</a></h3>
@@ -3143,79 +3139,79 @@
 <h2 id="har-file-structure">HAR File Structure<a class="headerlink" href="#har-file-structure" title="Permanent link">¶</a></h2>
 <h3 id="standard-har-format">Standard HAR Format<a class="headerlink" href="#standard-har-format" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">{</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">"log"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.2"</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">    </span><span class="nt">"creator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Codex Audit System"</span><span class="p">,</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">      </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.5.0"</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">    </span><span class="nt">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">      </span><span class="nt">"startedDateTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-12-10T22:00:00.000Z"</span><span class="p">,</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page_1"</span><span class="p">,</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Audit Run"</span><span class="p">,</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">      </span><span class="nt">"pageTimings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">        </span><span class="nt">"onContentLoad"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">        </span><span class="nt">"onLoad"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="p">}],</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w">      </span><span class="nt">"startedDateTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-12-10T22:00:01.000Z"</span><span class="p">,</span>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w">      </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w">      </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w">        </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w">        </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/commits"</span><span class="p">,</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="w">        </span><span class="nt">"httpVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTTP/1.1"</span><span class="p">,</span>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w">        </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w">        </span><span class="nt">"queryString"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="w">        </span><span class="nt">"cookies"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w">        </span><span class="nt">"headersSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w">        </span><span class="nt">"bodySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w">      </span><span class="p">},</span>
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a><span class="w">      </span><span class="nt">"response"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a><span class="w">        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
-<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a><span class="w">        </span><span class="nt">"statusText"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OK"</span><span class="p">,</span>
-<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a><span class="w">        </span><span class="nt">"httpVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTTP/1.1"</span><span class="p">,</span>
-<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a><span class="w">        </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a><span class="w">        </span><span class="nt">"cookies"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a><span class="w">        </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a><span class="w">          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
-<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a><span class="w">          </span><span class="nt">"mimeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application/json"</span><span class="p">,</span>
-<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a><span class="w">          </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{...}"</span><span class="p">,</span>
-<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a><span class="w">          </span><span class="nt">"encoding"</span><span class="p">:</span><span class="w"> </span><span class="s2">"utf-8"</span>
-<a href="#__codelineno-6-41" id="__codelineno-6-41" name="__codelineno-6-41"></a><span class="w">        </span><span class="p">},</span>
-<a href="#__codelineno-6-42" id="__codelineno-6-42" name="__codelineno-6-42"></a><span class="w">        </span><span class="nt">"redirectURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
-<a href="#__codelineno-6-43" id="__codelineno-6-43" name="__codelineno-6-43"></a><span class="w">        </span><span class="nt">"headersSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<a href="#__codelineno-6-44" id="__codelineno-6-44" name="__codelineno-6-44"></a><span class="w">        </span><span class="nt">"bodySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span>
-<a href="#__codelineno-6-45" id="__codelineno-6-45" name="__codelineno-6-45"></a><span class="w">      </span><span class="p">},</span>
-<a href="#__codelineno-6-46" id="__codelineno-6-46" name="__codelineno-6-46"></a><span class="w">      </span><span class="nt">"cache"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a href="#__codelineno-6-47" id="__codelineno-6-47" name="__codelineno-6-47"></a><span class="w">      </span><span class="nt">"timings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-6-48" id="__codelineno-6-48" name="__codelineno-6-48"></a><span class="w">        </span><span class="nt">"blocked"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-6-49" id="__codelineno-6-49" name="__codelineno-6-49"></a><span class="w">        </span><span class="nt">"dns"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<a href="#__codelineno-6-50" id="__codelineno-6-50" name="__codelineno-6-50"></a><span class="w">        </span><span class="nt">"connect"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
-<a href="#__codelineno-6-51" id="__codelineno-6-51" name="__codelineno-6-51"></a><span class="w">        </span><span class="nt">"send"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-6-52" id="__codelineno-6-52" name="__codelineno-6-52"></a><span class="w">        </span><span class="nt">"wait"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<a href="#__codelineno-6-53" id="__codelineno-6-53" name="__codelineno-6-53"></a><span class="w">        </span><span class="nt">"receive"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
-<a href="#__codelineno-6-54" id="__codelineno-6-54" name="__codelineno-6-54"></a><span class="w">        </span><span class="nt">"ssl"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
-<a href="#__codelineno-6-55" id="__codelineno-6-55" name="__codelineno-6-55"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-6-56" id="__codelineno-6-56" name="__codelineno-6-56"></a><span class="w">    </span><span class="p">}]</span>
-<a href="#__codelineno-6-57" id="__codelineno-6-57" name="__codelineno-6-57"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">"log"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.2"</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">"creator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Codex Audit System"</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.5.0"</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="nt">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="nt">"startedDateTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-12-10T22:00:00.000Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page_1"</span><span class="p">,</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Audit Run"</span><span class="p">,</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w"> </span><span class="nt">"pageTimings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span><span class="nt">"onContentLoad"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w"> </span><span class="nt">"onLoad"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w"> </span><span class="p">}],</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w"> </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w"> </span><span class="nt">"startedDateTime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-12-10T22:00:01.000Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w"> </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w"> </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w"> </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w"> </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/commits"</span><span class="p">,</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="w"> </span><span class="nt">"httpVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTTP/1.1"</span><span class="p">,</span>
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w"> </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w"> </span><span class="nt">"queryString"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="w"> </span><span class="nt">"cookies"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w"> </span><span class="nt">"headersSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w"> </span><span class="nt">"bodySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a><span class="w"> </span><span class="nt">"response"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a><span class="w"> </span><span class="nt">"statusText"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OK"</span><span class="p">,</span>
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a><span class="w"> </span><span class="nt">"httpVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTTP/1.1"</span><span class="p">,</span>
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a><span class="w"> </span><span class="nt">"headers"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a><span class="w"> </span><span class="nt">"cookies"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a><span class="w"> </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a><span class="w"> </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a><span class="w"> </span><span class="nt">"mimeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application/json"</span><span class="p">,</span>
+<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{...}"</span><span class="p">,</span>
+<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a><span class="w"> </span><span class="nt">"encoding"</span><span class="p">:</span><span class="w"> </span><span class="s2">"utf-8"</span>
+<a href="#__codelineno-6-41" id="__codelineno-6-41" name="__codelineno-6-41"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-6-42" id="__codelineno-6-42" name="__codelineno-6-42"></a><span class="w"> </span><span class="nt">"redirectURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<a href="#__codelineno-6-43" id="__codelineno-6-43" name="__codelineno-6-43"></a><span class="w"> </span><span class="nt">"headersSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<a href="#__codelineno-6-44" id="__codelineno-6-44" name="__codelineno-6-44"></a><span class="w"> </span><span class="nt">"bodySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span>
+<a href="#__codelineno-6-45" id="__codelineno-6-45" name="__codelineno-6-45"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-6-46" id="__codelineno-6-46" name="__codelineno-6-46"></a><span class="w"> </span><span class="nt">"cache"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a href="#__codelineno-6-47" id="__codelineno-6-47" name="__codelineno-6-47"></a><span class="w"> </span><span class="nt">"timings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-6-48" id="__codelineno-6-48" name="__codelineno-6-48"></a><span class="w"> </span><span class="nt">"blocked"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-6-49" id="__codelineno-6-49" name="__codelineno-6-49"></a><span class="w"> </span><span class="nt">"dns"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a href="#__codelineno-6-50" id="__codelineno-6-50" name="__codelineno-6-50"></a><span class="w"> </span><span class="nt">"connect"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<a href="#__codelineno-6-51" id="__codelineno-6-51" name="__codelineno-6-51"></a><span class="w"> </span><span class="nt">"send"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-6-52" id="__codelineno-6-52" name="__codelineno-6-52"></a><span class="w"> </span><span class="nt">"wait"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<a href="#__codelineno-6-53" id="__codelineno-6-53" name="__codelineno-6-53"></a><span class="w"> </span><span class="nt">"receive"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<a href="#__codelineno-6-54" id="__codelineno-6-54" name="__codelineno-6-54"></a><span class="w"> </span><span class="nt">"ssl"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span>
+<a href="#__codelineno-6-55" id="__codelineno-6-55" name="__codelineno-6-55"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-6-56" id="__codelineno-6-56" name="__codelineno-6-56"></a><span class="w"> </span><span class="p">}]</span>
+<a href="#__codelineno-6-57" id="__codelineno-6-57" name="__codelineno-6-57"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-6-58" id="__codelineno-6-58" name="__codelineno-6-58"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="custom-extensions-for-codex">Custom Extensions for Codex<a class="headerlink" href="#custom-extensions-for-codex" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="p">{</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">"log"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="nt">"_codex"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">      </span><span class="nt">"auditRunId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"run_20251210_220000"</span><span class="p">,</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">      </span><span class="nt">"auditVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.5.0"</span><span class="p">,</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">      </span><span class="nt">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">      </span><span class="nt">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">        </span><span class="nt">"totalRequests"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">        </span><span class="nt">"cacheHits"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">        </span><span class="nt">"cacheMisses"</span><span class="p">:</span><span class="w"> </span><span class="mi">33</span><span class="p">,</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">        </span><span class="nt">"totalTime"</span><span class="p">:</span><span class="w"> </span><span class="mi">5400</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="nt">"log"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="nt">"_codex"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">"auditRunId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"run_20251210_220000"</span><span class="p">,</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span><span class="nt">"auditVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.5.0"</span><span class="p">,</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="nt">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span><span class="nt">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="nt">"totalRequests"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="nt">"cacheHits"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w"> </span><span class="nt">"cacheMisses"</span><span class="p">:</span><span class="w"> </span><span class="mi">33</span><span class="p">,</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w"> </span><span class="nt">"totalTime"</span><span class="p">:</span><span class="w"> </span><span class="mi">5400</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
@@ -3224,51 +3220,51 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># scripts/space_traversal/audit_runner.py</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="k">def</span> <span class="nf">cmd_run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">    </span><span class="sd">"""Run audit with HAR recording."""</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/audit_session.har"</span><span class="p">))</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span><span class="sd">"""Run audit with HAR recording."""</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">har_recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"audit_artifacts/audit_session.har"</span><span class="p">))</span>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>        <span class="k">with</span> <span class="n">har_recorder</span><span class="o">.</span><span class="n">recording</span><span class="p">():</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>            <span class="c1"># Existing audit logic</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>            <span class="k">pass</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="k">finally</span><span class="p">:</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        <span class="n">har_recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="k">with</span> <span class="n">har_recorder</span><span class="o">.</span><span class="n">recording</span><span class="p">():</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="c1"># Existing audit logic</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="k">pass</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="k">finally</span><span class="p">:</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="n">har_recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="2-dashboard-generator">2. Dashboard Generator<a class="headerlink" href="#2-dashboard-generator" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># scripts/generate_audit_dashboard.py</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">    </span><span class="sd">"""Generate dashboard with HAR caching."""</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/dashboard"</span><span class="p">))</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="sd">"""Generate dashboard with HAR caching."""</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/dashboard"</span><span class="p">))</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="c1"># Load artifacts with caching</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="c1"># Generate HTML with cached assets</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="c1"># Load artifacts with caching</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="c1"># Generate HTML with cached assets</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="c1"># Export session HAR</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    <span class="n">har_recorder</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">"audit_artifacts/dashboard_session.har"</span><span class="p">)</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="c1"># Export session HAR</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="n">har_recorder</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">"audit_artifacts/dashboard_session.har"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="3-github-api-client">3. GitHub API Client<a class="headerlink" href="#3-github-api-client" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># New file: scripts/space_traversal/github_client.py</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="k">class</span> <span class="nc">GitHubClient</span><span class="p">:</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">har_cache_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/github"</span><span class="p">))</span> <span class="k">if</span> <span class="n">har_cache_enabled</span> <span class="k">else</span> <span class="kc">None</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">har_cache_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">har_cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">".cache/github"</span><span class="p">))</span> <span class="k">if</span> <span class="n">har_cache_enabled</span> <span class="k">else</span> <span class="kc">None</span>
 </code></pre></div>
 <h2 id="4-determinism-workflow">4. Determinism Workflow<a class="headerlink" href="#4-determinism-workflow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># .github/workflows/determinism.yml</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate audit dashboard with HAR</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">    </span><span class="no">python scripts/generate_audit_dashboard.py --enable-har</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/generate_audit_dashboard.py --enable-har</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload artifacts including HAR files</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">determinism-audit-${{ github.run_number }}</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w">      </span><span class="no">index.html</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w">      </span><span class="no">audit_artifacts/**</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">      </span><span class="no">audit_artifacts/*.har</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w w-Error"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">determinism-audit-${{ github.run_number }}</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.html</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">audit_artifacts/**</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">audit_artifacts/*.har</span>
 </code></pre></div>
 <hr/>
 <h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h2>
@@ -3276,17 +3272,17 @@
 <p><strong>Problem</strong>: HAR files may contain sensitive data (tokens, passwords, API keys)</p>
 <p><strong>Solution</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="k">class</span> <span class="nc">SecureHARRecorder</span><span class="p">(</span><span class="n">HARRecorder</span><span class="p">):</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">    </span><span class="sd">"""HAR recorder with sensitive data filtering."""</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w"> </span><span class="sd">"""HAR recorder with sensitive data filtering."""</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="n">SENSITIVE_HEADERS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'authorization'</span><span class="p">,</span> <span class="s1">'cookie'</span><span class="p">,</span> <span class="s1">'x-api-key'</span><span class="p">]</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">SENSITIVE_PATTERNS</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">'token=\w+'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'key=\w+'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'password=\w+'</span><span class="p">]</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="n">SENSITIVE_HEADERS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'authorization'</span><span class="p">,</span> <span class="s1">'cookie'</span><span class="p">,</span> <span class="s1">'x-api-key'</span><span class="p">]</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="n">SENSITIVE_PATTERNS</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">'token=\w+'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'key=\w+'</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'password=\w+'</span><span class="p">]</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    <span class="k">def</span> <span class="nf">sanitize_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w">        </span><span class="sd">"""Remove sensitive data from request."""</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>        <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SENSITIVE_HEADERS</span><span class="p">:</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>            <span class="k">if</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">request</span><span class="p">[</span><span class="s1">'headers'</span><span class="p">]:</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>                <span class="n">request</span><span class="p">[</span><span class="s1">'headers'</span><span class="p">][</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'[REDACTED]'</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>        <span class="k">return</span> <span class="n">request</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="k">def</span> <span class="nf">sanitize_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w"> </span><span class="sd">"""Remove sensitive data from request."""</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SENSITIVE_HEADERS</span><span class="p">:</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="k">if</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">request</span><span class="p">[</span><span class="s1">'headers'</span><span class="p">]:</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="n">request</span><span class="p">[</span><span class="s1">'headers'</span><span class="p">][</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'[REDACTED]'</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="k">return</span> <span class="n">request</span>
 </code></pre></div></p>
 <h3 id="2-access-control">2. Access Control<a class="headerlink" href="#2-access-control" title="Permanent link">¶</a></h3>
 <ul>
@@ -3377,39 +3373,39 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># tests/space_traversal/test_har_utils.py</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="k">def</span> <span class="nf">test_har_recorder_basic</span><span class="p">():</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">    </span><span class="sd">"""Test basic HAR recording."""</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/test.har"</span><span class="p">))</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">recorder</span><span class="o">.</span><span class="n">record_request</span><span class="p">(</span><span class="n">mock_request</span><span class="p">,</span> <span class="n">mock_response</span><span class="p">,</span> <span class="n">mock_timing</span><span class="p">)</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>    <span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/test.har"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span><span class="sd">"""Test basic HAR recording."""</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="n">recorder</span> <span class="o">=</span> <span class="n">HARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/test.har"</span><span class="p">))</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">recorder</span><span class="o">.</span><span class="n">record_request</span><span class="p">(</span><span class="n">mock_request</span><span class="p">,</span> <span class="n">mock_response</span><span class="p">,</span> <span class="n">mock_timing</span><span class="p">)</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">recorder</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/test.har"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
 <a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="k">def</span> <span class="nf">test_har_cache_hit</span><span class="p">():</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="w">    </span><span class="sd">"""Test cache hit scenario."""</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="n">cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/cache"</span><span class="p">))</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>    <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"http://example.com"</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">})</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"http://example.com"</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">)</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">}</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="w"> </span><span class="sd">"""Test cache hit scenario."""</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="n">cache</span> <span class="o">=</span> <span class="n">HARCache</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/cache"</span><span class="p">))</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"http://example.com"</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">})</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"http://example.com"</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">)</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="s2">"test"</span><span class="p">}</span>
 <a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>
 <a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="k">def</span> <span class="nf">test_har_sanitization</span><span class="p">():</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w">    </span><span class="sd">"""Test sensitive data removal."""</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>    <span class="n">recorder</span> <span class="o">=</span> <span class="n">SecureHARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/secure.har"</span><span class="p">))</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>    <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"headers"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"authorization"</span><span class="p">:</span> <span class="s2">"Bearer secret"</span><span class="p">}}</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">sanitize_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>    <span class="k">assert</span> <span class="n">sanitized</span><span class="p">[</span><span class="s2">"headers"</span><span class="p">][</span><span class="s2">"authorization"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"[REDACTED]"</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w"> </span><span class="sd">"""Test sensitive data removal."""</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="n">recorder</span> <span class="o">=</span> <span class="n">SecureHARRecorder</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">"/tmp/secure.har"</span><span class="p">))</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"headers"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"authorization"</span><span class="p">:</span> <span class="s2">"Bearer secret"</span><span class="p">}}</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="n">sanitized</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">sanitize_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> <span class="k">assert</span> <span class="n">sanitized</span><span class="p">[</span><span class="s2">"headers"</span><span class="p">][</span><span class="s2">"authorization"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"[REDACTED]"</span>
 </code></pre></div>
 <h2 id="integration-tests">Integration Tests<a class="headerlink" href="#integration-tests" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">def</span> <span class="nf">test_audit_with_har_recording</span><span class="p">():</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">    </span><span class="sd">"""Test full audit run with HAR recording."""</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="c1"># Run audit</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="c1"># Verify HAR file created</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="c1"># Verify HAR contains expected entries</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="c1"># Verify sensitive data redacted</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w"> </span><span class="sd">"""Test full audit run with HAR recording."""</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> <span class="c1"># Run audit</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="c1"># Verify HAR file created</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="c1"># Verify HAR contains expected entries</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="c1"># Verify sensitive data redacted</span>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>
 <a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="k">def</span> <span class="nf">test_dashboard_with_har_cache</span><span class="p">():</span>
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="w">    </span><span class="sd">"""Test dashboard generation with HAR caching."""</span>
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>    <span class="c1"># Generate dashboard</span>
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>    <span class="c1"># Verify cache used</span>
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>    <span class="c1"># Verify offline mode works</span>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="w"> </span><span class="sd">"""Test dashboard generation with HAR caching."""</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a> <span class="c1"># Generate dashboard</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> <span class="c1"># Verify cache used</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> <span class="c1"># Verify offline mode works</span>
 </code></pre></div>
 <hr/>
 <h2 id="operational-considerations">Operational Considerations<a class="headerlink" href="#operational-considerations" title="Permanent link">¶</a></h2>
@@ -3425,9 +3421,9 @@
 <p><strong>Action Items</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Add to .github/workflows/security.yml</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Bandit Security Scan</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="no">pip install bandit</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">    </span><span class="no">bandit -r scripts/ src/ -f json -o bandit-report.json</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install bandit</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bandit -r scripts/ src/ -f json -o bandit-report.json</span>
 </code></pre></div></p>
 <h2 id="2-git-command-failures-in-ci">2. Git Command Failures in CI<a class="headerlink" href="#2-git-command-failures-in-ci" title="Permanent link">¶</a></h2>
 <p><strong>Issue</strong>: CI tries to access files across different commits.</p>
@@ -3443,9 +3439,9 @@
 <p><strong>Action Items</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Update workflow to handle missing files</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check changed files</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">    </span><span class="no">git fetch origin ${{ github.base_ref }}</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">    </span><span class="no">git diff --name-only origin/${{ github.base_ref }}...HEAD || true</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git fetch origin ${{ github.base_ref }}</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git diff --name-only origin/${{ github.base_ref }}...HEAD || true</span>
 </code></pre></div></p>
 <h2 id="monitoring-logging">Monitoring &amp; Logging<a class="headerlink" href="#monitoring-logging" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Add to har_utils.py</span>
@@ -3455,27 +3451,27 @@
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="k">class</span> <span class="nc">HARRecorder</span><span class="p">:</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">enable_logging</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="k">if</span> <span class="n">enable_logging</span> <span class="k">else</span> <span class="kc">None</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">enable_logging</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="k">if</span> <span class="n">enable_logging</span> <span class="k">else</span> <span class="kc">None</span>
 <a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>    <span class="k">def</span> <span class="nf">record_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">timing</span><span class="p">):</span>
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span>
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Recording: </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Response size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span><span class="p">)</span>
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a> <span class="k">def</span> <span class="nf">record_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">timing</span><span class="p">):</span>
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Recording: </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Response size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Add to config files</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="nt">har</span><span class="p">:</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w">  </span><span class="nt">cache_dir</span><span class="p">:</span><span class="w"> </span><span class="s">".cache/har"</span>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="w">  </span><span class="nt">retention_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w">  </span><span class="nt">compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="w">  </span><span class="nt">sanitize_sensitive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="w">  </span><span class="nt">max_entry_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="w">  </span><span class="nt">excluded_patterns</span><span class="p">:</span>
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.jpg"</span>
-<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.png"</span>
-<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.woff2"</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w"> </span><span class="nt">cache_dir</span><span class="p">:</span><span class="w"> </span><span class="s">".cache/har"</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a><span class="w"> </span><span class="nt">retention_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w"> </span><span class="nt">compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="w"> </span><span class="nt">sanitize_sensitive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="w"> </span><span class="nt">max_entry_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="w"> </span><span class="nt">excluded_patterns</span><span class="p">:</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.jpg"</span>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.png"</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.woff2"</span>
 </code></pre></div>
 <hr/>
 <h2 id="future-enhancements">Future Enhancements<a class="headerlink" href="#future-enhancements" title="Permanent link">¶</a></h2>
@@ -3646,6 +3642,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

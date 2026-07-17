@@ -1,6 +1,6 @@
 # Repository Size Reduction & Archival Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Goal**: Reduce repository size from 11.2MB to under 10MB to enable CodeQL scanning
 **Date**: 2025-12-10

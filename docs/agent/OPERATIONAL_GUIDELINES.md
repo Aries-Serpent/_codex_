@@ -1,6 +1,6 @@
 # AI agent Operational Guidelines
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
 > **agent Identity:** ai_org_repo_admin

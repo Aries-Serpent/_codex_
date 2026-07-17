@@ -1,6 +1,6 @@
 # MCP Server Deployment
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-07-11

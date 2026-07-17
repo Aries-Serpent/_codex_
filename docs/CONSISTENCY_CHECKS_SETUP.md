@@ -1,6 +1,6 @@
 # Consistency Checks Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide explains how to set up and use the CI/CD consistency checks for the *codex* repository.
 

@@ -1,6 +1,6 @@
 # CODEX_MASTER_KEY & CODEX_BACKUP_KEY — Token Rotation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **For:** Human administrator (`@mbaetiong`) — manual GitHub UI / CLI steps required
 > **Scope:** `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` repository secrets

@@ -1,6 +1,6 @@
 # Production Readiness Certification
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -187,7 +187,7 @@ After comprehensive analysis, code review, gap analysis, and **complete implemen
 - [x] Evaluation metrics functional
 - [x] Plugin system working with quarantine
 - [x] Storage connectors implemented
-- [x] Audit pipeline v0.2.1 operational
+- [x] Audit pipeline v0.2.0 operational
 - [x] All features tested and validated
 
 ### Quality Assurance

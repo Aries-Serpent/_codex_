@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Architecture - Search Results &amp; Status - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2803,12 +2803,10 @@
 <li><a href="#executive-summary">Executive Summary</a></li>
 <li><a href="#key-findings">Key Findings:</a></li>
 <li><a href="#1-cognitive-brain-architecture-documentation">1. Cognitive Brain Architecture Documentation</a></li>
-<li><a href="#primary-documentation-files">Primary Documentation Files</a><ul>
+<li><a href="#primary-documentation-files">Primary Documentation Files</a></li>
 <li><a href="#11-cognitive-map-docssystemcodebase_cognitive_mapmd">1.1 <strong>Cognitive Map</strong> (<code>docs/system/CODEBASE_COGNITIVE_MAP.md</code>)</a></li>
 <li><a href="#12-dashboard-docsdocumentation_indexmd">1.2 <strong>Dashboard</strong> (<code>docs/DOCUMENTATION_INDEX.md</code>)</a></li>
 <li><a href="#13-cognitive-brain-app-status-cognitive_appcognitive_brain_status_v2md">1.3 <strong>Cognitive Brain App Status</strong> (<code>cognitive_app/COGNITIVE_BRAIN_STATUS_V2.md</code>)</a></li>
-</ul>
-</li>
 <li><a href="#2-pda-loop-and-aftermath-tag-processes">2. PDA Loop and AfterMath Tag Processes</a></li>
 <li><a href="#21-pda-loop-implementation">2.1 PDA Loop Implementation</a></li>
 <li><a href="#22-aftermath-tag-system">2.2 AfterMath Tag System</a></li>
@@ -2821,40 +2819,32 @@
 <li><a href="#integration">Integration</a></li>
 <li><a href="#query-examples">Query Examples</a></li>
 <li><a href="#4-cache-set-configurations">4. Cache Set Configurations</a></li>
-<li><a href="#41-cache-implementations">4.1 Cache Implementations</a><ul>
+<li><a href="#41-cache-implementations">4.1 Cache Implementations</a></li>
 <li><a href="#actions-server-cache-toolsactions_serverpy"><strong>Actions Server Cache</strong> (<code>tools/actions_server.py</code>)</a></li>
 <li><a href="#github-client-cache-srccodex_bridgegithub_clientpy"><strong>GitHub Client Cache</strong> (<code>src/codex_bridge/github_client.py</code>)</a></li>
 <li><a href="#tokenization-cache-teststokenizationtest_cachepy"><strong>Tokenization Cache</strong> (<code>tests/tokenization/test_cache.py</code>)</a></li>
 <li><a href="#training-data-cache-srctrainingdata_utilspy"><strong>Training Data Cache</strong> (<code>src/training/data_utils.py</code>)</a></li>
 <li><a href="#context-cache-testscontext_managementtest_enhanced_modulespy"><strong>Context Cache</strong> (<code>tests/context_management/test_enhanced_modules.py</code>)</a></li>
 <li><a href="#file-cache-scriptsspace_traversalperformancepy"><strong>File Cache</strong> (<code>scripts/space_traversal/performance.py</code>)</a></li>
-</ul>
-</li>
 <li><a href="#42-cache-strategy-phase-3c-lite">4.2 Cache Strategy (Phase 3C-Lite)</a></li>
 <li><a href="#5-continuation-prompt-patterns-and-examples">5. Continuation Prompt Patterns and Examples</a></li>
-<li><a href="#51-agent-continuation-protocol">5.1 Agent Continuation Protocol</a><ul>
+<li><a href="#51-agent-continuation-protocol">5.1 Agent Continuation Protocol</a></li>
 <li><a href="#phase-1-context-loading-first-2k-tokens"><strong>Phase 1: Context Loading (First 2K tokens)</strong></a></li>
 <li><a href="#phase-2-work-execution-main-session"><strong>Phase 2: Work Execution (Main session)</strong></a></li>
 <li><a href="#phase-3-session-closure-last-5k-tokens"><strong>Phase 3: Session Closure (Last 5K tokens)</strong></a></li>
-</ul>
-</li>
-<li><a href="#52-self-review-protocol-5-passes">5.2 Self-Review Protocol (5 Passes)</a><ul>
+<li><a href="#52-self-review-protocol-5-passes">5.2 Self-Review Protocol (5 Passes)</a></li>
 <li><a href="#pass-1-code-quality--correctness"><strong>Pass 1: Code Quality &amp; Correctness</strong></a></li>
 <li><a href="#pass-2-testing--validation"><strong>Pass 2: Testing &amp; Validation</strong></a></li>
 <li><a href="#pass-3-documentation--communication"><strong>Pass 3: Documentation &amp; Communication</strong></a></li>
 <li><a href="#pass-4-security--safety"><strong>Pass 4: Security &amp; Safety</strong></a></li>
 <li><a href="#pass-5-integration--dependencies"><strong>Pass 5: Integration &amp; Dependencies</strong></a></li>
-</ul>
-</li>
 <li><a href="#53-duration-aware-planning">5.3 Duration-Aware Planning</a></li>
 <li><a href="#54-continuation-prompt-format">5.4 Continuation Prompt Format</a></li>
 <li><a href="#-session-summary"> Session Summary</a></li>
 <li><a href="#-next-steps"> Next Steps</a></li>
 <li><a href="#-context-references"> Context References</a></li>
-<li><a href="#55-example-continuation-prompts-found-in-repository">5.5 Example Continuation Prompts (Found in Repository)</a><ul>
+<li><a href="#55-example-continuation-prompts-found-in-repository">5.5 Example Continuation Prompts (Found in Repository)</a></li>
 <li><a href="#coverage-enhancement-prompt-docspromptscoverage_continuation_promptmd"><strong>Coverage Enhancement Prompt</strong> (<code>docs/prompts/COVERAGE_CONTINUATION_PROMPT.md</code>)</a></li>
-</ul>
-</li>
 <li><a href="#-session-summary"> Session Summary</a></li>
 <li><a href="#-next-steps"> Next Steps</a></li>
 <li><a href="#agent-continuation-prompt-docsplansagent_continuation_promptmd"><strong>Agent Continuation Prompt</strong> (<code>docs/plans/AGENT_CONTINUATION_PROMPT.md</code>)</a></li>
@@ -2886,27 +2876,27 @@
 <li><a href="#102-short-term-priorities-next-1-2-sessions">10.2 Short-term Priorities (Next 1-2 Sessions)</a></li>
 <li><a href="#103-medium-term-roadmap-3-5-sessions">10.3 Medium-term Roadmap (3-5 Sessions)</a></li>
 <li><a href="#11-conclusions">11. Conclusions</a></li>
-<li><a href="#111-architecture-health--excellent">11.1 Architecture Health:  EXCELLENT</a></li>
-<li><a href="#112-pda-loop--fully-implemented">11.2 PDA Loop:  FULLY IMPLEMENTED</a></li>
-<li><a href="#113-agent-ecosystem--maturing">11.3 Agent Ecosystem:  MATURING</a></li>
-<li><a href="#114-cache-infrastructure--robust">11.4 Cache Infrastructure:  ROBUST</a></li>
-<li><a href="#115-continuation-patterns--mature">11.5 Continuation Patterns:  MATURE</a></li>
-<li><a href="#116-overall-assessment--production-ready-904">11.6 Overall Assessment:  PRODUCTION READY (90.4%)</a></li>
+<li><a href="#111-architecture-health--excellent">11.1 Architecture Health: EXCELLENT</a></li>
+<li><a href="#112-pda-loop--fully-implemented">11.2 PDA Loop: FULLY IMPLEMENTED</a></li>
+<li><a href="#113-agent-ecosystem--maturing">11.3 Agent Ecosystem: MATURING</a></li>
+<li><a href="#114-cache-infrastructure--robust">11.4 Cache Infrastructure: ROBUST</a></li>
+<li><a href="#115-continuation-patterns--mature">11.5 Continuation Patterns: MATURE</a></li>
+<li><a href="#116-overall-assessment--production-ready-904">11.6 Overall Assessment: PRODUCTION READY (90.4%)</a></li>
 <li><a href="#12-references">12. References</a></li>
 <li><a href="#121-primary-documentation">12.1 Primary Documentation</a></li>
 <li><a href="#122-core-implementations">12.2 Core Implementations</a></li>
 <li><a href="#123-cache-implementations">12.3 Cache Implementations</a></li>
 <li><a href="#124-related-documentation">12.4 Related Documentation</a></li>
 </ul>
-<p><strong>Generated</strong>: 2026-06-22<br/>
-<strong>Agent</strong>: Semantic Search Agent<br/>
+<p><strong>Generated</strong>: 2026-06-22
+<strong>Agent</strong>: Semantic Search Agent
 <strong>Repository</strong>: /home/runner/work/<em>codex</em>/<em>codex</em></p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This document provides a comprehensive search and analysis of the cognitive brain architecture, PDA loop processes, AfterMath tagging, custom agent implementations, cache configurations, and continuation prompt patterns within the <em>codex</em> repository.</p>
 <h3 id="key-findings">Key Findings:<a class="headerlink" href="#key-findings" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Cognitive Brain Architecture</strong>: Well-documented 4-layer system (Perception → Decision → Action → AfterMath)</li>
+<li><strong>Cognitive Brain Architecture</strong>: Well-documented 4-layer system (Perception Decision Action AfterMath)</li>
 <li><strong>PDA Loop</strong>: Implemented in <code>scripts/cognitive/cognitive_brain_core.py</code> with full cycle support</li>
 <li><strong>AfterMath Tag System</strong>: Comprehensive prompt template at <code>docs/prompts/aftermath-agent-prompt.md</code></li>
 <li><strong>Custom Agents</strong>: 50+ agent implementations in <code>.github/agents/</code> with specialized capabilities</li>
@@ -2920,25 +2910,25 @@
 <ul>
 <li><strong>Version</strong>: 1.0.0 (2026-06-22)</li>
 <li><strong>Size</strong>: 8.5 KB</li>
-<li><strong>Status</strong>:  Production Ready</li>
+<li><strong>Status</strong>: Production Ready</li>
 </ul>
 <p><strong>Structure</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>_codex_/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── src/              # Core application code
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   ├── codex/       # Ingestion pipeline (ingest→analyze→transform→verify)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│   ├── rag/         # RAG pipelines &amp; retrieval
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│   ├── verification/ # Chain-of-Verification (CoVe)
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   ├── mcp/         # Model Context Protocol adapters
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   └── tools/       # Tool registry
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── agents/          # Autonomous agents (workflow, quantum, physics)
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├── scripts/         # Automation &amp; utilities
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   └── mcp/        # ChatGPT Project packaging system
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>├── tests/           # 21,500+ test suite
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>├── docs/            # Documentation hub
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│   ├── mcp/        # MCP packaging docs (93+ KB)
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   ├── system/     # Cognitive brain (this file)
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   └── capabilities/ # Capability guides
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└── .github/         # CI/CD workflows &amp; automation
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> src/ # Core application code
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> codex/ # Ingestion pipeline (ingestanalyzetransformverify)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> rag/ # RAG pipelines &amp; retrieval
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> verification/ # Chain-of-Verification (CoVe)
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> mcp/ # Model Context Protocol adapters
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> tools/ # Tool registry
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> agents/ # Autonomous agents (workflow, quantum, physics)
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> scripts/ # Automation &amp; utilities
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> mcp/ # ChatGPT Project packaging system
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> tests/ # 21,500+ test suite
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> docs/ # Documentation hub
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> mcp/ # MCP packaging docs (93+ KB)
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> system/ # Cognitive brain (this file)
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> capabilities/ # Capability guides
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> .github/ # CI/CD workflows &amp; automation
 </code></pre></div></p>
 <p><strong>Key Components</strong>:
 1. <strong>Codex Ingestion Pipeline</strong> (<code>src/codex/</code>) - Complete Python code processing
@@ -2949,7 +2939,7 @@
 <ul>
 <li><strong>Version</strong>: 1.2.0 (2026-06-22)</li>
 <li><strong>Size</strong>: 13 KB</li>
-<li><strong>Status</strong>:  Active Development</li>
+<li><strong>Status</strong>: Active Development</li>
 </ul>
 <p><strong>Current Metrics</strong>:
 - Tests: 1615 (100% passing)
@@ -2958,23 +2948,23 @@
 - MLOps Maturity: Level 4 (100/100)
 - Cache Usage: 7.69 GB / 10 GB (23% buffer)</p>
 <p><strong>Active Phases</strong>:
--  Phase 6: MCP Package System (COMPLETE)
--  Phase 7: Cognitive Brain Infrastructure (COMPLETE)
--  Phase 8: Documentation Consolidation (COMPLETE)
--  Phase 9: Coverage &amp; Performance Enhancement (IN PROGRESS - 20%)</p>
+- Phase 6: MCP Package System (COMPLETE)
+- Phase 7: Cognitive Brain Infrastructure (COMPLETE)
+- Phase 8: Documentation Consolidation (COMPLETE)
+- Phase 9: Coverage &amp; Performance Enhancement (IN PROGRESS - 20%)</p>
 <h4 id="13-cognitive-brain-app-status-cognitive_appcognitive_brain_status_v2md">1.3 <strong>Cognitive Brain App Status</strong> (<code>cognitive_app/COGNITIVE_BRAIN_STATUS_V2.md</code>)<a class="headerlink" href="#13-cognitive-brain-app-status-cognitive_appcognitive_brain_status_v2md" title="Permanent link">¶</a></h4>
 <ul>
 <li><strong>Version</strong>: 2.0 (2026-06-22)</li>
 <li><strong>Overall Health</strong>: 90.4% (Production Ready)</li>
 </ul>
 <p><strong>7-Layer Architecture</strong>:
-1.  User Interface Layer (100% - Production Ready)
-2.  AI Generation Layer (100% - Production Ready)
-3.  Interactive Execution Layer (95% - Production Ready)
-4.  Quantum Processing Layer (97% - Minor Gap)
-5.  Agent Orchestration Layer (90% - Test Gap)
-6.  Memory Management Layer (100% - Production Ready)
-7.  Workflow Orchestration Layer (55% - Significant Gap)</p>
+1. User Interface Layer (100% - Production Ready)
+2. AI Generation Layer (100% - Production Ready)
+3. Interactive Execution Layer (95% - Production Ready)
+4. Quantum Processing Layer (97% - Minor Gap)
+5. Agent Orchestration Layer (90% - Test Gap)
+6. Memory Management Layer (100% - Production Ready)
+7. Workflow Orchestration Layer (55% - Significant Gap)</p>
 <p><strong>Test Coverage</strong>: 150/166 tests passing (90.4%)</p>
 <hr/>
 <h2 id="2-pda-loop-and-aftermath-tag-processes">2. PDA Loop and AfterMath Tag Processes<a class="headerlink" href="#2-pda-loop-and-aftermath-tag-processes" title="Permanent link">¶</a></h2>
@@ -2982,100 +2972,100 @@
 <p><strong>Core Implementation</strong>: <code>scripts/cognitive/cognitive_brain_core.py</code></p>
 <p><strong>Architecture</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">class</span> <span class="nc">CognitiveBrain</span><span class="p">:</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="sd">    Main coordinator for the Cognitive Brain system.</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="sd">    Manages the PDA Loop + AfterMath cycle across all 10 V10 agents.</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="sd">    """</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="sd"> Main coordinator for the Cognitive Brain system.</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="sd"> Manages the PDA Loop + AfterMath cycle across all 10 V10 agents.</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="sd"> """</span>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"cognitive"</span><span class="p">):</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>        <span class="c1"># Initialize subsystems</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">perception</span> <span class="o">=</span> <span class="n">PerceptionLayer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"perceptions"</span><span class="p">)</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">decision</span> <span class="o">=</span> <span class="n">DecisionEngine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"decisions"</span><span class="p">)</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">ActionExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"actions"</span><span class="p">)</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">aftermath</span> <span class="o">=</span> <span class="n">AfterMathEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"aftermath"</span><span class="p">)</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"cognitive"</span><span class="p">):</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="c1"># Initialize subsystems</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">perception</span> <span class="o">=</span> <span class="n">PerceptionLayer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"perceptions"</span><span class="p">)</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="bp">self</span><span class="o">.</span><span class="n">decision</span> <span class="o">=</span> <span class="n">DecisionEngine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"decisions"</span><span class="p">)</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">ActionExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"actions"</span><span class="p">)</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> <span class="bp">self</span><span class="o">.</span><span class="n">aftermath</span> <span class="o">=</span> <span class="n">AfterMathEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span> <span class="o">/</span> <span class="s2">"aftermath"</span><span class="p">)</span>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="k">def</span> <span class="nf">run_pda_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">        </span><span class="sd">"""Execute one complete PDA Loop + AfterMath cycle."""</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="c1"># Stage 1: Perceive</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="n">perception_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">perception</span><span class="o">.</span><span class="n">perceive</span><span class="p">()</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="k">def</span> <span class="nf">run_pda_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w"> </span><span class="sd">"""Execute one complete PDA Loop + AfterMath cycle."""</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="c1"># Stage 1: Perceive</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="n">perception_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">perception</span><span class="o">.</span><span class="n">perceive</span><span class="p">()</span>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>        <span class="c1"># Stage 2: Decide</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>        <span class="n">decisions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">make_decisions</span><span class="p">(</span><span class="n">perception_data</span><span class="p">)</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> <span class="c1"># Stage 2: Decide</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> <span class="n">decisions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision</span><span class="o">.</span><span class="n">make_decisions</span><span class="p">(</span><span class="n">perception_data</span><span class="p">)</span>
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>        <span class="c1"># Stage 3: Act</span>
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>        <span class="n">action_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">decisions</span><span class="p">)</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> <span class="c1"># Stage 3: Act</span>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> <span class="n">action_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">decisions</span><span class="p">)</span>
 <a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>        <span class="c1"># Stage 4: AfterMath</span>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>        <span class="n">learnings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aftermath</span><span class="o">.</span><span class="n">evaluate_and_learn</span><span class="p">(</span>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>            <span class="n">perception_data</span><span class="p">,</span> <span class="n">decisions</span><span class="p">,</span> <span class="n">action_results</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>        <span class="p">)</span>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> <span class="c1"># Stage 4: AfterMath</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> <span class="n">learnings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aftermath</span><span class="o">.</span><span class="n">evaluate_and_learn</span><span class="p">(</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> <span class="n">perception_data</span><span class="p">,</span> <span class="n">decisions</span><span class="p">,</span> <span class="n">action_results</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> <span class="p">)</span>
 </code></pre></div></p>
 <p><strong>4-Stage Cycle</strong>:
-1. <strong>PERCEPTION</strong> ️ - Data collection and environmental awareness
-2. <strong>DECISION</strong> 🧭 - Intelligent decision-making and optimization
-3. <strong>ACTION</strong>  - Workflow orchestration and agent dispatching
-4. <strong>AFTERMATH</strong>  - Feedback loops and self-improvement</p>
+1. <strong>PERCEPTION</strong> - Data collection and environmental awareness
+2. <strong>DECISION</strong> - Intelligent decision-making and optimization
+3. <strong>ACTION</strong> - Workflow orchestration and agent dispatching
+4. <strong>AFTERMATH</strong> - Feedback loops and self-improvement</p>
 <h3 id="22-aftermath-tag-system">2.2 AfterMath Tag System<a class="headerlink" href="#22-aftermath-tag-system" title="Permanent link">¶</a></h3>
 <p><strong>Documentation</strong>: <code>docs/prompts/aftermath-agent-prompt.md</code></p>
 <p><strong>Purpose</strong>: Structured session logging for AI-driven lessons learned</p>
 <p><strong>Schema Structure</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">meta</span><span class="p">:</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">session_id</span><span class="p">:</span><span class="w"> </span><span class="s">"S-PR2671-2025-12-30-1"</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">pr_number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2671</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="s">"copilot/sub-pr-2668-again"</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">started_at</span><span class="p">:</span><span class="w"> </span><span class="s">"2025-12-30T07:45:00Z"</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">finished_at</span><span class="p">:</span><span class="w"> </span><span class="s">"2025-12-30T08:18:00Z"</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="s">"Resolve</span><span class="nv"> </span><span class="s">PR</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">items;</span><span class="nv"> </span><span class="s">implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging"</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="nt">session_id</span><span class="p">:</span><span class="w"> </span><span class="s">"S-PR2671-2025-12-30-1"</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">pr_number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2671</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="s">"copilot/sub-pr-2668-again"</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">started_at</span><span class="p">:</span><span class="w"> </span><span class="s">"2025-12-30T07:45:00Z"</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">finished_at</span><span class="p">:</span><span class="w"> </span><span class="s">"2025-12-30T08:18:00Z"</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="s">"Resolve</span><span class="nv"> </span><span class="s">PR</span><span class="nv"> </span><span class="s">review</span><span class="nv"> </span><span class="s">items;</span><span class="nv"> </span><span class="s">implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging"</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="nt">lessons</span><span class="p">:</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Code</span><span class="nv"> </span><span class="s">quality</span><span class="nv"> </span><span class="s">maintenance</span><span class="nv"> </span><span class="s">scripts"</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="s">"Review</span><span class="nv"> </span><span class="s">comments</span><span class="nv"> </span><span class="s">about</span><span class="nv"> </span><span class="s">shell</span><span class="nv"> </span><span class="s">script</span><span class="nv"> </span><span class="s">portability"</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="nt">root_cause</span><span class="p">:</span><span class="w"> </span><span class="s">"BSD</span><span class="nv"> </span><span class="s">vs.</span><span class="nv"> </span><span class="s">GNU</span><span class="nv"> </span><span class="s">date</span><span class="nv"> </span><span class="s">incompatibility"</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="nt">fix</span><span class="p">:</span><span class="w"> </span><span class="s">"Used</span><span class="nv"> </span><span class="s">`date</span><span class="nv"> </span><span class="s">-u</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%S`</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">cross-platform</span><span class="nv"> </span><span class="s">support"</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="nt">evidence</span><span class="p">:</span><span class="w"> </span><span class="s">"commit:b62e012"</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">    </span><span class="nt">outcome</span><span class="p">:</span><span class="w"> </span><span class="s">"Scripts</span><span class="nv"> </span><span class="s">now</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">macOS</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">Linux"</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Code</span><span class="nv"> </span><span class="s">quality</span><span class="nv"> </span><span class="s">maintenance</span><span class="nv"> </span><span class="s">scripts"</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="s">"Review</span><span class="nv"> </span><span class="s">comments</span><span class="nv"> </span><span class="s">about</span><span class="nv"> </span><span class="s">shell</span><span class="nv"> </span><span class="s">script</span><span class="nv"> </span><span class="s">portability"</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="nt">root_cause</span><span class="p">:</span><span class="w"> </span><span class="s">"BSD</span><span class="nv"> </span><span class="s">vs.</span><span class="nv"> </span><span class="s">GNU</span><span class="nv"> </span><span class="s">date</span><span class="nv"> </span><span class="s">incompatibility"</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="nt">fix</span><span class="p">:</span><span class="w"> </span><span class="s">"Used</span><span class="nv"> </span><span class="s">`date</span><span class="nv"> </span><span class="s">-u</span><span class="nv"> </span><span class="s">+%Y%m%d%H%M%S`</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">cross-platform</span><span class="nv"> </span><span class="s">support"</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="nt">evidence</span><span class="p">:</span><span class="w"> </span><span class="s">"commit:b62e012"</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w"> </span><span class="nt">outcome</span><span class="p">:</span><span class="w"> </span><span class="s">"Scripts</span><span class="nv"> </span><span class="s">now</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">macOS</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">Linux"</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
 <a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="nt">decisions</span><span class="p">:</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">what</span><span class="p">:</span><span class="w"> </span><span class="s">"Implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">system"</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">    </span><span class="nt">why</span><span class="p">:</span><span class="w"> </span><span class="s">"Enable</span><span class="nv"> </span><span class="s">AI</span><span class="nv"> </span><span class="s">agents</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">learn</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">session</span><span class="nv"> </span><span class="s">experience"</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">    </span><span class="nt">alternatives</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"Manual</span><span class="nv"> </span><span class="s">session</span><span class="nv"> </span><span class="s">summaries"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"External</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">service"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">    </span><span class="nt">chosen</span><span class="p">:</span><span class="w"> </span><span class="s">"Structured</span><span class="nv"> </span><span class="s">YAML</span><span class="nv"> </span><span class="s">blocks</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">outputs"</span>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">    </span><span class="nt">rationale</span><span class="p">:</span><span class="w"> </span><span class="s">"Native</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">integration,</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">external</span><span class="nv"> </span><span class="s">dependencies"</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">what</span><span class="p">:</span><span class="w"> </span><span class="s">"Implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">system"</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w"> </span><span class="nt">why</span><span class="p">:</span><span class="w"> </span><span class="s">"Enable</span><span class="nv"> </span><span class="s">AI</span><span class="nv"> </span><span class="s">agents</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">learn</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">session</span><span class="nv"> </span><span class="s">experience"</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="nt">alternatives</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"Manual</span><span class="nv"> </span><span class="s">session</span><span class="nv"> </span><span class="s">summaries"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"External</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">service"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w"> </span><span class="nt">chosen</span><span class="p">:</span><span class="w"> </span><span class="s">"Structured</span><span class="nv"> </span><span class="s">YAML</span><span class="nv"> </span><span class="s">blocks</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">outputs"</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="nt">rationale</span><span class="p">:</span><span class="w"> </span><span class="s">"Native</span><span class="nv"> </span><span class="s">GitHub</span><span class="nv"> </span><span class="s">integration,</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">external</span><span class="nv"> </span><span class="s">dependencies"</span>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
 <a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="nt">metrics</span><span class="p">:</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">  </span><span class="nt">tokens_used</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">107199</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">  </span><span class="nt">tokens_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w">  </span><span class="nt">commits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">  </span><span class="nt">files_changed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">35</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">  </span><span class="nt">lines_added</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1847</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">  </span><span class="nt">lines_removed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">423</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="nt">tokens_used</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">107199</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w"> </span><span class="nt">tokens_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000000</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w"> </span><span class="nt">commits</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w"> </span><span class="nt">files_changed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">35</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w"> </span><span class="nt">lines_added</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1847</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w"> </span><span class="nt">lines_removed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">423</span>
 <a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>
 <a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="nt">quality</span><span class="p">:</span>
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">  </span><span class="nt">tests_passing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w">  </span><span class="nt">coverage_maintained</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w">  </span><span class="nt">linting_clean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w">  </span><span class="nt">security_clean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w"> </span><span class="nt">tests_passing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w"> </span><span class="nt">coverage_maintained</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w"> </span><span class="nt">linting_clean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w"> </span><span class="nt">security_clean</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>
 <a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="nt">next_steps</span><span class="p">:</span>
-<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="s">"Implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">future</span><span class="nv"> </span><span class="s">sessions"</span>
-<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w">    </span><span class="nt">priority</span><span class="p">:</span><span class="w"> </span><span class="s">"high"</span>
-<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a><span class="w">    </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s">"complete"</span>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="s">"Implement</span><span class="nv"> </span><span class="s">AfterMath</span><span class="nv"> </span><span class="s">logging</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">future</span><span class="nv"> </span><span class="s">sessions"</span>
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w"> </span><span class="nt">priority</span><span class="p">:</span><span class="w"> </span><span class="s">"high"</span>
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a><span class="w"> </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s">"complete"</span>
 </code></pre></div></p>
 <p><strong>AfterMath Scripts</strong>:
 - <code>scripts/aftermath/parse_session.py</code> - Parse aftermath blocks
 - <code>scripts/aftermath/update_cognitive_brain.py</code> - Update cognitive brain with learnings</p>
 <p><strong>Active Tags</strong> (from COGNITIVE_BRAIN_STATUS_V2.md):
-- <code>#cognitive-brain-integration</code> -  COMPLETE
-- <code>#test-coverage-enhancement</code> -  READY TO START
-- <code>#workflow-validation</code> -  PLANNED
-- <code>#performance-optimization</code> -  FUTURE</p>
+- <code>#cognitive-brain-integration</code> - COMPLETE
+- <code>#test-coverage-enhancement</code> - READY TO START
+- <code>#workflow-validation</code> - PLANNED
+- <code>#performance-optimization</code> - FUTURE</p>
 <hr/>
 <h2 id="3-custom-agent-implementations-and-patterns">3. Custom Agent Implementations and Patterns<a class="headerlink" href="#3-custom-agent-implementations-and-patterns" title="Permanent link">¶</a></h2>
 <h3 id="31-agent-directory-structure">3.1 Agent Directory Structure<a class="headerlink" href="#31-agent-directory-structure" title="Permanent link">¶</a></h3>
 <p><strong>Location</strong>: <code>.github/agents/</code></p>
 <p><strong>Agent Categories</strong>:
 1. <strong>Core Agents</strong> (<code>.github/agents/core/</code>)
-   - Base infrastructure and shared utilities</p>
+ - Base infrastructure and shared utilities</p>
 <ol>
 <li><strong>Specialized Agents</strong> (50+ implementations):</li>
 <li><code>ast-analysis-agent</code> - AST parsing and analysis</li>
@@ -3117,60 +3107,60 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="k">class</span> <span class="nc">Planner</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="sd">"""Base abstract class for all cognitive agents."""</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="sd">"""Base abstract class for all cognitive agents."""</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="nd">@abstractmethod</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ObservationData</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">        </span><span class="sd">"""Observe: Collect data from environment"""</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ObservationData</span><span class="p">:</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="sd">"""Observe: Collect data from environment"""</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="nd">@abstractmethod</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="k">def</span> <span class="nf">orient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">ObservationData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrientationResult</span><span class="p">:</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="sd">"""Orient: Analyze and contextualize observations"""</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> <span class="k">def</span> <span class="nf">orient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">ObservationData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrientationResult</span><span class="p">:</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w"> </span><span class="sd">"""Orient: Analyze and contextualize observations"""</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="nd">@abstractmethod</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="k">def</span> <span class="nf">decide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">OrientationResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Decision</span><span class="p">:</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">        </span><span class="sd">"""Decide: Determine optimal action"""</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="k">def</span> <span class="nf">decide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="n">OrientationResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Decision</span><span class="p">:</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span><span class="sd">"""Decide: Determine optimal action"""</span>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="nd">@abstractmethod</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decision</span><span class="p">:</span> <span class="n">Decision</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionResult</span><span class="p">:</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">        </span><span class="sd">"""Act: Execute decided action"""</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decision</span><span class="p">:</span> <span class="n">Decision</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionResult</span><span class="p">:</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w"> </span><span class="sd">"""Act: Execute decided action"""</span>
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="k">def</span> <span class="nf">ooda_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ActionResult</span><span class="p">:</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">        </span><span class="sd">"""Execute full OODA loop"""</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>        <span class="n">orientation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orient</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>        <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> <span class="k">def</span> <span class="nf">ooda_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ActionResult</span><span class="p">:</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w"> </span><span class="sd">"""Execute full OODA loop"""</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> <span class="n">observation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> <span class="n">orientation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orient</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> <span class="n">decision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decide</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Pattern 2: Legacy Agent Adapter</strong> (<code>agents/cognitive_adapter.py</code>)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">class</span> <span class="nc">LegacyAgentAdapter</span><span class="p">(</span><span class="n">Planner</span><span class="p">):</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="sd">"""Wrap legacy agents into new Planner interface."""</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span><span class="sd">"""Wrap legacy agents into new Planner interface."""</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">legacy_agent</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MemoryInterface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">legacy_agent</span> <span class="o">=</span> <span class="n">legacy_agent</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span> <span class="ow">or</span> <span class="n">SimpleDictMemory</span><span class="p">()</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">legacy_agent</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MemoryInterface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">legacy_agent</span> <span class="o">=</span> <span class="n">legacy_agent</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span> <span class="ow">or</span> <span class="n">SimpleDictMemory</span><span class="p">()</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ObservationData</span><span class="p">:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">        </span><span class="sd">"""Wrap input data in ObservationData structure"""</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        <span class="k">return</span> <span class="n">ObservationData</span><span class="p">(</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>            <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>            <span class="n">source</span><span class="o">=</span><span class="s2">"legacy_agent"</span><span class="p">,</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>            <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"agent_type"</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">legacy_agent</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        <span class="p">)</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ObservationData</span><span class="p">:</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="sd">"""Wrap input data in ObservationData structure"""</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="k">return</span> <span class="n">ObservationData</span><span class="p">(</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="n">source</span><span class="o">=</span><span class="s2">"legacy_agent"</span><span class="p">,</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">"agent_type"</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">legacy_agent</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="p">)</span>
 </code></pre></div>
 <p><strong>Pattern 3: Agent Orchestration</strong> (<code>agents/workflow_navigator.py</code>)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">class</span> <span class="nc">WorkflowNavigator</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="sd">"""Tokenized workflow navigation and execution."""</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="sd">"""Tokenized workflow navigation and execution."""</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">TOKENS</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>        <span class="s2">"audit"</span><span class="p">:</span> <span class="s2">"Audit execution and compliance"</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="s2">"decide"</span><span class="p">:</span> <span class="s2">"Decision-making and optimization"</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>        <span class="s2">"docs"</span><span class="p">:</span> <span class="s2">"Documentation generation"</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>        <span class="s2">"organize"</span><span class="p">:</span> <span class="s2">"Task organization and planning"</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>        <span class="s2">"review"</span><span class="p">:</span> <span class="s2">"Code review and validation"</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>        <span class="s2">"heal"</span><span class="p">:</span> <span class="s2">"Self-healing and error recovery"</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="p">}</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="n">TOKENS</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="s2">"audit"</span><span class="p">:</span> <span class="s2">"Audit execution and compliance"</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="s2">"decide"</span><span class="p">:</span> <span class="s2">"Decision-making and optimization"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="s2">"docs"</span><span class="p">:</span> <span class="s2">"Documentation generation"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="s2">"organize"</span><span class="p">:</span> <span class="s2">"Task organization and planning"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="s2">"review"</span><span class="p">:</span> <span class="s2">"Code review and validation"</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="s2">"heal"</span><span class="p">:</span> <span class="s2">"Self-healing and error recovery"</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> <span class="p">}</span>
 </code></pre></div>
 <h3 id="33-agent-configuration-examples">3.3 Agent Configuration Examples<a class="headerlink" href="#33-agent-configuration-examples" title="Permanent link">¶</a></h3>
 <p><strong>YAML Configuration</strong> (<code>codex-reviewer.agent.yml</code>):
@@ -3179,18 +3169,18 @@
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Automated code review agent</span>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="nt">capabilities</span><span class="p">:</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code_review</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">quality_analysis</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security_scanning</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code_review</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">quality_analysis</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security_scanning</span>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request.opened</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request.synchronize</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request.opened</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request.synchronize</span>
 <a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="nt">parameters</span><span class="p">:</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">  </span><span class="nt">max_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">  </span><span class="nt">review_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">comprehensive</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">  </span><span class="nt">security_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span><span class="nt">max_files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w"> </span><span class="nt">review_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">comprehensive</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w"> </span><span class="nt">security_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
 </code></pre></div></p>
 <p><strong>Markdown Specification</strong> (<code>.agent.md</code> files):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="gh"># Agent: Semantic Search</span>
@@ -3214,128 +3204,128 @@
 <h3 id="41-cache-implementations">4.1 Cache Implementations<a class="headerlink" href="#41-cache-implementations" title="Permanent link">¶</a></h3>
 <h4 id="actions-server-cache-toolsactions_serverpy"><strong>Actions Server Cache</strong> (<code>tools/actions_server.py</code>)<a class="headerlink" href="#actions-server-cache-toolsactions_serverpy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span> <span class="nf">_cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">    </span><span class="sd">"""Naive cache with timestamp; actions are human-in-the-loop so short TTL"""</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"ts"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"data"</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CACHE_DIR</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">+</span> <span class="s2">".json"</span><span class="p">)</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="sd">"""Naive cache with timestamp; actions are human-in-the-loop so short TTL"""</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"ts"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"data"</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CACHE_DIR</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">+</span> <span class="s2">".json"</span><span class="p">)</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="k">def</span> <span class="nf">get_branches</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"branches:</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">_cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="k">if</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="s2">"ts"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">gh_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/repos/</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">/branches?per_page=100"</span><span class="p">)</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="n">_cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="k">return</span> <span class="n">data</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"branches:</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">c</span> <span class="o">=</span> <span class="n">_cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="k">if</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="s2">"ts"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">gh_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/repos/</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">/branches?per_page=100"</span><span class="p">)</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="n">_cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="k">return</span> <span class="n">data</span>
 </code></pre></div>
 <h4 id="github-client-cache-srccodex_bridgegithub_clientpy"><strong>GitHub Client Cache</strong> (<code>src/codex_bridge/github_client.py</code>)<a class="headerlink" href="#github-client-cache-srccodex_bridgegithub_clientpy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">def</span> <span class="nf">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">    </span><span class="sd">"""Set cache with timestamp"""</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">_cache_path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">"ts"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"data"</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="sd">"""Set cache with timestamp"""</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> <span class="n">p</span> <span class="o">=</span> <span class="n">_cache_path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">"ts"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">"data"</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="k">def</span> <span class="nf">get_branches</span><span class="p">(</span><span class="n">owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"branches:</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>        <span class="k">return</span> <span class="n">c</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">gh_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/repos/</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">/branches?per_page=100"</span><span class="p">)</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    <span class="k">return</span> <span class="n">data</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"branches:</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="n">c</span> <span class="o">=</span> <span class="n">cache_get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="k">return</span> <span class="n">c</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">gh_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/repos/</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">/branches?per_page=100"</span><span class="p">)</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="n">cache_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="k">return</span> <span class="n">data</span>
 </code></pre></div>
 <h4 id="tokenization-cache-teststokenizationtest_cachepy"><strong>Tokenization Cache</strong> (<code>tests/tokenization/test_cache.py</code>)<a class="headerlink" href="#tokenization-cache-teststokenizationtest_cachepy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">class</span> <span class="nc">TokenizationCache</span><span class="p">:</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">    </span><span class="sd">"""Cache for tokenized text with TTL support."""</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="sd">"""Cache for tokenized text with TTL support."""</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttl_hours</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">24.0</span><span class="p">):</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">ttl_hours</span><span class="p">)</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CacheEntry</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttl_hours</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">24.0</span><span class="p">):</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">ttl_hours</span><span class="p">)</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CacheEntry</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">        </span><span class="sd">"""Store tokenization result"""</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_key</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">CacheEntry</span><span class="p">(</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>            <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>            <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>        <span class="p">)</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="sd">"""Store tokenization result"""</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_key</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">CacheEntry</span><span class="p">(</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> <span class="p">)</span>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w">        </span><span class="sd">"""Retrieve cached tokens if not expired"""</span>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_key</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>        <span class="n">entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>        <span class="k">if</span> <span class="n">entry</span> <span class="ow">and</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">entry</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span>
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>            <span class="k">return</span> <span class="n">entry</span><span class="o">.</span><span class="n">tokens</span>
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w"> </span><span class="sd">"""Retrieve cached tokens if not expired"""</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_key</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> <span class="n">entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> <span class="k">if</span> <span class="n">entry</span> <span class="ow">and</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">entry</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span>
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> <span class="k">return</span> <span class="n">entry</span><span class="o">.</span><span class="n">tokens</span>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> <span class="k">return</span> <span class="kc">None</span>
 </code></pre></div>
 <h4 id="training-data-cache-srctrainingdata_utilspy"><strong>Training Data Cache</strong> (<code>src/training/data_utils.py</code>)<a class="headerlink" href="#training-data-cache-srctrainingdata_utilspy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">def</span> <span class="nf">cache_dataset</span><span class="p">(</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    <span class="n">ds</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">Any</span><span class="p">]],</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> <span class="n">ds</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">Any</span><span class="p">]],</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">    </span><span class="sd">"""Cache tokenised dataset ds under cache_dir as .npz shards."""</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>            <span class="n">arr</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_to_ndarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>            <span class="n">np</span><span class="o">.</span><span class="n">savez_compressed</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"sample_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">06d</span><span class="si">}</span><span class="s2">.npz"</span><span class="p">,</span> <span class="o">**</span><span class="n">arr</span><span class="p">)</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>            <span class="k">continue</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w"> </span><span class="sd">"""Cache tokenised dataset ds under cache_dir as .npz shards."""</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="n">arr</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_to_ndarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="n">np</span><span class="o">.</span><span class="n">savez_compressed</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"sample_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">06d</span><span class="si">}</span><span class="s2">.npz"</span><span class="p">,</span> <span class="o">**</span><span class="n">arr</span><span class="p">)</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="k">continue</span>
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
 <a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="k">def</span> <span class="nf">load_cached</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]]:</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w">    </span><span class="sd">"""Yield cached samples stored by cache_dataset."""</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    <span class="k">for</span> <span class="n">npz</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.npz"</span><span class="p">)):</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">npz</span><span class="p">)</span>
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>            <span class="k">yield</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>            <span class="k">continue</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w"> </span><span class="sd">"""Yield cached samples stored by cache_dataset."""</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="k">for</span> <span class="n">npz</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.npz"</span><span class="p">)):</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">npz</span><span class="p">)</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a> <span class="k">yield</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a> <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> <span class="k">continue</span>
 </code></pre></div>
 <h4 id="context-cache-testscontext_managementtest_enhanced_modulespy"><strong>Context Cache</strong> (<code>tests/context_management/test_enhanced_modules.py</code>)<a class="headerlink" href="#context-cache-testscontext_managementtest_enhanced_modulespy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="k">class</span> <span class="nc">ContextCache</span><span class="p">:</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">    </span><span class="sd">"""Context-aware caching with tag-based invalidation."""</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w"> </span><span class="sd">"""Context-aware caching with tag-based invalidation."""</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">        </span><span class="sd">"""Store value with optional tags"""</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>        <span class="k">if</span> <span class="n">tags</span><span class="p">:</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w"> </span><span class="sd">"""Store value with optional tags"""</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="k">if</span> <span class="n">tags</span><span class="p">:</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="k">def</span> <span class="nf">invalidate_by_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w">        </span><span class="sd">"""Invalidate all entries with given tag"""</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="k">def</span> <span class="nf">invalidate_by_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w"> </span><span class="sd">"""Invalidate all entries with given tag"""</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="file-cache-scriptsspace_traversalperformancepy"><strong>File Cache</strong> (<code>scripts/space_traversal/performance.py</code>)<a class="headerlink" href="#file-cache-scriptsspace_traversalperformancepy" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="k">class</span> <span class="nc">FileCache</span><span class="p">:</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">    </span><span class="sd">"""Simple file-based cache with TTL."""</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w"> </span><span class="sd">"""Simple file-based cache with TTL."""</span>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">        </span><span class="sd">"""Store result in cache file"""</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>            <span class="s2">"key"</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>            <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>            <span class="s2">"expires_at"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">ttl_seconds</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>        <span class="p">}</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>        <span class="n">p</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w"> </span><span class="sd">"""Store result in cache file"""</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="s2">"key"</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="s2">"result"</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="s2">"expires_at"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">ttl_seconds</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> <span class="p">}</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="n">p</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">        </span><span class="sd">"""Retrieve from cache if not expired"""</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>            <span class="k">return</span> <span class="kc">None</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_at"</span><span class="p">]:</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>            <span class="k">return</span> <span class="kc">None</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w"> </span><span class="sd">"""Retrieve from cache if not expired"""</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s2">.json"</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> <span class="k">return</span> <span class="kc">None</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s2">"expires_at"</span><span class="p">]:</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="k">return</span> <span class="kc">None</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]</span>
 </code></pre></div>
 <h3 id="42-cache-strategy-phase-3c-lite">4.2 Cache Strategy (Phase 3C-Lite)<a class="headerlink" href="#42-cache-strategy-phase-3c-lite" title="Permanent link">¶</a></h3>
 <p><strong>From Cognitive Map</strong>:
@@ -3355,55 +3345,55 @@
 <h3 id="51-agent-continuation-protocol">5.1 Agent Continuation Protocol<a class="headerlink" href="#51-agent-continuation-protocol" title="Permanent link">¶</a></h3>
 <p><strong>Documentation</strong>: <code>docs/workflows/AGENT_CONTINUATION_PROTOCOL.md</code>
 - <strong>Version</strong>: 2.0.0 (2026-06-22)
-- <strong>Status</strong>:  Active</p>
+- <strong>Status</strong>: Active</p>
 <p><strong>3-Phase Workflow</strong>:</p>
 <h4 id="phase-1-context-loading-first-2k-tokens"><strong>Phase 1: Context Loading (First 2K tokens)</strong><a class="headerlink" href="#phase-1-context-loading-first-2k-tokens" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>1. Load Cognitive Brain
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>   → Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>   → Read docs/DOCUMENTATION_INDEX.md (current status)
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>   → Read docs/ROADMAP.md (planned work)
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> Read docs/DOCUMENTATION_INDEX.md (current status)
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> Read docs/ROADMAP.md (planned work)
 <a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>2. Identify Current Phase
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>   → Check Dashboard for "Active Initiatives"
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>   → Note completion percentages
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>   → Identify blocking issues
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> Check Dashboard for "Active Initiatives"
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> Note completion percentages
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> Identify blocking issues
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>
 <a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>3. Assess Session Capacity
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>   → Estimate token budget (typical: 64K-128K)
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>   → Calculate work capacity (tokens / complexity)
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>   → Determine if quick wins or deep work
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a> Estimate token budget (typical: 64K-128K)
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> Calculate work capacity (tokens / complexity)
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> Determine if quick wins or deep work
 </code></pre></div>
 <h4 id="phase-2-work-execution-main-session"><strong>Phase 2: Work Execution (Main session)</strong><a class="headerlink" href="#phase-2-work-execution-main-session" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>4. Execute Highest Priority Work
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>   → Follow roadmap priorities
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>   → Complete atomic units of work
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>   → Commit frequently with clear messages
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a> Follow roadmap priorities
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> Complete atomic units of work
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> Commit frequently with clear messages
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>5. Update Cognitive Brain
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>   → Mark completed tasks in Dashboard
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>   → Update completion percentages
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>   → Document decisions and blockers
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> Mark completed tasks in Dashboard
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> Update completion percentages
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> Document decisions and blockers
 <a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>
 <a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>6. Validate Changes
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>   → Run linters, tests, syntax checks
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>   → Verify no regressions
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>   → Check CI/CD status
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> Run linters, tests, syntax checks
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a> Verify no regressions
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a> Check CI/CD status
 </code></pre></div>
 <h4 id="phase-3-session-closure-last-5k-tokens"><strong>Phase 3: Session Closure (Last 5K tokens)</strong><a class="headerlink" href="#phase-3-session-closure-last-5k-tokens" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>7. Self-Review Protocol
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>   → Perform 5-pass review (see below)
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>   → Address all concerns
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>   → Iterate until 0 issues
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> Perform 5-pass review (see below)
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> Address all concerns
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> Iterate until 0 issues
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>8. Prepare Continuation
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>   → If work remains: Generate continuation prompt
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>   → Update Dashboard with next steps
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>   → Post continuation comment to PR
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> If work remains: Generate continuation prompt
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> Update Dashboard with next steps
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a> Post continuation comment to PR
 <a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>
 <a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>9. Document Session
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>   → Update Dashboard with session summary
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>   → Commit final changes
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>   → Mark phase complete if done
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a> Update Dashboard with session summary
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> Commit final changes
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a> Mark phase complete if done
 </code></pre></div>
 <h3 id="52-self-review-protocol-5-passes">5.2 Self-Review Protocol (5 Passes)<a class="headerlink" href="#52-self-review-protocol-5-passes" title="Permanent link">¶</a></h3>
 <p><strong>Critical</strong>: Perform all 5 passes before ending session. <strong>DO NOT SKIP</strong>.</p>
@@ -3490,14 +3480,14 @@
 </table>
 <p><strong>Priority Order</strong>:
 1. <strong>Critical</strong> - Blocking issues, security fixes
-2. <strong>High</strong> - Incomplete features, failing tests<br/>
+2. <strong>High</strong> - Incomplete features, failing tests
 3. <strong>Medium</strong> - Documentation, refactoring
 4. <strong>Low</strong> - Nice-to-have improvements</p>
 <h3 id="54-continuation-prompt-format">5.4 Continuation Prompt Format<a class="headerlink" href="#54-continuation-prompt-format" title="Permanent link">¶</a></h3>
 <p><strong>Template</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="ni">@copilot</span> Continue Phase [N]: [Phase Name]
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="gu">##  Session Summary</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="gu">## Session Summary</span>
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="gs">**Completed Work**</span>:
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="k">- [x]</span> Task 1 (commit abc123)
@@ -3509,7 +3499,7 @@
 <a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>
 <a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="gs">**Commits**</span>: abc123, def456, ghi789
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
-<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="gu">##  Next Steps</span>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="gu">## Next Steps</span>
 <a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>
 <a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="gs">**Priority Tasks**</span>:
 <a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="k">1.</span> [ ] Task A - [Brief description]
@@ -3522,7 +3512,7 @@
 <a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a>
 <a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a><span class="gs">**Duration Estimate**</span>: [X] sessions (~[Y]K tokens)
 <a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a>
-<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a><span class="gu">##  Context References</span>
+<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a><span class="gu">## Context References</span>
 <a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a>
 <a href="#__codelineno-17-30" id="__codelineno-17-30" name="__codelineno-17-30"></a><span class="k">-</span><span class="w"> </span>Cognitive Map
 <a href="#__codelineno-17-31" id="__codelineno-17-31" name="__codelineno-17-31"></a><span class="k">-</span><span class="w"> </span>Dashboard (documentation pending)
@@ -3537,12 +3527,12 @@
 <h4 id="coverage-enhancement-prompt-docspromptscoverage_continuation_promptmd"><strong>Coverage Enhancement Prompt</strong> (<code>docs/prompts/COVERAGE_CONTINUATION_PROMPT.md</code>)<a class="headerlink" href="#coverage-enhancement-prompt-docspromptscoverage_continuation_promptmd" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="ni">@copilot</span> Continue Phase 9.1: Critical Path Coverage
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="gu">##  Session Summary</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="gu">## Session Summary</span>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="gs">**Completed**</span>: Roadmap created, standards documented
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="gs">**Progress**</span>: Phase 9: 18% complete (27/150 tests)
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="gs">**Commits**</span>: da5d1f7
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="gu">##  Next Steps</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="gu">## Next Steps</span>
 <a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="k">1.</span> [ ] Add critical path tests (src/codex/cli.py)
 <a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="k">2.</span> [ ] Cover error handling paths
 <a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a><span class="k">3.</span> [ ] Test edge cases
@@ -3586,27 +3576,27 @@
 <h3 id="62-memory-management-patterns">6.2 Memory Management Patterns<a class="headerlink" href="#62-memory-management-patterns" title="Permanent link">¶</a></h3>
 <p><strong>SimpleDictMemory</strong> (<code>agents/cognitive_adapter.py</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="k">class</span> <span class="nc">SimpleDictMemory</span><span class="p">(</span><span class="n">MemoryInterface</span><span class="p">):</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w">    </span><span class="sd">"""Simple in-memory implementation of MemoryInterface."""</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w"> </span><span class="sd">"""Simple in-memory implementation of MemoryInterface."""</span>
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w">        </span><span class="sd">"""Store with history tracking"""</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>        <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
-<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span>
-<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">:</span>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">value</span><span class="p">))</span>
-<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a>        <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a> <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="w"> </span><span class="sd">"""Store with history tracking"""</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a> <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
+<a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span>
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">:</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">value</span><span class="p">))</span>
+<a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a> <span class="k">return</span> <span class="kc">True</span>
 <a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a>
-<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a>    <span class="k">def</span> <span class="nf">get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a><span class="w">        </span><span class="sd">"""Get historical versions"""</span>
-<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a>        <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
-<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a>        <span class="k">return</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="n">limit</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Most recent first</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a> <span class="k">def</span> <span class="nf">get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a><span class="w"> </span><span class="sd">"""Get historical versions"""</span>
+<a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a> <span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a> <span class="k">return</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="n">limit</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Most recent first</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="7-repository-navigation-for-ai-agents">7. Repository Navigation for AI Agents<a class="headerlink" href="#7-repository-navigation-for-ai-agents" title="Permanent link">¶</a></h2>
@@ -3778,11 +3768,11 @@
 <h3 id="92-known-gaps-and-mitigation">9.2 Known Gaps and Mitigation<a class="headerlink" href="#92-known-gaps-and-mitigation" title="Permanent link">¶</a></h3>
 <p><strong>Gaps</strong>:
 1. Test coverage below target (75% vs 80%+)
-   - <strong>Mitigation</strong>: Phase 9 in progress, 4-phase strategy
+ - <strong>Mitigation</strong>: Phase 9 in progress, 4-phase strategy
 2. Agent normalization incomplete (81% vs 100%)
-   - <strong>Mitigation</strong>: Standards documented, gradual migration
+ - <strong>Mitigation</strong>: Standards documented, gradual migration
 3. Workflow orchestration tests (55% vs 100%)
-   - <strong>Mitigation</strong>: Custom agent specified, high priority</p>
+ - <strong>Mitigation</strong>: Custom agent specified, high priority</p>
 <p><strong>Blockers</strong>: None active</p>
 <p><strong>Risks</strong>: All have mitigation plans (see Dashboard)</p>
 <hr/>
@@ -3813,9 +3803,9 @@
 </ol>
 <h3 id="102-short-term-priorities-next-1-2-sessions">10.2 Short-term Priorities (Next 1-2 Sessions)<a class="headerlink" href="#102-short-term-priorities-next-1-2-sessions" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Phase 9.1 Execution</strong> - Critical path coverage (75% → 85%)</li>
+<li><strong>Phase 9.1 Execution</strong> - Critical path coverage (75% 85%)</li>
 <li><strong>Agent Normalization</strong> - Complete remaining 19% of agents</li>
-<li><strong>Workflow Test Fixing</strong> - 11 failing tests (55% → 100%)</li>
+<li><strong>Workflow Test Fixing</strong> - 11 failing tests (55% 100%)</li>
 <li><strong>Documentation Cross-linking</strong> - Reduce broken links</li>
 </ol>
 <h3 id="103-medium-term-roadmap-3-5-sessions">10.3 Medium-term Roadmap (3-5 Sessions)<a class="headerlink" href="#103-medium-term-roadmap-3-5-sessions" title="Permanent link">¶</a></h3>
@@ -3827,37 +3817,37 @@
 </ol>
 <hr/>
 <h2 id="11-conclusions">11. Conclusions<a class="headerlink" href="#11-conclusions" title="Permanent link">¶</a></h2>
-<h3 id="111-architecture-health-excellent">11.1 Architecture Health:  EXCELLENT<a class="headerlink" href="#111-architecture-health-excellent" title="Permanent link">¶</a></h3>
+<h3 id="111-architecture-health-excellent">11.1 Architecture Health: EXCELLENT<a class="headerlink" href="#111-architecture-health-excellent" title="Permanent link">¶</a></h3>
 <p>The cognitive brain architecture is well-designed with:
-- Clear 4-layer structure (Perception → Decision → Action → AfterMath)
+- Clear 4-layer structure (Perception Decision Action AfterMath)
 - Comprehensive documentation (COGNITIVE_MAP + DASHBOARD)
 - Production-ready core implementation
 - Robust continuation protocol</p>
-<h3 id="112-pda-loop-fully-implemented">11.2 PDA Loop:  FULLY IMPLEMENTED<a class="headerlink" href="#112-pda-loop-fully-implemented" title="Permanent link">¶</a></h3>
+<h3 id="112-pda-loop-fully-implemented">11.2 PDA Loop: FULLY IMPLEMENTED<a class="headerlink" href="#112-pda-loop-fully-implemented" title="Permanent link">¶</a></h3>
 <p>The PDA loop is operational with:
 - Complete 4-stage cycle in <code>cognitive_brain_core.py</code>
 - AfterMath tag system with YAML schema
 - Structured logging for lessons learned
 - Integration with GitHub workflows</p>
-<h3 id="113-agent-ecosystem-maturing">11.3 Agent Ecosystem:  MATURING<a class="headerlink" href="#113-agent-ecosystem-maturing" title="Permanent link">¶</a></h3>
+<h3 id="113-agent-ecosystem-maturing">11.3 Agent Ecosystem: MATURING<a class="headerlink" href="#113-agent-ecosystem-maturing" title="Permanent link">¶</a></h3>
 <p>The agent ecosystem is extensive with:
 - 50+ specialized agents
 - Multiple implementation patterns (Base ABC, Legacy Adapter, Orchestration)
 - Clear categorization and documentation
 - 81% normalization complete, 19% remaining</p>
-<h3 id="114-cache-infrastructure-robust">11.4 Cache Infrastructure:  ROBUST<a class="headerlink" href="#114-cache-infrastructure-robust" title="Permanent link">¶</a></h3>
+<h3 id="114-cache-infrastructure-robust">11.4 Cache Infrastructure: ROBUST<a class="headerlink" href="#114-cache-infrastructure-robust" title="Permanent link">¶</a></h3>
 <p>Multiple cache implementations with:
 - Consistent patterns across codebase
 - TTL support in all implementations
 - File-based and memory-based options
 - 7.69 GB / 10 GB utilization (23% buffer)</p>
-<h3 id="115-continuation-patterns-mature">11.5 Continuation Patterns:  MATURE<a class="headerlink" href="#115-continuation-patterns-mature" title="Permanent link">¶</a></h3>
+<h3 id="115-continuation-patterns-mature">11.5 Continuation Patterns: MATURE<a class="headerlink" href="#115-continuation-patterns-mature" title="Permanent link">¶</a></h3>
 <p>Continuation protocol is production-ready with:
 - Comprehensive v2.0.0 documentation
 - 5-pass self-review system
 - Duration-aware planning
 - Multiple example prompts</p>
-<h3 id="116-overall-assessment-production-ready-904">11.6 Overall Assessment:  PRODUCTION READY (90.4%)<a class="headerlink" href="#116-overall-assessment-production-ready-904" title="Permanent link">¶</a></h3>
+<h3 id="116-overall-assessment-production-ready-904">11.6 Overall Assessment: PRODUCTION READY (90.4%)<a class="headerlink" href="#116-overall-assessment-production-ready-904" title="Permanent link">¶</a></h3>
 <p>The <em>codex</em> repository cognitive brain is <strong>production-ready</strong> with:
 - Strong architecture and implementation
 - Comprehensive documentation and protocols
@@ -3897,11 +3887,11 @@
 <li><code>docs/MASTER_INDEX.md</code> - Documentation index</li>
 </ul>
 <hr/>
-<p><strong>Generated by</strong>: Semantic Search Agent<br/>
-<strong>Date</strong>: 2026-01-11<br/>
-<strong>Repository</strong>: /home/runner/work/<em>codex</em>/<em>codex</em><br/>
-<strong>Version</strong>: 1.0.0<br/>
-<strong>Status</strong>:  Complete</p>
+<p><strong>Generated by</strong>: Semantic Search Agent
+<strong>Date</strong>: 2026-01-11
+<strong>Repository</strong>: /home/runner/work/<em>codex</em>/<em>codex</em>
+<strong>Version</strong>: 1.0.0
+<strong>Status</strong>: Complete</p>
 <hr/>
 <p><strong>Questions?</strong> Refer to Cognitive Map (documentation pending) or Dashboard.</p>
 </article>
@@ -3933,6 +3923,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

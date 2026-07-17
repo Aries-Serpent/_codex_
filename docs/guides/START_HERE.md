@@ -1,6 +1,6 @@
 # Codex ML Documentation Guide - Complete Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
 **Scope:** All user guides, tutorials, and reference materials
@@ -347,7 +347,6 @@
 
 ## Certification Programs
 
-*Coming Soon!*
 - Codex ML Practitioner (Level 1)
 - Codex ML Professional (Level 2)
 - Codex ML Expert (Level 3)

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/PHASE_11_1_COGNITIVE_BRAIN_UPDATE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 11.x Priority 1 - Cognitive Brain Update &amp; Follow-Up Plan - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2353,7 +2353,7 @@
 <a class="md-nav__link" href="#deprioritized-third-party">
 <span class="md-ellipsis">
       
-        ⏸️ Deprioritized (Third-Party)
+        Deprioritized (Third-Party)
       
     </span>
 </a>
@@ -2553,26 +2553,26 @@
 <h1 id="phase-11x-priority-1-cognitive-brain-update-follow-up-plan">Phase 11.x Priority 1 - Cognitive Brain Update &amp; Follow-Up Plan<a class="headerlink" href="#phase-11x-priority-1-cognitive-brain-update-follow-up-plan" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Date</strong>: 2026-01-15<br/>
-<strong>Status</strong>:  <strong>ALL REVIEWS ADDRESSED - PRODUCTION READY</strong><br/>
+<p><strong>Date</strong>: 2026-01-15
+<strong>Status</strong>: <strong>ALL REVIEWS ADDRESSED - PRODUCTION READY</strong>
 <strong>Commit</strong>: bcbdea8</p>
 <hr/>
 <h2 id="code-review-resolution-summary">Code Review Resolution Summary<a class="headerlink" href="#code-review-resolution-summary" title="Permanent link">¶</a></h2>
 <h3 id="issues-addressed-27-comments">Issues Addressed (27 Comments)<a class="headerlink" href="#issues-addressed-27-comments" title="Permanent link">¶</a></h3>
 <p><strong>Critical Fixes</strong>:
-1.  <strong>secrets.base64 → base64</strong>: Fixed incorrect module reference in GitHub Actions workflow
-2.  <strong>Python version consistency</strong>: Updated README.md from 3.11+ to 3.9+ to match code requirements
-3.  <strong>Empty except clause</strong>: Added explanatory comment for expected error handling</p>
+1. <strong>secrets.base64 base64</strong>: Fixed incorrect module reference in GitHub Actions workflow
+2. <strong>Python version consistency</strong>: Updated README.md from 3.11+ to 3.9+ to match code requirements
+3. <strong>Empty except clause</strong>: Added explanatory comment for expected error handling</p>
 <p><strong>Code Quality Improvements</strong>:
-4.  <strong>Removed 6 unused variables</strong> in examples/authentication/03_token_management.py
-5.  <strong>Removed 6 unused variables</strong> in tests/auth/test_token_manager.py<br/>
-6.  <strong>Removed 4 unused variables</strong> in scripts/validate_auth_security.py
-7.  <strong>Removed 12 unused imports</strong> across 6 files</p>
+4. <strong>Removed 6 unused variables</strong> in examples/authentication/03_token_management.py
+5. <strong>Removed 6 unused variables</strong> in tests/auth/test_token_manager.py
+6. <strong>Removed 4 unused variables</strong> in scripts/validate_auth_security.py
+7. <strong>Removed 12 unused imports</strong> across 6 files</p>
 <p><strong>Validation</strong>:
--  All 77 unit/integration tests passing
--  All 23 security validation tests passing
--  No new warnings introduced
--  All linting checks passing</p>
+- All 77 unit/integration tests passing
+- All 23 security validation tests passing
+- No new warnings introduced
+- All linting checks passing</p>
 <hr/>
 <h2 id="codeql-alerts-status">CodeQL Alerts Status<a class="headerlink" href="#codeql-alerts-status" title="Permanent link">¶</a></h2>
 <p>The CodeQL alerts mentioned in PR comments (admin-automation-agent lines 153, 155, 157) are <strong>already resolved</strong>:</p>
@@ -2582,33 +2582,33 @@
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Lines 151, 153, 155, 157: All use safe_message</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Task completed: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Task error: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"️  Task warning: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ℹ️  Task info: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Task warning: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ℹ Task info: </span><span class="si">{</span><span class="n">safe_message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Status</strong>: These are <strong>stale alerts</strong> pending CodeQL rescan. The taint flow is properly broken at line 138.</p>
 <hr/>
 <h2 id="cognitive-brain-status-update">Cognitive Brain Status Update<a class="headerlink" href="#cognitive-brain-status-update" title="Permanent link">¶</a></h2>
 <h3 id="new-capabilities-added">New Capabilities Added<a class="headerlink" href="#new-capabilities-added" title="Permanent link">¶</a></h3>
 <p><strong>Authentication Intelligence</strong> (Phase 11.x Priority 1):
--  OAuth2 flow management with PKCE security
--  Multi-factor authentication (TOTP + backup codes)
--  JWT-like token generation and validation
--  Session management with activity tracking
--  Rate limiting for brute force protection
--  Token revocation and blacklisting</p>
+- OAuth2 flow management with PKCE security
+- Multi-factor authentication (TOTP + backup codes)
+- JWT-like token generation and validation
+- Session management with activity tracking
+- Rate limiting for brute force protection
+- Token revocation and blacklisting</p>
 <p><strong>Security Patterns Enhanced</strong>:
--  PKCE implementation (S256 challenge method)
--  State-based CSRF protection
--  Constant-time comparison (timing attack prevention)
--  Secure random generation (secrets module)
--  Production warnings for dev conveniences
--  In-memory storage warnings</p>
+- PKCE implementation (S256 challenge method)
+- State-based CSRF protection
+- Constant-time comparison (timing attack prevention)
+- Secure random generation (secrets module)
+- Production warnings for dev conveniences
+- In-memory storage warnings</p>
 <p><strong>Testing &amp; Validation</strong>:
--  77 comprehensive unit/integration tests
--  23 security validation tests
--  4 working example scripts
--  GitHub Actions automation
--  Weekly security audit workflow</p>
+- 77 comprehensive unit/integration tests
+- 23 security validation tests
+- 4 working example scripts
+- GitHub Actions automation
+- Weekly security audit workflow</p>
 <h3 id="production-readiness">Production Readiness<a class="headerlink" href="#production-readiness" title="Permanent link">¶</a></h3>
 <p><strong>Deployment Checklist</strong>:
 - [x] Core implementation complete
@@ -2639,7 +2639,7 @@
 - GitHub Actions: 2 workflows (tests + security audit)
 - GitHub API: User info retrieval
 - GitHub Teams: Ready for team-based auth</p>
-<h3 id="deprioritized-third-party">⏸️ Deprioritized (Third-Party)<a class="headerlink" href="#deprioritized-third-party" title="Permanent link">¶</a></h3>
+<h3 id="deprioritized-third-party">Deprioritized (Third-Party)<a class="headerlink" href="#deprioritized-third-party" title="Permanent link">¶</a></h3>
 <p><strong>Moved to Future Phases</strong> (per requirements):
 - Google (OAuth, Drive, NotebookLM)
 - AWS (CloudHSM, S3)
@@ -2655,14 +2655,14 @@
 <ol>
 <li>
 <p><strong>GitHub OAuth App</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Create at: https://github.com/settings/developers</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Create at: https://github.com/settings/developers</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="c1"># Set callback URL to: https://yourapp.com/callback</span>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="c1"># Copy Client ID and Client Secret</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Environment Configuration</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_CLIENT_ID</span><span class="o">=</span><span class="s2">"your_client_id"</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_CLIENT_ID</span><span class="o">=</span><span class="s2">"your_client_id"</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_CLIENT_SECRET</span><span class="o">=</span><span class="s2">"your_client_secret"</span><span class="w"> </span>&lt;!--<span class="w"> </span>pragma:<span class="w"> </span>allowlist<span class="w"> </span>secret<span class="w"> </span>--&gt;
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_REDIRECT_URI</span><span class="o">=</span><span class="s2">"https://yourapp.com/callback"</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TOKEN_SECRET_KEY</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import secrets; print(secrets.token_urlsafe(64))'</span><span class="k">)</span><span class="s2">"</span>
@@ -2671,35 +2671,35 @@
 </li>
 <li>
 <p><strong>Database Setup</strong> (Replace in-memory storage):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">-- PostgreSQL schema</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1">-- PostgreSQL schema</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">mfa_secrets</span><span class="w"> </span><span class="p">(</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="n">secret_encrypted</span><span class="w"> </span><span class="n">BYTEA</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">secret_encrypted</span><span class="w"> </span><span class="n">BYTEA</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">()</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="p">);</span>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">backup_codes</span><span class="w"> </span><span class="p">(</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">    </span><span class="n">code_hash</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="n">used</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">    </span><span class="n">used_at</span><span class="w"> </span><span class="k">TIMESTAMP</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="n">code_hash</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="n">used</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="n">used_at</span><span class="w"> </span><span class="k">TIMESTAMP</span>
 <a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="p">);</span>
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="p">(</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="n">session_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="n">mfa_verified</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">    </span><span class="n">last_activity</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="n">ip_address</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">45</span><span class="p">),</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="n">user_agent</span><span class="w"> </span><span class="nb">TEXT</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="n">session_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="n">user_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="n">mfa_verified</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="n">last_activity</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="n">ip_address</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">45</span><span class="p">),</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="n">user_agent</span><span class="w"> </span><span class="nb">TEXT</span>
 <a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="p">);</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Redis Setup</strong> (Distributed sessions):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Install Redis</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Install Redis</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>redis-server
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Configure Redis</span>
@@ -2717,8 +2717,8 @@
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sa</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="c1"># Create tables (see schema above)</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="k">pass</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="c1"># Create tables (see schema above)</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="k">pass</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2737,7 +2737,7 @@
 </li>
 <li>
 <p><strong>Deploy with Docker</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12-slim</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.12-slim</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
@@ -2747,19 +2747,19 @@
 </li>
 <li>
 <p><strong>Configure Load Balancer</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">upstream</span><span class="w"> </span><span class="s">codex_auth</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">auth1</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">auth2</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">auth3</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">upstream</span><span class="w"> </span><span class="s">codex_auth</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="kn">server</span><span class="w"> </span><span class="n">auth1</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="kn">server</span><span class="w"> </span><span class="n">auth2</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="kn">server</span><span class="w"> </span><span class="n">auth3</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="p">}</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="k">server</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="p">;</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">auth.yourapp.com</span><span class="p">;</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="p">;</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="kn">server_name</span><span class="w"> </span><span class="s">auth.yourapp.com</span><span class="p">;</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="w">        </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://codex_auth</span><span class="p">;</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://codex_auth</span><span class="p">;</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="p">}</span>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="p">}</span>
 </code></pre></div></p>
 </li>
@@ -2777,14 +2777,22 @@
 <p><strong>Scope</strong>: <code>src/codex/auth/</code>, GitHub Apps API</p>
 <p><strong>Diagram</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing User Request, Auth Agent'}}%%
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>graph TD
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    User[User Request] --&gt; Agent[Auth Agent]
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    Agent --&gt; OAuth[Create OAuth App]
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    Agent --&gt; MFA[Setup MFA]
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    Agent --&gt; Test[Validate Setup]
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    OAuth --&gt; GitHub[GitHub API]
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    MFA --&gt; User
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    Test --&gt; Report[Status Report]
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>graph TD
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> User[User Request] --&gt; Agent[Auth Agent]
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> Agent --&gt; OAuth[Create OAuth App]
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> Agent --&gt; MFA[Setup MFA]
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> Agent --&gt; Test[Validate Setup]
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> OAuth --&gt; GitHub[GitHub API]
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> MFA --&gt; User
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> Test --&gt; Report[Status Report]
 </code></pre></div></p>
 <h3 id="2-security-audit-agent">2. Security Audit Agent<a class="headerlink" href="#2-security-audit-agent" title="Permanent link">¶</a></h3>
 <p><strong>Purpose</strong>: Continuous security monitoring</p>
@@ -2797,15 +2805,24 @@
 <p><strong>Scope</strong>: <code>tests/auth/</code>, <code>scripts/validate_auth_security.py</code>, GitHub Security</p>
 <p><strong>Diagram</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Weekly Trigger, Security Agent'}}%%
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>graph TD
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    Schedule[Weekly Trigger] --&gt; Agent[Security Agent]
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    Agent --&gt; Tests[Run 23 Security Tests]
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    Agent --&gt; CodeQL[Check CodeQL Alerts]
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    Agent --&gt; Config[Validate Configs]
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    Tests --&gt; Report[Security Report]
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    CodeQL --&gt; Report
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    Config --&gt; Report
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    Report --&gt; Slack[Alert Team]
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>graph TD
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> Schedule[Weekly Trigger] --&gt; Agent[Security Agent]
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> Agent --&gt; Tests[Run 23 Security Tests]
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> Agent --&gt; CodeQL[Check CodeQL Alerts]
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> Agent --&gt; Config[Validate Configs]
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> Tests --&gt; Report[Security Report]
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> CodeQL --&gt; Report
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> Config --&gt; Report
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> Report --&gt; Slack[Alert Team]
 </code></pre></div></p>
 <h3 id="3-token-rotation-agent">3. Token Rotation Agent<a class="headerlink" href="#3-token-rotation-agent" title="Permanent link">¶</a></h3>
 <p><strong>Purpose</strong>: Automated credential rotation</p>
@@ -2818,16 +2835,26 @@
 <p><strong>Scope</strong>: <code>src/codex/auth/token_manager.py</code>, GitHub Secrets</p>
 <p><strong>Diagram</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Monthly/Alert, Rotation Agent'}}%%
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>graph TD
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>    Trigger[Monthly/Alert] --&gt; Agent[Rotation Agent]
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    Agent --&gt; Backup[Backup Current Keys]
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    Agent --&gt; Generate[Generate New Keys]
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    Agent --&gt; Deploy[Deploy New Keys]
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    Agent --&gt; Revoke[Revoke Old Tokens]
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    Deploy --&gt; Verify[Verify New Keys]
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    Verify --&gt; Success{Success?}
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    Success --&gt;|Yes| Done[Complete]
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    Success --&gt;|No| Rollback[Rollback]
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>graph TD
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> Trigger[Monthly/Alert] --&gt; Agent[Rotation Agent]
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> Agent --&gt; Backup[Backup Current Keys]
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> Agent --&gt; Generate[Generate New Keys]
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> Agent --&gt; Deploy[Deploy New Keys]
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> Agent --&gt; Revoke[Revoke Old Tokens]
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> Deploy --&gt; Verify[Verify New Keys]
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> Verify --&gt; Success{Success?}
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> Success --&gt;|Yes| Done[Complete]
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> Success --&gt;|No| Rollback[Rollback]
 </code></pre></div></p>
 <hr/>
 <h2 id="next-phase-planning">Next Phase Planning<a class="headerlink" href="#next-phase-planning" title="Permanent link">¶</a></h2>
@@ -2835,10 +2862,10 @@
 <p><strong>When to Start</strong>: After third-party services are prioritized</p>
 <p><strong>GitHub-First Components</strong>:
 1. <strong>GitHub Actions Integration</strong>:
-   - Automated token rotation workflows
-   - Secret sync to GitHub Secrets
-   - Authentication event logging
-   - Compliance reporting</p>
+ - Automated token rotation workflows
+ - Secret sync to GitHub Secrets
+ - Authentication event logging
+ - Compliance reporting</p>
 <ol>
 <li><strong>GitHub API Automation</strong>:</li>
 <li>User provisioning</li>
@@ -2962,10 +2989,10 @@
 </code></pre></div></p>
 <h2 id="continuous-improvement-areas">Continuous Improvement Areas<a class="headerlink" href="#continuous-improvement-areas" title="Permanent link">¶</a></h2>
 <p><strong>Identified Issues</strong>:
-1. In-memory storage limits scalability → <strong>Fixed in next phase</strong>
-2. Auto-generated secrets → <strong>Production warning added</strong>
-3. Missing distributed session support → <strong>Redis in next phase</strong>
-4. No encryption at rest → <strong>KMS integration in next phase</strong></p>
+1. In-memory storage limits scalability <strong>Fixed in next phase</strong>
+2. Auto-generated secrets <strong>Production warning added</strong>
+3. Missing distributed session support <strong>Redis in next phase</strong>
+4. No encryption at rest <strong>KMS integration in next phase</strong></p>
 <p><strong>Monitoring Points</strong>:
 1. Authentication success/failure rates
 2. Token generation latency
@@ -2994,11 +3021,11 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Monitoring and alerting</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Third-party integrations (when prioritized)</li>
 </ul>
-<p><strong>Current Status</strong>:  <strong>ALL REVIEWS COMPLETE - READY FOR PRODUCTION HARDENING</strong></p>
+<p><strong>Current Status</strong>: <strong>ALL REVIEWS COMPLETE - READY FOR PRODUCTION HARDENING</strong></p>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-01-15<br/>
-<strong>Next Review</strong>: After production deployment<br/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-01-15
+<strong>Next Review</strong>: After production deployment
 <strong>Maintained By</strong>: GitHub Copilot + Team</p>
 </article>
 </div>
@@ -3029,6 +3056,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

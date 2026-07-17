@@ -1,6 +1,6 @@
 # Phase 5 Track 2: Security Hardening Decisions
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date**: 2026-07-10
 **Authority**: @mbaetiong (D-tier FULL AUTONOMOUS)

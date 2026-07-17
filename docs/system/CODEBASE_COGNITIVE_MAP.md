@@ -1,6 +1,6 @@
 # Codebase Cognitive Map
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T08:42:00Z | Updated: 2026-06-22
 > PR: #4731 | Session: S1325

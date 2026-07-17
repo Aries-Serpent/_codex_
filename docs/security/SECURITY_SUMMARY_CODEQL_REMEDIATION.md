@@ -1,6 +1,6 @@
 # Security Summary: CodeQL Clear-Text Logging Remediation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date**: 2026-01-13
 **PR**: copilot/remediate-codeql-alerts

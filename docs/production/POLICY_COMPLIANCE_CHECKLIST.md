@@ -1,6 +1,6 @@
 # Phase 6 Batch 2 — Policy Compliance Checklist for Contributors
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version:** 1.0.0
 **Status:** FINAL
@@ -11,7 +11,7 @@
 
 ## Overview
 
-This checklist must be completed BEFORE submitting a pull request. It enforces the **CODEBASE_AGENCY_POLICY.md (v0.2.1)** and ensures compliance with all governance gates.
+This checklist must be completed BEFORE submitting a pull request. It enforces the **CODEBASE_AGENCY_POLICY.md (v0.2.0)** and ensures compliance with all governance gates.
 
 **Policy Reference:**
 - Full policy: `.codex/CODEBASE_AGENCY_POLICY.md`
@@ -430,4 +430,4 @@ python scripts/ci/generate_accountability_report.py --session-id $SESSION_ID
 
 **STATUS: POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
 
-All governance requirements from CODEBASE_AGENCY_POLICY.md (v0.2.1) are now enforceable via this checklist and CI/CD gates.
+All governance requirements from CODEBASE_AGENCY_POLICY.md (v0.2.0) are now enforceable via this checklist and CI/CD gates.

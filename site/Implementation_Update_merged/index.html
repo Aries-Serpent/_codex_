@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/Implementation_Update_merged/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>[Implementation Update]: Training CLI, Checkpoint Helpers, and API Inference Wiring - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2275,7 +2275,7 @@
 <blockquote>
 <p>Generated: 2026-06-22 00:32:28 | Author: mbaetiong</p>
 </blockquote>
-<p>Roles: [Primary], [Secondary]  Energy: [3]</p>
+<p>Roles: [Primary], [Secondary] Energy: [3]</p>
 <p>This document merges the last applied atomic diffs (training CLI, checkpoint utilities, API /infer wiring, secret filtering) with the implementation summary provided. It is an authoritative, concise reference for reviewers and maintainers.</p>
 <p>1) High-level summary
 - Purpose: Introduce optional model/LoRA wiring into the training loop, lightweight checkpoint helpers, a Hydra training CLI/config, and safer API inference wiring with expanded secret masking. All changes are intentionally offline-first and guarded by optional deps.
@@ -2312,7 +2312,7 @@
 </tr>
 <tr>
 <td>API Inference</td>
-<td>Lazy load tokenizer/model, encode→decode flow, secret masking, fallbacks</td>
+<td>Lazy load tokenizer/model, encodedecode flow, secret masking, fallbacks</td>
 <td>services/api/main.py</td>
 </tr>
 <tr>
@@ -2402,7 +2402,7 @@
 <tr>
 <td>/infer</td>
 <td>Echo with basic sk- filter</td>
-<td>Tokenizer→encode→decode flow, secret masking across more patterns, lazy cached components</td>
+<td>Tokenizerencodedecode flow, secret masking across more patterns, lazy cached components</td>
 </tr>
 <tr>
 <td>Model/LoRA</td>
@@ -2431,12 +2431,12 @@
 - Replace /infer with prior echo implementation in services/api/main.py.</p>
 <p>9) Minimal usage examples
 - Hydra train (example):
-  python -m codex_ml.cli.train epochs=1 model_name=MiniLM checkpoint.dir=artifacts/ckpts
+ python -m codex_ml.cli.train epochs=1 model_name=MiniLM checkpoint.dir=artifacts/ckpts
 - Legacy raw loop:
-  python -m codex_ml.train_loop --epochs 1 --grad-accum 2
+ python -m codex_ml.train_loop --epochs 1 --grad-accum 2
 - API call that demonstrates masking:
-  curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIAEXAMPLEKEY"}'
-  → completion masks key: "[SECRET]"</p>
+ curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIAEXAMPLEKEY"}'
+ completion masks key: "[SECRET]"</p>
 <p>10) Follow-ups (prioritized)
 1. P1: Implement resume by reading latest.json and load_checkpoint wrapper.
 2. P1: Replace demo_epoch with a small but realistic train_step loop (optimizer, scheduler, gradient accumulation, optional AMP).
@@ -2502,6 +2502,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

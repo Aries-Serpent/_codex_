@@ -1,6 +1,6 @@
 # Codex ML Architecture - Consolidated Reference
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version**: 1.1.0 (Consolidated)
 > **Last Updated**: 2026-06-22
@@ -108,7 +108,7 @@ The system is built on three core principles:
 
 ```
 
- codex-ml v0.2.1 System 
+ codex-ml v0.2.0 System 
  
  
  Core ML Platform 
@@ -233,7 +233,7 @@ _codex_/
  architecture/ # Architecture docs
  admin/ # Admin guides
  scripts/ # Utility scripts (195+ files)
- space_traversal/ # Audit pipeline v0.2.1
+ space_traversal/ # Audit pipeline v0.2.0
  configs/ # Hydra configurations
  deploy/ # Deployment manifests
  monitoring/ # Observability tools

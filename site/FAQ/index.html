@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/FAQ/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>codex Frequently Asked Questions (FAQ) - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2653,8 +2653,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Last Updated: 2026-06-27
-</strong>Status:<strong> Phase 3 - Documentation Enhancement Campaign<br/>
+<p><strong>Last Updated: 2026-07-16
+</strong>Status:<strong> Phase 3 - Documentation Enhancement Campaign
 </strong>Reading Level:** 8th Grade (Flesch-Kincaid)</p>
 </blockquote>
 <hr/>
@@ -2708,8 +2708,8 @@
 </tbody>
 </table>
 <p><strong>Quick check:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Should be 3.8+</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>pip<span class="w"> </span>--version<span class="w">     </span><span class="c1"># Should be 21.0+</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Should be 3.8+</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>pip<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Should be 21.0+</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="q2-how-do-i-install-codex-locally">Q2: How do I install <em>codex</em> locally?<a class="headerlink" href="#q2-how-do-i-install-codex-locally" title="Permanent link">¶</a></h3>
@@ -2722,12 +2722,12 @@
 <p><strong>Option 2: Development Setup (10 minutes)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>_codex_
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w">  </span><span class="c1"># Includes testing tools</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w"> </span><span class="c1"># Includes testing tools</span>
 </code></pre></div></p>
 <p><strong>Option 3: Full Production Setup (15 minutes)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nb">cd</span><span class="w"> </span>_codex_
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev,all]"</span><span class="w">  </span><span class="c1"># Includes all optional dependencies</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev,all]"</span><span class="w"> </span><span class="c1"># Includes all optional dependencies</span>
 </code></pre></div></p>
 <p><strong>Verify installation:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(' _codex_ installed successfully')"</span>
@@ -2740,17 +2740,17 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w"> </span>--force-reinstall
 </code></pre></div></p>
 <p><strong>Fix 2: Check Python version</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>python<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Must be 3.8+</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>python<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Must be 3.8+</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="c1"># If not, install Python 3.10+</span>
 </code></pre></div></p>
 <p><strong>Fix 3: Check for conflicting packages</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>pip<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>codex<span class="w">  </span><span class="c1"># Look for conflicts</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>codex_ml<span class="w">    </span><span class="c1"># Remove conflicts</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">          </span><span class="c1"># Reinstall</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>pip<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>codex<span class="w"> </span><span class="c1"># Look for conflicts</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>codex_ml<span class="w"> </span><span class="c1"># Remove conflicts</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w"> </span><span class="c1"># Reinstall</span>
 </code></pre></div></p>
 <p><strong>Fix 4: Create fresh virtual environment</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv_fresh
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nb">source</span><span class="w"> </span>venv_fresh/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv_fresh\Scripts\activate</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nb">source</span><span class="w"> </span>venv_fresh/bin/activate<span class="w"> </span><span class="c1"># On Windows: venv_fresh\Scripts\activate</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </code></pre></div></p>
 <p>If still failing: Check <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a> or create a new one.</p>
@@ -2779,16 +2779,16 @@
 <h3 id="q5-where-are-the-configuration-files-located">Q5: Where are the configuration files located?<a class="headerlink" href="#q5-where-are-the-configuration-files-located" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Configuration files are in these locations:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>_codex_/
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>├── configs/
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>│   ├── default/           # Default settings
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>│   │   ├── training.yaml
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>│   │   ├── model.yaml
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>│   │   └── evaluation.yaml
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>│   └── production/        # Production-specific settings
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>│       ├── training.yaml
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>│       └── features.yaml
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>└── experiments/           # Experiment variations
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    └── my_experiment.yaml
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> configs/
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> default/ # Default settings
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> training.yaml
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> model.yaml
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> evaluation.yaml
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> production/ # Production-specific settings
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> training.yaml
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> features.yaml
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> experiments/ # Experiment variations
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> my_experiment.yaml
 </code></pre></div>
 <p><strong>Find the right config:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Search for a config</span>
@@ -2807,13 +2807,13 @@
 <p><strong>Step 2: Add settings</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># configs/my_config.yaml</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w"> </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="nt">model</span><span class="p">:</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"transformer"</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="nt">hidden_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"transformer"</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w"> </span><span class="nt">hidden_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768</span>
 </code></pre></div></p>
 <p><strong>Step 3: Use it</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>python<span class="w"> </span>train.py<span class="w"> </span>--config-path<span class="w"> </span>configs<span class="w"> </span>--config-name<span class="w"> </span>my_config
@@ -2854,9 +2854,9 @@
 </code></pre></div></p>
 <p><strong>Step 2: Run training</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.training.cli<span class="w"> </span>train<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w">  </span>--config<span class="w"> </span>configs/default/training.yaml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">  </span>--data<span class="w"> </span>data/train.csv<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w">  </span>--output<span class="w"> </span>runs/experiment_1
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w"> </span>--config<span class="w"> </span>configs/default/training.yaml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w"> </span>--data<span class="w"> </span>data/train.csv<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="w"> </span>--output<span class="w"> </span>runs/experiment_1
 </code></pre></div></p>
 <p><strong>Step 3: Monitor progress</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># View results in MLflow</span>
@@ -2908,9 +2908,9 @@
 </table>
 <p><strong>Quick fix:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w">  </span>training.device<span class="o">=</span>cuda<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">  </span>training.batch_size<span class="o">=</span><span class="m">128</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">  </span>training.eval_every<span class="o">=</span><span class="m">100</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w"> </span>training.device<span class="o">=</span>cuda<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w"> </span>training.batch_size<span class="o">=</span><span class="m">128</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w"> </span>training.eval_every<span class="o">=</span><span class="m">100</span>
 </code></pre></div></p>
 <p><strong>Still slow?</strong> Check <a href="../guides/inference_performance/">Performance Optimization Guide</a></p>
 <hr/>
@@ -2932,18 +2932,18 @@
 </code></pre></div></p>
 <p><strong>Option 3: Fine-tune existing model</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>python<span class="w"> </span>train.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="w">  </span>+model.pretrained<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w">  </span>+model.model_name<span class="o">=</span><span class="s2">"bert-base-uncased"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="w">  </span>training.epochs<span class="o">=</span><span class="m">5</span><span class="w">  </span><span class="c1"># Usually fewer epochs needed</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="w"> </span>+model.pretrained<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w"> </span>+model.model_name<span class="o">=</span><span class="s2">"bert-base-uncased"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="w"> </span>training.epochs<span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="c1"># Usually fewer epochs needed</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="q11-how-do-i-evaluate-my-model">Q11: How do I evaluate my model?<a class="headerlink" href="#q11-how-do-i-evaluate-my-model" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Evaluation in <em>codex</em> has 3 steps:</p>
 <p><strong>Step 1: Run evaluation</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.evaluation.cli<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="w">  </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w">  </span>--data<span class="w"> </span>data/test.csv<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w">  </span>--output<span class="w"> </span>results/eval_1
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="w"> </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w"> </span>--data<span class="w"> </span>data/test.csv<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w"> </span>--output<span class="w"> </span>results/eval_1
 </code></pre></div></p>
 <p><strong>Step 2: View results</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># Results saved as JSON</span>
@@ -2951,16 +2951,16 @@
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>
 <a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="c1"># Example output:</span>
 <a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a><span class="c1"># {</span>
-<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a><span class="c1">#   "accuracy": 0.87,</span>
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a><span class="c1">#   "f1_score": 0.85,</span>
-<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="c1">#   "precision": 0.88,</span>
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a><span class="c1">#   "recall": 0.83</span>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a><span class="c1"># "accuracy": 0.87,</span>
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a><span class="c1"># "f1_score": 0.85,</span>
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="c1"># "precision": 0.88,</span>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a><span class="c1"># "recall": 0.83</span>
 <a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a><span class="c1"># }</span>
 </code></pre></div></p>
 <p><strong>Step 3: Compare models</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># Use MLflow to compare runs</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="c1"># Open http://localhost:5000</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="c1"># Click "Experiments" → "Compare Runs"</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="c1"># Click "Experiments" "Compare Runs"</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
@@ -3048,15 +3048,15 @@ If still crashing, create an <a href="https://github.com/Aries-Serpent/_codex_/i
 </table>
 <p><strong>Example interpretation:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a>Epoch 1: Loss=0.45, Accuracy=82%
-<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a>↓ Loss is decreasing (good!)
-<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a>↑ Accuracy is improving (good!)
+<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a> Loss is decreasing (good!)
+<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a> Accuracy is improving (good!)
 <a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a>
 <a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a>Epoch 10: Loss=0.05, Accuracy=95%
 <a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a> Model is learning well
 </code></pre></div></p>
 <p><strong>Warning signs:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>Loss not decreasing → Learning rate too low or model too weak
-<a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a>Accuracy stuck → Need more training data or better model
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>Loss not decreasing Learning rate too low or model too weak
+<a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a>Accuracy stuck Need more training data or better model
 </code></pre></div></p>
 <hr/>
 <h3 id="q14-how-do-i-fix-common-runtime-errors">Q14: How do I fix common runtime errors?<a class="headerlink" href="#q14-how-do-i-fix-common-runtime-errors" title="Permanent link">¶</a></h3>
@@ -3079,7 +3079,7 @@ If still crashing, create an <a href="https://github.com/Aries-Serpent/_codex_/i
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="c1"># Data shape issue - reshape your data</span>
 <a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a><span class="c1"># In your script:</span>
 <a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a>import<span class="w"> </span>numpy<span class="w"> </span>as<span class="w"> </span>np
-<a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>data.reshape<span class="o">(</span>-1,<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w">  </span><span class="c1"># Reshape to 2D</span>
+<a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a><span class="nv">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>data.reshape<span class="o">(</span>-1,<span class="w"> </span><span class="m">1</span><span class="o">)</span><span class="w"> </span><span class="c1"># Reshape to 2D</span>
 </code></pre></div></p>
 <p><strong>Error: "ImportError: No module named 'transformers'"</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a><span class="c1"># Install missing dependency</span>
@@ -3097,7 +3097,7 @@ If still crashing, create an <a href="https://github.com/Aries-Serpent/_codex_/i
 <a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Input shape: </span><span class="si">{</span><span class="n">input_data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Approach 2: Python debugger (pdb)</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-38-1" id="__codelineno-38-1" name="__codelineno-38-1"></a><span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>  <span class="c1"># Program stops here</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-38-1" id="__codelineno-38-1" name="__codelineno-38-1"></a><span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span> <span class="c1"># Program stops here</span>
 <a href="#__codelineno-38-2" id="__codelineno-38-2" name="__codelineno-38-2"></a><span class="c1"># Type 'n' to step, 'c' to continue, 'h' for help</span>
 </code></pre></div></p>
 <p><strong>Approach 3: Logging</strong>
@@ -3114,50 +3114,50 @@ If still crashing, create an <a href="https://github.com/Aries-Serpent/_codex_/i
 <p><strong>A:</strong> Help us fix bugs faster with good bug reports:</p>
 <p><strong>What to include:</strong>
 1. <strong>Title</strong> - Clear, one-line description
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a>"Training crashes with CUDA out of memory on second epoch"
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a>"Training crashes with CUDA out of memory on second epoch"
 </code></pre></div></p>
 <ol>
 <li>
 <p><strong>Steps to reproduce</strong> - Exact commands
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-41-1" id="__codelineno-41-1" name="__codelineno-41-1"></a>python train.py --config configs/default/training.yaml
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-41-1" id="__codelineno-41-1" name="__codelineno-41-1"></a>python train.py --config configs/default/training.yaml
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Expected vs actual</strong> - What should happen vs what happened
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-42-1" id="__codelineno-42-1" name="__codelineno-42-1"></a>Expected: Training completes in 10 epochs
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-42-1" id="__codelineno-42-1" name="__codelineno-42-1"></a>Expected: Training completes in 10 epochs
 <a href="#__codelineno-42-2" id="__codelineno-42-2" name="__codelineno-42-2"></a>Actual: Crashes after 1 epoch
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Environment</strong> - System information
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a>python<span class="w"> </span>--version
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a>python<span class="w"> </span>--version
 <a href="#__codelineno-43-2" id="__codelineno-43-2" name="__codelineno-43-2"></a>pip<span class="w"> </span>freeze<span class="w"> </span>&gt;<span class="w"> </span>requirements.txt
-<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a>nvidia-smi<span class="w">  </span><span class="c1"># For GPU info</span>
+<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a>nvidia-smi<span class="w"> </span><span class="c1"># For GPU info</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Error message</strong> - Full traceback
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a>Traceback (most recent call last):
-<a href="#__codelineno-44-2" id="__codelineno-44-2" name="__codelineno-44-2"></a>  File "train.py", line 42, in &lt;module&gt;
-<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a>  ...
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a>Traceback (most recent call last):
+<a href="#__codelineno-44-2" id="__codelineno-44-2" name="__codelineno-44-2"></a>File "train.py", line 42, in &lt;module&gt;
+<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a>...
 </code></pre></div></p>
 </li>
 </ol>
 <p><strong>Report it:</strong>
-Go to <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a> → Click "New Issue"</p>
+Go to <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a> Click "New Issue"</p>
 <hr/>
 <h2 id="deployment-production">Deployment &amp; Production<a class="headerlink" href="#deployment-production" title="Permanent link">¶</a></h2>
 <h3 id="q17-how-do-i-deploy-a-model">Q17: How do I deploy a model?<a class="headerlink" href="#q17-how-do-i-deploy-a-model" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Deployment in <em>codex</em> has 3 options:</p>
 <p><strong>Option 1: Local REST API (for testing)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-45-1" id="__codelineno-45-1" name="__codelineno-45-1"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a><span class="w">  </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-45-3" id="__codelineno-45-3" name="__codelineno-45-3"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">8000</span>
+<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a><span class="w"> </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-45-3" id="__codelineno-45-3" name="__codelineno-45-3"></a><span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
 <a href="#__codelineno-45-4" id="__codelineno-45-4" name="__codelineno-45-4"></a>
 <a href="#__codelineno-45-5" id="__codelineno-45-5" name="__codelineno-45-5"></a><span class="c1"># Test it</span>
 <a href="#__codelineno-45-6" id="__codelineno-45-6" name="__codelineno-45-6"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-45-7" id="__codelineno-45-7" name="__codelineno-45-7"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-45-8" id="__codelineno-45-8" name="__codelineno-45-8"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"input": "test text"}'</span>
+<a href="#__codelineno-45-7" id="__codelineno-45-7" name="__codelineno-45-7"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-45-8" id="__codelineno-45-8" name="__codelineno-45-8"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"input": "test text"}'</span>
 </code></pre></div></p>
 <p><strong>Option 2: Docker deployment (for production)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-46-1" id="__codelineno-46-1" name="__codelineno-46-1"></a><span class="c1"># Build Docker image</span>
@@ -3190,19 +3190,19 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 <p><strong>Layer 3: Data Quality</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-49-1" id="__codelineno-49-1" name="__codelineno-49-1"></a><span class="c1"># Check for data drift</span>
 <a href="#__codelineno-49-2" id="__codelineno-49-2" name="__codelineno-49-2"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.monitoring.check_drift<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-49-3" id="__codelineno-49-3" name="__codelineno-49-3"></a><span class="w">  </span>--baseline<span class="w"> </span>data/train.csv<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-49-4" id="__codelineno-49-4" name="__codelineno-49-4"></a><span class="w">  </span>--current<span class="w"> </span>data/latest.csv
+<a href="#__codelineno-49-3" id="__codelineno-49-3" name="__codelineno-49-3"></a><span class="w"> </span>--baseline<span class="w"> </span>data/train.csv<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-49-4" id="__codelineno-49-4" name="__codelineno-49-4"></a><span class="w"> </span>--current<span class="w"> </span>data/latest.csv
 <a href="#__codelineno-49-5" id="__codelineno-49-5" name="__codelineno-49-5"></a>
 <a href="#__codelineno-49-6" id="__codelineno-49-6" name="__codelineno-49-6"></a><span class="c1"># Alerts if incoming data differs significantly from training data</span>
 </code></pre></div></p>
 <p><strong>Set up alerts:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-50-1" id="__codelineno-50-1" name="__codelineno-50-1"></a><span class="c1"># monitoring.yaml</span>
 <a href="#__codelineno-50-2" id="__codelineno-50-2" name="__codelineno-50-2"></a><span class="nt">alerting</span><span class="p">:</span>
-<a href="#__codelineno-50-3" id="__codelineno-50-3" name="__codelineno-50-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-50-4" id="__codelineno-50-4" name="__codelineno-50-4"></a><span class="w">  </span><span class="nt">slack_webhook</span><span class="p">:</span><span class="w"> </span><span class="s">"https://hooks.slack.com/..."</span>
-<a href="#__codelineno-50-5" id="__codelineno-50-5" name="__codelineno-50-5"></a><span class="w">  </span><span class="nt">thresholds</span><span class="p">:</span>
-<a href="#__codelineno-50-6" id="__codelineno-50-6" name="__codelineno-50-6"></a><span class="w">    </span><span class="nt">error_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">  </span><span class="c1"># Alert if &gt;5% errors</span>
-<a href="#__codelineno-50-7" id="__codelineno-50-7" name="__codelineno-50-7"></a><span class="w">    </span><span class="nt">latency_p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># Alert if &gt;1s latency</span>
+<a href="#__codelineno-50-3" id="__codelineno-50-3" name="__codelineno-50-3"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-50-4" id="__codelineno-50-4" name="__codelineno-50-4"></a><span class="w"> </span><span class="nt">slack_webhook</span><span class="p">:</span><span class="w"> </span><span class="s">"https://hooks.slack.com/..."</span>
+<a href="#__codelineno-50-5" id="__codelineno-50-5" name="__codelineno-50-5"></a><span class="w"> </span><span class="nt">thresholds</span><span class="p">:</span>
+<a href="#__codelineno-50-6" id="__codelineno-50-6" name="__codelineno-50-6"></a><span class="w"> </span><span class="nt">error_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w"> </span><span class="c1"># Alert if &gt;5% errors</span>
+<a href="#__codelineno-50-7" id="__codelineno-50-7" name="__codelineno-50-7"></a><span class="w"> </span><span class="nt">latency_p95</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># Alert if &gt;1s latency</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="q19-how-do-i-update-a-deployed-model">Q19: How do I update a deployed model?<a class="headerlink" href="#q19-how-do-i-update-a-deployed-model" title="Permanent link">¶</a></h3>
@@ -3212,8 +3212,8 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 </code></pre></div></p>
 <p><strong>Step 2: Test new model</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-52-1" id="__codelineno-52-1" name="__codelineno-52-1"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.evaluation.cli<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a><span class="w">  </span>--model<span class="w"> </span>runs/experiment_2/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-52-3" id="__codelineno-52-3" name="__codelineno-52-3"></a><span class="w">  </span>--data<span class="w"> </span>data/test.csv
+<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a><span class="w"> </span>--model<span class="w"> </span>runs/experiment_2/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-52-3" id="__codelineno-52-3" name="__codelineno-52-3"></a><span class="w"> </span>--data<span class="w"> </span>data/test.csv
 <a href="#__codelineno-52-4" id="__codelineno-52-4" name="__codelineno-52-4"></a>
 <a href="#__codelineno-52-5" id="__codelineno-52-5" name="__codelineno-52-5"></a><span class="c1"># Compare metrics with old model</span>
 </code></pre></div></p>
@@ -3293,18 +3293,18 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 <a href="#__codelineno-56-17" id="__codelineno-56-17" name="__codelineno-56-17"></a>python<span class="w"> </span>train.py<span class="w"> </span>&gt;<span class="w"> </span>output.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
 </code></pre></div>
 <h3 id="common-workflows">Common Workflows<a class="headerlink" href="#common-workflows" title="Permanent link">¶</a></h3>
-<p><strong>Train → Evaluate → Deploy</strong>
+<p><strong>Train Evaluate Deploy</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-57-1" id="__codelineno-57-1" name="__codelineno-57-1"></a><span class="c1"># 1. Train</span>
 <a href="#__codelineno-57-2" id="__codelineno-57-2" name="__codelineno-57-2"></a>python<span class="w"> </span>train.py<span class="w"> </span>--output<span class="w"> </span>runs/my_experiment
 <a href="#__codelineno-57-3" id="__codelineno-57-3" name="__codelineno-57-3"></a>
 <a href="#__codelineno-57-4" id="__codelineno-57-4" name="__codelineno-57-4"></a><span class="c1"># 2. Evaluate</span>
 <a href="#__codelineno-57-5" id="__codelineno-57-5" name="__codelineno-57-5"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.evaluation.cli<span class="w"> </span>evaluate<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-57-6" id="__codelineno-57-6" name="__codelineno-57-6"></a><span class="w">  </span>--model<span class="w"> </span>runs/my_experiment/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-57-7" id="__codelineno-57-7" name="__codelineno-57-7"></a><span class="w">  </span>--data<span class="w"> </span>data/test.csv
+<a href="#__codelineno-57-6" id="__codelineno-57-6" name="__codelineno-57-6"></a><span class="w"> </span>--model<span class="w"> </span>runs/my_experiment/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-57-7" id="__codelineno-57-7" name="__codelineno-57-7"></a><span class="w"> </span>--data<span class="w"> </span>data/test.csv
 <a href="#__codelineno-57-8" id="__codelineno-57-8" name="__codelineno-57-8"></a>
 <a href="#__codelineno-57-9" id="__codelineno-57-9" name="__codelineno-57-9"></a><span class="c1"># 3. Deploy</span>
 <a href="#__codelineno-57-10" id="__codelineno-57-10" name="__codelineno-57-10"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-57-11" id="__codelineno-57-11" name="__codelineno-57-11"></a><span class="w">  </span>--model<span class="w"> </span>runs/my_experiment/model.pt
+<a href="#__codelineno-57-11" id="__codelineno-57-11" name="__codelineno-57-11"></a><span class="w"> </span>--model<span class="w"> </span>runs/my_experiment/model.pt
 </code></pre></div></p>
 <hr/>
 <h2 id="key-learning-points">Key Learning Points<a class="headerlink" href="#key-learning-points" title="Permanent link">¶</a></h2>
@@ -3330,7 +3330,7 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 <tr>
 <td><strong>Evaluation</strong></td>
 <td>Measure model quality - know if it's good</td>
-<td><a href="../evaluation/">Evaluation Guide</a></td>
+<td><a href="./evaluation/README.md">Evaluation Guide</a></td>
 </tr>
 <tr>
 <td><strong>Deployment</strong></td>
@@ -3403,20 +3403,20 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 <li><a href="./README.md">Main Documentation</a></li>
 <li><a href="../docs/guides/QUICKSTART/">Quick Start Guide</a></li>
 <li><a href="./configuration/">Configuration Guide</a></li>
-<li><a href="../evaluation/">Evaluation Guide</a></li>
-<li>🚢 <a href="../guides/production_deployment/">Deployment Guide</a></li>
+<li><a href="./evaluation/README.md">Evaluation Guide</a></li>
+<li><a href="../guides/production_deployment/">Deployment Guide</a></li>
 </ul>
 <h3 id="community">Community<a class="headerlink" href="#community" title="Permanent link">¶</a></h3>
 <ul>
-<li>💬 <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a></li>
-<li>🐛 <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a></li>
+<li><a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a></li>
+<li><a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a></li>
 <li>⭐ <a href="https://github.com/Aries-Serpent/_codex_">Star us on GitHub</a></li>
 </ul>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">¶</a></h3>
 <ul>
 <li><a href="../examples/">Code Examples</a></li>
-<li>📓 <a href="../notebooks/">Jupyter Notebooks</a></li>
-<li>🧪 <a href="../tests/">Test Cases</a></li>
+<li><a href="../notebooks/">Jupyter Notebooks</a></li>
+<li><a href="../tests/">Test Cases</a></li>
 </ul>
 <hr/>
 <h2 id="faq-metadata">FAQ Metadata<a class="headerlink" href="#faq-metadata" title="Permanent link">¶</a></h2>
@@ -3434,7 +3434,7 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 </tr>
 <tr>
 <td><strong>Last Updated</strong></td>
-<td>2026-06-27</td>
+<td>2026-07-16</td>
 </tr>
 <tr>
 <td><strong>Quality Score</strong></td>
@@ -3468,7 +3468,7 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 1. Open an <a href="https://github.com/Aries-Serpent/_codex_/issues">issue on GitHub</a>
 2. Add your question and we'll answer it
 3. Check back - your answer will be added here!</p>
-<p><strong>Last updated: 2026-06-27
+<p><strong>Last updated: 2026-07-16
 </strong>Maintained by:** <em>codex</em> Documentation Team</p>
 </article>
 </div>
@@ -3499,6 +3499,6 @@ Follow the <a href="../guides/production_deployment/">Deployment Guide</a></p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

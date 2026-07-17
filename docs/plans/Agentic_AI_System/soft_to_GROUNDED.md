@@ -1,6 +1,6 @@
 # Deep Research: Soft GROUNDED Conversion for Monorepo Agentic AI Systems
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 > Generated: 2026-06-22 | Author: mbaetiong | Chunk: 1 of N

@@ -1,6 +1,6 @@
 # What's Next — PR #4346 · S864 · 2026-05-08
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -68,7 +68,7 @@
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v0.2.1v0.2.1); `run_validation.sh` now uses `detect-secrets==1.5.0` | | <!-- pragma: allowlist secret -->
+| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v0.2.0v0.2.0); `run_validation.sh` now uses `detect-secrets==1.5.0` | | <!-- pragma: allowlist secret -->
 | 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message | |
 | 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | | <!-- pragma: allowlist secret -->
 | 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) | |

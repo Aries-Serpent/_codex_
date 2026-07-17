@@ -1,6 +1,6 @@
-## Quick Start: Cognitive Brain v0.2.1
+## Quick Start: Cognitive Brain v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Welcome to **Cognitive Brain** — a lightweight AI coordination framework for autonomous agents. Get up and running in 5 minutes.
 

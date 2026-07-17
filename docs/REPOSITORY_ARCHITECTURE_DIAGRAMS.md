@@ -1,18 +1,18 @@
-# Repository Architecture Diagrams - v0.2.1 Pre-Release
+# Repository Architecture Diagrams - v0.2.0 Pre-Release
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Version**: v0.2.1 Pre-Release
+**Version**: v0.2.0 Pre-Release
 **Package**: codex-ml
 **Last Updated**: 2026-05-20
 **Context**: Production-ready with 21,500+ test functions, 10.7% coverage, 48 CVEs fixed, 280+ agents
-**Purpose**: Updated architecture diagrams reflecting v0.2.1 pre-release state
+**Purpose**: Updated architecture diagrams reflecting v0.2.0 pre-release state
 
 ---
 
-## Overview (v0.2.1)
+## Overview (v0.2.0)
 
-This document presents all key architecture diagrams aligned with v0.2.1 pre-release:
+This document presents all key architecture diagrams aligned with v0.2.0 pre-release:
 1. **21,500+ Tests**: Comprehensive test functions across all components
 2. **10.7% Coverage**: Current baseline — ratchet roadmap targeting 90%
 3. **48 CVEs Fixed**: Security-hardened through IP-005 remediation
@@ -24,15 +24,15 @@ This document presents all key architecture diagrams aligned with v0.2.1 pre-rel
 
 ---
 
-## Diagram 1: codex-ml v0.2.1 CI/CD & Testing Architecture
+## Diagram 1: codex-ml v0.2.0 CI/CD & Testing Architecture
 
-### Current State (v0.2.1 Pre-Release)
+### Current State (v0.2.0 Pre-Release)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing test-comprehensive.yml<br/> 21,500+ Tests<br/>10.7% Coverage<br/> pytest-rerunfailures, test-rag.yml<br/> RAG Pipeline Tests<br/> No duplicate timeouts<br/> Uses pytest.ini'}}%%
 
 graph TB
- subgraph "codex-ml v0.2.1 CI/CD Pipeline"
+ subgraph "codex-ml v0.2.0 CI/CD Pipeline"
  TC[test-comprehensive.yml<br/> 21,500+ Tests<br/>10.7% Coverage<br/> pytest-rerunfailures]
  TR[test-rag.yml<br/> RAG Pipeline Tests<br/> No duplicate timeouts<br/> Uses pytest.ini]
  SH[self-healing.yml<br/> Auto-Fix + Self-Heal<br/> 75-87% Time Savings<br/> PyYAML dependency order]
@@ -44,7 +44,7 @@ graph TB
  CONV[TESTING_CONVENTIONS.md<br/> Best practices<br/> Common pitfalls<br/> Quick reference]
  end
 
- subgraph "Custom Actions (v0.2.1)"
+ subgraph "Custom Actions (v0.2.0)"
  SPC[setup-python-cached<br/> Requires PyYAML first<br/> Tiered caching<br/> Documented usage]
  DTS[doc-test-scribe-action<br/>🆕 Auto-generate docs/tests<br/> Integrated security<br/> HTML index generation]
  end
@@ -93,7 +93,7 @@ graph TB
  DTS --> MODE
  PR -.tags.-> Copilot[GitHub Copilot<br/> AI Review]
 
- %% Styling v0.2.1
+ %% Styling v0.2.0
  style TC fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
  style TR fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
  style SH fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
@@ -103,7 +103,7 @@ graph TB
  style HTML fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
 ```
 
-### v0.2.1 Key Improvements
+### v0.2.0 Key Improvements
 - **21,500+ Tests**: Comprehensive test functions across all modules
 - **10.7% Coverage**: Baseline; roadmap targets 90%
 - **48 CVEs Fixed**: Security hardening complete
@@ -1010,7 +1010,7 @@ graph TD
  D3[rate_limit_orchestrator.py\ntoken-bucket dedup backoff]
  D4[Session TTL via repo variable\nCOPILOT_SESSION_TTL_SECONDS]
  D5[31 docs archived\ndocs/plans/archive/]
- D6[CODEBASE_MERMAID_MAPS v0.2.1\nsections 13-16 added]
+ D6[CODEBASE_MERMAID_MAPS v0.2.0\nsections 13-16 added]
  end
 
  subgraph "Zero-Gate Autonomous Loop"
@@ -1047,5 +1047,5 @@ graph TD
  style PM3 fill:#fce4ec,color:#000
 ```
 
-**Last Updated**: 2026-05-08T08:34Z (S873 — Diagram 10 added: Phase 9 Autonomous Ops; cross-ref CODEBASE_MERMAID_MAPS v0.2.1)
+**Last Updated**: 2026-05-08T08:34Z (S873 — Diagram 10 added: Phase 9 Autonomous Ops; cross-ref CODEBASE_MERMAID_MAPS v0.2.0)
 **Status**: Phase 20 Complete · Phase 21 Ready · Phase 9 Autonomous Ops 95% Complete

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ITERATION_3_GAP_ANALYSIS/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Security Remediation - Iteration 3 Gap Analysis - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2502,16 +2502,16 @@
 <hr/>
 <h2 id="current-state-summary">Current State Summary<a class="headerlink" href="#current-state-summary" title="Permanent link">¶</a></h2>
 <h3 id="completed-work-3-phases">Completed Work (3 Phases)<a class="headerlink" href="#completed-work-3-phases" title="Permanent link">¶</a></h3>
-<p><strong>Phase 1: Dependabot &amp; Code Scanning (62 vulnerabilities)</strong> 
+<p><strong>Phase 1: Dependabot &amp; Code Scanning (62 vulnerabilities)</strong>
 - Dependabot alerts: 14/14 fixed
 - Original code scanning: 25/25 fixed
 - Additional verified: 23/23 verified
 - Code review issues: 8/8 addressed</p>
-<p><strong>Phase 2: Automated Bulk Fixes (14 files)</strong> 
+<p><strong>Phase 2: Automated Bulk Fixes (14 files)</strong>
 - Shell=True removed: 8 files
 - MD5 usedforsecurity added: 4 files
 - Fix scripts created: 2</p>
-<p><strong>Phase 3: Exception Handling (147 files)</strong> 
+<p><strong>Phase 3: Exception Handling (147 files)</strong>
 - Try-except-pass patterns: 150+ fixed
 - Logging added comprehensively
 - Debugging capability improved</p>
@@ -2521,10 +2521,10 @@
 <h2 id="gap-analysis-remaining-issues">Gap Analysis - Remaining Issues<a class="headerlink" href="#gap-analysis-remaining-issues" title="Permanent link">¶</a></h2>
 <h3 id="priority-1-critical-0-found">Priority 1: CRITICAL (0 found)<a class="headerlink" href="#priority-1-critical-0-found" title="Permanent link">¶</a></h3>
 <p><strong>Status</strong>: All critical vulnerabilities resolved
--  No unsafe eval() usage (only model.eval() and ast.literal_eval())
--  No unsafe pickle.load() (all use safe_pickle_load)
--  No shell=True in subprocess calls
--  All torch.load() use weights_only=True</p>
+- No unsafe eval() usage (only model.eval() and ast.literal_eval())
+- No unsafe pickle.load() (all use safe_pickle_load)
+- No shell=True in subprocess calls
+- All torch.load() use weights_only=True</p>
 <h3 id="priority-2-high-2-categories">Priority 2: HIGH (2 categories)<a class="headerlink" href="#priority-2-high-2-categories" title="Permanent link">¶</a></h3>
 <h4 id="21-incomplete-error-handling-coverage">2.1 Incomplete Error Handling Coverage<a class="headerlink" href="#21-incomplete-error-handling-coverage" title="Permanent link">¶</a></h4>
 <p><strong>Finding</strong>: Some files still have generic exception handling without specific types
@@ -2593,7 +2593,7 @@
 <h2 id="recommended-next-actions">Recommended Next Actions<a class="headerlink" href="#recommended-next-actions" title="Permanent link">¶</a></h2>
 <h3 id="immediate-this-session">Immediate (This Session)<a class="headerlink" href="#immediate-this-session" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Create Test Suite for Security Utilities</strong> </li>
+<li><strong>Create Test Suite for Security Utilities</strong></li>
 <li>Priority: HIGH</li>
 <li>Effort: 30 minutes</li>
 <li>Impact: Validates security improvements</li>
@@ -2601,7 +2601,7 @@
 <p>Files: 4 test files</p>
 </li>
 <li>
-<p><strong>Add Security Best Practices Guide</strong> </p>
+<p><strong>Add Security Best Practices Guide</strong></p>
 </li>
 <li>Priority: MEDIUM</li>
 <li>Effort: 15 minutes</li>
@@ -2610,7 +2610,7 @@
 <p>File: docs/SECURITY_BEST_PRACTICES.md</p>
 </li>
 <li>
-<p><strong>Create Validation Script</strong> </p>
+<p><strong>Create Validation Script</strong></p>
 </li>
 <li>Priority: MEDIUM</li>
 <li>Effort: 15 minutes</li>
@@ -2647,24 +2647,24 @@
 <h2 id="risk-assessment">Risk Assessment<a class="headerlink" href="#risk-assessment" title="Permanent link">¶</a></h2>
 <h3 id="current-risk-level-low">Current Risk Level: <strong>LOW</strong><a class="headerlink" href="#current-risk-level-low" title="Permanent link">¶</a></h3>
 <p><strong>Mitigated Risks</strong>:
--  RCE via torch.load (PyTorch vulnerability)
--  RCE via pickle deserialization
--  Command injection via subprocess
--  DoS attacks via malicious uploads
--  Weak cryptography (MD5)
--  Silent failure hiding bugs</p>
+- RCE via torch.load (PyTorch vulnerability)
+- RCE via pickle deserialization
+- Command injection via subprocess
+- DoS attacks via malicious uploads
+- Weak cryptography (MD5)
+- Silent failure hiding bugs</p>
 <p><strong>Remaining Risks</strong>:
-- ️ Untested security utilities (MEDIUM)
-  - <strong>Mitigation</strong>: Add test suite
-  - <strong>Timeline</strong>: This session</p>
+- Untested security utilities (MEDIUM)
+ - <strong>Mitigation</strong>: Add test suite
+ - <strong>Timeline</strong>: This session</p>
 <ul>
-<li>️ Generic exception handling (LOW)</li>
+<li>Generic exception handling (LOW)</li>
 <li><strong>Mitigation</strong>: Existing logging provides visibility</li>
 <li>
 <p><strong>Timeline</strong>: Future optimization</p>
 </li>
 <li>
-<p>️ Documentation gaps (VERY LOW)</p>
+<p>Documentation gaps (VERY LOW)</p>
 </li>
 <li><strong>Mitigation</strong>: Core security documented</li>
 <li><strong>Timeline</strong>: Ongoing</li>
@@ -2761,13 +2761,13 @@
 <tr>
 <td><strong>Test coverage</strong></td>
 <td>Partial</td>
-<td>️</td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<p><strong>Overall Status</strong>: <strong>PRODUCTION-READY</strong> </p>
+<p><strong>Overall Status</strong>: <strong>PRODUCTION-READY</strong></p>
 <p><strong>Key Achievements</strong>:
 1. All 62 original vulnerabilities resolved
 2. 161 additional files improved with automated fixes
@@ -2822,6 +2822,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

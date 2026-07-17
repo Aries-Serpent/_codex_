@@ -1,6 +1,6 @@
 # PR #4317 — Session Diagram: Full Scope of What Was Accomplished
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Stats: 62+ commits · 3 Dependabot PRs consolidated · 0 CI failures · all blocking gates **

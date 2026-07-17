@@ -191,9 +191,9 @@ docs/cognitive_brain/COGNITIVE_APP_CONNECTION_GUIDE.md       → Not found
   referenced_by: 1
   action: "Archive & update references"
 
-"docs/validation/v0.2.1_*":
+"docs/validation/v0.2.0_*":
   status: "draft/incomplete"
-  archive_location: "docs/archive/validation/v0.2.1/"
+  archive_location: "docs/archive/validation/v0.2.0/"
   reason: "Iteration-specific validation reports"
   referenced_by: 6
   action: "Consolidate & update index"

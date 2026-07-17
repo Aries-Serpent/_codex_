@@ -1,6 +1,6 @@
 # PR #4323 — Session Diagram
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Sessions: S1…S34S35S36S37 — HEAD `6c239f07`**

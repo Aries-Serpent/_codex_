@@ -1,10 +1,10 @@
 # Skills Telemetry Dashboard
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Category:** Autonomous Agentic Agency — Telemetry
 > **Status:** Active | **Last Updated: 2026-07-11
-> **Owner:** skills-master-agent v0.2.1
+> **Owner:** skills-master-agent v0.2.0
 > **Data Source:** `logs/skill_events.jsonl` via `codex-skill telemetry push`
 
 ---
@@ -20,13 +20,13 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 ## Skills-to-agent Mapping
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv0.2.1", "doc.refresh.agent\nv0.2.1"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv0.2.0", "doc.refresh.agent\nv0.2.0"'}}%%
 
 graph LR
  subgraph "Built-in Skills"
- S1["doc.retriever.core\nv0.2.1"]
- S2["doc.refresh.agent\nv0.2.1"]
- S3["code.search.extract\nv0.2.1"]
+ S1["doc.retriever.core\nv0.2.0"]
+ S2["doc.refresh.agent\nv0.2.0"]
+ S3["code.search.extract\nv0.2.0"]
  end
 
  subgraph "CI/CD Agents"

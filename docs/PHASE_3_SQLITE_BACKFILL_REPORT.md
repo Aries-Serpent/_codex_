@@ -1,6 +1,6 @@
 # Phase 3: SQLite Session Database Backfill Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-06-23T02:53:21.637634+00:00
 **Status:** SUCCESS

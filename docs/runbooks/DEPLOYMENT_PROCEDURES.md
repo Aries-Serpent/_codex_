@@ -1,6 +1,6 @@
 # RUNBOOK: Deployment Procedures for Codex ML Platform
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version:** 1.0.0
 **Last Updated: 2026-07-10
@@ -201,16 +201,16 @@ See [Post-Deployment Validation](#post-deployment-validation) below.
 
 ```bash
 # Build image
-docker build -t codex-ml:v0.2.1 .
+docker build -t codex-ml:v0.2.0 .
 
 # Tag for registry
-docker tag codex-ml:v0.2.1 registry.example.com/codex-ml:v0.2.1
+docker tag codex-ml:v0.2.0 registry.example.com/codex-ml:v0.2.0
 
 # Push to registry
-docker push registry.example.com/codex-ml:v0.2.1
+docker push registry.example.com/codex-ml:v0.2.0
 
 # Verify push
-docker pull registry.example.com/codex-ml:v0.2.1
+docker pull registry.example.com/codex-ml:v0.2.0
 ```
 
 #### Step 2: Update Helm Values
@@ -219,7 +219,7 @@ docker pull registry.example.com/codex-ml:v0.2.1
 # values-prod.yaml
 image:
  repository: registry.example.com/codex-ml
- tag: v0.2.1
+ tag: v0.2.0
  pullPolicy: IfNotPresent
 
 replicas: 3
@@ -379,7 +379,7 @@ sqlite3 /var/lib/codex/codex.db < /var/backups/codex_backup_YYYYMMDD_HHMMSS.sql
 
 # 3. Restore previous code version
 cd /opt/codex
-git checkout v0.2.1
+git checkout v0.2.0
 
 # 4. Install previous dependencies
 source venv/bin/activate

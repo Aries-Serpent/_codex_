@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3610/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3610 (S140) - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2398,9 +2398,9 @@
 <h1 id="cognitive-brain-status-pr-3610-s140">Cognitive Brain Status — PR #3610 (S140)<a class="headerlink" href="#cognitive-brain-status-pr-3610-s140" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Generated</strong>: 2026-06-22T00:00:00Z<br/>
-<strong>Session</strong>: S140<br/>
-<strong>PR</strong>: #3610 (<code>copilot/sub-pr-3606</code>)<br/>
+<p><strong>Generated</strong>: 2026-06-22T00:00:00Z
+<strong>Session</strong>: S140
+<strong>PR</strong>: #3610 (<code>copilot/sub-pr-3606</code>)
 <strong>Base PR</strong>: #3606 (<code>0D_base_</code>)</p>
 <hr/>
 <h2 id="current-phase-phase-5-ci-robustness-in-progress">Current Phase: Phase 5 — CI Robustness (In Progress)<a class="headerlink" href="#current-phase-phase-5-ci-robustness-in-progress" title="Permanent link">¶</a></h2>
@@ -2495,150 +2495,162 @@
 </ul>
 <h4 id="dependabot-cherry-pick">Dependabot Cherry-pick<a class="headerlink" href="#dependabot-cherry-pick" title="Permanent link">¶</a></h4>
 <ul>
-<li>PR #3608: <code>Dockerfile</code> — nvidia/cuda 12.1.0 → 13.2.0 (Ubuntu 22.04 runtime)</li>
+<li>PR #3608: <code>Dockerfile</code> — nvidia/cuda 12.1.0 13.2.0 (Ubuntu 22.04 runtime)</li>
 </ul>
 <hr/>
 <h2 id="architecture-diagram-current">Architecture Diagram (Current)<a class="headerlink" href="#architecture-diagram-current" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR Comment Upsert&lt;br/&gt;(paginated, race-safe)", "Consolidator Dedup&lt;br/&gt;(newest-first merge)"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "CI/CD Robustness Layer (Phase 5)"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        UPSRT["PR Comment Upsert&lt;br/&gt;(paginated, race-safe)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        DEDUP["Consolidator Dedup&lt;br/&gt;(newest-first merge)"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        DEFER["Deferral Gate&lt;br/&gt;(fence-safe scanner)"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        CACHE["Pip Cache&lt;br/&gt;(94/98 workflows)"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    end
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    subgraph "Test Infrastructure"
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        EVAL["evaluate_datasets&lt;br/&gt;(module-level)"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        POOL["PooledConnectionProxy&lt;br/&gt;backup(_raw_conn)"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        SORT["trend_aggregator&lt;br/&gt;sorted(key=str)"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        GH["codex.github&lt;br/&gt;(explicit import guard)"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    end
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    subgraph "Production Hardening (Phase 4 )"
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        PC["PatternCompressor /health"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        BC["BrainClient health"]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        RD["Redis RAG backend"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        CE["CrossEncoderReranker"]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    end
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    subgraph "Observability (Phase 6 🔮)"
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        OT["OTEL workflow histogram"]
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>        DB["CB Dashboard v2"]
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>        TR["Token rotation e2e"]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    end
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    UPSRT --&gt; DEDUP
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    DEFER --&gt; CACHE
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    EVAL --&gt; POOL
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    SORT --&gt; GH
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph "CI/CD Robustness Layer (Phase 5)"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> UPSRT["PR Comment Upsert&lt;br/&gt;(paginated, race-safe)"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> DEDUP["Consolidator Dedup&lt;br/&gt;(newest-first merge)"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> DEFER["Deferral Gate&lt;br/&gt;(fence-safe scanner)"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> CACHE["Pip Cache&lt;br/&gt;(94/98 workflows)"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> end
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> subgraph "Test Infrastructure"
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> EVAL["evaluate_datasets&lt;br/&gt;(module-level)"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> POOL["PooledConnectionProxy&lt;br/&gt;backup(_raw_conn)"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> SORT["trend_aggregator&lt;br/&gt;sorted(key=str)"]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> GH["codex.github&lt;br/&gt;(explicit import guard)"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> end
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> subgraph "Production Hardening (Phase 4 )"
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> PC["PatternCompressor /health"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> BC["BrainClient health"]
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> RD["Redis RAG backend"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> CE["CrossEncoderReranker"]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> end
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> subgraph "Observability (Phase 6 )"
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> OT["OTEL workflow histogram"]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> DB["CB Dashboard v2"]
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> TR["Token rotation e2e"]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> end
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> UPSRT --&gt; DEDUP
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> DEFER --&gt; CACHE
 <a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    style UPSRT fill:#22c55e,color:#fff
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    style DEDUP fill:#22c55e,color:#fff
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    style EVAL fill:#22c55e,color:#fff
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    style POOL fill:#22c55e,color:#fff
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    style SORT fill:#22c55e,color:#fff
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    style GH fill:#22c55e,color:#fff
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    style PC fill:#8b5cf6,color:#fff
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    style BC fill:#8b5cf6,color:#fff
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    style RD fill:#8b5cf6,color:#fff
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    style CE fill:#8b5cf6,color:#fff
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    style OT fill:#f59e0b,color:#fff
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    style DB fill:#f59e0b,color:#fff
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    style TR fill:#ef4444,color:#fff
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> EVAL --&gt; POOL
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> SORT --&gt; GH
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> style UPSRT fill:#22c55e,color:#fff
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> style DEDUP fill:#22c55e,color:#fff
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> style EVAL fill:#22c55e,color:#fff
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a> style POOL fill:#22c55e,color:#fff
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> style SORT fill:#22c55e,color:#fff
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a> style GH fill:#22c55e,color:#fff
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> style PC fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a> style BC fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> style RD fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a> style CE fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> style OT fill:#f59e0b,color:#fff
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a> style DB fill:#f59e0b,color:#fff
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> style TR fill:#ef4444,color:#fff
 </code></pre></div>
 <hr/>
 <h2 id="phase-5-completion-status">Phase 5 Completion Status<a class="headerlink" href="#phase-5-completion-status" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Diagram'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>gantt
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    title Cognitive Brain Phase Roadmap
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    dateFormat  YYYY-MM-DD
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    axisFormat  %b %d
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    section Phase 4 (Production Hardening)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    PatternCompressor /health     :done, p4a, 2026-02-20, 2026-02-25
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    BrainClient health            :done, p4b, 2026-02-25, 2026-03-01
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    Redis RAG + Feast             :done, p4c, 2026-02-28, 2026-03-05
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    CrossEncoderReranker          :done, p4d, 2026-03-01, 2026-03-05
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    capability_detectors tests    :done, p4e, 2026-03-05, 2026-03-10
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    section Phase 5 (CI Robustness)
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    Deferral fence-opener fix      :done, p5b, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    PRECOMMIT doc_metrics_sync     :done, p5c, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    Template indent fix            :done, p5d, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    Upsert pagination (4 wkfl)     :done, p5e, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    Consolidator newest-first      :done, p5f, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    CI test fixes (6 failures)     :done, p5g, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    nvidia/cuda bump + dockerfile  :done, p5h, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    pip-cache pattern fix (4 wkfl) :done, p5i, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    actionlint self-ref fix        :done, p5j, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    CHANGELOG REQ-5 compliance     :done, p5k, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    section Phase 6 (Observability)
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>    OTEL workflow histogram        :done, p6a, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>    slow-test @pytest.mark.slow    :done, p6b, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>    dependabot-auto-absorb wkfl    :done, p6c, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>    CB Dashboard v2 metrics widget :done, p6d, 2026-03-17, 2026-03-17
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>    mypy zero-error baseline       :active, p6e, 2026-03-18, 2026-03-22
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    Token rotation e2e (admin)     :crit, p6f, 2026-04-01, 2026-04-07
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>gantt
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> title Cognitive Brain Phase Roadmap
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> dateFormat YYYY-MM-DD
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> axisFormat %b %d
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> section Phase 4 (Production Hardening)
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> PatternCompressor /health :done, p4a, 2026-02-20, 2026-02-25
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> BrainClient health :done, p4b, 2026-02-25, 2026-03-01
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> Redis RAG + Feast :done, p4c, 2026-02-28, 2026-03-05
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> CrossEncoderReranker :done, p4d, 2026-03-01, 2026-03-05
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> capability_detectors tests :done, p4e, 2026-03-05, 2026-03-10
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> section Phase 5 (CI Robustness)
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> Deferral fence-opener fix :done, p5b, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> PRECOMMIT doc_metrics_sync :done, p5c, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> Template indent fix :done, p5d, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> Upsert pagination (4 wkfl) :done, p5e, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> Consolidator newest-first :done, p5f, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> CI test fixes (6 failures) :done, p5g, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> nvidia/cuda bump + dockerfile :done, p5h, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> pip-cache pattern fix (4 wkfl) :done, p5i, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> actionlint self-ref fix :done, p5j, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> CHANGELOG REQ-5 compliance :done, p5k, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> section Phase 6 (Observability)
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> OTEL workflow histogram :done, p6a, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> slow-test @pytest.mark.slow :done, p6b, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> dependabot-auto-absorb wkfl :done, p6c, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> CB Dashboard v2 metrics widget :done, p6d, 2026-03-17, 2026-03-17
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> mypy zero-error baseline :active, p6e, 2026-03-18, 2026-03-22
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> Token rotation e2e (admin) :crit, p6f, 2026-04-01, 2026-04-07
 </code></pre></div>
 <hr/>
 <h2 id="cb-dashboard-v3-real-time-ci-metrics-widget-s143">CB Dashboard v3 — Real-Time CI Metrics Widget (S143)<a class="headerlink" href="#cb-dashboard-v3-real-time-ci-metrics-widget-s143" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml&lt;br/&gt;pip cache ", "branch-rebase-gate.yml&lt;br/&gt;pip cache "'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>graph TB
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    subgraph "CI Health — S143 Baseline (2026-03-17)"
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        direction LR
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        subgraph "S141 "
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>            A1["cost-gate.yml&lt;br/&gt;pip cache "]
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>            A2["branch-rebase-gate.yml&lt;br/&gt;pip cache "]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>            A3["deferral-language-gate.yml&lt;br/&gt;pip cache "]
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>            A4["root-org-validation.yml&lt;br/&gt;actionlint "]
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>            A5["CHANGELOG REQ-5 "]
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        end
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>        subgraph "S142 "
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>            B1["mypy 0 errors "]
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>            B2["78 unused-ignores removed "]
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>            B3["TOKEN_ROTATION_GUIDE.md "]
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>            B4["533 stale docs remediated "]
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>            B5["doc-freshness-check.yml "]
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>        end
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>        subgraph "S143  (Now)"
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>            C1["pyasn1 0.6.3&lt;br/&gt;CVE-2026-30922 "]
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>            C2["OTel coherence histogram &lt;br/&gt;workflow.coherence.score"]
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>            C3["compute_coherence() &lt;br/&gt;policy-alignment helper"]
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>        end
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>        subgraph "Admin-Gated "
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>            D1["Token rotation e2e&lt;br/&gt;(real GitHub App)"]
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>            D2["CODEX_MASTER_KEY&lt;br/&gt;rotation calendar"]
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>        end
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>    end
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>    A5 --&gt; B1
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>    B1 --&gt; C1
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>    C1 --&gt; C2
-<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>    C2 --&gt; C3
-<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>    C3 -.-&gt;|requires admin| D1
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>graph TB
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> subgraph "CI Health — S143 Baseline (2026-03-17)"
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> direction LR
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> subgraph "S141 "
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> A1["cost-gate.yml&lt;br/&gt;pip cache "]
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> A2["branch-rebase-gate.yml&lt;br/&gt;pip cache "]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> A3["deferral-language-gate.yml&lt;br/&gt;pip cache "]
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> A4["root-org-validation.yml&lt;br/&gt;actionlint "]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> A5["CHANGELOG REQ-5 "]
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> end
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> subgraph "S142 "
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> B1["mypy 0 errors "]
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> B2["78 unused-ignores removed "]
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> B3["TOKEN_ROTATION_GUIDE.md "]
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> B4["533 stale docs remediated "]
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> B5["doc-freshness-check.yml "]
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> end
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> subgraph "S143 (Now)"
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> C1["pyasn1 0.6.3&lt;br/&gt;CVE-2026-30922 "]
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> C2["OTel coherence histogram &lt;br/&gt;workflow.coherence.score"]
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> C3["compute_coherence() &lt;br/&gt;policy-alignment helper"]
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> end
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> subgraph "Admin-Gated "
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> D1["Token rotation e2e&lt;br/&gt;(real GitHub App)"]
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> D2["CODEX_MASTER_KEY&lt;br/&gt;rotation calendar"]
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a> end
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a> end
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a> A5 --&gt; B1
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a> B1 --&gt; C1
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a> C1 --&gt; C2
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a> C2 --&gt; C3
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a> C3 -.-&gt;|requires admin| D1
 </code></pre></div>
 <h3 id="otel-coherence-histogram-architecture">OTel Coherence Histogram — Architecture<a class="headerlink" href="#otel-coherence-histogram-architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram showing 0.0, 1.0'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>sequenceDiagram
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    participant CI as GitHub Actions Job
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    participant OTel as otel_metrics.py
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    participant Reg as _MetricRegistry
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    participant Dash as Dashboard / Health Check
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    CI-&gt;&gt;OTel: import workflow_coherence_score, compute_coherence
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    CI-&gt;&gt;OTel: compute_coherence(actual_steps, expected_steps)
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    OTel--&gt;&gt;CI: score: float [0.0, 1.0]
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    CI-&gt;&gt;OTel: workflow_coherence_score.observe(score)
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    OTel-&gt;&gt;Reg: _observations.append(score)
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    Dash-&gt;&gt;Reg: metrics.get("workflow.coherence.score")
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    Reg--&gt;&gt;Dash: Histogram snapshot {count, sum, avg}
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>sequenceDiagram
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> participant CI as GitHub Actions Job
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> participant OTel as otel_metrics.py
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> participant Reg as _MetricRegistry
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> participant Dash as Dashboard / Health Check
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> CI-&gt;&gt;OTel: import workflow_coherence_score, compute_coherence
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> CI-&gt;&gt;OTel: compute_coherence(actual_steps, expected_steps)
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> OTel--&gt;&gt;CI: score: float [0.0, 1.0]
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> CI-&gt;&gt;OTel: workflow_coherence_score.observe(score)
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> OTel-&gt;&gt;Reg: _observations.append(score)
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> Dash-&gt;&gt;Reg: metrics.get("workflow.coherence.score")
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> Reg--&gt;&gt;Dash: Histogram snapshot {count, sum, avg}
 </code></pre></div>
 <h3 id="ci-metrics-snapshot-s143-cumulative">CI Metrics Snapshot (S143 Cumulative)<a class="headerlink" href="#ci-metrics-snapshot-s143-cumulative" title="Permanent link">¶</a></h3>
 <table>
@@ -2720,7 +2732,7 @@
 </ul>
 <h3 id="priority-2-enhancement">Priority 2 — Enhancement<a class="headerlink" href="#priority-2-enhancement" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>OTel → live CI wiring</strong> — Instrument <code>scripts/ci/*.py</code> to emit <code>workflow_coherence_score.observe()</code> at job completion</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>OTel live CI wiring</strong> — Instrument <code>scripts/ci/*.py</code> to emit <code>workflow_coherence_score.observe()</code> at job completion</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Coherence dashboard</strong> — Weekly GitHub Actions step that snapshots coherence histogram and posts to PR</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>P2 plans content review</strong> — <code>@mbaetiong</code> to validate historical decision records</li>
 </ul>
@@ -2732,7 +2744,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>tests/critical_path/test_auth_flows.py</code> — <code>@pytest.mark.slow</code> on 2 rate-limiter tests</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>.github/workflows/dependabot-auto-absorb.yml</code> — single-file bump auto-cherry-pick</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> CB Dashboard v3 — coherence architecture diagram + cumulative metrics table</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>requirements/lock.txt</code> — pyasn1 0.6.2 → 0.6.3 (CVE-2026-30922)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>requirements/lock.txt</code> — pyasn1 0.6.2 0.6.3 (CVE-2026-30922)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> mypy zero-error baseline (S142)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> TOKEN_ROTATION_GUIDE.md created (S142)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 533 stale docs remediated via <code>update_doc_freshness.py</code> (S142)</li>
@@ -2769,6 +2781,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Contributing to _codex_
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
 **Audience:** Contributors, Maintainers
@@ -147,7 +147,7 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 ### Using a Template
 
 1. Copy the template file
-2. Replace all `[PLACEHOLDER: ...]` entries
+2. Replace all `[To be updated by contributor]` entries
 3. Attach supporting assets (tests, notebooks)
 4. Document execution in "Execution Notes"
 5. Validate placeholders are resolved
@@ -155,13 +155,13 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 
 **Example:**
 ```
-[PLACEHOLDER: MIGRATION_INTENT_SUMMARY] 
+[To be updated by contributor] 
  "Relocate tokenizer helpers to `codex.text`" # pragma: allowlist secret
 
-[PLACEHOLDER: COMMAND_LIST]
+[To be updated by contributor]
  "`codex-cli sync`, `codex-cli diff`"
 
-[PLACEHOLDER: APPROVAL_DEADLINE]
+[To be updated by contributor]
  "2025-11-07"
 ```
 

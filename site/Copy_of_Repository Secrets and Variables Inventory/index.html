@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/Copy_of_Repository%20Secrets%20and%20Variables%20Inventory/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Repository Secrets and Variables Inventory - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2281,11 +2281,11 @@
 <a class="md-nav__link" href="#consolidated-todo-list-all-open-items-moved-to-top-per-convention">
 <span class="md-ellipsis">
       
-        ️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
+        CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
       
     </span>
 </a>
-<nav aria-label="️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)" class="md-nav">
+<nav aria-label="CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#blocking-secrets-pass-must-complete-before-full-agent-operation">
@@ -2330,7 +2330,7 @@
 <a class="md-nav__link" href="#blocker-status-api-403-secrets-pending-manual-entry-only">
 <span class="md-ellipsis">
       
-        🚧 Blocker Status: API 403 → Secrets pending manual entry only
+        Blocker Status: API 403 Secrets pending manual entry only
       
     </span>
 </a>
@@ -2669,7 +2669,7 @@
 <a class="md-nav__link" href="#whats-next-post-variables-only-pass">
 <span class="md-ellipsis">
       
-        ▶️ What's Next (Post Variables-Only Pass)
+        What's Next (Post Variables-Only Pass)
       
     </span>
 </a>
@@ -2745,7 +2745,7 @@
 <a class="md-nav__link" href="#secret-rotation-schedule-template">
 <span class="md-ellipsis">
       
-        📅 Secret Rotation Schedule Template
+        Secret Rotation Schedule Template
       
     </span>
 </a>
@@ -2765,103 +2765,75 @@
 </blockquote>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
 <ul>
-<li><a href="#-consolidated-todo-list-all-open-items--moved-to-top-per-convention">️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)</a></li>
+<li><a href="#-consolidated-todo-list-all-open-items--moved-to-top-per-convention"> CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)</a></li>
 <li><a href="#-blocking--secrets-pass-must-complete-before-full-agent-operation"> BLOCKING — Secrets Pass (Must complete before full agent operation)</a></li>
 <li><a href="#-high--post-variables-verification"> HIGH — Post-Variables Verification</a></li>
 <li><a href="#-completed"> COMPLETED</a></li>
 <li><a href="#-deferred--blocked"> DEFERRED / BLOCKED</a></li>
-<li><a href="#-blocker-status-api-403--secrets-pending-manual-entry-only">🚧 Blocker Status: API <code>403</code> → Secrets pending manual entry only</a></li>
+<li><a href="#-blocker-status-api-403--secrets-pending-manual-entry-only"> Blocker Status: API <code>403</code> Secrets pending manual entry only</a></li>
 <li><a href="#-table-of-contents"> TABLE OF CONTENTS</a></li>
 <li><a href="#-copilot-setup-stepsyml-verification"> copilot-setup-steps.yml Verification</a></li>
 <li><a href="#variables-used-by-copilot-setup-stepsyml">Variables Used by copilot-setup-steps.yml</a></li>
 <li><a href="#secrets-used-by-copilot-setup-stepsyml">Secrets Used by copilot-setup-steps.yml</a></li>
 <li><a href="#-previously-missing-variables--now-implemented"> PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED</a></li>
 <li><a href="#0-open-required-pages-first-direct-urls">0) Open required pages first (direct URLs)</a></li>
-<li><a href="#05--single-source-copypaste-packs-variables--secrets">0.5)  Single-Source Copy/Paste Packs (Variables + Secrets)</a><ul>
+<li><a href="#05--single-source-copypaste-packs-variables--secrets">0.5) Single-Source Copy/Paste Packs (Variables + Secrets)</a></li>
 <li><a href="#a-pass-2-missing-variables--validated-expected-values-ready-to-enter">A) Pass-2 Missing Variables — validated expected values (ready to enter)</a></li>
-<li><a href="#b-copypaste-block--repository-variables-actions--implemented">B) Copy/Paste block — Repository Variables (Actions)  IMPLEMENTED</a></li>
+<li><a href="#b-copypaste-block--repository-variables-actions--implemented">B) Copy/Paste block — Repository Variables (Actions) IMPLEMENTED</a></li>
 <li><a href="#c-copypaste-block--repository-secrets-actions">C) Copy/Paste block — Repository Secrets (Actions)</a></li>
 <li><a href="#d-copypaste-block--environment-secrets-aries_serpent_codex_">D) Copy/Paste block — Environment Secrets (<code>Aries_Serpent_codex_</code>)</a></li>
 <li><a href="#e-copypaste-block--organization-secrets">E) Copy/Paste block — Organization Secrets</a></li>
-<li><a href="#f-copypaste-block--agents-variables--secrets--implemented-json-values-provided">F) Copy/Paste block — Agents Variables + Secrets  IMPLEMENTED (JSON values provided)</a></li>
-</ul>
-</li>
+<li><a href="#f-copypaste-block--agents-variables--secrets--implemented-json-values-provided">F) Copy/Paste block — Agents Variables + Secrets IMPLEMENTED (JSON values provided)</a></li>
 <li><a href="#agents-variables--simple-values">Agents Variables — simple values</a></li>
 <li><a href="#agents-secrets-minimum--link-orgrepo-secrets-to-agents-scope">Agents Secrets (minimum) — link org/repo secrets to Agents scope</a></li>
-<li><a href="#1-repository-variables-settingsvariablesactions--all-implemented">1) Repository Variables (<code>/settings/variables/actions</code>)  ALL IMPLEMENTED</a></li>
-<li><a href="#-previously-missing-variables--now-implemented"> Previously Missing Variables — Now Implemented</a><ul>
+<li><a href="#1-repository-variables-settingsvariablesactions--all-implemented">1) Repository Variables (<code>/settings/variables/actions</code>) ALL IMPLEMENTED</a></li>
+<li><a href="#-previously-missing-variables--now-implemented"> Previously Missing Variables — Now Implemented</a></li>
 <li><a href="#updateverify-existing-variables">Update/Verify Existing Variables</a></li>
 <li><a href="#complete-repository-variables-list-76-total">Complete Repository Variables List (76 total)</a></li>
-</ul>
-</li>
-<li><a href="#2-repository-secrets-settingssecretsactions">2) Repository Secrets (<code>/settings/secrets/actions</code>)</a><ul>
+<li><a href="#2-repository-secrets-settingssecretsactions">2) Repository Secrets (<code>/settings/secrets/actions</code>)</a></li>
 <li><a href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
 <li><a href="#must-have-repository-secrets-priority-critical">MUST-HAVE Repository Secrets (Priority: CRITICAL)</a></li>
 <li><a href="#should-have-repository-secrets-priority-high">SHOULD-HAVE Repository Secrets (Priority: HIGH)</a></li>
 <li><a href="#may-have-repository-secrets-priority-optional">MAY-HAVE Repository Secrets (Priority: OPTIONAL)</a></li>
 <li><a href="#secret-rotation-policy">Secret Rotation Policy</a></li>
-</ul>
-</li>
-<li><a href="#3-environment-variables--secrets-aries_serpent_codex_">3) Environment Variables + Secrets (<code>Aries_Serpent_codex_</code>)</a><ul>
+<li><a href="#3-environment-variables--secrets-aries_serpent_codex_">3) Environment Variables + Secrets (<code>Aries_Serpent_codex_</code>)</a></li>
 <li><a href="#create-environment-if-not-exists">Create Environment (if not exists)</a></li>
 <li><a href="#environment-variables">Environment Variables</a></li>
 <li><a href="#environment-secrets">Environment Secrets</a></li>
 <li><a href="#secret-rotation-schedule">Secret Rotation Schedule</a></li>
-</ul>
-</li>
-<li><a href="#4-organization-variables-organizationssettingsvariablesactions">4) Organization Variables (<code>/organizations/.../settings/variables/actions</code>)</a><ul>
+<li><a href="#4-organization-variables-organizationssettingsvariablesactions">4) Organization Variables (<code>/organizations/.../settings/variables/actions</code>)</a></li>
 <li><a href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
 <li><a href="#current-status">Current Status</a></li>
-</ul>
-</li>
-<li><a href="#5-organization-secrets-organizationssettingssecretsactions">5) Organization Secrets (<code>/organizations/.../settings/secrets/actions</code>)</a><ul>
+<li><a href="#5-organization-secrets-organizationssettingssecretsactions">5) Organization Secrets (<code>/organizations/.../settings/secrets/actions</code>)</a></li>
 <li><a href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
 <li><a href="#must-have-organization-secrets-priority-critical">MUST-HAVE Organization Secrets (Priority: CRITICAL)</a></li>
 <li><a href="#should-have-organization-secrets-priority-high">SHOULD-HAVE Organization Secrets (Priority: HIGH)</a></li>
 <li><a href="#may-have-organization-secrets-priority-optional">MAY-HAVE Organization Secrets (Priority: OPTIONAL)</a></li>
 <li><a href="#secret-rotation-policy">Secret Rotation Policy</a></li>
-</ul>
-</li>
-<li><a href="#6-agents-variables-settingsvariablesagents">6) Agents Variables (<code>/settings/variables/agents</code>)</a><ul>
+<li><a href="#6-agents-variables-settingsvariablesagents">6) Agents Variables (<code>/settings/variables/agents</code>)</a></li>
 <li><a href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
 <li><a href="#must-have-agent-variables-priority-critical">MUST-HAVE Agent Variables (Priority: CRITICAL)</a></li>
 <li><a href="#should-have-agent-variables-priority-high">SHOULD-HAVE Agent Variables (Priority: HIGH)</a></li>
 <li><a href="#may-have-agent-variables-priority-optional">MAY-HAVE Agent Variables (Priority: OPTIONAL)</a></li>
-</ul>
-</li>
-<li><a href="#7-agents-secrets-settingssecretsagents">7) Agents Secrets (<code>/settings/secrets/agents</code>)</a><ul>
+<li><a href="#7-agents-secrets-settingssecretsagents">7) Agents Secrets (<code>/settings/secrets/agents</code>)</a></li>
 <li><a href="#step-by-step-instructions">Step-by-Step Instructions</a></li>
 <li><a href="#must-have-agent-secrets-priority-critical">MUST-HAVE Agent Secrets (Priority: CRITICAL)</a></li>
 <li><a href="#should-have-agent-secrets-priority-high">SHOULD-HAVE Agent Secrets (Priority: HIGH)</a></li>
 <li><a href="#may-have-agent-secrets-priority-optional">MAY-HAVE Agent Secrets (Priority: OPTIONAL)</a></li>
 <li><a href="#verification">Verification</a></li>
-</ul>
-</li>
-<li><a href="#8-post-setup-validation-verify-copilot-setup-stepsyml-works">8) Post-Setup Validation: Verify copilot-setup-steps.yml Works</a><ul>
+<li><a href="#8-post-setup-validation-verify-copilot-setup-stepsyml-works">8) Post-Setup Validation: Verify copilot-setup-steps.yml Works</a></li>
 <li><a href="#validation-checklist">Validation Checklist</a></li>
-</ul>
-</li>
 <li><a href="#-complete-inventory-tables"> Complete Inventory Tables</a></li>
-<li><a href="#environment-variables-aries_serpent_codex_-environment">Environment Variables (Aries_Serpent_codex_ Environment)</a><ul>
+<li><a href="#environment-variables-aries_serpent_codex_-environment">Environment Variables (Aries_Serpent_codex_ Environment)</a></li>
 <li><a href="#maintainer-addupdate-notes--environment-variables">Maintainer Add/Update Notes — Environment Variables</a></li>
-</ul>
-</li>
-<li><a href="#repository-variables">Repository Variables</a><ul>
+<li><a href="#repository-variables">Repository Variables</a></li>
 <li><a href="#maintainer-addupdate-notes--repository-variables">Maintainer Add/Update Notes — Repository Variables</a></li>
-</ul>
-</li>
-<li><a href="#environment-secrets-aries_serpent_codex_-environment">Environment Secrets (Aries_Serpent_codex_ Environment)</a><ul>
+<li><a href="#environment-secrets-aries_serpent_codex_-environment">Environment Secrets (Aries_Serpent_codex_ Environment)</a></li>
 <li><a href="#maintainer-addupdate-notes--environment-secrets">Maintainer Add/Update Notes — Environment Secrets</a></li>
-</ul>
-</li>
-<li><a href="#repository-secrets">Repository Secrets</a><ul>
+<li><a href="#repository-secrets">Repository Secrets</a></li>
 <li><a href="#maintainer-addupdate-notes--repository-secrets">Maintainer Add/Update Notes — Repository Secrets</a></li>
-</ul>
-</li>
-<li><a href="#organization-secrets">Organization Secrets</a><ul>
+<li><a href="#organization-secrets">Organization Secrets</a></li>
 <li><a href="#maintainer-addupdate-notes--organization-secrets">Maintainer Add/Update Notes — Organization Secrets</a></li>
-</ul>
-</li>
 <li><a href="#-maintainer-required-additions--agent-variables-and-secrets"> Maintainer Required Additions — Agent Variables and Secrets</a></li>
 <li><a href="#agent-variables-copilot-agent-settings">Agent Variables (Copilot Agent Settings)</a></li>
 <li><a href="#agent-secrets-copilot-agent-settings">Agent Secrets (Copilot Agent Settings)</a></li>
@@ -2874,15 +2846,15 @@
 <li><a href="#organization-settings-requires-org-owneradmin">Organization Settings (requires org owner/admin)</a></li>
 <li><a href="#workflow--validation">Workflow &amp; Validation</a></li>
 <li><a href="#external-services-for-secrettoken-generation">External Services (for secret/token generation)</a></li>
-<li><a href="#-whats-next-post-variables-only-pass">▶️ What's Next (Post Variables-Only Pass)</a></li>
+<li><a href="#-whats-next-post-variables-only-pass"> What's Next (Post Variables-Only Pass)</a></li>
 <li><a href="#-maintainer-execution-checklist"> Maintainer Execution Checklist</a></li>
-<li><a href="#phase-1-critical-repository-setup--complete">Phase 1: Critical Repository Setup  COMPLETE</a></li>
-<li><a href="#phase-2-environment-configuration--complete-variables-secrets-pending">Phase 2: Environment Configuration  COMPLETE (variables); Secrets pending</a></li>
+<li><a href="#phase-1-critical-repository-setup--complete">Phase 1: Critical Repository Setup COMPLETE</a></li>
+<li><a href="#phase-2-environment-configuration--complete-variables-secrets-pending">Phase 2: Environment Configuration COMPLETE (variables); Secrets pending</a></li>
 <li><a href="#phase-3-organization-secrets-requires-org-owneradmin">Phase 3: Organization Secrets (Requires Org Owner/Admin)</a></li>
-<li><a href="#phase-4-agents-configuration-copilotagents-scope--complete-variables-secrets-pending">Phase 4: Agents Configuration (Copilot/Agents Scope)  COMPLETE (variables); Secrets pending</a></li>
+<li><a href="#phase-4-agents-configuration-copilotagents-scope--complete-variables-secrets-pending">Phase 4: Agents Configuration (Copilot/Agents Scope) COMPLETE (variables); Secrets pending</a></li>
 <li><a href="#phase-5-validation">Phase 5: Validation</a></li>
 <li><a href="#phase-6-post-setup">Phase 6: Post-Setup</a></li>
-<li><a href="#-secret-rotation-schedule-template">📅 Secret Rotation Schedule Template</a></li>
+<li><a href="#-secret-rotation-schedule-template"> Secret Rotation Schedule Template</a></li>
 </ul>
 <blockquote>
 <p>Expanded by: Copilot Task Agent (2026-06-03T22:09:48Z)
@@ -2893,7 +2865,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <strong>STATUS UPDATE</strong>: 2026-06-04T17:43Z — All non-secret variables confirmed implemented. Secrets pending maintainer manual entry. ToDo checklist moved to top.</p>
 </blockquote>
 <hr/>
-<h2 id="consolidated-todo-list-all-open-items-moved-to-top-per-convention">️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)<a class="headerlink" href="#consolidated-todo-list-all-open-items-moved-to-top-per-convention" title="Permanent link">¶</a></h2>
+<h2 id="consolidated-todo-list-all-open-items-moved-to-top-per-convention">CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)<a class="headerlink" href="#consolidated-todo-list-all-open-items-moved-to-top-per-convention" title="Permanent link">¶</a></h2>
 <blockquote>
 <p><strong>Status as of 2026-06-04T17:43Z</strong>: All repository variables (Actions, Agents, Environment) have been set by the maintainer. <strong>Secrets have NOT yet been entered</strong> — pending maintainer confirmation that all variables are visible before secrets pass begins.</p>
 </blockquote>
@@ -2968,7 +2940,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All 18 Agents Variables set</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All 13 environment variables in <code>Aries_Serpent_codex_</code> set</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> JSON/complex variables provided with concrete initial values (see Copy/Paste Pack F)</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> starlette bumped 0.50.0 → 1.0.1 in requirements/lock.txt (PR #4750)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> starlette bumped 0.50.0 1.0.1 in requirements/lock.txt (PR #4750)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> copilot-setup-steps.yml canonical <code>run: |</code> block restored (PR #4750)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> test_layer_boundaries.py aligned with canonical preload block form (PR #4750)</li>
 </ul>
@@ -2980,7 +2952,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Document completion timestamp and create GitHub issue for rotation schedule</li>
 </ul>
 <hr/>
-<h2 id="blocker-status-api-403-secrets-pending-manual-entry-only">🚧 Blocker Status: API <code>403</code> → Secrets pending manual entry only<a class="headerlink" href="#blocker-status-api-403-secrets-pending-manual-entry-only" title="Permanent link">¶</a></h2>
+<h2 id="blocker-status-api-403-secrets-pending-manual-entry-only">Blocker Status: API <code>403</code> Secrets pending manual entry only<a class="headerlink" href="#blocker-status-api-403-secrets-pending-manual-entry-only" title="Permanent link">¶</a></h2>
 <p>All variables have been implemented. The remaining blocker affects <strong>secrets only</strong> (not variables) — GitHub Actions secrets APIs return <code>403 Resource not accessible by integration</code>. Complete secrets in GitHub UI using the exact steps below.</p>
 <hr/>
 <h2 id="table-of-contents_1">TABLE OF CONTENTS<a class="headerlink" href="#table-of-contents_1" title="Permanent link">¶</a></h2>
@@ -3066,61 +3038,32 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </tbody>
 </table>
 <h3 id="secrets-used-by-copilot-setup-stepsyml">Secrets Used by copilot-setup-steps.yml<a class="headerlink" href="#secrets-used-by-copilot-setup-stepsyml" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Secret Name</th>
-<th>Usage in Workflow</th>
-<th>Required?</th>
-<th>Priority</th>
-<th>Current Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CODEX_MASTER_KEY</code></td>
-<td>Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations</td>
-<td><strong>YES</strong></td>
-<td><strong>CRITICAL</strong></td>
-<td>Org secret</td>
-</tr>
-<tr>
-<td><code>CODEX_BACKUP_KEY</code></td>
-<td>Lines 118, 169, 198, 268, 336, 1113: Fallback auth token</td>
-<td><strong>YES</strong></td>
-<td><strong>CRITICAL</strong></td>
-<td>Org secret</td>
-</tr>
-<tr>
-<td><code>GITHUB_TOKEN</code></td>
-<td>Line 170, fallback in token chains: Default workflow token</td>
-<td>Auto-provided</td>
-<td>N/A</td>
-<td>Auto-injected</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret Name | Usage in Workflow | Required? | Priority | Current Status | <!-- pragma: allowlist secret -->
+|-------------|-------------------|-----------|----------|----------------|
+| <code>CODEX_MASTER_KEY</code> | Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations | <strong>YES</strong> | <strong>CRITICAL</strong> | Org secret | <!-- pragma: allowlist secret -->
+| <code>CODEX_BACKUP_KEY</code> | Lines 118, 169, 198, 268, 336, 1113: Fallback auth token | <strong>YES</strong> | <strong>CRITICAL</strong> | Org secret | <!-- pragma: allowlist secret -->
+| <code>GITHUB_TOKEN</code> | Line 170, fallback in token chains: Default workflow token | Auto-provided | N/A | Auto-injected | <!-- pragma: allowlist secret --></p>
 <h3 id="previously-missing-variables-now-implemented">PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED<a class="headerlink" href="#previously-missing-variables-now-implemented" title="Permanent link">¶</a></h3>
 <p>The following variables were previously missing from the inventory and have now been created by the maintainer:</p>
 <ol>
-<li><strong><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></strong> = <code>3</code> </li>
+<li><strong><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></strong> = <code>3</code></li>
 <li>
 <p>Rate limit for autonomous CI healer to prevent runaway healing loops</p>
 </li>
 <li>
-<p><strong><code>CODEX_SWEEP_SKIP_MAIN</code></strong> = <code>true</code> </p>
+<p><strong><code>CODEX_SWEEP_SKIP_MAIN</code></strong> = <code>true</code></p>
 </li>
 <li>
 <p>Boolean flag to skip main branch in automated sweep operations</p>
 </li>
 <li>
-<p><strong><code>CODEX_HEALER_SKIP_SKIPCI</code></strong> = <code>true</code> </p>
+<p><strong><code>CODEX_HEALER_SKIP_SKIPCI</code></strong> = <code>true</code></p>
 </li>
 <li>
 <p>Boolean flag to skip commits marked <code>[skip ci]</code> in healer operations</p>
 </li>
 <li>
-<p><strong><code>COPILOT_AGENT_STATE</code></strong> = <code>idle</code> </p>
+<p><strong><code>COPILOT_AGENT_STATE</code></strong> = <code>idle</code></p>
 </li>
 <li>Current agent state tracking (idle/active/blocked)</li>
 </ol>
@@ -3137,7 +3080,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Organization <strong>Actions Variables</strong>: https://github.com/organizations/Aries-Serpent/settings/variables/actions</li>
 <li>Organization <strong>Actions Secrets</strong>: https://github.com/organizations/Aries-Serpent/settings/secrets/actions</li>
 </ol>
-<h3 id="05-single-source-copypaste-packs-variables-secrets">0.5)  Single-Source Copy/Paste Packs (Variables + Secrets)<a class="headerlink" href="#05-single-source-copypaste-packs-variables-secrets" title="Permanent link">¶</a></h3>
+<h3 id="05-single-source-copypaste-packs-variables-secrets">0.5) Single-Source Copy/Paste Packs (Variables + Secrets)<a class="headerlink" href="#05-single-source-copypaste-packs-variables-secrets" title="Permanent link">¶</a></h3>
 <p>Use this section as the <strong>single maintainer execution source</strong> for manual entry.</p>
 <h4 id="a-pass-2-missing-variables-validated-expected-values-ready-to-enter">A) Pass-2 Missing Variables — validated expected values (ready to enter)<a class="headerlink" href="#a-pass-2-missing-variables-validated-expected-values-ready-to-enter" title="Permanent link">¶</a></h4>
 <table>
@@ -3246,7 +3189,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </tr>
 </tbody>
 </table>
-<h4 id="b-copypaste-block-repository-variables-actions-implemented">B) Copy/Paste block — Repository Variables (Actions)  IMPLEMENTED<a class="headerlink" href="#b-copypaste-block-repository-variables-actions-implemented" title="Permanent link">¶</a></h4>
+<h4 id="b-copypaste-block-repository-variables-actions-implemented">B) Copy/Paste block — Repository Variables (Actions) IMPLEMENTED<a class="headerlink" href="#b-copypaste-block-repository-variables-actions-implemented" title="Permanent link">¶</a></h4>
 <p>All variables below have been set. This block is retained as a reference/reset guide:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nv">CODEX_MAX_HEALER_RUNS_PER_HOUR</span><span class="o">=</span><span class="m">3</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nv">CODEX_SWEEP_SKIP_MAIN</span><span class="o">=</span><span class="nb">true</span>
@@ -3273,7 +3216,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="nv">WEBHOOK_RECEIVER_URL</span><span class="o">=</span>https://bootstrap-pending-8765.app.github.dev/webhook/github
 </code></pre></div>
 <blockquote>
-<p>️ <strong>Action required</strong>: Update <code>WEBHOOK_RECEIVER_URL</code> with the actual active Codespace name before running webhook-dependent workflows.</p>
+<p><strong>Action required</strong>: Update <code>WEBHOOK_RECEIVER_URL</code> with the actual active Codespace name before running webhook-dependent workflows.</p>
 </blockquote>
 <h4 id="c-copypaste-block-repository-secrets-actions">C) Copy/Paste block — Repository Secrets (Actions)<a class="headerlink" href="#c-copypaste-block-repository-secrets-actions" title="Permanent link">¶</a></h4>
 <p>Paste names/values into: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/actions</p>
@@ -3308,7 +3251,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="nv">CODECOV_TOKEN</span><span class="o">=</span>&lt;paste-secret&gt;
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="nv">_CODEX_ACTION_RUNNER</span><span class="o">=</span>&lt;paste-secret&gt;
 </code></pre></div>
-<h4 id="f-copypaste-block-agents-variables-secrets-implemented-json-values-provided">F) Copy/Paste block — Agents Variables + Secrets  IMPLEMENTED (JSON values provided)<a class="headerlink" href="#f-copypaste-block-agents-variables-secrets-implemented-json-values-provided" title="Permanent link">¶</a></h4>
+<h4 id="f-copypaste-block-agents-variables-secrets-implemented-json-values-provided">F) Copy/Paste block — Agents Variables + Secrets IMPLEMENTED (JSON values provided)<a class="headerlink" href="#f-copypaste-block-agents-variables-secrets-implemented-json-values-provided" title="Permanent link">¶</a></h4>
 <ul>
 <li>Agents Variables: https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/agents</li>
 <li>Agents Secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents</li>
@@ -3342,16 +3285,16 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="nv">OPENAI_API_KEY</span><span class="o">=</span>&lt;link-repo-secret&gt;
 </code></pre></div>
 <hr/>
-<h2 id="1-repository-variables-settingsvariablesactions-all-implemented">1) Repository Variables (<code>/settings/variables/actions</code>)  ALL IMPLEMENTED<a class="headerlink" href="#1-repository-variables-settingsvariablesactions-all-implemented" title="Permanent link">¶</a></h2>
+<h2 id="1-repository-variables-settingsvariablesactions-all-implemented">1) Repository Variables (<code>/settings/variables/actions</code>) ALL IMPLEMENTED<a class="headerlink" href="#1-repository-variables-settingsvariablesactions-all-implemented" title="Permanent link">¶</a></h2>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/actions</p>
-<p>Click path: <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong> → <strong>Variables</strong> → <strong>New repository variable</strong>.</p>
+<p>Click path: <strong>Settings</strong> <strong>Secrets and variables</strong> <strong>Actions</strong> <strong>Variables</strong> <strong>New repository variable</strong>.</p>
 <h3 id="previously-missing-variables-now-implemented_1">Previously Missing Variables — Now Implemented<a class="headerlink" href="#previously-missing-variables-now-implemented_1" title="Permanent link">¶</a></h3>
 <p>All 4 previously-missing variables required by <code>copilot-setup-steps.yml</code> have been created:</p>
 <ol>
-<li><strong><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></strong> = <code>3</code> </li>
-<li><strong><code>CODEX_SWEEP_SKIP_MAIN</code></strong> = <code>true</code> </li>
-<li><strong><code>CODEX_HEALER_SKIP_SKIPCI</code></strong> = <code>true</code> </li>
-<li><strong><code>COPILOT_AGENT_STATE</code></strong> = <code>idle</code> </li>
+<li><strong><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></strong> = <code>3</code></li>
+<li><strong><code>CODEX_SWEEP_SKIP_MAIN</code></strong> = <code>true</code></li>
+<li><strong><code>CODEX_HEALER_SKIP_SKIPCI</code></strong> = <code>true</code></li>
+<li><strong><code>COPILOT_AGENT_STATE</code></strong> = <code>idle</code></li>
 </ol>
 <h4 id="updateverify-existing-variables">Update/Verify Existing Variables<a class="headerlink" href="#updateverify-existing-variables" title="Permanent link">¶</a></h4>
 <p>All variables below are set. Review periodically for freshness (automated vars are updated by workflows):
@@ -3369,7 +3312,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <p><strong>All 76 repository variables from the inventory should be present</strong>. See <a href="#-complete-inventory-tables">Complete Inventory Tables</a> section below for the full list.</p>
 <h3 id="2-repository-secrets-settingssecretsactions">2) Repository Secrets (<code>/settings/secrets/actions</code>)<a class="headerlink" href="#2-repository-secrets-settingssecretsactions" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/actions</p>
-<p>Click path: <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong> → <strong>Secrets</strong> → <strong>New repository secret</strong>.</p>
+<p>Click path: <strong>Settings</strong> <strong>Secrets and variables</strong> <strong>Actions</strong> <strong>Secrets</strong> <strong>New repository secret</strong>.</p>
 <h4 id="step-by-step-instructions">Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions" title="Permanent link">¶</a></h4>
 <ol>
 <li><strong>Navigate</strong> to https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/actions</li>
@@ -3454,7 +3397,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <hr/>
 <h3 id="3-environment-variables-secrets-aries_serpent_codex_">3) Environment Variables + Secrets (<code>Aries_Serpent_codex_</code>)<a class="headerlink" href="#3-environment-variables-secrets-aries_serpent_codex_" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/settings/environments</p>
-<p>Click path: <strong>Settings</strong> → <strong>Environments</strong> → <strong>Aries_Serpent_codex_</strong> (or create environment first if it doesn't exist).</p>
+<p>Click path: <strong>Settings</strong> <strong>Environments</strong> <strong>Aries_Serpent_codex_</strong> (or create environment first if it doesn't exist).</p>
 <h4 id="create-environment-if-not-exists">Create Environment (if not exists)<a class="headerlink" href="#create-environment-if-not-exists" title="Permanent link">¶</a></h4>
 <ol>
 <li>Navigate to: https://github.com/Aries-Serpent/<em>codex</em>/settings/environments</li>
@@ -3549,40 +3492,38 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </li>
 <li>
 <p><strong><code>RUST_TEST_THREADS</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>Add variable</strong></li>
 <li>Name: <code>RUST_TEST_THREADS</code></li>
 <li>Value: <code>1</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CARGO_TERM_COLOR</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>Add variable</strong></li>
 <li>Name: <code>CARGO_TERM_COLOR</code></li>
 <li>Value: <code>always</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_BRIDGE_DIR</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>Add variable</strong></li>
 <li>Name: <code>CODEX_BRIDGE_DIR</code></li>
 <li>Value: <code>/tmp/codex_secure_bridge</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_BRIDGE_OWNER_ONLY</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>Add variable</strong></li>
 <li>Name: <code>CODEX_BRIDGE_OWNER_ONLY</code></li>
 <li>Value: <code>true</code></li>
 <li>Click <strong>Add variable</strong></li>
-</ul>
-</li>
 </ol>
 <p><strong>Total Environment Variables to Create</strong>: 13</p>
 <h4 id="environment-secrets">Environment Secrets<a class="headerlink" href="#environment-secrets" title="Permanent link">¶</a></h4>
@@ -3622,8 +3563,8 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <hr/>
 <h3 id="4-organization-variables-organizationssettingsvariablesactions">4) Organization Variables (<code>/organizations/.../settings/variables/actions</code>)<a class="headerlink" href="#4-organization-variables-organizationssettingsvariablesactions" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/organizations/Aries-Serpent/settings/variables/actions</p>
-<p>Click path: <strong>Org Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong> → <strong>Variables</strong> → <strong>New organization variable</strong>.</p>
-<p>️ <strong>Note</strong>: This section requires <strong>organization owner</strong> or <strong>admin</strong> privileges.</p>
+<p>Click path: <strong>Org Settings</strong> <strong>Secrets and variables</strong> <strong>Actions</strong> <strong>Variables</strong> <strong>New organization variable</strong>.</p>
+<p><strong>Note</strong>: This section requires <strong>organization owner</strong> or <strong>admin</strong> privileges.</p>
 <h4 id="step-by-step-instructions_1">Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions_1" title="Permanent link">¶</a></h4>
 <ol>
 <li><strong>Navigate</strong> to https://github.com/organizations/Aries-Serpent/settings/variables/actions</li>
@@ -3636,15 +3577,15 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 1. Click <strong>New organization variable</strong>
 2. Name: <em>(copy from repository variable)</em>
 3. Value: <em>(copy from repository variable)</em>
-4. Repository access: Select <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Add</strong>
+4. Repository access: Select <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Add</strong>
 5. Click <strong>Add variable</strong>
 6. Then delete the duplicate repository variable after confirming workflow compatibility</p>
 <p><strong>Total Organization Variables to Create</strong>: 0 (currently none; all are repo-scoped)</p>
 <hr/>
 <h3 id="5-organization-secrets-organizationssettingssecretsactions">5) Organization Secrets (<code>/organizations/.../settings/secrets/actions</code>)<a class="headerlink" href="#5-organization-secrets-organizationssettingssecretsactions" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/organizations/Aries-Serpent/settings/secrets/actions</p>
-<p>Click path: <strong>Org Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong> → <strong>Secrets</strong> → <strong>New organization secret</strong>.</p>
-<p>️ <strong>Note</strong>: This section requires <strong>organization owner</strong> or <strong>admin</strong> privileges.</p>
+<p>Click path: <strong>Org Settings</strong> <strong>Secrets and variables</strong> <strong>Actions</strong> <strong>Secrets</strong> <strong>New organization secret</strong>.</p>
+<p><strong>Note</strong>: This section requires <strong>organization owner</strong> or <strong>admin</strong> privileges.</p>
 <h4 id="step-by-step-instructions_2">Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions_2" title="Permanent link">¶</a></h4>
 <ol>
 <li><strong>Navigate</strong> to https://github.com/organizations/Aries-Serpent/settings/secrets/actions</li>
@@ -3657,7 +3598,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>CODEX_MASTER_KEY</code></li>
 <li>Secret: <em>(GitHub App installation token or PAT with <code>repo</code>, <code>workflow</code>, <code>admin:org</code>, <code>read:packages</code>, <code>write:packages</code> scopes)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Primary authentication token for all critical operations - used in token fallback chain</p>
@@ -3668,7 +3609,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>CODEX_BACKUP_KEY</code></li>
 <li>Secret: <em>(Secondary GitHub App installation token or PAT with same scopes as CODEX_MASTER_KEY)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Fallback authentication token when CODEX_MASTER_KEY fails</p>
@@ -3679,7 +3620,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>CODEX_ADMIN_KEY</code></li>
 <li>Secret: <em>(GitHub PAT with admin-level scopes for sensitive operations)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>Purpose: Administrative token for elevated privilege operations</li>
 </ol>
@@ -3689,7 +3630,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>_GITHUB_APP_PRIVATE_KEY</code></li>
 <li>Secret: <em>(PEM-formatted private key from your GitHub App settings)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Required for GitHub App JWT signing and installation token generation</p>
@@ -3700,7 +3641,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>_GITHUB_APP_ID</code></li>
 <li>Secret: <em>(Numeric App ID from GitHub App settings, e.g., <code>123456</code>)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: GitHub App identifier</p>
@@ -3711,7 +3652,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>_GITHUB_APP_INSTALLATION_ID</code></li>
 <li>Secret: <em>(Numeric installation ID for this org, find at https://github.com/organizations/Aries-Serpent/settings/installations)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Links App to this organization installation</p>
@@ -3722,7 +3663,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>_GITHUB_APP_CLIENT_SECRET</code></li>
 <li>Secret: <em>(Client secret from GitHub App OAuth settings)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>Purpose: OAuth client secret for App authentication flows</li>
 </ol>
@@ -3732,7 +3673,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>RAG_OPENAI_KEY</code></li>
 <li>Secret: <em>(OpenAI API key dedicated to RAG operations, starting with <code>sk-proj-</code> or <code>sk-</code>)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Dedicated OpenAI key for RAG/embedding operations (isolated from main OPENAI_API_KEY)</p>
@@ -3743,55 +3684,53 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>HF_TOKEN</code></li>
 <li>Secret: <em>(Hugging Face user access token from https://huggingface.co/settings/tokens)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>
 <p>Purpose: Access gated models and private datasets on Hugging Face</p>
 </li>
 <li>
 <p><strong><code>PYPI_TOKEN</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>PYPI_TOKEN</code></li>
 <li>Secret: <em>(PyPI API token from https://pypi.org/manage/account/token/, starting with <code>pypi-</code>)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
-<li>Purpose: Publish Python packages to PyPI</li>
-</ul>
+<li>
+<p>Purpose: Publish Python packages to PyPI</p>
 </li>
 <li>
 <p><strong><code>NPM_TOKEN</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>NPM_TOKEN</code></li>
 <li>Secret: <em>(npm access token from https://www.npmjs.com/settings/</em>/tokens)*</li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
-<li>Purpose: Publish Node.js packages to npm registry</li>
-</ul>
+<li>
+<p>Purpose: Publish Node.js packages to npm registry</p>
 </li>
 <li>
 <p><strong><code>CODECOV_TOKEN</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>CODECOV_TOKEN</code></li>
 <li>Secret: <em>(Codecov upload token from https://codecov.io/gh/Aries-Serpent/<em>codex</em>/settings)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
-<li>Purpose: Upload coverage reports to Codecov</li>
-</ul>
+<li>
+<p>Purpose: Upload coverage reports to Codecov</p>
 </li>
 <li>
 <p><strong><code>_CODEX_ACTION_RUNNER</code></strong></p>
-<ul>
+</li>
 <li>Click <strong>New organization secret</strong> (or update existing)</li>
 <li>Name: <code>_CODEX_ACTION_RUNNER</code></li>
 <li>Secret: <em>(GitHub PAT for action runner operations)</em></li>
-<li>Repository access: <strong>Selected repositories</strong> → Search <code>_codex_</code> → Select → <strong>Update selection</strong></li>
+<li>Repository access: <strong>Selected repositories</strong> Search <code>_codex_</code> Select <strong>Update selection</strong></li>
 <li>Click <strong>Add secret</strong> (or <strong>Update secret</strong>)</li>
 <li>Purpose: Runner-specific authentication token</li>
-</ul>
-</li>
 </ol>
 <h4 id="secret-rotation-policy_1">Secret Rotation Policy<a class="headerlink" href="#secret-rotation-policy_1" title="Permanent link">¶</a></h4>
 <ul>
@@ -3822,7 +3761,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 5. Save.</p>
 <h3 id="6-agents-variables-settingsvariablesagents">6) Agents Variables (<code>/settings/variables/agents</code>)<a class="headerlink" href="#6-agents-variables-settingsvariablesagents" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/agents</p>
-<p>Click path: <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Copilot</strong> (or <strong>Agents</strong>) → <strong>Variables</strong> → <strong>New variable</strong>.</p>
+<p>Click path: <strong>Settings</strong> <strong>Secrets and variables</strong> <strong>Copilot</strong> (or <strong>Agents</strong>) <strong>Variables</strong> <strong>New variable</strong>.</p>
 <h4 id="step-by-step-instructions_3">Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions_3" title="Permanent link">¶</a></h4>
 <ol>
 <li><strong>Navigate</strong> to https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/agents</li>
@@ -3871,7 +3810,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <p><strong><code>COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS</code></strong></p>
 </li>
 <li>Name: <code>COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS</code></li>
-<li>Value: <em>(copy the current value from Repository Variables → Actions at https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/actions — must be kept in sync)</em></li>
+<li>Value: <em>(copy the current value from Repository Variables Actions at https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/actions — must be kept in sync)</em></li>
 <li>Click <strong>Add variable</strong></li>
 <li>
 <p>Purpose: Network allowlist must be synchronized between Actions and Agents settings</p>
@@ -3881,7 +3820,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </li>
 <li>Name: <code>COPILOT_AGENT_PREFLIGHT_RULES</code></li>
 <li>Value (initial — paste exact JSON):
-     <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"rules"</span><span class="p">:{</span><span class="nt">"require_report_progress"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"require_wec_block"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"no_direct_git_push"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"token_chain"</span><span class="p">:[</span><span class="s2">"CODEX_MASTER_KEY"</span><span class="p">,</span><span class="s2">"CODEX_BACKUP_KEY"</span><span class="p">,</span><span class="s2">"github.token"</span><span class="p">],</span><span class="nt">"pre_commit_commands"</span><span class="p">:[</span><span class="s2">"python scripts/ci/session_wrapup_autofix.py --check --pr-number ${PR}"</span><span class="p">],</span><span class="nt">"commit_msg_prefix_required"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"max_autonomy_level"</span><span class="p">:</span><span class="s2">"D"</span><span class="p">}}</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"rules"</span><span class="p">:{</span><span class="nt">"require_report_progress"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"require_wec_block"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"no_direct_git_push"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"token_chain"</span><span class="p">:[</span><span class="s2">"CODEX_MASTER_KEY"</span><span class="p">,</span><span class="s2">"CODEX_BACKUP_KEY"</span><span class="p">,</span><span class="s2">"github.token"</span><span class="p">],</span><span class="nt">"pre_commit_commands"</span><span class="p">:[</span><span class="s2">"python scripts/ci/session_wrapup_autofix.py --check --pr-number ${PR}"</span><span class="p">],</span><span class="nt">"commit_msg_prefix_required"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"max_autonomy_level"</span><span class="p">:</span><span class="s2">"D"</span><span class="p">}}</span>
 </code></pre></div></li>
 <li>Click <strong>Add variable</strong></li>
 <li>
@@ -3892,7 +3831,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </li>
 <li>Name: <code>COPILOT_WEC_SELECTION_MATRIX</code></li>
 <li>Value (initial — paste exact JSON):
-     <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"matrix"</span><span class="p">:{</span><span class="nt">"default"</span><span class="p">:[</span><span class="s2">"pre-merge-validation.yml"</span><span class="p">,</span><span class="s2">"comment-review-gate.yml"</span><span class="p">,</span><span class="s2">"deferral-language-gate.yml"</span><span class="p">,</span><span class="s2">"agent-auth-delegation.yml"</span><span class="p">,</span><span class="s2">"workflow-execution-gate.yml"</span><span class="p">],</span><span class="nt">"testing"</span><span class="p">:[</span><span class="s2">"validate.yml"</span><span class="p">,</span><span class="s2">"resilient_validation.yml"</span><span class="p">,</span><span class="s2">"nox_gates.yml"</span><span class="p">],</span><span class="nt">"security"</span><span class="p">:[</span><span class="s2">"security-scanning-suite.yml"</span><span class="p">,</span><span class="s2">"codeql-analysis.yml"</span><span class="p">,</span><span class="s2">"actionlint-audit.yml"</span><span class="p">],</span><span class="nt">"documentation"</span><span class="p">:[</span><span class="s2">"documentation-link-checker.yml"</span><span class="p">],</span><span class="nt">"infrastructure"</span><span class="p">:[</span><span class="s2">"reference-integrity.yml"</span><span class="p">,</span><span class="s2">"dependency-submission.yml"</span><span class="p">]}}</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"matrix"</span><span class="p">:{</span><span class="nt">"default"</span><span class="p">:[</span><span class="s2">"pre-merge-validation.yml"</span><span class="p">,</span><span class="s2">"comment-review-gate.yml"</span><span class="p">,</span><span class="s2">"deferral-language-gate.yml"</span><span class="p">,</span><span class="s2">"agent-auth-delegation.yml"</span><span class="p">,</span><span class="s2">"workflow-execution-gate.yml"</span><span class="p">],</span><span class="nt">"testing"</span><span class="p">:[</span><span class="s2">"validate.yml"</span><span class="p">,</span><span class="s2">"resilient_validation.yml"</span><span class="p">,</span><span class="s2">"nox_gates.yml"</span><span class="p">],</span><span class="nt">"security"</span><span class="p">:[</span><span class="s2">"security-scanning-suite.yml"</span><span class="p">,</span><span class="s2">"codeql-analysis.yml"</span><span class="p">,</span><span class="s2">"actionlint-audit.yml"</span><span class="p">],</span><span class="nt">"documentation"</span><span class="p">:[</span><span class="s2">"documentation-link-checker.yml"</span><span class="p">],</span><span class="nt">"infrastructure"</span><span class="p">:[</span><span class="s2">"reference-integrity.yml"</span><span class="p">,</span><span class="s2">"dependency-submission.yml"</span><span class="p">]}}</span>
 </code></pre></div></li>
 <li>Click <strong>Add variable</strong></li>
 <li>Purpose: Required for WEC workflow selection logic</li>
@@ -3902,7 +3841,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li><strong><code>COPILOT_WEC_TEMPLATE_DRIFT</code></strong></li>
 <li>Name: <code>COPILOT_WEC_TEMPLATE_DRIFT</code></li>
 <li>Value (initial — zero-drift state after remediation):
-     <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"count"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="nt">"items"</span><span class="p">:[],</span><span class="nt">"note"</span><span class="p">:</span><span class="s2">"e-to-d-transition-gate.yml, d-capable-promotion-gate.yml, mcp-health.yml added to _WEC_ITEMS in session_wrapup_autofix.py"</span><span class="p">}</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"count"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="nt">"items"</span><span class="p">:[],</span><span class="nt">"note"</span><span class="p">:</span><span class="s2">"e-to-d-transition-gate.yml, d-capable-promotion-gate.yml, mcp-health.yml added to _WEC_ITEMS in session_wrapup_autofix.py"</span><span class="p">}</span>
 </code></pre></div></li>
 <li>
 <p>Click <strong>Add variable</strong></p>
@@ -3912,90 +3851,86 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </li>
 <li>Name: <code>COPILOT_SESSION_TOOL_CAPABILITIES</code></li>
 <li>Value (initial — 4-surface capability map):
-     <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"surfaces"</span><span class="p">:{</span><span class="nt">"copilot_coding_agent"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_push_via_report_progress"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_read_github_api"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_write_github_api"</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span><span class="nt">"github_actions"</span><span class="p">:{</span><span class="nt">"can_read_variables"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_write_variables"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_read_secrets"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_trigger_workflows"</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span><span class="nt">"copilot_chat"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_push"</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span><span class="nt">"cli"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_push"</span><span class="p">:</span><span class="kc">true</span><span class="p">}}}</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="p">{</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0"</span><span class="p">,</span><span class="nt">"updated"</span><span class="p">:</span><span class="s2">"2026-06-04"</span><span class="p">,</span><span class="nt">"surfaces"</span><span class="p">:{</span><span class="nt">"copilot_coding_agent"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_push_via_report_progress"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_read_github_api"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_write_github_api"</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span><span class="nt">"github_actions"</span><span class="p">:{</span><span class="nt">"can_read_variables"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_write_variables"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_read_secrets"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_trigger_workflows"</span><span class="p">:</span><span class="kc">true</span><span class="p">},</span><span class="nt">"copilot_chat"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"can_push"</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span><span class="nt">"cli"</span><span class="p">:{</span><span class="nt">"can_edit_files"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_run_bash"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nt">"can_push"</span><span class="p">:</span><span class="kc">true</span><span class="p">}}}</span>
 </code></pre></div></li>
 <li>
 <p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>COGNITIVE_BRAIN_INJECTION_ENABLED</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>COGNITIVE_BRAIN_INJECTION_ENABLED</code></li>
 <li>Value: <code>true</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></li>
 <li>Value: <code>128000</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE</code></li>
 <li>Value: <code>0.75</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>COGNITIVE_BRAIN_ALLOWED_ACTORS</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>COGNITIVE_BRAIN_ALLOWED_ACTORS</code></li>
 <li>Value: <code>mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_COVERAGE_THRESHOLD</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>CODEX_COVERAGE_THRESHOLD</code></li>
 <li>Value: <code>80</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_LINT_STRICT</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>CODEX_LINT_STRICT</code></li>
 <li>Value: <code>true</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_CI_FAILURE_THRESHOLD</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>CODEX_CI_FAILURE_THRESHOLD</code></li>
 <li>Value: <code>10.0</code></li>
-<li>Click <strong>Add variable</strong></li>
-</ul>
+<li>
+<p>Click <strong>Add variable</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_PYTHON_VERSION</code></strong></p>
-<ul>
+</li>
 <li>Name: <code>CODEX_PYTHON_VERSION</code></li>
 <li>Value: <code>3.12</code></li>
 <li>Click <strong>Add variable</strong></li>
-</ul>
-</li>
 </ol>
 <h4 id="may-have-agent-variables-priority-optional">MAY-HAVE Agent Variables (Priority: OPTIONAL)<a class="headerlink" href="#may-have-agent-variables-priority-optional" title="Permanent link">¶</a></h4>
 <ol>
-<li><strong><code>CODEX_LOG_LEVEL</code></strong><ul>
+<li><strong><code>CODEX_LOG_LEVEL</code></strong></li>
 <li>Name: <code>CODEX_LOG_LEVEL</code></li>
 <li>Value: <code>INFO</code></li>
 <li>Click <strong>Add variable</strong></li>
-</ul>
-</li>
 </ol>
 <p><strong>Total Agent Variables to Create</strong>: 18 minimum (7 MUST + 11 SHOULD + 1 MAY optional)</p>
 <hr/>
 <h3 id="7-agents-secrets-settingssecretsagents">7) Agents Secrets (<code>/settings/secrets/agents</code>)<a class="headerlink" href="#7-agents-secrets-settingssecretsagents" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents</p>
-<p>Click path: <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Copilot</strong> (or <strong>Agents</strong>) → <strong>Secrets</strong> → <strong>New secret</strong>.</p>
+<p>Click path: <strong>Settings</strong> <strong>Secrets and variables</strong> <strong>Copilot</strong> (or <strong>Agents</strong>) <strong>Secrets</strong> <strong>New secret</strong>.</p>
 <h4 id="step-by-step-instructions_4">Step-by-Step Instructions<a class="headerlink" href="#step-by-step-instructions_4" title="Permanent link">¶</a></h4>
 <ol>
 <li><strong>Navigate</strong> to https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents</li>
@@ -4003,7 +3938,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click the <strong>Secrets</strong> sub-tab</li>
 <li>For each secret below, click <strong>New secret</strong></li>
 </ol>
-<p>️ <strong>IMPORTANT</strong>: Most Agent Secrets are <strong>organization secrets</strong> that need to be <strong>granted access</strong> to the Copilot/Agents scope for this repository. You do NOT re-create them here - you <strong>grant repository access</strong> from the organization settings.</p>
+<p><strong>IMPORTANT</strong>: Most Agent Secrets are <strong>organization secrets</strong> that need to be <strong>granted access</strong> to the Copilot/Agents scope for this repository. You do NOT re-create them here - you <strong>grant repository access</strong> from the organization settings.</p>
 <h4 id="must-have-agent-secrets-priority-critical">MUST-HAVE Agent Secrets (Priority: CRITICAL)<a class="headerlink" href="#must-have-agent-secrets-priority-critical" title="Permanent link">¶</a></h4>
 <p><strong>These are Organization Secrets - Grant Access:</strong></p>
 <ol>
@@ -4018,7 +3953,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Click <strong>Save</strong></li>
 <li><strong>THEN</strong> return to: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents</li>
 <li>
-<p>Click <strong>New secret</strong> → Name: <code>CODEX_MASTER_KEY</code> → <strong>Add secret from organization secrets</strong> → Select <code>CODEX_MASTER_KEY</code> → <strong>Add secret</strong></p>
+<p>Click <strong>New secret</strong> Name: <code>CODEX_MASTER_KEY</code> <strong>Add secret from organization secrets</strong> Select <code>CODEX_MASTER_KEY</code> <strong>Add secret</strong></p>
 </li>
 <li>
 <p><strong><code>CODEX_BACKUP_KEY</code></strong> ⭐ <strong>CRITICAL</strong></p>
@@ -4069,7 +4004,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>Navigate to: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/actions</li>
 <li>Note the current value indicator</li>
 <li><strong>Then</strong> at https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents:</li>
-<li>Click <strong>New secret</strong> → Name: <code>OPENAI_API_KEY</code> → <strong>Add from repository secrets</strong> or <strong>Create new</strong></li>
+<li>Click <strong>New secret</strong> Name: <code>OPENAI_API_KEY</code> <strong>Add from repository secrets</strong> or <strong>Create new</strong></li>
 <li>If creating new, paste the same value used in Actions secrets</li>
 <li>Click <strong>Add secret</strong></li>
 </ol>
@@ -4081,16 +4016,14 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </li>
 <li>
 <p><strong><code>CODEX_WEBHOOK_SECRET</code></strong></p>
-<ul>
-<li>Repository secret - add to Agents scope if webhook-managing agent flows are used</li>
-</ul>
+</li>
+<li>
+<p>Repository secret - add to Agents scope if webhook-managing agent flows are used</p>
 </li>
 <li>
 <p><strong><code>_CODEX_BOT_RUNNER</code></strong></p>
-<ul>
-<li>Repository secret - add to Agents scope only for runner-management tasks</li>
-</ul>
 </li>
+<li>Repository secret - add to Agents scope only for runner-management tasks</li>
 </ol>
 <h4 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h4>
 <p>After adding all secrets, verify at https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents that you see:
@@ -4100,7 +4033,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <hr/>
 <h3 id="8-post-setup-validation-verify-copilot-setup-stepsyml-works">8) Post-Setup Validation: Verify copilot-setup-steps.yml Works<a class="headerlink" href="#8-post-setup-validation-verify-copilot-setup-stepsyml-works" title="Permanent link">¶</a></h3>
 <p><strong>Direct URL</strong>: https://github.com/Aries-Serpent/<em>codex</em>/actions/workflows/copilot-setup-steps.yml</p>
-<p>Click path: <strong>Actions</strong> → <strong>Copilot Setup Steps</strong> → <strong>Run workflow</strong> dropdown → <strong>Run workflow</strong>.</p>
+<p>Click path: <strong>Actions</strong> <strong>Copilot Setup Steps</strong> <strong>Run workflow</strong> dropdown <strong>Run workflow</strong>.</p>
 <h4 id="validation-checklist">Validation Checklist<a class="headerlink" href="#validation-checklist" title="Permanent link">¶</a></h4>
 <p>After completing all above sections, validate the configuration:</p>
 <ol>
@@ -4142,13 +4075,11 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <li>
 <p><strong>If workflow fails</strong>:</p>
 </li>
-<li>Click on the failed job → expand failed step</li>
-<li>Check error message:<ul>
-<li>If <code>variable not found</code> → go back to section 1 or 6 and create the missing variable</li>
-<li>If <code>secret not found</code> → go back to section 2, 3, 4, 5, or 7 and add the missing secret</li>
-<li>If <code>permission denied</code> → check organization secret repository access grants</li>
-</ul>
-</li>
+<li>Click on the failed job expand failed step</li>
+<li>Check error message:</li>
+<li>If <code>variable not found</code> go back to section 1 or 6 and create the missing variable</li>
+<li>If <code>secret not found</code> go back to section 2, 3, 4, 5, or 7 and add the missing secret</li>
+<li>If <code>permission denied</code> check organization secret repository access grants</li>
 <li>
 <p>Fix the issue, then re-run the workflow</p>
 </li>
@@ -4294,7 +4225,7 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 <tr>
 <td><code>COPILOT_WEC_TEMPLATE_DRIFT</code></td>
 <td>VERIFY + SYNC</td>
-<td><code>count=0</code> template mapping gaps (normalized <code>auto-approve-workflows.yml</code> → <code>auto-approve-workflows</code>)</td>
+<td><code>count=0</code> template mapping gaps (normalized <code>auto-approve-workflows.yml</code> <code>auto-approve-workflows</code>)</td>
 <td>Drift was remediated in <code>_WEC_ITEMS</code>; keep the repo variable and agent settings copy aligned to the current zero-drift state.</td>
 </tr>
 <tr>
@@ -4330,36 +4261,11 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </tbody>
 </table>
 <h4 id="maintainer-addupdate-notes-environment-secrets">Maintainer Add/Update Notes — Environment Secrets<a class="headerlink" href="#maintainer-addupdate-notes-environment-secrets" title="Permanent link">¶</a></h4>
-<table>
-<thead>
-<tr>
-<th>Secret</th>
-<th>Expected Action</th>
-<th>Rotation / Rule</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CODEX_ENVIRONMENT_RUNNER</code></td>
-<td>ROTATE/VERIFY</td>
-<td>90-day cadence</td>
-<td>Environment runner auth hardening.</td>
-</tr>
-<tr>
-<td><code>CODEX_RUNNER_SHA256</code></td>
-<td>UPDATE on runner change</td>
-<td>must match active runner binary</td>
-<td>Integrity verification for runner payload.</td>
-</tr>
-<tr>
-<td><code>CODEX_RUNNER_TOKEN</code></td>
-<td>ROTATE</td>
-<td>90-day cadence or on exposure</td>
-<td>Limit long-lived runner token risk.</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
+|---|---|---|---|
+| <code>CODEX_ENVIRONMENT_RUNNER</code> | ROTATE/VERIFY | 90-day cadence | Environment runner auth hardening. |
+| <code>CODEX_RUNNER_SHA256</code> | UPDATE on runner change | must match active runner binary | Integrity verification for runner payload. |
+| <code>CODEX_RUNNER_TOKEN</code> | ROTATE | 90-day cadence or on exposure | Limit long-lived runner token risk. | <!-- pragma: allowlist secret --></p>
 <hr/>
 <h3 id="repository-secrets">Repository Secrets<a class="headerlink" href="#repository-secrets" title="Permanent link">¶</a></h3>
 <table>
@@ -4379,48 +4285,13 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </tbody>
 </table>
 <h4 id="maintainer-addupdate-notes-repository-secrets">Maintainer Add/Update Notes — Repository Secrets<a class="headerlink" href="#maintainer-addupdate-notes-repository-secrets" title="Permanent link">¶</a></h4>
-<table>
-<thead>
-<tr>
-<th>Secret</th>
-<th>Expected Action</th>
-<th>Rotation / Rule</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>OPENAI_API_KEY</code></td>
-<td>ROTATE/VERIFY</td>
-<td>90-day cadence</td>
-<td>LLM runtime secret hygiene.</td>
-</tr>
-<tr>
-<td><code>CODEX_WEBHOOK_SECRET</code></td>
-<td>ROTATE/VERIFY</td>
-<td>on webhook infra change or 90-day</td>
-<td>Protect webhook signature validation.</td>
-</tr>
-<tr>
-<td><code>_CODEX_BOT_RUNNER</code></td>
-<td>ROTATE/VERIFY</td>
-<td>90-day cadence</td>
-<td>Bot runner token should not remain static.</td>
-</tr>
-<tr>
-<td><code>CODEX_GHP_TOKEN_BASE64</code> / <code>CODEX_GHP_TOKEN_HEX</code></td>
-<td>REVIEW necessity</td>
-<td>keep one preferred encoding path</td>
-<td>Reduce duplicate token encodings unless required for compatibility.</td>
-</tr>
-<tr>
-<td><code>CODEX_REPO_ID</code></td>
-<td>VERIFY</td>
-<td>numeric repo ID current</td>
-<td>Keep internal ID references consistent.</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
+|---|---|---|---|
+| <code>OPENAI_API_KEY</code> | ROTATE/VERIFY | 90-day cadence | LLM runtime secret hygiene. | <!-- pragma: allowlist secret -->
+| <code>CODEX_WEBHOOK_SECRET</code> | ROTATE/VERIFY | on webhook infra change or 90-day | Protect webhook signature validation. | <!-- pragma: allowlist secret -->
+| <code>_CODEX_BOT_RUNNER</code> | ROTATE/VERIFY | 90-day cadence | Bot runner token should not remain static. | <!-- pragma: allowlist secret -->
+| <code>CODEX_GHP_TOKEN_BASE64</code> / <code>CODEX_GHP_TOKEN_HEX</code> | REVIEW necessity | keep one preferred encoding path | Reduce duplicate token encodings unless required for compatibility. | <!-- pragma: allowlist secret -->
+| <code>CODEX_REPO_ID</code> | VERIFY | numeric repo ID current | Keep internal ID references consistent. |</p>
 <hr/>
 <h3 id="organization-secrets">Organization Secrets<a class="headerlink" href="#organization-secrets" title="Permanent link">¶</a></h3>
 <table>
@@ -4440,58 +4311,18 @@ Maintainer Manual Setup Runbook Added: 2026-06-03T21:47:19Z (explicit click-by-c
 </tbody>
 </table>
 <h4 id="maintainer-addupdate-notes-organization-secrets">Maintainer Add/Update Notes — Organization Secrets<a class="headerlink" href="#maintainer-addupdate-notes-organization-secrets" title="Permanent link">¶</a></h4>
-<table>
-<thead>
-<tr>
-<th>Secret</th>
-<th>Expected Action</th>
-<th>Rotation / Rule</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CODEX_MASTER_KEY</code></td>
-<td><strong>ROTATE/VERIFY PRIORITY</strong></td>
-<td>90-day cadence</td>
-<td>Primary write token in auth chain.</td>
-</tr>
-<tr>
-<td><code>CODEX_BACKUP_KEY</code></td>
-<td>ROTATE/VERIFY</td>
-<td>90-day cadence</td>
-<td>Fallback write token; must remain valid.</td>
-</tr>
-<tr>
-<td><code>CODEX_ADMIN_KEY</code></td>
-<td>ROTATE/VERIFY</td>
-<td>90-day cadence</td>
-<td>Elevated operations token.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_PRIVATE_KEY</code></td>
-<td>ROTATE/VERIFY</td>
-<td>app key rotation policy</td>
-<td>Required for GitHub App JWT auth.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
-<td>ROTATE/VERIFY</td>
-<td>app secret rotation policy</td>
-<td>OAuth/App exchange integrity.</td>
-</tr>
-<tr>
-<td><code>HF_TOKEN</code>, <code>NPM_TOKEN</code>, <code>PYPI_TOKEN</code>, <code>_CODEX_ACTION_RUNNER</code>, <code>CODECOV_TOKEN</code></td>
-<td>REVIEW AGE + ROTATE as needed</td>
-<td>follow provider policy</td>
-<td>Aging secrets should be refreshed on schedule.</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret | Expected Action | Rotation / Rule | Reason | <!-- pragma: allowlist secret -->
+|---|---|---|---|
+| <code>CODEX_MASTER_KEY</code> | <strong>ROTATE/VERIFY PRIORITY</strong> | 90-day cadence | Primary write token in auth chain. | <!-- pragma: allowlist secret -->
+| <code>CODEX_BACKUP_KEY</code> | ROTATE/VERIFY | 90-day cadence | Fallback write token; must remain valid. | <!-- pragma: allowlist secret -->
+| <code>CODEX_ADMIN_KEY</code> | ROTATE/VERIFY | 90-day cadence | Elevated operations token. | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_PRIVATE_KEY</code> | ROTATE/VERIFY | app key rotation policy | Required for GitHub App JWT auth. |
+| <code>_GITHUB_APP_CLIENT_SECRET</code> | ROTATE/VERIFY | app secret rotation policy | OAuth/App exchange integrity. | <!-- pragma: allowlist secret -->
+| <code>HF_TOKEN</code>, <code>NPM_TOKEN</code>, <code>PYPI_TOKEN</code>, <code>_CODEX_ACTION_RUNNER</code>, <code>CODECOV_TOKEN</code> | REVIEW AGE + ROTATE as needed | follow provider policy | Aging secrets should be refreshed on schedule. | <!-- pragma: allowlist secret --></p>
 <hr/>
 <h2 id="maintainer-required-additions-agent-variables-and-secrets">Maintainer Required Additions — Agent Variables and Secrets<a class="headerlink" href="#maintainer-required-additions-agent-variables-and-secrets" title="Permanent link">¶</a></h2>
 <blockquote>
-<p>Target UI for variables: https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/agents<br/>
+<p>Target UI for variables: https://github.com/Aries-Serpent/<em>codex</em>/settings/variables/agents
 Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/secrets/agents</p>
 </blockquote>
 <h3 id="agent-variables-copilot-agent-settings">Agent Variables (Copilot Agent Settings)<a class="headerlink" href="#agent-variables-copilot-agent-settings" title="Permanent link">¶</a></h3>
@@ -4635,96 +4466,19 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 </tbody>
 </table>
 <h3 id="agent-secrets-copilot-agent-settings">Agent Secrets (Copilot Agent Settings)<a class="headerlink" href="#agent-secrets-copilot-agent-settings" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Secret Name</th>
-<th>Source of Truth</th>
-<th>Action</th>
-<th>Priority</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>CODEX_MASTER_KEY</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>MUST</td>
-<td>Primary write/auth token for agent operations.</td>
-</tr>
-<tr>
-<td><code>CODEX_BACKUP_KEY</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>MUST</td>
-<td>Required fallback in token chain.</td>
-</tr>
-<tr>
-<td><code>CODEX_ADMIN_KEY</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>Needed for elevated admin workflows.</td>
-</tr>
-<tr>
-<td><code>OPENAI_API_KEY</code></td>
-<td>Repo secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>Needed for LLM-backed tasks where applicable.</td>
-</tr>
-<tr>
-<td><code>RAG_OPENAI_KEY</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>MAY</td>
-<td>Needed for RAG-specific agent operations.</td>
-</tr>
-<tr>
-<td><code>CODEX_WEBHOOK_SECRET</code></td>
-<td>Repo secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>MAY</td>
-<td>Needed only for webhook-managing agent flows.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_ID</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>GitHub App auth bundle member.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_INSTALLATION_ID</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>GitHub App installation token flow.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_PRIVATE_KEY</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>JWT signing for App auth.</td>
-</tr>
-<tr>
-<td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
-<td>Org secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>SHOULD</td>
-<td>OAuth/App client secret requirements.</td>
-</tr>
-<tr>
-<td><code>_CODEX_BOT_RUNNER</code></td>
-<td>Repo secret</td>
-<td>ADD/GRANT/VERIFY</td>
-<td>MAY</td>
-<td>Needed only for runner-management tasks.</td>
-</tr>
-</tbody>
-</table>
+<p>| Secret Name | Source of Truth | Action | Priority | Notes | <!-- pragma: allowlist secret -->
+|---|---|---|---|---|
+| <code>CODEX_MASTER_KEY</code> | Org secret | ADD/GRANT/VERIFY | MUST | Primary write/auth token for agent operations. | <!-- pragma: allowlist secret -->
+| <code>CODEX_BACKUP_KEY</code> | Org secret | ADD/GRANT/VERIFY | MUST | Required fallback in token chain. | <!-- pragma: allowlist secret -->
+| <code>CODEX_ADMIN_KEY</code> | Org secret | ADD/GRANT/VERIFY | SHOULD | Needed for elevated admin workflows. | <!-- pragma: allowlist secret -->
+| <code>OPENAI_API_KEY</code> | Repo secret | ADD/GRANT/VERIFY | SHOULD | Needed for LLM-backed tasks where applicable. | <!-- pragma: allowlist secret -->
+| <code>RAG_OPENAI_KEY</code> | Org secret | ADD/GRANT/VERIFY | MAY | Needed for RAG-specific agent operations. | <!-- pragma: allowlist secret -->
+| <code>CODEX_WEBHOOK_SECRET</code> | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for webhook-managing agent flows. | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_ID</code> | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App auth bundle member. | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_INSTALLATION_ID</code> | Org secret | ADD/GRANT/VERIFY | SHOULD | GitHub App installation token flow. | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_PRIVATE_KEY</code> | Org secret | ADD/GRANT/VERIFY | SHOULD | JWT signing for App auth. | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_CLIENT_SECRET</code> | Org secret | ADD/GRANT/VERIFY | SHOULD | OAuth/App client secret requirements. | <!-- pragma: allowlist secret -->
+| <code>_CODEX_BOT_RUNNER</code> | Repo secret | ADD/GRANT/VERIFY | MAY | Needed only for runner-management tasks. | <!-- pragma: allowlist secret --></p>
 <hr/>
 <h2 id="summary-statistics">Summary Statistics<a class="headerlink" href="#summary-statistics" title="Permanent link">¶</a></h2>
 <table>
@@ -4813,14 +4567,14 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <li><strong>GitHub Apps</strong>: https://github.com/settings/apps</li>
 </ul>
 <hr/>
-<h2 id="whats-next-post-variables-only-pass">▶️ What's Next (Post Variables-Only Pass)<a class="headerlink" href="#whats-next-post-variables-only-pass" title="Permanent link">¶</a></h2>
+<h2 id="whats-next-post-variables-only-pass">What's Next (Post Variables-Only Pass)<a class="headerlink" href="#whats-next-post-variables-only-pass" title="Permanent link">¶</a></h2>
 <blockquote>
 <p><strong>Status 2026-06-04T17:43Z</strong>: All non-secret variables are implemented. See consolidated TODO at the top of this document.</p>
 </blockquote>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Execute <strong>secrets pass</strong> (repo/env/org) — see SECRETS-1/2/3/4/5 in TODO block above. <em>(Waiting for maintainer confirmation that all variables are visible before secrets pass begins.)</em></li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Resolve <code>COPILOT_WEC_TEMPLATE_DRIFT</code> by adding the missing workflows to <code>_WEC_ITEMS</code> in <code>scripts/ci/session_wrapup_autofix.py</code> (<code>e-to-d-transition-gate.yml</code>, <code>d-capable-promotion-gate.yml</code>, <code>mcp-health.yml</code>).  Done</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Replace all "placeholder JSON" references with concrete initial values.  Done (see Copy/Paste Pack F for <code>COPILOT_AGENT_PREFLIGHT_RULES</code>, <code>COPILOT_WEC_SELECTION_MATRIX</code>, <code>COPILOT_WEC_TEMPLATE_DRIFT</code>, <code>COPILOT_SESSION_TOOL_CAPABILITIES</code>)</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Resolve <code>COPILOT_WEC_TEMPLATE_DRIFT</code> by adding the missing workflows to <code>_WEC_ITEMS</code> in <code>scripts/ci/session_wrapup_autofix.py</code> (<code>e-to-d-transition-gate.yml</code>, <code>d-capable-promotion-gate.yml</code>, <code>mcp-health.yml</code>). Done</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Replace all "placeholder JSON" references with concrete initial values. Done (see Copy/Paste Pack F for <code>COPILOT_AGENT_PREFLIGHT_RULES</code>, <code>COPILOT_WEC_SELECTION_MATRIX</code>, <code>COPILOT_WEC_TEMPLATE_DRIFT</code>, <code>COPILOT_SESSION_TOOL_CAPABILITIES</code>)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Reconcile <code>settings/variables/agents</code> against repo variables to ensure no drift between Actions Variables and Agents Variables pages</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> After secrets pass, regenerate summary totals and update this file's timestamp block</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update <code>WEBHOOK_RECEIVER_URL</code> with the active Codespace name when spinning up Codespace environment</li>
@@ -4828,7 +4582,7 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <hr/>
 <h2 id="maintainer-execution-checklist">Maintainer Execution Checklist<a class="headerlink" href="#maintainer-execution-checklist" title="Permanent link">¶</a></h2>
 <p>Use this checklist to systematically configure all secrets and variables:</p>
-<h3 id="phase-1-critical-repository-setup-complete">Phase 1: Critical Repository Setup  COMPLETE<a class="headerlink" href="#phase-1-critical-repository-setup-complete" title="Permanent link">¶</a></h3>
+<h3 id="phase-1-critical-repository-setup-complete">Phase 1: Critical Repository Setup COMPLETE<a class="headerlink" href="#phase-1-critical-repository-setup-complete" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>1.1</strong>: Create 4 MISSING repository variables (see section 1):</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code> = <code>3</code></li>
@@ -4842,7 +4596,7 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>_CODEX_BOT_RUNNER</code></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODEX_REPO_ID</code></li>
 </ul>
-<h3 id="phase-2-environment-configuration-complete-variables-secrets-pending">Phase 2: Environment Configuration  COMPLETE (variables); Secrets pending<a class="headerlink" href="#phase-2-environment-configuration-complete-variables-secrets-pending" title="Permanent link">¶</a></h3>
+<h3 id="phase-2-environment-configuration-complete-variables-secrets-pending">Phase 2: Environment Configuration COMPLETE (variables); Secrets pending<a class="headerlink" href="#phase-2-environment-configuration-complete-variables-secrets-pending" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>2.1</strong>: Create or verify <code>Aries_Serpent_codex_</code> environment exists</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>2.2</strong>: Add all 13 environment variables (see section 3)</li>
@@ -4860,7 +4614,7 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>_GITHUB_APP_CLIENT_SECRET</code></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>3.2</strong>: Verify repository access for ALL org secrets includes <code>Aries-Serpent/_codex_</code></li>
 </ul>
-<h3 id="phase-4-agents-configuration-copilotagents-scope-complete-variables-secrets-pending">Phase 4: Agents Configuration (Copilot/Agents Scope)  COMPLETE (variables); Secrets pending<a class="headerlink" href="#phase-4-agents-configuration-copilotagents-scope-complete-variables-secrets-pending" title="Permanent link">¶</a></h3>
+<h3 id="phase-4-agents-configuration-copilotagents-scope-complete-variables-secrets-pending">Phase 4: Agents Configuration (Copilot/Agents Scope) COMPLETE (variables); Secrets pending<a class="headerlink" href="#phase-4-agents-configuration-copilotagents-scope-complete-variables-secrets-pending" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>4.1</strong>: Create 18 Agents Variables (see section 6):</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 7 MUST-HAVE variables (including JSON vars — see Copy/Paste Pack F)</li>
@@ -4874,7 +4628,7 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>5.1</strong>: Manual workflow trigger test (see section 8)</li>
 <li>Navigate to: https://github.com/Aries-Serpent/<em>codex</em>/actions/workflows/copilot-setup-steps.yml</li>
-<li>Click <strong>Run workflow</strong> → Select <code>main</code> → <strong>Run workflow</strong></li>
+<li>Click <strong>Run workflow</strong> Select <code>main</code> <strong>Run workflow</strong></li>
 <li>Wait for completion (~2-5 minutes)</li>
 <li>Verify green checkmark and no missing variable/secret errors</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>5.2</strong>: Check all 7 settings URLs and verify all required names present:</li>
@@ -4893,17 +4647,17 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>6.4</strong>: Link verification issue/PR in this file</li>
 </ul>
 <hr/>
-<h2 id="secret-rotation-schedule-template">📅 Secret Rotation Schedule Template<a class="headerlink" href="#secret-rotation-schedule-template" title="Permanent link">¶</a></h2>
+<h2 id="secret-rotation-schedule-template">Secret Rotation Schedule Template<a class="headerlink" href="#secret-rotation-schedule-template" title="Permanent link">¶</a></h2>
 <p>Copy this template to your issue tracker or calendar:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>SECRET ROTATION SCHEDULE (2026-06-04 baseline)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>SECRET ROTATION SCHEDULE (2026-06-04 baseline)  # pragma: allowlist secret
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>CRITICAL (Every 90 days):
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>- 2026-09-02: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>- 2026-12-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>- 2027-03-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>- 2026-09-02: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>- 2026-12-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>- 2027-03-01: Rotate CODEX_MASTER_KEY, CODEX_BACKUP_KEY, OPENAI_API_KEY  # pragma: allowlist secret
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>
 <a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>HIGH (Every 180 days):
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>- 2026-12-01: Rotate CODEX_WEBHOOK_SECRET, HF_TOKEN, PYPI_TOKEN, NPM_TOKEN, CODECOV_TOKEN
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>- 2026-12-01: Rotate CODEX_WEBHOOK_SECRET, HF_TOKEN, PYPI_TOKEN, NPM_TOKEN, CODECOV_TOKEN  # pragma: allowlist secret
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>
 <a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>ANNUAL:
 <a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>- 2027-06-04: Rotate _GITHUB_APP_PRIVATE_KEY (if not compromised earlier)
@@ -4938,6 +4692,6 @@ Target UI for secrets: https://github.com/Aries-Serpent/<em>codex</em>/settings/
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

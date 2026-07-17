@@ -1,6 +1,6 @@
 # Fix Summary - PR #2852: CodeQL Security Alerts Remediation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 

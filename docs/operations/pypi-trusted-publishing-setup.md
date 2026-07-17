@@ -1,6 +1,6 @@
 # PyPI Trusted Publishing Setup for GitHub Actions
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 > **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong

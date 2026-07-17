@@ -1,6 +1,6 @@
 # Quick-Start Guides by User Profile
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 ## 1. Local Developer (90% use case)

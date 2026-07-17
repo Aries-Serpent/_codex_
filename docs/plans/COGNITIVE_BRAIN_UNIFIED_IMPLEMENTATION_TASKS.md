@@ -1,6 +1,6 @@
 # Cognitive Brain Unified Implementation Tasks
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Created:** 2026-01-03
 **Updated: 2026-07-11
@@ -335,7 +335,7 @@ This unified plan is complete when:
 | 8/8 review comments resolved | subprocess.py + rate_limit_orchestrator.py | S871/S872 |
 | ruff E501 exemption | `pyproject.toml` per-file-ignores | S872 |
 | Secrets baseline FPs classified | `.secrets.baseline` | S870 |
-| CODEBASE_MERMAID_MAPS v0.2.1 | `docs/CODEBASE_MERMAID_MAPS.md` sections 13-16 | S873 |
+| CODEBASE_MERMAID_MAPS v0.2.0 | `docs/CODEBASE_MERMAID_MAPS.md` sections 13-16 | S873 |
 | PLAN_STATUS_DASHBOARD updated | `docs/plans/PLAN_STATUS_DASHBOARD.md` | S873 |
 | cognitive_brain/INDEX.md Phase 9 | `docs/cognitive_brain/INDEX.md` | S873 |
 

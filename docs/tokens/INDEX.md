@@ -1,5 +1,5 @@
 # Token Management Documentation
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 Complete guide to token management, authentication, and GitHub token patterns in Aries-Serpent/_codex_.
 

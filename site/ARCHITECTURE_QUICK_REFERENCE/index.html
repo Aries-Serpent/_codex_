@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ARCHITECTURE_QUICK_REFERENCE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Architecture Quick Reference - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2281,11 +2281,11 @@
 <a class="md-nav__link" href="#core-architecture">
 <span class="md-ellipsis">
       
-        🏗️ Core Architecture
+        Core Architecture
       
     </span>
 </a>
-<nav aria-label="🏗️ Core Architecture" class="md-nav">
+<nav aria-label="Core Architecture" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#system-layers">
@@ -2330,7 +2330,7 @@
 <a class="md-nav__link" href="#plugin-architecture">
 <span class="md-ellipsis">
       
-        🔌 Plugin Architecture
+        Plugin Architecture
       
     </span>
 </a>
@@ -2490,11 +2490,11 @@
 <a class="md-nav__link" href="#advanced-topics">
 <span class="md-ellipsis">
       
-        🎓 Advanced Topics
+        Advanced Topics
       
     </span>
 </a>
-<nav aria-label="🎓 Advanced Topics" class="md-nav">
+<nav aria-label="Advanced Topics" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#for-developers">
@@ -2554,8 +2554,8 @@
 <h1 id="architecture-quick-reference">Architecture Quick Reference<a class="headerlink" href="#architecture-quick-reference" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-06-22<br/>
-<strong>Status</strong>:  Consolidated<br/>
+<p><strong>Last Updated</strong>: 2026-06-22
+<strong>Status</strong>: Consolidated
 <strong>Full Reference</strong>: <a href="../architecture/ARCHITECTURE_CONSOLIDATED/">Consolidated Architecture</a></p>
 <hr/>
 <h2 id="system-overview">System Overview<a class="headerlink" href="#system-overview" title="Permanent link">¶</a></h2>
@@ -2568,21 +2568,19 @@
 <li><strong>Status</strong>: Production-ready</li>
 </ul>
 <hr/>
-<h2 id="core-architecture">🏗️ Core Architecture<a class="headerlink" href="#core-architecture" title="Permanent link">¶</a></h2>
+<h2 id="core-architecture">Core Architecture<a class="headerlink" href="#core-architecture" title="Permanent link">¶</a></h2>
 <h3 id="system-layers">System Layers<a class="headerlink" href="#system-layers" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│         User Applications (API)         │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│     Framework Layer (Hydra, OmegaConf)  │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│    ML Training &amp; Evaluation Pipeline    │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│      Plugin System &amp; Extensibility      │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│    Data Processing &amp; Infrastructure     │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│          Storage &amp; Persistence          │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>└─────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> User Applications (API) 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> Framework Layer (Hydra, OmegaConf) 
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> ML Training &amp; Evaluation Pipeline 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Plugin System &amp; Extensibility 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Data Processing &amp; Infrastructure 
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> Storage &amp; Persistence 
 </code></pre></div>
 <h3 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">¶</a></h3>
 <table>
@@ -2624,31 +2622,31 @@
 <hr/>
 <h2 id="directory-structure-simplified">Directory Structure (Simplified)<a class="headerlink" href="#directory-structure-simplified" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>_codex_/
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── src/
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>│   ├── codex_ml/           # Main ML framework
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>│   ├── codex_utils/        # Utilities library
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>│   ├── codex/              # Core package
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>│   └── ...
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>├── tests/                  # Test suite
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>├── docs/                   # Documentation hub
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>├── .github/                # GitHub Actions workflows
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>├── pyproject.toml          # Package configuration
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>└── README.md               # Main readme
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> src/
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> codex_ml/ # Main ML framework
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> codex_utils/ # Utilities library
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> codex/ # Core package
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> ...
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> tests/ # Test suite
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> docs/ # Documentation hub
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> .github/ # GitHub Actions workflows
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> pyproject.toml # Package configuration
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> README.md # Main readme
 </code></pre></div>
 <hr/>
 <h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Config (YAML) → Hydra → Framework
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>                           ↓
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>                    Plugin System
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>                           ↓
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>                    ML Pipeline
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>                           ↓
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>                  Data Processing
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>                           ↓
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>                      Storage
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Config (YAML) Hydra Framework
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> Plugin System
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> ML Pipeline
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> Data Processing
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> Storage
 </code></pre></div>
 <hr/>
-<h2 id="plugin-architecture">🔌 Plugin Architecture<a class="headerlink" href="#plugin-architecture" title="Permanent link">¶</a></h2>
+<h2 id="plugin-architecture">Plugin Architecture<a class="headerlink" href="#plugin-architecture" title="Permanent link">¶</a></h2>
 <p>The system uses a plugin-driven design:</p>
 <ol>
 <li><strong>Define Plugin Interface</strong> - Specify required methods</li>
@@ -2661,27 +2659,27 @@
 <p>Uses <strong>Hydra</strong> for configuration management:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># config.yaml</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nt">database</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
 </code></pre></div>
 <hr/>
 <h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="production-deployment">Production Deployment<a class="headerlink" href="#production-deployment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Load Balancer
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>     ↓
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>  [API Servers]
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>     ↓
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>  [Workers]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>     ↓
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>  [Database]
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>  [Cache]
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>  [Storage]
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> [API Servers]
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> [Workers]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> [Database]
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> [Cache]
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> [Storage]
 </code></pre></div>
 <h3 id="environments">Environments<a class="headerlink" href="#environments" title="Permanent link">¶</a></h3>
 <table>
@@ -2770,7 +2768,7 @@
 <li><strong>Read Full Reference</strong>: See consolidated architecture for details</li>
 </ol>
 <hr/>
-<h2 id="advanced-topics">🎓 Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permanent link">¶</a></h2>
+<h2 id="advanced-topics">Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permanent link">¶</a></h2>
 <h3 id="for-developers">For Developers<a class="headerlink" href="#for-developers" title="Permanent link">¶</a></h3>
 <ul>
 <li>Plugin development</li>
@@ -2837,8 +2835,8 @@
 <li><strong>Troubleshooting</strong>: <a href="./troubleshooting/">FAQ</a></li>
 </ul>
 <hr/>
-<p><strong>Status</strong>:  Complete<br/>
-<strong>Consolidated Date</strong>: 2026-06-22<br/>
+<p><strong>Status</strong>: Complete
+<strong>Consolidated Date</strong>: 2026-06-22
 <strong>For Updates</strong>: See <a href="../architecture/ARCHITECTURE_CONSOLIDATED/">Consolidated Architecture</a></p>
 </article>
 </div>
@@ -2869,6 +2867,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

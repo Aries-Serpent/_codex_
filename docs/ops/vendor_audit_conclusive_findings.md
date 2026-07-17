@@ -1,12 +1,12 @@
 # Knowledge Transfer — Vendor Audit Conclusive Findings
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
 - [Executive Summary](#executive-summary)
 - [Timeline of Recent Runs (progression and outcomes)](#timeline-of-recent-runs-progression-and-outcomes)
-- [Versioned Enhancements (v0.2.1 v0.2.1)](#versioned-enhancements-v150--v154)
+- [Versioned Enhancements (v0.2.0 v0.2.0)](#versioned-enhancements-v150--v154)
 - [Latest Run Metrics (representative)](#latest-run-metrics-representative)
 - [Conclusive Vendor Findings](#conclusive-vendor-findings)
 - [Egress/Network Posture](#egressnetwork-posture)
@@ -35,19 +35,19 @@
 | 2 | Setup | FAIL | Bash env helper error: invalid indirect expansion under set -u | “var: invalid indirect expansion” at ensure_default |
 | 3 | Setup | FAIL | Python NameError: psi_caps not defined | Missing/late function definition |
 | 4 | Setup | FAIL | Python NameError: os_info not defined | Missing/late function definition |
-| 5 | Setup | PASS | v0.2.1/1.5.4: fixed ordering; expanded datapoints; structured error artifact added | Full JSON persisted |
-| 6 | Maintenance | PASS | Matching v0.2.1/1.5.4 parity; stronger disk write | Full JSON persisted |
+| 5 | Setup | PASS | v0.2.0/1.5.4: fixed ordering; expanded datapoints; structured error artifact added | Full JSON persisted |
+| 6 | Maintenance | PASS | Matching v0.2.0/1.5.4 parity; stronger disk write | Full JSON persisted |
 
-## Versioned Enhancements (v0.2.1 v0.2.1)
+## Versioned Enhancements (v0.2.0 v0.2.0)
 
 | Version | Area | Change |
 | ------- | ---- | ------ |
-| v0.2.1 | Bench | Standardize CPU bench buffer via CODEX_CPU_BENCH_BUF_KB (default 8192 KB) |
-| v0.2.1 | Recon | Add cgroup cpu.stat, io.stat; network sysctls; TLS CA paths; inode totals |
-| v0.2.1 | Shell | Safer env sanitization under set -u; restructure here-doc write-to-file pattern |
-| v0.2.1 | Recon | Add cpuset.cpus.effective, memory.current, swap limits, pids.{max,current}, resolv.conf, default route, IO schedulers |
-| v0.2.1 | Stability | Fix function ordering (psi_caps) and ensure completeness before use |
-| v0.2.1 | Stability | Restore/move os_info; add structured error artifacts (.error.json) and top-level try/except |
+| v0.2.0 | Bench | Standardize CPU bench buffer via CODEX_CPU_BENCH_BUF_KB (default 8192 KB) |
+| v0.2.0 | Recon | Add cgroup cpu.stat, io.stat; network sysctls; TLS CA paths; inode totals |
+| v0.2.0 | Shell | Safer env sanitization under set -u; restructure here-doc write-to-file pattern |
+| v0.2.0 | Recon | Add cpuset.cpus.effective, memory.current, swap limits, pids.{max,current}, resolv.conf, default route, IO schedulers |
+| v0.2.0 | Stability | Fix function ordering (psi_caps) and ensure completeness before use |
+| v0.2.0 | Stability | Restore/move os_info; add structured error artifacts (.error.json) and top-level try/except |
 
 ## Latest Run Metrics (representative)
 

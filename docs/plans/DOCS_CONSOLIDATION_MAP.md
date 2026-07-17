@@ -1,6 +1,6 @@
 # Documentation Consolidation Map
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Created:** 2026-05-08 S868 | **Updated: 2026-07-11
 > **Purpose:** Catalogue all `docs/plans/` files (81 total at creation 50 active after S870 archive sweep).

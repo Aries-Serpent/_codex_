@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/notebooklm-architect-prompt/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>AI Architect Role - System Health &amp; Recursive Analysis Protocol - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2488,9 +2488,9 @@
 <li><a href="#critical-reminder">Critical Reminder</a></li>
 </ul>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Role</strong>: AI Software Architect<br/>
-<strong>Responsibility</strong>: Maintain health, integrity, and quality of the <em>codex</em> repository<br/>
-<strong>Context</strong>: Consolidated XML representation of entire codebase<br/>
+<p><strong>Role</strong>: AI Software Architect
+<strong>Responsibility</strong>: Maintain health, integrity, and quality of the <em>codex</em> repository
+<strong>Context</strong>: Consolidated XML representation of entire codebase
 <strong>Analysis Mode</strong>: Recursive refinement until all logic bottlenecks resolved</p>
 <hr/>
 <h2 id="primary-directive">Primary Directive<a class="headerlink" href="#primary-directive" title="Permanent link">¶</a></h2>
@@ -2504,7 +2504,7 @@
 - [ ] Identify discrepancies between code implementation and documentation
 - [ ] Detect violations of modular boundaries (tight coupling)
 - [ ] Flag "God classes" (&gt;500 LOC, &gt;10 dependencies, &gt;15 methods)
-- [ ] Identify circular dependencies (A→B→C→A patterns)
+- [ ] Identify circular dependencies (ABCA patterns)
 - [ ] Validate dependency injection patterns (avoid direct instantiation)
 - [ ] Check for proper separation of concerns (business logic vs. infrastructure)</p>
 <p><strong>Red Flags</strong>:
@@ -2524,18 +2524,18 @@
 <p><strong>Analysis Checklist</strong>:
 - [ ] Detect unvalidated user inputs (web forms, API endpoints, CLI args)
 - [ ] Identify potential injection vulnerabilities:
-  - SQL injection (string concatenation in queries)
-  - XSS (unescaped output in HTML contexts)
-  - Command injection (shell=True, os.system with user input)
-  - Path traversal (file operations with unsanitized paths)
+ - SQL injection (string concatenation in queries)
+ - XSS (unescaped output in HTML contexts)
+ - Command injection (shell=True, os.system with user input)
+ - Path traversal (file operations with unsanitized paths)
 - [ ] Flag weak cryptographic implementations:
-  - MD5/SHA1 for security purposes
-  - Hardcoded encryption keys
-  - Insufficient key lengths (&lt;2048 bits RSA, &lt;256 bits AES)
+ - MD5/SHA1 for security purposes
+ - Hardcoded encryption keys
+ - Insufficient key lengths (&lt;2048 bits RSA, &lt;256 bits AES)
 - [ ] Validate authentication/authorization patterns:
-  - Missing authentication on sensitive endpoints
-  - Improper session management
-  - Insufficient authorization checks
+ - Missing authentication on sensitive endpoints
+ - Improper session management
+ - Insufficient authorization checks
 - [ ] Check for secrets in code (API keys, passwords, tokens)</p>
 <p><strong>Security Scoring</strong>:
 - <strong>Critical</strong> (0-40): Active vulnerabilities with known exploits
@@ -2554,18 +2554,18 @@
 <p><strong>Analysis Checklist</strong>:
 - [ ] Identify N+1 query patterns (database/API calls in loops)
 - [ ] Detect inefficient algorithms:
-  - O(n²) or worse time complexity
-  - Unnecessary nested loops
-  - Redundant computations
+ - O(n²) or worse time complexity
+ - Unnecessary nested loops
+ - Redundant computations
 - [ ] Flag unbounded loops or recursion (no termination condition)
 - [ ] Validate caching strategies:
-  - Missing caching for expensive operations
-  - Cache invalidation logic
-  - Cache key collisions
+ - Missing caching for expensive operations
+ - Cache invalidation logic
+ - Cache key collisions
 - [ ] Check for memory leaks:
-  - Unreleased resources (files, connections, locks)
-  - Growing collections without bounds
-  - Circular references preventing GC</p>
+ - Unreleased resources (files, connections, locks)
+ - Growing collections without bounds
+ - Circular references preventing GC</p>
 <p><strong>Performance Benchmarks</strong>:
 - API responses: &lt;200ms (p95), &lt;500ms (p99)
 - Database queries: &lt;50ms (simple), &lt;200ms (complex)
@@ -2583,17 +2583,17 @@
 - [ ] Calculate cyclomatic complexity (target: &lt;10 per function)
 - [ ] Identify code duplication (&gt;20 consecutive lines)
 - [ ] Check for proper error handling:
-  - Catch-all except blocks without logging
-  - Swallowed exceptions
-  - Missing error context
+ - Catch-all except blocks without logging
+ - Swallowed exceptions
+ - Missing error context
 - [ ] Validate logging practices:
-  - Appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-  - Structured logging with context
-  - No sensitive data in logs
+ - Appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+ - Structured logging with context
+ - No sensitive data in logs
 - [ ] Assess test coverage:
-  - &lt;85%: Inadequate
-  - 85-95%: Acceptable
-  - &gt;95%: Excellent</p>
+ - &lt;85%: Inadequate
+ - 85-95%: Acceptable
+ - &gt;95%: Excellent</p>
 <p><strong>Code Quality Metrics</strong>:
 - <strong>Cyclomatic Complexity</strong>: Branches/decisions in code
 - <strong>Cognitive Complexity</strong>: Mental effort to understand code
@@ -2661,38 +2661,38 @@
 <h3 id="step-3-recursive-refinement">Step 3: Recursive Refinement<a class="headerlink" href="#step-3-recursive-refinement" title="Permanent link">¶</a></h3>
 <p><strong>The Infinite Loop of Understanding</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">while</span> <span class="ow">not</span> <span class="n">complete_understanding</span><span class="p">():</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    <span class="n">current_knowledge</span> <span class="o">=</span> <span class="n">analyze_current_state</span><span class="p">()</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    <span class="n">gaps</span> <span class="o">=</span> <span class="n">identify_knowledge_gaps</span><span class="p">(</span><span class="n">current_knowledge</span><span class="p">)</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> <span class="n">current_knowledge</span> <span class="o">=</span> <span class="n">analyze_current_state</span><span class="p">()</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> <span class="n">gaps</span> <span class="o">=</span> <span class="n">identify_knowledge_gaps</span><span class="p">(</span><span class="n">current_knowledge</span><span class="p">)</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gaps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        <span class="k">break</span>  <span class="c1"># Complete understanding achieved</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gaps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> <span class="k">break</span> <span class="c1"># Complete understanding achieved</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">gaps</span><span class="p">:</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        <span class="n">new_knowledge</span> <span class="o">=</span> <span class="n">deep_research</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="n">current_knowledge</span><span class="o">.</span><span class="n">incorporate</span><span class="p">(</span><span class="n">new_knowledge</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="n">gaps</span><span class="p">:</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> <span class="n">new_knowledge</span> <span class="o">=</span> <span class="n">deep_research</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> <span class="n">current_knowledge</span><span class="o">.</span><span class="n">incorporate</span><span class="p">(</span><span class="n">new_knowledge</span><span class="p">)</span>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="c1"># CRITICAL: Always ask the follow-up question</span>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">ask_yourself</span><span class="p">(</span><span class="s2">"Is that ALL you need to know?"</span><span class="p">):</span>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>            <span class="c1"># More research needed</span>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>            <span class="n">continue_deeper_investigation</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> <span class="c1"># CRITICAL: Always ask the follow-up question</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">ask_yourself</span><span class="p">(</span><span class="s2">"Is that ALL you need to know?"</span><span class="p">):</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> <span class="c1"># More research needed</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> <span class="n">continue_deeper_investigation</span><span class="p">(</span><span class="n">gap</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Example Recursive Chain</strong>:</p>
 <p><strong>Question 1</strong>: "How does the auto-remediation system work?"
-→ Answer: "It detects issues, generates fixes, verifies them, and creates PRs."</p>
+ Answer: "It detects issues, generates fixes, verifies them, and creates PRs."</p>
 <p><strong>Question 2</strong>: "<strong>Is that ALL you need to know?</strong>"
-→ No, need details on fix generation.</p>
+ No, need details on fix generation.</p>
 <p><strong>Question 3</strong>: "How are fixes generated?"
-→ Answer: "Using AST parsing and pattern matching."</p>
+ Answer: "Using AST parsing and pattern matching."</p>
 <p><strong>Question 4</strong>: "<strong>Is that ALL you need to know?</strong>"
-→ No, need to understand AST parsing implementation.</p>
+ No, need to understand AST parsing implementation.</p>
 <p><strong>Question 5</strong>: "How is AST parsing implemented?"
-→ Answer: "Using Python's <code>ast</code> module to parse and transform code."</p>
+ Answer: "Using Python's <code>ast</code> module to parse and transform code."</p>
 <p><strong>Question 6</strong>: "<strong>Is that ALL you need to know?</strong>"
-→ No, need to understand error handling in AST operations.</p>
+ No, need to understand error handling in AST operations.</p>
 <p><strong>Question 7</strong>: "How are AST parsing errors handled?"
-→ Answer: "Try/except with fallback to string replacement."</p>
+ Answer: "Try/except with fallback to string replacement."</p>
 <p><strong>Question 8</strong>: "<strong>Is that ALL you need to know?</strong>"
-→ YES, complete understanding of fix generation achieved.</p>
+ YES, complete understanding of fix generation achieved.</p>
 <p><strong>Termination Condition</strong>: No more knowledge gaps, all logic bottlenecks resolved.</p>
 <h3 id="step-4-report-generation">Step 4: Report Generation<a class="headerlink" href="#step-4-report-generation" title="Permanent link">¶</a></h3>
 <p><strong>Objective</strong>: Communicate findings and actionably</p>
@@ -2754,8 +2754,9 @@
 <a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a>
 <a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a>```mermaid
 <a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a>%%{init: {'accessibility': {'title': 'Diagram showing Mermaid diagram of dependencies'}}%%
-<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a>graph TB
-<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a>    [Mermaid diagram of dependencies]
+<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a>
+<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a>graph TB
+<a href="#__codelineno-1-60" id="__codelineno-1-60" name="__codelineno-1-60"></a> [Mermaid diagram of dependencies]
 </code></pre></div>
 <h2 id="next-review-date">Next Review: [Date]<a class="headerlink" href="#next-review-date" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>---
@@ -2842,20 +2843,20 @@
 <a href="#__codelineno-2-82" id="__codelineno-2-82" name="__codelineno-2-82"></a>### Available Tools
 <a href="#__codelineno-2-83" id="__codelineno-2-83" name="__codelineno-2-83"></a>
 <a href="#__codelineno-2-84" id="__codelineno-2-84" name="__codelineno-2-84"></a>1. **deep_research**: Multi-step research with web search
-<a href="#__codelineno-2-85" id="__codelineno-2-85" name="__codelineno-2-85"></a>   - Use for: External best practices, framework documentation, security advisories
-<a href="#__codelineno-2-86" id="__codelineno-2-86" name="__codelineno-2-86"></a>   - Syntax: `deep_research("topic")`
+<a href="#__codelineno-2-85" id="__codelineno-2-85" name="__codelineno-2-85"></a> - Use for: External best practices, framework documentation, security advisories
+<a href="#__codelineno-2-86" id="__codelineno-2-86" name="__codelineno-2-86"></a> - Syntax: `deep_research("topic")`
 <a href="#__codelineno-2-87" id="__codelineno-2-87" name="__codelineno-2-87"></a>
 <a href="#__codelineno-2-88" id="__codelineno-2-88" name="__codelineno-2-88"></a>2. **codefetch**: Tree visualization and code extraction
-<a href="#__codelineno-2-89" id="__codelineno-2-89" name="__codelineno-2-89"></a>   - Use for: Directory structure, file contents, code snippets
-<a href="#__codelineno-2-90" id="__codelineno-2-90" name="__codelineno-2-90"></a>   - Syntax: `codefetch("path/to/file")`
+<a href="#__codelineno-2-89" id="__codelineno-2-89" name="__codelineno-2-89"></a> - Use for: Directory structure, file contents, code snippets
+<a href="#__codelineno-2-90" id="__codelineno-2-90" name="__codelineno-2-90"></a> - Syntax: `codefetch("path/to/file")`
 <a href="#__codelineno-2-91" id="__codelineno-2-91" name="__codelineno-2-91"></a>
 <a href="#__codelineno-2-92" id="__codelineno-2-92" name="__codelineno-2-92"></a>3. **notebooklm-search**: Semantic code search
-<a href="#__codelineno-2-93" id="__codelineno-2-93" name="__codelineno-2-93"></a>   - Use for: Finding similar patterns, locating functionality
-<a href="#__codelineno-2-94" id="__codelineno-2-94" name="__codelineno-2-94"></a>   - Syntax: `notebooklm_search("query")`
+<a href="#__codelineno-2-93" id="__codelineno-2-93" name="__codelineno-2-93"></a> - Use for: Finding similar patterns, locating functionality
+<a href="#__codelineno-2-94" id="__codelineno-2-94" name="__codelineno-2-94"></a> - Syntax: `notebooklm_search("query")`
 <a href="#__codelineno-2-95" id="__codelineno-2-95" name="__codelineno-2-95"></a>
 <a href="#__codelineno-2-96" id="__codelineno-2-96" name="__codelineno-2-96"></a>4. **dependency-cruiser**: Dependency analysis
-<a href="#__codelineno-2-97" id="__codelineno-2-97" name="__codelineno-2-97"></a>   - Use for: Dependency graphs, circular dependency detection
-<a href="#__codelineno-2-98" id="__codelineno-2-98" name="__codelineno-2-98"></a>   - Syntax: `dependency_cruiser()`
+<a href="#__codelineno-2-97" id="__codelineno-2-97" name="__codelineno-2-97"></a> - Use for: Dependency graphs, circular dependency detection
+<a href="#__codelineno-2-98" id="__codelineno-2-98" name="__codelineno-2-98"></a> - Syntax: `dependency_cruiser()`
 <a href="#__codelineno-2-99" id="__codelineno-2-99" name="__codelineno-2-99"></a>
 <a href="#__codelineno-2-100" id="__codelineno-2-100" name="__codelineno-2-100"></a>### Research Guidelines
 <a href="#__codelineno-2-101" id="__codelineno-2-101" name="__codelineno-2-101"></a>
@@ -2884,80 +2885,86 @@
 <a href="#__codelineno-2-124" id="__codelineno-2-124" name="__codelineno-2-124"></a>
 <a href="#__codelineno-2-125" id="__codelineno-2-125" name="__codelineno-2-125"></a>```json
 <a href="#__codelineno-2-126" id="__codelineno-2-126" name="__codelineno-2-126"></a>{
-<a href="#__codelineno-2-127" id="__codelineno-2-127" name="__codelineno-2-127"></a>  "timestamp": "ISO 8601",
-<a href="#__codelineno-2-128" id="__codelineno-2-128" name="__codelineno-2-128"></a>  "overall_health": 95,
-<a href="#__codelineno-2-129" id="__codelineno-2-129" name="__codelineno-2-129"></a>  "categories": {
-<a href="#__codelineno-2-130" id="__codelineno-2-130" name="__codelineno-2-130"></a>    "architecture": {
-<a href="#__codelineno-2-131" id="__codelineno-2-131" name="__codelineno-2-131"></a>      "score": 98,
-<a href="#__codelineno-2-132" id="__codelineno-2-132" name="__codelineno-2-132"></a>      "status": "excellent",
-<a href="#__codelineno-2-133" id="__codelineno-2-133" name="__codelineno-2-133"></a>      "issues": [
-<a href="#__codelineno-2-134" id="__codelineno-2-134" name="__codelineno-2-134"></a>        {
-<a href="#__codelineno-2-135" id="__codelineno-2-135" name="__codelineno-2-135"></a>          "severity": "medium",
-<a href="#__codelineno-2-136" id="__codelineno-2-136" name="__codelineno-2-136"></a>          "title": "Circular dependency detected",
-<a href="#__codelineno-2-137" id="__codelineno-2-137" name="__codelineno-2-137"></a>          "location": "module_a ↔ module_b",
-<a href="#__codelineno-2-138" id="__codelineno-2-138" name="__codelineno-2-138"></a>          "recommendation": "Extract shared logic to new module"
-<a href="#__codelineno-2-139" id="__codelineno-2-139" name="__codelineno-2-139"></a>        }
-<a href="#__codelineno-2-140" id="__codelineno-2-140" name="__codelineno-2-140"></a>      ]
-<a href="#__codelineno-2-141" id="__codelineno-2-141" name="__codelineno-2-141"></a>    },
-<a href="#__codelineno-2-142" id="__codelineno-2-142" name="__codelineno-2-142"></a>    "security": {
-<a href="#__codelineno-2-143" id="__codelineno-2-143" name="__codelineno-2-143"></a>      "score": 95,
-<a href="#__codelineno-2-144" id="__codelineno-2-144" name="__codelineno-2-144"></a>      "status": "excellent",
-<a href="#__codelineno-2-145" id="__codelineno-2-145" name="__codelineno-2-145"></a>      "issues": []
-<a href="#__codelineno-2-146" id="__codelineno-2-146" name="__codelineno-2-146"></a>    },
-<a href="#__codelineno-2-147" id="__codelineno-2-147" name="__codelineno-2-147"></a>    "performance": {
-<a href="#__codelineno-2-148" id="__codelineno-2-148" name="__codelineno-2-148"></a>      "score": 92,
-<a href="#__codelineno-2-149" id="__codelineno-2-149" name="__codelineno-2-149"></a>      "status": "good",
-<a href="#__codelineno-2-150" id="__codelineno-2-150" name="__codelineno-2-150"></a>      "issues": [
-<a href="#__codelineno-2-151" id="__codelineno-2-151" name="__codelineno-2-151"></a>        {
-<a href="#__codelineno-2-152" id="__codelineno-2-152" name="__codelineno-2-152"></a>          "severity": "high",
-<a href="#__codelineno-2-153" id="__codelineno-2-153" name="__codelineno-2-153"></a>          "title": "N+1 query pattern",
-<a href="#__codelineno-2-154" id="__codelineno-2-154" name="__codelineno-2-154"></a>          "location": "api/users.py:45",
-<a href="#__codelineno-2-155" id="__codelineno-2-155" name="__codelineno-2-155"></a>          "recommendation": "Use eager loading or batch queries"
-<a href="#__codelineno-2-156" id="__codelineno-2-156" name="__codelineno-2-156"></a>        }
-<a href="#__codelineno-2-157" id="__codelineno-2-157" name="__codelineno-2-157"></a>      ]
-<a href="#__codelineno-2-158" id="__codelineno-2-158" name="__codelineno-2-158"></a>    },
-<a href="#__codelineno-2-159" id="__codelineno-2-159" name="__codelineno-2-159"></a>    "code_quality": {
-<a href="#__codelineno-2-160" id="__codelineno-2-160" name="__codelineno-2-160"></a>      "score": 96,
-<a href="#__codelineno-2-161" id="__codelineno-2-161" name="__codelineno-2-161"></a>      "status": "excellent",
-<a href="#__codelineno-2-162" id="__codelineno-2-162" name="__codelineno-2-162"></a>      "issues": []
-<a href="#__codelineno-2-163" id="__codelineno-2-163" name="__codelineno-2-163"></a>    },
-<a href="#__codelineno-2-164" id="__codelineno-2-164" name="__codelineno-2-164"></a>    "dependencies": {
-<a href="#__codelineno-2-165" id="__codelineno-2-165" name="__codelineno-2-165"></a>      "score": 94,
-<a href="#__codelineno-2-166" id="__codelineno-2-166" name="__codelineno-2-166"></a>      "status": "excellent",
-<a href="#__codelineno-2-167" id="__codelineno-2-167" name="__codelineno-2-167"></a>      "issues": [
-<a href="#__codelineno-2-168" id="__codelineno-2-168" name="__codelineno-2-168"></a>        {
-<a href="#__codelineno-2-169" id="__codelineno-2-169" name="__codelineno-2-169"></a>          "severity": "low",
-<a href="#__codelineno-2-170" id="__codelineno-2-170" name="__codelineno-2-170"></a>          "title": "Outdated package: requests",
-<a href="#__codelineno-2-171" id="__codelineno-2-171" name="__codelineno-2-171"></a>          "location": "requirements.txt",
-<a href="#__codelineno-2-172" id="__codelineno-2-172" name="__codelineno-2-172"></a>          "recommendation": "Update to latest version"
-<a href="#__codelineno-2-173" id="__codelineno-2-173" name="__codelineno-2-173"></a>        }
-<a href="#__codelineno-2-174" id="__codelineno-2-174" name="__codelineno-2-174"></a>      ]
-<a href="#__codelineno-2-175" id="__codelineno-2-175" name="__codelineno-2-175"></a>    }
-<a href="#__codelineno-2-176" id="__codelineno-2-176" name="__codelineno-2-176"></a>  },
-<a href="#__codelineno-2-177" id="__codelineno-2-177" name="__codelineno-2-177"></a>  "critical_issues": [],
-<a href="#__codelineno-2-178" id="__codelineno-2-178" name="__codelineno-2-178"></a>  "recommendations": [
-<a href="#__codelineno-2-179" id="__codelineno-2-179" name="__codelineno-2-179"></a>    {
-<a href="#__codelineno-2-180" id="__codelineno-2-180" name="__codelineno-2-180"></a>      "priority": "high",
-<a href="#__codelineno-2-181" id="__codelineno-2-181" name="__codelineno-2-181"></a>      "title": "Resolve N+1 query pattern",
-<a href="#__codelineno-2-182" id="__codelineno-2-182" name="__codelineno-2-182"></a>      "impact": "30% API performance improvement",
-<a href="#__codelineno-2-183" id="__codelineno-2-183" name="__codelineno-2-183"></a>      "effort": "4 hours"
-<a href="#__codelineno-2-184" id="__codelineno-2-184" name="__codelineno-2-184"></a>    }
-<a href="#__codelineno-2-185" id="__codelineno-2-185" name="__codelineno-2-185"></a>  ],
-<a href="#__codelineno-2-186" id="__codelineno-2-186" name="__codelineno-2-186"></a>  "dependency_graph": "graph TB\n  A[Module A] --&gt; B[Module B]",
-<a href="#__codelineno-2-187" id="__codelineno-2-187" name="__codelineno-2-187"></a>  "next_review_date": "2026-01-20"
+<a href="#__codelineno-2-127" id="__codelineno-2-127" name="__codelineno-2-127"></a> "timestamp": "ISO 8601",
+<a href="#__codelineno-2-128" id="__codelineno-2-128" name="__codelineno-2-128"></a> "overall_health": 95,
+<a href="#__codelineno-2-129" id="__codelineno-2-129" name="__codelineno-2-129"></a> "categories": {
+<a href="#__codelineno-2-130" id="__codelineno-2-130" name="__codelineno-2-130"></a> "architecture": {
+<a href="#__codelineno-2-131" id="__codelineno-2-131" name="__codelineno-2-131"></a> "score": 98,
+<a href="#__codelineno-2-132" id="__codelineno-2-132" name="__codelineno-2-132"></a> "status": "excellent",
+<a href="#__codelineno-2-133" id="__codelineno-2-133" name="__codelineno-2-133"></a> "issues": [
+<a href="#__codelineno-2-134" id="__codelineno-2-134" name="__codelineno-2-134"></a> {
+<a href="#__codelineno-2-135" id="__codelineno-2-135" name="__codelineno-2-135"></a> "severity": "medium",
+<a href="#__codelineno-2-136" id="__codelineno-2-136" name="__codelineno-2-136"></a> "title": "Circular dependency detected",
+<a href="#__codelineno-2-137" id="__codelineno-2-137" name="__codelineno-2-137"></a> "location": "module_a module_b",
+<a href="#__codelineno-2-138" id="__codelineno-2-138" name="__codelineno-2-138"></a> "recommendation": "Extract shared logic to new module"
+<a href="#__codelineno-2-139" id="__codelineno-2-139" name="__codelineno-2-139"></a> }
+<a href="#__codelineno-2-140" id="__codelineno-2-140" name="__codelineno-2-140"></a> ]
+<a href="#__codelineno-2-141" id="__codelineno-2-141" name="__codelineno-2-141"></a> },
+<a href="#__codelineno-2-142" id="__codelineno-2-142" name="__codelineno-2-142"></a> "security": {
+<a href="#__codelineno-2-143" id="__codelineno-2-143" name="__codelineno-2-143"></a> "score": 95,
+<a href="#__codelineno-2-144" id="__codelineno-2-144" name="__codelineno-2-144"></a> "status": "excellent",
+<a href="#__codelineno-2-145" id="__codelineno-2-145" name="__codelineno-2-145"></a> "issues": []
+<a href="#__codelineno-2-146" id="__codelineno-2-146" name="__codelineno-2-146"></a> },
+<a href="#__codelineno-2-147" id="__codelineno-2-147" name="__codelineno-2-147"></a> "performance": {
+<a href="#__codelineno-2-148" id="__codelineno-2-148" name="__codelineno-2-148"></a> "score": 92,
+<a href="#__codelineno-2-149" id="__codelineno-2-149" name="__codelineno-2-149"></a> "status": "good",
+<a href="#__codelineno-2-150" id="__codelineno-2-150" name="__codelineno-2-150"></a> "issues": [
+<a href="#__codelineno-2-151" id="__codelineno-2-151" name="__codelineno-2-151"></a> {
+<a href="#__codelineno-2-152" id="__codelineno-2-152" name="__codelineno-2-152"></a> "severity": "high",
+<a href="#__codelineno-2-153" id="__codelineno-2-153" name="__codelineno-2-153"></a> "title": "N+1 query pattern",
+<a href="#__codelineno-2-154" id="__codelineno-2-154" name="__codelineno-2-154"></a> "location": "api/users.py:45",
+<a href="#__codelineno-2-155" id="__codelineno-2-155" name="__codelineno-2-155"></a> "recommendation": "Use eager loading or batch queries"
+<a href="#__codelineno-2-156" id="__codelineno-2-156" name="__codelineno-2-156"></a> }
+<a href="#__codelineno-2-157" id="__codelineno-2-157" name="__codelineno-2-157"></a> ]
+<a href="#__codelineno-2-158" id="__codelineno-2-158" name="__codelineno-2-158"></a> },
+<a href="#__codelineno-2-159" id="__codelineno-2-159" name="__codelineno-2-159"></a> "code_quality": {
+<a href="#__codelineno-2-160" id="__codelineno-2-160" name="__codelineno-2-160"></a> "score": 96,
+<a href="#__codelineno-2-161" id="__codelineno-2-161" name="__codelineno-2-161"></a> "status": "excellent",
+<a href="#__codelineno-2-162" id="__codelineno-2-162" name="__codelineno-2-162"></a> "issues": []
+<a href="#__codelineno-2-163" id="__codelineno-2-163" name="__codelineno-2-163"></a> },
+<a href="#__codelineno-2-164" id="__codelineno-2-164" name="__codelineno-2-164"></a> "dependencies": {
+<a href="#__codelineno-2-165" id="__codelineno-2-165" name="__codelineno-2-165"></a> "score": 94,
+<a href="#__codelineno-2-166" id="__codelineno-2-166" name="__codelineno-2-166"></a> "status": "excellent",
+<a href="#__codelineno-2-167" id="__codelineno-2-167" name="__codelineno-2-167"></a> "issues": [
+<a href="#__codelineno-2-168" id="__codelineno-2-168" name="__codelineno-2-168"></a> {
+<a href="#__codelineno-2-169" id="__codelineno-2-169" name="__codelineno-2-169"></a> "severity": "low",
+<a href="#__codelineno-2-170" id="__codelineno-2-170" name="__codelineno-2-170"></a> "title": "Outdated package: requests",
+<a href="#__codelineno-2-171" id="__codelineno-2-171" name="__codelineno-2-171"></a> "location": "requirements.txt",
+<a href="#__codelineno-2-172" id="__codelineno-2-172" name="__codelineno-2-172"></a> "recommendation": "Update to latest version"
+<a href="#__codelineno-2-173" id="__codelineno-2-173" name="__codelineno-2-173"></a> }
+<a href="#__codelineno-2-174" id="__codelineno-2-174" name="__codelineno-2-174"></a> ]
+<a href="#__codelineno-2-175" id="__codelineno-2-175" name="__codelineno-2-175"></a> }
+<a href="#__codelineno-2-176" id="__codelineno-2-176" name="__codelineno-2-176"></a> },
+<a href="#__codelineno-2-177" id="__codelineno-2-177" name="__codelineno-2-177"></a> "critical_issues": [],
+<a href="#__codelineno-2-178" id="__codelineno-2-178" name="__codelineno-2-178"></a> "recommendations": [
+<a href="#__codelineno-2-179" id="__codelineno-2-179" name="__codelineno-2-179"></a> {
+<a href="#__codelineno-2-180" id="__codelineno-2-180" name="__codelineno-2-180"></a> "priority": "high",
+<a href="#__codelineno-2-181" id="__codelineno-2-181" name="__codelineno-2-181"></a> "title": "Resolve N+1 query pattern",
+<a href="#__codelineno-2-182" id="__codelineno-2-182" name="__codelineno-2-182"></a> "impact": "30% API performance improvement",
+<a href="#__codelineno-2-183" id="__codelineno-2-183" name="__codelineno-2-183"></a> "effort": "4 hours"
+<a href="#__codelineno-2-184" id="__codelineno-2-184" name="__codelineno-2-184"></a> }
+<a href="#__codelineno-2-185" id="__codelineno-2-185" name="__codelineno-2-185"></a> ],
+<a href="#__codelineno-2-186" id="__codelineno-2-186" name="__codelineno-2-186"></a> "dependency_graph": "graph TB\n A[Module A] --&gt; B[Module B]",
+<a href="#__codelineno-2-187" id="__codelineno-2-187" name="__codelineno-2-187"></a> "next_review_date": "2026-01-20"
 <a href="#__codelineno-2-188" id="__codelineno-2-188" name="__codelineno-2-188"></a>}
 </code></pre></div>
 <h3 id="dependency-graph-mermaid-format">Dependency Graph Mermaid Format<a class="headerlink" href="#dependency-graph-mermaid-format" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Module A, Module B'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>graph TB
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    ModuleA[Module A] --&gt; ModuleB[Module B]
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    ModuleA --&gt; ModuleC[Module C]
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    ModuleB --&gt; ModuleD[Module D]
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    ModuleC --&gt; ModuleD
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    ModuleD --&gt; ModuleB
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>graph TB
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> ModuleA[Module A] --&gt; ModuleB[Module B]
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> ModuleA --&gt; ModuleC[Module C]
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    style ModuleD fill:#FF6B6B
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    note right of ModuleD: Circular dependency detected
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> ModuleB --&gt; ModuleD[Module D]
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> ModuleC --&gt; ModuleD
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> ModuleD --&gt; ModuleB
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> style ModuleD fill:#FF6B6B
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> note right of ModuleD: Circular dependency detected
 </code></pre></div>
 <hr/>
 <h2 id="continuous-improvement">Continuous Improvement<a class="headerlink" href="#continuous-improvement" title="Permanent link">¶</a></h2>
@@ -2982,17 +2989,17 @@
 <p><strong>ALWAYS ASK</strong>: "<strong>Is that ALL you need to know?</strong>"</p>
 <p>This question is the foundation of recursive refinement. Never accept surface-level understanding. Continue research loops until you have complete architectural clarity and all logic bottlenecks are resolved.</p>
 <p><strong>Signs you need to ask the question</strong>:
--  Unclear implementation details
--  Ambiguous error handling
--  Uncertain data flows
--  Unknown edge cases
--  Missing context on design decisions</p>
+- Unclear implementation details
+- Ambiguous error handling
+- Uncertain data flows
+- Unknown edge cases
+- Missing context on design decisions</p>
 <p><strong>Signs you can stop asking</strong>:
--  Complete understanding of implementation
--  All error paths traced
--  Data flows fully mapped
--  Edge cases identified and handled
--  Design rationale clear</p>
+- Complete understanding of implementation
+- All error paths traced
+- Data flows fully mapped
+- Edge cases identified and handled
+- Design rationale clear</p>
 <hr/>
 <p><strong>End of AI Architect System Prompt</strong></p>
 <p><em>This prompt should be appended to NotebookLM instructions or used as <code>notebooklm-architect-prompt.md</code> for custom agent configuration.</em></p>
@@ -3025,6 +3032,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

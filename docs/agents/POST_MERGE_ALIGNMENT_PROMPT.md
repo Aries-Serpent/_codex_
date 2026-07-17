@@ -1,6 +1,6 @@
 # Post-Merge Documentation Alignment — Copilot Session Prompt
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **USE AFTER:** PR #3818 (`0D_base_` `main`) is merged
 > **INVOKE WITH:** `@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md`

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/security/ADMIN_TOKEN_SETUP/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Admin Token Setup Guide for codex - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2569,11 +2569,11 @@
 <a class="md-nav__link" href="#verification-checklist">
 <span class="md-ellipsis">
       
-        ️ Verification Checklist
+        Verification Checklist
       
     </span>
 </a>
-<nav aria-label="️ Verification Checklist" class="md-nav">
+<nav aria-label="Verification Checklist" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#configuration-validation">
@@ -2609,7 +2609,7 @@
 <a class="md-nav__link" href="#physics-alignment">
 <span class="md-ellipsis">
       
-        ⚛️ Physics Alignment
+        Physics Alignment
       
     </span>
 </a>
@@ -2645,7 +2645,7 @@
 <blockquote>
 <p><strong>Generated</strong>: 2026-06-22
 <strong>Repository</strong>: Aries-Serpent/<em>codex</em>
-<strong>Security Level</strong>:  (5/5)
+<strong>Security Level</strong>: (5/5)
 <strong>Roles</strong>: [Org Admin], [Security Officer]</p>
 </blockquote>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2700,9 +2700,9 @@
 </ul>
 <h3 id="required-tools">Required Tools<a class="headerlink" href="#required-tools" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Check installed tools</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>gh<span class="w"> </span>--version<span class="w">          </span><span class="c1"># GitHub CLI</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python3<span class="w"> </span>--version<span class="w">     </span><span class="c1"># Python 3.8+</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>pip3<span class="w"> </span>--version<span class="w">        </span><span class="c1"># Python package manager</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>gh<span class="w"> </span>--version<span class="w"> </span><span class="c1"># GitHub CLI</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python3<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Python 3.8+</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>pip3<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Python package manager</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># Install cryptography library (for AES encryption)</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>pip3<span class="w"> </span>install<span class="w"> </span>cryptography
@@ -2710,17 +2710,15 @@
 <hr/>
 <h2 id="setup-process">Setup Process<a class="headerlink" href="#setup-process" title="Permanent link">¶</a></h2>
 <h3 id="step-1-generate-github-personal-access-token">Step 1: Generate GitHub Personal Access Token<a class="headerlink" href="#step-1-generate-github-personal-access-token" title="Permanent link">¶</a></h3>
-<ol>
+<ol class="task-list">
 <li>Navigate to: https://github.com/settings/tokens/new</li>
 <li>Configure token:</li>
 <li><strong>Note</strong>: <code>_codex_ Copilot Agent Token</code></li>
 <li><strong>Expiration</strong>: 90 days (recommended)</li>
-<li><strong>Scopes</strong>: Select:<ul class="task-list">
+<li><strong>Scopes</strong>: Select:</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>repo</code> (Full control of private repositories)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>workflow</code> (Update GitHub Action workflows)</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>admin:org</code> (if org-level operations needed)</li>
-</ul>
-</li>
 <li>Click <strong>Generate token</strong></li>
 <li><strong>COPY THE TOKEN</strong> (you won't see it again)</li>
 </ol>
@@ -2739,24 +2737,24 @@
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="c1"># The tool will generate encrypted values</span>
 </code></pre></div>
 <p><strong>Example output</strong>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a> _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> Energy: 5/5 |  Security Mode Active
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a> _CODEX_ TOKEN ENCRYPTION TOOL v2.0 # pragma: allowlist secret
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> Energy: 5/5 | Security Mode Active
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>================================================================================
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN # pragma: allowlist secret
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> Encryption complete!
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> COPY THESE VALUES TO GITHUB SECRETS: # pragma: allowlist secret
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>🥇 RECOMMENDED - Base64 Encoding:
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>   Secret Name:  CODEX_GHP_TOKEN_BASE64  # pragma: allowlist secret
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4  # pragma: allowlist secret
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> RECOMMENDED - Base64 Encoding:
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> Secret Name: CODEX_GHP_TOKEN_BASE64 # pragma: allowlist secret
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4 # pragma: allowlist secret
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> MOST SECURE - AES-256-GCM Encryption:
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>   Secret Name: CODEX_GHP_TOKEN_AES_KEY  # pragma: allowlist secret
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>   Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz  # pragma: allowlist secret
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>   ...
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> Secret Name: CODEX_GHP_TOKEN_AES_KEY # pragma: allowlist secret
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz # pragma: allowlist secret
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> ...
 </code></pre></div>
 <h2 id="step-3-add-secrets-to-github">Step 3: Add Secrets to GitHub<a class="headerlink" href="#step-3-add-secrets-to-github" title="Permanent link">¶</a></h2>
 <h3 id="option-a-automated-recommended">Option A: Automated (Recommended)<a class="headerlink" href="#option-a-automated-recommended" title="Permanent link">¶</a></h3>
@@ -2848,11 +2846,11 @@
 <p><strong>Symptoms</strong>: AES encrypted token cannot be decrypted</p>
 <p><strong>Solutions</strong>:
 1. Install cryptography library:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>cryptography
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>pip3<span class="w"> </span>install<span class="w"> </span>cryptography
 </code></pre></div>
 2. Add to workflow:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install cryptography</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install cryptography</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install cryptography</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install cryptography</span>
 </code></pre></div>
 3. Use Base64 encoding as fallback</p>
 <hr/>
@@ -2898,10 +2896,10 @@
 <hr/>
 <h2 id="mission-overview">Mission Overview<a class="headerlink" href="#mission-overview" title="Permanent link">¶</a></h2>
 <p><strong>Objective</strong>: Enable secure token management for AI agents through AES-256-GCM encryption with zero plaintext exposure.</p>
-<p><strong>Energy Level</strong>:  (5/5 - Security Critical)</p>
-<p><strong>Status</strong>:  Active</p>
+<p><strong>Energy Level</strong>: (5/5 - Security Critical)</p>
+<p><strong>Status</strong>: Active</p>
 <hr/>
-<h2 id="verification-checklist">️ Verification Checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
+<h2 id="verification-checklist">Verification Checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
 <h3 id="configuration-validation">Configuration Validation<a class="headerlink" href="#configuration-validation" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> GitHub Personal Access Token generated with correct scopes</li>
@@ -2963,7 +2961,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="physics-alignment">⚛️ Physics Alignment<a class="headerlink" href="#physics-alignment" title="Permanent link">¶</a></h2>
+<h2 id="physics-alignment">Physics Alignment<a class="headerlink" href="#physics-alignment" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -2974,27 +2972,27 @@
 </thead>
 <tbody>
 <tr>
-<td>Path ️</td>
+<td>Path</td>
 <td>Clear progression from token generation to secure storage</td>
-<td>5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup</td>
+<td>5-phase setup: Generate Encrypt Configure Verify Cleanup</td>
 </tr>
 <tr>
 <td>Fields</td>
 <td>Token transformation from plaintext to encrypted state</td>
-<td>Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret</td>
+<td>Multiple encoding layers: Plaintext AES-256-GCM Base64 GitHub Secret</td>
 </tr>
 <tr>
-<td>Patterns ️</td>
+<td>Patterns</td>
 <td>Recognition of security best practices</td>
 <td>SHA-256 verification, expiration dates, automated rotation reminders</td>
 </tr>
 <tr>
 <td>Redundancy</td>
 <td>Fallback encryption methods if primary fails</td>
-<td>Fallback chain: AES-256-GCM → Base64 → Hex → Manual entry</td>
+<td>Fallback chain: AES-256-GCM Base64 Hex Manual entry</td>
 </tr>
 <tr>
-<td>Balance ️</td>
+<td>Balance</td>
 <td>Security strength vs operational usability</td>
 <td>Military-grade encryption with automated setup scripts</td>
 </tr>
@@ -3043,10 +3041,10 @@
 <h2 id="redundancy-patterns">Redundancy Patterns<a class="headerlink" href="#redundancy-patterns" title="Permanent link">¶</a></h2>
 <p><strong>Rollback Strategy</strong>: If encrypted token fails, immediately generate new token and re-run encryption process with verified parameters.</p>
 <p><strong>Parallel Paths</strong>:
-- If AES-256-GCM decryption fails → Use Base64 encoding fallback
-- If automated setup script fails → Use manual GitHub CLI commands
-- If GitHub CLI unavailable → Use web UI manual configuration
-- If token verification fails → Regenerate encryption with same token and update secrets</p>
+- If AES-256-GCM decryption fails Use Base64 encoding fallback
+- If automated setup script fails Use manual GitHub CLI commands
+- If GitHub CLI unavailable Use web UI manual configuration
+- If token verification fails Regenerate encryption with same token and update secrets</p>
 <p><strong>Recovery Procedures</strong>:
 1. <strong>Token Retrieval Failure</strong>: Export <code>CODEX_GHP_TOKEN_BASE64</code> locally, test decoder module, verify secret names match exactly
 2. <strong>Encryption Tool Error</strong>: Install <code>cryptography</code> library, ensure Python 3.8+, re-run tool with clean terminal
@@ -3081,6 +3079,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

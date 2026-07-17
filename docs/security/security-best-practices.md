@@ -1,6 +1,6 @@
 # Security Best Practices Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Comprehensive guide to secure development, deployment, and operations
 > **Level**: Advanced | **Prerequisites**: Basic security knowledge

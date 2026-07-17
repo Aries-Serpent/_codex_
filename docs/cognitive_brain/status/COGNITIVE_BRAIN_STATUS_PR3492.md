@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3492
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 # Update User Access Levels + Cognitive Brain Next-Phase Objectives
 
@@ -49,7 +49,7 @@ graph TB
  end
 
  subgraph STATE["Current Repository State"]
- REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+ REG["AGENT_REGISTRY.yaml v0.2.0\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
  GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
  WF["96 workflows"]
  RBAC["StructuralPolicyManager RBAC\n4 allowed actors via env var\nCODEX_MASTER_KEY + CODEX_BACKUP_KEY granted"]

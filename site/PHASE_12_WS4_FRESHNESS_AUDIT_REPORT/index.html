@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_12_WS4_FRESHNESS_AUDIT_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 12 WS4 - Documentation Freshness Audit Report - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2633,10 +2633,10 @@
 <article class="md-content__inner md-typeset">
 <h1 id="phase-12-ws4-documentation-freshness-audit-report">Phase 12 WS4 - Documentation Freshness Audit Report<a class="headerlink" href="#phase-12-ws4-documentation-freshness-audit-report" title="Permanent link">¶</a></h1>
 <p><strong>Version</strong>: v0.2.1</p>
-<p><strong>Campaign:</strong> Phase 12 WS3 Documentation (D-tier autonomous)<br/>
-<strong>Agent:</strong> doc-freshness-checker<br/>
-<strong>Date:</strong> 2026-07-08<br/>
-<strong>Status:</strong>  PHASE 1 COMPLETE - Phase 2-4 IN PROGRESS<br/>
+<p><strong>Campaign:</strong> Phase 12 WS3 Documentation (D-tier autonomous)
+<strong>Agent:</strong> doc-freshness-checker
+<strong>Date:</strong> 2026-07-08
+<strong>Status:</strong> PHASE 1 COMPLETE - Phase 2-4 IN PROGRESS
 <strong>Target:</strong> 100% documentation freshness &amp; 0 stale API references</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2666,19 +2666,19 @@
 <tr>
 <td><strong>External Links</strong></td>
 <td>3,125</td>
-<td>️ Validate</td>
+<td>Validate</td>
 <td>No broken</td>
 </tr>
 <tr>
 <td><strong>Files with Stale Markers</strong></td>
 <td>68</td>
-<td>️ Review</td>
+<td>Review</td>
 <td>&lt; 5</td>
 </tr>
 <tr>
 <td><strong>Version References</strong></td>
 <td>192</td>
-<td>️ Update</td>
+<td>Update</td>
 <td>&lt; 10</td>
 </tr>
 <tr>
@@ -2692,7 +2692,7 @@
 <h3 id="freshness-summary">Freshness Summary<a class="headerlink" href="#freshness-summary" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>1,802 files (96.4%)</strong> - Current and well-maintained</li>
-<li>️ <strong>68 files (3.6%)</strong> - Contain TODO/FIXME/DEPRECATED markers</li>
+<li><strong>68 files (3.6%)</strong> - Contain TODO/FIXME/DEPRECATED markers</li>
 <li><strong>Recent updates</strong> - Last commit: 2026-07-08 16:18:15 UTC</li>
 <li><strong>Code examples</strong> - All major documentation has executable examples</li>
 </ul>
@@ -2701,15 +2701,15 @@
 <h3 id="11-documentation-inventory">1.1 Documentation Inventory<a class="headerlink" href="#11-documentation-inventory" title="Permanent link">¶</a></h3>
 <p><strong>File Distribution:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>docs/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── Root docs (markdown)        142 files
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── API documentation           46 files
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── Configuration guides        38 files
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── Architecture docs           34 files
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>├── Security documentation      28 files
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├── Developer guides            42 files
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── Admin documentation         24 files
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>└── Miscellaneous              516 files
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>────────────────────────────────────────────
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> Root docs (markdown) 142 files
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> API documentation 46 files
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Configuration guides 38 files
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Architecture docs 34 files
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Security documentation 28 files
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Developer guides 42 files
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Admin documentation 24 files
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Miscellaneous 516 files
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>TOTAL: 1,870 markdown files
 </code></pre></div></p>
 <h3 id="12-code-example-analysis">1.2 Code Example Analysis<a class="headerlink" href="#12-code-example-analysis" title="Permanent link">¶</a></h3>
@@ -2724,9 +2724,9 @@
 <p><strong>Coverage:</strong> 83.5% of documentation files include code examples</p>
 <h3 id="13-stale-content-detection">1.3 Stale Content Detection<a class="headerlink" href="#13-stale-content-detection" title="Permanent link">¶</a></h3>
 <p><strong>Files with Stale Markers:</strong></p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>TODO markers:        65 files
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>FIXME markers:       11 files
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>DEPRECATED pattern:  97 files
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>TODO markers: 65 files
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>FIXME markers: 11 files
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>DEPRECATED pattern: 97 files
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>Outdated references: 28 files
 </code></pre></div>
 <p><strong>Top files requiring updates:</strong>
@@ -2739,30 +2739,30 @@
 <h2 id="phase-2-content-accuracy-validation">Phase 2: Content Accuracy Validation<a class="headerlink" href="#phase-2-content-accuracy-validation" title="Permanent link">¶</a></h2>
 <h3 id="21-module-existence-check">2.1 Module Existence Check<a class="headerlink" href="#21-module-existence-check" title="Permanent link">¶</a></h3>
 <p><strong>Referenced Modules:</strong>
--  <code>src/codex/security/__init__.py</code> - VERIFIED
--  <code>src/codex/models/__init__.py</code> - MISSING (needs update)
--  <code>src/codex/cache/__init__.py</code> - VERIFIED
--  <code>scripts/cognitive/topology_manager.py</code> - VERIFIED
--  <code>scripts/cognitive/cache_manager.py</code> - VERIFIED</p>
+- <code>src/codex/security/__init__.py</code> - VERIFIED
+- <code>src/codex/models/__init__.py</code> - MISSING (needs update)
+- <code>src/codex/cache/__init__.py</code> - VERIFIED
+- <code>scripts/cognitive/topology_manager.py</code> - VERIFIED
+- <code>scripts/cognitive/cache_manager.py</code> - VERIFIED</p>
 <p><strong>Action:</strong> Update 1 reference to missing module</p>
 <h3 id="22-version-reference-audit">2.2 Version Reference Audit<a class="headerlink" href="#22-version-reference-audit" title="Permanent link">¶</a></h3>
 <p><strong>Files with Version References:</strong> 192</p>
 <p><strong>Version Patterns Found:</strong>
-- <code>v0.9.0</code> → 8 references
-- <code>v1.0.0</code> → 15 references
-- <code>v1.2.7</code> → 6 references
-- <code>v2.0.0</code> → 12 references
+- <code>v0.9.0</code> 8 references
+- <code>v1.0.0</code> 15 references
+- <code>v1.2.7</code> 6 references
+- <code>v2.0.0</code> 12 references
 - Undated: 151 files</p>
 <p><strong>Status:</strong> Most are in historical documents; recommend review</p>
 <h3 id="23-api-documentation-status">2.3 API Documentation Status<a class="headerlink" href="#23-api-documentation-status" title="Permanent link">¶</a></h3>
 <p><strong>API Documentation Files:</strong> 46 files</p>
 <ul>
-<li><code>API_REFERENCE.md</code> -  Current</li>
-<li><code>zendesk_api_reference.md</code> -  Current</li>
-<li><code>RAG_API_REFERENCE.md</code> -  Current</li>
-<li><code>INGESTION_API_REFERENCE.md</code> -  Current</li>
+<li><code>API_REFERENCE.md</code> - Current</li>
+<li><code>zendesk_api_reference.md</code> - Current</li>
+<li><code>RAG_API_REFERENCE.md</code> - Current</li>
+<li><code>INGESTION_API_REFERENCE.md</code> - Current</li>
 </ul>
-<p><strong>Status:</strong>  All API docs synchronized with implementation</p>
+<p><strong>Status:</strong> All API docs synchronized with implementation</p>
 <h3 id="24-legacy-pattern-detection">2.4 Legacy Pattern Detection<a class="headerlink" href="#24-legacy-pattern-detection" title="Permanent link">¶</a></h3>
 <p><strong>Detected Legacy Patterns:</strong></p>
 <table>
@@ -2779,19 +2779,19 @@
 <td><code>import sys; sys.path.insert</code></td>
 <td>3</td>
 <td>3</td>
-<td>️ Modernize</td>
+<td>Modernize</td>
 </tr>
 <tr>
 <td><code>pytest.mark.flaky</code></td>
 <td>8</td>
 <td>8</td>
-<td>️ Document</td>
+<td>Document</td>
 </tr>
 <tr>
 <td>Deprecated imports</td>
 <td>97</td>
 <td>97</td>
-<td>️ Review</td>
+<td>Review</td>
 </tr>
 </tbody>
 </table>
@@ -2815,18 +2815,18 @@
 - <code>localhost:8765</code> - 48 references
 - <code>localhost:8001</code> - 30 references
 - <code>localhost:8765'</code> (malformed) - 26 references</p>
-<p><strong>Status:</strong> ️ 69 files contain localhost references (likely example/demo docs)</p>
+<p><strong>Status:</strong> 69 files contain localhost references (likely example/demo docs)</p>
 <p><strong>GitHub File Links:</strong> 29 files with GitHub blob links
-- Status:  Generally up-to-date</p>
+- Status: Generally up-to-date</p>
 <p><strong>ReadTheDocs Links:</strong> 26 files with rtd references
-- Status:  Third-party but stable</p>
+- Status: Third-party but stable</p>
 <h3 id="33-link-validation-plan">3.3 Link Validation Plan<a class="headerlink" href="#33-link-validation-plan" title="Permanent link">¶</a></h3>
 <p><strong>Validated (Sample Testing):</strong>
--  github.com - Primary repository (verified)
--  docs.github.com - GitHub documentation (active)
--  pypi.org - Python package index (active)
--  docs.python.org - Python docs (active)
-- ️ Localhost links - Development only (need context added)</p>
+- github.com - Primary repository (verified)
+- docs.github.com - GitHub documentation (active)
+- pypi.org - Python package index (active)
+- docs.python.org - Python docs (active)
+- Localhost links - Development only (need context added)</p>
 <hr/>
 <h2 id="phase-4-freshness-improvements-maintenance-procedures">Phase 4: Freshness Improvements &amp; Maintenance Procedures<a class="headerlink" href="#phase-4-freshness-improvements-maintenance-procedures" title="Permanent link">¶</a></h2>
 <h3 id="41-stale-content-update-plan">4.1 Stale Content Update Plan<a class="headerlink" href="#41-stale-content-update-plan" title="Permanent link">¶</a></h3>
@@ -2846,8 +2846,8 @@
 - Reference materials</p>
 <h3 id="42-freshness-maintenance-procedures">4.2 Freshness Maintenance Procedures<a class="headerlink" href="#42-freshness-maintenance-procedures" title="Permanent link">¶</a></h3>
 <h4 id="procedure-a-quarterly-freshness-audit">Procedure A: Quarterly Freshness Audit<a class="headerlink" href="#procedure-a-quarterly-freshness-audit" title="Permanent link">¶</a></h4>
-<p><strong>Frequency:</strong> Every 90 days<br/>
-<strong>Owner:</strong> Documentation team<br/>
+<p><strong>Frequency:</strong> Every 90 days
+<strong>Owner:</strong> Documentation team
 <strong>Effort:</strong> 2-3 hours</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># 1. Scan for stale markers</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"TODO\|FIXME\|DEPRECATED\|OUTDATED"</span><span class="w"> </span>docs/<span class="w"> </span>--include<span class="o">=</span><span class="s2">"*.md"</span>
@@ -2862,8 +2862,8 @@
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Freshness audit complete"</span><span class="w"> </span>&gt;<span class="w"> </span>docs/FRESHNESS_AUDIT_<span class="k">$(</span>date<span class="w"> </span>+%Y-%m-%d<span class="k">)</span>.md
 </code></pre></div>
 <h4 id="procedure-b-code-example-validation">Procedure B: Code Example Validation<a class="headerlink" href="#procedure-b-code-example-validation" title="Permanent link">¶</a></h4>
-<p><strong>Frequency:</strong> On every documentation PR<br/>
-<strong>Owner:</strong> Reviewers<br/>
+<p><strong>Frequency:</strong> On every documentation PR
+<strong>Owner:</strong> Reviewers
 <strong>Effort:</strong> 10-15 minutes per PR</p>
 <p><strong>Checklist:</strong>
 - [ ] All code examples are syntactically valid
@@ -2882,8 +2882,8 @@
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"^from|^import"</span><span class="w"> </span>examples/*.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>ast
 </code></pre></div></p>
 <h4 id="procedure-c-external-link-validation">Procedure C: External Link Validation<a class="headerlink" href="#procedure-c-external-link-validation" title="Permanent link">¶</a></h4>
-<p><strong>Frequency:</strong> Monthly<br/>
-<strong>Owner:</strong> CI/CD pipeline<br/>
+<p><strong>Frequency:</strong> Monthly
+<strong>Owner:</strong> CI/CD pipeline
 <strong>Effort:</strong> Automated</p>
 <p><strong>Links to Skip:</strong>
 - <code>localhost:*</code> - Development/demo only
@@ -2900,14 +2900,14 @@
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="n">links</span> <span class="o">=</span> <span class="n">extract_external_links</span><span class="p">(</span><span class="s2">"docs/"</span><span class="p">)</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_template</span><span class="p">(</span><span class="n">link</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_localhost</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>            <span class="n">report_broken_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_template</span><span class="p">(</span><span class="n">link</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_localhost</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="n">report_broken_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="procedure-d-version-sync-protocol">Procedure D: Version Sync Protocol<a class="headerlink" href="#procedure-d-version-sync-protocol" title="Permanent link">¶</a></h4>
-<p><strong>Frequency:</strong> Before each release<br/>
-<strong>Owner:</strong> Release manager<br/>
+<p><strong>Frequency:</strong> Before each release
+<strong>Owner:</strong> Release manager
 <strong>Effort:</strong> 1 hour per release</p>
 <p><strong>Steps:</strong>
 1. Identify changed modules/APIs
@@ -2931,14 +2931,14 @@
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>status: active|archived|draft
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>review_cycle: quarterly|biannual|annual
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>related_modules:
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="k">-</span><span class="w"> </span>src/codex/module_name
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="gu">  - scripts/script_name</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="k">-</span><span class="w"> </span>src/codex/module_name
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="gu"> - scripts/script_name</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="gu">---</span>
 </code></pre></div></p>
 <h3 id="43-mkdocs-configuration-improvements">4.3 MkDocs Configuration Improvements<a class="headerlink" href="#43-mkdocs-configuration-improvements" title="Permanent link">¶</a></h3>
 <p><strong>Current Status:</strong> 263 warnings (majority are reference warnings)</p>
 <p><strong>Fix Plan Implementation:</strong></p>
-<p><strong>Batch 1: Quick Fixes  (COMPLETED)</strong>
+<p><strong>Batch 1: Quick Fixes (COMPLETED)</strong>
 - Fixed nav configuration
 - Fixed internal link patterns
 - Impact: ~40 warnings reduced</p>
@@ -2960,23 +2960,23 @@
 <p><strong>Automated Freshness Checks (CI Integration):</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># .github/workflows/doc-freshness.yml</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Documentation Freshness Check</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">pull_request</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">schedule</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0'</span><span class="p p-Indicator">]]</span><span class="w">  </span><span class="c1"># Weekly on Sunday</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">pull_request</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">schedule</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0'</span><span class="p p-Indicator">]]</span><span class="w"> </span><span class="c1"># Weekly on Sunday</span>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">  </span><span class="nt">freshness</span><span class="p">:</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Freshness Audit</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">          </span><span class="no">python tools/freshness_audit.py</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">          </span><span class="no">python tools/validate_code_examples.py</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">          </span><span class="no">python tools/link_validator.py</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Report Results</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w">          </span><span class="no">gh issue create --title " Doc Freshness Alert" \</span>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="w">            </span><span class="no">--body "See workflow logs for details"</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="nt">freshness</span><span class="p">:</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Freshness Audit</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/freshness_audit.py</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/validate_code_examples.py</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python tools/link_validator.py</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Report Results</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w"> </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh issue create --title " Doc Freshness Alert" \</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--body "See workflow logs for details"</span>
 </code></pre></div>
 <hr/>
 <h2 id="phase-4-success-metrics-acceptance-criteria">Phase 4: Success Metrics &amp; Acceptance Criteria<a class="headerlink" href="#phase-4-success-metrics-acceptance-criteria" title="Permanent link">¶</a></h2>
@@ -3013,7 +3013,7 @@
 <td>Broken Links</td>
 <td>0%</td>
 <td>~2% (69 localhost)</td>
-<td>️ REVIEW</td>
+<td>REVIEW</td>
 </tr>
 <tr>
 <td>API Sync</td>
@@ -3025,7 +3025,7 @@
 <td>MkDocs Warnings</td>
 <td>&lt; 50</td>
 <td>263</td>
-<td>️ IN PROGRESS</td>
+<td>IN PROGRESS</td>
 </tr>
 </tbody>
 </table>
@@ -3153,10 +3153,10 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Report Generated:</strong> 2026-07-08 16:25 UTC<br/>
-<strong>Agent:</strong> doc-freshness-checker (WS4)<br/>
-<strong>Campaign:</strong> Phase 12 WS3 Documentation (D-tier autonomous)<br/>
-<strong>Status:</strong>  PHASE 1 COMPLETE → PHASE 2 IN PROGRESS</p>
+<p><strong>Report Generated:</strong> 2026-07-08 16:25 UTC
+<strong>Agent:</strong> doc-freshness-checker (WS4)
+<strong>Campaign:</strong> Phase 12 WS3 Documentation (D-tier autonomous)
+<strong>Status:</strong> PHASE 1 COMPLETE PHASE 2 IN PROGRESS</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3186,6 +3186,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

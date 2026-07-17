@@ -1,13 +1,13 @@
-# Space Traversal Audit Runbook (v0.2.1)
+# Space Traversal Audit Runbook (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Updated: 2026-06-22
  Roles: [Primary: Audit Lead], [Secondary: CI Maintainer] Energy: 5
 
 ## Purpose
 
-End-to-end operational guide for running, validating, and interpreting the capability audit pipeline per Space Traversal Workflow v0.2.1.
+End-to-end operational guide for running, validating, and interpreting the capability audit pipeline per Space Traversal Workflow v0.2.0.
 
 ---
 
@@ -267,4 +267,4 @@ export WANDB_MODE=offline
 
 ---
 
-*End of Audit Runbook v0.2.1*
+*End of Audit Runbook v0.2.0*

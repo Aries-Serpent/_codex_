@@ -1,6 +1,6 @@
 # PHASE 0: Executive Dashboard & Critical Path
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@
 - [ per-iteration STANDUP TEMPLATE](#-per-iteration-standup-template)
 - [Phase 0 per-iteration Standup - [DATE]](#phase-0-per-iteration-standup---date)
 - [Blockers Resolved Today](#blockers-resolved-today)
-- [Work In Progress](#work-in-progress)
+
 - [Blockers / Help Needed](#blockers--help-needed)
 - [Confidence Level](#confidence-level)
 - [ ESCALATION PATH](#-escalation-path)
@@ -270,7 +270,7 @@ Gate: 7 iterations 7 iterations
 - [ ] BLOCK-DEP-002: tree-sitter Status: [OPEN|IN_PROGRESS|RESOLVED]
 - [ ] ...
 
-## Work In Progress
+## In Progress
 - Team Member A: [Task] - [% complete]
 - Team Member B: [Task] - [% complete]
 

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ADVANCED_PHYSICS_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Advanced Physics Paradigms Integration Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2568,7 +2568,7 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Logistic map: x_{n+1} = r * x_n * (1 - x_n)
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Lyapunov exponent (measure of chaos):
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>λ = lim_{n→∞} (1/n) * Σ log|f'(x_i)|
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>λ = lim_{n∞} (1/n) * Σ log|f'(x_i)|
 </code></pre></div></p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">agents.advanced_physics_calculators</span> <span class="kn">import</span> <span class="n">ChaoticNeuralNetwork</span>
@@ -2594,7 +2594,7 @@
 - Multi-scale code decomposition</p>
 <p><strong>Key Equations</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a># Box-counting dimension
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>D = lim_{ε→0} log(N(ε)) / log(1/ε)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>D = lim_{ε0} log(N(ε)) / log(1/ε)
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a># Self-similarity measure
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>S = Σ_scales pattern_similarity(scale_i, scale_j)
@@ -2606,10 +2606,10 @@
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="c1"># Analyze code tree structure</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="n">code_tree</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="s1">'module'</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="s1">'class1'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'method1'</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">'method2'</span><span class="p">:</span> <span class="p">{}},</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        <span class="s1">'class2'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'method3'</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">'method4'</span><span class="p">:</span> <span class="p">{}}</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="p">}</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="s1">'module'</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="s1">'class1'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'method1'</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">'method2'</span><span class="p">:</span> <span class="p">{}},</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> <span class="s1">'class2'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'method3'</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">'method4'</span><span class="p">:</span> <span class="p">{}}</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> <span class="p">}</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="p">}</span>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="n">analysis</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analyze_code_tree</span><span class="p">(</span><span class="n">code_tree</span><span class="p">)</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
@@ -2676,13 +2676,13 @@
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="n">router</span> <span class="o">=</span> <span class="n">EMFieldRouter</span><span class="p">(</span><span class="n">grid_resolution</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># Add code hotspots as charges</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">router</span><span class="o">.</span><span class="n">add_charge</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]),</span> <span class="n">charge</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>  <span class="c1"># High-risk area</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">router</span><span class="o">.</span><span class="n">add_charge</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]),</span> <span class="n">charge</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>  <span class="c1"># Medium-risk</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">router</span><span class="o">.</span><span class="n">add_charge</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">]),</span> <span class="n">charge</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span> <span class="c1"># High-risk area</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">router</span><span class="o">.</span><span class="n">add_charge</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]),</span> <span class="n">charge</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span> <span class="c1"># Medium-risk</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="c1"># Route reviewer along field lines</span>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="n">trajectory</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">route_agent</span><span class="p">(</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    <span class="n">start_position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]),</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    <span class="n">steps</span><span class="o">=</span><span class="mi">40</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="n">start_position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]),</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> <span class="n">steps</span><span class="o">=</span><span class="mi">40</span>
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="p">)</span>
 <a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="c1"># Identify priority regions</span>
@@ -2702,7 +2702,7 @@
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>∂²u/∂t² = c²∇²u - γ∂u/∂t
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a># Interference
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>I_total = |A_1 + A_2|²  # Constructive if in phase
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>I_total = |A_1 + A_2|² # Constructive if in phase
 </code></pre></div></p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">agents.advanced_physics_calculators</span> <span class="kn">import</span> <span class="n">WavePropagator</span>
@@ -2719,7 +2719,7 @@
 <a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="c1"># Measure interference</span>
 <a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="n">interference</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">measure_interference</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">))</span>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="k">if</span> <span class="n">interference</span><span class="p">[</span><span class="s1">'constructive'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Signals reinforce (agreement)"</span><span class="p">)</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Signals reinforce (agreement)"</span><span class="p">)</span>
 </code></pre></div></p>
 <h2 id="6-relativistic-effects">6. Relativistic Effects<a class="headerlink" href="#6-relativistic-effects" title="Permanent link">¶</a></h2>
 <p><strong>Purpose</strong>: Latency-aware scheduling for distributed systems</p>
@@ -2735,7 +2735,7 @@
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>γ = 1 / √(1 - v²/c²)
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a># Time dilation
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>τ = t / γ  # Proper time
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>τ = t / γ # Proper time
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a># Communication delay
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>Δt = distance / c
@@ -2748,14 +2748,14 @@
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="c1"># Add distributed agents</span>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_a'</span><span class="p">,</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_a'</span><span class="p">,</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="p">)</span>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">add_agent</span><span class="p">(</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_b'</span><span class="p">,</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    <span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>  <span class="c1"># Fast-moving</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_b'</span><span class="p">,</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> <span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span> <span class="c1"># Fast-moving</span>
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="p">)</span>
 <a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
 <a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="c1"># Synchronize clocks</span>
@@ -2763,10 +2763,10 @@
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="c1"># Schedule task with relativistic corrections</span>
 <a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="n">result</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule_task</span><span class="p">(</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>    <span class="n">task_id</span><span class="o">=</span><span class="s1">'task1'</span><span class="p">,</span>
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>    <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_b'</span><span class="p">,</span>
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>    <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>    <span class="n">priority</span><span class="o">=</span><span class="mf">1.0</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> <span class="n">task_id</span><span class="o">=</span><span class="s1">'task1'</span><span class="p">,</span>
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a> <span class="n">agent_id</span><span class="o">=</span><span class="s1">'service_b'</span><span class="p">,</span>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a> <span class="n">deadline</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a> <span class="n">priority</span><span class="o">=</span><span class="mf">1.0</span>
 <a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="p">)</span>
 </code></pre></div></p>
 <h2 id="unified-orchestrator">Unified Orchestrator<a class="headerlink" href="#unified-orchestrator" title="Permanent link">¶</a></h2>
@@ -2778,19 +2778,19 @@
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># Comprehensive analysis</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="n">decision_space</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    <span class="s1">'exploration'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    <span class="s1">'param_ranges'</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)],</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    <span class="s1">'structure'</span><span class="p">:</span> <span class="n">code_tree</span><span class="p">,</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    <span class="s1">'workflow'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="s1">'hotspots'</span><span class="p">:</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span> <span class="mf">1.0</span><span class="p">)],</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    <span class="s1">'signals'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'position'</span><span class="p">:</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="s1">'amplitude'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'frequency'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}],</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="s1">'agents'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'agent_id'</span><span class="p">:</span> <span class="s1">'a1'</span><span class="p">,</span> <span class="s1">'position'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])}]</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="s1">'exploration'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="s1">'param_ranges'</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)],</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="s1">'structure'</span><span class="p">:</span> <span class="n">code_tree</span><span class="p">,</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="s1">'workflow'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="s1">'hotspots'</span><span class="p">:</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span> <span class="mf">1.0</span><span class="p">)],</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="s1">'signals'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'position'</span><span class="p">:</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="s1">'amplitude'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'frequency'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}],</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="s1">'agents'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'agent_id'</span><span class="p">:</span> <span class="s1">'a1'</span><span class="p">,</span> <span class="s1">'position'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])}]</span>
 <a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="p">}</span>
 <a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>
 <a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a><span class="n">results</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">full_analysis</span><span class="p">(</span><span class="n">decision_space</span><span class="p">)</span>
 <a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>
 <a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="c1"># Check status</span>
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="n">status</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>  <span class="c1"># All paradigms: 'active'</span>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="n">status</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span> <span class="c1"># All paradigms: 'active'</span>
 </code></pre></div>
 <h2 id="software-developer-orchestrator">Software Developer Orchestrator<a class="headerlink" href="#software-developer-orchestrator" title="Permanent link">¶</a></h2>
 <h3 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">¶</a></h3>
@@ -2817,10 +2817,10 @@
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="c1"># 2. Define requirements (partial is OK!)</span>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="n">requirements</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>    <span class="s1">'app_type'</span><span class="p">:</span> <span class="s1">'python_cli'</span><span class="p">,</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>    <span class="s1">'app_name'</span><span class="p">:</span> <span class="s1">'data_processor'</span><span class="p">,</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>    <span class="s1">'description'</span><span class="p">:</span> <span class="s1">'CLI tool for data processing'</span><span class="p">,</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>    <span class="s1">'commands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'process'</span><span class="p">,</span> <span class="s1">'validate'</span><span class="p">,</span> <span class="s1">'export'</span><span class="p">],</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="s1">'app_type'</span><span class="p">:</span> <span class="s1">'python_cli'</span><span class="p">,</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="s1">'app_name'</span><span class="p">:</span> <span class="s1">'data_processor'</span><span class="p">,</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="s1">'description'</span><span class="p">:</span> <span class="s1">'CLI tool for data processing'</span><span class="p">,</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> <span class="s1">'commands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'process'</span><span class="p">,</span> <span class="s1">'validate'</span><span class="p">,</span> <span class="s1">'export'</span><span class="p">],</span>
 <a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="p">}</span>
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="c1"># 3. Analyze - identifies missing variables</span>
@@ -2830,10 +2830,10 @@
 <a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>
 <a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="c1"># 4. Review missing variables with AI suggestions</span>
 <a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">analysis</span><span class="p">[</span><span class="s1">'missing_variables'</span><span class="p">]:</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">var</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">var</span><span class="p">[</span><span class="s1">'suggested_options'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>    <span class="c1"># Example output:</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>    <span class="c1"># cli_framework: ['argparse', 'typer', 'click']</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>    <span class="c1"># python_version: ['3.10', '3.11', '3.12']</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">var</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">var</span><span class="p">[</span><span class="s1">'suggested_options'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> <span class="c1"># Example output:</span>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> <span class="c1"># cli_framework: ['argparse', 'typer', 'click']</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a> <span class="c1"># python_version: ['3.10', '3.11', '3.12']</span>
 <a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>
 <a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="c1"># 5. Complete requirements</span>
 <a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a><span class="n">requirements</span><span class="p">[</span><span class="s1">'cli_framework'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'typer'</span>
@@ -2848,13 +2848,13 @@
 <a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a>
 <a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a><span class="c1"># EM fields prioritize critical components</span>
 <a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a><span class="n">sorted_components</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a>    <span class="n">architecture</span><span class="p">[</span><span class="s1">'components'</span><span class="p">],</span>
-<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a>    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="s1">'priority'</span><span class="p">],</span>
-<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a>    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a> <span class="n">architecture</span><span class="p">[</span><span class="s1">'components'</span><span class="p">],</span>
+<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="s1">'priority'</span><span class="p">],</span>
+<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a><span class="p">)</span>
 <a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Top priority components:"</span><span class="p">)</span>
 <a href="#__codelineno-13-44" id="__codelineno-13-44" name="__codelineno-13-44"></a><span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">sorted_components</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
-<a href="#__codelineno-13-45" id="__codelineno-13-45" name="__codelineno-13-45"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Component: </span><span class="si">{</span><span class="n">comp</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">, Priority: </span><span class="si">{</span><span class="n">comp</span><span class="p">[</span><span class="s1">'priority'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-45" id="__codelineno-13-45" name="__codelineno-13-45"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Component: </span><span class="si">{</span><span class="n">comp</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">, Priority: </span><span class="si">{</span><span class="n">comp</span><span class="p">[</span><span class="s1">'priority'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-13-46" id="__codelineno-13-46" name="__codelineno-13-46"></a>
 <a href="#__codelineno-13-47" id="__codelineno-13-47" name="__codelineno-13-47"></a><span class="c1"># Dependency analysis determines build order</span>
 <a href="#__codelineno-13-48" id="__codelineno-13-48" name="__codelineno-13-48"></a><span class="n">build_order</span> <span class="o">=</span> <span class="n">architecture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'recommended_order'</span><span class="p">,</span> <span class="p">[])</span>
@@ -2993,8 +2993,8 @@
 3. Consult inline documentation
 4. Open an issue on GitHub</p>
 <hr/>
-<p><strong>Version</strong>: 1.0.0<br/>
-<strong>Last Updated</strong>: 2025-12-12<br/>
+<p><strong>Version</strong>: 1.0.0
+<strong>Last Updated</strong>: 2025-12-12
 <strong>Maintainer</strong>: Codex Development Team</p>
 </article>
 </div>
@@ -3025,6 +3025,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # PR #4425 #4427 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **PR:** [#4425](https://github.com/Aries-Serpent/_codex_/pull/4425) **Transitioned to PR #4427**
 > **Session:** S966 | **Date:2026-07-13

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PERFORMANCE_MASTER_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Performance Optimization &amp; Reliability Master Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2586,10 +2586,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Consolidated Master Document</strong> for Codex Performance<br/>
-<strong>Created</strong>: 2026-07-08<br/>
-<strong>Consolidation Campaign</strong>: Phase 12 WS3<br/>
-<strong>Status</strong>:  Active Master Document</p>
+<p><strong>Consolidated Master Document</strong> for Codex Performance
+<strong>Created</strong>: 2026-07-08
+<strong>Consolidation Campaign</strong>: Phase 12 WS3
+<strong>Status</strong>: Active Master Document</p>
 </blockquote>
 <p><strong>Consolidated from</strong> 4 source files:
 - docs/PERFORMANCE_OPTIMIZATION_GUIDE.md
@@ -2653,38 +2653,36 @@
 </tbody>
 </table>
 <h3 id="performance-domains">Performance Domains<a class="headerlink" href="#performance-domains" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌──────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│ 1. Inference Performance                  │ ← Model speed
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│    (LLM inference, embeddings)            │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├──────────────────────────────────────────┤
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│ 2. API Performance                        │ ← Request latency
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│    (REST endpoints, GraphQL)              │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├──────────────────────────────────────────┤
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│ 3. Cache Performance                      │ ← Hit rates
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│    (L1-L4 cache hierarchy)                │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>├──────────────────────────────────────────┤
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│ 4. Database Performance                   │ ← Query latency
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│    (SQLite, indexes, queries)             │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>├──────────────────────────────────────────┤
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│ 5. Network Performance                    │ ← Throughput
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│    (Bandwidth, latency)                   │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>├──────────────────────────────────────────┤
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│ 6. System Resource Usage                  │ ← CPU, memory, disk
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│    (Host level metrics)                   │
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>└──────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> 1. Inference Performance Model speed
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (LLM inference, embeddings) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> 2. API Performance Request latency
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> (REST endpoints, GraphQL) 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> 3. Cache Performance Hit rates
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> (L1-L4 cache hierarchy) 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> 4. Database Performance Query latency
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> (SQLite, indexes, queries) 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> 5. Network Performance Throughput
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> (Bandwidth, latency) 
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> 6. System Resource Usage CPU, memory, disk
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> (Host level metrics) 
 </code></pre></div>
 <hr/>
 <h2 id="baseline-metrics">Baseline Metrics<a class="headerlink" href="#baseline-metrics" title="Permanent link">¶</a></h2>
 <h3 id="inference-performance">Inference Performance<a class="headerlink" href="#inference-performance" title="Permanent link">¶</a></h3>
-<p><strong>Model</strong>: Claude Sonnet 4.5<br/>
+<p><strong>Model</strong>: Claude Sonnet 4.5
 <strong>Tested</strong>: 2026-07-08</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Input Tokens      Output Tokens     Total Latency    Tokens/Sec
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>─────────────────────────────────────────────────────────────
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>100               100               245ms            408
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>500               100               312ms            320
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>1000              100               456ms            219
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>1000              500               1234ms           405
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>5000              500               2156ms           232
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Input Tokens Output Tokens Total Latency Tokens/Sec
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>100 100 245ms 408
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>500 100 312ms 320
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>1000 100 456ms 219
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>1000 500 1234ms 405
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>5000 500 2156ms 232
 </code></pre></div>
 <p><strong>Key Findings</strong>:
 - Input processing: ~0.2ms per token
@@ -2692,135 +2690,135 @@
 - Model loading overhead: ~50ms
 - Average throughput: 300 tokens/sec</p>
 <h3 id="api-performance">API Performance<a class="headerlink" href="#api-performance" title="Permanent link">¶</a></h3>
-<p><strong>Endpoint</strong>: <code>/api/v1/analyze</code><br/>
-<strong>Method</strong>: POST<br/>
+<p><strong>Endpoint</strong>: <code>/api/v1/analyze</code>
+<strong>Method</strong>: POST
 <strong>Payload</strong>: 1KB JSON</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Percentile    Latency    Requests/Sec
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>─────────────────────────────────────
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>p50           42ms       ~1000
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>p75           58ms       ~900
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>p90           78ms       ~800
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>p95           92ms       ~700
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>p99           156ms      ~500
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Percentile Latency Requests/Sec
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>p50 42ms ~1000
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>p75 58ms ~900
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>p90 78ms ~800
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>p95 92ms ~700
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>p99 156ms ~500
 </code></pre></div>
 <h3 id="cache-performance">Cache Performance<a class="headerlink" href="#cache-performance" title="Permanent link">¶</a></h3>
 <p><strong>Cache Type</strong>: 4-Layer Hierarchy</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>L1: In-Memory (Process Cache)
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    Size: 100MB
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    TTL: 5 minutes
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    Hit Rate: 95%
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> Size: 100MB
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> TTL: 5 minutes
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> Hit Rate: 95%
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>L2: Memory Store (Shared RAM)
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    Size: 1GB
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    TTL: 30 minutes
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    Hit Rate: 88%
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> Size: 1GB
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> TTL: 30 minutes
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> Hit Rate: 88%
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>L3: Disk Cache (SQLite)
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    Size: 10GB
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    TTL: 7 days
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    Hit Rate: 72%
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> Size: 10GB
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> TTL: 7 days
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> Hit Rate: 72%
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>L4: Remote Cache (if configured)
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    Hit Rate: 60%
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> Hit Rate: 60%
 </code></pre></div>
 <h3 id="database-performance">Database Performance<a class="headerlink" href="#database-performance" title="Permanent link">¶</a></h3>
-<p><strong>Database</strong>: SQLite<br/>
-<strong>Size</strong>: 2GB<br/>
+<p><strong>Database</strong>: SQLite
+<strong>Size</strong>: 2GB
 <strong>Connection Pool</strong>: 10 workers</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Query Type          Average Latency    Query Count (24h)
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>──────────────────────────────────────────────────────
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>SELECT (indexed)    &lt; 1ms              125,000
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>SELECT (unindexed)  45-200ms           5,000
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>INSERT              2-5ms              85,000
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>UPDATE              3-8ms              42,000
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>DELETE              4-10ms             12,000
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Query Type Average Latency Query Count (24h)
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>SELECT (indexed) &lt; 1ms 125,000
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>SELECT (unindexed) 45-200ms 5,000
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>INSERT 2-5ms 85,000
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>UPDATE 3-8ms 42,000
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>DELETE 4-10ms 12,000
 </code></pre></div>
 <hr/>
 <h2 id="optimization-strategies">Optimization Strategies<a class="headerlink" href="#optimization-strategies" title="Permanent link">¶</a></h2>
 <h3 id="1-inference-optimization">1. Inference Optimization<a class="headerlink" href="#1-inference-optimization" title="Permanent link">¶</a></h3>
 <p><strong>Strategy</strong>: Batch Processing
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Instead of single inference per request</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>  <span class="c1"># 245ms</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span> <span class="c1"># 245ms</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Batch similar requests</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">responses</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_batch</span><span class="p">([</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">prompt1</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">prompt2</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">prompt3</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">prompt4</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">prompt5</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="p">])</span>  <span class="c1"># ~350ms total (70ms per request)</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="n">prompt1</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">prompt2</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="n">prompt3</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="n">prompt4</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="n">prompt5</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="p">])</span> <span class="c1"># ~350ms total (70ms per request)</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Token Limiting
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Reduce max_tokens to match actual needs</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">prompt</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># Not 2048</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="p">)</span>  <span class="c1"># Faster inference</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> <span class="n">prompt</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="c1"># Not 2048</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="p">)</span> <span class="c1"># Faster inference</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Caching
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Cache identical inputs</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="k">def</span> <span class="nf">analyze_code</span><span class="p">(</span><span class="n">code_snippet</span><span class="p">):</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>        <span class="sa">f</span><span class="s2">"Analyze: </span><span class="si">{</span><span class="n">code_snippet</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>        <span class="n">max_tokens</span><span class="o">=</span><span class="mi">500</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="sa">f</span><span class="s2">"Analyze: </span><span class="si">{</span><span class="n">code_snippet</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">500</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="p">)</span>
 </code></pre></div></p>
 <h3 id="2-api-optimization">2. API Optimization<a class="headerlink" href="#2-api-optimization" title="Permanent link">¶</a></h3>
 <p><strong>Strategy</strong>: Response Compression
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/api/v1/data"</span><span class="p">)</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">def</span> <span class="nf">get_data</span><span class="p">():</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="k">return</span> <span class="p">{</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>        <span class="s2">"data"</span><span class="p">:</span> <span class="n">large_data_structure</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="p">}</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="k">return</span> <span class="p">{</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="s2">"data"</span><span class="p">:</span> <span class="n">large_data_structure</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="p">}</span>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="c1"># Enable gzip compression in reverse proxy</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># Reduces response size: 500KB → 50KB</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># Reduces response size: 500KB 50KB</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Pagination
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Instead of returning all 10,000 results</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/api/v1/items?limit=50&amp;offset=0"</span><span class="p">)</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="k">def</span> <span class="nf">list_items</span><span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="k">return</span> <span class="p">{</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>        <span class="s2">"items"</span><span class="p">:</span> <span class="n">items</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span><span class="o">+</span><span class="n">limit</span><span class="p">],</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>        <span class="s2">"total"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>        <span class="s2">"limit"</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>        <span class="s2">"offset"</span><span class="p">:</span> <span class="n">offset</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    <span class="p">}</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="k">return</span> <span class="p">{</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="s2">"items"</span><span class="p">:</span> <span class="n">items</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span><span class="o">+</span><span class="n">limit</span><span class="p">],</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="s2">"total"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="s2">"limit"</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="s2">"offset"</span><span class="p">:</span> <span class="n">offset</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Connection Pooling
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Configure connection pool</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">database</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">url</span><span class="o">=</span><span class="s2">"sqlite:///data.db"</span><span class="p">,</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="n">min_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="n">max_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="n">connection_timeout</span><span class="o">=</span><span class="mi">30</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">url</span><span class="o">=</span><span class="s2">"sqlite:///data.db"</span><span class="p">,</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="n">min_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="n">max_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="n">connection_timeout</span><span class="o">=</span><span class="mi">30</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="3-cache-optimization">3. Cache Optimization<a class="headerlink" href="#3-cache-optimization" title="Permanent link">¶</a></h3>
 <p><strong>Strategy</strong>: Cache Warming
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">def</span> <span class="nf">warm_cache</span><span class="p">():</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">    </span><span class="sd">"""Pre-populate cache on startup."""</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="n">common_queries</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>        <span class="s2">"popular_agents"</span><span class="p">,</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        <span class="s2">"frequent_workflows"</span><span class="p">,</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="s2">"static_configs"</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    <span class="p">]</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">common_queries</span><span class="p">:</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>        <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w"> </span><span class="sd">"""Pre-populate cache on startup."""</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="n">common_queries</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="s2">"popular_agents"</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="s2">"frequent_workflows"</span><span class="p">,</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="s2">"static_configs"</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="p">]</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">common_queries</span><span class="p">:</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">cache</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Selective Caching
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Cache expensive operations only</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>  <span class="c1"># Cache for 5 minutes</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="c1"># Cache for 5 minutes</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="k">def</span> <span class="nf">expensive_operation</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">    </span><span class="sd">"""Only cache expensive operations."""</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="k">return</span> <span class="n">complex_computation</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w"> </span><span class="sd">"""Only cache expensive operations."""</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="k">return</span> <span class="n">complex_computation</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># Don't cache frequently changing data</span>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="k">def</span> <span class="nf">get_live_metrics</span><span class="p">():</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="w">    </span><span class="sd">"""Skip cache - always fresh data."""</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    <span class="k">return</span> <span class="n">fetch_metrics</span><span class="p">()</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="w"> </span><span class="sd">"""Skip cache - always fresh data."""</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="k">return</span> <span class="n">fetch_metrics</span><span class="p">()</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Cache Eviction Policy
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>LRU: Evict least recently used entries
@@ -2841,11 +2839,11 @@
 <p><strong>Strategy</strong>: Query Optimization
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Instead of multiple queries</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="k">for</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="n">session_ids</span><span class="p">:</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">events</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SELECT * FROM events WHERE session_id = </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> <span class="n">events</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SELECT * FROM events WHERE session_id = </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="c1"># Use bulk query</span>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="n">events</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    <span class="sa">f</span><span class="s2">"SELECT * FROM events WHERE session_id IN (</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">session_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> <span class="sa">f</span><span class="s2">"SELECT * FROM events WHERE session_id IN (</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">session_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Connection Pooling
@@ -2853,141 +2851,140 @@
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>    <span class="s2">"sqlite:///data.db"</span><span class="p">,</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>    <span class="n">poolclass</span><span class="o">=</span><span class="n">QueuePool</span><span class="p">,</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>    <span class="n">max_overflow</span><span class="o">=</span><span class="mi">20</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> <span class="s2">"sqlite:///data.db"</span><span class="p">,</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> <span class="n">poolclass</span><span class="o">=</span><span class="n">QueuePool</span><span class="p">,</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> <span class="n">max_overflow</span><span class="o">=</span><span class="mi">20</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="5-network-optimization">5. Network Optimization<a class="headerlink" href="#5-network-optimization" title="Permanent link">¶</a></h3>
 <p><strong>Strategy</strong>: CDN for Static Assets
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>User Request
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>    ↓
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>CDN (closest edge location) ← 99% hit rate
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    ↓
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>CDN (closest edge location) 99% hit rate
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>Origin Server (if cache miss)
 </code></pre></div></p>
 <p><strong>Strategy</strong>: Protocol Optimization
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>HTTP/2:
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>  - Multiplexing (5x faster)
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>  - Server push
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>  - Header compression
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a> - Multiplexing (5x faster)
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> - Server push
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> - Header compression
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>HTTP/3 (QUIC):
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>  - 0-RTT connection
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>  - Better mobile performance
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> - 0-RTT connection
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> - Better mobile performance
 </code></pre></div></p>
 <hr/>
 <h2 id="reliability-engineering">Reliability Engineering<a class="headerlink" href="#reliability-engineering" title="Permanent link">¶</a></h2>
 <h3 id="high-availability-design">High Availability Design<a class="headerlink" href="#high-availability-design" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>│ Load Balancer (active-active)       │
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>├─────┬─────────────────────────┬─────┤
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>│     │                         │     │
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>▼     ▼                         ▼     ▼
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>Service A   Service B    Service C   Service D
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>(healthy)   (healthy)    (healthy)   (healthy)
-<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>
-<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>Health Check: Every 10s
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>Failed Health Check: Auto-remove from pool
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a> Load Balancer (active-active) 
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>Service A Service B Service C Service D
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>(healthy) (healthy) (healthy) (healthy)
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>Health Check: Every 10s
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>Failed Health Check: Auto-remove from pool
 </code></pre></div>
 <h3 id="circuit-breaker-pattern">Circuit Breaker Pattern<a class="headerlink" href="#circuit-breaker-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a>CLOSED (healthy)
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>    ↓
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>Request fails (error rate &gt; 5%)
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>    ↓
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>OPEN (fail fast)
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    ↓
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>
 <a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>Wait 60 seconds
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>    ↓
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>
 <a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>HALF_OPEN (test requests)
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>    ↓
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>
 <a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>Success: CLOSED
 <a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>Failure: OPEN
 </code></pre></div>
 <h3 id="graceful-degradation">Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Feature flags for graceful degradation</span>
 <a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="nt">degradation</span><span class="p">:</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w">  </span><span class="nt">caching_disabled</span><span class="p">:</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w">    </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"5x</span><span class="nv"> </span><span class="s">slower</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">loss"</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Cache</span><span class="nv"> </span><span class="s">service</span><span class="nv"> </span><span class="s">unavailable"</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="w">    </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-recovery</span><span class="nv"> </span><span class="s">when</span><span class="nv"> </span><span class="s">cache</span><span class="nv"> </span><span class="s">back"</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w"> </span><span class="nt">caching_disabled</span><span class="p">:</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w"> </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"5x</span><span class="nv"> </span><span class="s">slower</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">loss"</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w"> </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Cache</span><span class="nv"> </span><span class="s">service</span><span class="nv"> </span><span class="s">unavailable"</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-recovery</span><span class="nv"> </span><span class="s">when</span><span class="nv"> </span><span class="s">cache</span><span class="nv"> </span><span class="s">back"</span>
 <a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>
-<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="w">  </span><span class="nt">search_disabled</span><span class="p">:</span>
-<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a><span class="w">    </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"Full-text</span><span class="nv"> </span><span class="s">search</span><span class="nv"> </span><span class="s">unavailable"</span>
-<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Search</span><span class="nv"> </span><span class="s">index</span><span class="nv"> </span><span class="s">corruption"</span>
-<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="w">    </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Manual</span><span class="nv"> </span><span class="s">index</span><span class="nv"> </span><span class="s">rebuild"</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="w"> </span><span class="nt">search_disabled</span><span class="p">:</span>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a><span class="w"> </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"Full-text</span><span class="nv"> </span><span class="s">search</span><span class="nv"> </span><span class="s">unavailable"</span>
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="w"> </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Search</span><span class="nv"> </span><span class="s">index</span><span class="nv"> </span><span class="s">corruption"</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Manual</span><span class="nv"> </span><span class="s">index</span><span class="nv"> </span><span class="s">rebuild"</span>
 <a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>
-<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="w">  </span><span class="nt">recommendations_disabled</span><span class="p">:</span>
-<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="w">    </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"ML</span><span class="nv"> </span><span class="s">features</span><span class="nv"> </span><span class="s">unavailable"</span>
-<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Model</span><span class="nv"> </span><span class="s">service</span><span class="nv"> </span><span class="s">down"</span>
-<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="w">    </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-recovery</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="w"> </span><span class="nt">recommendations_disabled</span><span class="p">:</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="w"> </span><span class="nt">impact</span><span class="p">:</span><span class="w"> </span><span class="s">"ML</span><span class="nv"> </span><span class="s">features</span><span class="nv"> </span><span class="s">unavailable"</span>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="w"> </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Model</span><span class="nv"> </span><span class="s">service</span><span class="nv"> </span><span class="s">down"</span>
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-recovery</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
 </code></pre></div>
 <hr/>
 <h2 id="monitoring-alerting">Monitoring &amp; Alerting<a class="headerlink" href="#monitoring-alerting" title="Permanent link">¶</a></h2>
 <h3 id="metrics-to-monitor">Metrics to Monitor<a class="headerlink" href="#metrics-to-monitor" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="nt">latency_metrics</span><span class="p">:</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API response time (p50, p95, p99)</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent response time</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Database query latency</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cache lookup latency</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API response time (p50, p95, p99)</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent response time</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Database query latency</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cache lookup latency</span>
 <a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>
 <a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a><span class="nt">throughput_metrics</span><span class="p">:</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Requests per second</span>
-<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Tokens processed per second</span>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cache hits per second</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Database transactions per second</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Requests per second</span>
+<a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Tokens processed per second</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Cache hits per second</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Database transactions per second</span>
 <a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>
 <a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a><span class="nt">resource_metrics</span><span class="p">:</span>
-<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CPU usage (%)</span>
-<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Memory usage (%)</span>
-<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Disk I/O (reads/writes per second)</span>
-<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Network bandwidth (bytes/sec)</span>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CPU usage (%)</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Memory usage (%)</span>
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Disk I/O (reads/writes per second)</span>
+<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Network bandwidth (bytes/sec)</span>
 <a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a>
 <a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a><span class="nt">error_metrics</span><span class="p">:</span>
-<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Error rate (%)</span>
-<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5xx errors</span>
-<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Timeout rate (%)</span>
-<a href="#__codelineno-22-23" id="__codelineno-22-23" name="__codelineno-22-23"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Failed cache operations</span>
+<a href="#__codelineno-22-20" id="__codelineno-22-20" name="__codelineno-22-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Error rate (%)</span>
+<a href="#__codelineno-22-21" id="__codelineno-22-21" name="__codelineno-22-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5xx errors</span>
+<a href="#__codelineno-22-22" id="__codelineno-22-22" name="__codelineno-22-22"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Timeout rate (%)</span>
+<a href="#__codelineno-22-23" id="__codelineno-22-23" name="__codelineno-22-23"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Failed cache operations</span>
 </code></pre></div>
 <h3 id="alert-configuration">Alert Configuration<a class="headerlink" href="#alert-configuration" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="nt">alerts</span><span class="p">:</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high_latency</span>
-<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="w">    </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"p95_latency</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">100ms</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Page</span><span class="nv"> </span><span class="s">on-call</span><span class="nv"> </span><span class="s">engineer"</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high_latency</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="w"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"p95_latency</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">100ms</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Page</span><span class="nv"> </span><span class="s">on-call</span><span class="nv"> </span><span class="s">engineer"</span>
 <a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high_error_rate</span>
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a><span class="w">    </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"error_rate</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">1%</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">minutes"</span>
-<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CRITICAL</span>
-<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a><span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-rollback</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">page</span><span class="nv"> </span><span class="s">team"</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high_error_rate</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a><span class="w"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"error_rate</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">1%</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">minutes"</span>
+<a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CRITICAL</span>
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Auto-rollback</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">page</span><span class="nv"> </span><span class="s">team"</span>
 <a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a>
-<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache_degradation</span>
-<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a><span class="w">    </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"cache_hit_rate</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">80%</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">10</span><span class="nv"> </span><span class="s">minutes"</span>
-<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
-<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a><span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Trigger</span><span class="nv"> </span><span class="s">cache</span><span class="nv"> </span><span class="s">warmup</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">page</span><span class="nv"> </span><span class="s">team"</span>
+<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache_degradation</span>
+<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a><span class="w"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"cache_hit_rate</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">80%</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">10</span><span class="nv"> </span><span class="s">minutes"</span>
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
+<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Trigger</span><span class="nv"> </span><span class="s">cache</span><span class="nv"> </span><span class="s">warmup</span><span class="nv"> </span><span class="s">+</span><span class="nv"> </span><span class="s">page</span><span class="nv"> </span><span class="s">team"</span>
 <a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a>
-<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database_slow</span>
-<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a><span class="w">    </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"query_latency_p95</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">50ms</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
-<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a><span class="w">    </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
-<a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a><span class="w">    </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Page</span><span class="nv"> </span><span class="s">DBA"</span>
+<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database_slow</span>
+<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a><span class="w"> </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="s">"query_latency_p95</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">50ms</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">minutes"</span>
+<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a><span class="w"> </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
+<a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a><span class="w"> </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="s">"Page</span><span class="nv"> </span><span class="s">DBA"</span>
 </code></pre></div>
 <h3 id="dashboard-layout">Dashboard Layout<a class="headerlink" href="#dashboard-layout" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>Top Section: SLO Status
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>├── Availability: 99.95% (green)
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>├── Latency (p95): 87ms (green)
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>└── Error Rate: 0.2% (green)
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a> Availability: 99.95% (green)
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a> Latency (p95): 87ms (green)
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a> Error Rate: 0.2% (green)
 <a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>
 <a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>Middle Section: Key Metrics
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>├── Requests/sec: 1,234
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>├── Cache Hit Rate: 92%
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>├── DB Latency: 15ms
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>└── CPU Usage: 45%
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a> Requests/sec: 1,234
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a> Cache Hit Rate: 92%
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a> DB Latency: 15ms
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a> CPU Usage: 45%
 <a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>
 <a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>Bottom Section: Recent Incidents
-<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>├── Incident 1: [resolved]
-<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a>├── Incident 2: [in progress]
-<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a>└── Incident 3: [acknowledged]
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a> Incident 1: [resolved]
+<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a> Incident 2: [in progress]
+<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a> Incident 3: [acknowledged]
 </code></pre></div>
 <hr/>
 <h2 id="troubleshooting-guide">Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Permanent link">¶</a></h2>
@@ -3035,55 +3032,55 @@
 <h2 id="capacity-planning">Capacity Planning<a class="headerlink" href="#capacity-planning" title="Permanent link">¶</a></h2>
 <h3 id="current-capacity">Current Capacity<a class="headerlink" href="#current-capacity" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>API Servers: 4 instances (1 vCPU, 2GB RAM each)
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>  - Can handle: ~5,000 req/sec
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>  - Current load: ~1,000 req/sec
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>  - Headroom: 80%
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a> - Can handle: ~5,000 req/sec
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a> - Current load: ~1,000 req/sec
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a> - Headroom: 80%
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>Database: 1 SQLite instance (8 vCPU, 16GB RAM)
-<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>  - Can handle: ~100,000 ops/sec
-<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>  - Current load: ~10,000 ops/sec
-<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>  - Headroom: 90%
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a> - Can handle: ~100,000 ops/sec
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a> - Current load: ~10,000 ops/sec
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a> - Headroom: 90%
 <a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>
 <a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a>Cache: 2GB in-memory + 10GB disk
-<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>  - Can cache: 100,000 objects
-<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>  - Current objects: 50,000
-<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>  - Headroom: 50%
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a> - Can cache: 100,000 objects
+<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a> - Current objects: 50,000
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a> - Headroom: 50%
 </code></pre></div>
 <h3 id="growth-projections">Growth Projections<a class="headerlink" href="#growth-projections" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>3 Months: +30% users
-<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>  → Add 2 API servers (6 total)
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>  → Increase cache to 5GB
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a> Add 2 API servers (6 total)
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a> Increase cache to 5GB
 <a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>
 <a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>6 Months: +60% users
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>  → Add 3 API servers (9 total)
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>  → Migrate database to PostgreSQL
-<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>  → Add Redis for distributed cache
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> Add 3 API servers (9 total)
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> Migrate database to PostgreSQL
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a> Add Redis for distributed cache
 <a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a>
 <a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>12 Months: +150% users
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a>  → Add 5 API servers (14 total)
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a>  → Multi-region deployment
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a>  → CDN for static assets
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a> Add 5 API servers (14 total)
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a> Multi-region deployment
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a> CDN for static assets
 </code></pre></div>
 <h3 id="scaling-strategy">Scaling Strategy<a class="headerlink" href="#scaling-strategy" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>Vertical Scaling:
-<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>  - Increase machine size (vCPU, RAM)
-<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>  - Better for single point of failure
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>  - Limited by hardware limits
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a> - Increase machine size (vCPU, RAM)
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a> - Better for single point of failure
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a> - Limited by hardware limits
 <a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>
 <a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>Horizontal Scaling:
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>  - Add more machines
-<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>  - Better for redundancy
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a>  - Requires load balancing
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> - Add more machines
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a> - Better for redundancy
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a> - Requires load balancing
 <a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a>
 <a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a>Auto-Scaling:
-<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>  - Scale based on metrics
-<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>  - Target: 70% CPU utilization
-<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a>  - Min instances: 4, Max: 20
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a> - Scale based on metrics
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a> - Target: 70% CPU utilization
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a> - Min instances: 4, Max: 20
 </code></pre></div>
 <hr/>
 <p><strong>This document is the authoritative performance and reliability guide for Codex.</strong></p>
 <p><em>Last Updated: 2026-07-08
-</em>Consolidation Status:  Complete (4 files merged)*</p>
+</em>Consolidation Status: Complete (4 files merged)*</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3113,6 +3110,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

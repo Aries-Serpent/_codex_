@@ -1,6 +1,6 @@
 # _codex_ Repository: Complete Admin Implementation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -194,7 +194,6 @@ organization_settings:
 4. Check: **"Allow GitHub Actions to create and approve pull requests"**
 5. Click: **Save**
 
-<!-- Screenshot placeholder: [Actions Permissions Settings] -->
 
 ---
 
@@ -526,7 +525,7 @@ If using GitHub-hosted runners (recommended):
 mkdir actions-runner && cd actions-runner
 
 # Download runner (get URL from Settings Actions Runners New self-hosted runner)
-curl -o actions-runner-linux-x64-2.311.0.tar.gz -L https://github.com/actions/runner/releases/download/v0.2.1/actions-runner-linux-x64-2.311.0.tar.gz
+curl -o actions-runner-linux-x64-2.311.0.tar.gz -L https://github.com/actions/runner/releases/download/v0.2.0/actions-runner-linux-x64-2.311.0.tar.gz
 
 # Extract
 tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz

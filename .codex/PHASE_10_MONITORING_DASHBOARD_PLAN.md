@@ -749,10 +749,10 @@ pip list | grep -E "(numpy|torch|transformers)"
 
 3. **Remediation**
    - If dependency incompatible:
-     * Release v0.2.1 patch with updated constraint
+     * Release v0.2.0 patch with updated constraint
      * Estimate time: 1-2 hours
    - If package issue:
-     * Publish v0.2.1 with fix
+     * Publish v0.2.0 with fix
      * Yank v0.2.0 if critical
    - If PyPI issue:
      * Wait for PyPI to resolve
@@ -792,7 +792,7 @@ pip list | grep -E "(numpy|torch|transformers)"
    - Optimize slow operations
    - Add indexes to database if needed
    - Implement circuit breakers for external APIs
-   - Release performance fix in v0.2.1
+   - Release performance fix in v0.2.0
 
 ---
 
@@ -818,9 +818,9 @@ pip list | grep -E "(numpy|torch|transformers)"
      * Coordinate responsible disclosure timeline
 
 3. **Remediation** (1-2 hours)
-   - Release v0.2.1 with security fix
+   - Release v0.2.0 with security fix
    - Publish security advisory with CVE details
-   - Recommend all users upgrade to v0.2.1
+   - Recommend all users upgrade to v0.2.0
 
 4. **Communication** (ongoing)
    - GitHub security advisory

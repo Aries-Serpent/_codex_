@@ -1,6 +1,6 @@
 # Genesis Phase 10.1 — Guard Removal Checklist
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status**: Awaiting Admin Approval
 **Owner**: @mbaetiong

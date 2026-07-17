@@ -1,6 +1,6 @@
 # Workflow Compliance Matrix
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: Phase 0 audit (WU-0.1) | 213 workflows scanned
 

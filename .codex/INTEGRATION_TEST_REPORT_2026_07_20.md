@@ -327,7 +327,7 @@ TOTAL: 1,528 tests
 2. 📋 **Schedule API Alignment Task**: 2-4 hours post-release
 3. ✅ **Update Documentation**: Integration coverage included
 
-### 9.2 Post-Release Actions (Patch v0.2.1)
+### 9.2 Post-Release Actions (Patch v0.2.0)
 
 1. **API Surface Alignment**: Fix WorkflowParser and WorkflowRun interfaces
 2. **SessionDB Method Audit**: Align query method names across codebase

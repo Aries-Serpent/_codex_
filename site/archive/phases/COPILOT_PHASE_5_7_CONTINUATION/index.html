@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/COPILOT_PHASE_5_7_CONTINUATION/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>@copilot Security Remediation Phase 5-7 Continuation - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2450,16 +2450,16 @@
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
 <p>PR #2827 security remediation is progressing well. <strong>Phases 1-4 are complete</strong> with all critical vulnerabilities addressed:</p>
-<p><strong>Phase 1-3</strong>: Critical security fixes (shell injection, XML parsing, hash algorithms)<br/>
-<strong>Phase 4</strong>: CORS hardening, pre-commit hooks, Semgrep rules  </p>
+<p><strong>Phase 1-3</strong>: Critical security fixes (shell injection, XML parsing, hash algorithms)
+ <strong>Phase 4</strong>: CORS hardening, pre-commit hooks, Semgrep rules</p>
 <p><strong>Current Commits</strong>:
 - <code>a97c216</code>: Critical security fixes
 - <code>d847c7b</code>: Comprehensive documentation with Mermaid diagrams
 - <code>ade3a6d</code>: CORS security hardening and prevention tools</p>
 <h2 id="remaining-phases">Remaining Phases<a class="headerlink" href="#remaining-phases" title="Permanent link">¶</a></h2>
 <h3 id="phase-5-cicd-improvements-high-priority">Phase 5: CI/CD Improvements (High Priority)<a class="headerlink" href="#phase-5-cicd-improvements-high-priority" title="Permanent link">¶</a></h3>
-<h4 id="task-51-fix-rust-unit-test-failures">Task 5.1: Fix Rust Unit Test Failures ️<a class="headerlink" href="#task-51-fix-rust-unit-test-failures" title="Permanent link">¶</a></h4>
-<p><strong>Status</strong>: Needs investigation<br/>
+<h4 id="task-51-fix-rust-unit-test-failures">Task 5.1: Fix Rust Unit Test Failures<a class="headerlink" href="#task-51-fix-rust-unit-test-failures" title="Permanent link">¶</a></h4>
+<p><strong>Status</strong>: Needs investigation
 <strong>Command to run</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>/home/runner/work/_codex_/_codex_
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>cargo<span class="w"> </span>check<span class="w"> </span>--all-targets<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>/tmp/cargo_check.log
@@ -2480,8 +2480,8 @@
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1">// If seeing borrow checker errors</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="kd">let</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w"> </span><span class="c1">// Clone if needed</span>
 </code></pre></div></p>
-<h4 id="task-52-optimize-rag-test-performance">Task 5.2: Optimize RAG Test Performance ️<a class="headerlink" href="#task-52-optimize-rag-test-performance" title="Permanent link">¶</a></h4>
-<p><strong>Status</strong>: Tests timing out after 4-6 minutes<br/>
+<h4 id="task-52-optimize-rag-test-performance">Task 5.2: Optimize RAG Test Performance<a class="headerlink" href="#task-52-optimize-rag-test-performance" title="Permanent link">¶</a></h4>
+<p><strong>Status</strong>: Tests timing out after 4-6 minutes
 <strong>Files</strong>: <code>tests/rag/</code> or related RAG modules</p>
 <p><strong>Steps</strong>:
 1. Add timeout decorators:
@@ -2580,9 +2580,9 @@
 <p><strong>File</strong>: <code>docs/SECURITY_BEST_PRACTICES.md</code></p>
 <p><strong>Sections to add</strong>:
 1. <strong>Subprocess Security</strong>
-   - Always use <code>shell=False</code>
-   - Use <code>shlex.split()</code> for command parsing
-   - Never pass user input directly to shell</p>
+ - Always use <code>shell=False</code>
+ - Use <code>shlex.split()</code> for command parsing
+ - Never pass user input directly to shell</p>
 <ol>
 <li><strong>XML Parsing Guidelines</strong></li>
 <li>Use <code>defusedxml</code> instead of <code>xml.etree</code></li>
@@ -2616,88 +2616,88 @@
 </li>
 <li>
 <p><strong>Pre-commit Hook Setup</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>pre-commit<span class="w"> </span>install
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
-</code></pre></div></p>
+<code>bash
+   pre-commit install
+   pre-commit run --all-files</code></p>
 </li>
 </ol>
 <h4 id="task-72-create-developer-security-guide">Task 7.2: Create Developer Security Guide<a class="headerlink" href="#task-72-create-developer-security-guide" title="Permanent link">¶</a></h4>
 <p><strong>File</strong>: <code>docs/security/SECURE_CODING_GUIDE.md</code></p>
 <p><strong>Template</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="gh"># Secure Coding Guide</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="gu">## Quick Security Checklist for PRs</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="k">- [ ]</span> No <span class="sb">`shell=True`</span> in subprocess calls
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="k">- [ ]</span> XML parsing uses <span class="sb">`defusedxml`</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="k">- [ ]</span> Hash algorithms appropriate for use case
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">- [ ]</span> File permissions restrictive (0o600 for sensitive files)
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="k">- [ ]</span> CORS origins explicitly whitelisted
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="k">- [ ]</span> No secrets in code
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="k">- [ ]</span> Input validation implemented
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="k">- [ ]</span> Error messages don't leak sensitive info
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="gu">## Code Examples</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="gu">###  Safe vs  Unsafe Patterns</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="gu">#### Subprocess Execution</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="gs">**Unsafe**</span>:
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>```python
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>cmd = f"rm -rf {user_input}"
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>subprocess.run(cmd, shell=True)  # Command injection!
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="gh"># Secure Coding Guide</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="gu">## Quick Security Checklist for PRs</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="k">- [ ]</span> No <span class="sb">`shell=True`</span> in subprocess calls
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="k">- [ ]</span> XML parsing uses <span class="sb">`defusedxml`</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="k">- [ ]</span> Hash algorithms appropriate for use case
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="k">- [ ]</span> File permissions restrictive (0o600 for sensitive files)
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="k">- [ ]</span> CORS origins explicitly whitelisted
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="k">- [ ]</span> No secrets in code
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="k">- [ ]</span> Input validation implemented
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a><span class="k">- [ ]</span> Error messages don't leak sensitive info
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="gu">## Code Examples</span>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="gu">###  Safe vs  Unsafe Patterns</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="gu">#### Subprocess Execution</span>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> <span class="gs">**Unsafe**</span>:
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>```python
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>cmd = f"rm -rf {user_input}"
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>subprocess.run(cmd, shell=True) # Command injection!
 </code></pre></div></p>
 <p><strong>Safe</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="kn">import</span> <span class="nn">shlex</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"rm"</span><span class="p">,</span> <span class="s2">"-rf"</span><span class="p">,</span> <span class="n">user_input</span><span class="p">]</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">shlex</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"rm"</span><span class="p">,</span> <span class="s2">"-rf"</span><span class="p">,</span> <span class="n">user_input</span><span class="p">]</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="xml-parsing">XML Parsing<a class="headerlink" href="#xml-parsing" title="Permanent link">¶</a></h4>
 <p><strong>Unsafe</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">untrusted_xml</span><span class="p">)</span>  <span class="c1"># XXE vulnerability!</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">untrusted_xml</span><span class="p">)</span> <span class="c1"># XXE vulnerability!</span>
 </code></pre></div></p>
 <p><strong>Safe</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">defusedxml</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">untrusted_xml</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">defusedxml</span> <span class="kn">import</span> <span class="n">ElementTree</span> <span class="k">as</span> <span class="n">ET</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">untrusted_xml</span><span class="p">)</span>
 </code></pre></div></p>
 <h2 id="automated-tools-usage">Automated Tools Usage<a class="headerlink" href="#automated-tools-usage" title="Permanent link">¶</a></h2>
 <h3 id="pre-commit-hooks">Pre-commit Hooks<a class="headerlink" href="#pre-commit-hooks" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>pre-commit<span class="w"> </span>install
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>check-shell-true
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>check-unsafe-xml
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>pre-commit<span class="w"> </span>install
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>check-shell-true
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>pre-commit<span class="w"> </span>run<span class="w"> </span>check-unsafe-xml
 </code></pre></div>
 <h3 id="semgrep-scanning">Semgrep Scanning<a class="headerlink" href="#semgrep-scanning" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>semgrep<span class="w"> </span>--config<span class="w"> </span>.semgrep/<span class="w"> </span>.
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>semgrep<span class="w"> </span>--config<span class="w"> </span>auto<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>semgrep<span class="w"> </span>--config<span class="w"> </span>.semgrep/<span class="w"> </span>.
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>semgrep<span class="w"> </span>--config<span class="w"> </span>auto<span class="w"> </span>.
 </code></pre></div>
 <h3 id="bandit-security-linting">Bandit Security Linting<a class="headerlink" href="#bandit-security-linting" title="Permanent link">¶</a></h3>
-<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>bandit<span class="w"> </span>-r<span class="w"> </span>src/<span class="w"> </span>-ll
+<p><div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>bandit<span class="w"> </span>-r<span class="w"> </span>src/<span class="w"> </span>-ll
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>## Verification Commands
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>After completing phases, run:
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>```bash
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a># 1. Security scans
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>semgrep --config auto . --error
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>semgrep --config .semgrep/ . --error
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>bandit -r src/ -ll
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a># 2. Test suite
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>pytest tests/ -v --timeout=300 -m "not slow"
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>cargo test --verbose
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a># 3. Pre-commit hooks
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>pre-commit run --all-files
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>
-<a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a># 4. Linting
-<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>ruff check .
-<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>mypy src/
-<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>
-<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a># 5. Build verification
-<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a>python -m build
-<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>cargo build --release
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>## Verification Commands
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>After completing phases, run:
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>```bash
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a># 1. Security scans
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>semgrep --config auto . --error
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>semgrep --config .semgrep/ . --error
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>bandit -r src/ -ll
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a># 2. Test suite
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>pytest tests/ -v --timeout=300 -m "not slow"
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>cargo test --verbose
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a># 3. Pre-commit hooks
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a>pre-commit run --all-files
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a># 4. Linting
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>ruff check .
+<a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>mypy src/
+<a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a>
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a># 5. Build verification
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a>python -m build
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a>cargo build --release
 </code></pre></div></p>
 <h2 id="success-criteria-checklist">Success Criteria Checklist<a class="headerlink" href="#success-criteria-checklist" title="Permanent link">¶</a></h2>
 <ul class="task-list">
@@ -2777,10 +2777,10 @@
 3. Verify all security scans pass
 4. Complete documentation
 5. Create final security report</p>
-<p><strong>Assigned</strong>: @copilot<br/>
-<strong>Priority</strong>: High<br/>
-<strong>Expected Duration</strong>: 8-12 hours<br/>
-<strong>Started</strong>: 2026-01-13T04:30:00Z<br/>
+<p><strong>Assigned</strong>: @copilot
+<strong>Priority</strong>: High
+<strong>Expected Duration</strong>: 8-12 hours
+<strong>Started</strong>: 2026-01-13T04:30:00Z
 <strong>Target Completion</strong>: 2026-01-14T16:00:00Z</p>
 </article>
 </div>
@@ -2811,6 +2811,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

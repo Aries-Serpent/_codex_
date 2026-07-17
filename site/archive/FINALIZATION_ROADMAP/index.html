@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/FINALIZATION_ROADMAP/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Finalization Roadmap &amp; Path Forward - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2799,10 +2799,8 @@
 <li><a href="#23-performance">2.3 Performance</a></li>
 <li><a href="#24-documentation">2.4 Documentation</a></li>
 <li><a href="#phase-3-future-enhancements-staged-for-next-iterations">Phase 3: Future Enhancements (Staged for Next Iterations)</a></li>
-<li><a href="#31-high-priority-next-sprint">3.1 High Priority (Next Sprint)</a><ul>
+<li><a href="#31-high-priority-next-sprint">3.1 High Priority (Next Sprint)</a></li>
 <li><a href="#311-multi-agent-coordination">3.1.1 Multi-Agent Coordination</a></li>
-</ul>
-</li>
 <li><a href="#new-file-agentsmulti_agent_coordinatorpy">New file: agents/multi_agent_coordinator.py</a></li>
 <li><a href="#312-visual-mind-map-generation">3.1.2 Visual Mind Map Generation</a></li>
 <li><a href="#new-file-agentsvisualizationsmind_map_generatorpy">New file: agents/visualizations/mind_map_generator.py</a></li>
@@ -2816,11 +2814,9 @@
 <li><a href="#323-automated-capability-gap-detection">3.2.3 Automated Capability Gap Detection</a></li>
 <li><a href="#new-file-agentscapability_detectorpy">New file: agents/capability_detector.py</a></li>
 <li><a href="#33-low-priority-long-term-vision">3.3 Low Priority (Long-term Vision)</a></li>
-<li><a href="#331-distributed-mental-mapping">3.3.1 Distributed Mental Mapping</a><ul>
+<li><a href="#331-distributed-mental-mapping">3.3.1 Distributed Mental Mapping</a></li>
 <li><a href="#332-real-time-collaboration-features">3.3.2 Real-time Collaboration Features</a></li>
 <li><a href="#333-advanced-visualization-dashboard">3.3.3 Advanced Visualization Dashboard</a></li>
-</ul>
-</li>
 <li><a href="#phase-4-continuous-improvement-strategy">Phase 4: Continuous Improvement Strategy</a></li>
 <li><a href="#41-metrics-to-track">4.1 Metrics to Track</a></li>
 <li><a href="#42-feedback-loop-implementation">4.2 Feedback Loop Implementation</a></li>
@@ -2860,20 +2856,20 @@
 <li><a href="#initialize">Initialize</a></li>
 <li><a href="#define-state">Define state</a></li>
 <li><a href="#define-possible-paths">Define possible paths</a></li>
-<li><a href="#orchestrate-assess--deliberate--optimize--act">Orchestrate: ASSESS → DELIBERATE → OPTIMIZE → ACT</a></li>
+<li><a href="#orchestrate-assess--deliberate--optimize--act">Orchestrate: ASSESS DELIBERATE OPTIMIZE ACT</a></li>
 <li><a href="#appendix-b-file-manifest">Appendix B: File Manifest</a></li>
 <li><a href="#b1-new-files-created-21-files">B.1 New Files Created (21 files)</a></li>
 <li><a href="#b2-modified-files-22-files">B.2 Modified Files (22 files)</a></li>
 <li><a href="#b3-archived-files-126-files">B.3 Archived Files (126 files)</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
-<p><strong>Document Version:</strong> 1.0.0<br/>
-<strong>Generated:</strong> 2025-12-10<br/>
+<p><strong>Document Version:</strong> 1.0.0
+<strong>Generated:</strong> 2025-12-10
 <strong>Status:</strong> Production-Ready with Future Enhancements Planned</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This PR (#2460) has successfully implemented comprehensive AI Agent orchestration infrastructure with physics-inspired decision-making, mental mapping capabilities, and tokenized workflow navigation. All critical bugs have been fixed, all features tested, and the codebase is production-ready.</p>
-<p><strong>Completion Status:</strong>  100% Complete
+<p><strong>Completion Status:</strong> 100% Complete
 - All code review comments addressed
 - All bugs fixed and validated
 - All features implemented and tested
@@ -3040,17 +3036,17 @@
 <p><strong>Implementation Plan:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># New file: agents/multi_agent_coordinator.py</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">class</span> <span class="nc">MultiAgentCoordinator</span><span class="p">:</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd">    Coordinate multiple agents using physics-inspired force vector alignment.</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd">    Agents can collaborate on complex tasks by aligning their decision vectors.</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd">    """</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="k">def</span> <span class="nf">align_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Agent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ForceVector</span><span class="p">:</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">        </span><span class="sd">"""Align force vectors from multiple agents to find consensus."""</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        <span class="k">pass</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="sd"> Coordinate multiple agents using physics-inspired force vector alignment.</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd"> Agents can collaborate on complex tasks by aligning their decision vectors.</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd"> """</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> <span class="k">def</span> <span class="nf">align_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Agent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ForceVector</span><span class="p">:</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w"> </span><span class="sd">"""Align force vectors from multiple agents to find consensus."""</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> <span class="k">pass</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="k">def</span> <span class="nf">distribute_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">agents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Agent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Agent</span><span class="p">,</span> <span class="n">SubTask</span><span class="p">]:</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">        </span><span class="sd">"""Distribute complex tasks across multiple agents optimally."""</span>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="k">pass</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> <span class="k">def</span> <span class="nf">distribute_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">agents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Agent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Agent</span><span class="p">,</span> <span class="n">SubTask</span><span class="p">]:</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w"> </span><span class="sd">"""Distribute complex tasks across multiple agents optimally."""</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Testing Strategy:</strong>
 - Unit tests for force alignment algorithms
@@ -3067,14 +3063,14 @@
 <p><strong>Implementation Plan:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># New file: agents/visualizations/mind_map_generator.py</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">class</span> <span class="nc">MindMapGenerator</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="sd">"""Generate interactive visual mind maps from mental mapping data."""</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="k">def</span> <span class="nf">generate_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mental_map</span><span class="p">:</span> <span class="n">MentalMappingModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">        </span><span class="sd">"""Create interactive HTML visualization with D3.js."""</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="sd">"""Generate interactive visual mind maps from mental mapping data."""</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="k">def</span> <span class="nf">generate_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mental_map</span><span class="p">:</span> <span class="n">MentalMappingModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="sd">"""Create interactive HTML visualization with D3.js."""</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="k">def</span> <span class="nf">export_graphviz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mental_map</span><span class="p">:</span> <span class="n">MentalMappingModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">        </span><span class="sd">"""Export as Graphviz DOT format for static diagrams."""</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="k">pass</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="k">def</span> <span class="nf">export_graphviz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mental_map</span><span class="p">:</span> <span class="n">MentalMappingModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w"> </span><span class="sd">"""Export as Graphviz DOT format for static diagrams."""</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Components:</strong>
 - D3.js-based interactive visualization
@@ -3096,18 +3092,18 @@
 <p><strong>Implementation Plan:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># New file: agents/predictive_analytics.py</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">class</span> <span class="nc">PredictiveAnalytics</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="sd">"""Analyze historical decisions to predict optimal future actions."""</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="k">def</span> <span class="nf">train_predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">historical_maps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MentalMappingModel</span><span class="p">]):</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">        </span><span class="sd">"""Train ML model on past decisions and outcomes."""</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="k">pass</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="sd">"""Analyze historical decisions to predict optimal future actions."""</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="k">def</span> <span class="nf">train_predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">historical_maps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MentalMappingModel</span><span class="p">]):</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="sd">"""Train ML model on past decisions and outcomes."""</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="k">def</span> <span class="nf">predict_optimal_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_state</span><span class="p">:</span> <span class="n">DecisionState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionPath</span><span class="p">:</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">        </span><span class="sd">"""Predict best action path based on historical data."""</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="k">pass</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="k">def</span> <span class="nf">predict_optimal_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_state</span><span class="p">:</span> <span class="n">DecisionState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionPath</span><span class="p">:</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="sd">"""Predict best action path based on historical data."""</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">def</span> <span class="nf">confidence_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="n">ActionPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">        </span><span class="sd">"""Calculate confidence in prediction based on similarity to past cases."""</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>        <span class="k">pass</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="k">def</span> <span class="nf">confidence_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="n">ActionPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="sd">"""Calculate confidence in prediction based on similarity to past cases."""</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Features:</strong>
 - ML model training on historical decisions
@@ -3131,21 +3127,21 @@
 <p><strong>Concept:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># New file: agents/quantum_orchestrator.py</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">class</span> <span class="nc">QuantumOrchestrator</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="sd">    Quantum-inspired decision-making with superposition of possible paths.</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd">    Explore multiple futures simultaneously before committing to one.</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd">    """</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="k">def</span> <span class="nf">create_superposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ActionPath</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Superposition</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">        </span><span class="sd">"""Create quantum superposition of all possible paths."""</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        <span class="k">pass</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="sd"> Quantum-inspired decision-making with superposition of possible paths.</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="sd"> Explore multiple futures simultaneously before committing to one.</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="sd"> """</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="k">def</span> <span class="nf">create_superposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ActionPath</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Superposition</span><span class="p">:</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="sd">"""Create quantum superposition of all possible paths."""</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> <span class="k">pass</span>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="k">def</span> <span class="nf">evolve_superposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">superposition</span><span class="p">:</span> <span class="n">Superposition</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="sd">"""Evolve superposition forward in time using Schrödinger-like equation."""</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="k">pass</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> <span class="k">def</span> <span class="nf">evolve_superposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">superposition</span><span class="p">:</span> <span class="n">Superposition</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w"> </span><span class="sd">"""Evolve superposition forward in time using Schrödinger-like equation."""</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="k">pass</span>
 <a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="k">def</span> <span class="nf">collapse_to_optimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">superposition</span><span class="p">:</span> <span class="n">Superposition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionPath</span><span class="p">:</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">        </span><span class="sd">"""Collapse superposition to single optimal path."""</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="k">pass</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="k">def</span> <span class="nf">collapse_to_optimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">superposition</span><span class="p">:</span> <span class="n">Superposition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionPath</span><span class="p">:</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span><span class="sd">"""Collapse superposition to single optimal path."""</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Research Required:</strong>
 - Quantum computing principles applied to decision-making
@@ -3159,14 +3155,14 @@
 <p><strong>Implementation Plan:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># New file: agents/nl_query_interface.py</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="k">class</span> <span class="nc">NaturalLanguageQueryInterface</span><span class="p">:</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="sd">"""Natural language interface for querying mental maps and workflows."""</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">natural_language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryResult</span><span class="p">:</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">        </span><span class="sd">"""Process natural language query and return results."""</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="k">pass</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="sd">"""Natural language interface for querying mental maps and workflows."""</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">natural_language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryResult</span><span class="p">:</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w"> </span><span class="sd">"""Process natural language query and return results."""</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="k">def</span> <span class="nf">suggest_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">        </span><span class="sd">"""Suggest relevant queries based on current context."""</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        <span class="k">pass</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="k">def</span> <span class="nf">suggest_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="sd">"""Suggest relevant queries based on current context."""</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Features:</strong>
 - NLP-based query parsing
@@ -3180,18 +3176,18 @@
 <p><strong>Implementation Plan:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># New file: agents/capability_detector.py</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="k">class</span> <span class="nc">CapabilityDetector</span><span class="p">:</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="sd">"""Detect capability gaps and generate implementation plans."""</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="k">def</span> <span class="nf">detect_gaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CapabilityGap</span><span class="p">]:</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">        </span><span class="sd">"""Analyze feedback to identify missing capabilities."""</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="k">pass</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="sd">"""Detect capability gaps and generate implementation plans."""</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="k">def</span> <span class="nf">detect_gaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CapabilityGap</span><span class="p">]:</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="sd">"""Analyze feedback to identify missing capabilities."""</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="k">def</span> <span class="nf">generate_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gap</span><span class="p">:</span> <span class="n">CapabilityGap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImplementationPlan</span><span class="p">:</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">        </span><span class="sd">"""Generate implementation plan for addressing gap."""</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>        <span class="k">pass</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="k">def</span> <span class="nf">generate_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gap</span><span class="p">:</span> <span class="n">CapabilityGap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImplementationPlan</span><span class="p">:</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="sd">"""Generate implementation plan for addressing gap."""</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="k">pass</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="k">def</span> <span class="nf">track_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="n">ImplementationPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgressReport</span><span class="p">:</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">        </span><span class="sd">"""Track implementation progress and update stakeholders."""</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>        <span class="k">pass</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="k">def</span> <span class="nf">track_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="n">ImplementationPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgressReport</span><span class="p">:</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="sd">"""Track implementation progress and update stakeholders."""</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="k">pass</span>
 </code></pre></div></p>
 <p><strong>Integration:</strong>
 - Connect to self-healing workflow
@@ -3424,12 +3420,12 @@
 </code></pre></div>
 <h2 id="a2-workflow-execution">A.2 Workflow Execution<a class="headerlink" href="#a2-workflow-execution" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Quick access via aliases</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>navigator.execute<span class="o">(</span><span class="s2">"audit"</span><span class="o">)</span><span class="w">      </span><span class="c1"># Run audit pipeline</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>navigator.execute<span class="o">(</span><span class="s2">"decide"</span><span class="o">)</span><span class="w">     </span><span class="c1"># Make decision with physics</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>navigator.execute<span class="o">(</span><span class="s2">"docs"</span><span class="o">)</span><span class="w">       </span><span class="c1"># Generate documentation</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>navigator.execute<span class="o">(</span><span class="s2">"organize"</span><span class="o">)</span><span class="w">   </span><span class="c1"># Organize repository</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>navigator.execute<span class="o">(</span><span class="s2">"review"</span><span class="o">)</span><span class="w">     </span><span class="c1"># Review mental maps</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>navigator.execute<span class="o">(</span><span class="s2">"heal"</span><span class="o">)</span><span class="w">       </span><span class="c1"># Run self-healing</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>navigator.execute<span class="o">(</span><span class="s2">"audit"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Run audit pipeline</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>navigator.execute<span class="o">(</span><span class="s2">"decide"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Make decision with physics</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>navigator.execute<span class="o">(</span><span class="s2">"docs"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Generate documentation</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>navigator.execute<span class="o">(</span><span class="s2">"organize"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Organize repository</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>navigator.execute<span class="o">(</span><span class="s2">"review"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Review mental maps</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>navigator.execute<span class="o">(</span><span class="s2">"heal"</span><span class="o">)</span><span class="w"> </span><span class="c1"># Run self-healing</span>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="c1"># Natural language</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>navigator.execute<span class="o">(</span><span class="s2">"Run audit pipeline"</span><span class="o">)</span>
@@ -3444,22 +3440,22 @@
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Think through problem</span>
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="n">problem_node</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="n">mental_map</span><span class="o">.</span><span class="n">think_through_problem</span><span class="p">(</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">problem</span><span class="o">=</span><span class="s2">"Fix bug in module X"</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">'pr'</span><span class="p">:</span> <span class="mi">2460</span><span class="p">}</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">problem</span><span class="o">=</span><span class="s2">"Fix bug in module X"</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">'pr'</span><span class="p">:</span> <span class="mi">2460</span><span class="p">}</span>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="p">)</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="c1"># Make decision</span>
 <a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="n">decision</span> <span class="o">=</span> <span class="n">mental_map</span><span class="o">.</span><span class="n">make_decision</span><span class="p">(</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="n">decision_content</span><span class="o">=</span><span class="s2">"Refactor module X"</span><span class="p">,</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    <span class="n">problem_node_id</span><span class="o">=</span><span class="n">problem_node</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="n">confidence</span><span class="o">=</span><span class="mf">0.85</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="n">decision_content</span><span class="o">=</span><span class="s2">"Refactor module X"</span><span class="p">,</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="n">problem_node_id</span><span class="o">=</span><span class="n">problem_node</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.85</span>
 <a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="p">)</span>
 <a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>
 <a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="c1"># Record outcome</span>
 <a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="n">outcome</span> <span class="o">=</span> <span class="n">mental_map</span><span class="o">.</span><span class="n">record_outcome</span><span class="p">(</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>    <span class="n">decision_node_id</span><span class="o">=</span><span class="n">decision</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>    <span class="n">outcome_content</span><span class="o">=</span><span class="s2">"Bug fixed, tests passing"</span><span class="p">,</span>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>    <span class="n">success</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> <span class="n">decision_node_id</span><span class="o">=</span><span class="n">decision</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> <span class="n">outcome_content</span><span class="o">=</span><span class="s2">"Bug fixed, tests passing"</span><span class="p">,</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> <span class="n">success</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="p">)</span>
 <a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
 <a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="c1"># Save for later</span>
@@ -3471,27 +3467,27 @@
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># Define state</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="n">state</span> <span class="o">=</span> <span class="n">DecisionState</span><span class="p">(</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="n">current_position</span><span class="o">=</span><span class="s2">"code_review"</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="n">goal_position</span><span class="o">=</span><span class="s2">"merged"</span><span class="p">,</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="n">available_resources</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    <span class="n">time_available</span><span class="o">=</span><span class="mf">0.6</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="n">current_position</span><span class="o">=</span><span class="s2">"code_review"</span><span class="p">,</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="n">goal_position</span><span class="o">=</span><span class="s2">"merged"</span><span class="p">,</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="n">available_resources</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="n">time_available</span><span class="o">=</span><span class="mf">0.6</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="p">)</span>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>
 <a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a><span class="c1"># Define possible paths</span>
 <a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    <span class="n">ActionPath</span><span class="p">(</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>        <span class="n">action_type</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>        <span class="n">description</span><span class="o">=</span><span class="s2">"Run comprehensive tests"</span><span class="p">,</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>        <span class="n">potential_energy</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>        <span class="n">momentum</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>        <span class="n">friction</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>        <span class="n">confidence</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>        <span class="n">impact</span><span class="o">=</span><span class="mf">0.9</span>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>    <span class="p">),</span>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>    <span class="c1"># ... more paths</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="n">ActionPath</span><span class="p">(</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="n">action_type</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Run comprehensive tests"</span><span class="p">,</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> <span class="n">potential_energy</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> <span class="n">momentum</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> <span class="n">friction</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> <span class="n">impact</span><span class="o">=</span><span class="mf">0.9</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> <span class="p">),</span>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> <span class="c1"># ... more paths</span>
 <a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="p">]</span>
 <a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a><span class="c1"># Orchestrate: ASSESS → DELIBERATE → OPTIMIZE → ACT</span>
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a><span class="c1"># Orchestrate: ASSESS DELIBERATE OPTIMIZE ACT</span>
 <a href="#__codelineno-9-27" id="__codelineno-9-27" name="__codelineno-9-27"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">orchestrate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
 <a href="#__codelineno-9-28" id="__codelineno-9-28" name="__codelineno-9-28"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Optimal path: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">best_path</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
@@ -3543,11 +3539,11 @@
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
 <p>This PR represents a significant advancement in AI Agent orchestration capabilities for the <em>codex</em> repository. All planned features have been successfully implemented, all bugs fixed, and all documentation completed. The codebase is production-ready with a clear path forward for future enhancements.</p>
 <p><strong>Key Achievements:</strong>
--  100% of planned features implemented
--  100% of bugs fixed and validated
--  100% of documentation complete
--  0 security vulnerabilities
--  Production-ready quality</p>
+- 100% of planned features implemented
+- 100% of bugs fixed and validated
+- 100% of documentation complete
+- 0 security vulnerabilities
+- Production-ready quality</p>
 <p><strong>Next Steps:</strong>
 1. <strong>Immediate:</strong> Final stakeholder approval and merge
 2. <strong>Short-term:</strong> Implement multi-agent coordination (3-4 iterations)
@@ -3555,8 +3551,8 @@
 4. <strong>Long-term:</strong> Predictive analytics and quantum orchestration (10-12 iterations)</p>
 <p><strong>Recommendation:</strong> Approve and merge this PR. Begin next sprint with multi-agent coordination as first priority.</p>
 <hr/>
-<p><strong>Document Prepared By:</strong> @copilot<br/>
-<strong>Review Status:</strong> Ready for Approval<br/>
+<p><strong>Document Prepared By:</strong> @copilot
+<strong>Review Status:</strong> Ready for Approval
 <strong>Last Updated: 2026-07-11
 </strong>Version:** 1.0.0</p>
 </article>
@@ -3588,6 +3584,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Documentation Coverage - 99% Achievement Path
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -15,7 +15,7 @@
 ### Root Level Documentation (144 files)
  README.md (410 lines) - Complete
  CONTRIBUTING.md (41 lines) - Complete
- .codex/archive/deprecated/AGENTS.md (v0.2.1) - Comprehensive
+ .codex/archive/deprecated/AGENTS.md (v0.2.0) - Comprehensive
  SECURITY.md - Complete
  CHANGELOG.md - Current
 

@@ -1,6 +1,6 @@
 # [Human Admin] Repository Variables Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **For:** Human administrator (mbaetiong) — manual GitHub UI / CLI actions required
 > **Source:** [PR #3483 comment #issuecomment-3988416714](https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714)

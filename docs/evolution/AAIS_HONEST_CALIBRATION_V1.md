@@ -1,6 +1,6 @@
 # AAIS Honest Calibration — V1.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-03-14T05:30Z
 > **Author:** copilot-swe-agent (Session 24, PR #3575)

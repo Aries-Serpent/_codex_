@@ -290,9 +290,9 @@ concurrency:
 
 | Setting | Value | Verified |
 |---------|-------|----------|
-| `site_name` | `Codex Docs v0.2.1` | ✅ |
+| `site_name` | `Codex Docs v0.2.0` | ✅ |
 | `site_url` | `https://aries-serpent.github.io/_codex_/` | ✅ |
-| `site_description` | `Project documentation - v0.2.1 (MkDocs Material)` | ✅ |
+| `site_description` | `Project documentation - v0.2.0 (MkDocs Material)` | ✅ |
 | `repo_name` | `Aries-Serpent/_codex_` | ✅ |
 | `repo_url` | `https://github.com/Aries-Serpent/_codex_` | ✅ |
 

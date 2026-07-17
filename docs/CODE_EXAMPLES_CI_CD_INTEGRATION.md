@@ -1,6 +1,6 @@
 # Code Example Validator: CI/CD Integration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Phase 12 WS5 - Code Example Validation**  
 **Integration Status**:  Ready for Implementation  

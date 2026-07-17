@@ -1,6 +1,6 @@
 # Template: `_codex_` per-iteration Status Update (v1.2 — Enhanced with Schema Validation & Audit Integration)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 ## Table of Contents

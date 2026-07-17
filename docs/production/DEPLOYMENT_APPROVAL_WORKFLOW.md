@@ -1,6 +1,6 @@
 # Phase 6 Batch 2 — Deployment Approval Workflow & Governance Gates
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 **Version:** 1.0.0

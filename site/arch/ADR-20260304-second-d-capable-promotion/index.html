@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/ADR-20260304-second-d-capable-promotion/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-20260304: Second D_CAPABLE Agent Promotion — workflow-ci-fixer - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2282,7 +2282,7 @@
 <a class="md-nav__link" href="#ed-gate-state-at-time-of-promotion">
 <span class="md-ellipsis">
       
-        E→D Gate State at Time of Promotion
+        ED Gate State at Time of Promotion
       
     </span>
 </a>
@@ -2430,7 +2430,7 @@ observation of <code>ci-testing-agent</code></em>.</p>
 <p>The 2-sprint observation period completed without demotion annotations in
 <code>e-to-d-transition-gate.yml</code> and zero D_CAPABLE violations recorded in
 <code>agent_sessions</code>. Conditions are met to proceed with the second promotion.</p>
-<h3 id="ed-gate-state-at-time-of-promotion">E→D Gate State at Time of Promotion<a class="headerlink" href="#ed-gate-state-at-time-of-promotion" title="Permanent link">¶</a></h3>
+<h3 id="ed-gate-state-at-time-of-promotion">ED Gate State at Time of Promotion<a class="headerlink" href="#ed-gate-state-at-time-of-promotion" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2609,7 +2609,7 @@ ADR-20260303 pre-evaluation. This is not a circular dependency — GROUNDED
 suitability was independently confirmed in ADR-20260303 before this promotion.</p>
 <h2 id="4-decision">4. Decision<a class="headerlink" href="#4-decision" title="Permanent link">¶</a></h2>
 <p><strong>Promote <code>workflow-ci-fixer</code> from <code>autonomy_model: E</code> to <code>autonomy_model: D_CAPABLE</code>.</strong></p>
-<p>Changes applied in <code>AGENT_REGISTRY.yaml</code> (v0.2.1 → v0.2.1):</p>
+<p>Changes applied in <code>AGENT_REGISTRY.yaml</code> (v0.2.1 v0.2.1):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Before</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nt">enforcement_tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PARTIAL</span>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="nt">autonomy_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">E</span>
@@ -2695,16 +2695,16 @@ suitability was independently confirmed in ADR-20260303 before this promotion.</
 <h3 id="risks-mitigations">Risks &amp; Mitigations<a class="headerlink" href="#risks-mitigations" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Risk</strong>: <code>workflow-ci-fixer</code> agent file is marked deprecated (superseded by <code>codebase-health-guardian</code>).
-  <strong>Mitigation</strong>: (1) The agent remains <code>status: active</code> in the registry and continues to be invocable by
-  CI orchestration; the deprecation notice is an informational migration recommendation, not a deactivation.
-  (2) <code>codebase-health-guardian</code> is the long-term target but has not been independently evaluated against
-  the full D_CAPABLE criteria set (has_tests, has_docs, GROUNDED tier) in any prior ADR. Promoting the
-  deprecated-but-active agent is the correct path for this cycle; a follow-on ADR may migrate D_CAPABLE
-  status to <code>codebase-health-guardian</code> once it passes the full criteria check. The 2-sprint observation
-  of <code>workflow-ci-fixer</code> will provide the safety window to identify any deprecation-related gaps.</li>
+ <strong>Mitigation</strong>: (1) The agent remains <code>status: active</code> in the registry and continues to be invocable by
+ CI orchestration; the deprecation notice is an informational migration recommendation, not a deactivation.
+ (2) <code>codebase-health-guardian</code> is the long-term target but has not been independently evaluated against
+ the full D_CAPABLE criteria set (has_tests, has_docs, GROUNDED tier) in any prior ADR. Promoting the
+ deprecated-but-active agent is the correct path for this cycle; a follow-on ADR may migrate D_CAPABLE
+ status to <code>codebase-health-guardian</code> once it passes the full criteria check. The 2-sprint observation
+ of <code>workflow-ci-fixer</code> will provide the safety window to identify any deprecation-related gaps.</li>
 <li><strong>Risk</strong>: Premature promotion of PARTIAL-tier agent bypassing GROUNDED verification.
-  <strong>Mitigation</strong>: <code>enforcement_tier</code> upgraded to GROUNDED as part of this promotion, consistent with the
-  ADR-20260303 §3 pre-evaluation that already assessed this agent as GROUNDED-tier capable.</li>
+ <strong>Mitigation</strong>: <code>enforcement_tier</code> upgraded to GROUNDED as part of this promotion, consistent with the
+ ADR-20260303 §3 pre-evaluation that already assessed this agent as GROUNDED-tier capable.</li>
 </ul>
 <h2 id="8-provenance-compliance">8. Provenance &amp; Compliance<a class="headerlink" href="#8-provenance-compliance" title="Permanent link">¶</a></h2>
 <ul>
@@ -2712,7 +2712,7 @@ suitability was independently confirmed in ADR-20260303 before this promotion.</
 <li><strong>Observation</strong>: 2-sprint clean observation of <code>ci-testing-agent</code> (PR #3494) completed</li>
 <li><strong>Follow-up</strong>: <code>.codex/docs/FOLLOWUP_PROMPT_PR3494.md</code> — Priority 2</li>
 <li><strong>Predecessor ADR</strong>: <code>ADR-20260303-first-d-capable-promotion.md</code></li>
-<li><strong>Registry version</strong>: v0.2.1 → v0.2.1 (patch increment)</li>
+<li><strong>Registry version</strong>: v0.2.1 v0.2.1 (patch increment)</li>
 <li><strong>Change log</strong>: PR #3494 (this PR)</li>
 <li><strong>Next review</strong>: Third D_CAPABLE candidate after 2-sprint observation of <code>workflow-ci-fixer</code></li>
 </ul>
@@ -2745,6 +2745,6 @@ suitability was independently confirmed in ADR-20260303 before this promotion.</
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

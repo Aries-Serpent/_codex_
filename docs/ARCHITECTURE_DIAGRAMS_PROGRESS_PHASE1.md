@@ -1,6 +1,6 @@
 # Architecture Diagram Coverage Report - P2.3 Execution
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Report Date**: 2026-01-20
 **Phase**: P2.3 - Add Architecture Diagrams (30 hours)

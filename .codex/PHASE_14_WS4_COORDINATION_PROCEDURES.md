@@ -127,7 +127,7 @@ This document defines standardized procedures for coordinating four active agent
 - **Handoff:** All agents report daily status to agent-orchestrator; checkpoint 1 generated
 
 **Phase 3: Completion (T+3w to T+8w)**
-- orchestrator-agent: Ramps to 100%, reaches v0.2.1 GA
+- orchestrator-agent: Ramps to 100%, reaches v0.2.0 GA
 - workflow-health-monitor: Optimizes cache, reaches infrastructure GA
 - security-audit-agent: Completes security hardening, reaches security GA
 - **Handoff:** agent-orchestrator generates final phase 14 report; Phase 15 planning begins

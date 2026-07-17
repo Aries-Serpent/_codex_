@@ -1,6 +1,6 @@
-# [Validation]: Patch Scope Confirmation (v0.2.1)
+# [Validation]: Patch Scope Confirmation (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
@@ -40,6 +40,6 @@ Notes:
 ## Conclusion
 - With the two package markers added, no further files are required for this iteration.
 - All scope items are implemented, documented, and covered by smoke tests.
-- Future optional work (beyond v0.2.1): evolve token similarity, coverage ingestion, and trend aggregation as per roadmap.
+- Future optional work (beyond v0.2.0): evolve token similarity, coverage ingestion, and trend aggregation as per roadmap.
 
 *End of Confirmation*

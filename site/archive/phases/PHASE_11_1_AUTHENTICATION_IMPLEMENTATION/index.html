@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_11_1_AUTHENTICATION_IMPLEMENTATION/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 11.x Priority 1 - Advanced Authentication System - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2567,8 +2567,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Status</strong>:  <strong>IMPLEMENTED AND TESTED</strong><br/>
-<strong>Date</strong>: 2026-01-15<br/>
+<p><strong>Status</strong>: <strong>IMPLEMENTED AND TESTED</strong>
+<strong>Date</strong>: 2026-01-15
 <strong>Test Coverage</strong>: 77 tests, 100% passing</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2584,37 +2584,49 @@
 <hr/>
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing User/Client, OAuth Manager'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Authentication Layer"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        User[User/Client]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        OAuth[OAuth Manager]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        MFA[MFA Provider]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        Token[Token Manager]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        GH[GitHub API]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    end
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    subgraph "Security Layer"
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        Sanitizer[Log Sanitizer]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        RateLimit[Rate Limiter]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        SessionStore[Session Store]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    end
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    User --&gt;|1. Login Request| OAuth
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    OAuth --&gt;|2. Redirect| GH
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    GH --&gt;|3. Auth Code| OAuth
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    OAuth --&gt;|4. Exchange Code| GH
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    GH --&gt;|5. Access Token| OAuth
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    OAuth --&gt;|6. Verify User| GH
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    GH --&gt;|7. User Info| OAuth
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    OAuth --&gt;|8. MFA Challenge| MFA
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    MFA --&gt;|9. TOTP/Backup| User
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    User --&gt;|10. MFA Code| MFA
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    MFA --&gt;|11. Generate Session| Token
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    Token --&gt;|12. Session Token| User
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    subgraph "Authentication Layer"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        User[User/Client]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        OAuth[OAuth Manager]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        MFA[MFA Provider]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        Token[Token Manager]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        GH[GitHub API]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    end
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    subgraph "Security Layer"
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        Sanitizer[Log Sanitizer]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        RateLimit[Rate Limiter]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        SessionStore[Session Store]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    end
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    User --&gt;|1. Login Request| OAuth
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    OAuth --&gt;|2. Redirect| GH
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    GH --&gt;|3. Auth Code| OAuth
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    OAuth --&gt;|4. Exchange Code| GH
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    GH --&gt;|5. Access Token| OAuth
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    OAuth --&gt;|6. Verify User| GH
 <a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    OAuth -.-&gt; Sanitizer
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    MFA -.-&gt; RateLimit
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    Token -.-&gt; SessionStore
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    GH --&gt;|7. User Info| OAuth
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    OAuth --&gt;|8. MFA Challenge| MFA
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    MFA --&gt;|9. TOTP/Backup| User
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    User --&gt;|10. MFA Code| MFA
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    MFA --&gt;|11. Generate Session| Token
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    Token --&gt;|12. Session Token| User
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    OAuth -.-&gt; Sanitizer
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    MFA -.-&gt; RateLimit
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    Token -.-&gt; SessionStore
 </code></pre></div>
 <hr/>
 <h2 id="component-details">Component Details<a class="headerlink" href="#component-details" title="Permanent link">¶</a></h2>
@@ -2659,11 +2671,11 @@
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>print(f"Authenticated as: {user['login']}")
 </code></pre></div></p>
 <p><strong>Security Features</strong>:
--  PKCE with S256 challenge method
--  State parameter for CSRF protection (15-minute expiry)
--  Secure random generation (<code>secrets</code> module)
--  Sanitized error messages (no token leakage)
--  HTTPS-only communication</p>
+- PKCE with S256 challenge method
+- State parameter for CSRF protection (15-minute expiry)
+- Secure random generation (<code>secrets</code> module)
+- Sanitized error messages (no token leakage)
+- HTTPS-only communication</p>
 <hr/>
 <h2 id="2-mfa-provider-mfa_providerpy">2. MFA Provider (<code>mfa_provider.py</code>)<a class="headerlink" href="#2-mfa-provider-mfa_providerpy" title="Permanent link">¶</a></h2>
 <p><strong>Purpose</strong>: Implements Time-based One-Time Password (TOTP) authentication.</p>
@@ -2707,12 +2719,12 @@
 <a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="n">backup_valid</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">verify_backup_code</span><span class="p">(</span><span class="s2">"user123"</span><span class="p">,</span> <span class="n">backup_codes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </code></pre></div></p>
 <p><strong>Security Features</strong>:
--  HMAC-SHA1 TOTP algorithm (RFC 6238)
--  Time window validation (±30 seconds)
--  Backup codes hashed with SHA-256
--  Single-use backup codes
--  Rate limiting (3 failed attempts → 15-minute lockout)
--  Secure random generation (20-byte secrets)</p>
+- HMAC-SHA1 TOTP algorithm (RFC 6238)
+- Time window validation (±30 seconds)
+- Backup codes hashed with SHA-256
+- Single-use backup codes
+- Rate limiting (3 failed attempts 15-minute lockout)
+- Secure random generation (20-byte secrets)</p>
 <hr/>
 <h2 id="3-token-manager-token_managerpy">3. Token Manager (<code>token_manager.py</code>)<a class="headerlink" href="#3-token-manager-token_managerpy" title="Permanent link">¶</a></h2>
 <p><strong>Purpose</strong>: Manages JWT-like tokens for authentication and session management.</p>
@@ -2765,60 +2777,61 @@
 <a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="n">count</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">revoke_all_user_tokens</span><span class="p">(</span><span class="s2">"user123"</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Security Features</strong>:
--  HMAC-SHA256 signatures
--  Token expiry validation
--  Token revocation list
--  Session activity tracking
--  Automatic session cleanup
--  Type-safe token validation</p>
+- HMAC-SHA256 signatures
+- Token expiry validation
+- Token revocation list
+- Session activity tracking
+- Automatic session cleanup
+- Type-safe token validation</p>
 <hr/>
 <h2 id="integration-workflow">Integration Workflow<a class="headerlink" href="#integration-workflow" title="Permanent link">¶</a></h2>
 <h3 id="complete-authentication-flow">Complete Authentication Flow<a class="headerlink" href="#complete-authentication-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>sequenceDiagram
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    participant User
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    participant App
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    participant OAuth
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    participant GitHub
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    participant MFA
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    participant Token
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    participant Session
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    User-&gt;&gt;App: Login with GitHub
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    App-&gt;&gt;OAuth: Initiate OAuth flow
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    OAuth-&gt;&gt;OAuth: Generate state + PKCE
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    OAuth-&gt;&gt;User: Redirect to GitHub
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    User-&gt;&gt;GitHub: Approve access
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    GitHub-&gt;&gt;App: Callback with code
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    App-&gt;&gt;OAuth: Exchange code
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    OAuth-&gt;&gt;GitHub: Verify code + PKCE
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    GitHub-&gt;&gt;OAuth: Access token
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    OAuth-&gt;&gt;GitHub: Get user info
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    GitHub-&gt;&gt;OAuth: User data
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    OAuth-&gt;&gt;App: User authenticated
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    App-&gt;&gt;MFA: Check MFA status
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    alt MFA Enabled
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>        MFA-&gt;&gt;User: Request TOTP/Backup code
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>        User-&gt;&gt;MFA: Provide code
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>        MFA-&gt;&gt;MFA: Verify code
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>        alt Valid Code
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>            MFA-&gt;&gt;App: MFA verified
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>        else Invalid Code
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>            MFA-&gt;&gt;User: Error (rate limit)
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>        end
-<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>    end
-<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>
-<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>    App-&gt;&gt;Token: Generate session token
-<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>    Token-&gt;&gt;Session: Create session
-<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>    Token-&gt;&gt;App: Session token + ID
-<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a>    App-&gt;&gt;User: Login successful
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>sequenceDiagram
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    participant User
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    participant App
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    participant OAuth
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    participant GitHub
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    participant MFA
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    participant Token
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    participant Session
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    User-&gt;&gt;App: Login with GitHub
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    App-&gt;&gt;OAuth: Initiate OAuth flow
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    OAuth-&gt;&gt;OAuth: Generate state + PKCE
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    OAuth-&gt;&gt;User: Redirect to GitHub
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    User-&gt;&gt;GitHub: Approve access
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    GitHub-&gt;&gt;App: Callback with code
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    App-&gt;&gt;OAuth: Exchange code
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    OAuth-&gt;&gt;GitHub: Verify code + PKCE
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    GitHub-&gt;&gt;OAuth: Access token
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    OAuth-&gt;&gt;GitHub: Get user info
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    GitHub-&gt;&gt;OAuth: User data
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>    OAuth-&gt;&gt;App: User authenticated
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    App-&gt;&gt;MFA: Check MFA status
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    alt MFA Enabled
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>        MFA-&gt;&gt;User: Request TOTP/Backup code
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>        User-&gt;&gt;MFA: Provide code
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>        MFA-&gt;&gt;MFA: Verify code
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>        alt Valid Code
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>            MFA-&gt;&gt;App: MFA verified
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>        else Invalid Code
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>            MFA-&gt;&gt;User: Error (rate limit)
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>        end
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>    end
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>    App-&gt;&gt;Token: Generate session token
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>    Token-&gt;&gt;Session: Create session
+<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a>    Token-&gt;&gt;App: Session token + ID
+<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a>    App-&gt;&gt;User: Login successful
 </code></pre></div>
 <hr/>
 <h2 id="test-coverage">Test Coverage<a class="headerlink" href="#test-coverage" title="Permanent link">¶</a></h2>
 <h3 id="test-suite-summary">Test Suite Summary<a class="headerlink" href="#test-suite-summary" title="Permanent link">¶</a></h3>
-<p><strong>Total Tests</strong>: 77 tests across 3 test files<br/>
-<strong>Pass Rate</strong>: 100%<br/>
+<p><strong>Total Tests</strong>: 77 tests across 3 test files
+<strong>Pass Rate</strong>: 100%
 <strong>Execution Time</strong>: &lt; 2 seconds</p>
 <h4 id="oauth-manager-tests-22-tests">OAuth Manager Tests (22 tests)<a class="headerlink" href="#oauth-manager-tests-22-tests" title="Permanent link">¶</a></h4>
 <ul>
@@ -2874,7 +2887,7 @@
 <li>
 <p><strong>Rate Limiting</strong></p>
 </li>
-<li>3 failed MFA attempts → 15-minute lockout</li>
+<li>3 failed MFA attempts 15-minute lockout</li>
 <li>Prevents brute force attacks</li>
 <li>
 <p>Per-user tracking</p>
@@ -2926,38 +2939,38 @@
 </li>
 <li>
 <p><strong>Environment Variables</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_CLIENT_ID</span><span class="o">=</span><span class="s2">"your_client_id"</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITHUB_CLIENT_SECRET</span><span class="o">=</span><span class="s2">"your_client_secret"</span><span class="w"> </span>&lt;!--<span class="w"> </span>pragma:<span class="w"> </span>allowlist<span class="w"> </span>secret<span class="w"> </span>--&gt;
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TOKEN_SECRET_KEY</span><span class="o">=</span><span class="s2">"your_random_secret_key"</span><span class="w"> </span>&lt;!--<span class="w"> </span>pragma:<span class="w"> </span>allowlist<span class="w"> </span>secret<span class="w"> </span>--&gt;
-</code></pre></div></p>
+<code>bash
+   export GITHUB_CLIENT_ID="your_client_id"
+   export GITHUB_CLIENT_SECRET="your_client_secret" &lt;!-- pragma: allowlist secret --&gt;
+   export TOKEN_SECRET_KEY="your_random_secret_key" &lt;!-- pragma: allowlist secret --&gt;</code></p>
 </li>
 <li>
 <p><strong>Python Dependencies</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>httpx
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="c1"># Already included in project dependencies</span>
-</code></pre></div></p>
+<code>bash
+   pip install httpx
+   # Already included in project dependencies</code></p>
 </li>
 </ol>
 <h3 id="basic-integration">Basic Integration<a class="headerlink" href="#basic-integration" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">src.codex.auth.oauth_manager</span> <span class="kn">import</span> <span class="n">OAuthManager</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">src.codex.auth.mfa_provider</span> <span class="kn">import</span> <span class="n">MFAProvider</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="kn">from</span> <span class="nn">src.codex.auth.token_manager</span> <span class="kn">import</span> <span class="n">TokenManager</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="kn">import</span> <span class="nn">os</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># Initialize components</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">oauth_manager</span> <span class="o">=</span> <span class="n">OAuthManager</span><span class="p">()</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">mfa_provider</span> <span class="o">=</span> <span class="n">MFAProvider</span><span class="p">()</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="n">token_manager</span> <span class="o">=</span> <span class="n">TokenManager</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'TOKEN_SECRET_KEY'</span><span class="p">))</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="c1"># Configure GitHub OAuth</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="n">github_config</span> <span class="o">=</span> <span class="n">oauth_manager</span><span class="o">.</span><span class="n">create_github_config</span><span class="p">(</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    <span class="n">client_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_CLIENT_ID'</span><span class="p">),</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>    <span class="n">client_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_CLIENT_SECRET'</span><span class="p">),</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    <span class="n">redirect_uri</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_REDIRECT_URI'</span><span class="p">),</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>    <span class="n">scope</span><span class="o">=</span><span class="s2">"repo user"</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="p">)</span>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="c1"># Your authentication endpoints would use these components</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">src.codex.auth.oauth_manager</span> <span class="kn">import</span> <span class="n">OAuthManager</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">src.codex.auth.mfa_provider</span> <span class="kn">import</span> <span class="n">MFAProvider</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">src.codex.auth.token_manager</span> <span class="kn">import</span> <span class="n">TokenManager</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="kn">import</span> <span class="nn">os</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="c1"># Initialize components</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="n">oauth_manager</span> <span class="o">=</span> <span class="n">OAuthManager</span><span class="p">()</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="n">mfa_provider</span> <span class="o">=</span> <span class="n">MFAProvider</span><span class="p">()</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="n">token_manager</span> <span class="o">=</span> <span class="n">TokenManager</span><span class="p">(</span><span class="n">secret_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'TOKEN_SECRET_KEY'</span><span class="p">))</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="c1"># Configure GitHub OAuth</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="n">github_config</span> <span class="o">=</span> <span class="n">oauth_manager</span><span class="o">.</span><span class="n">create_github_config</span><span class="p">(</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="n">client_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_CLIENT_ID'</span><span class="p">),</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    <span class="n">client_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_CLIENT_SECRET'</span><span class="p">),</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    <span class="n">redirect_uri</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'GITHUB_REDIRECT_URI'</span><span class="p">),</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    <span class="n">scope</span><span class="o">=</span><span class="s2">"repo user"</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="p">)</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="c1"># Your authentication endpoints would use these components</span>
 </code></pre></div>
 <h2 id="production-considerations">Production Considerations<a class="headerlink" href="#production-considerations" title="Permanent link">¶</a></h2>
 <ol>
@@ -3086,13 +3099,13 @@
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">¶</a></h3>
-<p><strong>Issue</strong>: OAuth flow fails with "Invalid state parameter"<br/>
+<p><strong>Issue</strong>: OAuth flow fails with "Invalid state parameter"
 <strong>Solution</strong>: Ensure state is not expired (15-minute window). Check clock synchronization.</p>
-<p><strong>Issue</strong>: TOTP codes always fail<br/>
+<p><strong>Issue</strong>: TOTP codes always fail
 <strong>Solution</strong>: Verify time synchronization between server and client. Check if user is locked out (rate limiting).</p>
-<p><strong>Issue</strong>: Token validation fails<br/>
+<p><strong>Issue</strong>: Token validation fails
 <strong>Solution</strong>: Check token expiry. Verify token hasn't been revoked. Ensure correct secret key.</p>
-<p><strong>Issue</strong>: Session not found<br/>
+<p><strong>Issue</strong>: Session not found
 <strong>Solution</strong>: Check if session expired (30-minute inactivity). Verify session cleanup hasn't removed it.</p>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
@@ -3104,11 +3117,11 @@
 <li>Follows Phase 10.2 security patterns</li>
 <li>Enables future GitHub-first enhancements</li>
 </ul>
-<p><strong>Status</strong>:  <strong>COMPLETE AND PRODUCTION-READY</strong></p>
+<p><strong>Status</strong>: <strong>COMPLETE AND PRODUCTION-READY</strong></p>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-01-15<br/>
-<strong>Author</strong>: GitHub Copilot<br/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-01-15
+<strong>Author</strong>: GitHub Copilot
 <strong>Next Review</strong>: After deployment validation</p>
 </article>
 </div>
@@ -3139,6 +3152,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

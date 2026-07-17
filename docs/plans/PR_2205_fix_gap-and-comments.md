@@ -3,7 +3,7 @@ The below are details provide context for resolving gaps (which checklist) and c
 ````markdown name=reports/checklists/_codex__Remaining_Gaps_Implementation_Checklist.md
 # [Checklist]: Remaining Gaps Implementation Map to 99–100 + Promotion
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > ** ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 

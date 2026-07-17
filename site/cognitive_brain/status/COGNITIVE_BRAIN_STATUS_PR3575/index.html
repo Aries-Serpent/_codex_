@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3575/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3575 (CI Failure Triage + Auto-Fix Mechanism) - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2515,9 +2515,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p><strong>Generated:</strong> 2026-03-14T04:45Z
-<strong>PR:</strong> #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
+<strong>PR:</strong> #3575 — fix: CI failures — Python 3.113.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 <strong>Branch:</strong> <code>copilot/ci-failure-triage-report</code>
-<strong>Status:</strong>  IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
+<strong>Status:</strong> IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
 <strong>Agent:</strong> github-actions[bot] / copilot-swe-agent</p>
 <hr/>
 <h2 id="phase-summary">Phase Summary<a class="headerlink" href="#phase-summary" title="Permanent link">¶</a></h2>
@@ -2533,7 +2533,7 @@
 <tr>
 <td>Phase 1 — Python version alignment</td>
 <td>COMPLETE</td>
-<td>4 workflows updated 3.11 → 3.12</td>
+<td>4 workflows updated 3.11 3.12</td>
 </tr>
 <tr>
 <td>Phase 2 — Deferral scanner hardening</td>
@@ -2558,7 +2558,7 @@
 <tr>
 <td>Phase 6 — PR review thread resolution</td>
 <td>COMPLETE</td>
-<td><code>is</code> → <code>==</code>, exemption anchor tightened</td>
+<td><code>is</code> <code>==</code>, exemption anchor tightened</td>
 </tr>
 <tr>
 <td>Phase 7 — Documentation compliance</td>
@@ -2595,27 +2595,34 @@
 <hr/>
 <h2 id="deferral-scanner-three-tier-code-span-stripping-architecture">Deferral Scanner — Three-Tier Code Span Stripping Architecture<a class="headerlink" href="#deferral-scanner-three-tier-code-span-stripping-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR body text line", "Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    PR["PR body text line"] --&gt; S1
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        S1 --&gt; S2 --&gt; S3
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    end
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> PR["PR body text line"] --&gt; S1
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    S3 --&gt; SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    SCAN --&gt;|match| EXEMPTION["Exemption check\n(# noqa, &lt;!-- noqa --&gt;, path anchors)"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    SCAN --&gt;|no match| PASS[" PASS"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    EXEMPTION --&gt;|exempt| PASS
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    EXEMPTION --&gt;|not exempt| FAIL[" FAIL — policy violation"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    style S1 fill:#ffd700
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    style S2 fill:#98fb98
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    style S3 fill:#87ceeb
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    style PASS fill:#90EE90
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    style FAIL fill:#ff6b6b
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> S1 --&gt; S2 --&gt; S3
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> end
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> S3 --&gt; SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> SCAN --&gt;|match| EXEMPTION["Exemption check\n(# noqa, &lt;!-- noqa --&gt;, path anchors)"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> SCAN --&gt;|no match| PASS[" PASS"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> EXEMPTION --&gt;|exempt| PASS
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> EXEMPTION --&gt;|not exempt| FAIL[" FAIL — policy violation"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> style S1 fill:#ffd700
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> style S2 fill:#98fb98
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> style S3 fill:#87ceeb
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> style PASS fill:#90EE90
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> style FAIL fill:#ff6b6b
 </code></pre></div>
 <p><strong>Three-tier priority order is mandatory</strong>: outer-single-bt wrapper MUST be stripped before
 double-bt spans, which MUST be stripped before single-bt spans. Reversing the order causes
@@ -2665,45 +2672,53 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 <hr/>
 <h2 id="architecture-diagram-auto-fix-flow">Architecture Diagram: Auto-Fix Flow<a class="headerlink" href="#architecture-diagram-auto-fix-flow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "Agent Token Delegation\nenabled", "cognitive-preflight job"'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>flowchart TD
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    ATD["Agent Token Delegation\nenabled"] --&gt; CPF
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>flowchart TD
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    subgraph CPF["cognitive-preflight job"]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        R4["REQ-4: accountability_check"]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>        R5["REQ-5: changelog_check"]
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>        AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>        R4 --&gt;|FAIL| AFX
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        R5 --&gt;|FAIL| AFX
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>        AFX --&gt; FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>        FIX --&gt; PUSH["git commit [skip ci]\ngit push → PR branch"]
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>        PUSH --&gt; NEXT["Next non-skip run:\nREQ-4  REQ-5 "]
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    end
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> ATD["Agent Token Delegation\nenabled"] --&gt; CPF
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> subgraph CPF["cognitive-preflight job"]
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> R4["REQ-4: accountability_check"]
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> R5["REQ-5: changelog_check"]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> R4 --&gt;|FAIL| AFX
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> R5 --&gt;|FAIL| AFX
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    R4 --&gt;|PASS| DONE[" continue"]
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    R5 --&gt;|PASS| DONE
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    style AFX fill:#ffd700
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    style FIX fill:#98fb98
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    style DONE fill:#90EE90
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> AFX --&gt; FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> FIX --&gt; PUSH["git commit [skip ci]\ngit push PR branch"]
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> PUSH --&gt; NEXT["Next non-skip run:\nREQ-4 REQ-5 "]
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> end
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> R4 --&gt;|PASS| DONE[" continue"]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> R5 --&gt;|PASS| DONE
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> style AFX fill:#ffd700
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> style FIX fill:#98fb98
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> style DONE fill:#90EE90
 </code></pre></div>
 <hr/>
 <h2 id="cognitive-brain-pattern-updates">Cognitive Brain Pattern Updates<a class="headerlink" href="#cognitive-brain-pattern-updates" title="Permanent link">¶</a></h2>
 <h3 id="pattern-24-preflight_001-updated">Pattern #24 (PREFLIGHT_001 — Updated)<a class="headerlink" href="#pattern-24-preflight_001-updated" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">accountability_report_not_updated</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"REQ-4:</span><span class="nv"> </span><span class="s">docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">commit"</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">fix_script</span><span class="p">:</span><span class="w"> </span><span class="s">"scripts/ci/session_wrapup_autofix.py</span><span class="nv"> </span><span class="s">--fix-accountability"</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">workflow_step</span><span class="p">:</span><span class="w"> </span><span class="s">"agent-auth-delegation.yml:autofix_docs"</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w w-Error"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"REQ-4:</span><span class="nv"> </span><span class="s">docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">commit"</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">fix_script</span><span class="p">:</span><span class="w"> </span><span class="s">"scripts/ci/session_wrapup_autofix.py</span><span class="nv"> </span><span class="s">--fix-accountability"</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">workflow_step</span><span class="p">:</span><span class="w"> </span><span class="s">"agent-auth-delegation.yml:autofix_docs"</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="pattern-25-deferral_001-updated-session-24">Pattern #25 (DEFERRAL_001 — Updated Session 24)<a class="headerlink" href="#pattern-25-deferral_001-updated-session-24" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deferral_language_gate_false_positive</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"PR</span><span class="nv"> </span><span class="s">description</span><span class="nv"> </span><span class="s">contains</span><span class="nv"> </span><span class="s">nested</span><span class="nv"> </span><span class="s">backtick</span><span class="nv"> </span><span class="s">code</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">examples</span><span class="nv"> </span><span class="s">triggering</span><span class="nv"> </span><span class="s">scanner"</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">three_tier_fix</span><span class="p">:</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="nt">tier_1</span><span class="p">:</span><span class="w"> </span><span class="s">"outer</span><span class="nv"> </span><span class="s">`</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">content</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">`</span><span class="nv"> </span><span class="s">display</span><span class="nv"> </span><span class="s">wrapper</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">FIRST"</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="nt">tier_2</span><span class="p">:</span><span class="w"> </span><span class="s">"double-backtick</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">content</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">SECOND"</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="nt">tier_3</span><span class="p">:</span><span class="w"> </span><span class="s">"single-backtick</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">`content`</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">THIRD"</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">  </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w w-Error"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"PR</span><span class="nv"> </span><span class="s">description</span><span class="nv"> </span><span class="s">contains</span><span class="nv"> </span><span class="s">nested</span><span class="nv"> </span><span class="s">backtick</span><span class="nv"> </span><span class="s">code</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">examples</span><span class="nv"> </span><span class="s">triggering</span><span class="nv"> </span><span class="s">scanner"</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">three_tier_fix</span><span class="p">:</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">tier_1</span><span class="p">:</span><span class="w"> </span><span class="s">"outer</span><span class="nv"> </span><span class="s">`</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">content</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">`</span><span class="nv"> </span><span class="s">display</span><span class="nv"> </span><span class="s">wrapper</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">FIRST"</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="nt">tier_2</span><span class="p">:</span><span class="w"> </span><span class="s">"double-backtick</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">content</span><span class="nv"> </span><span class="s">``</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">SECOND"</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span><span class="nt">tier_3</span><span class="p">:</span><span class="w"> </span><span class="s">"single-backtick</span><span class="nv"> </span><span class="s">span</span><span class="nv"> </span><span class="s">`content`</span><span class="nv"> </span><span class="s">—</span><span class="nv"> </span><span class="s">strip</span><span class="nv"> </span><span class="s">THIRD"</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w"> </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">23</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">24</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <hr/>
 <h2 id="self-healing-coverage-matrix">Self-Healing Coverage Matrix<a class="headerlink" href="#self-healing-coverage-matrix" title="Permanent link">¶</a></h2>
@@ -2819,9 +2834,9 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 <hr/>
 <p><em>Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-001 cognitive-preflight gate</em></p>
 <p><strong>Generated:</strong> 2026-03-14T03:20Z
-<strong>PR:</strong> #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
+<strong>PR:</strong> #3575 — fix: CI failures — Python 3.113.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 <strong>Branch:</strong> <code>copilot/ci-failure-triage-report</code>
-<strong>Status:</strong>  IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
+<strong>Status:</strong> IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
 <strong>Agent:</strong> github-actions[bot] / copilot-swe-agent</p>
 <hr/>
 <h2 id="phase-summary_1">Phase Summary<a class="headerlink" href="#phase-summary_1" title="Permanent link">¶</a></h2>
@@ -2837,7 +2852,7 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 <tr>
 <td>Phase 1 — Python version alignment</td>
 <td>COMPLETE</td>
-<td>4 workflows updated 3.11 → 3.12</td>
+<td>4 workflows updated 3.11 3.12</td>
 </tr>
 <tr>
 <td>Phase 2 — Deferral scanner hardening</td>
@@ -2862,7 +2877,7 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 <tr>
 <td>Phase 6 — PR review thread resolution</td>
 <td>COMPLETE</td>
-<td><code>is</code> → <code>==</code>, exemption anchor tightened</td>
+<td><code>is</code> <code>==</code>, exemption anchor tightened</td>
 </tr>
 <tr>
 <td>Phase 7 — Documentation compliance</td>
@@ -2876,7 +2891,7 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 <h3 id="pattern-cognitive-pre-flight-req-4-accountability_report_not_updated_1">Pattern: Cognitive Pre-flight REQ-4 (<code>accountability_report_not_updated</code>)<a class="headerlink" href="#pattern-cognitive-pre-flight-req-4-accountability_report_not_updated_1" title="Permanent link">¶</a></h3>
 <p><strong>Frequency:</strong> 5 consecutive failures before this session
 <strong>Root cause:</strong> Every commit pushed to the branch (including automated merge-from-main commits)
-must touch <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>.  Commits that don't
+must touch <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code>. Commits that don't
 (e.g. workflow-only fixes, cognitive brain metadata updates from main) fail REQ-4.</p>
 <p><strong>Fix applied:</strong>
 1. <code>scripts/ci/session_wrapup_autofix.py</code> — idempotent auto-fix script
@@ -2893,46 +2908,45 @@ that the scanner is designed to catch. These appear as plain text (not code span
 3. PR description updated to use backtick spans for example phrases</p>
 <hr/>
 <h2 id="architecture-diagram-auto-fix-flow_1">Architecture Diagram: Auto-Fix Flow<a class="headerlink" href="#architecture-diagram-auto-fix-flow_1" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Agent Token Delegation enabled  # pragma: allowlist secret
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>         │
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>         ▼
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>┌─────────────────────────────────────────────────────────┐
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>│            cognitive-preflight job                       │
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>│                                                          │
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>│  REQ-4: accountability_check ──── PASS ──► continue     │
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>│                     │                                    │
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>│                   FAIL                                   │
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>│                     ▼                                    │
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>│  REQ-5: changelog_check ─────── PASS/FAIL               │
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>│                     │                                    │
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>│  Auto-fix step (always, if REQ-4 or REQ-5 failed):      │
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>│    1. session_wrapup_autofix.py --fix-accountability     │
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>│                                 --fix-changelog          │
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>│    2. git add + git commit [skip ci]                     │
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>│    3. git push → PR branch (CODEX_MASTER_KEY)           │
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>│    4. Next non-skip run: REQ-4 , REQ-5               │
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>└─────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Agent Token Delegation enabled # pragma: allowlist secret
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> cognitive-preflight job 
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> REQ-4: accountability_check PASS continue 
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> FAIL 
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> REQ-5: changelog_check PASS/FAIL 
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> Auto-fix step (always, if REQ-4 or REQ-5 failed): 
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> 1. session_wrapup_autofix.py --fix-accountability 
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> --fix-changelog 
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> 2. git add + git commit [skip ci] 
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> 3. git push PR branch (CODEX_MASTER_KEY) 
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> 4. Next non-skip run: REQ-4 , REQ-5 
 </code></pre></div>
 <hr/>
 <h2 id="cognitive-brain-pattern-updates_1">Cognitive Brain Pattern Updates<a class="headerlink" href="#cognitive-brain-pattern-updates_1" title="Permanent link">¶</a></h2>
 <h3 id="new-pattern-added-pattern-20">New Pattern Added (Pattern #20)<a class="headerlink" href="#new-pattern-added-pattern-20" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">accountability_report_not_updated</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"REQ-4:</span><span class="nv"> </span><span class="s">docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">commit"</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Cognitive</span><span class="nv"> </span><span class="s">Pre-flight</span><span class="nv"> </span><span class="s">REQ-4</span><span class="nv"> </span><span class="s">failure"</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">fix_script</span><span class="p">:</span><span class="w"> </span><span class="s">"scripts/ci/session_wrapup_autofix.py</span><span class="nv"> </span><span class="s">--fix-accountability"</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="nt">workflow_step</span><span class="p">:</span><span class="w"> </span><span class="s">"agent-auth-delegation.yml:autofix_docs"</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">21</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">20</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">19</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">18</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w w-Error"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"REQ-4:</span><span class="nv"> </span><span class="s">docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">commit"</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Cognitive</span><span class="nv"> </span><span class="s">Pre-flight</span><span class="nv"> </span><span class="s">REQ-4</span><span class="nv"> </span><span class="s">failure"</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">fix_script</span><span class="p">:</span><span class="w"> </span><span class="s">"scripts/ci/session_wrapup_autofix.py</span><span class="nv"> </span><span class="s">--fix-accountability"</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nt">workflow_step</span><span class="p">:</span><span class="w"> </span><span class="s">"agent-auth-delegation.yml:autofix_docs"</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nt">frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">high</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">21</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">20</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">19</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">18</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h3 id="updated-pattern-pattern-5">Updated Pattern (Pattern #5)<a class="headerlink" href="#updated-pattern-pattern-5" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deferral_language_gate_false_positive</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"PR</span><span class="nv"> </span><span class="s">description</span><span class="nv"> </span><span class="s">contains</span><span class="nv"> </span><span class="s">example</span><span class="nv"> </span><span class="s">deferral</span><span class="nv"> </span><span class="s">phrases</span><span class="nv"> </span><span class="s">triggering</span><span class="nv"> </span><span class="s">false</span><span class="nv"> </span><span class="s">positive"</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Deferral</span><span class="nv"> </span><span class="s">Language</span><span class="nv"> </span><span class="s">Gate</span><span class="nv"> </span><span class="s">PR_SCAN</span><span class="nv"> </span><span class="s">failure"</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># Requires PR description update</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nt">fix_guidance</span><span class="p">:</span><span class="w"> </span><span class="s">"Wrap</span><span class="nv"> </span><span class="s">example</span><span class="nv"> </span><span class="s">phrases</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">backtick</span><span class="nv"> </span><span class="s">code</span><span class="nv"> </span><span class="s">spans</span><span class="nv"> </span><span class="s">OR</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">&lt;!--</span><span class="nv"> </span><span class="s">noqa:</span><span class="nv"> </span><span class="s">deferral</span><span class="nv"> </span><span class="s">--&gt;</span><span class="nv"> </span><span class="s">comment"</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">  </span><span class="nt">frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">medium</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w w-Error"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"PR</span><span class="nv"> </span><span class="s">description</span><span class="nv"> </span><span class="s">contains</span><span class="nv"> </span><span class="s">example</span><span class="nv"> </span><span class="s">deferral</span><span class="nv"> </span><span class="s">phrases</span><span class="nv"> </span><span class="s">triggering</span><span class="nv"> </span><span class="s">false</span><span class="nv"> </span><span class="s">positive"</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">"Deferral</span><span class="nv"> </span><span class="s">Language</span><span class="nv"> </span><span class="s">Gate</span><span class="nv"> </span><span class="s">PR_SCAN</span><span class="nv"> </span><span class="s">failure"</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">auto_fixable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># Requires PR description update</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">fix_guidance</span><span class="p">:</span><span class="w"> </span><span class="s">"Wrap</span><span class="nv"> </span><span class="s">example</span><span class="nv"> </span><span class="s">phrases</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">backtick</span><span class="nv"> </span><span class="s">code</span><span class="nv"> </span><span class="s">spans</span><span class="nv"> </span><span class="s">OR</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">&lt;!--</span><span class="nv"> </span><span class="s">noqa:</span><span class="nv"> </span><span class="s">deferral</span><span class="nv"> </span><span class="s">--&gt;</span><span class="nv"> </span><span class="s">comment"</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">medium</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">sessions_affected</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <hr/>
 <h2 id="next-phase-plan">Next-Phase Plan<a class="headerlink" href="#next-phase-plan" title="Permanent link">¶</a></h2>
@@ -3030,6 +3044,6 @@ that the scanner is designed to catch. These appear as plain text (not code span
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

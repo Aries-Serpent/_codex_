@@ -84,7 +84,7 @@
 - 📝 **WS2_INFRASTRUCTURE_CONTEXT_TEMPLATE.md** — Infrastructure provisioning context brief (database RDS, network topology, cache infrastructure, cost baseline) required for WS2 agents
 - ✅ **WS3_SECURITY_CLARIFICATIONS_QUESTIONNAIRE.md** — 7-point security policy questionnaire (SIEM selection, compliance standards, data classification, incident SLA, audit logs, pen testing, encryption) required for WS3 agents
 - 🚀 **Phase 14 Multi-Workstream Campaign Pre-Kickoff** (2026-07-24T20:10Z target):
-  - ✅ WS1 Feature Rollout (100% ready, v0.2.1 GA target 2026-08-25)
+  - ✅ WS1 Feature Rollout (100% ready, v0.2.0 GA target 2026-08-25)
   - ⏳ WS2 Infrastructure Provisioning (80% ready, blocked on infrastructure context)
   - ⏳ WS3 Security & Compliance (85% ready, blocked on security clarifications)
   - ✅ WS4 Orchestration & Monitoring (100% LIVE, real-time SLA dashboard active)
@@ -894,7 +894,7 @@ Implemented profile-scoped import guards ensuring optional runtime dependencies 
   - **Files processed**: 1,947 markdown files
   - **Stale dates updated**: 347 entries
   - **Target date**: 2026-07-13 (current session)
-  - **Version consistency**: All files now reference v0.2.1
+  - **Version consistency**: All files now reference v0.2.0
   - **Report**: `.codex/SITE_FIRST_LANE_2_METADATA_REPORT.md`
   
 - ✅ **Lane F (Professional Tone)**:
@@ -921,13 +921,13 @@ Implemented profile-scoped import guards ensuring optional runtime dependencies 
 - ✅ **Lane J (Production Hardening)**: MkDocs build verification, smoke tests, site rendering validation
 - ✅ **Lane K (Governance & Lifecycle)**:
   - **Accountability**: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Session 2026-07-13T19:08Z)
-  - **Version bump**: v0.2.1 → v0.2.2 (all metadata synchronized)
+  - **Version bump**: v0.2.0 → v0.2.2 (all metadata synchronized)
   - **Final Report**: `.codex/SITE_FIRST_INITIATIVE_FINAL_REPORT.md` (consolidated metrics + lane summaries)
   - **Compliance gates**: REQ-4 (accountability) ✅, REQ-5 (changelog) ✅, build verification ✅
 
 **Success Criteria Met** (All-or-Nothing):
 - ✅ **Link Health**: 100% internal links functional (0 dead links)
-- ✅ **Date Accuracy**: 100% of dates current (2026-07-13), versions consistent (v0.2.1)
+- ✅ **Date Accuracy**: 100% of dates current (2026-07-13), versions consistent (v0.2.0)
 - ✅ **Professional Tone**: 0 decorative emojis in nav/headers, marketing language removed
 - ✅ **Deployment**: Site builds and deploys to GitHub Pages + local 127.0.0.1
 - ✅ **File Alignment**: All 1,947 source files in sync with published nav
@@ -1223,7 +1223,7 @@ Implemented profile-scoped import guards ensuring optional runtime dependencies 
 **Lane 2: Date & Metadata Accuracy** ✅
 - Audited all 1,947 markdown files for metadata freshness
 - **Updated 347 stale dates** (>30 days old) to 2026-07-13
-- Verified version consistency across all files (v0.2.1 confirmed)
+- Verified version consistency across all files (v0.2.0 confirmed)
 - Documented missing metadata patterns
 - **Deliverable**: Metadata Accuracy Report
 

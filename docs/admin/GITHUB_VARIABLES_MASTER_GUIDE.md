@@ -2,7 +2,7 @@
 
 # GitHub Variables & Secrets — Master Reference Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -754,4 +754,4 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ; SAR-G01 all 9 Codespace secrets confirmed ; §13 converted to resolved archive; v0.2.1)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ; SAR-G01 all 9 Codespace secrets confirmed ; §13 converted to resolved archive; v0.2.0)*

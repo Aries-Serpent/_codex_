@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/CODESPACE_COPILOT_AGENT_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GitHub Codespace — Copilot Agent Configuration Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2481,10 +2481,10 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Status:</strong>  NEW (PR #3503 W-126, 2026-03-05)<br/>
-<strong>Session:</strong> S114<br/>
-<strong>Audience:</strong> Copilot Coding Agents, repository maintainers<br/>
-<strong>Related:</strong> <code>.devcontainer/devcontainer.json</code>, <code>copilot-setup-steps.yml</code>,<br/>
+<p><strong>Status:</strong> NEW (PR #3503 W-126, 2026-03-05)
+<strong>Session:</strong> S114
+<strong>Audience:</strong> Copilot Coding Agents, repository maintainers
+<strong>Related:</strong> <code>.devcontainer/devcontainer.json</code>, <code>copilot-setup-steps.yml</code>,
 <code>docs/agent/COPILOT_TOKEN_GUIDE.md</code>, <code>docs/agent/GITHUB_APP_CLI_MAPPING.md</code></p>
 </blockquote>
 <hr/>
@@ -2493,30 +2493,30 @@
 environment</strong> it gets inside GitHub Actions (<code>copilot-setup-steps.yml</code>), but
 running interactively in the browser or VS Code. Every configuration file,
 lifecycle script, and environment variable mirrors the Actions workflow exactly.</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GitHub Actions (CI)                  GitHub Codespace (interactive)
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>─────────────────────────────────    ────────────────────────────────────────
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>copilot-setup-steps.yml              .devcontainer/devcontainer.json
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>  Phase 1+2: system deps        ≡      on-create.sh
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>  Phase 3+4: pip install        ≡      update-content.sh
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>  Phase 5+6: env vars + auth    ≡      post-create.sh
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>  Phase 7:   start CLI server   ≡      post-start.sh
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>  (attach)                      ≡      post-attach.sh  (banner)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GitHub Actions (CI) GitHub Codespace (interactive)
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>copilot-setup-steps.yml .devcontainer/devcontainer.json
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Phase 1+2: system deps ≡ on-create.sh
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Phase 3+4: pip install ≡ update-content.sh
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Phase 5+6: env vars + auth ≡ post-create.sh
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Phase 7: start CLI server ≡ post-start.sh
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> (attach) ≡ post-attach.sh (banner)
 </code></pre></div>
 <hr/>
 <h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>.devcontainer/
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── devcontainer.json              ← Master configuration
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>└── scripts/
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    ├── on-create.sh               ← Phase 1+2: system deps (runs once)
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    ├── update-content.sh          ← Phase 3+4: pip install (re-runs on rebuild)
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    ├── post-create.sh             ← Phase 5+6: env vars + auth report (once)
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    ├── post-start.sh              ← Phase 7: start CLI API server (every start)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    └── post-attach.sh             ← Banner + health check (every attach)
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> devcontainer.json Master configuration
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> scripts/
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> on-create.sh Phase 1+2: system deps (runs once)
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> update-content.sh Phase 3+4: pip install (re-runs on rebuild)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> post-create.sh Phase 5+6: env vars + auth report (once)
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> post-start.sh Phase 7: start CLI API server (every start)
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> post-attach.sh Banner + health check (every attach)
 </code></pre></div>
 <hr/>
 <h2 id="prerequisites-admin-setup">Prerequisites — Admin Setup<a class="headerlink" href="#prerequisites-admin-setup" title="Permanent link">¶</a></h2>
 <p>Before any Copilot agent can use the Codespace, an org admin must configure
-these <strong>Codespace secrets</strong> (Settings → Codespaces → Secrets):</p>
+these <strong>Codespace secrets</strong> (Settings Codespaces Secrets):</p>
 <table>
 <thead>
 <tr>
@@ -2569,7 +2569,7 @@ these <strong>Codespace secrets</strong> (Settings → Codespaces → Secrets):<
 </tbody>
 </table>
 <blockquote>
-<p>Secrets set at the <strong>org level</strong> (Settings → Codespaces → Secrets → select
+<p>Secrets set at the <strong>org level</strong> (Settings Codespaces Secrets select
 <code>Aries-Serpent/_codex_</code>) are automatically available to all Codespaces in the
 repository without per-user configuration.</p>
 </blockquote>
@@ -2577,48 +2577,48 @@ repository without per-user configuration.</p>
 <h2 id="lifecycle-execution-order">Lifecycle Execution Order<a class="headerlink" href="#lifecycle-execution-order" title="Permanent link">¶</a></h2>
 <p>Codespaces runs devcontainer lifecycle hooks in this exact order:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Container pulled / built
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>        │
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>        ▼  ① onCreateCommand
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>  on-create.sh
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>  • apt-get system packages
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>  • git lfs install --skip-smudge
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>  • mkdir .codex/sessions, artifacts
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>        │
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>        ▼  ② updateContentCommand  (re-runs on branch switch)
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>  update-content.sh
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>  • pip install pytest, ruff, black, mypy, ...
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>  • pip install -e .[dev]
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>  • pip install fastapi uvicorn httpx cryptography
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>  • npm ci  (if package.json)
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>  • cargo build  (if Cargo.toml)
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>  • pre-commit install
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>        │
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>        ▼  ③ postCreateCommand  (after first updateContent)
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>  post-create.sh
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>  • write ~/.codex_env  (all CODEX_* vars)
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>  • auth token status report
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>  • write .codex/codespace_auth_status.json
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>  • load agent_context.json (repo variables)
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>  • validate python / gh / ruff / imports
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>        │
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>        ▼  ④ postStartCommand  (every container start)
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>  post-start.sh
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>  • kill stale CLI API server
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>  • nohup uvicorn ... :8765  (with auth token forwarding)
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>  • retry health-check × 5
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>  • verify GitHub App JWT generation
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>        │
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>        ▼  ⑤ postAttachCommand  (every terminal attach)
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>  post-attach.sh
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>  • print Copilot agent banner
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>  • show service status
-<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>  • show token status
-<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>  • print quick-start commands
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> ① onCreateCommand
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> on-create.sh
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> • apt-get system packages
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> • git lfs install --skip-smudge
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> • mkdir .codex/sessions, artifacts
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> ② updateContentCommand (re-runs on branch switch)
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> update-content.sh
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> • pip install pytest, ruff, black, mypy, ...
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> • pip install -e .[dev]
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> • pip install fastapi uvicorn httpx cryptography
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> • npm ci (if package.json)
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> • cargo build (if Cargo.toml)
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> • pre-commit install
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> ③ postCreateCommand (after first updateContent)
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> post-create.sh
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> • write ~/.codex_env (all CODEX_* vars)
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> • auth token status report
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a> • write .codex/codespace_auth_status.json
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> • load agent_context.json (repo variables)
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> • validate python / gh / ruff / imports
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> ④ postStartCommand (every container start)
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> post-start.sh
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> • kill stale CLI API server
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> • nohup uvicorn ... :8765 (with auth token forwarding)
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> • retry health-check × 5
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> • verify GitHub App JWT generation
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a> ⑤ postAttachCommand (every terminal attach)
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a> post-attach.sh
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a> • print Copilot agent banner
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a> • show service status
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a> • show token status
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a> • print quick-start commands
 </code></pre></div>
 <hr/>
 <h2 id="environment-variables-full-reference">Environment Variables — Full Reference<a class="headerlink" href="#environment-variables-full-reference" title="Permanent link">¶</a></h2>
-<p>These are set in <code>devcontainer.json → containerEnv</code> (static) and
-<code>post-create.sh → ~/.codex_env</code> (dynamic). They match <code>copilot-setup-steps.yml</code>
+<p>These are set in <code>devcontainer.json containerEnv</code> (static) and
+<code>post-create.sh ~/.codex_env</code> (dynamic). They match <code>copilot-setup-steps.yml</code>
 exactly.</p>
 <h3 id="core-codex-variables">Core Codex Variables<a class="headerlink" href="#core-codex-variables" title="Permanent link">¶</a></h3>
 <table>
@@ -2754,12 +2754,12 @@ exactly.</p>
 <hr/>
 <h2 id="token-resolution-chain-codespace-vs-actions">Token Resolution Chain (Codespace vs Actions)<a class="headerlink" href="#token-resolution-chain-codespace-vs-actions" title="Permanent link">¶</a></h2>
 <p>Both environments use the <strong>same priority chain</strong>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>             GitHub Actions                 Codespace
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>             ──────────────────             ─────────────────────
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>1 (primary)  job env: CODEX_MASTER_KEY  ≡  Codespace secret → env var
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>2 (backup)   job env: CODEX_BACKUP_KEY  ≡  Codespace secret → env var
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>3 (alias)    AGENT_GITHUB_TOKEN          ≡  GITHUB_TOKEN (auto-provided)
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>4 (fallback) GITHUB_TOKEN               ≡  GITHUB_TOKEN (auto-provided)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a> GitHub Actions Codespace
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>1 (primary) job env: CODEX_MASTER_KEY ≡ Codespace secret env var
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>2 (backup) job env: CODEX_BACKUP_KEY ≡ Codespace secret env var
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>3 (alias) AGENT_GITHUB_TOKEN ≡ GITHUB_TOKEN (auto-provided)
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>4 (fallback) GITHUB_TOKEN ≡ GITHUB_TOKEN (auto-provided)
 </code></pre></div>
 <p>In Codespaces, <code>GITHUB_TOKEN</code> is <strong>automatically provided</strong> by GitHub with
 <code>contents:read</code> scope. It cannot access the Variables API — use
@@ -2774,12 +2774,12 @@ implement this chain automatically — no manual header construction needed.</p>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Use BrainClient (Python)</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>from<span class="w"> </span>codex.agents.brain_client<span class="w"> </span>import<span class="w"> </span>BrainClient
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nv">brain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>BrainClient<span class="o">()</span><span class="w">            </span><span class="c1"># auto-discovers CODEX_CLI_API_URL</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>brain.is_available<span class="o">()</span><span class="w">             </span><span class="c1"># True when server is up</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nv">brain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>BrainClient<span class="o">()</span><span class="w"> </span><span class="c1"># auto-discovers CODEX_CLI_API_URL</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>brain.is_available<span class="o">()</span><span class="w"> </span><span class="c1"># True when server is up</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1"># Proxy a GitHub API call (auto-injects CODEX_MASTER_KEY → CODEX_BACKUP_KEY)</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1"># Proxy a GitHub API call (auto-injects CODEX_MASTER_KEY CODEX_BACKUP_KEY)</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="nv">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>brain.proxy_request<span class="o">(</span><span class="s2">"GET"</span>,
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">    </span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="o">)</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w"> </span><span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_"</span><span class="o">)</span>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="c1"># Run a shell command</span>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>brain.run_command<span class="o">(</span><span class="s2">"git log --oneline -5"</span><span class="o">)</span>
@@ -2794,38 +2794,38 @@ implement this chain automatically — no manual header construction needed.</p>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Or manually</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>nohup<span class="w"> </span>uvicorn<span class="w"> </span>cognitive_app.src.server.cli_api_server:app<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8765</span><span class="w"> </span>--log-level<span class="w"> </span>warning<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">    </span>&gt;<span class="w"> </span>.codex/cli_api_server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8765</span><span class="w"> </span>--log-level<span class="w"> </span>warning<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span>&gt;<span class="w"> </span>.codex/cli_api_server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
 </code></pre></div>
 <hr/>
 <h2 id="github-app-in-codespace">GitHub App in Codespace<a class="headerlink" href="#github-app-in-codespace" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">os</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">codex.auth.github_app</span> <span class="kn">import</span> <span class="n">GitHubApp</span><span class="p">,</span> <span class="n">GitHubAppConfig</span><span class="p">,</span> <span class="n">_resolve_github_token</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="c1"># ── 1. Check token chain ────────────────────────────────────────────────────</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="c1"># 1. Check token chain </span>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_resolve_github_token</span><span class="p">():</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">status</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="s2">""</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">status</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="s2">""</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="c1"># ── 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) ──────</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="c1"># 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) </span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">GitHubAppConfig</span><span class="p">(</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    <span class="n">app_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_ID"</span><span class="p">]),</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>    <span class="n">private_key_pem</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_PRIVATE_KEY"</span><span class="p">],</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    <span class="n">webhook_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_SECRET"</span><span class="p">),</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> <span class="n">app_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_ID"</span><span class="p">]),</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> <span class="n">private_key_pem</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_PRIVATE_KEY"</span><span class="p">],</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a> <span class="n">webhook_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"WEBHOOK_SECRET"</span><span class="p">),</span>
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="p">)</span>
 <a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="n">app</span> <span class="o">=</span> <span class="n">GitHubApp</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 <a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="n">jwt</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">generate_jwt</span><span class="p">()</span>
 <a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="c1"># ── 3. Get installation token ────────────────────────────────────────────────</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="c1"># 3. Get installation token </span>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="n">token</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_installation_token</span><span class="p">(</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    <span class="n">installation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_INSTALLATION_ID"</span><span class="p">]),</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> <span class="n">installation_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"_GITHUB_APP_INSTALLATION_ID"</span><span class="p">]),</span>
 <a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="p">)</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>           <span class="c1"># ghs_xxxx</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_expired</span><span class="p">())</span>    <span class="c1"># False</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">token</span><span class="p">)</span> <span class="c1"># ghs_xxxx</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_expired</span><span class="p">())</span> <span class="c1"># False</span>
 <a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="c1"># ── 4. PAT fallback (auto MASTER_KEY → BACKUP_KEY) ──────────────────────────</span>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="c1"># 4. PAT fallback (auto MASTER_KEY BACKUP_KEY) </span>
 <a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="n">data</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">pat_api_get</span><span class="p">(</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span>
 <a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -2837,8 +2837,8 @@ implement this chain automatically — no manual header construction needed.</p>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># Verify a payload (e.g., from a test script)</span>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'{"action":"opened","number":42}'</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">sig</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">compute_signature</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>      <span class="c1"># "sha256=abc123..."</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="k">assert</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">sig</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span>   <span class="c1"># </span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">sig</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">compute_signature</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span> <span class="c1"># "sha256=abc123..."</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="k">assert</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">sig</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span> <span class="c1"># </span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="c1"># Forward to OODA loop via CLI server</span>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="kn">from</span> <span class="nn">codex.agents.brain_client</span> <span class="kn">import</span> <span class="n">BrainClient</span>
@@ -2846,8 +2846,8 @@ implement this chain automatically — no manual header construction needed.</p>
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
 <a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span>
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="n">result</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">ooda_process</span><span class="p">(</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>    <span class="n">input_data</span><span class="o">=</span><span class="p">{</span><span class="s2">"event"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span> <span class="s2">"event_type"</span><span class="p">:</span> <span class="s2">"pull_request"</span><span class="p">},</span>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"webhook"</span><span class="p">},</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> <span class="n">input_data</span><span class="o">=</span><span class="p">{</span><span class="s2">"event"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span> <span class="s2">"event_type"</span><span class="p">:</span> <span class="s2">"pull_request"</span><span class="p">},</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"webhook"</span><span class="p">},</span>
 <a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -2878,7 +2878,7 @@ implement this chain automatically — no manual header construction needed.</p>
 </tr>
 </tbody>
 </table>
-<p>All ports are defined in <code>devcontainer.json → forwardPorts</code> and are accessible
+<p>All ports are defined in <code>devcontainer.json forwardPorts</code> and are accessible
 from the Codespace public URL when forwarded.</p>
 <hr/>
 <h2 id="vs-code-extensions-pre-installed">VS Code Extensions (pre-installed)<a class="headerlink" href="#vs-code-extensions-pre-installed" title="Permanent link">¶</a></h2>
@@ -2931,24 +2931,24 @@ from the Codespace public URL when forwarded.</p>
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="server-not-starting">Server not starting<a class="headerlink" href="#server-not-starting" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>cat<span class="w"> </span>.codex/cli_api_server.log<span class="w">    </span><span class="c1"># check startup errors</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>bash<span class="w"> </span>.devcontainer/scripts/post-start.sh<span class="w">   </span><span class="c1"># restart</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>cat<span class="w"> </span>.codex/cli_api_server.log<span class="w"> </span><span class="c1"># check startup errors</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>bash<span class="w"> </span>.devcontainer/scripts/post-start.sh<span class="w"> </span><span class="c1"># restart</span>
 </code></pre></div>
 <h3 id="token-not-available">Token not available<a class="headerlink" href="#token-not-available" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Check which secrets are set</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="s2">from codex.auth.github_app import _resolve_github_token</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="s2">for val, name in _resolve_github_token():</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="s2">    print(f'{\"\" if val else \"\"} {name}')</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="s2"> print(f'{\"\" if val else \"\"} {name}')</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="s2">"</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># If missing: Settings → Codespaces → Secrets → add the secret</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># If missing: Settings Codespaces Secrets add the secret</span>
 </code></pre></div>
 <h2 id="import-errors">Import errors<a class="headerlink" href="#import-errors" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>bash<span class="w"> </span>.devcontainer/scripts/update-content.sh<span class="w">   </span><span class="c1"># re-install deps</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>bash<span class="w"> </span>.devcontainer/scripts/update-content.sh<span class="w"> </span><span class="c1"># re-install deps</span>
 </code></pre></div>
 <h3 id="github-app-jwt-fails">GitHub App JWT fails<a class="headerlink" href="#github-app-jwt-fails" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Check _GITHUB_APP_PRIVATE_KEY is in PEM format</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$_GITHUB_APP_PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w">   </span><span class="c1"># should be "-----BEGIN RSA PRIVATE KEY-----" &lt;!-- pragma: allowlist secret --&gt;</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$_GITHUB_APP_PRIVATE_KEY</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w"> </span><span class="c1"># should be "-----BEGIN RSA PRIVATE KEY-----" &lt;!-- pragma: allowlist secret --&gt;</span>
 </code></pre></div>
 <hr/>
 <h2 id="parity-matrix-codespace-vs-github-actions">Parity Matrix — Codespace vs GitHub Actions<a class="headerlink" href="#parity-matrix-codespace-vs-github-actions" title="Permanent link">¶</a></h2>
@@ -2988,12 +2988,12 @@ from the Codespace public URL when forwarded.</p>
 </tr>
 <tr>
 <td>Phase 6: Set Codex env vars</td>
-<td><code>post-create.sh</code> → <code>~/.codex_env</code></td>
+<td><code>post-create.sh</code> <code>~/.codex_env</code></td>
 <td></td>
 </tr>
 <tr>
 <td>Phase 6: Export auth tokens</td>
-<td>Codespace secrets → env vars</td>
+<td>Codespace secrets env vars</td>
 <td></td>
 </tr>
 <tr>
@@ -3030,7 +3030,7 @@ from the Codespace public URL when forwarded.</p>
 <li><code>.devcontainer/scripts/</code> — lifecycle scripts</li>
 <li><code>.github/workflows/copilot-setup-steps.yml</code> — Actions equivalent</li>
 <li><code>docs/agent/COPILOT_TOKEN_GUIDE.md</code> — full token reference</li>
-<li><code>docs/agent/GITHUB_APP_CLI_MAPPING.md</code> — GitHub App ↔ CLI mapping</li>
+<li><code>docs/agent/GITHUB_APP_CLI_MAPPING.md</code> — GitHub App CLI mapping</li>
 <li><code>docs/plans/custom-preview-image.md</code> — GHCR preview image plan</li>
 <li><code>src/codex/auth/github_app.py</code> — GitHub App package</li>
 <li><code>src/codex/agents/brain_client.py</code> — CLI API client</li>
@@ -3064,6 +3064,6 @@ from the Codespace public URL when forwarded.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

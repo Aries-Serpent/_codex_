@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/SYSTEM_CONTEXT/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>System Context Diagram (C4 Context) - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2358,7 +2358,7 @@
 <a class="md-nav__link" href="#incoming-users-system">
 <span class="md-ellipsis">
       
-        Incoming (Users → System)
+        Incoming (Users System)
       
     </span>
 </a>
@@ -2367,7 +2367,7 @@
 <a class="md-nav__link" href="#outgoing-system-external">
 <span class="md-ellipsis">
       
-        Outgoing (System → External)
+        Outgoing (System External)
       
     </span>
 </a>
@@ -2403,76 +2403,85 @@
 <h1 id="system-context-diagram-c4-context">System Context Diagram (C4 Context)<a class="headerlink" href="#system-context-diagram-c4-context" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-01-20<br/>
-<strong>Version</strong>: v0.2.1<br/>
+<p><strong>Last Updated</strong>: 2026-01-20
+<strong>Version</strong>: v0.2.1
 <strong>Reference</strong>: <a href="../5_LAYER_ARCHITECTURE/">5-Layer Architecture</a></p>
 <hr/>
 <h2 id="context-level-overview">Context Level Overview<a class="headerlink" href="#context-level-overview" title="Permanent link">¶</a></h2>
 <p>The Aries-Serpent/<em>codex</em> system operates within a broader ecosystem of users and external systems:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'System Context Diagram&lt;br/&gt;Users and External Systems'}, 'theme': 'base'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "External Systems"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        GH["🐙 GitHub&lt;br/&gt;PR Management&lt;br/&gt;Issue Tracking&lt;br/&gt;Workflows"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        ZD["🎫 Zendesk&lt;br/&gt;Support Tickets&lt;br/&gt;Customer Data&lt;br/&gt;CRM Integration"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        HF["🤗 Hugging Face&lt;br/&gt;Model Hub&lt;br/&gt;Model Weights&lt;br/&gt;Community Models"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        MLFLOW[" MLflow&lt;br/&gt;Experiment Tracking&lt;br/&gt;Model Registry&lt;br/&gt;Artifacts"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        S3["☁️ Cloud Storage&lt;br/&gt;S3/GCS/Azure&lt;br/&gt;Model Storage&lt;br/&gt;Data Backup"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        BENCH[" Benchmark&lt;br/&gt;Services&lt;br/&gt;Performance Tracking&lt;br/&gt;Leaderboards"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    end
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    subgraph "Aries-Serpent/_codex_ System"
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        CORE[" Core Platform&lt;br/&gt;Training&lt;br/&gt;Evaluation&lt;br/&gt;Serving&lt;br/&gt;RAG Pipeline"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        AGENTS[" Agent System&lt;br/&gt;161 Autonomous Agents&lt;br/&gt;Task Orchestration&lt;br/&gt;Execution Engine"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        BRAIN[" Cognitive Brain&lt;br/&gt;OODA Loops&lt;br/&gt;Quantum Orchestration&lt;br/&gt;Decision Making"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        INFRA[" Infrastructure&lt;br/&gt;Config Management&lt;br/&gt;Database&lt;br/&gt;Monitoring&lt;br/&gt;Caching"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    end
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    subgraph "Users"
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        DEV["👨‍💻 ML Engineers&lt;br/&gt;Model Development&lt;br/&gt;Experimentation&lt;br/&gt;Training"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        DS[" Data Scientists&lt;br/&gt;Feature Engineering&lt;br/&gt;Data Analysis&lt;br/&gt;EDA"]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        OPS[" DevOps/SRE&lt;br/&gt;Deployment&lt;br/&gt;Monitoring&lt;br/&gt;Operations"]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        LEAD["👔 Team Leads&lt;br/&gt;Progress Tracking&lt;br/&gt;Resource Planning&lt;br/&gt;Governance"]
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    end
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    %% User interactions with system
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    DEV --&gt;|"CLI Commands&lt;br/&gt;API Calls"| CORE
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    DEV --&gt;|"Configure&lt;br/&gt;Trigger"| AGENTS
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    DS --&gt;|"Query&lt;br/&gt;Analyze"| INFRA
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    OPS --&gt;|"Deploy&lt;br/&gt;Monitor"| INFRA
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    LEAD --&gt;|"Metrics&lt;br/&gt;Reports"| BRAIN
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    %% System internal flows
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    CORE --&gt;|"Execute&lt;br/&gt;Tasks"| AGENTS
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    AGENTS --&gt;|"Request&lt;br/&gt;Context"| BRAIN
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    BRAIN --&gt;|"Decision&lt;br/&gt;Feedback"| AGENTS
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    CORE --&gt;|"Persist&lt;br/&gt;State"| INFRA
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    AGENTS --&gt;|"Log&lt;br/&gt;Metrics"| INFRA
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    %% External system integrations
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    CORE -.-&gt;|"Push Models&lt;br/&gt;Pull Weights"| HF
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    AGENTS -.-&gt;|"PR/Issue&lt;br/&gt;Actions"| GH
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    BRAIN -.-&gt;|"Support&lt;br/&gt;Tickets"| ZD
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    CORE -.-&gt;|"Track&lt;br/&gt;Experiments"| MLFLOW
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    INFRA -.-&gt;|"Store&lt;br/&gt;Retrieve"| S3
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    AGENTS -.-&gt;|"Upload&lt;br/&gt;Results"| BENCH
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    %% Styling
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    style DEV fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    style DS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    style OPS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    style LEAD fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>    style CORE fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    style AGENTS fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    style BRAIN fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    style INFRA fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    style GH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    style ZD fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    style HF fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    style MLFLOW fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    style S3 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>    style BENCH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph "External Systems"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> GH[" GitHub&lt;br/&gt;PR Management&lt;br/&gt;Issue Tracking&lt;br/&gt;Workflows"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> ZD[" Zendesk&lt;br/&gt;Support Tickets&lt;br/&gt;Customer Data&lt;br/&gt;CRM Integration"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> HF[" Hugging Face&lt;br/&gt;Model Hub&lt;br/&gt;Model Weights&lt;br/&gt;Community Models"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> MLFLOW[" MLflow&lt;br/&gt;Experiment Tracking&lt;br/&gt;Model Registry&lt;br/&gt;Artifacts"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> S3[" Cloud Storage&lt;br/&gt;S3/GCS/Azure&lt;br/&gt;Model Storage&lt;br/&gt;Data Backup"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> BENCH[" Benchmark&lt;br/&gt;Services&lt;br/&gt;Performance Tracking&lt;br/&gt;Leaderboards"]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> end
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> subgraph "Aries-Serpent/_codex_ System"
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> CORE[" Core Platform&lt;br/&gt;Training&lt;br/&gt;Evaluation&lt;br/&gt;Serving&lt;br/&gt;RAG Pipeline"]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> AGENTS[" Agent System&lt;br/&gt;161 Autonomous Agents&lt;br/&gt;Task Orchestration&lt;br/&gt;Execution Engine"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> BRAIN[" Cognitive Brain&lt;br/&gt;OODA Loops&lt;br/&gt;Quantum Orchestration&lt;br/&gt;Decision Making"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> INFRA[" Infrastructure&lt;br/&gt;Config Management&lt;br/&gt;Database&lt;br/&gt;Monitoring&lt;br/&gt;Caching"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> end
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> subgraph "Users"
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> DEV[" ML Engineers&lt;br/&gt;Model Development&lt;br/&gt;Experimentation&lt;br/&gt;Training"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> DS[" Data Scientists&lt;br/&gt;Feature Engineering&lt;br/&gt;Data Analysis&lt;br/&gt;EDA"]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> OPS[" DevOps/SRE&lt;br/&gt;Deployment&lt;br/&gt;Monitoring&lt;br/&gt;Operations"]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> LEAD[" Team Leads&lt;br/&gt;Progress Tracking&lt;br/&gt;Resource Planning&lt;br/&gt;Governance"]
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> end
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> %% User interactions with system
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> DEV --&gt;|"CLI Commands&lt;br/&gt;API Calls"| CORE
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> DEV --&gt;|"Configure&lt;br/&gt;Trigger"| AGENTS
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> DS --&gt;|"Query&lt;br/&gt;Analyze"| INFRA
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> OPS --&gt;|"Deploy&lt;br/&gt;Monitor"| INFRA
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> LEAD --&gt;|"Metrics&lt;br/&gt;Reports"| BRAIN
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> %% System internal flows
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> CORE --&gt;|"Execute&lt;br/&gt;Tasks"| AGENTS
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> AGENTS --&gt;|"Request&lt;br/&gt;Context"| BRAIN
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> BRAIN --&gt;|"Decision&lt;br/&gt;Feedback"| AGENTS
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> CORE --&gt;|"Persist&lt;br/&gt;State"| INFRA
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> AGENTS --&gt;|"Log&lt;br/&gt;Metrics"| INFRA
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> %% External system integrations
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a> CORE -.-&gt;|"Push Models&lt;br/&gt;Pull Weights"| HF
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> AGENTS -.-&gt;|"PR/Issue&lt;br/&gt;Actions"| GH
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a> BRAIN -.-&gt;|"Support&lt;br/&gt;Tickets"| ZD
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a> CORE -.-&gt;|"Track&lt;br/&gt;Experiments"| MLFLOW
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a> INFRA -.-&gt;|"Store&lt;br/&gt;Retrieve"| S3
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> AGENTS -.-&gt;|"Upload&lt;br/&gt;Results"| BENCH
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> %% Styling
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> style DEV fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a> style DS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a> style OPS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a> style LEAD fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a> style CORE fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a> style AGENTS fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a> style BRAIN fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a> style INFRA fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a> style GH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a> style ZD fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a> style HF fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a> style MLFLOW fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a> style S3 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a> style BENCH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
 </code></pre></div>
 <hr/>
 <h2 id="system-responsibilities">System Responsibilities<a class="headerlink" href="#system-responsibilities" title="Permanent link">¶</a></h2>
@@ -2492,7 +2501,7 @@
 </ul>
 <h3 id="cognitive-brain">Cognitive Brain<a class="headerlink" href="#cognitive-brain" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>OODA Loops</strong>: Observe → Orient → Decide → Act</li>
+<li><strong>OODA Loops</strong>: Observe Orient Decide Act</li>
 <li><strong>Pattern Recognition</strong>: Identify recurring issues</li>
 <li><strong>Decision Making</strong>: Choose optimal actions</li>
 <li><strong>Quantum Orchestration</strong>: Coordinate complex workflows</li>
@@ -2570,7 +2579,7 @@
 <tr>
 <td><strong>MLflow</strong></td>
 <td>Experiment tracking</td>
-<td>Unidirectional (→)</td>
+<td>Unidirectional ()</td>
 <td>Per-run</td>
 </tr>
 <tr>
@@ -2582,21 +2591,21 @@
 <tr>
 <td><strong>Benchmarks</strong></td>
 <td>Performance tracking</td>
-<td>Unidirectional (→)</td>
+<td>Unidirectional ()</td>
 <td>Per-release</td>
 </tr>
 </tbody>
 </table>
 <hr/>
 <h2 id="key-boundary-crossings">Key Boundary Crossings<a class="headerlink" href="#key-boundary-crossings" title="Permanent link">¶</a></h2>
-<h3 id="incoming-users-system">Incoming (Users → System)<a class="headerlink" href="#incoming-users-system" title="Permanent link">¶</a></h3>
+<h3 id="incoming-users-system">Incoming (Users System)<a class="headerlink" href="#incoming-users-system" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>CLI Commands</strong> - User runs <code>codex train --config config.yaml</code></li>
 <li><strong>API Calls</strong> - Programmatic model requests: <code>POST /api/predict</code></li>
-<li><strong>GitHub Triggers</strong> - PR opened → Automated checks</li>
-<li><strong>Configuration Changes</strong> - Update <code>configs/</code> → System reloads</li>
+<li><strong>GitHub Triggers</strong> - PR opened Automated checks</li>
+<li><strong>Configuration Changes</strong> - Update <code>configs/</code> System reloads</li>
 </ol>
-<h3 id="outgoing-system-external">Outgoing (System → External)<a class="headerlink" href="#outgoing-system-external" title="Permanent link">¶</a></h3>
+<h3 id="outgoing-system-external">Outgoing (System External)<a class="headerlink" href="#outgoing-system-external" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Model Upload</strong> - Push trained models to Hugging Face</li>
 <li><strong>PR Comments</strong> - Agent post findings to GitHub PR</li>
@@ -2608,19 +2617,19 @@
 <h2 id="architecture-context">Architecture Context<a class="headerlink" href="#architecture-context" title="Permanent link">¶</a></h2>
 <p>This C4 Context diagram represents <strong>Level 1</strong> of the C4 model:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Level 1: System Context (this diagram)
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>  ↓
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Level 2: Containers (see 5-Layer Architecture)
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>  ↓
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>Level 3: Components (see individual layer docs)
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>  ↓
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>Level 4: Code (see source files)
 </code></pre></div>
 <hr/>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
 <ul>
-<li>👉 See <a href="../5_LAYER_ARCHITECTURE/">5-Layer Architecture</a> for internal layer structure</li>
-<li>👉 See <a href="../E2E_REQUEST_FLOW/">End-to-End Request Flow</a> for request lifecycle</li>
-<li>👉 See <a href="../COMPONENT_DEPENDENCIES/">Component Dependencies</a> for module relationships</li>
+<li>See <a href="../5_LAYER_ARCHITECTURE/">5-Layer Architecture</a> for internal layer structure</li>
+<li>See <a href="../E2E_REQUEST_FLOW/">End-to-End Request Flow</a> for request lifecycle</li>
+<li>See <a href="../COMPONENT_DEPENDENCIES/">Component Dependencies</a> for module relationships</li>
 </ul>
 <hr/>
 <p><strong>Related Documentation</strong>:
@@ -2656,6 +2665,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

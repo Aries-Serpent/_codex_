@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3422
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 # Phase 4: Memory Layer + xterm.js + Auth Forwarding + Telemetry Classifiers
@@ -28,7 +28,7 @@
 | P4.5 | 3 new telemetry classifiers in `collect_telemetry.py` | Done |
 | P4.6 | `memory-sync-agent.md` (v2.0 with diagram) | Done |
 | P4.6 | `telemetry-classifier-agent.md` (v2.0 with diagram) | Done |
-| P4.7 | `AGENT_REGISTRY.yaml` v0.2.1 (126128) | Done |
+| P4.7 | `AGENT_REGISTRY.yaml` v0.2.0 (126128) | Done |
 | P4.8 | REQ-8 GROUNDED gate in `agent-auth-delegation.yml` | Done |
 | P4.8 | `cognitive-ooda-loop-agent.md` v2.0 with Phase 4 wiring | Done |
 | Gov | `CHANGELOG.md` `[Unreleased]` entry | Done |
@@ -99,7 +99,7 @@ Agents (128 total)
 | xterm.js PTY | | **** | |
 | Telemetry classifiers | 15 | **18** | 18+ |
 | Agent count | 126 | **128** | 128+ |
-| AGENT_REGISTRY version | v0.2.1 | **v0.2.1** | v0.2.1 |
+| AGENT_REGISTRY version | v0.2.0 | **v0.2.0** | v0.2.0 |
 | REQ-8 GROUNDED gate | | **** | |
 | Bandit findings in new code | 1 | **0** | 0 |
 
@@ -127,7 +127,7 @@ Agents (128 total)
 - [ ] `api-proxy-audit-agent.md` — logs all /api/request calls to LTM for pattern analysis
 
 ### Sprint 15 — Phase 5 Governance
-- [ ] AGENT_REGISTRY.yaml v0.2.1 (128130)
+- [ ] AGENT_REGISTRY.yaml v0.2.0 (128130)
 - [ ] CHANGELOG Phase 5 entry
 - [ ] SESSION_RESTORE_PR3423.md chain prompt
 

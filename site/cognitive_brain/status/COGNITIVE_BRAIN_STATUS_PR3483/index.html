@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3483/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status — PR #3483 - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2274,11 +2274,11 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h1 id="sc2016sc2012-fix-repo-variable-expansion-mermaid-codebase-audit">SC2016/SC2012 Fix + Repo Variable Expansion + Mermaid Codebase Audit<a class="headerlink" href="#sc2016sc2012-fix-repo-variable-expansion-mermaid-codebase-audit" title="Permanent link">¶</a></h1>
-<p><strong>Status:</strong>  COMPLETE<br/>
-<strong>PR:</strong> #3483<br/>
-<strong>Branch:</strong> <code>copilot/fix-lint-workflows-error</code><br/>
+<p><strong>Status:</strong> COMPLETE
+<strong>PR:</strong> #3483
+<strong>Branch:</strong> <code>copilot/fix-lint-workflows-error</code>
 <strong>Date:2026-07-13
-</strong>Session:<strong> COGNITIVE_BRAIN_SESSION_NUMBER 110+<br/>
+</strong>Session:<strong> COGNITIVE_BRAIN_SESSION_NUMBER 110+
 </strong>Agent:** copilot-swe-agent (PR #3483 session)</p>
 <hr/>
 <h2 id="session-summary">Session Summary<a class="headerlink" href="#session-summary" title="Permanent link">¶</a></h2>
@@ -2298,7 +2298,7 @@
 </tr>
 <tr>
 <td>W-084</td>
-<td><code>actionlint-audit.yml</code> SC2012 ×2 fix (<code>ls</code> → <code>find</code>)</td>
+<td><code>actionlint-audit.yml</code> SC2012 ×2 fix (<code>ls</code> <code>find</code>)</td>
 <td>Done</td>
 </tr>
 <tr>
@@ -2361,29 +2361,31 @@
 <hr/>
 <h2 id="architecture-state-post-pr-3483">Architecture State (Post PR #3483)<a class="headerlink" href="#architecture-state-post-pr-3483" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing "PR #3483 Deliverables", " actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph PR3483["PR #3483 Deliverables"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        FIX1[" actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        DOCS1[" REPO_VARIABLES_IMPLEMENTATION_GUIDE.md\n5 Mermaid diagrams\nFull wiring reference"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        DOCS2[" HUMAN_ADMIN_REPO_VARIABLES_SETUP.md\nCheckboxes + copy-paste CLI\nStep-by-step UI guide"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        AUDIT[" Mermaid codebase audit\n9 files fixed (91→96 workflows)\n446 files scanned total"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        AGENTS[" 3 agent files updated\nrepo-var-sync v1.1\ncognitive-brain-manager v2.0\nci-health-alert-agent updated"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    end
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    subgraph VARS["13 New Repo Variables (to create)"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        CB_VARS["Cognitive Brain (4)\nMAX_CONTEXT_TOKENS=32000\nLTM_RETENTION_DAYS=90\nPATTERN_MIN_CONFIDENCE=0.75\nMEMORY_TIER=both"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        CLI_VARS["Copilot CLI (4)\nCLI_BASE_URL=:8765\nCLI_ENABLED=true\nSESSION_RESTORE_ENABLED=true\nMAX_AUTONOMY_LEVEL=E"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        CI_VARS["CI/CD Health (5)\nCI_FAILURE_THRESHOLD=10.0\nCI_LAST_GREEN_SHA=auto\nHANDOFF_TIMEOUT=120\nEMBEDDING_REBUILD=true\nAUTO_PROMOTE=false"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    end
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    subgraph STATE["Current Repository State"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        WF["96 workflows (fixed from stale 91)"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    end
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    PR3483 --&gt; VARS
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    PR3483 --&gt; STATE
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph PR3483["PR #3483 Deliverables"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> FIX1[" actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> DOCS1[" REPO_VARIABLES_IMPLEMENTATION_GUIDE.md\n5 Mermaid diagrams\nFull wiring reference"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> DOCS2[" HUMAN_ADMIN_REPO_VARIABLES_SETUP.md\nCheckboxes + copy-paste CLI\nStep-by-step UI guide"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> AUDIT[" Mermaid codebase audit\n9 files fixed (9196 workflows)\n446 files scanned total"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> AGENTS[" 3 agent files updated\nrepo-var-sync v1.1\ncognitive-brain-manager v2.0\nci-health-alert-agent updated"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> end
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> subgraph VARS["13 New Repo Variables (to create)"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> CB_VARS["Cognitive Brain (4)\nMAX_CONTEXT_TOKENS=32000\nLTM_RETENTION_DAYS=90\nPATTERN_MIN_CONFIDENCE=0.75\nMEMORY_TIER=both"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> CLI_VARS["Copilot CLI (4)\nCLI_BASE_URL=:8765\nCLI_ENABLED=true\nSESSION_RESTORE_ENABLED=true\nMAX_AUTONOMY_LEVEL=E"]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> CI_VARS["CI/CD Health (5)\nCI_FAILURE_THRESHOLD=10.0\nCI_LAST_GREEN_SHA=auto\nHANDOFF_TIMEOUT=120\nEMBEDDING_REBUILD=true\nAUTO_PROMOTE=false"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> end
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> subgraph STATE["Current Repository State"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> WF["96 workflows (fixed from stale 91)"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> end
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> PR3483 --&gt; VARS
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> PR3483 --&gt; STATE
 </code></pre></div>
 <hr/>
 <h2 id="mermaid-diagram-audit-results">Mermaid Diagram Audit Results<a class="headerlink" href="#mermaid-diagram-audit-results" title="Permanent link">¶</a></h2>
@@ -2405,31 +2407,31 @@
 <tbody>
 <tr>
 <td><code>docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md</code></td>
-<td>Header: 91 → 96</td>
+<td>Header: 91 96</td>
 </tr>
 <tr>
 <td><code>docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3422.md</code></td>
-<td>91 → 96</td>
+<td>91 96</td>
 </tr>
 <tr>
 <td><code>.github/copilot-prompts/active/PR-3422-followup.md</code></td>
-<td>91 → 96</td>
+<td>91 96</td>
 </tr>
 <tr>
 <td><code>.github/workflows/CONSOLIDATION_GUIDE.md</code></td>
-<td>91 → 96</td>
+<td>91 96</td>
 </tr>
 <tr>
 <td><code>.github/agents/AGENT_REGISTRY.md</code></td>
-<td>91 → 96</td>
+<td>91 96</td>
 </tr>
 <tr>
 <td><code>.codex/docs/CUSTOM_AGENT_MCP_INTEGRATION_AUDIT.md</code></td>
-<td>91 → 96 (×2)</td>
+<td>91 96 (×2)</td>
 </tr>
 <tr>
 <td><code>.codex/plans/PR3422_PHASE4_PLANSET.md</code></td>
-<td>91 → 96</td>
+<td>91 96</td>
 </tr>
 <tr>
 <td><code>.codex/plans/COGNITIVE_BRAIN_LIVE_STATUS.md</code></td>
@@ -2437,31 +2439,43 @@
 </tr>
 <tr>
 <td><code>docs/plans/Agentic_AI_System/READINESS_AUDIT_ANALYSIS.md</code></td>
-<td>91 → 96 (×3)</td>
+<td>91 96 (×3)</td>
 </tr>
 </tbody>
 </table>
 <hr/>
 <h2 id="next-phase-plan">Next Phase Plan<a class="headerlink" href="#next-phase-plan" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "PR #3483\n MERGED", "P1 — Immediate\n(next session)"'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>flowchart LR
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    NOW["PR #3483\n MERGED"] --&gt; P1
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>flowchart LR
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    P1["P1 — Immediate\n(next session)"]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    P1 --&gt; P1A["Admin: create 13 new\nrepo variables via\nHUMAN_ADMIN_REPO_VARIABLES_SETUP.md"]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    P1 --&gt; P1B["Verify actionlint-audit\nCI gate passes green"]
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> NOW["PR #3483\n MERGED"] --&gt; P1
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> P1["P1 — Immediate\n(next session)"]
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    P1A &amp; P1B --&gt; P2["P2 — Wiring PRs"]
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    P2 --&gt; P2A["generate_manifest.py:\nCONTEXT_WINDOW_BUDGET\n→ COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    P2 --&gt; P2B["prune_corpus.py:\nretention_days\n→ COGNITIVE_BRAIN_LTM_RETENTION_DAYS"]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    P2 --&gt; P2C["ci-health-monitor.yml:\nhardcoded threshold\n→ CODEX_CI_FAILURE_THRESHOLD"]
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    P2 --&gt; P2D["agent-handoff-gate.yml:\nhardcoded timeout\n→ AGENT_HANDOFF_TIMEOUT_SECONDS"]
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    P2 --&gt; P2E["chatops_copilot_trigger.yml:\nadd SESSION_NUMBER\nauto-increment step"]
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    P2A &amp; P2B &amp; P2C &amp; P2D &amp; P2E --&gt; P3["P3 — Enhancement"]
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    P3 --&gt; P3A["Add .actionlintrc\nshell-check: enable: true"]
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    P3 --&gt; P3B["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\nE → D when validated"]
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    P3 --&gt; P3C["AUTO_PROMOTE_TIER_ENABLED\nfalse → true when validated"]
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> P1 --&gt; P1A["Admin: create 13 new\nrepo variables via\nHUMAN_ADMIN_REPO_VARIABLES_SETUP.md"]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> P1 --&gt; P1B["Verify actionlint-audit\nCI gate passes green"]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> P1A &amp; P1B --&gt; P2["P2 — Wiring PRs"]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> P2 --&gt; P2A["generate_manifest.py:\nCONTEXT_WINDOW_BUDGET\n COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"]
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> P2 --&gt; P2B["prune_corpus.py:\nretention_days\n COGNITIVE_BRAIN_LTM_RETENTION_DAYS"]
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> P2 --&gt; P2C["ci-health-monitor.yml:\nhardcoded threshold\n CODEX_CI_FAILURE_THRESHOLD"]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> P2 --&gt; P2D["agent-handoff-gate.yml:\nhardcoded timeout\n AGENT_HANDOFF_TIMEOUT_SECONDS"]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> P2 --&gt; P2E["chatops_copilot_trigger.yml:\nadd SESSION_NUMBER\nauto-increment step"]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> P2A &amp; P2B &amp; P2C &amp; P2D &amp; P2E --&gt; P3["P3 — Enhancement"]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> P3 --&gt; P3A["Add .actionlintrc\nshell-check: enable: true"]
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> P3 --&gt; P3B["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\nE D when validated"]
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> P3 --&gt; P3C["AUTO_PROMOTE_TIER_ENABLED\nfalse true when validated"]
 </code></pre></div>
 <hr/>
 <h2 id="governance-compliance">Governance Compliance<a class="headerlink" href="#governance-compliance" title="Permanent link">¶</a></h2>
@@ -2524,6 +2538,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

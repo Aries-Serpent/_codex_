@@ -1,5 +1,5 @@
 # CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Quick Reference Guide for Token Requirements in 13 Level-1 Custom Agents**
 

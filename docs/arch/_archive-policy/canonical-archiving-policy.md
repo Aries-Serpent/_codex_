@@ -1,6 +1,6 @@
 # Codebase Archival & Hygiene Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -12,7 +12,7 @@
 @-- References:
 CODEOWNERS (GitHub): https://docs.github.com/articles/about-code-owners
 Repo archival (GitHub): https://docs.github.com/en/repositories/archiving-a-github-repository/archiving-repositories
-Conventional Commits: https://www.conventionalcommits.org/en/v0.2.1/
+Conventional Commits: https://www.conventionalcommits.org/en/v0.2.0/
 Keep a Changelog: https://keepachangelog.com/en/1.1.0/
 ADRs: https://adr.github.io/
 SLSA provenance: https://slsa.dev/provenance

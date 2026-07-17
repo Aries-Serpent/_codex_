@@ -1,6 +1,6 @@
 # GitHub Pages Status Dashboard
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last Updated**: 2026-06-22T00:00:00Z
 > **Updated by**: Copilot Coding Agent — Session S304 (PR #3901)

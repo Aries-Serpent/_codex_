@@ -1,9 +1,9 @@
 # Data Flow Architecture
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-01-20
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---

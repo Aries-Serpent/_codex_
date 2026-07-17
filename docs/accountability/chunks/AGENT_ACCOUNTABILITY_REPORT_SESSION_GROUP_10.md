@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 10
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 10 of 32  
 **Sessions:** S295-PR4211-ci-rescue-checkout-v5-pda to S859-PR4346-callable-fix-doc-optimizer  

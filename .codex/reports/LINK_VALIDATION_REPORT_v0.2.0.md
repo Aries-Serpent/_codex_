@@ -113,7 +113,7 @@ DOC_OPERATIONAL_RUNBOOK.md:241
   → Example/placeholder text: needs cleanup
 
 validation/INDEX.md:34
-  [Next_Iteration_Prompt_v0.2.1](Next_Iteration_Prompt_v0.2.1.md)
+  [Next_Iteration_Prompt_v0.2.0](Next_Iteration_Prompt_v0.2.0.md)
   → May reference archived iteration content
 
 workflows/PHASE1_TRACKING.md:274

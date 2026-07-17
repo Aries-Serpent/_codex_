@@ -1,5 +1,5 @@
 # Cargo Features Documentation
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -214,7 +214,7 @@ ImportError: dynamic module does not define module export function
 
 ## References
 
-- [PyO3 Features Documentation](https://pyo3.rs/v0.2.1/building-and-distribution)
+- [PyO3 Features Documentation](https://pyo3.rs/v0.2.0/building-and-distribution)
 - [Cargo Features Guide](https://doc.rust-lang.org/cargo/reference/features.html)
 - [Rust Conditional Compilation](https://doc.rust-lang.org/reference/conditional-compilation.html)
 - Incident Report: `.codex/incident_reports/ci_failure_batch_2026_01_19.md`

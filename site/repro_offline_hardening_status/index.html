@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/repro_offline_hardening_status/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Offline Hardening and Reproducibility Guards - Implementation Status - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2309,7 +2309,7 @@
 <a class="md-nav__link" href="#c-deterministic-split-helper-sha1-801010">
 <span class="md-ellipsis">
       
-        [C] Deterministic Split Helper (SHA1 → 80/10/10)
+        [C] Deterministic Split Helper (SHA1 80/10/10)
       
     </span>
 </a>
@@ -2345,7 +2345,7 @@
 <a class="md-nav__link" href="#g-tokenization-cli-explicit-offline-first-flags">
 <span class="md-ellipsis">
       
-        [G] Tokenization CLI: Explicit Offline-first Flags ️
+        [G] Tokenization CLI: Explicit Offline-first Flags
       
     </span>
 </a>
@@ -2373,22 +2373,22 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Branch</strong>: <code>chore/offline-hardening-and-repro-guards-0D</code><br/>
-<strong>Date</strong>: 2025-11-03<br/>
-<strong>Status</strong>:  <strong>All features already implemented</strong></p>
+<p><strong>Branch</strong>: <code>chore/offline-hardening-and-repro-guards-0D</code>
+<strong>Date</strong>: 2025-11-03
+<strong>Status</strong>: <strong>All features already implemented</strong></p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>All requested offline hardening and reproducibility guard patchsets have been verified as <strong>already implemented</strong> in the codebase. This document provides evidence and references for each feature.</p>
 <hr/>
 <h2 id="feature-implementation-status">Feature Implementation Status<a class="headerlink" href="#feature-implementation-status" title="Permanent link">¶</a></h2>
 <h3 id="a-default-ndjson-metrics-sink">[A] Default NDJSON Metrics Sink<a class="headerlink" href="#a-default-ndjson-metrics-sink" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>src/codex_ml/eval/runner.py:542</code></p>
 <p><code>python
 metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))</code>text</p>
 <p>The default is already <code>"ndjson"</code> with CSV as a fallback option. The system supports multiple sinks via the <code>_normalise_metrics_sink</code> function.</p>
 <hr/>
 <h3 id="b-deterministic-seeding-at-train-cli">[B] Deterministic Seeding at Train CLI<a class="headerlink" href="#b-deterministic-seeding-at-train-cli" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>src/codex_ml/cli/train.py:305</code></p>
 <p><code>python
 seed = int(seed_override) if seed_override is not None else None
@@ -2399,14 +2399,14 @@ try:
 except Exception as exc:
     LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)</code>text</p>
 <p>The training CLI already calls <code>repro.set_seed(seed)</code> to ensure deterministic behavior.</p>
-<p><strong>Supporting Module</strong>: <code>src/codex_ml/utils/repro.py</code><br/>
+<p><strong>Supporting Module</strong>: <code>src/codex_ml/utils/repro.py</code>
 The module provides:
 - <code>set_seed(seed, deterministic=None)</code> - Sets seeds for Python, NumPy, PyTorch
 - <code>set_reproducible(seed)</code> - Comprehensive seeding wrapper
 - <code>set_deterministic(flag)</code> - Toggle PyTorch deterministic algorithms</p>
 <hr/>
-<h3 id="c-deterministic-split-helper-sha1-801010">[C] Deterministic Split Helper (SHA1 → 80/10/10)<a class="headerlink" href="#c-deterministic-split-helper-sha1-801010" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<h3 id="c-deterministic-split-helper-sha1-801010">[C] Deterministic Split Helper (SHA1 80/10/10)<a class="headerlink" href="#c-deterministic-split-helper-sha1-801010" title="Permanent link">¶</a></h3>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>src/codex_ml/data/splits.py</code></p>
 <p>```python
 def stable_fold(example_id: str) -&gt; int:
@@ -2429,7 +2429,7 @@ def stable_fold(example_id: str) -&gt; int:
 - And 12+ other split-related test files</p>
 <hr/>
 <h3 id="d-peft-lora-opt-in-gating">[D] PEFT / LoRA Opt-in Gating<a class="headerlink" href="#d-peft-lora-opt-in-gating" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented with graceful degradation<br/>
+<p><strong>Status</strong>: Already implemented with graceful degradation
 <strong>Location</strong>: <code>src/codex_ml/models/peft_hooks.py:6-10</code></p>
 <p><code>python
 try:
@@ -2445,7 +2445,7 @@ def build_lora(model: Any, cfg: Optional[LoraBuildCfg] = None) -&gt; Any:
     # ... PEFT logic</code>text</p>
 <hr/>
 <h3 id="e-cpu-only-model-construction-smoke-gate">[E] CPU-only Model Construction Smoke Gate<a class="headerlink" href="#e-cpu-only-model-construction-smoke-gate" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>noxfile.py:177-189</code></p>
 <p><code>python
 @nox.session(name="model-smoke")
@@ -2463,7 +2463,7 @@ def model_smoke(session: nox.Session) -&gt; None:
 <p><strong>Usage</strong>: <code>nox -s model-smoke</code></p>
 <hr/>
 <h3 id="f-make-dev-install-lock-only">[F] Make Dev Install Lock-only<a class="headerlink" href="#f-make-dev-install-lock-only" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>configs/development/Makefile:12-18</code></p>
 <p><code>makefile
 setup:
@@ -2475,8 +2475,8 @@ setup:
     pip install -r requirements/dev.txt --no-deps</code>text</p>
 <p>The Makefile enforces <code>requirements/lock.txt</code> for reproducible installs.</p>
 <hr/>
-<h3 id="g-tokenization-cli-explicit-offline-first-flags">[G] Tokenization CLI: Explicit Offline-first Flags ️<a class="headerlink" href="#g-tokenization-cli-explicit-offline-first-flags" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Partially implemented<br/>
+<h3 id="g-tokenization-cli-explicit-offline-first-flags">[G] Tokenization CLI: Explicit Offline-first Flags<a class="headerlink" href="#g-tokenization-cli-explicit-offline-first-flags" title="Permanent link">¶</a></h3>
+<p><strong>Status</strong>: Partially implemented
 <strong>Location</strong>: <code>src/codex_ml/tokenization/cli.py</code></p>
 <p>The tokenization CLI exists but doesn't have all the explicit offline flags mentioned in the patchset. However, it does support:
 - Local model paths via <code>CODEX_TOKENIZER_MODEL</code> environment variable
@@ -2484,7 +2484,7 @@ setup:
 <p><strong>Enhancement Needed</strong>: Add explicit <code>--allow-remote</code>, <code>--cache-dir</code>, <code>--padding</code>, <code>--truncation</code> flags as specified in patchset [G].</p>
 <hr/>
 <h3 id="h-docker-documented-digest-pin-example">[H] Docker: Documented Digest-pin Example<a class="headerlink" href="#h-docker-documented-digest-pin-example" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>: Already implemented<br/>
+<p><strong>Status</strong>: Already implemented
 <strong>Location</strong>: <code>Dockerfile:10-12</code></p>
 <p>```dockerfile</p>
 <h1 id="for-immutable-builds-prefer-digest-pinning-example">For immutable builds, prefer digest pinning. Example:<a class="headerlink" href="#for-immutable-builds-prefer-digest-pinning-example" title="Permanent link">¶</a></h1>
@@ -2503,7 +2503,7 @@ setup:
 <li><strong>Docker best practices</strong>: Digest-pin documented</li>
 <li><strong>NDJSON metrics</strong>: Default sink configured</li>
 </ol>
-<h3 id="pending-validations">️ Pending Validations<a class="headerlink" href="#pending-validations" title="Permanent link">¶</a></h3>
+<h3 id="pending-validations">Pending Validations<a class="headerlink" href="#pending-validations" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>Tokenization roundtrip test</strong>: Test file path from patchset needs verification</li>
 <li><strong>No CI YAML touched</strong>: Confirmed - no workflow files modified</li>
@@ -2563,6 +2563,6 @@ setup:
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

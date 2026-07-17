@@ -1,6 +1,6 @@
 # Copilot PR Template Usage Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version:** 1.0.0
 > **Generated:** 2025-11-17
@@ -260,7 +260,7 @@ Before finishing a session, verify:
 ```markdown
 # Comprehensive ML Platform Enhancement: [Feature Names]
 
-> **Based on:** PR_TEMPLATE_COMPREHENSIVE.md v0.2.1
+> **Based on:** PR_TEMPLATE_COMPREHENSIVE.md v0.2.0
 
 ---
 
@@ -498,7 +498,7 @@ If unsure about:
 
 ## VERSION HISTORY
 
-- **v0.2.1** (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage
+- **v0.2.0** (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage
 
 ---
 

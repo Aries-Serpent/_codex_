@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>[Human Admin] Repository Variables Setup Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2493,10 +2493,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>For:</strong> Human administrator (mbaetiong) — manual GitHub UI / CLI actions required<br/>
-<strong>Source:</strong> <a href="https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714">PR #3483 comment #issuecomment-3988416714</a><br/>
-<strong>Technical reference:</strong> <a href="../REPO_VARIABLES_IMPLEMENTATION_GUIDE/"><code>REPO_VARIABLES_IMPLEMENTATION_GUIDE.md</code></a><br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>For:</strong> Human administrator (mbaetiong) — manual GitHub UI / CLI actions required
+<strong>Source:</strong> <a href="https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714">PR #3483 comment #issuecomment-3988416714</a>
+<strong>Technical reference:</strong> <a href="../REPO_VARIABLES_IMPLEMENTATION_GUIDE/"><code>REPO_VARIABLES_IMPLEMENTATION_GUIDE.md</code></a>
+<strong>Version:</strong> 1.0.0
 **Last Updated: 2026-07-11</p>
 </blockquote>
 <hr/>
@@ -2504,33 +2504,43 @@
 <p>This guide contains <strong>every action needed to implement the repository variable recommendations</strong>
 from PR #3483. Each section has:</p>
 <ul>
-<li>☐ checkboxes to track completion</li>
+<li>checkboxes to track completion</li>
 <li>copy-paste ready code blocks</li>
 <li>direct URLs — no searching required</li>
-<li>👆 exact click-by-click steps</li>
+<li>exact click-by-click steps</li>
 </ul>
-<p><strong>Total variables to create: 13</strong><br/>
-<strong>Variables to convert to placeholder (auto-managed): 1</strong><br/>
+<p><strong>Total variables to create: 13</strong>
+<strong>Variables to convert to placeholder (auto-managed): 1</strong>
 <strong>Estimated time: ~20 minutes</strong></p>
 <hr/>
 <h2 id="setup-flow">Setup Flow<a class="headerlink" href="#setup-flow" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing  Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    START([ Start]) --&gt; PREREQ{Prerequisites\nmet?}
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    PREREQ --&gt;|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    FIX_PREREQ --&gt; PREREQ
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    PREREQ --&gt;|Yes| CHOICE{Setup method?}
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    CHOICE --&gt;|Fast — CLI| BATCH["§1 Batch CLI\n~5 minutes"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    CHOICE --&gt;|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    BATCH --&gt; VERIFY["§3 Verify\nAll 13 variables present"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    UI_METHOD --&gt; VERIFY
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    VERIFY --&gt; DONE([ Complete])
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> START([ Start]) --&gt; PREREQ{Prerequisites\nmet?}
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> PREREQ --&gt;|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> FIX_PREREQ --&gt; PREREQ
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> PREREQ --&gt;|Yes| CHOICE{Setup method?}
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    style START fill:#22c55e,color:#fff
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    style DONE fill:#22c55e,color:#fff
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    style PREREQ fill:#f59e0b,color:#fff
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    style BATCH fill:#3b82f6,color:#fff
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    style UI_METHOD fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> CHOICE --&gt;|Fast — CLI| BATCH["§1 Batch CLI\n~5 minutes"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> CHOICE --&gt;|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> BATCH --&gt; VERIFY["§3 Verify\nAll 13 variables present"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> UI_METHOD --&gt; VERIFY
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> VERIFY --&gt; DONE([ Complete])
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> style START fill:#22c55e,color:#fff
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> style DONE fill:#22c55e,color:#fff
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> style PREREQ fill:#f59e0b,color:#fff
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> style BATCH fill:#3b82f6,color:#fff
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> style UI_METHOD fill:#8b5cf6,color:#fff
 </code></pre></div>
 <hr/>
 <h2 id="prerequisites-checklist">Prerequisites Checklist<a class="headerlink" href="#prerequisites-checklist" title="Permanent link">¶</a></h2>
@@ -2539,91 +2549,92 @@ from PR #3483. Each section has:</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> You are logged in as <strong>mbaetiong</strong> (repository owner)</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>gh</code> CLI is installed — run <code>gh --version</code> to confirm</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>gh auth status</code> shows <code>Aries-Serpent/_codex_</code> in scope</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODEX_MASTER_KEY</code> secret exists with <code>variables: read+write</code> permission<br/>
-  → Check: <a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">https://github.com/Aries-Serpent/_codex_/settings/secrets/actions</a></li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODEX_MASTER_KEY</code> secret exists with <code>variables: read+write</code> permission
+ Check: <a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">https://github.com/Aries-Serpent/_codex_/settings/secrets/actions</a></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> You have at least 20 minutes uninterrupted</li>
 </ul>
 <hr/>
 <h2 id="1-batch-cli-method-recommended-5-minutes">§1 — Batch CLI Method (Recommended — ~5 minutes)<a class="headerlink" href="#1-batch-cli-method-recommended-5-minutes" title="Permanent link">¶</a></h2>
 <p>Copy and paste the entire block below into your terminal. It creates all 13 new variables in one pass using the GitHub CLI.</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># ── Aries-Serpent/_codex_ repository variable setup ──────────────────────────</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Aries-Serpent/_codex_ repository variable setup </span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="c1"># Source: PR #3483 #issuecomment-3988416714</span>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="c1"># Run from any directory — uses gh CLI (must be authenticated)</span>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="nv">REPO</span><span class="o">=</span><span class="s2">"Aries-Serpent/_codex_"</span>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>create_var<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">  </span><span class="nb">local</span><span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">"</span><span class="nv">$name</span><span class="s2">"</span><span class="w"> </span>--body<span class="w"> </span><span class="s2">"</span><span class="nv">$value</span><span class="s2">"</span><span class="w"> </span>--repo<span class="w"> </span><span class="s2">"</span><span class="nv">$REPO</span><span class="s2">"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  </span><span class="nv">$name</span><span class="s2"> = </span><span class="nv">$value</span><span class="s2">"</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="k">else</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  FAILED: </span><span class="nv">$name</span><span class="s2">"</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">  </span><span class="k">fi</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span><span class="nv">value</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="w"> </span><span class="k">if</span><span class="w"> </span>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">"</span><span class="nv">$name</span><span class="s2">"</span><span class="w"> </span>--body<span class="w"> </span><span class="s2">"</span><span class="nv">$value</span><span class="s2">"</span><span class="w"> </span>--repo<span class="w"> </span><span class="s2">"</span><span class="nv">$REPO</span><span class="s2">"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" </span><span class="nv">$name</span><span class="s2"> = </span><span class="nv">$value</span><span class="s2">"</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w"> </span><span class="k">else</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" FAILED: </span><span class="nv">$name</span><span class="s2">"</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="k">fi</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="o">}</span>
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Creating Cognitive Brain variables…"</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"</span><span class="w">    </span><span class="s2">"32000"</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_LTM_RETENTION_DAYS"</span><span class="w">    </span><span class="s2">"90"</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"</span><span class="w"> </span><span class="s2">"32000"</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_LTM_RETENTION_DAYS"</span><span class="w"> </span><span class="s2">"90"</span>
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE"</span><span class="w"> </span><span class="s2">"0.75"</span>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_MEMORY_TIER"</span><span class="w">            </span><span class="s2">"both"</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>create_var<span class="w"> </span><span class="s2">"COGNITIVE_BRAIN_MEMORY_TIER"</span><span class="w"> </span><span class="s2">"both"</span>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Creating Copilot CLI variables…"</span>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_CLI_BASE_URL"</span><span class="w">                   </span><span class="s2">"http://localhost:8765"</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_CLI_ENABLED"</span><span class="w">                    </span><span class="s2">"true"</span>
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_AGENT_SESSION_RESTORE_ENABLED"</span><span class="w">  </span><span class="s2">"true"</span>
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_AGENT_MAX_AUTONOMY_LEVEL"</span><span class="w">       </span><span class="s2">"E"</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_CLI_BASE_URL"</span><span class="w"> </span><span class="s2">"http://localhost:8765"</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_CLI_ENABLED"</span><span class="w"> </span><span class="s2">"true"</span>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_AGENT_SESSION_RESTORE_ENABLED"</span><span class="w"> </span><span class="s2">"true"</span>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>create_var<span class="w"> </span><span class="s2">"COPILOT_AGENT_MAX_AUTONOMY_LEVEL"</span><span class="w"> </span><span class="s2">"E"</span>
 <a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
 <a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Creating CI/CD health variables…"</span>
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>create_var<span class="w"> </span><span class="s2">"CODEX_CI_FAILURE_THRESHOLD"</span><span class="w">             </span><span class="s2">"10.0"</span>
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>create_var<span class="w"> </span><span class="s2">"CODEX_CI_LAST_GREEN_SHA"</span><span class="w">                </span><span class="s2">""</span>
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>create_var<span class="w"> </span><span class="s2">"AGENT_HANDOFF_TIMEOUT_SECONDS"</span><span class="w">          </span><span class="s2">"120"</span>
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>create_var<span class="w"> </span><span class="s2">"EMBEDDING_INDEX_AUTO_REBUILD"</span><span class="w">           </span><span class="s2">"true"</span>
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>create_var<span class="w"> </span><span class="s2">"AUTO_PROMOTE_TIER_ENABLED"</span><span class="w">              </span><span class="s2">"false"</span>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>create_var<span class="w"> </span><span class="s2">"CODEX_CI_FAILURE_THRESHOLD"</span><span class="w"> </span><span class="s2">"10.0"</span>
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>create_var<span class="w"> </span><span class="s2">"CODEX_CI_LAST_GREEN_SHA"</span><span class="w"> </span><span class="s2">""</span>
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>create_var<span class="w"> </span><span class="s2">"AGENT_HANDOFF_TIMEOUT_SECONDS"</span><span class="w"> </span><span class="s2">"120"</span>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>create_var<span class="w"> </span><span class="s2">"EMBEDDING_INDEX_AUTO_REBUILD"</span><span class="w"> </span><span class="s2">"true"</span>
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>create_var<span class="w"> </span><span class="s2">"AUTO_PROMOTE_TIER_ENABLED"</span><span class="w"> </span><span class="s2">"false"</span>
 <a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
 <a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Done. Verify at:"</span>
 <a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"https://github.com/Aries-Serpent/_codex_/settings/variables/actions"</span>
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"──────────────────────────────────────────────────"</span>
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
 </code></pre></div>
 <p><strong>After running</strong>, check all 13 lines show . If any show , see <a href="#4-troubleshooting">§4 Troubleshooting</a>.</p>
 <hr/>
 <h2 id="2-github-ui-method-step-by-step">§2 — GitHub UI Method (Step-by-Step)<a class="headerlink" href="#2-github-ui-method-step-by-step" title="Permanent link">¶</a></h2>
 <h3 id="navigate-to-the-variables-page">Navigate to the variables page<a class="headerlink" href="#navigate-to-the-variables-page" title="Permanent link">¶</a></h3>
-<p>👆 <strong>Click this link:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">https://github.com/Aries-Serpent/_codex_/settings/variables/actions</a></p>
+<p><strong>Click this link:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">https://github.com/Aries-Serpent/_codex_/settings/variables/actions</a></p>
 <p>Or navigate manually:
 1. Open <a href="https://github.com/Aries-Serpent/_codex_">https://github.com/Aries-Serpent/_codex_</a>
 2. Click <strong>Settings</strong> tab (top of the page, requires owner access)
-3. In the left sidebar, scroll to <strong>Security</strong> → click <strong>Secrets and variables</strong>
+3. In the left sidebar, scroll to <strong>Security</strong> click <strong>Secrets and variables</strong>
 4. Click <strong>Actions</strong> in the sub-menu
 5. Click the <strong>Variables</strong> tab (next to Secrets)</p>
 <p>You should see the existing variables list. You will click <strong>New repository variable</strong> for each one below.</p>
 <hr/>
 <h3 id="variable-setup-mermaid-checklist-map">Variable setup — Mermaid checklist map<a class="headerlink" href="#variable-setup-mermaid-checklist-map" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Mind Map'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>mindmap
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>  root((Variables\nto Create))
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    Cognitive Brain
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>      COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>      COGNITIVE_BRAIN_LTM_RETENTION_DAYS
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>      COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>      COGNITIVE_BRAIN_MEMORY_TIER
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    Copilot CLI
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>      COPILOT_CLI_BASE_URL
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>      COPILOT_CLI_ENABLED
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>      COPILOT_AGENT_SESSION_RESTORE_ENABLED
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>      COPILOT_AGENT_MAX_AUTONOMY_LEVEL
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    CI/CD Health
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>      CODEX_CI_FAILURE_THRESHOLD
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>      CODEX_CI_LAST_GREEN_SHA
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>      AGENT_HANDOFF_TIMEOUT_SECONDS
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>      EMBEDDING_INDEX_AUTO_REBUILD
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>      AUTO_PROMOTE_TIER_ENABLED
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>mindmap
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> root((Variables\nto Create))
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> Cognitive Brain
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> COGNITIVE_BRAIN_LTM_RETENTION_DAYS
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> COGNITIVE_BRAIN_MEMORY_TIER
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> Copilot CLI
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> COPILOT_CLI_BASE_URL
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> COPILOT_CLI_ENABLED
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> COPILOT_AGENT_SESSION_RESTORE_ENABLED
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> COPILOT_AGENT_MAX_AUTONOMY_LEVEL
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> CI/CD Health
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> CODEX_CI_FAILURE_THRESHOLD
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> CODEX_CI_LAST_GREEN_SHA
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> AGENT_HANDOFF_TIMEOUT_SECONDS
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> EMBEDDING_INDEX_AUTO_REBUILD
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> AUTO_PROMOTE_TIER_ENABLED
 </code></pre></div>
 <hr/>
 <h3 id="group-a-cognitive-brain-4-variables">Group A — Cognitive Brain (4 variables)<a class="headerlink" href="#group-a-cognitive-brain-4-variables" title="Permanent link">¶</a></h3>
@@ -2880,8 +2891,8 @@ start — enabling memory continuity across Copilot coding agent sessions.</p>
 <blockquote>
 <p><strong>Purpose:</strong> Runtime cap on agent autonomy tier. <code>E</code> = advisory only (current safe default).
 Change to <code>D</code> only after <code>e-to-d-transition-gate.yml</code> confirms 5/5 conditions AND you have
-reviewed the E→D Transition Map.<br/>
-️ <strong>Do not set to <code>D</code> without explicit owner review.</strong></p>
+reviewed the ED Transition Map.
+<strong>Do not set to <code>D</code> without explicit owner review.</strong></p>
 </blockquote>
 <hr/>
 <h3 id="group-c-cicd-health-5-variables">Group C — CI/CD Health (5 variables)<a class="headerlink" href="#group-c-cicd-health-5-variables" title="Permanent link">¶</a></h3>
@@ -3041,12 +3052,12 @@ Already wired at lines 231–238 of the validation workflow.</p>
 </code></pre></div></p>
 <blockquote>
 <p><strong>Purpose:</strong> Gates <code>scripts/ci/auto_promote_tier.py</code>. Start at <code>false</code> — automation will
-not promote agent tiers autonomously.<br/>
-️ <strong>Only set to <code>true</code> after thorough validation of the promotion script logic.</strong></p>
+not promote agent tiers autonomously.
+<strong>Only set to <code>true</code> after thorough validation of the promotion script logic.</strong></p>
 </blockquote>
 <hr/>
 <h3 id="group-d-update-existing-variable-1-action">Group D — Update Existing Variable (1 action)<a class="headerlink" href="#group-d-update-existing-variable-1-action" title="Permanent link">¶</a></h3>
-<h4 id="d1-cognitive_brain_session_number-convert-to-auto-increment">D1 — <code>COGNITIVE_BRAIN_SESSION_NUMBER</code> → Convert to Auto-Increment<a class="headerlink" href="#d1-cognitive_brain_session_number-convert-to-auto-increment" title="Permanent link">¶</a></h4>
+<h4 id="d1-cognitive_brain_session_number-convert-to-auto-increment">D1 — <code>COGNITIVE_BRAIN_SESSION_NUMBER</code> Convert to Auto-Increment<a class="headerlink" href="#d1-cognitive_brain_session_number-convert-to-auto-increment" title="Permanent link">¶</a></h4>
 <p>This variable should no longer be manually set. A workflow step should increment it
 automatically on each session open.</p>
 <p><strong>Current manual workaround</strong> (until workflow wiring is done):</p>
@@ -3056,7 +3067,7 @@ automatically on each session open.</p>
 <p><strong>To update manually right now</strong> (temporary — increment by 1):
 1. Click <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">https://github.com/Aries-Serpent/_codex_/settings/variables/actions</a>
 2. Find <code>COGNITIVE_BRAIN_SESSION_NUMBER</code> in the list
-3. Click the <strong>pencil ✏️ edit icon</strong> to the right
+3. Click the <strong>pencil edit icon</strong> to the right
 4. Change the value to the current value + 1
 5. Click <strong>Save variable</strong></p>
 <blockquote>
@@ -3071,22 +3082,22 @@ to <code>chatops_copilot_trigger.yml</code> so the increment happens automatical
 <a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>gh<span class="w"> </span>variable<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort
 </code></pre></div>
 <p>Expected output includes (among existing variables):</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a>AGENT_HANDOFF_TIMEOUT_SECONDS        120
-<a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>AUTO_PROMOTE_TIER_ENABLED            false
-<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a>CODEX_CI_FAILURE_THRESHOLD           10.0
-<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a>CODEX_CI_LAST_GREEN_SHA              (empty or a SHA)
-<a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a>COGNITIVE_BRAIN_LTM_RETENTION_DAYS   90
-<a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS   32000
-<a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a>COGNITIVE_BRAIN_MEMORY_TIER          both
-<a href="#__codelineno-30-8" id="__codelineno-30-8" name="__codelineno-30-8"></a>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE  0.75
-<a href="#__codelineno-30-9" id="__codelineno-30-9" name="__codelineno-30-9"></a>COPILOT_AGENT_MAX_AUTONOMY_LEVEL     E
-<a href="#__codelineno-30-10" id="__codelineno-30-10" name="__codelineno-30-10"></a>COPILOT_AGENT_SESSION_RESTORE_ENABLED  true
-<a href="#__codelineno-30-11" id="__codelineno-30-11" name="__codelineno-30-11"></a>COPILOT_CLI_BASE_URL                 http://localhost:8765
-<a href="#__codelineno-30-12" id="__codelineno-30-12" name="__codelineno-30-12"></a>COPILOT_CLI_ENABLED                  true
-<a href="#__codelineno-30-13" id="__codelineno-30-13" name="__codelineno-30-13"></a>EMBEDDING_INDEX_AUTO_REBUILD         true
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a>AGENT_HANDOFF_TIMEOUT_SECONDS 120
+<a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>AUTO_PROMOTE_TIER_ENABLED false
+<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a>CODEX_CI_FAILURE_THRESHOLD 10.0
+<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a>CODEX_CI_LAST_GREEN_SHA (empty or a SHA)
+<a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a>COGNITIVE_BRAIN_LTM_RETENTION_DAYS 90
+<a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS 32000
+<a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a>COGNITIVE_BRAIN_MEMORY_TIER both
+<a href="#__codelineno-30-8" id="__codelineno-30-8" name="__codelineno-30-8"></a>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE 0.75
+<a href="#__codelineno-30-9" id="__codelineno-30-9" name="__codelineno-30-9"></a>COPILOT_AGENT_MAX_AUTONOMY_LEVEL E
+<a href="#__codelineno-30-10" id="__codelineno-30-10" name="__codelineno-30-10"></a>COPILOT_AGENT_SESSION_RESTORE_ENABLED true
+<a href="#__codelineno-30-11" id="__codelineno-30-11" name="__codelineno-30-11"></a>COPILOT_CLI_BASE_URL http://localhost:8765
+<a href="#__codelineno-30-12" id="__codelineno-30-12" name="__codelineno-30-12"></a>COPILOT_CLI_ENABLED true
+<a href="#__codelineno-30-13" id="__codelineno-30-13" name="__codelineno-30-13"></a>EMBEDDING_INDEX_AUTO_REBUILD true
 </code></pre></div>
 <h2 id="verify-via-github-ui">Verify via GitHub UI<a class="headerlink" href="#verify-via-github-ui" title="Permanent link">¶</a></h2>
-<p>👆 Click: <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">https://github.com/Aries-Serpent/_codex_/settings/variables/actions</a></p>
+<p>Click: <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">https://github.com/Aries-Serpent/_codex_/settings/variables/actions</a></p>
 <p>Confirm all 13 variable names appear in the list. The page does not show values by default —
 click the variable name to expand it and confirm the value.</p>
 <h3 id="completion-checklist-summary">Completion Checklist Summary<a class="headerlink" href="#completion-checklist-summary" title="Permanent link">¶</a></h3>
@@ -3129,29 +3140,30 @@ If a workflow is not picking up a new variable:
 <p>The frontend reads this as <code>VITE_CLI_API_URL</code> environment variable, not as a GitHub
 repository variable. To use it in a CI build:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build cognitive_app</span>
-<a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a><span class="w">  </span><span class="nt">env</span><span class="p">:</span>
-<a href="#__codelineno-33-3" id="__codelineno-33-3" name="__codelineno-33-3"></a><span class="w">    </span><span class="nt">VITE_CLI_API_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.COPILOT_CLI_BASE_URL }}</span>
-<a href="#__codelineno-33-4" id="__codelineno-33-4" name="__codelineno-33-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cd cognitive_app &amp;&amp; npm run build</span>
+<a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a><span class="w w-Error"> </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-33-3" id="__codelineno-33-3" name="__codelineno-33-3"></a><span class="w"> </span><span class="nt">VITE_CLI_API_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.COPILOT_CLI_BASE_URL }}</span>
+<a href="#__codelineno-33-4" id="__codelineno-33-4" name="__codelineno-33-4"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cd cognitive_app &amp;&amp; npm run build</span>
 </code></pre></div>
 <hr/>
 <h2 id="5-what-changes-after-setup">§5 — What Changes After Setup<a class="headerlink" href="#5-what-changes-after-setup" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-34-1" id="__codelineno-34-1" name="__codelineno-34-1"></a>%%{init: {'accessibility': {'title': 'Timeline'}}%%
-<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>timeline
-<a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a>    title Variable Setup Impact Timeline
-<a href="#__codelineno-34-4" id="__codelineno-34-4" name="__codelineno-34-4"></a>    section Immediately
-<a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a>        CODEX_CI_FAILURE_THRESHOLD available : ci-health-monitor.yml can compare against it
-<a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a>        EMBEDDING_INDEX_AUTO_REBUILD=true : FAISS index rebuilt on next registry push
-<a href="#__codelineno-34-7" id="__codelineno-34-7" name="__codelineno-34-7"></a>        COPILOT_CLI_ENABLED=true : CLI startup step unblocked in copilot-setup-steps.yml
-<a href="#__codelineno-34-8" id="__codelineno-34-8" name="__codelineno-34-8"></a>    section Next @copilot trigger
-<a href="#__codelineno-34-9" id="__codelineno-34-9" name="__codelineno-34-9"></a>        COGNITIVE_BRAIN_SESSION_NUMBER increments : if workflow step wired per Implementation Guide §6
-<a href="#__codelineno-34-10" id="__codelineno-34-10" name="__codelineno-34-10"></a>        Session context includes MAX_CONTEXT_TOKENS : once generate_manifest.py wired
-<a href="#__codelineno-34-11" id="__codelineno-34-11" name="__codelineno-34-11"></a>    section Next CI run
-<a href="#__codelineno-34-12" id="__codelineno-34-12" name="__codelineno-34-12"></a>        CODEX_CI_LAST_GREEN_SHA written : on first fully green run after variable creation
-<a href="#__codelineno-34-13" id="__codelineno-34-13" name="__codelineno-34-13"></a>        CI failure rate compared vs threshold : degraded/ok/critical status updated automatically
-<a href="#__codelineno-34-14" id="__codelineno-34-14" name="__codelineno-34-14"></a>    section After code wiring (PRs)
-<a href="#__codelineno-34-15" id="__codelineno-34-15" name="__codelineno-34-15"></a>        generate_manifest.py uses MAX_CONTEXT_TOKENS : context injection ceiling externalised
-<a href="#__codelineno-34-16" id="__codelineno-34-16" name="__codelineno-34-16"></a>        prune_corpus.py uses LTM_RETENTION_DAYS : retention policy externalised
-<a href="#__codelineno-34-17" id="__codelineno-34-17" name="__codelineno-34-17"></a>        agent-handoff-gate.yml uses HANDOFF_TIMEOUT : timeout externalised
+<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>
+<a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a>timeline
+<a href="#__codelineno-34-4" id="__codelineno-34-4" name="__codelineno-34-4"></a> title Variable Setup Impact Timeline
+<a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a> section Immediately
+<a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a> CODEX_CI_FAILURE_THRESHOLD available : ci-health-monitor.yml can compare against it
+<a href="#__codelineno-34-7" id="__codelineno-34-7" name="__codelineno-34-7"></a> EMBEDDING_INDEX_AUTO_REBUILD=true : FAISS index rebuilt on next registry push
+<a href="#__codelineno-34-8" id="__codelineno-34-8" name="__codelineno-34-8"></a> COPILOT_CLI_ENABLED=true : CLI startup step unblocked in copilot-setup-steps.yml
+<a href="#__codelineno-34-9" id="__codelineno-34-9" name="__codelineno-34-9"></a> section Next @copilot trigger
+<a href="#__codelineno-34-10" id="__codelineno-34-10" name="__codelineno-34-10"></a> COGNITIVE_BRAIN_SESSION_NUMBER increments : if workflow step wired per Implementation Guide §6
+<a href="#__codelineno-34-11" id="__codelineno-34-11" name="__codelineno-34-11"></a> Session context includes MAX_CONTEXT_TOKENS : once generate_manifest.py wired
+<a href="#__codelineno-34-12" id="__codelineno-34-12" name="__codelineno-34-12"></a> section Next CI run
+<a href="#__codelineno-34-13" id="__codelineno-34-13" name="__codelineno-34-13"></a> CODEX_CI_LAST_GREEN_SHA written : on first fully green run after variable creation
+<a href="#__codelineno-34-14" id="__codelineno-34-14" name="__codelineno-34-14"></a> CI failure rate compared vs threshold : degraded/ok/critical status updated automatically
+<a href="#__codelineno-34-15" id="__codelineno-34-15" name="__codelineno-34-15"></a> section After code wiring (PRs)
+<a href="#__codelineno-34-16" id="__codelineno-34-16" name="__codelineno-34-16"></a> generate_manifest.py uses MAX_CONTEXT_TOKENS : context injection ceiling externalised
+<a href="#__codelineno-34-17" id="__codelineno-34-17" name="__codelineno-34-17"></a> prune_corpus.py uses LTM_RETENTION_DAYS : retention policy externalised
+<a href="#__codelineno-34-18" id="__codelineno-34-18" name="__codelineno-34-18"></a> agent-handoff-gate.yml uses HANDOFF_TIMEOUT : timeout externalised
 </code></pre></div>
 <hr/>
 <h2 id="document-maintenance">Document Maintenance<a class="headerlink" href="#document-maintenance" title="Permanent link">¶</a></h2>
@@ -3220,6 +3232,6 @@ repository variable. To use it in a CI build:</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

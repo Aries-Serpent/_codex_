@@ -1,6 +1,6 @@
 # Rate-Limit Recovery Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Applies to:** Copilot Cloud Agent sessions on `Aries-Serpent/_codex_`
 **Pattern:** `RATE_LIMIT_001` (added S923, 2026-05-11)

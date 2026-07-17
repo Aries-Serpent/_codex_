@@ -1,6 +1,6 @@
 # DeepResearch: GitHub Discussions — Codebase Integration, Hardening, and CLI Design
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
 > **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer] Energy: 9

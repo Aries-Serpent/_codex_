@@ -1,6 +1,6 @@
 # Documentation Quality Audit - Complete Report Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** January 18, 2026
 **Repository:** _codex_

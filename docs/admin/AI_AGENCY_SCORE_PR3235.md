@@ -1,6 +1,6 @@
 # AI Agency Score - GitHub Pages Validation Implementation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -316,7 +316,7 @@ if in_code_block(md_file, line_num):
  ```markdown
  # .github/agents/CHANGELOG.md
 
- ## 2026-02-10 - v0.2.1
+ ## 2026-02-10 - v0.2.0
  - Added auto-fix functionality
  - Fixed CSS opacity issues
  - Enhanced browser compatibility

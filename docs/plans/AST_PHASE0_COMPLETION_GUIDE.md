@@ -1,6 +1,6 @@
 # Phase 0: AST Implementation - Complete Guidance & Readiness Assessment
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 
 ## Table of Contents
 

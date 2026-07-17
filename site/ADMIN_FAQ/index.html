@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ADMIN_FAQ/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>codex Admin FAQ - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2663,7 +2663,7 @@
 <h2 id="workflow-questions">Workflow Questions<a class="headerlink" href="#workflow-questions" title="Permanent link">¶</a></h2>
 <h3 id="q-workflows-are-failing-with-permission-errors">Q: Workflows are failing with permission errors<a class="headerlink" href="#q-workflows-are-failing-with-permission-errors" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Check these settings:
-1. Go to: Settings → Actions → General
+1. Go to: Settings Actions General
 2. Set Workflow permissions to "Read and write"
 3. Enable "Allow GitHub Actions to create and approve pull requests"
 4. Save changes</p>
@@ -2677,16 +2677,16 @@
 <p><strong>A:</strong> Yes:
 1. Rename the file with <code>.disabled</code> extension (e.g., <code>workflow.yml.disabled</code>)
 2. Or use the workflow's <code>on:</code> trigger conditions
-3. Or disable via Settings → Actions → Runners</p>
+3. Or disable via Settings Actions Runners</p>
 <hr/>
 <h2 id="security-questions">Security Questions<a class="headerlink" href="#security-questions" title="Permanent link">¶</a></h2>
 <h3 id="q-what-security-features-should-i-enable">Q: What security features should I enable?<a class="headerlink" href="#q-what-security-features-should-i-enable" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Enable all of these:
--  Dependency graph
--  Dependabot alerts
--  Dependabot security updates
--  Secret scanning
--  Push protection</p>
+- Dependency graph
+- Dependabot alerts
+- Dependabot security updates
+- Secret scanning
+- Push protection</p>
 <h3 id="q-why-is-push-protection-blocking-my-commits">Q: Why is push protection blocking my commits?<a class="headerlink" href="#q-why-is-push-protection-blocking-my-commits" title="Permanent link">¶</a></h3>
 <p><strong>A:</strong> Push protection blocks commits containing patterns that look like secrets. Either:
 1. Remove the secret from your code
@@ -2714,35 +2714,35 @@
 <hr/>
 <h2 id="troubleshooting-decision-tree">Troubleshooting Decision Tree<a class="headerlink" href="#troubleshooting-decision-tree" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Issue: Workflow failing
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── Permission error?
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   └── Check: Settings → Actions → Workflow permissions
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── Missing secret?
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│   └── Check: Settings → Secrets and variables → Actions
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>├── Timeout?
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   └── Check: Workflow has `timeout-minutes` set appropriately
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>└── Unknown error?
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    └── Check: Workflow logs for specific error message
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> Permission error?
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> Check: Settings Actions Workflow permissions
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Missing secret?
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Check: Settings Secrets and variables Actions
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Timeout?
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Check: Workflow has `timeout-minutes` set appropriately
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Unknown error?
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Check: Workflow logs for specific error message
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Issue: Can't create GitHub App
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── Not an org owner?
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>│   └── Ask org owner or create under personal account
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>├── App name already taken?
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>│   └── Choose a different name
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>└── Missing required fields?
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    └── Ensure all required fields are filled
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> Not an org owner?
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> Ask org owner or create under personal account
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> App name already taken?
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Choose a different name
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> Missing required fields?
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> Ensure all required fields are filled
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Issue: Secrets not working
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── Secret name typo?
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>│   └── Verify exact name matches workflow reference
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>├── Secret in wrong scope?
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>│   └── Check if using org vs repo secrets correctly
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>└── Secret recently added?
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    └── Re-run the workflow (secrets are loaded at run start)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> Secret name typo?
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> Verify exact name matches workflow reference
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> Secret in wrong scope?
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> Check if using org vs repo secrets correctly
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> Secret recently added?
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> Re-run the workflow (secrets are loaded at run start)
 </code></pre></div>
 <hr/>
 <h2 id="still-need-help">Still Need Help?<a class="headerlink" href="#still-need-help" title="Permanent link">¶</a></h2>
 <ol>
-<li><strong>Check logs:</strong> Actions → Select run → View job logs</li>
+<li><strong>Check logs:</strong> Actions Select run View job logs</li>
 <li><strong>Search issues:</strong> <code>https://github.com/Aries-Serpent/_codex_/issues</code></li>
 <li><strong>GitHub Docs:</strong> <code>https://docs.github.com</code></li>
 <li><strong>Create issue:</strong> Use the repository issue tracker</li>
@@ -2778,6 +2778,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

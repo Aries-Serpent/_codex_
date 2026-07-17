@@ -1,6 +1,6 @@
 # Copilot Continuation System - Complete Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -51,7 +51,7 @@ The Copilot Continuation System provides persistent, version-controlled storage 
 
 ```
 .github/
- pull_request_template.md # Enhanced PR template (v0.2.1)
+ pull_request_template.md # Enhanced PR template (v0.2.0)
  copilot-prompts/
  README.md # System documentation
  templates/ # Reusable templates

@@ -145,14 +145,14 @@ Phase 14 Start: 2026-07-24 (T+0)
   ├─ 100% Rollout             ├─ Cache optimization       ├─ Secrets rotation
   │  (T+3w → T+6w)            │  (T+3w → T+5w)            │  (T+3w → T+4w)
   │
-  └─ v0.2.1 GA                └─ Infrastructure GA        └─ Security GA
+  └─ v0.2.0 GA                └─ Infrastructure GA        └─ Security GA
      (T+6w)                       (T+7w)                      (T+8w)
 
 Checkpoints (weekly status reports):
   • Checkpoint 1 (T+1w, 2026-07-31): Planning finalized
   • Checkpoint 2 (T+2w, 2026-08-07): Canary + infra + security go-live
   • Checkpoint 3 (T+3w, 2026-08-14): A/B testing + cache optimization
-  • Checkpoint 4 (T+6w, 2026-08-25): WS1 v0.2.1 GA
+  • Checkpoint 4 (T+6w, 2026-08-25): WS1 v0.2.0 GA
   • Checkpoint 5 (T+7w, 2026-09-04): WS2 infrastructure GA
   • Phase 14 Final (T+8w, 2026-09-18): WS3 security GA + Phase 15 ready
 

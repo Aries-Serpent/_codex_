@@ -1,6 +1,6 @@
 # Human Admin Consolidated Action Tracker
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 # ALL Manual Intervention Points from Phase 10+ Integration
 ## Table of Contents

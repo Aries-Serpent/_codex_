@@ -290,7 +290,7 @@ source deploy/setup_universal.sh
 ### mkdocs.yml Structure
 
 ```yaml
-site_name: Codex Docs v0.2.1
+site_name: Codex Docs v0.2.0
 site_url: https://aries-serpent.github.io/_codex_/
 repo_name: Aries-Serpent/_codex_
 repo_url: https://github.com/Aries-Serpent/_codex_

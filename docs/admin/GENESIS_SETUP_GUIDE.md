@@ -1,6 +1,6 @@
 # [Guide]: The Genesis Protocol - Sovereign Admin Initialization
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
 > **repository:** `Aries-Serpent/_codex_` (ID: 1040037790)

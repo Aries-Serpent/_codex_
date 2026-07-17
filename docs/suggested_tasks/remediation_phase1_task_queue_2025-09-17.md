@@ -1,6 +1,6 @@
 # Codex Remediation Task Queue – Phase 1 Execution Packet (2025-09-17)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 

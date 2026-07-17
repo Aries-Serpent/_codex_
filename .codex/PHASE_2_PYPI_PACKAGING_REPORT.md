@@ -232,8 +232,8 @@ Report generated: 2026-07-11T07:51:30+00:00
 python3 -m twine upload dist/codex_ml-0.2.1*
 
 # Or use GitHub Actions workflow:
-git tag v0.2.1
-git push origin v0.2.1
+git tag v0.2.0
+git push origin v0.2.0
 # → Triggers .github/workflows/pypi-publish.yml
 ```
 

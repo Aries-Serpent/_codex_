@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/approval-policies-detailed/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Approval Policies &amp; Decision Logic - Detailed - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2648,8 +2648,8 @@
 <h1 id="approval-policies-decision-logic-detailed">Approval Policies &amp; Decision Logic - Detailed<a class="headerlink" href="#approval-policies-decision-logic-detailed" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Status:</strong> Production Ready<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Status:</strong> Production Ready
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-08
 </strong>Author:** Phase 12 WS3 Documentation Team</p>
 <hr/>
@@ -2682,21 +2682,19 @@
 <li><strong>Immutable history:</strong> Once resolved, approvals cannot be changed</li>
 </ul>
 <h3 id="approval-workflow-states">Approval Workflow States<a class="headerlink" href="#approval-workflow-states" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>                    ┌─────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>                    │ PENDING (5m)│
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>                    └──────┬──────┘
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>                           │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>           ┌───────────────┼───────────────┐
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>           │               │               │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>      ┌────▼─────┐   ┌─────▼──────┐  ┌────▼─────┐
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>      │ APPROVED  │   │ REJECTED   │  │ EXPIRED  │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>      └──────────┘   └────────────┘  └──────────┘
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>           │               │              │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>           └───────────────┼──────────────┘
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>                           │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>                    ┌──────▼────────┐
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>                    │ ARCHIVED (90d)│
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>                    └───────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> PENDING (5m)
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> APPROVED REJECTED EXPIRED 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> ARCHIVED (90d)
 </code></pre></div>
 <hr/>
 <h2 id="approval-states">Approval States<a class="headerlink" href="#approval-states" title="Permanent link">¶</a></h2>
@@ -2708,16 +2706,16 @@
 - Multiple approvers can vote before reaching APPROVED/REJECTED
 - Context and metadata immutable</p>
 <p><strong>Transitions:</strong>
-- → APPROVED: All required approvers approved
-- → REJECTED: Any required approver rejected
-- → EXPIRED: 5 minutes elapsed without decision</p>
+- APPROVED: All required approvers approved
+- REJECTED: Any required approver rejected
+- EXPIRED: 5 minutes elapsed without decision</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">request</span> <span class="o">=</span> <span class="n">ApprovalRequest</span><span class="p">(</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="n">request_id</span><span class="o">=</span><span class="s2">"req-789"</span><span class="p">,</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="n">status</span><span class="o">=</span><span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="p">,</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">created_at</span><span class="o">=</span><span class="mi">1720000000</span><span class="p">,</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">expires_at</span><span class="o">=</span><span class="mi">1720000300</span>  <span class="c1"># 5 minutes later</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="n">request_id</span><span class="o">=</span><span class="s2">"req-789"</span><span class="p">,</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="n">status</span><span class="o">=</span><span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="n">created_at</span><span class="o">=</span><span class="mi">1720000000</span><span class="p">,</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">expires_at</span><span class="o">=</span><span class="mi">1720000300</span> <span class="c1"># 5 minutes later</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="approved">APPROVED<a class="headerlink" href="#approved" title="Permanent link">¶</a></h3>
@@ -2728,21 +2726,21 @@
 - Immutable - cannot be un-approved
 - Full decision history retained</p>
 <p><strong>Transitions:</strong>
-- ← PENDING: When last required approver approved
-- → ARCHIVED: After 90-day retention</p>
+- PENDING: When last required approver approved
+- ARCHIVED: After 90-day retention</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">request</span><span class="o">.</span><span class="n">decisions</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">ApprovalDecision</span><span class="p">(</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>        <span class="n">approver</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="n">reason</span><span class="o">=</span><span class="s2">"Reviewed and validated"</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="p">),</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">ApprovalDecision</span><span class="p">(</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>        <span class="n">approver</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="n">reason</span><span class="o">=</span><span class="s2">"Security assessment passed"</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="p">)</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="n">ApprovalDecision</span><span class="p">(</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="n">approver</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">reason</span><span class="o">=</span><span class="s2">"Reviewed and validated"</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="p">),</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="n">ApprovalDecision</span><span class="p">(</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="n">approver</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="n">reason</span><span class="o">=</span><span class="s2">"Security assessment passed"</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="p">)</span>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">]</span>
 </code></pre></div></p>
 <h3 id="rejected">REJECTED<a class="headerlink" href="#rejected" title="Permanent link">¶</a></h3>
@@ -2753,19 +2751,19 @@
 - Immutable - cannot be un-rejected
 - Rejection reason documented</p>
 <p><strong>Transitions:</strong>
-- ← PENDING: When any required approver rejected
-- → ARCHIVED: After 90-day retention</p>
+- PENDING: When any required approver rejected
+- ARCHIVED: After 90-day retention</p>
 <p><strong>Escalation Options:</strong>
 - Requester can submit new request for re-approval
 - Resubmission after addressing approval reason recommended</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">REJECTED</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">request</span><span class="o">.</span><span class="n">decisions</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">ApprovalDecision</span><span class="p">(</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>        <span class="n">approver</span><span class="o">=</span><span class="s2">"charlie"</span><span class="p">,</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>        <span class="n">decision</span><span class="o">=</span><span class="s2">"rejected"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>        <span class="n">reason</span><span class="o">=</span><span class="s2">"ML model has not been validated against Q3 security requirements"</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> <span class="n">ApprovalDecision</span><span class="p">(</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> <span class="n">approver</span><span class="o">=</span><span class="s2">"charlie"</span><span class="p">,</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"rejected"</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="n">reason</span><span class="o">=</span><span class="s2">"ML model has not been validated against Q3 security requirements"</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="p">)</span>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="p">]</span>
 </code></pre></div></p>
 <h3 id="expired">EXPIRED<a class="headerlink" href="#expired" title="Permanent link">¶</a></h3>
@@ -2776,9 +2774,9 @@
 - Typically triggers automatic escalation
 - Requester can resubmit immediately</p>
 <p><strong>Transitions:</strong>
-- ← PENDING: When 5 minutes elapsed
-- → Auto-escalate: Escalate to Level 2 approvers if multi-level policy
-- → ARCHIVED: After 90-day retention</p>
+- PENDING: When 5 minutes elapsed
+- Auto-escalate: Escalate to Level 2 approvers if multi-level policy
+- ARCHIVED: After 90-day retention</p>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># At 5-minute mark</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">EXPIRED</span>
@@ -2788,11 +2786,11 @@
 <h2 id="sla-escalation">SLA Escalation<a class="headerlink" href="#sla-escalation" title="Permanent link">¶</a></h2>
 <h3 id="escalation-policy">Escalation Policy<a class="headerlink" href="#escalation-policy" title="Permanent link">¶</a></h3>
 <p>If approval decision is not made within the SLA window, the request automatically escalates to the next level of authority:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Level 1 (Primary)  ──4 hours──→  Level 2 (Secondary)  ──4 hours──→  Level 3 (Senior)
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>                     (escalate)                          (escalate)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Level 1 (Primary) 4 hours Level 2 (Secondary) 4 hours Level 3 (Senior)
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> (escalate) (escalate)
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>If Level 3 doesn't respond:
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>   → Auto-approve (quorum unavailable)
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> Auto-approve (quorum unavailable)
 </code></pre></div>
 <h3 id="level-1-primary-owner-4-hours">Level 1: Primary Owner (4 hours)<a class="headerlink" href="#level-1-primary-owner-4-hours" title="Permanent link">¶</a></h3>
 <p><strong>Who:</strong> Usually the direct manager or subject-matter expert</p>
@@ -2802,11 +2800,11 @@
 - Reject with clear reason</p>
 <p><strong>Example SLA Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">SLAPolicy</span><span class="p">(</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">l1_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">l2_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">owner_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">max_escalations</span><span class="o">=</span><span class="mi">2</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> <span class="n">l1_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> <span class="n">l2_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">owner_sla_hours</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">max_escalations</span><span class="o">=</span><span class="mi">2</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="p">)</span>
 </code></pre></div></p>
 <h3 id="level-2-secondary-reviewer-4-hours">Level 2: Secondary Reviewer (4 hours)<a class="headerlink" href="#level-2-secondary-reviewer-4-hours" title="Permanent link">¶</a></h3>
@@ -2818,23 +2816,23 @@
 - Same approval authority as L1</p>
 <p><strong>Escalation Trigger:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">request</span><span class="o">.</span><span class="n">sla_deadline</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">+=</span> <span class="mi">1</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">request</span><span class="o">.</span><span class="n">current_approver_id</span> <span class="o">=</span> <span class="s2">"level2_approver"</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="n">request</span><span class="o">.</span><span class="n">sla_deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3600</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">+=</span> <span class="mi">1</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">request</span><span class="o">.</span><span class="n">current_approver_id</span> <span class="o">=</span> <span class="s2">"level2_approver"</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="n">request</span><span class="o">.</span><span class="n">sla_deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3600</span>
 </code></pre></div></p>
 <h3 id="level-3-senior-authority-4-hours">Level 3: Senior Authority (4 hours)<a class="headerlink" href="#level-3-senior-authority-4-hours" title="Permanent link">¶</a></h3>
 <p><strong>When:</strong> Escalated from L2 after 4 hours without response</p>
 <p><strong>Who:</strong> Director, manager, or authority figure</p>
-<p><strong>Authority:</strong> 
+<p><strong>Authority:</strong>
 - Can override previous concerns
 - Final decision authority
 - May make executive decision</p>
 <p><strong>Auto-Approval Logic:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">request</span><span class="o">.</span><span class="n">sla_deadline</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="c1"># Auto-approve due to quorum unavailable</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">=</span> <span class="mi">3</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> <span class="c1"># Auto-approve due to quorum unavailable</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">=</span> <span class="mi">3</span>
 </code></pre></div></p>
 <h3 id="special-slas">Special SLAs<a class="headerlink" href="#special-slas" title="Permanent link">¶</a></h3>
 <h4 id="destructive-operations-0-hours">Destructive Operations (0 hours)<a class="headerlink" href="#destructive-operations-0-hours" title="Permanent link">¶</a></h4>
@@ -2847,10 +2845,10 @@
 </ul>
 <p><strong>Policy:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">SLAPolicy</span><span class="p">(</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"DESTRUCTIVE_OPERATION"</span><span class="p">,</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="n">l1_sla_hours</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Immediate approval required</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="n">is_destructive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">requires_system_admin</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"DESTRUCTIVE_OPERATION"</span><span class="p">,</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> <span class="n">l1_sla_hours</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="c1"># Immediate approval required</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="n">is_destructive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">requires_system_admin</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="p">)</span>
 </code></pre></div></p>
 <h4 id="incident-response-30-minutes">Incident Response (30 minutes)<a class="headerlink" href="#incident-response-30-minutes" title="Permanent link">¶</a></h4>
@@ -2862,10 +2860,10 @@
 </ul>
 <p><strong>Policy:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">SLAPolicy</span><span class="p">(</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"INCIDENT_RESPONSE"</span><span class="p">,</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">incident_sla_minutes</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="n">is_incident_related</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="n">max_escalations</span><span class="o">=</span><span class="mi">1</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"INCIDENT_RESPONSE"</span><span class="p">,</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">incident_sla_minutes</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="n">is_incident_related</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="n">max_escalations</span><span class="o">=</span><span class="mi">1</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
@@ -2879,26 +2877,26 @@
 <p><strong>SLA:</strong> 4 hours (best-effort, no escalation)</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="n">APPROVAL_POLICY_MATRIX</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    <span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>        <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>        <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"development"</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="p">}</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> <span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"development"</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="p">}</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Workflow:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Requester submits request
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>    ↓
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>[Check: Does requester have agent_operator role?]
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    ├─ YES → Auto-approve, proceed with deployment
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    └─ NO  → Request agent_operator approval
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>                ↓
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>            [Wait up to 4 hours]
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>                ↓
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>            [Timeout: Request expires]
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> YES Auto-approve, proceed with deployment
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> NO Request agent_operator approval
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> [Wait up to 4 hours]
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> [Timeout: Request expires]
 </code></pre></div></p>
 <h3 id="agent_deploy_staging">AGENT_DEPLOY_STAGING<a class="headerlink" href="#agent_deploy_staging" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Deploy agent to staging environment</p>
@@ -2909,12 +2907,12 @@
 <p><strong>SLA:</strong> 4 hours (escalates to L2, then L3)</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="s2">"AGENT_DEPLOY_STAGING"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>    <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"staging"</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"staging"</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="agent_deploy_prod">AGENT_DEPLOY_PROD<a class="headerlink" href="#agent_deploy_prod" title="Permanent link">¶</a></h3>
@@ -2927,30 +2925,30 @@
 <p><strong>SLA:</strong> 4 hours per approver (cascading)</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">],</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span><span class="p">,</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>    <span class="s2">"sequential_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>    <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>    <span class="s2">"risk_level"</span><span class="p">:</span> <span class="s2">"high"</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">],</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span><span class="p">,</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> <span class="s2">"sequential_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a> <span class="s2">"risk_level"</span><span class="p">:</span> <span class="s2">"high"</span>
 <a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Workflow:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>agent_operator submits deployment request
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>    ↓
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>[Requires 2 approvals: security_reviewer + ci_operator]
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    ├─ security_reviewer reviews code/model (4h SLA)
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    │   ├─ Approved → Continue
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    │   ├─ Rejected → Deployment blocked
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    │   └─ Timeout → Escalate to L2 security reviewer
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>    │
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    └─ ci_operator reviews infrastructure (4h SLA in parallel)
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>        ├─ Approved → Both approved, proceed
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>        ├─ Rejected → Deployment blocked
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>        └─ Timeout → Escalate to L2 infra reviewer
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> security_reviewer reviews code/model (4h SLA)
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> Approved Continue
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> Rejected Deployment blocked
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> Timeout Escalate to L2 security reviewer
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> ci_operator reviews infrastructure (4h SLA in parallel)
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> Approved Both approved, proceed
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> Rejected Deployment blocked
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> Timeout Escalate to L2 infra reviewer
 </code></pre></div></p>
 <h3 id="secret_rotate">SECRET_ROTATE<a class="headerlink" href="#secret_rotate" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Rotate/update sensitive credentials</p>
@@ -2961,13 +2959,13 @@
 <p><strong>SLA:</strong> 2 hours (expedited, critical operation)</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="s2">"SECRET_ROTATE"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>    <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">],</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    <span class="s2">"is_destructive"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># But time-sensitive</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>    <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SYSTEM_ADMIN</span><span class="p">],</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> <span class="s2">"is_destructive"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># But time-sensitive</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Special Handling:</strong>
@@ -2982,18 +2980,18 @@
 - SLA: 24 hours</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="s2">"CODE_REVIEW_SECURITY"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>    <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>    <span class="s2">"risk_areas"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>        <span class="s2">"authentication"</span><span class="p">,</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>        <span class="s2">"authorization"</span><span class="p">,</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>        <span class="s2">"cryptography"</span><span class="p">,</span>
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>        <span class="s2">"secrets"</span><span class="p">,</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>        <span class="s2">"data validation"</span>
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    <span class="p">]</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> <span class="s2">"risk_areas"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> <span class="s2">"authentication"</span><span class="p">,</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> <span class="s2">"authorization"</span><span class="p">,</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a> <span class="s2">"cryptography"</span><span class="p">,</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> <span class="s2">"secrets"</span><span class="p">,</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a> <span class="s2">"data validation"</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="p">]</span>
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="workflow_change">WORKFLOW_CHANGE<a class="headerlink" href="#workflow_change" title="Permanent link">¶</a></h3>
@@ -3004,12 +3002,12 @@
 - SLA: 4 hours</p>
 <p><strong>Policy Definition:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="s2">"WORKFLOW_CHANGE"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>    <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">],</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>    <span class="s2">"conditional_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span>  <span class="c1"># If security-related</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a> <span class="s2">"require_rbac_approval"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span><span class="p">],</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> <span class="s2">"conditional_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span> <span class="c1"># If security-related</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">1</span>
 <a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="p">}</span>
 </code></pre></div></p>
 <hr/>
@@ -3019,58 +3017,58 @@
 <h4 id="condition-1-requester-has-required-role">Condition 1: Requester Has Required Role<a class="headerlink" href="#condition-1-requester-has-required-role" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Check if requester has all required approval roles</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="k">def</span> <span class="nf">check_rbac_auto_approval</span><span class="p">(</span><span class="n">requester_roles</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>    <span class="n">required_roles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="s2">"required_roles"</span><span class="p">])</span>
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>    <span class="n">has_all_roles</span> <span class="o">=</span> <span class="n">required_roles</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">requester_roles</span><span class="p">))</span>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>    <span class="k">return</span> <span class="n">has_all_roles</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a> <span class="n">required_roles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="s2">"required_roles"</span><span class="p">])</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a> <span class="n">has_all_roles</span> <span class="o">=</span> <span class="n">required_roles</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">requester_roles</span><span class="p">))</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a> <span class="k">return</span> <span class="n">has_all_roles</span>
 </code></pre></div>
 <h4 id="condition-2-policy-allows-auto-approval">Condition 2: Policy Allows Auto-Approval<a class="headerlink" href="#condition-2-policy-allows-auto-approval" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Check policy configuration</span>
 <a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="k">def</span> <span class="nf">policy_allows_auto_approval</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>    <span class="k">return</span> <span class="n">policy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a> <span class="k">return</span> <span class="n">policy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="condition-3-not-a-destructive-operation">Condition 3: Not a Destructive Operation<a class="headerlink" href="#condition-3-not-a-destructive-operation" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="k">def</span> <span class="nf">is_safe_for_auto_approval</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>    <span class="k">return</span> <span class="ow">not</span> <span class="n">policy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"is_destructive"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a> <span class="k">return</span> <span class="ow">not</span> <span class="n">policy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"is_destructive"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="auto-approval-examples">Auto-Approval Examples<a class="headerlink" href="#auto-approval-examples" title="Permanent link">¶</a></h3>
 <h4 id="example-1-developer-deploying-to-dev-environment">Example 1: Developer Deploying to Dev Environment<a class="headerlink" href="#example-1-developer-deploying-to-dev-environment" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="n">request</span> <span class="o">=</span> <span class="n">ApprovalRequest</span><span class="p">(</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">,</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>    <span class="n">requester_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>    <span class="n">requester_roles</span><span class="o">=</span><span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a>    <span class="n">resource_id</span><span class="o">=</span><span class="s2">"agent_dev_v1"</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">,</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a> <span class="n">requester_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a> <span class="n">requester_roles</span><span class="o">=</span><span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">],</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a> <span class="n">resource_id</span><span class="o">=</span><span class="s2">"agent_dev_v1"</span>
 <a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="p">)</span>
 <a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>
 <a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="c1"># Policy allows auto-approval if requester has agent_operator</span>
 <a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a><span class="k">if</span> <span class="nb">all</span><span class="p">([</span>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">][</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">],</span>
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="ow">not</span> <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">][</span><span class="s2">"is_destructive"</span><span class="p">]</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a> <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">][</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">],</span>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a> <span class="ow">not</span> <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">][</span><span class="s2">"is_destructive"</span><span class="p">]</span>
 <a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a><span class="p">]):</span>
-<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>    <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
-<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a>    <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>    <span class="c1"># Proceed immediately</span>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a> <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a> <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a> <span class="c1"># Proceed immediately</span>
 </code></pre></div>
 <h4 id="example-2-agent-operator-with-rbac-privilege">Example 2: Agent Operator with RBAC Privilege<a class="headerlink" href="#example-2-agent-operator-with-rbac-privilege" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="n">request</span> <span class="o">=</span> <span class="n">ApprovalRequest</span><span class="p">(</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
-<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>    <span class="n">requester_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>    <span class="n">requester_roles</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>        <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
-<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a>        <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>        <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span>
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>    <span class="p">]</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">,</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a> <span class="n">requester_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a> <span class="n">requester_roles</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span>
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">,</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a> <span class="p">]</span>
 <a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a><span class="p">)</span>
 <a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>
 <a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a><span class="c1"># Policy requires both security_reviewer + ci_operator</span>
 <a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a><span class="k">if</span> <span class="nb">all</span><span class="p">([</span>
-<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
-<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a>    <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
-<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a>    <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">][</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">],</span>
+<a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a> <span class="n">CodexRole</span><span class="o">.</span><span class="n">CI_OPERATOR</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">requester_roles</span><span class="p">,</span>
+<a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a> <span class="n">POLICIES</span><span class="p">[</span><span class="s2">"AGENT_DEPLOY_PROD"</span><span class="p">][</span><span class="s2">"auto_approve_if_privileged"</span><span class="p">],</span>
 <a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a><span class="p">]):</span>
-<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a>    <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
-<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a>    <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
-<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a>    <span class="c1"># Proceed immediately (rare case - usually blocked by "not auto_approve_if_privileged")</span>
+<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a> <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ApprovalStatus</span><span class="o">.</span><span class="n">APPROVED</span>
+<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a> <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a> <span class="c1"># Proceed immediately (rare case - usually blocked by "not auto_approve_if_privileged")</span>
 </code></pre></div>
 <h3 id="auto-approval-audit">Auto-Approval Audit<a class="headerlink" href="#auto-approval-audit" title="Permanent link">¶</a></h3>
 <p>When auto-approval is triggered, it's logged differently:</p>
@@ -3078,107 +3076,142 @@
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>
 <a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="c1"># Logged as</span>
 <a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="p">{</span>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>    <span class="s2">"timestamp"</span><span class="p">:</span> <span class="mi">1720000000</span><span class="p">,</span>
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>    <span class="s2">"request_id"</span><span class="p">:</span> <span class="s2">"req-xyz"</span><span class="p">,</span>
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>    <span class="s2">"audit_code"</span><span class="p">:</span> <span class="n">AuditCode</span><span class="o">.</span><span class="n">AUTO_APPROVAL_RBAC_PRIVILEGE</span><span class="p">,</span>
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>    <span class="s2">"requester_id"</span><span class="p">:</span> <span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>    <span class="s2">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">],</span>
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>    <span class="s2">"policy"</span><span class="p">:</span> <span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">,</span>
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>    <span class="s2">"auto_approved"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>    <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"Requester has required agent_operator role"</span>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a> <span class="s2">"timestamp"</span><span class="p">:</span> <span class="mi">1720000000</span><span class="p">,</span>
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a> <span class="s2">"request_id"</span><span class="p">:</span> <span class="s2">"req-xyz"</span><span class="p">,</span>
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a> <span class="s2">"audit_code"</span><span class="p">:</span> <span class="n">AuditCode</span><span class="o">.</span><span class="n">AUTO_APPROVAL_RBAC_PRIVILEGE</span><span class="p">,</span>
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a> <span class="s2">"requester_id"</span><span class="p">:</span> <span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a> <span class="s2">"roles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"agent_operator"</span><span class="p">],</span>
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a> <span class="s2">"policy"</span><span class="p">:</span> <span class="s2">"AGENT_DEPLOY_DEV"</span><span class="p">,</span>
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a> <span class="s2">"auto_approved"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"Requester has required agent_operator role"</span>
 <a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
 <h2 id="decision-trees">Decision Trees<a class="headerlink" href="#decision-trees" title="Permanent link">¶</a></h2>
 <h3 id="single-level-approval">Single-Level Approval<a class="headerlink" href="#single-level-approval" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>graph TD
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>    A["Approval Request&lt;br/&gt;policy_code: AGENT_DEPLOY_DEV&lt;br/&gt;5-minute SLA"] --&gt; B{"Requester has&lt;br/&gt;agent_operator&lt;br/&gt;role?"}
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>    B --&gt;|Yes| C[" Auto-Approve&lt;br/&gt;status: APPROVED"]
-<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>    B --&gt;|No| D["Require Approval&lt;br/&gt;status: PENDING&lt;br/&gt;Start 5-minute SLA"]
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a> A["Approval Request&lt;br/&gt;policy_code: AGENT_DEPLOY_DEV&lt;br/&gt;5-minute SLA"] --&gt; B{"Requester has&lt;br/&gt;agent_operator&lt;br/&gt;role?"}
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a> B --&gt;|Yes| C[" Auto-Approve&lt;br/&gt;status: APPROVED"]
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a>
-<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>    D --&gt; E{"approver&lt;br/&gt;responds?"}
-<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>    E --&gt;|Approved| F[" Approved&lt;br/&gt;status: APPROVED"]
-<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>    E --&gt;|Rejected| G[" Rejected&lt;br/&gt;status: REJECTED"]
-<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>    E --&gt;|No Response| H[" Expired&lt;br/&gt;status: EXPIRED&lt;br/&gt;Request expires"]
-<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a>
-<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>    C --&gt; I["Proceed"]
-<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a>    F --&gt; I
-<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>    G --&gt; J["Block"]
-<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a>    H --&gt; J
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a> B --&gt;|No| D["Require Approval&lt;br/&gt;status: PENDING&lt;br/&gt;Start 5-minute SLA"]
+<a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>
+<a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a> D --&gt; E{"approver&lt;br/&gt;responds?"}
+<a href="#__codelineno-25-10" id="__codelineno-25-10" name="__codelineno-25-10"></a>
+<a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a> E --&gt;|Approved| F[" Approved&lt;br/&gt;status: APPROVED"]
+<a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a>
+<a href="#__codelineno-25-13" id="__codelineno-25-13" name="__codelineno-25-13"></a> E --&gt;|Rejected| G[" Rejected&lt;br/&gt;status: REJECTED"]
+<a href="#__codelineno-25-14" id="__codelineno-25-14" name="__codelineno-25-14"></a>
+<a href="#__codelineno-25-15" id="__codelineno-25-15" name="__codelineno-25-15"></a> E --&gt;|No Response| H[" Expired&lt;br/&gt;status: EXPIRED&lt;br/&gt;Request expires"]
+<a href="#__codelineno-25-16" id="__codelineno-25-16" name="__codelineno-25-16"></a>
+<a href="#__codelineno-25-17" id="__codelineno-25-17" name="__codelineno-25-17"></a> C --&gt; I["Proceed"]
+<a href="#__codelineno-25-18" id="__codelineno-25-18" name="__codelineno-25-18"></a>
+<a href="#__codelineno-25-19" id="__codelineno-25-19" name="__codelineno-25-19"></a> F --&gt; I
+<a href="#__codelineno-25-20" id="__codelineno-25-20" name="__codelineno-25-20"></a>
+<a href="#__codelineno-25-21" id="__codelineno-25-21" name="__codelineno-25-21"></a> G --&gt; J["Block"]
+<a href="#__codelineno-25-22" id="__codelineno-25-22" name="__codelineno-25-22"></a>
+<a href="#__codelineno-25-23" id="__codelineno-25-23" name="__codelineno-25-23"></a> H --&gt; J
 </code></pre></div>
 <h3 id="multi-level-escalation">Multi-Level Escalation<a class="headerlink" href="#multi-level-escalation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>graph TD
-<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>    A["Request Submitted&lt;br/&gt;SLA: 4 hours"] --&gt; B["Level 1 Approver&lt;br/&gt;(Primary Owner)"]
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>    B --&gt; C{"L1 Response?"}
-<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>    C --&gt;|Approved| D[" L1 Approved"]
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>    C --&gt;|Rejected| E[" Rejected"]
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>    C --&gt;|No Response| F["L1 SLA Elapsed"]
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a> A["Request Submitted&lt;br/&gt;SLA: 4 hours"] --&gt; B["Level 1 Approver&lt;br/&gt;(Primary Owner)"]
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> B --&gt; C{"L1 Response?"}
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> C --&gt;|Approved| D[" L1 Approved"]
 <a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>
-<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a>    D --&gt; G["Continue"]
-<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>    E --&gt; H["Block"]
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a>    F --&gt; I["Escalate to L2"]
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a> C --&gt;|Rejected| E[" Rejected"]
+<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a> C --&gt;|No Response| F["L1 SLA Elapsed"]
 <a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a>
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a>    I --&gt; J["Level 2 Approver&lt;br/&gt;(Secondary)&lt;br/&gt;SLA: 4 hours"]
-<a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a>    J --&gt; K{"L2 Response?"}
-<a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a>
-<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>    K --&gt;|Approved| L[" L2 Approved"]
-<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a>    K --&gt;|Rejected| M[" Rejected"]
-<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a>    K --&gt;|No Response| N["L2 SLA Elapsed"]
-<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a>
-<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a>    L --&gt; O["Continue"]
-<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a>    M --&gt; H
-<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a>    N --&gt; P["Escalate to L3"]
-<a href="#__codelineno-26-23" id="__codelineno-26-23" name="__codelineno-26-23"></a>
-<a href="#__codelineno-26-24" id="__codelineno-26-24" name="__codelineno-26-24"></a>    P --&gt; Q["Level 3 Approver&lt;br/&gt;(Senior Authority)&lt;br/&gt;SLA: 4 hours"]
-<a href="#__codelineno-26-25" id="__codelineno-26-25" name="__codelineno-26-25"></a>    Q --&gt; R{"L3 Response?"}
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a> D --&gt; G["Continue"]
+<a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a>
+<a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a> E --&gt; H["Block"]
+<a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>
+<a href="#__codelineno-26-17" id="__codelineno-26-17" name="__codelineno-26-17"></a> F --&gt; I["Escalate to L2"]
+<a href="#__codelineno-26-18" id="__codelineno-26-18" name="__codelineno-26-18"></a>
+<a href="#__codelineno-26-19" id="__codelineno-26-19" name="__codelineno-26-19"></a> I --&gt; J["Level 2 Approver&lt;br/&gt;(Secondary)&lt;br/&gt;SLA: 4 hours"]
+<a href="#__codelineno-26-20" id="__codelineno-26-20" name="__codelineno-26-20"></a>
+<a href="#__codelineno-26-21" id="__codelineno-26-21" name="__codelineno-26-21"></a> J --&gt; K{"L2 Response?"}
+<a href="#__codelineno-26-22" id="__codelineno-26-22" name="__codelineno-26-22"></a>
+<a href="#__codelineno-26-23" id="__codelineno-26-23" name="__codelineno-26-23"></a> K --&gt;|Approved| L[" L2 Approved"]
+<a href="#__codelineno-26-24" id="__codelineno-26-24" name="__codelineno-26-24"></a>
+<a href="#__codelineno-26-25" id="__codelineno-26-25" name="__codelineno-26-25"></a> K --&gt;|Rejected| M[" Rejected"]
 <a href="#__codelineno-26-26" id="__codelineno-26-26" name="__codelineno-26-26"></a>
-<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a>    R --&gt;|Approved| S[" L3 Approved"]
-<a href="#__codelineno-26-28" id="__codelineno-26-28" name="__codelineno-26-28"></a>    R --&gt;|Rejected| T[" Rejected"]
-<a href="#__codelineno-26-29" id="__codelineno-26-29" name="__codelineno-26-29"></a>    R --&gt;|No Response| U["Auto-Approve&lt;br/&gt;Quorum Unavailable"]
+<a href="#__codelineno-26-27" id="__codelineno-26-27" name="__codelineno-26-27"></a> K --&gt;|No Response| N["L2 SLA Elapsed"]
+<a href="#__codelineno-26-28" id="__codelineno-26-28" name="__codelineno-26-28"></a>
+<a href="#__codelineno-26-29" id="__codelineno-26-29" name="__codelineno-26-29"></a> L --&gt; O["Continue"]
 <a href="#__codelineno-26-30" id="__codelineno-26-30" name="__codelineno-26-30"></a>
-<a href="#__codelineno-26-31" id="__codelineno-26-31" name="__codelineno-26-31"></a>    S --&gt; V["Proceed"]
-<a href="#__codelineno-26-32" id="__codelineno-26-32" name="__codelineno-26-32"></a>    T --&gt; H
-<a href="#__codelineno-26-33" id="__codelineno-26-33" name="__codelineno-26-33"></a>    U --&gt; V
+<a href="#__codelineno-26-31" id="__codelineno-26-31" name="__codelineno-26-31"></a> M --&gt; H
+<a href="#__codelineno-26-32" id="__codelineno-26-32" name="__codelineno-26-32"></a>
+<a href="#__codelineno-26-33" id="__codelineno-26-33" name="__codelineno-26-33"></a> N --&gt; P["Escalate to L3"]
+<a href="#__codelineno-26-34" id="__codelineno-26-34" name="__codelineno-26-34"></a>
+<a href="#__codelineno-26-35" id="__codelineno-26-35" name="__codelineno-26-35"></a> P --&gt; Q["Level 3 Approver&lt;br/&gt;(Senior Authority)&lt;br/&gt;SLA: 4 hours"]
+<a href="#__codelineno-26-36" id="__codelineno-26-36" name="__codelineno-26-36"></a>
+<a href="#__codelineno-26-37" id="__codelineno-26-37" name="__codelineno-26-37"></a> Q --&gt; R{"L3 Response?"}
+<a href="#__codelineno-26-38" id="__codelineno-26-38" name="__codelineno-26-38"></a>
+<a href="#__codelineno-26-39" id="__codelineno-26-39" name="__codelineno-26-39"></a> R --&gt;|Approved| S[" L3 Approved"]
+<a href="#__codelineno-26-40" id="__codelineno-26-40" name="__codelineno-26-40"></a>
+<a href="#__codelineno-26-41" id="__codelineno-26-41" name="__codelineno-26-41"></a> R --&gt;|Rejected| T[" Rejected"]
+<a href="#__codelineno-26-42" id="__codelineno-26-42" name="__codelineno-26-42"></a>
+<a href="#__codelineno-26-43" id="__codelineno-26-43" name="__codelineno-26-43"></a> R --&gt;|No Response| U["Auto-Approve&lt;br/&gt;Quorum Unavailable"]
+<a href="#__codelineno-26-44" id="__codelineno-26-44" name="__codelineno-26-44"></a>
+<a href="#__codelineno-26-45" id="__codelineno-26-45" name="__codelineno-26-45"></a> S --&gt; V["Proceed"]
+<a href="#__codelineno-26-46" id="__codelineno-26-46" name="__codelineno-26-46"></a>
+<a href="#__codelineno-26-47" id="__codelineno-26-47" name="__codelineno-26-47"></a> T --&gt; H
+<a href="#__codelineno-26-48" id="__codelineno-26-48" name="__codelineno-26-48"></a>
+<a href="#__codelineno-26-49" id="__codelineno-26-49" name="__codelineno-26-49"></a> U --&gt; V
 </code></pre></div>
 <h3 id="incident-mode-escalation">Incident Mode Escalation<a class="headerlink" href="#incident-mode-escalation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>graph TD
-<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>    A["Incident Mode Active"] --&gt; B["Request Submitted&lt;br/&gt;30-minute SLA"]
-<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>    B --&gt; C["Level 1 Approver&lt;br/&gt;(Primary)"]
-<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>    C --&gt; D{"L1 Response&lt;br/&gt;30 min SLA?"}
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a> A["Incident Mode Active"] --&gt; B["Request Submitted&lt;br/&gt;30-minute SLA"]
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a> B --&gt; C["Level 1 Approver&lt;br/&gt;(Primary)"]
 <a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>    D --&gt;|Approved| E[" Approved"]
-<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>    D --&gt;|Rejected| F[" Rejected"]
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a>    D --&gt;|No Response| G["Skip L2&lt;br/&gt;Go to L3"]
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> C --&gt; D{"L1 Response&lt;br/&gt;30 min SLA?"}
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a> D --&gt;|Approved| E[" Approved"]
 <a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a>
-<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a>    E --&gt; H["Proceed"]
-<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>    F --&gt; I["Block"]
-<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>    G --&gt; J["Level 3 Approver&lt;br/&gt;(Senior Authority)&lt;br/&gt;30-minute SLA"]
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a> D --&gt;|Rejected| F[" Rejected"]
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a> D --&gt;|No Response| G["Skip L2&lt;br/&gt;Go to L3"]
 <a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a>
-<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a>    J --&gt; K{"L3 Response?"}
-<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>    K --&gt;|Approved| L[" Approved"]
-<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a>    K --&gt;|Rejected| M[" Rejected"]
-<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a>    K --&gt;|No Response| N["Auto-Approve&lt;br/&gt;Incident Override"]
-<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a>
-<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a>    L --&gt; H
-<a href="#__codelineno-27-21" id="__codelineno-27-21" name="__codelineno-27-21"></a>    M --&gt; I
-<a href="#__codelineno-27-22" id="__codelineno-27-22" name="__codelineno-27-22"></a>    N --&gt; H
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a> E --&gt; H["Proceed"]
+<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>
+<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a> F --&gt; I["Block"]
+<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a>
+<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a> G --&gt; J["Level 3 Approver&lt;br/&gt;(Senior Authority)&lt;br/&gt;30-minute SLA"]
+<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a>
+<a href="#__codelineno-27-21" id="__codelineno-27-21" name="__codelineno-27-21"></a> J --&gt; K{"L3 Response?"}
+<a href="#__codelineno-27-22" id="__codelineno-27-22" name="__codelineno-27-22"></a>
+<a href="#__codelineno-27-23" id="__codelineno-27-23" name="__codelineno-27-23"></a> K --&gt;|Approved| L[" Approved"]
+<a href="#__codelineno-27-24" id="__codelineno-27-24" name="__codelineno-27-24"></a>
+<a href="#__codelineno-27-25" id="__codelineno-27-25" name="__codelineno-27-25"></a> K --&gt;|Rejected| M[" Rejected"]
+<a href="#__codelineno-27-26" id="__codelineno-27-26" name="__codelineno-27-26"></a>
+<a href="#__codelineno-27-27" id="__codelineno-27-27" name="__codelineno-27-27"></a> K --&gt;|No Response| N["Auto-Approve&lt;br/&gt;Incident Override"]
+<a href="#__codelineno-27-28" id="__codelineno-27-28" name="__codelineno-27-28"></a>
+<a href="#__codelineno-27-29" id="__codelineno-27-29" name="__codelineno-27-29"></a> L --&gt; H
+<a href="#__codelineno-27-30" id="__codelineno-27-30" name="__codelineno-27-30"></a>
+<a href="#__codelineno-27-31" id="__codelineno-27-31" name="__codelineno-27-31"></a> M --&gt; I
+<a href="#__codelineno-27-32" id="__codelineno-27-32" name="__codelineno-27-32"></a>
+<a href="#__codelineno-27-33" id="__codelineno-27-33" name="__codelineno-27-33"></a> N --&gt; H
 </code></pre></div>
 <hr/>
 <h2 id="implementation-guide">Implementation Guide<a class="headerlink" href="#implementation-guide" title="Permanent link">¶</a></h2>
 <h3 id="step-1-define-policy">Step 1: Define Policy<a class="headerlink" href="#step-1-define-policy" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># Define a new approval policy</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="n">policy</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a>    <span class="s2">"policy_code"</span><span class="p">:</span> <span class="s2">"CUSTOM_OPERATION"</span><span class="p">,</span>
-<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>    <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span>
-<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a>    <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a>    <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a>    <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a>    <span class="s2">"is_destructive"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a>    <span class="s2">"sequential_approval"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a>    <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a> <span class="s2">"policy_code"</span><span class="p">:</span> <span class="s2">"CUSTOM_OPERATION"</span><span class="p">,</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a> <span class="s2">"required_roles"</span><span class="p">:</span> <span class="p">[</span><span class="n">CodexRole</span><span class="o">.</span><span class="n">AGENT_OPERATOR</span><span class="p">,</span> <span class="n">CodexRole</span><span class="o">.</span><span class="n">SECURITY_REVIEWER</span><span class="p">],</span>
+<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a> <span class="s2">"sla_hours"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a> <span class="s2">"max_escalations"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a> <span class="s2">"auto_approve_if_privileged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a> <span class="s2">"is_destructive"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a> <span class="s2">"sequential_approval"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a> <span class="s2">"requires_all_approvers"</span><span class="p">:</span> <span class="kc">True</span>
 <a href="#__codelineno-28-11" id="__codelineno-28-11" name="__codelineno-28-11"></a><span class="p">}</span>
 <a href="#__codelineno-28-12" id="__codelineno-28-12" name="__codelineno-28-12"></a>
 <a href="#__codelineno-28-13" id="__codelineno-28-13" name="__codelineno-28-13"></a><span class="n">APPROVAL_POLICY_MATRIX</span><span class="p">[</span><span class="s2">"CUSTOM_OPERATION"</span><span class="p">]</span> <span class="o">=</span> <span class="n">policy</span>
@@ -3189,10 +3222,10 @@
 <a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="n">service</span> <span class="o">=</span> <span class="n">ApprovalService</span><span class="p">()</span>
 <a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a>
 <a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="n">request</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">submit_approval</span><span class="p">(</span>
-<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a>    <span class="n">policy_code</span><span class="o">=</span><span class="s2">"CUSTOM_OPERATION"</span><span class="p">,</span>
-<a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a>    <span class="n">requester_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
-<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a>    <span class="n">resource_id</span><span class="o">=</span><span class="s2">"resource_001"</span><span class="p">,</span>
-<a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"change_type"</span><span class="p">:</span> <span class="s2">"update"</span><span class="p">,</span> <span class="s2">"risk_level"</span><span class="p">:</span> <span class="s2">"medium"</span><span class="p">}</span>
+<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a> <span class="n">policy_code</span><span class="o">=</span><span class="s2">"CUSTOM_OPERATION"</span><span class="p">,</span>
+<a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a> <span class="n">requester_id</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">,</span>
+<a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a> <span class="n">resource_id</span><span class="o">=</span><span class="s2">"resource_001"</span><span class="p">,</span>
+<a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"change_type"</span><span class="p">:</span> <span class="s2">"update"</span><span class="p">,</span> <span class="s2">"risk_level"</span><span class="p">:</span> <span class="s2">"medium"</span><span class="p">}</span>
 <a href="#__codelineno-29-10" id="__codelineno-29-10" name="__codelineno-29-10"></a><span class="p">)</span>
 <a href="#__codelineno-29-11" id="__codelineno-29-11" name="__codelineno-29-11"></a>
 <a href="#__codelineno-29-12" id="__codelineno-29-12" name="__codelineno-29-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Request </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">request_id</span><span class="si">}</span><span class="s2"> created"</span><span class="p">)</span>
@@ -3202,21 +3235,21 @@
 <h3 id="step-3-check-request-status">Step 3: Check Request Status<a class="headerlink" href="#step-3-check-request-status" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># Check if request was auto-approved</span>
 <a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a><span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">auto_approved</span><span class="p">:</span>
-<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Request auto-approved (requester has required roles)"</span><span class="p">)</span>
-<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a>    <span class="c1"># Proceed immediately</span>
+<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Request auto-approved (requester has required roles)"</span><span class="p">)</span>
+<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a> <span class="c1"># Proceed immediately</span>
 <a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Awaiting approval from: </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">pending_approvers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a>    <span class="c1"># Wait or poll for approvals</span>
+<a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Awaiting approval from: </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">pending_approvers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a> <span class="c1"># Wait or poll for approvals</span>
 </code></pre></div>
 <h3 id="step-4-add-decision">Step 4: Add Decision<a class="headerlink" href="#step-4-add-decision" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="kn">from</span> <span class="nn">codex.governance.approval_service</span> <span class="kn">import</span> <span class="n">ApprovalDecision</span>
 <a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a>
 <a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a><span class="n">decision</span> <span class="o">=</span> <span class="n">ApprovalDecision</span><span class="p">(</span>
-<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
-<a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a>    <span class="n">approver_name</span><span class="o">=</span><span class="s2">"Bob Chen"</span><span class="p">,</span>
-<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-31-7" id="__codelineno-31-7" name="__codelineno-31-7"></a>    <span class="n">reason</span><span class="o">=</span><span class="s2">"Change validated against security requirements"</span><span class="p">,</span>
-<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a>    <span class="n">authority_level</span><span class="o">=</span><span class="mi">1</span>  <span class="c1"># L1 approver</span>
+<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a> <span class="n">approver_id</span><span class="o">=</span><span class="s2">"bob"</span><span class="p">,</span>
+<a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a> <span class="n">approver_name</span><span class="o">=</span><span class="s2">"Bob Chen"</span><span class="p">,</span>
+<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-31-7" id="__codelineno-31-7" name="__codelineno-31-7"></a> <span class="n">reason</span><span class="o">=</span><span class="s2">"Change validated against security requirements"</span><span class="p">,</span>
+<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a> <span class="n">authority_level</span><span class="o">=</span><span class="mi">1</span> <span class="c1"># L1 approver</span>
 <a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a><span class="p">)</span>
 <a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a>
 <a href="#__codelineno-31-11" id="__codelineno-31-11" name="__codelineno-31-11"></a><span class="n">service</span><span class="o">.</span><span class="n">add_decision</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">request_id</span><span class="p">,</span> <span class="n">decision</span><span class="p">)</span>
@@ -3224,18 +3257,18 @@
 <a href="#__codelineno-31-13" id="__codelineno-31-13" name="__codelineno-31-13"></a><span class="c1"># Check if approved now</span>
 <a href="#__codelineno-31-14" id="__codelineno-31-14" name="__codelineno-31-14"></a><span class="n">updated</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_request</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">request_id</span><span class="p">)</span>
 <a href="#__codelineno-31-15" id="__codelineno-31-15" name="__codelineno-31-15"></a><span class="k">if</span> <span class="n">updated</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">"approved"</span><span class="p">:</span>
-<a href="#__codelineno-31-16" id="__codelineno-31-16" name="__codelineno-31-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Approved! Proceeding with action..."</span><span class="p">)</span>
+<a href="#__codelineno-31-16" id="__codelineno-31-16" name="__codelineno-31-16"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Approved! Proceeding with action..."</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="step-5-handle-escalation">Step 5: Handle Escalation<a class="headerlink" href="#step-5-handle-escalation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a><span class="c1"># Check if request has escalated</span>
 <a href="#__codelineno-32-2" id="__codelineno-32-2" name="__codelineno-32-2"></a><span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-32-3" id="__codelineno-32-3" name="__codelineno-32-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Request escalated </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span><span class="si">}</span><span class="s2"> times"</span><span class="p">)</span>
+<a href="#__codelineno-32-3" id="__codelineno-32-3" name="__codelineno-32-3"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Request escalated </span><span class="si">{</span><span class="n">request</span><span class="o">.</span><span class="n">escalation_count</span><span class="si">}</span><span class="s2"> times"</span><span class="p">)</span>
 <a href="#__codelineno-32-4" id="__codelineno-32-4" name="__codelineno-32-4"></a>
 <a href="#__codelineno-32-5" id="__codelineno-32-5" name="__codelineno-32-5"></a><span class="c1"># Check if request expired</span>
 <a href="#__codelineno-32-6" id="__codelineno-32-6" name="__codelineno-32-6"></a><span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">"expired"</span><span class="p">:</span>
-<a href="#__codelineno-32-7" id="__codelineno-32-7" name="__codelineno-32-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Request expired without approval"</span><span class="p">)</span>
-<a href="#__codelineno-32-8" id="__codelineno-32-8" name="__codelineno-32-8"></a>    <span class="c1"># Option 1: Resubmit</span>
-<a href="#__codelineno-32-9" id="__codelineno-32-9" name="__codelineno-32-9"></a>    <span class="c1"># Option 2: Escalate manually</span>
+<a href="#__codelineno-32-7" id="__codelineno-32-7" name="__codelineno-32-7"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Request expired without approval"</span><span class="p">)</span>
+<a href="#__codelineno-32-8" id="__codelineno-32-8" name="__codelineno-32-8"></a> <span class="c1"># Option 1: Resubmit</span>
+<a href="#__codelineno-32-9" id="__codelineno-32-9" name="__codelineno-32-9"></a> <span class="c1"># Option 2: Escalate manually</span>
 </code></pre></div>
 <hr/>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
@@ -3247,7 +3280,7 @@
 </ul>
 <hr/>
 <p><strong>Last Updated: 2026-07-08
-</strong>Version:<strong> 1.0.0<br/>
+</strong>Version:<strong> 1.0.0
 </strong>Status:** Production Ready</p>
 </article>
 </div>
@@ -3278,6 +3311,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

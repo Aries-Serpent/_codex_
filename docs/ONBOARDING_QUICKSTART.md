@@ -1,6 +1,6 @@
 # Codex ML: 5-Minute Onboarding Quickstart
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker)
 > **Audience:** New developers, ML engineers, AI researchers

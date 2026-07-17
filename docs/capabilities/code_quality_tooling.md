@@ -1,6 +1,6 @@
 # Code Quality Tooling
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -188,7 +188,7 @@ def security(session):
 ```.pre-commit-config.yaml
 repos:
  - repo: https://github.com/pre-commit/pre-commit-hooks
- rev: v0.2.1
+ rev: v0.2.0
  hooks:
  - id: trailing-whitespace
  - id: end-of-file-fixer
@@ -197,7 +197,7 @@ repos:
  - id: check-merge-conflict
 
  - repo: https://github.com/astral-sh/ruff-pre-commit
- rev: v0.2.1
+ rev: v0.2.0
  hooks:
  - id: ruff
  args: [--fix, --exit-non-zero-on-fix]
@@ -208,7 +208,7 @@ repos:
  - id: black
 
  - repo: https://github.com/pre-commit/mirrors-mypy
- rev: v0.2.1
+ rev: v0.2.0
  hooks:
  - id: mypy
  additional_dependencies: [types-all]
@@ -404,7 +404,7 @@ ignore_missing_imports = true
 3. **Pre-commit hooks too slow**
  ```bash
  # Skip hooks temporarily
- git commit --no-verify -m "WIP: skip hooks"
+ git commit --no-verify -m "skip hooks"
 
  # Or run specific hooks
  pre-commit run ruff --all-files

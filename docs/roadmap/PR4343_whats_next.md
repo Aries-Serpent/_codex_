@@ -1,6 +1,6 @@
 # PR #4343 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Status:  In progress — workflow approvals processed; queue still active with API-rate-limit constraints on deeper run inspection**

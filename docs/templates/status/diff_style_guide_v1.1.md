@@ -1,6 +1,6 @@
 # Guide: Atomic Patch Diff Style for `_codex_` (v1.1)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
  Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer]  Energy: 5  

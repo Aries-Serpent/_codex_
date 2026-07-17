@@ -1,6 +1,6 @@
 # ADR-20260304-third-d-capable-evaluation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -115,7 +115,7 @@ and/or missing `violations_30d` tracking (C4).
 1. `rust-error-validator` `maturity` field updated to `production` (requires @mbaetiong sign-off)
 2. `rust-error-validator` `violations_30d: 0` explicitly set after 30-day observation window
 3. A new ADR is created documenting the evaluation at that time
-4. `AGENT_REGISTRY.yaml` updated (v0.2.1) with the promotion
+4. `AGENT_REGISTRY.yaml` updated (v0.2.0) with the promotion
 5. `CODEX_MANIFEST.json` regenerated
 
 ---

@@ -1,6 +1,6 @@
 # Sprint Plan — Phase 13.1: MCP Interactive Mode
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -9,7 +9,7 @@
 **Owner:** Copilot Coding Agent (S263+)
 **Timeline:** 2026-04-01 2026-04-15
 **Phase:** 13.1 (follows Phase 13 CI/Security Hardening, S257–S263)
-**Tracked in:** `docs/evolution/EVOLUTION_TIMELINE.md` v0.2.1
+**Tracked in:** `docs/evolution/EVOLUTION_TIMELINE.md` v0.2.0
 
 ---
 

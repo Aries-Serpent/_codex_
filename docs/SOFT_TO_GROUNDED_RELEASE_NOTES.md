@@ -1,6 +1,6 @@
 # Soft GROUNDED Conversion: Release Notes & User Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -19,7 +19,7 @@ gates structurally enforce agent governance, blocking PRs that violate registry 
 handoff protocols, workflow standards, transition conditions, or corpus health thresholds.
 
 **Key metrics:**
-- **152 agents** cataloged in `AGENT_REGISTRY.yaml` v0.2.1 (GROUNDED=8, PARTIAL=144, SOFT=0)
+- **152 agents** cataloged in `AGENT_REGISTRY.yaml` v0.2.0 (GROUNDED=8, PARTIAL=144, SOFT=0)
 - **5 Tier-1 gates** that block merges on violations
 - **FAISS semantic memory corpus** with nightly + on-push refreshes
 - **ED transition gate** controlling agent autonomy levels with automated demotion annotations
@@ -35,7 +35,7 @@ handoff protocols, workflow standards, transition conditions, or corpus health t
 
 | Area | Previous State |
 |------|---------------|
-| Agent catalog | 128 agents in AGENT_REGISTRY.yaml v0.2.1 — no enforcement fields, no schema validation |
+| Agent catalog | 128 agents in AGENT_REGISTRY.yaml v0.2.0 — no enforcement fields, no schema validation |
 | Merge gates | No CI checks enforced agent governance rules; violations were invisible |
 | Agent handoffs | No protocol schema; agents delegated work without structure |
 | Semantic search | No corpus; agent routing relied on keyword matching or manual selection |
@@ -46,7 +46,7 @@ handoff protocols, workflow standards, transition conditions, or corpus health t
 
 | Area | Current State |
 |------|--------------|
-| Agent catalog | **152 agents** in AGENT_REGISTRY.yaml v0.2.1 — all with `enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from`; SOFT=0 |
+| Agent catalog | **152 agents** in AGENT_REGISTRY.yaml v0.2.0 — all with `enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from`; SOFT=0 |
 | Merge gates | **5 Tier-1 gates** — PRs blocked on schema violations, handoff errors, lint failures, low ED scores, unhealthy corpus |
 | Agent handoffs | `AgentHandoffManifest_v1.1.json` schema with Tier-1 validation gate |
 | Semantic search | **FAISS corpus** (all-MiniLM-L6-v2, 512-word chunks, 90-day retention) with nightly + on-push rebuilds |
@@ -159,7 +159,7 @@ These 5 gates run on every PR and block merges on violations:
 
 | File | Purpose |
 |------|---------|
-| `.github/agents/AGENT_REGISTRY.yaml` | Central agent catalog (152 agents, v0.2.1) |
+| `.github/agents/AGENT_REGISTRY.yaml` | Central agent catalog (152 agents, v0.2.0) |
 | `CODEX_MANIFEST.json` | Root discovery index with integrity hash |
 | `.codex/schemas/AgentRegistrySchema.json` | JSON Schema for registry validation |
 | `.codex/schemas/CodexManifestSchema.json` | JSON Schema for manifest validation |

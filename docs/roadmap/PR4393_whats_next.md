@@ -1,6 +1,6 @@
 # PR #4393 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **PR:** [#4393](https://github.com/Aries-Serpent/_codex_/pull/4393)
 **Branch:** `copilot/fix-ci-failure-triage-report`

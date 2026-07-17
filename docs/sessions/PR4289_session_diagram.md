@@ -1,6 +1,6 @@
 # PR #4289 — Session Diagram: Full Scope of What Was Accomplished
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Stats: 64 commits · 118 files changed · 2,050 insertions(+) · 384 deletions(-)**

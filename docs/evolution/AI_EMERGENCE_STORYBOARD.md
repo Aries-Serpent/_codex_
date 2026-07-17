@@ -1,6 +1,6 @@
 # AI Emergence Storyboard — The _codex_ Story
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22
 **Version**: 2.0.0

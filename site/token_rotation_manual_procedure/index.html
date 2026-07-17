@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/token_rotation_manual_procedure/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Token Rotation Manual Procedure - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2839,10 +2839,10 @@
 <h1 id="token-rotation-manual-procedure">Token Rotation Manual Procedure<a class="headerlink" href="#token-rotation-manual-procedure" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
+<p>**Last Updated: 2026-07-16</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the <em>codex</em> repository.</p>
-<p><strong>️ IMPORTANT</strong>: Only execute these procedures with explicit authorization from repository administrators.</p>
+<p>** IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.</p>
 <hr/>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
 <h3 id="1-required-access">1. Required Access<a class="headerlink" href="#1-required-access" title="Permanent link">¶</a></h3>
@@ -2893,9 +2893,9 @@
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--verify
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Expected output:</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1">#  TOKEN_SECRET_KEY is set</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1">#  CODEX_MASTER_KEY is set</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1">#  Backup directory exists</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1"># TOKEN_SECRET_KEY is set</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1"># CODEX_MASTER_KEY is set</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Backup directory exists</span>
 </code></pre></div>
 <h2 id="step-3-perform-rotation">Step 3: Perform Rotation<a class="headerlink" href="#step-3-perform-rotation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Standard rotation (will backup automatically)</span>
@@ -2927,8 +2927,8 @@
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="s2">secret = os.getenv('TOKEN_SECRET_KEY')</span>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="s2">payload = {</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="s2">    'sub': 'test-user',</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="s2">    'exp': datetime.utcnow() + timedelta(hours=1)</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="s2"> 'sub': 'test-user',</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="s2"> 'exp': datetime.utcnow() + timedelta(hours=1)</span>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="s2">}</span>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="s2">token = jwt.encode(payload, secret, algorithm='HS256')</span>
 <a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="s2">print(f' JWT generated: {token[:50]}...')</span>
@@ -2997,9 +2997,9 @@
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--validate
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># Expected output:</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1">#  TOKEN_SECRET_KEY: accessible</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="c1">#  GITHUB_OAUTH_CLIENT_SECRET: accessible</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1">#  SESSION_ENCRYPTION_KEY: accessible</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="c1"># TOKEN_SECRET_KEY: accessible</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="c1"># GITHUB_OAUTH_CLIENT_SECRET: accessible</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># SESSION_ENCRYPTION_KEY: accessible</span>
 </code></pre></div>
 <h2 id="step-5-sync-to-downstream-systems">Step 5: Sync to Downstream Systems<a class="headerlink" href="#step-5-sync-to-downstream-systems" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Sync secrets to dependent systems (if configured)</span>
@@ -3026,9 +3026,9 @@
 <h4 id="step-1-generate-new-secret-optional">Step 1: Generate New Secret (Optional)<a class="headerlink" href="#step-1-generate-new-secret-optional" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Generate a new secure secret (32 bytes = 256 bits)</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>python3<span class="w"> </span>scripts/phase10/automated_secrets_manager.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span>--action<span class="w"> </span>generate-key<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">  </span>--name<span class="w"> </span>NEW_SECRET_NAME<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">  </span>--key-length<span class="w"> </span><span class="m">32</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span>--action<span class="w"> </span>generate-key<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w"> </span>--name<span class="w"> </span>NEW_SECRET_NAME<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span>--key-length<span class="w"> </span><span class="m">32</span>
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="c1"># The script will:</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="c1"># 1. Generate cryptographically secure random key</span>
@@ -3038,10 +3038,10 @@
 <h2 id="step-2-set-existing-secret">Step 2: Set Existing Secret<a class="headerlink" href="#step-2-set-existing-secret" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Set secret with specific value</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>python3<span class="w"> </span>scripts/phase10/automated_secrets_manager.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span>--action<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">  </span>--name<span class="w"> </span>SECRET_NAME<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">  </span>--value<span class="w"> </span><span class="s2">"your-secret-value"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">  </span>--method<span class="w"> </span>api
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w"> </span>--action<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w"> </span>--name<span class="w"> </span>SECRET_NAME<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span>--value<span class="w"> </span><span class="s2">"your-secret-value"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w"> </span>--method<span class="w"> </span>api
 <a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="c1"># Methods:</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="c1"># - api: Direct GitHub REST API (requires PyNaCl)</span>
@@ -3051,16 +3051,16 @@
 <h2 id="step-3-verify-secret-was-set">Step 3: Verify Secret Was Set<a class="headerlink" href="#step-3-verify-secret-was-set" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Verify secret exists in GitHub</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>python3<span class="w"> </span>scripts/phase10/automated_secrets_manager.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w">  </span>--action<span class="w"> </span>verify<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">  </span>--name<span class="w"> </span>SECRET_NAME
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w"> </span>--action<span class="w"> </span>verify<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span>--name<span class="w"> </span>SECRET_NAME
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="c1"># Expected output:</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1">#  SECRET_NAME exists in GitHub Secrets</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="c1"># SECRET_NAME exists in GitHub Secrets</span>
 </code></pre></div>
 <h2 id="step-4-list-all-secrets">Step 4: List All Secrets<a class="headerlink" href="#step-4-list-all-secrets" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># List all configured secrets (names only, no values)</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>python3<span class="w"> </span>scripts/phase10/automated_secrets_manager.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w">  </span>--action<span class="w"> </span>list
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w"> </span>--action<span class="w"> </span>list
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="c1"># Output example:</span>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="c1"># Secrets in Aries-Serpent/_codex_:</span>
@@ -3114,8 +3114,8 @@
 1. Go to: https://github.com/settings/tokens
 2. Edit your token
 3. Ensure these scopes are checked:
-   - <code>repo</code> (full control)
-   - <code>workflow</code> (update workflows)
+ - <code>repo</code> (full control)
+ - <code>workflow</code> (update workflows)
 4. Regenerate token
 5. Update <code>GITHUB_TOKEN</code> environment variable</p>
 <hr/>
@@ -3159,27 +3159,10 @@
 <h2 id="automation">Automation<a class="headerlink" href="#automation" title="Permanent link">¶</a></h2>
 <h3 id="scheduled-rotations">Scheduled Rotations<a class="headerlink" href="#scheduled-rotations" title="Permanent link">¶</a></h3>
 <p>Automated rotations run via GitHub Actions:</p>
-<table>
-<thead>
-<tr>
-<th>Workflow</th>
-<th>Schedule</th>
-<th>Secrets Rotated</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>auth-token-rotation.yml</code></td>
-<td>1st of month, midnight UTC</td>
-<td>TOKEN_SECRET_KEY</td>
-</tr>
-<tr>
-<td><code>auth-secret-rotation.yml</code></td>
-<td>1st of month, 2 AM UTC</td>
-<td>All auth secrets</td>
-</tr>
-</tbody>
-</table>
+<p>| Workflow | Schedule | Secrets Rotated | <!-- pragma: allowlist secret -->
+|----------|----------|-----------------|
+| <code>auth-token-rotation.yml</code> | 1st of month, midnight UTC | TOKEN_SECRET_KEY | <!-- pragma: allowlist secret -->
+| <code>auth-secret-rotation.yml</code> | 1st of month, 2 AM UTC | All auth secrets | <!-- pragma: allowlist secret --></p>
 <h3 id="manual-trigger">Manual Trigger<a class="headerlink" href="#manual-trigger" title="Permanent link">¶</a></h3>
 <p>Trigger workflows manually:
 1. Go to: https://github.com/Aries-Serpent/<em>codex</em>/actions
@@ -3197,13 +3180,13 @@
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">¶</a></h2>
 <h3 id="common-commands">Common Commands<a class="headerlink" href="#common-commands" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># JWT rotation</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w">              </span><span class="c1"># Rotate</span>
-<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--verify<span class="w">     </span><span class="c1"># Verify</span>
-<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--rollback<span class="w">   </span><span class="c1"># Rollback</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span><span class="c1"># Rotate</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--verify<span class="w"> </span><span class="c1"># Verify</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>python3<span class="w"> </span>scripts/rotate_jwt_secret.py<span class="w"> </span>--rollback<span class="w"> </span><span class="c1"># Rollback</span>
 <a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a>
 <a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a><span class="c1"># Secrets sync</span>
-<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--backup<span class="w">   </span><span class="c1"># Backup</span>
-<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--rotate<span class="w">   </span><span class="c1"># Rotate all</span>
+<a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--backup<span class="w"> </span><span class="c1"># Backup</span>
+<a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--rotate<span class="w"> </span><span class="c1"># Rotate all</span>
 <a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>python3<span class="w"> </span>scripts/github_secrets_sync.py<span class="w"> </span>--validate<span class="w"> </span><span class="c1"># Validate</span>
 <a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a>
 <a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a><span class="c1"># Manual injection</span>
@@ -3213,18 +3196,18 @@
 </code></pre></div>
 <h2 id="file-locations">File Locations<a class="headerlink" href="#file-locations" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>.codex/
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>├── secrets/
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>│   └── backups/          # Encrypted secret backups
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>│       ├── jwt_secret_&lt;timestamp&gt;.enc
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>│       └── secrets_backup_&lt;timestamp&gt;.json.enc
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>└── audit/
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>    └── phase10/          # Audit logs
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>        └── secrets-rotation-&lt;timestamp&gt;.log
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a> secrets/ # pragma: allowlist secret
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a> backups/ # Encrypted secret backups # pragma: allowlist secret
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a> jwt_secret_&lt;timestamp&gt;.enc # pragma: allowlist secret
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a> secrets_backup_&lt;timestamp&gt;.json.enc # pragma: allowlist secret
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a> audit/
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a> phase10/ # Audit logs
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a> secrets-rotation-&lt;timestamp&gt;.log # pragma: allowlist secret
 <a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>
 <a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>.github/workflows/
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>├── auth-token-rotation.yml      # JWT rotation workflow
-<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>├── auth-secret-rotation.yml     # Multi-secret rotation
-<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>└── phase10-automated-secrets-setup.yml  # Initial setup
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a> auth-token-rotation.yml # JWT rotation workflow # pragma: allowlist secret
+<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a> auth-secret-rotation.yml # Multi-secret rotation # pragma: allowlist secret
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a> phase10-automated-secrets-setup.yml # Initial setup # pragma: allowlist secret
 </code></pre></div>
 <hr/>
 <h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
@@ -3241,8 +3224,8 @@
 <li>Cognitive Brain Status: <code>COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md</code></li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-01-17<br/>
-<strong>Version</strong>: 1.0<br/>
+<p><strong>Last Updated</strong>: 2026-01-17
+<strong>Version</strong>: 1.0
 <strong>Status</strong>: Approved for Production Use</p>
 </article>
 </div>
@@ -3273,6 +3256,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

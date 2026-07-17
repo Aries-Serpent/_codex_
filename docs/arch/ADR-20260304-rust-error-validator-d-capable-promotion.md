@@ -1,6 +1,6 @@
 # ADR-20260304: Third D_CAPABLE Agent Promotion — `rust-error-validator`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T23:18:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
@@ -73,7 +73,7 @@ satisfy the 30-day observation window for `rust-error-validator`.
 
 **`rust-error-validator` promoted to `D_CAPABLE`.**
 
-Changes applied to `AGENT_REGISTRY.yaml` v0.2.1 (this PR):
+Changes applied to `AGENT_REGISTRY.yaml` v0.2.0 (this PR):
 - `maturity: beta` `maturity: production`
 - `autonomy_model: E` `autonomy_model: D_CAPABLE`
 - `violations_30d: 0` added

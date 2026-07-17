@@ -1,6 +1,6 @@
-# Space Traversal Capability Audit Guide (v0.2.1)
+# Space Traversal Capability Audit Guide (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: Codex Audit System
 > Roles: [Audit Orchestrator], [Capability Cartographer]
@@ -21,7 +21,7 @@
 
 ---
 
-## 2. Codex-Specific Enhancements (v0.2.1)
+## 2. Codex-Specific Enhancements (v0.2.0)
 
 ### New Capabilities Detected
 
@@ -29,13 +29,13 @@ Based on actual repo structure, the audit now recognizes:
 
 | Domain | Facet Keys | Required Patterns | Added In |
 |--------|-----------|-------------------|----------|
-| **ML Training** | `train` | `train`, `epoch`, `loss` | v0.2.1 |
-| **Model Serving** | `serve`, `inference` | `serve`, `predict`, `api` | v0.2.1 |
+| **ML Training** | `train` | `train`, `epoch`, `loss` | v0.2.0 |
+| **Model Serving** | `serve`, `inference` | `serve`, `predict`, `api` | v0.2.0 |
 | **Experiment Tracking** | `logging`, `tracking` | `mlflow`, `wandb`, `tensorboard` | v1.0 |
 | **Data Pipelines** | `data`, `dataset` | `split`, `loader`, `transform` | v1.0 |
-| **Security/Secrets** | `security`, `secret` | `sanitize`, `redact`, `baseline` | v0.2.1 |
-| **Status Reporting** | `status`, `audit` | `codex_status`, `report` | v0.2.1 |
-| **Archival/Bundling** | `archive`, `bundle` | `prefix`, `manifest`, `pointer` | v0.2.1 |
+| **Security/Secrets** | `security`, `secret` | `sanitize`, `redact`, `baseline` | v0.2.0 |
+| **Status Reporting** | `status`, `audit` | `codex_status`, `report` | v0.2.0 |
+| **Archival/Bundling** | `archive`, `bundle` | `prefix`, `manifest`, `pointer` | v0.2.0 |
 
 ### External Metrics Integration (P5)
 
@@ -53,7 +53,7 @@ export SUMMARY_ENABLE=1               # Emit knobs_effective.json sidecar
 ## Component Scoring Updates
 
 ```text
-# v0.2.1 formulas (applied in stage_s4_scoring)
+# v0.2.0 formulas (applied in stage_s4_scoring)
 consistency = base_consistency * similarity_index  # P5: token similarity multiplier
 tests = max(base_tests, coverage_percent)          # P5: coverage XML override
 safeguards = base_safeguards * sev_factor          # P5: severity-influenced (additive/penalty)
@@ -164,7 +164,7 @@ SAFEGUARD_KEYWORDS = [
 ]
 ```text
 
-### Codex-Recommended Additions (v0.2.1)
+### Codex-Recommended Additions (v0.2.0)
 ```python
 # Already added to scripts/space_traversal/audit_runner.py
 SAFEGUARD_KEYWORDS += [
@@ -226,7 +226,7 @@ def detect(file_index: dict) -> dict:
 
 ---
 
-## 11. Manifest Fields (v0.2.1)
+## 11. Manifest Fields (v0.2.0)
 
 | Field | Description | Example |
 |-------|-------------|---------|
@@ -404,7 +404,7 @@ unset SECURITY_SEVERITY_ENABLE
 
 ---
 
-## 20. Domain Patterns (Extended v0.2.1)
+## 20. Domain Patterns (Extended v0.2.0)
 
 ```python
 DOMAIN_PATTERNS = {
@@ -418,7 +418,7 @@ DOMAIN_PATTERNS = {
     "logging": re.compile(r"log|tracking", re.I),
     "config": re.compile(r"config|hydra", re.I),
 
-    # Codex Extensions (v0.2.1)
+    # Codex Extensions (v0.2.0)
     "serve": re.compile(r"serve|inference|api", re.I),
     "secret": re.compile(r"secret|baseline|redact", re.I),
     "status": re.compile(r"status|audit|report", re.I),
@@ -441,7 +441,7 @@ DOCS_SYNONYMS_MAP = {
     "logging-tracking": ["tracking", "mlflow", "wandb", "tensorboard", "log"],
     "configuration": ["config", "hydra", "omegaconf", "yaml"],
 
-    # Codex-specific (v0.2.1)
+    # Codex-specific (v0.2.0)
     "ml-serving": ["serve", "api", "inference", "predict", "fastapi"],
     "inference-serving": ["serve", "api", "inference", "predict", "fastapi"],
     "status-reporting": ["status", "audit", "report", "codex_status"],
@@ -451,4 +451,4 @@ DOCS_SYNONYMS_MAP = {
 
 ---
 
-*End of Space Traversal Guide v0.2.1*
+*End of Space Traversal Guide v0.2.0*

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/adr-template/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR: - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2320,68 +2320,101 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="adr">ADR: <title imperative,="" short="" —=""><a class="headerlink" href="#adr" title="Permanent link">¶</a></title></h1>
-<p><strong>Last Updated:</strong> 2026-07-11
-<strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
-<ul>
-<li><strong>Status</strong>: Proposed | Accepted | Superseded by ADR-XXXX | Rejected</li>
-<li><strong>Date</strong>: YYYY-MM-DD</li>
-<li><strong>Decision Type</strong>: Archive | Rescue | Deprecate</li>
-<li><strong>Related Issues/PRs</strong>: #123, #456</li>
-<li><strong>Owners</strong>: @team/owners</li>
-</ul>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">¶</a></h2>
-<p>What problem are we solving? List signals: age, refs/usage, coverage/ownership, deprecation markers, planner score. Link to planner report, SBOM reverse-deps, and any consumer impact analysis.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">¶</a></h2>
-<p>Explain <em>what</em> we chose (e.g., archive with tombstone), scope (files/modules), and the effective version/date. Attach the evidence log <code>id</code> and tombstone paths.</p>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
-<ul>
-<li><strong>Positive</strong>: leaner tree, faster CI, reduced cognitive load.</li>
-<li><strong>Negative</strong>: loss of local history; potential consumer churn.</li>
-<li><strong>Risks/Mitigations</strong>: migration notes, compatibility shims, communication plan.</li>
-</ul>
-<h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">¶</a></h2>
-<ul>
-<li>Keep as-is</li>
-<li>Partial rescue (owner assigned, TODOs)</li>
-<li>Fork or split package</li>
-</ul>
-<h2 id="provenance-compliance">Provenance &amp; Compliance<a class="headerlink" href="#provenance-compliance" title="Permanent link">¶</a></h2>
-<ul>
-<li><strong>Provenance</strong>: attestation path(s) for the archival operation.</li>
-<li><strong>SBOM impact</strong>: consumers reviewed (SPDX/CycloneDX reports).</li>
-<li><strong>Change log</strong>: link to CHANGELOG entry.</li>
-</ul>
-</article>
-</div>
-<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
-<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
-</div>
-<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+<h1 id="adr">ADR: <title imperative,="" short="" —="">&lt;a class="headerlink" href="#adr" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Last Updated:&lt;/strong&gt; 2026-07-11
+&lt;strong&gt;Version:&lt;/strong&gt; v0.2.1&lt;/p&gt;
+&lt;p&gt;**Last Updated: 2026-06-22&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Status&lt;/strong&gt;: Proposed | Accepted | Superseded by ADR-XXXX | Rejected&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Date&lt;/strong&gt;: YYYY-MM-DD&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decision Type&lt;/strong&gt;: Archive | Rescue | Deprecate&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Related Issues/PRs&lt;/strong&gt;: #123, #456&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Owners&lt;/strong&gt;: @team/owners&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="context"&gt;Context&lt;a class="headerlink" href="#context" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;What problem are we solving? List signals: age, refs/usage, coverage/ownership, deprecation markers, planner score. Link to planner report, SBOM reverse-deps, and any consumer impact analysis.&lt;/p&gt;
+&lt;h2 id="decision"&gt;Decision&lt;a class="headerlink" href="#decision" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Explain &lt;em&gt;what&lt;/em&gt; we chose (e.g., archive with tombstone), scope (files/modules), and the effective version/date. Attach the evidence log &lt;code&gt;id&lt;/code&gt; and tombstone paths.&lt;/p&gt;
+&lt;h2 id="consequences"&gt;Consequences&lt;a class="headerlink" href="#consequences" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Positive&lt;/strong&gt;: leaner tree, faster CI, reduced cognitive load.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Negative&lt;/strong&gt;: loss of local history; potential consumer churn.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Risks/Mitigations&lt;/strong&gt;: migration notes, compatibility shims, communication plan.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="alternatives-considered"&gt;Alternatives Considered&lt;a class="headerlink" href="#alternatives-considered" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Keep as-is&lt;/li&gt;
+&lt;li&gt;Partial rescue (owner assigned, TODOs)&lt;/li&gt;
+&lt;li&gt;Fork or split package&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="provenance-compliance"&gt;Provenance &amp; Compliance&lt;a class="headerlink" href="#provenance-compliance" title="Permanent link"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Provenance&lt;/strong&gt;: attestation path(s) for the archival operation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SBOM impact&lt;/strong&gt;: consumers reviewed (SPDX/CycloneDX reports).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Change log&lt;/strong&gt;: link to CHANGELOG entry.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              &lt;/article&gt;
+            &lt;/div&gt;
+          
+          
+  &lt;script&gt;var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}&lt;/script&gt;
+
+&lt;script&gt;var target=document.getElementById(location.hash.slice(1));target&amp;&amp;target.name&amp;&amp;(target.checked=target.name.startsWith("__tabbed_"))&lt;/script&gt;
+        &lt;/div&gt;
+        
+          &lt;button type="button" class="md-top md-icon" data-md-component="top" hidden&gt;
+  
+  &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"&gt;&lt;path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/&gt;&lt;/svg&gt;
   Back to top
-</button>
-</main>
-<footer class="md-footer">
-<div class="md-footer-meta md-typeset">
-<div class="md-footer-meta__inner md-grid">
-<div class="md-copyright">
+&lt;/button&gt;
+        
+      &lt;/main&gt;
+      
+        &lt;footer class="md-footer"&gt;
+  
+  &lt;div class="md-footer-meta md-typeset"&gt;
+    &lt;div class="md-footer-meta__inner md-grid"&gt;
+      &lt;div class="md-copyright"&gt;
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+    &lt;a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener"&gt;
       Material for MkDocs
-    </a>
-</div>
-</div>
-</div>
-</footer>
-</div>
-<div class="md-dialog" data-md-component="dialog">
-<div class="md-dialog__inner md-typeset"></div>
-</div>
-<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
-</body>
-</html>
+    &lt;/a&gt;
+  
+&lt;/div&gt;
+      
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+      
+    &lt;/div&gt;
+    &lt;div class="md-dialog" data-md-component="dialog"&gt;
+      &lt;div class="md-dialog__inner md-typeset"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    
+    
+    
+      
+      
+      &lt;script id="__config" type="application/json"&gt;{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}&lt;/script&gt;
+    
+    
+      &lt;script src="../../assets/javascripts/bundle.d7400e89.min.js"&gt;&lt;/script&gt;
+      
+    
+  &lt;/body&gt;
+&lt;/html&gt;</title></h1></article></div></div></main></div></body></html>

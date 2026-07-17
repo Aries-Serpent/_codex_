@@ -1,6 +1,6 @@
 # Copilot Cloud Agent — Session Handoff & WEC Autonomy Design
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Document:** `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`
 > **Status:** Living document — updated 2026-07-13

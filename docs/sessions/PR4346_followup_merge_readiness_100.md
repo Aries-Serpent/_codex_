@@ -1,6 +1,6 @@
 # PR #4346 — Follow-up Prompt: Merge Readiness 100%
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-05-08 · S860-FINAL
 > **Branch:** `finding-autofix-faa8614c` · **PR:** #4346

@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 09
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 9 of 32
 **Sessions:** S183-PR4193-merge-conflict to S294-PR4204-access-probe-rag-context-autonomization

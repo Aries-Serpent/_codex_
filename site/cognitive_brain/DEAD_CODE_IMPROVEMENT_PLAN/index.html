@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Dead Code &amp; Incomplete Feature Improvement Plan - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2403,10 +2403,10 @@
 <h1 id="dead-code-incomplete-feature-improvement-plan">Dead Code &amp; Incomplete Feature Improvement Plan<a class="headerlink" href="#dead-code-incomplete-feature-improvement-plan" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Generated:</strong> 2026-03-16<br/>
+<p><strong>Generated:</strong> 2026-03-16
 <strong>Updated: 2026-07-11
-</strong>Source:<strong> Codebase-wide vulture scan (PR #3586 Session S118–S119)<br/>
-</strong>Policy:<strong> Per AI Agency Policy — no placeholder removed without full assessment.<br/>
+</strong>Source:<strong> Codebase-wide vulture scan (PR #3586 Session S118–S119)
+</strong>Policy:<strong> Per AI Agency Policy — no placeholder removed without full assessment.
 All items are either </strong>implemented in this session<strong> or </strong>added to the ongoing
 Cognitive Brain improvement backlog** below.</p>
 <hr/>
@@ -2516,10 +2516,10 @@ Cognitive Brain improvement backlog** below.</p>
 </tbody>
 </table>
 <hr/>
-<p><strong>File:</strong> <code>src/security/decorators.py:219</code><br/>
-<strong>Pattern:</strong> <code>get_token_scopes(credentials)</code> raises <code>NotImplementedError</code><br/>
+<p><strong>File:</strong> <code>src/security/decorators.py:219</code>
+<strong>Pattern:</strong> <code>get_token_scopes(credentials)</code> raises <code>NotImplementedError</code>
 <strong>Risk:</strong> <strong>Security-critical</strong> — any code path that reaches this function will raise,
-ensuring fail-closed behaviour. However, the stub must be replaced before production.<br/>
+ensuring fail-closed behaviour. However, the stub must be replaced before production.
 <strong>Required implementation:</strong>
 1. Decode JWT bearer token from <code>credentials.credentials</code>
 2. Validate signature using public key from <code>CODEX_MASTER_KEY</code> / JWK endpoint
@@ -2567,21 +2567,21 @@ CB-004, CB-005 acceptance tests closed in S124.
 S125–S128: all CB items verified complete, CI stabilised, slow tests fixed.</p>
 </blockquote>
 <h3 id="cb-004-follow-up-brain_clientyml-test-fixture">CB-004 Follow-up: <code>brain_client.yml</code> Test Fixture<a class="headerlink" href="#cb-004-follow-up-brain_clientyml-test-fixture" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  COMPLETED in S124<br/>
+<p><strong>Status:</strong> COMPLETED in S124
 <strong>Implemented:</strong> <code>tests/cognitive_brain/test_inject_with_brain_client.py</code> — 6 offline mock tests:
-- <code>memory_search()</code> called during quantum reconstruction<br/>
-- <code>memory_search()</code> skipped when <code>is_available()</code> returns <code>False</code><br/>
-- Injector works without BrainClient (backward compat)<br/>
-- Memory search results augment payload<br/>
-- <code>BrainClient</code> exception does not break inject<br/>
+- <code>memory_search()</code> called during quantum reconstruction
+- <code>memory_search()</code> skipped when <code>is_available()</code> returns <code>False</code>
+- Injector works without BrainClient (backward compat)
+- Memory search results augment payload
+- <code>BrainClient</code> exception does not break inject
 - <code>brain_client</code> stored on injector</p>
 <hr/>
 <h3 id="cb-005-follow-up-htmlvisualizer-tests">CB-005 Follow-up: HTMLVisualizer Tests<a class="headerlink" href="#cb-005-follow-up-htmlvisualizer-tests" title="Permanent link">¶</a></h3>
-<p><strong>Status:</strong>  COMPLETED in S124<br/>
+<p><strong>Status:</strong> COMPLETED in S124
 <strong>Implemented:</strong> <code>tests/ast/test_visualize.py</code> — 4 new tests added (total 6):
-- <code>test_node_rendering_includes_function_and_class_counts</code> — metric cards in HTML<br/>
-- <code>test_tree_depth_reflected_in_node_children_count</code> — <code>_node_to_dict</code> child count<br/>
-- <code>test_css_output_contains_required_selectors</code> — <code>.container</code>, <code>.metric-card</code>, <code>.node</code><br/>
+- <code>test_node_rendering_includes_function_and_class_counts</code> — metric cards in HTML
+- <code>test_tree_depth_reflected_in_node_children_count</code> — <code>_node_to_dict</code> child count
+- <code>test_css_output_contains_required_selectors</code> — <code>.container</code>, <code>.metric-card</code>, <code>.node</code>
 - <code>test_render_html_with_empty_nodes</code> — empty node list handled gracefully</p>
 <hr/>
 <h2 id="s125s128-status-summary">S125–S128 Status Summary<a class="headerlink" href="#s125s128-status-summary" title="Permanent link">¶</a></h2>
@@ -2636,8 +2636,8 @@ S125–S128: all CB items verified complete, CI stabilised, slow tests fixed.</p
 </tr>
 </tbody>
 </table>
-<p><strong>All 13 CB backlog items:  IMPLEMENTED &amp; TESTED</strong><br/>
-<strong>Phase 5: CI Robustness &amp; Observability (PR #3607 → next PR)</strong><br/>
+<p><strong>All 13 CB backlog items: IMPLEMENTED &amp; TESTED</strong>
+<strong>Phase 5: CI Robustness &amp; Observability (PR #3607 next PR)</strong>
 Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:</p>
 <hr/>
 <h2 id="false-positives-no-action-required">False Positives — No Action Required<a class="headerlink" href="#false-positives-no-action-required" title="Permanent link">¶</a></h2>
@@ -2685,11 +2685,11 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 <hr/>
 <h2 id="related-issues">Related Issues<a class="headerlink" href="#related-issues" title="Permanent link">¶</a></h2>
 <ul>
-<li>PR #3586 — original dead code scan and fixes  </li>
-<li>PR #3604 — gap analysis and stub completion (S129–S130)  </li>
-<li>Issue #3587 — CI failure triage report  </li>
-<li><code>.codex/patterns/ci_failure_patterns.yaml</code> — <code>DEAD_CODE_100_CONFIDENCE</code> pattern added  </li>
-<li><code>scripts/ci/dead_code_scan.py</code> — CI tool for ongoing enforcement  </li>
+<li>PR #3586 — original dead code scan and fixes</li>
+<li>PR #3604 — gap analysis and stub completion (S129–S130)</li>
+<li>Issue #3587 — CI failure triage report</li>
+<li><code>.codex/patterns/ci_failure_patterns.yaml</code> — <code>DEAD_CODE_100_CONFIDENCE</code> pattern added</li>
+<li><code>scripts/ci/dead_code_scan.py</code> — CI tool for ongoing enforcement</li>
 <li><code>.pre-commit-config.yaml</code> — <code>dead-code-scan</code> pre-push hook (100% confidence gate)</li>
 </ul>
 <hr/>
@@ -2706,13 +2706,13 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 <tbody>
 <tr>
 <td>GH-001</td>
-<td><code>github_provider.create_token()</code> stub → API implementation</td>
+<td><code>github_provider.create_token()</code> stub API implementation</td>
 <td>Uses <code>POST /app/installations/{id}/access_tokens</code></td>
 <td>S130</td>
 </tr>
 <tr>
 <td>GH-002</td>
-<td><code>github_provider.update_token_scopes()</code> stub → API implementation</td>
+<td><code>github_provider.update_token_scopes()</code> stub API implementation</td>
 <td>Uses <code>PATCH /user/installations/{id}/permissions</code></td>
 <td>S130</td>
 </tr>
@@ -2726,7 +2726,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 </table>
 <hr/>
 <h2 id="cognitive-brain-next-phase-plan">Cognitive Brain Next-Phase Plan<a class="headerlink" href="#cognitive-brain-next-phase-plan" title="Permanent link">¶</a></h2>
-<h3 id="phase-4-production-hardening-complete-pr-360436053607">Phase 4: Production Hardening —  COMPLETE (PR #3604/3605/3607)<a class="headerlink" href="#phase-4-production-hardening-complete-pr-360436053607" title="Permanent link">¶</a></h3>
+<h3 id="phase-4-production-hardening-complete-pr-360436053607">Phase 4: Production Hardening — COMPLETE (PR #3604/3605/3607)<a class="headerlink" href="#phase-4-production-hardening-complete-pr-360436053607" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2792,7 +2792,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 <td>QA</td>
 <td>Replace dummy tests in <code>test_loop.py</code></td>
 <td>Agent</td>
-<td>S132 — 9 dummy → 6 real</td>
+<td>S132 — 9 dummy 6 real</td>
 </tr>
 <tr>
 <td>P3</td>
@@ -2818,7 +2818,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 </tbody>
 </table>
 <hr/>
-<h3 id="phase-5-ci-robustness-observability-active-pr-3607-s138">Phase 5: CI Robustness &amp; Observability —  ACTIVE (PR #3607 / S138)<a class="headerlink" href="#phase-5-ci-robustness-observability-active-pr-3607-s138" title="Permanent link">¶</a></h3>
+<h3 id="phase-5-ci-robustness-observability-active-pr-3607-s138">Phase 5: CI Robustness &amp; Observability — ACTIVE (PR #3607 / S138)<a class="headerlink" href="#phase-5-ci-robustness-observability-active-pr-3607-s138" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2902,45 +2902,47 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening  COMPLETE", "PatternCompressor /health "'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph P4["Phase 4 — Production Hardening  COMPLETE"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        P4A["PatternCompressor /health "]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        P4B["BrainClient health diagnostics "]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        P4C["Redis RAG cache backend "]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        P4D["Redis feast backend "]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        P4E["CrossEncoderReranker "]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        P4F["OTel coherence gauge "]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        P4G["test_loop.py dummy→real "]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        P4H["dev-key hardening "]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        P4I["PS-06 KMeans sharding "]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        P4J["capability_detectors 25 tests "]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    end
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    subgraph P5["Phase 5 — CI Robustness  ACTIVE"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        P5A["Fence-opener bypass prevention  S138"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        P5B["PRECOMMIT_FILES post-sync augment  S138"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        P5C["Template-literal indentation fix  S138"]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        P5D["9 bot-comment upsert types  S136-S137"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        P5E["Logging import ordering  S138"]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail "]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        P5G["slow-test marker audit "]
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        P5H["session-analysis post-merge scan "]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    end
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    subgraph P6["Phase 6 — Observability 🔮 PLANNED"]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        P6A["Workflow timing histogram"]
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        P6B["OTEL span — upsert latency"]
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        P6C["Cognitive Brain dashboard v2"]
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        P6D["Token rotation e2e (admin)"]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    end
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    P4 --&gt; P5
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    P5 --&gt; P6
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening COMPLETE", "PatternCompressor /health "'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph P4["Phase 4 — Production Hardening COMPLETE"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> P4A["PatternCompressor /health "]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> P4B["BrainClient health diagnostics "]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> P4C["Redis RAG cache backend "]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> P4D["Redis feast backend "]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> P4E["CrossEncoderReranker "]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> P4F["OTel coherence gauge "]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> P4G["test_loop.py dummyreal "]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> P4H["dev-key hardening "]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> P4I["PS-06 KMeans sharding "]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> P4J["capability_detectors 25 tests "]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> end
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> subgraph P5["Phase 5 — CI Robustness ACTIVE"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> P5A["Fence-opener bypass prevention S138"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> P5B["PRECOMMIT_FILES post-sync augment S138"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> P5C["Template-literal indentation fix S138"]
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> P5D["9 bot-comment upsert types S136-S137"]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> P5E["Logging import ordering S138"]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail "]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> P5G["slow-test marker audit "]
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> P5H["session-analysis post-merge scan "]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> end
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> subgraph P6["Phase 6 — Observability PLANNED"]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> P6A["Workflow timing histogram"]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> P6B["OTEL span — upsert latency"]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> P6C["Cognitive Brain dashboard v2"]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> P6D["Token rotation e2e (admin)"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> end
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> P4 --&gt; P5
 <a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    style P4 fill:#22c55e,color:#fff
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    style P5 fill:#3b82f6,color:#fff
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    style P6 fill:#8b5cf6,color:#fff
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> P5 --&gt; P6
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> style P4 fill:#22c55e,color:#fff
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> style P5 fill:#3b82f6,color:#fff
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> style P6 fill:#8b5cf6,color:#fff
 </code></pre></div>
 <hr/>
 <h3 id="cognitive-brain-component-status-updated-s138">Cognitive Brain Component Status — Updated S138<a class="headerlink" href="#cognitive-brain-component-status-updated-s138" title="Permanent link">¶</a></h3>
@@ -3041,7 +3043,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:<
 </tbody>
 </table>
 <hr/>
-<p><em>This document is the authoritative record of dead code disposition.<br/>
+<p><em>This document is the authoritative record of dead code disposition.
 Update this file whenever a backlog item is implemented.</em></p>
 </article>
 </div>
@@ -3072,6 +3074,6 @@ Update this file whenever a backlog item is implemented.</em></p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

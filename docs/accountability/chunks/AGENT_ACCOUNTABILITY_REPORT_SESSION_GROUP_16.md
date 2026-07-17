@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 16
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 16 of 32  
 **Sessions:** auto-pda-2026-06-08 to auto-pda-2026-06-08  

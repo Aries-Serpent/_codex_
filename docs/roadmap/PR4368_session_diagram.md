@@ -1,6 +1,6 @@
 # PR #4368 — Session Diagram
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **PR:** #4368 — Harden safe pickle imports, fix EvaluationRunner NameError and CodeQL alert, resolve merge conflicts, self-heal CI and compatibility failures, extend CB
 **Branch:** `copilot/update-safe-pickle-import`

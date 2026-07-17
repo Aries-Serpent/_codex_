@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/structural_integrity/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Structural Integrity Detection - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2709,29 +2709,29 @@
 <h3 id="detection-algorithm">Detection Algorithm<a class="headerlink" href="#detection-algorithm" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a># Pseudocode for structural integrity detection
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>for each file in repository:
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    extract directory structure
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> extract directory structure
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>identify split-brain patterns:
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    intersection = root_dirs ∩ src_dirs
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> intersection = root_dirs ∩ src_dirs
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>identify shadowing patterns:
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    shadows = root_dirs ∩ known_pypi_packages
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> shadows = root_dirs ∩ known_pypi_packages
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>assess risk_level:
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    high: if split-brain OR shadowing detected
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    low: otherwise
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> high: if split-brain OR shadowing detected
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> low: otherwise
 </code></pre></div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <h3 id="detector-settings">Detector Settings<a class="headerlink" href="#detector-settings" title="Permanent link">¶</a></h3>
 <p>The detector is configured in <code>scripts/space_traversal/detectors/structure_integrity.py</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Known libraries that should not exist as root directories</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">KNOWN_SHADOW_RISKS</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="s2">"hydra"</span><span class="p">,</span> <span class="s2">"torch"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">,</span> <span class="s2">"requests"</span><span class="p">,</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="s2">"wandb"</span><span class="p">,</span> <span class="s2">"mlflow"</span><span class="p">,</span> <span class="s2">"pandas"</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="s2">"hydra"</span><span class="p">,</span> <span class="s2">"torch"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">,</span> <span class="s2">"requests"</span><span class="p">,</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="s2">"wandb"</span><span class="p">,</span> <span class="s2">"mlflow"</span><span class="p">,</span> <span class="s2">"pandas"</span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="p">}</span>
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="c1"># Evidence limit for file samples</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="n">evidence_limit</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># Configurable per detect() call</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="n">evidence_limit</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># Configurable per detect() call</span>
 </code></pre></div>
 <h2 id="excluded-directories">Excluded Directories<a class="headerlink" href="#excluded-directories" title="Permanent link">¶</a></h2>
 <p>Standard directories excluded from risk assessment:
@@ -2743,87 +2743,87 @@
 <h3 id="example-1-clean-architecture-no-issues">Example 1: Clean Architecture (No Issues)<a class="headerlink" href="#example-1-clean-architecture-no-issues" title="Permanent link">¶</a></h3>
 <p><strong>Repository Structure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>project/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── src/
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>│   └── myapp/
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>│       ├── __init__.py
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>│       └── core.py
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>├── tests/
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>├── docs/
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>└── scripts/
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> src/
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> myapp/
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> __init__.py
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> core.py
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> tests/
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> docs/
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> scripts/
 </code></pre></div></p>
 <p><strong>Detection Result:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p">{</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low"</span><span class="p">,</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low"</span><span class="p">,</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w"> </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="example-2-split-brain-architecture-detected">Example 2: Split-Brain Architecture Detected<a class="headerlink" href="#example-2-split-brain-architecture-detected" title="Permanent link">¶</a></h3>
 <p><strong>Repository Structure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>project/
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>├── myapp/          # ️ Duplicate at root
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>│   └── utils.py
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>├── src/
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>│   └── myapp/      # ️ Also in src/
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>│       └── core.py
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> myapp/ # Duplicate at root
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> utils.py
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> src/
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> myapp/ # Also in src/
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> core.py
 </code></pre></div></p>
 <p><strong>Detection Result:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">{</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="s2">"myapp/utils.py"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="s2">"src/myapp/core.py"</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="p">],</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"split-brain"</span><span class="p">],</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">    </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"myapp"</span><span class="p">],</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="s2">"myapp/utils.py"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="s2">"src/myapp/core.py"</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="p">],</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"split-brain"</span><span class="p">],</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"myapp"</span><span class="p">],</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="example-3-library-shadowing-detected">Example 3: Library Shadowing Detected<a class="headerlink" href="#example-3-library-shadowing-detected" title="Permanent link">¶</a></h3>
 <p><strong>Repository Structure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>project/
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>├── torch/          # ️ Shadows PyTorch
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>│   └── custom.py
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>├── src/
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>│   └── myapp/
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> torch/ # Shadows PyTorch
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> custom.py
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> src/
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> myapp/
 </code></pre></div></p>
 <p><strong>Detection Result:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="p">{</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"torch/custom.py"</span><span class="p">],</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"lib-shadowing"</span><span class="p">],</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">  </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">    </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">    </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">    </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"torch"</span><span class="p">]</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span><span class="nt">"evidence_files"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"torch/custom.py"</span><span class="p">],</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"lib-shadowing"</span><span class="p">],</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"torch"</span><span class="p">]</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="example-4-multiple-issues">Example 4: Multiple Issues<a class="headerlink" href="#example-4-multiple-issues" title="Permanent link">¶</a></h3>
 <p><strong>Repository Structure:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>project/
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>├── numpy/          # ️ Shadows NumPy
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>├── utils/          # ️ Duplicate
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>└── src/
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    └── utils/      # ️ Duplicate
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> numpy/ # Shadows NumPy
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> utils/ # Duplicate
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> src/
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> utils/ # Duplicate
 </code></pre></div></p>
 <p><strong>Detection Result:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p">{</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"lib-shadowing"</span><span class="p">,</span><span class="w"> </span><span class="s2">"split-brain"</span><span class="p">],</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">  </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">    </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">    </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"utils"</span><span class="p">],</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">    </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"numpy"</span><span class="p">]</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"structural-integrity"</span><span class="p">,</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="nt">"found_patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"lib-shadowing"</span><span class="p">,</span><span class="w"> </span><span class="s2">"split-brain"</span><span class="p">],</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span><span class="nt">"risk_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"high"</span><span class="p">,</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w"> </span><span class="nt">"split_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"utils"</span><span class="p">],</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w"> </span><span class="nt">"shadow_dirs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"numpy"</span><span class="p">]</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="p">}</span>
 </code></pre></div></p>
 <h2 id="integration-with-audit-pipeline">Integration with Audit Pipeline<a class="headerlink" href="#integration-with-audit-pipeline" title="Permanent link">¶</a></h2>
@@ -2846,29 +2846,29 @@
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="c1"># Check for issues</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">"meta"</span><span class="p">][</span><span class="s2">"risk_level"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"high"</span><span class="p">:</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found issues: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'found_patterns'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Split-brain dirs: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'meta'</span><span class="p">][</span><span class="s1">'split_dirs'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shadowing dirs: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'meta'</span><span class="p">][</span><span class="s1">'shadow_dirs'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found issues: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'found_patterns'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Split-brain dirs: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'meta'</span><span class="p">][</span><span class="s1">'split_dirs'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shadowing dirs: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'meta'</span><span class="p">][</span><span class="s1">'shadow_dirs'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="risk-mitigation">Risk Mitigation<a class="headerlink" href="#risk-mitigation" title="Permanent link">¶</a></h2>
 <h3 id="resolving-split-brain-architecture">Resolving Split-Brain Architecture<a class="headerlink" href="#resolving-split-brain-architecture" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Module exists in both root and <code>src/</code></p>
 <p><strong>Solutions</strong>:
 1. <strong>Consolidate to <code>src/</code></strong> (recommended):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>git<span class="w"> </span>mv<span class="w"> </span>mymodule/<span class="w"> </span>src/mymodule/
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>git<span class="w"> </span>mv<span class="w"> </span>mymodule/<span class="w"> </span>src/mymodule/
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="c1"># Update imports throughout codebase</span>
 </code></pre></div></p>
 <ol>
 <li>
 <p><strong>Rename one module</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>mv<span class="w"> </span>mymodule/<span class="w"> </span>mymodule_legacy/
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>mv<span class="w"> </span>mymodule/<span class="w"> </span>mymodule_legacy/
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="c1"># Update references</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Use explicit namespacing</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># In root module</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="kn">from</span> <span class="nn">src.mymodule</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># Explicit delegation</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="kn">from</span> <span class="nn">src.mymodule</span> <span class="kn">import</span> <span class="o">*</span> <span class="c1"># Explicit delegation</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -2876,19 +2876,19 @@
 <p><strong>Problem</strong>: Local directory shadows PyPI package</p>
 <p><strong>Solutions</strong>:
 1. <strong>Rename local directory</strong> (recommended):
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>mv<span class="w"> </span>torch/<span class="w"> </span>torch_custom/
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>mv<span class="w"> </span>torch/<span class="w"> </span>torch_custom/
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>mv<span class="w"> </span>numpy/<span class="w"> </span>numpy_extensions/
 </code></pre></div></p>
 <ol>
 <li>
 <p><strong>Move to <code>src/</code></strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>src/project_torch
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>src/project_torch
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>git<span class="w"> </span>mv<span class="w"> </span>torch/*<span class="w"> </span>src/project_torch/
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Use package prefix</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>mv<span class="w"> </span>torch/<span class="w"> </span>myproject_torch/
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>mv<span class="w"> </span>torch/<span class="w"> </span>myproject_torch/
 </code></pre></div></p>
 </li>
 </ol>
@@ -2897,12 +2897,12 @@
 <ol>
 <li>
 <p><strong>Use <code>src/</code> layout</strong> for all application code:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>project/
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>├── src/
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>│   └── myapp/
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>├── tests/
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>├── docs/
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>└── scripts/
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>project/
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>src/
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>myapp/
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>tests/
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>docs/
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>scripts/
 </code></pre></div></p>
 </li>
 <li>
@@ -2929,22 +2929,22 @@
 <ol>
 <li>
 <p><strong>Evidence Limit</strong>: Adjust for repository size
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">detect</span><span class="p">(</span><span class="n">file_index</span><span class="p">,</span> <span class="n">evidence_limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>  <span class="c1"># Larger repos</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">detect</span><span class="p">(</span><span class="n">file_index</span><span class="p">,</span> <span class="n">evidence_limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># Larger repos</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Custom Shadow Risks</strong>: Extend <code>KNOWN_SHADOW_RISKS</code>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="n">KNOWN_SHADOW_RISKS</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>    <span class="o">*</span><span class="n">KNOWN_SHADOW_RISKS</span><span class="p">,</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>    <span class="s2">"custom_lib"</span><span class="p">,</span> <span class="s2">"internal_package"</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a> <span class="o">*</span><span class="n">KNOWN_SHADOW_RISKS</span><span class="p">,</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a> <span class="s2">"custom_lib"</span><span class="p">,</span> <span class="s2">"internal_package"</span>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="p">}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Exclude Additional Directories</strong>: Modify exclusion list
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="n">excluded</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>    <span class="s2">".git"</span><span class="p">,</span> <span class="s2">"tests"</span><span class="p">,</span> <span class="s2">"docs"</span><span class="p">,</span> <span class="s2">"scripts"</span><span class="p">,</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a>    <span class="s2">"vendor"</span><span class="p">,</span> <span class="s2">"third_party"</span>  <span class="c1"># Add project-specific</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a> <span class="s2">".git"</span><span class="p">,</span> <span class="s2">"tests"</span><span class="p">,</span> <span class="s2">"docs"</span><span class="p">,</span> <span class="s2">"scripts"</span><span class="p">,</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a> <span class="s2">"vendor"</span><span class="p">,</span> <span class="s2">"third_party"</span> <span class="c1"># Add project-specific</span>
 <a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="p">}</span>
 </code></pre></div></p>
 </li>
@@ -2987,15 +2987,15 @@
 <h2 id="cicd-integration">CI/CD Integration<a class="headerlink" href="#cicd-integration" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># .github/workflows/quality-gate.yml</span>
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Structural Integrity</span>
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="w">    </span><span class="no">python scripts/space_traversal/audit_runner.py run</span>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="w">    </span><span class="no">python -c "</span>
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="w">    </span><span class="no">import json</span>
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="w">    </span><span class="no">with open('audit_artifacts/capabilities_scored.json') as f:</span>
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="w">        </span><span class="no">data = json.load(f)</span>
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="w">    </span><span class="no">cap = next(c for c in data['capabilities'] if c['id']=='structural-integrity')</span>
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="w">    </span><span class="no">assert cap['score'] &gt;= 0.70, f'Structural integrity score {cap[\"score\"]} below threshold'</span>
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="w">    </span><span class="no">"</span>
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/space_traversal/audit_runner.py run</span>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python -c "</span>
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">import json</span>
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">with open('audit_artifacts/capabilities_scored.json') as f</span><span class="p p-Indicator">:</span>
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data = json.load(f)</span>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cap = next(c for c in data['capabilities'] if c['id']=='structural-integrity')</span>
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">assert cap['score'] &gt;= 0.70, f'Structural integrity score {cap[\"score\"]} below threshold'</span>
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a><span class="w"> </span><span class="s">"</span>
 </code></pre></div>
 <h2 id="related-capabilities">Related Capabilities<a class="headerlink" href="#related-capabilities" title="Permanent link">¶</a></h2>
 <ul>
@@ -3027,8 +3027,8 @@
 <li><strong>v1.3</strong>: Added safeguards and deterministic behavior</li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2025-12-09<br/>
-<strong>Maintainer</strong>: Codex Audit System<br/>
+<p><strong>Last Updated</strong>: 2025-12-09
+<strong>Maintainer</strong>: Codex Audit System
 <strong>Capability ID</strong>: structural-integrity</p>
 <h2 id="advanced-safeguards">Advanced Safeguards<a class="headerlink" href="#advanced-safeguards" title="Permanent link">¶</a></h2>
 <h3 id="reproducibility-guarantees">Reproducibility Guarantees<a class="headerlink" href="#reproducibility-guarantees" title="Permanent link">¶</a></h3>
@@ -3080,6 +3080,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

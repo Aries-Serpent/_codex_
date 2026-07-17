@@ -13,7 +13,7 @@
  ```bash
  grep "site_url:" mkdocs.yml
  ```
-- [ ] **site_name defined**: `Codex Docs v0.2.1`
+- [ ] **site_name defined**: `Codex Docs v0.2.0`
  ```bash
  grep "site_name:" mkdocs.yml
  ```

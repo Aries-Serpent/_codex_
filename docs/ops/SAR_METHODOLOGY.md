@@ -1,6 +1,6 @@
 # Search and Rescue (SAR) Methodology — Aries-Serpent/_codex_
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 ## Codebase Alignment at Level 4 MLOps
@@ -824,11 +824,11 @@ xychart-beta
 ## 11. Variable Audit Data Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.0)"'}}%%
 
 flowchart TD
  subgraph GUIDE[" Source of Truth"]
- MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"]
+ MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.0)"]
  end
 
  subgraph REGISTRY_SRC[" Expected Registry\n(embedded in variable_audit_cli.py)"]

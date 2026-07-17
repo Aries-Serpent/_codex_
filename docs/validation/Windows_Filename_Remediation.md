@@ -1,6 +1,6 @@
 # [Docs]: Windows Filename Compatibility Remediation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-01-21 | **Author:** mbaetiong
 > **Roles:** [Primary: Platform Validator], [Secondary: CI Orchestrator] **Energy:** 5

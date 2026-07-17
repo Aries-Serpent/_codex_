@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/GITHUB_VARIABLES_MASTER_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GITHUB VARIABLES MASTER GUIDE - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2371,7 +2371,7 @@
 <a class="md-nav__link" href="#6b-copilot-agent-runtime">
 <span class="md-ellipsis">
       
-        6b. 🖥️ Copilot Agent Runtime
+        6b. Copilot Agent Runtime
       
     </span>
 </a>
@@ -2398,7 +2398,7 @@
 <a class="md-nav__link" href="#6e-runtime-build-config">
 <span class="md-ellipsis">
       
-        6e. 🐍 Runtime / Build Config
+        6e. Runtime / Build Config
       
     </span>
 </a>
@@ -2749,19 +2749,19 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <blockquote>
-<p><strong>Last synced:</strong> <code>2026-07-12T08:25:20Z</code> (auto-sync workflow)</p>
+<p><strong>Last synced:</strong> <code>2026-07-13T09:44:53Z</code> (auto-sync workflow)</p>
 </blockquote>
 <h1 id="github-variables-secrets-master-reference-guide">GitHub Variables &amp; Secrets — Master Reference Guide<a class="headerlink" href="#github-variables-secrets-master-reference-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Version:</strong> 1.7.0 (W-142/S116 phase 3, 2026-03-07)<br/>
-<strong>Owner:</strong> @mbaetiong<br/>
-<strong>Status:</strong>  Current — reflects live state as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)<br/>
-<strong>Audience:</strong> Human admins, Copilot agents, CI/CD authors<br/>
-<strong>Auto-synced by:</strong> <code>repo-var-sync-schedule.yml</code> (daily 06:00 UTC → <code>.codex/agent_context.json</code>)</p>
-<p>️ <strong>This is the single source of truth.</strong> All other variable docs link here.</p>
+<p><strong>Version:</strong> 1.7.0 (W-142/S116 phase 3, 2026-03-07)
+<strong>Owner:</strong> @mbaetiong
+<strong>Status:</strong> Current — reflects live state as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)
+<strong>Audience:</strong> Human admins, Copilot agents, CI/CD authors
+<strong>Auto-synced by:</strong> <code>repo-var-sync-schedule.yml</code> (daily 06:00 UTC <code>.codex/agent_context.json</code>)</p>
+<p><strong>This is the single source of truth.</strong> All other variable docs link here.</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2779,7 +2779,7 @@
 <li><a href="#6e--runtime--build-config">6e. Runtime / Build Config</a></li>
 <li><a href="#6f--ml--huggingface--weights--biases">6f. ML / HuggingFace / Weights &amp; Biases</a></li>
 <li><a href="#6g-webhook--infra">6g. Webhook / Infra</a></li>
-<li><a href="#6h--autonomous-agent-config">6h.  Autonomous Agent Config</a> ⬅️ <strong>New (S116)</strong></li>
+<li><a href="#6h--autonomous-agent-config">6h. Autonomous Agent Config</a> ⬅ <strong>New (S116)</strong></li>
 <li><a href="#7-environment-variables-aries_serpent_codex_">Environment Variables (Aries_Serpent_codex_)</a></li>
 <li><a href="#8-codespace-secrets">Codespace Secrets</a></li>
 <li><a href="#9-workflow-defined-env-variables">Workflow-Defined env: Variables</a></li>
@@ -2792,27 +2792,26 @@
 <h2 id="1-architecture-overview">1. Architecture Overview<a class="headerlink" href="#1-architecture-overview" title="Permanent link">¶</a></h2>
 <!-- anchor: 1.-architecture-overview -->
 <p>GitHub provides <strong>six distinct storage layers</strong> for variables and secrets. Choosing the wrong layer is the most common misconfiguration.</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│                    Variable Storage Hierarchy                        │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│                                                                      │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│  🏢 ORGANIZATION LEVEL  (Aries-Serpent)                             │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│  ├─ Org Secrets       → shared across all repos in org              │  # pragma: allowlist secret
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│  └─ Org Variables     → [none currently, use repo vars instead]     │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│                                                                      │
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  📦 REPOSITORY LEVEL  (Aries-Serpent/_codex_)                       │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│  ├─ Repo Secrets      → encrypted, not readable by agents           │  # pragma: allowlist secret
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│  └─ Repo Variables    → readable plaintext, writable via API        │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│                                                                      │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│  🌍 ENVIRONMENT LEVEL  (Aries_Serpent_codex_ environment)           │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│  ├─ Env Secrets       → override repo secrets for this env          │  # pragma: allowlist secret
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│  └─ Env Variables     → override repo variables for this env        │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│                                                                      │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│  💻 CODESPACE LEVEL  (org or user-scoped)                           │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│  └─ Codespace Secrets → injected into interactive Codespace only    │  # pragma: allowlist secret
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>└─────────────────────────────────────────────────────────────────────┘
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>Resolution order (GitHub Actions): Env &gt; Repo &gt; Org (most specific wins)
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>Token access:  CODEX_MASTER_KEY &gt; CODEX_BACKUP_KEY &gt; GITHUB_TOKEN  # pragma: allowlist secret
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Variable Storage Hierarchy 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> ORGANIZATION LEVEL (Aries-Serpent) 
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> Org Secrets shared across all repos in org # pragma: allowlist secret
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> Org Variables [none currently, use repo vars instead] 
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> REPOSITORY LEVEL (Aries-Serpent/_codex_) 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Repo Secrets encrypted, not readable by agents # pragma: allowlist secret
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Repo Variables readable plaintext, writable via API 
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> ENVIRONMENT LEVEL (Aries_Serpent_codex_ environment) 
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> Env Secrets override repo secrets for this env # pragma: allowlist secret
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Env Variables override repo variables for this env 
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> CODESPACE LEVEL (org or user-scoped) 
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> Codespace Secrets injected into interactive Codespace only # pragma: allowlist secret
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>Resolution order (GitHub Actions): Env &gt; Repo &gt; Org (most specific wins)
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>Token access: CODEX_MASTER_KEY &gt; CODEX_BACKUP_KEY &gt; GITHUB_TOKEN # pragma: allowlist secret
 </code></pre></div>
 <p><strong>Key constraints:</strong>
 - <code>GITHUB_TOKEN</code> <strong>cannot</strong> read/write the Variables API — requires <code>CODEX_MASTER_KEY</code> (classic PAT, <code>repo</code> scope).
@@ -2832,37 +2831,37 @@
 <tbody>
 <tr>
 <td><strong>Org Secrets</strong></td>
-<td><a href="https://github.com/organizations/Aries-Serpent/settings/secrets/actions">Settings → Security → Secrets → Actions</a></td>
+<td><a href="https://github.com/organizations/Aries-Serpent/settings/secrets/actions">Settings Security Secrets Actions</a></td>
 <td><code>gh secret set NAME --org Aries-Serpent</code></td>
 </tr>
 <tr>
 <td><strong>Org Variables</strong></td>
-<td><a href="https://github.com/organizations/Aries-Serpent/settings/variables/actions">Settings → Security → Variables → Actions</a></td>
+<td><a href="https://github.com/organizations/Aries-Serpent/settings/variables/actions">Settings Security Variables Actions</a></td>
 <td><code>gh variable set NAME --org Aries-Serpent</code></td>
 </tr>
 <tr>
 <td><strong>Repo Secrets</strong></td>
-<td><a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">Settings → Secrets and variables → Actions → Secrets tab</a></td>
+<td><a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">Settings Secrets and variables Actions Secrets tab</a></td>
 <td><code>gh secret set NAME --repo Aries-Serpent/_codex_</code></td>
 </tr>
 <tr>
 <td><strong>Repo Variables</strong></td>
-<td><a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">Settings → Secrets and variables → Actions → Variables tab</a></td>
+<td><a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">Settings Secrets and variables Actions Variables tab</a></td>
 <td><code>gh variable set NAME --body VALUE --repo Aries-Serpent/_codex_</code></td>
 </tr>
 <tr>
 <td><strong>Env Secrets</strong></td>
-<td><a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings → Environments → Aries_Serpent_codex_ → Secrets</a></td>
+<td><a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings Environments Aries_Serpent_codex_ Secrets</a></td>
 <td><code>gh secret set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_</code></td>
 </tr>
 <tr>
 <td><strong>Env Variables</strong></td>
-<td><a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings → Environments → Aries_Serpent_codex_ → Variables</a></td>
+<td><a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings Environments Aries_Serpent_codex_ Variables</a></td>
 <td><code>gh variable set NAME --env Aries_Serpent_codex_ --repo Aries-Serpent/_codex_</code></td>
 </tr>
 <tr>
 <td><strong>Codespace Secrets (org)</strong></td>
-<td><a href="https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces">Settings → Codespaces → Secrets</a></td>
+<td><a href="https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces">Settings Codespaces Secrets</a></td>
 <td><code>gh secret set NAME --app codespaces --org Aries-Serpent</code></td>
 </tr>
 <tr>
@@ -2876,30 +2875,30 @@
 <h2 id="3-organization-secrets">3. Organization Secrets<a class="headerlink" href="#3-organization-secrets" title="Permanent link">¶</a></h2>
 <!-- anchor: 3.-organization-secrets -->
 <blockquote>
-<p><strong>Location:</strong> <a href="https://github.com/organizations/Aries-Serpent/settings/secrets/actions">Aries-Serpent → Settings → Security → Secrets → Actions</a><br/>
-<strong>Referenced in workflows as:</strong> <code>${{ secrets.NAME }}</code><br/>
+<p><strong>Location:</strong> <a href="https://github.com/organizations/Aries-Serpent/settings/secrets/actions">Aries-Serpent Settings Security Secrets Actions</a>
+<strong>Referenced in workflows as:</strong> <code>${{ secrets.NAME }}</code>
 <strong>Access via API:</strong> Requires <code>CODEX_MASTER_KEY</code> or org-admin token</p>
 </blockquote>
 <p>| # | Secret Name | Status | Last Updated | Purpose | Required By | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | <code>CODECOV_TOKEN</code> |  Present | 2 months ago | Code coverage upload to codecov.io | <code>coverage*.yml</code> workflows | <!-- pragma: allowlist secret -->
-| 2 | <code>CODEX_ADMIN_KEY</code> |  Present | 3 hours ago | Fine-grained PAT (<code>Webhooks:write</code>). Used for <code>webhook_configurator.py</code> least-privilege mode. | <code>apply-webhooks</code> job in <code>agent_infrastructure_manager.yml</code> |
-| 3 | <code>CODEX_BACKUP_KEY</code> |  Present | <strong>2 hours ago</strong> | Fallback GitHub PAT — auto-used on 401/403 from <code>CODEX_MASTER_KEY</code>. Same scope as master. | All auth-delegation workflows, <code>variable_manager.py</code>, <code>brain_client.py</code>, <code>github_app.py</code> |
-| 4 | <code>CODEX_MASTER_KEY</code> |  Present | <strong>now</strong> (2026-03-06) | Primary full-scope GitHub PAT (classic, <code>repo</code> scope + <code>admin:repo_hook</code>). <strong>Required for Variables API, Secrets API, Webhooks API.</strong> Re-rotated 2026-03-06 — next rotation due ~2026-06-04. | <code>agent-auth-delegation.yml</code>, <code>variable_manager.py</code>, <code>webhook_configurator.py</code>, <code>brain_client.py</code> | <!-- pragma: allowlist secret -->
-| 5 | <code>HF_TOKEN</code> |  Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows | <!-- pragma: allowlist secret -->
-| 6 | <code>NPM_TOKEN</code> |  Present | 2 months ago | npm publish authentication | Node.js package publish workflows | <!-- pragma: allowlist secret -->
-| 7 | <code>PYPI_TOKEN</code> |  Present | 2 months ago | PyPI publish authentication | Python package publish workflows | <!-- pragma: allowlist secret -->
-| 8 | <code>RAG_OPENAI_KEY</code> |  Present | 3 weeks ago | OpenAI API key for RAG embeddings | RAG index build workflows |
-| 9 | <code>_CODEX_ACTION_RUNNER</code> |  Present | 2 months ago | Runner registration token for self-hosted Actions runners | Runner registration | <!-- pragma: allowlist secret -->
-| 10 | <code>_GITHUB_APP_CLIENT_SECRET</code> |  Present | 8 hours ago | GitHub App OAuth client secret for web-flow App authentication | <code>github_app.py</code>, OAuth web-flow auth | <!-- pragma: allowlist secret -->
-| 11 | <code>_GITHUB_APP_ID</code> |  Present | 8 hours ago | Numeric GitHub App ID for RS256 JWT generation | <code>github_app.py</code>, App JWT auth flows |
-| 12 | <code>_GITHUB_APP_INSTALLATION_ID</code> |  Present | 8 hours ago | App installation ID for generating installation access tokens | <code>github_app.py</code>, installation token flows | <!-- pragma: allowlist secret -->
-| 13 | <code>_GITHUB_APP_PRIVATE_KEY</code> |  Present | 8 hours ago | RSA-2048 PEM private key for signing GitHub App JWTs | <code>github_app.py</code>, RS256 JWT signing |</p>
+| 1 | <code>CODECOV_TOKEN</code> | Present | 2 months ago | Code coverage upload to codecov.io | <code>coverage*.yml</code> workflows | <!-- pragma: allowlist secret -->
+| 2 | <code>CODEX_ADMIN_KEY</code> | Present | 3 hours ago | Fine-grained PAT (<code>Webhooks:write</code>). Used for <code>webhook_configurator.py</code> least-privilege mode. | <code>apply-webhooks</code> job in <code>agent_infrastructure_manager.yml</code> |
+| 3 | <code>CODEX_BACKUP_KEY</code> | Present | <strong>2 hours ago</strong> | Fallback GitHub PAT — auto-used on 401/403 from <code>CODEX_MASTER_KEY</code>. Same scope as master. | All auth-delegation workflows, <code>variable_manager.py</code>, <code>brain_client.py</code>, <code>github_app.py</code> |
+| 4 | <code>CODEX_MASTER_KEY</code> | Present | <strong>now</strong> (2026-03-06) | Primary full-scope GitHub PAT (classic, <code>repo</code> scope + <code>admin:repo_hook</code>). <strong>Required for Variables API, Secrets API, Webhooks API.</strong> Re-rotated 2026-03-06 — next rotation due ~2026-06-04. | <code>agent-auth-delegation.yml</code>, <code>variable_manager.py</code>, <code>webhook_configurator.py</code>, <code>brain_client.py</code> | <!-- pragma: allowlist secret -->
+| 5 | <code>HF_TOKEN</code> | Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows | <!-- pragma: allowlist secret -->
+| 6 | <code>NPM_TOKEN</code> | Present | 2 months ago | npm publish authentication | Node.js package publish workflows | <!-- pragma: allowlist secret -->
+| 7 | <code>PYPI_TOKEN</code> | Present | 2 months ago | PyPI publish authentication | Python package publish workflows | <!-- pragma: allowlist secret -->
+| 8 | <code>RAG_OPENAI_KEY</code> | Present | 3 weeks ago | OpenAI API key for RAG embeddings | RAG index build workflows |
+| 9 | <code>_CODEX_ACTION_RUNNER</code> | Present | 2 months ago | Runner registration token for self-hosted Actions runners | Runner registration | <!-- pragma: allowlist secret -->
+| 10 | <code>_GITHUB_APP_CLIENT_SECRET</code> | Present | 8 hours ago | GitHub App OAuth client secret for web-flow App authentication | <code>github_app.py</code>, OAuth web-flow auth | <!-- pragma: allowlist secret -->
+| 11 | <code>_GITHUB_APP_ID</code> | Present | 8 hours ago | Numeric GitHub App ID for RS256 JWT generation | <code>github_app.py</code>, App JWT auth flows |
+| 12 | <code>_GITHUB_APP_INSTALLATION_ID</code> | Present | 8 hours ago | App installation ID for generating installation access tokens | <code>github_app.py</code>, installation token flows | <!-- pragma: allowlist secret -->
+| 13 | <code>_GITHUB_APP_PRIVATE_KEY</code> | Present | 8 hours ago | RSA-2048 PEM private key for signing GitHub App JWTs | <code>github_app.py</code>, RS256 JWT signing |</p>
 <blockquote>
-<p><strong><code>CODEX_MASTER_KEY</code> and <code>CODEX_BACKUP_KEY</code> rotated 2026-03-06</strong> (latest rotation "now" per @mbaetiong — repo-level Codespace override removed, org secret active directly). Next rotation due ~2026-06-04 (90-day cycle).<br/>
+<p><strong><code>CODEX_MASTER_KEY</code> and <code>CODEX_BACKUP_KEY</code> rotated 2026-03-06</strong> (latest rotation "now" per @mbaetiong — repo-level Codespace override removed, org secret active directly). Next rotation due ~2026-06-04 (90-day cycle).
 See <a href="../../ops/secrets_rotation_runbook/"><code>docs/ops/secrets_rotation_runbook.md</code></a> for the full rotation procedure.</p>
 </blockquote>
-<p><strong>Token chain in code:</strong> <code>CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN</code><br/>
+<p><strong>Token chain in code:</strong> <code>CODEX_MASTER_KEY CODEX_BACKUP_KEY AGENT_GITHUB_TOKEN GITHUB_TOKEN</code>
 This is enforced by <code>_resolve_github_token()</code> in <code>src/codex/auth/github_app.py</code> and <code>scripts/tools/variable_manager.py</code>.</p>
 <h3 id="github-app-authentication-secrets-_github_app_">GitHub App Authentication Secrets (<code>_GITHUB_APP_*</code>)<a class="headerlink" href="#github-app-authentication-secrets-_github_app_" title="Permanent link">¶</a></h3>
 <!-- anchor: github-app-authentication-secrets-_github_app_* -->
@@ -2915,42 +2914,42 @@ as system/infrastructure secrets managed by the org admin.</p>
 <h2 id="4-repository-secrets">4. Repository Secrets<a class="headerlink" href="#4-repository-secrets" title="Permanent link">¶</a></h2>
 <!-- anchor: 4.-repository-secrets -->
 <blockquote>
-<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">Settings → Secrets and variables → Actions → Secrets tab</a><br/>
+<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/secrets/actions">Settings Secrets and variables Actions Secrets tab</a>
 <strong>Referenced in workflows as:</strong> <code>${{ secrets.NAME }}</code></p>
 </blockquote>
 <p>| # | Secret Name | Status | Last Updated | Purpose | Notes | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | <code>CODEX_GHP_TOKEN_BASE64</code> |  Present | 2 months ago | Base64-encoded GitHub token for copilot-with-mcp workflow | Decoder priority #3 in <code>copilot_token_decoder.py</code> | <!-- pragma: allowlist secret -->
-| 2 | <code>CODEX_GHP_TOKEN_HEX</code> |  Present | 2 months ago | Hex-encoded GitHub token (alternative encoding) | Decoder priority #4 | <!-- pragma: allowlist secret -->
-| 3 | <code>CODEX_GHP_TOKEN_SHA256</code> |  Present | 2 months ago | One-way SHA-256 hash of GHP token for integrity validation | Verification only — not a usable token | <!-- pragma: allowlist secret -->
-| 4 | <code>CODEX_REPO_ID</code> |  Present | 6 hours ago | Repository numeric ID (GitHub internal) | Used in manifest generation |
-| 5 | <code>CODEX_WEBHOOK_SECRET</code> |  Present | 12 minutes ago | HMAC-SHA256 shared secret for incoming webhook verification | <code>WebhookVerifier</code> in <code>src/codex/auth/github_app.py</code> | <!-- pragma: allowlist secret -->
-| 6 | <code>OPENAI_API_KEY</code> |  Present | 5 hours ago | OpenAI API key for LLM agent operations | Consumed by <code>brain_client.py</code> and LLM-based CI workflows | <!-- pragma: allowlist secret -->
-| 7 | <code>_CODEX_BOT_RUNNER</code> |  Present | <strong>45 minutes ago</strong> | Bot runner registration token |  Rotated 2026-03-06 | <!-- pragma: allowlist secret --></p>
+| 1 | <code>CODEX_GHP_TOKEN_BASE64</code> | Present | 2 months ago | Base64-encoded GitHub token for copilot-with-mcp workflow | Decoder priority #3 in <code>copilot_token_decoder.py</code> | <!-- pragma: allowlist secret -->
+| 2 | <code>CODEX_GHP_TOKEN_HEX</code> | Present | 2 months ago | Hex-encoded GitHub token (alternative encoding) | Decoder priority #4 | <!-- pragma: allowlist secret -->
+| 3 | <code>CODEX_GHP_TOKEN_SHA256</code> | Present | 2 months ago | One-way SHA-256 hash of GHP token for integrity validation | Verification only — not a usable token | <!-- pragma: allowlist secret -->
+| 4 | <code>CODEX_REPO_ID</code> | Present | 6 hours ago | Repository numeric ID (GitHub internal) | Used in manifest generation |
+| 5 | <code>CODEX_WEBHOOK_SECRET</code> | Present | 12 minutes ago | HMAC-SHA256 shared secret for incoming webhook verification | <code>WebhookVerifier</code> in <code>src/codex/auth/github_app.py</code> | <!-- pragma: allowlist secret -->
+| 6 | <code>OPENAI_API_KEY</code> | Present | 5 hours ago | OpenAI API key for LLM agent operations | Consumed by <code>brain_client.py</code> and LLM-based CI workflows | <!-- pragma: allowlist secret -->
+| 7 | <code>_CODEX_BOT_RUNNER</code> | Present | <strong>45 minutes ago</strong> | Bot runner registration token | Rotated 2026-03-06 | <!-- pragma: allowlist secret --></p>
 <h3 id="token-decoder-priority-order">Token Decoder Priority Order<a class="headerlink" href="#token-decoder-priority-order" title="Permanent link">¶</a></h3>
 <!-- anchor: token-decoder-priority-order -->
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>1. CODEX_GHP_TOKEN_CONFIG   (Combined AES — not currently set)  # pragma: allowlist secret
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>2. CODEX_GHP_TOKEN_BASE64    (present — simplest, recommended)  # pragma: allowlist secret
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>3. CODEX_GHP_TOKEN_HEX       (present — alternative)  # pragma: allowlist secret
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>4. GITHUB_TOKEN             (auto-provided by Actions)  # pragma: allowlist secret
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>1. CODEX_GHP_TOKEN_CONFIG (Combined AES — not currently set) # pragma: allowlist secret
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>2. CODEX_GHP_TOKEN_BASE64 (present — simplest, recommended) # pragma: allowlist secret
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>3. CODEX_GHP_TOKEN_HEX (present — alternative) # pragma: allowlist secret
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>4. GITHUB_TOKEN (auto-provided by Actions) # pragma: allowlist secret
 </code></pre></div>
 <hr/>
 <h2 id="5-environment-secrets-aries_serpent_codex_">5. Environment Secrets (<code>Aries_Serpent_codex_</code>)<a class="headerlink" href="#5-environment-secrets-aries_serpent_codex_" title="Permanent link">¶</a></h2>
 <!-- anchor: 5.-environment-secrets-aries_serpent_codex_ -->
 <blockquote>
-<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings → Environments → Aries_Serpent_codex_</a><br/>
+<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings Environments Aries_Serpent_codex_</a>
 <strong>Override scope:</strong> These override org/repo secrets for jobs using <code>environment: Aries_Serpent_codex_</code></p>
 </blockquote>
 <p>| # | Secret Name | Status | Last Updated | Value | Notes | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | <code>CODEX_ENVIRONMENT_RUNNER</code> |  Present | <strong>48 minutes ago</strong> | <em>(secret)</em> |  Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
-| 2 | <code>CODEX_RUNNER_SHA256</code> |  Present | <strong>50 minutes ago</strong> | <em>(secret hash)</em> |  Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
-| 3 | <code>CODEX_RUNNER_TOKEN</code> |  Present | <strong>50 minutes ago</strong> | <em>(secret)</em> |  Rotated 2026-03-06 | <!-- pragma: allowlist secret --></p>
+| 1 | <code>CODEX_ENVIRONMENT_RUNNER</code> | Present | <strong>48 minutes ago</strong> | <em>(secret)</em> | Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
+| 2 | <code>CODEX_RUNNER_SHA256</code> | Present | <strong>50 minutes ago</strong> | <em>(secret hash)</em> | Rotated 2026-03-06 | <!-- pragma: allowlist secret -->
+| 3 | <code>CODEX_RUNNER_TOKEN</code> | Present | <strong>50 minutes ago</strong> | <em>(secret)</em> | Rotated 2026-03-06 | <!-- pragma: allowlist secret --></p>
 <blockquote>
 <p><strong>Issue 1 resolved (2026-03-06):</strong> <code>CODEX_ENV_NODE_VERSION</code> was previously stored here as an
 environment secret. It has been <strong>deleted</strong> from env secrets and <strong>recreated</strong> as an environment
 variable (see <a href="#7-environment-variables-aries_serpent_codex_">§7</a>). Node.js version strings are
-non-sensitive and should be variables, not secrets.<br/>
+non-sensitive and should be variables, not secrets.
 <strong>Current runtime baseline (2026-06-05):</strong> Node.js <code>22</code> is the required active value; older
 <code>18</code>/<code>20</code> references in this document are historical records only.</p>
 </blockquote>
@@ -2958,13 +2957,13 @@ non-sensitive and should be variables, not secrets.<br/>
 <h2 id="6-repository-variables">6. Repository Variables<a class="headerlink" href="#6-repository-variables" title="Permanent link">¶</a></h2>
 <!-- anchor: 6.-repository-variables -->
 <blockquote>
-<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">Settings → Secrets and variables → Actions → Variables tab</a><br/>
-<strong>Referenced in workflows as:</strong> <code>${{ vars.NAME }}</code><br/>
-<strong>Readable by agents via:</strong> <code>VariableManager</code> (requires <code>CODEX_MASTER_KEY</code>)<br/>
+<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/variables/actions">Settings Secrets and variables Actions Variables tab</a>
+<strong>Referenced in workflows as:</strong> <code>${{ vars.NAME }}</code>
+<strong>Readable by agents via:</strong> <code>VariableManager</code> (requires <code>CODEX_MASTER_KEY</code>)
 <strong>Auto-synced to:</strong> <code>.codex/agent_context.json</code> daily</p>
 </blockquote>
 <p>Variables are grouped by subsystem. Human-governance flags must <strong>never</strong> be overwritten by automation without explicit owner approval.</p>
-<h3 id="6a-cognitive-brain">6a.  Cognitive Brain<a class="headerlink" href="#6a-cognitive-brain" title="Permanent link">¶</a></h3>
+<h3 id="6a-cognitive-brain">6a. Cognitive Brain<a class="headerlink" href="#6a-cognitive-brain" title="Permanent link">¶</a></h3>
 <!-- anchor: 6a.--cognitive-brain -->
 <table>
 <thead>
@@ -3028,8 +3027,8 @@ non-sensitive and should be variables, not secrets.<br/>
 </tr>
 </tbody>
 </table>
-<h3 id="6b-copilot-agent-runtime">6b. 🖥️ Copilot Agent Runtime<a class="headerlink" href="#6b-copilot-agent-runtime" title="Permanent link">¶</a></h3>
-<!-- anchor: 6b.-🖥️-copilot-agent-runtime -->
+<h3 id="6b-copilot-agent-runtime">6b. Copilot Agent Runtime<a class="headerlink" href="#6b-copilot-agent-runtime" title="Permanent link">¶</a></h3>
+<!-- anchor: 6b.--copilot-agent-runtime -->
 <table>
 <thead>
 <tr>
@@ -3046,14 +3045,14 @@ non-sensitive and should be variables, not secrets.<br/>
 <td><code>COPILOT_AGENT_AUTH_ENABLED</code></td>
 <td></td>
 <td><code>true</code></td>
-<td>️ <strong>Human governance flag</strong> — gates token delegation workflow</td>
+<td><strong>Human governance flag</strong> — gates token delegation workflow</td>
 </tr>
 <tr>
 <td>2</td>
 <td><code>COPILOT_AGENT_FIREWALL_ENABLED</code></td>
 <td></td>
 <td><code>true</code></td>
-<td>️ <strong>Human governance flag</strong> — network isolation control</td>
+<td><strong>Human governance flag</strong> — network isolation control</td>
 </tr>
 <tr>
 <td>3</td>
@@ -3092,7 +3091,7 @@ non-sensitive and should be variables, not secrets.<br/>
 </tr>
 </tbody>
 </table>
-<h3 id="6c-cicd-health">6c.  CI/CD Health<a class="headerlink" href="#6c-cicd-health" title="Permanent link">¶</a></h3>
+<h3 id="6c-cicd-health">6c. CI/CD Health<a class="headerlink" href="#6c-cicd-health" title="Permanent link">¶</a></h3>
 <!-- anchor: 6c.--ci-cd-health -->
 <table>
 <thead>
@@ -3124,7 +3123,7 @@ non-sensitive and should be variables, not secrets.<br/>
 <td><code>AUTONOMOUS_ACTIONS_ENABLED</code></td>
 <td></td>
 <td><code>true</code></td>
-<td>️ <strong>Human governance flag</strong> — gates autonomous agent actions</td>
+<td><strong>Human governance flag</strong> — gates autonomous agent actions</td>
 </tr>
 <tr>
 <td>4</td>
@@ -3156,7 +3155,7 @@ non-sensitive and should be variables, not secrets.<br/>
 </tr>
 </tbody>
 </table>
-<h3 id="6d-identity-static-config">6d.  Identity &amp; Static Config<a class="headerlink" href="#6d-identity-static-config" title="Permanent link">¶</a></h3>
+<h3 id="6d-identity-static-config">6d. Identity &amp; Static Config<a class="headerlink" href="#6d-identity-static-config" title="Permanent link">¶</a></h3>
 <!-- anchor: 6d.--identity-&-static-config -->
 <table>
 <thead>
@@ -3227,8 +3226,8 @@ non-sensitive and should be variables, not secrets.<br/>
 </tr>
 </tbody>
 </table>
-<h3 id="6e-runtime-build-config">6e. 🐍 Runtime / Build Config<a class="headerlink" href="#6e-runtime-build-config" title="Permanent link">¶</a></h3>
-<!-- anchor: 6e.-🐍-runtime---build-config -->
+<h3 id="6e-runtime-build-config">6e. Runtime / Build Config<a class="headerlink" href="#6e-runtime-build-config" title="Permanent link">¶</a></h3>
+<!-- anchor: 6e.--runtime---build-config -->
 <table>
 <thead>
 <tr>
@@ -3354,7 +3353,7 @@ non-sensitive and should be variables, not secrets.<br/>
 </tr>
 </tbody>
 </table>
-<h3 id="6f-ml-huggingface-weights-biases">6f.  ML / HuggingFace / Weights &amp; Biases<a class="headerlink" href="#6f-ml-huggingface-weights-biases" title="Permanent link">¶</a></h3>
+<h3 id="6f-ml-huggingface-weights-biases">6f. ML / HuggingFace / Weights &amp; Biases<a class="headerlink" href="#6f-ml-huggingface-weights-biases" title="Permanent link">¶</a></h3>
 <!-- anchor: 6f.--ml---huggingface---weights-&-biases -->
 <table>
 <thead>
@@ -3469,7 +3468,7 @@ non-sensitive and should be variables, not secrets.<br/>
 </tbody>
 </table>
 <blockquote>
-<p>Both variables above are written atomically by step 4b in <code>.devcontainer/scripts/post-start.sh</code> on every Codespace start and resume.<br/>
+<p>Both variables above are written atomically by step 4b in <code>.devcontainer/scripts/post-start.sh</code> on every Codespace start and resume.
 <code>gh variable set</code> creates the variable if absent, so <strong>no manual seeding is required</strong> — the first Codespace start after this commit will provision both variables automatically.</p>
 </blockquote>
 <h4 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">¶</a></h4>
@@ -3525,7 +3524,7 @@ non-sensitive and should be variables, not secrets.<br/>
 </tbody>
 </table>
 <blockquote>
-<p>️ <strong>Security note (REDIS_URL):</strong> If authentication is required, do <strong>not</strong> store credentials in a repository variable. Set <code>REDIS_URL</code> from a <strong>GitHub Actions Secret</strong> or <strong>Codespaces Secret</strong> containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.</p>
+<p><strong>Security note (REDIS_URL):</strong> If authentication is required, do <strong>not</strong> store credentials in a repository variable. Set <code>REDIS_URL</code> from a <strong>GitHub Actions Secret</strong> or <strong>Codespaces Secret</strong> containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.</p>
 </blockquote>
 <h5 id="redis_url-implementation-notes">REDIS_URL implementation notes<a class="headerlink" href="#redis_url-implementation-notes" title="Permanent link">¶</a></h5>
 <ul>
@@ -3533,7 +3532,7 @@ non-sensitive and should be variables, not secrets.<br/>
 <li>When <code>REDIS_URL</code> is set, the Redis backend path is selected for online-store usage.</li>
 <li>When unset, the system falls back to default local backends (<code>SQLiteBackend</code> / <code>InMemoryBackend</code>).</li>
 </ul>
-<h3 id="6h-autonomous-agent-config">6h.  Autonomous Agent Config<a class="headerlink" href="#6h-autonomous-agent-config" title="Permanent link">¶</a></h3>
+<h3 id="6h-autonomous-agent-config">6h. Autonomous Agent Config<a class="headerlink" href="#6h-autonomous-agent-config" title="Permanent link">¶</a></h3>
 <!-- anchor: 6h.--autonomous-agent-config -->
 <p>Variables controlling the 7-phase autonomous agent framework introduced in S116 (PR #3508).
 All scripts fall back to safe coded defaults when variables are unset.</p>
@@ -3558,7 +3557,7 @@ All scripts fall back to safe coded defaults when variables are unset.</p>
 <td><strong>Set</strong> <code>0</code> (2026-03-07)</td>
 <td><code>0</code> <em>(intentional; matches default)</em></td>
 <td><code>0</code></td>
-<td>️ <strong>Human governance flag</strong> — set to <code>"1"</code> to halt agent loops (Phases 1 &amp; 7). See operational notes below.</td>
+<td><strong>Human governance flag</strong> — set to <code>"1"</code> to halt agent loops (Phases 1 &amp; 7). See operational notes below.</td>
 </tr>
 <tr>
 <td>2</td>
@@ -3630,21 +3629,21 @@ All scripts fall back to safe coded defaults when variables are unset.</p>
 <code>AGENT_KILL_SWITCH=1</code> provides a fast path to halt agent loops without changing <code>AUTONOMOUS_ACTIONS_ENABLED</code>,
 which gates the broader token delegation workflow.</p>
 <p><strong>Quick-set all agent config vars:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_KILL_SWITCH<span class="w">            </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w">   </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_BUDGET_SECONDS<span class="w">      </span>--body<span class="w"> </span><span class="s2">"60"</span><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_MAX_ITERATIONS<span class="w">      </span>--body<span class="w"> </span><span class="s2">"3"</span><span class="w">   </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_DRY_RUN<span class="w">             </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w">   </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_BUDGET_SECONDS<span class="w">  </span>--body<span class="w"> </span><span class="s2">"120"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_ITERATIONS<span class="w">      </span>--body<span class="w"> </span><span class="s2">"2"</span><span class="w">   </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_DRY_RUN<span class="w">         </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w">   </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>UNCERTAINTY_BUDGET_SECONDS<span class="w">   </span>--body<span class="w"> </span><span class="s2">"10"</span><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_KILL_SWITCH<span class="w"> </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_BUDGET_SECONDS<span class="w"> </span>--body<span class="w"> </span><span class="s2">"60"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_MAX_ITERATIONS<span class="w"> </span>--body<span class="w"> </span><span class="s2">"3"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AUTONOMY_DRY_RUN<span class="w"> </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_BUDGET_SECONDS<span class="w"> </span>--body<span class="w"> </span><span class="s2">"120"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_ITERATIONS<span class="w"> </span>--body<span class="w"> </span><span class="s2">"2"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>AGENT_RUNNER_DRY_RUN<span class="w"> </span>--body<span class="w"> </span><span class="s2">"0"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>UNCERTAINTY_BUDGET_SECONDS<span class="w"> </span>--body<span class="w"> </span><span class="s2">"10"</span><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 </code></pre></div></p>
 </blockquote>
 <hr/>
 <h2 id="7-environment-variables-aries_serpent_codex_">7. Environment Variables (<code>Aries_Serpent_codex_</code>)<a class="headerlink" href="#7-environment-variables-aries_serpent_codex_" title="Permanent link">¶</a></h2>
 <!-- anchor: 7.-environment-variables-aries_serpent_codex_ -->
 <blockquote>
-<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings → Environments → Aries_Serpent_codex_</a><br/>
+<p><strong>Location:</strong> <a href="https://github.com/Aries-Serpent/_codex_/settings/environments">Settings Environments Aries_Serpent_codex_</a>
 <strong>Override scope:</strong> These <strong>override</strong> repository variables of the same name for jobs using <code>environment: Aries_Serpent_codex_</code></p>
 </blockquote>
 <table>
@@ -3769,9 +3768,9 @@ which gates the broader token delegation workflow.</p>
 <h2 id="8-codespace-secrets">8. Codespace Secrets<a class="headerlink" href="#8-codespace-secrets" title="Permanent link">¶</a></h2>
 <!-- anchor: 8.-codespace-secrets -->
 <blockquote>
-<p><strong>Location (org):</strong> <a href="https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces">Settings → Codespaces → Secrets</a><br/>
-<strong>Location (user):</strong> <a href="https://github.com/settings/secrets/codespaces">github.com/settings/secrets/codespaces</a><br/>
-<strong>Injected by:</strong> <code>.devcontainer/devcontainer.json</code> <code>"secrets":</code> block<br/>
+<p><strong>Location (org):</strong> <a href="https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces">Settings Codespaces Secrets</a>
+<strong>Location (user):</strong> <a href="https://github.com/settings/secrets/codespaces">github.com/settings/secrets/codespaces</a>
+<strong>Injected by:</strong> <code>.devcontainer/devcontainer.json</code> <code>"secrets":</code> block
 <strong>When:</strong> Only available inside an active GitHub Codespace session</p>
 </blockquote>
 <h2 id="quick-start-active-codespace">Quick Start — Active Codespace<a class="headerlink" href="#quick-start-active-codespace" title="Permanent link">¶</a></h2>
@@ -3811,23 +3810,23 @@ which gates the broader token delegation workflow.</p>
 </blockquote>
 <p>These secrets mirror the Actions org secrets but are injected into Codespace containers for interactive agent sessions.</p>
 <blockquote>
-<p>️ <strong>Codespace secrets are NOT automatically mirrored from org Actions secrets</strong> — they must be set separately at the Codespace level even when the same secret exists as an Actions org secret.</p>
+<p><strong>Codespace secrets are NOT automatically mirrored from org Actions secrets</strong> — they must be set separately at the Codespace level even when the same secret exists as an Actions org secret.</p>
 </blockquote>
 <p>| # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| 1 | <code>CODEX_MASTER_KEY</code> |  <strong>Confirmed</strong> (org-level, 2026-03-06) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | <code>CODEX_MASTER_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 2 | <code>CODEX_BACKUP_KEY</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | Fallback PAT for 401/403 retries | User Codespace secrets | <code>CODEX_BACKUP_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 3 | <code>CODEX_ADMIN_KEY</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | Fine-grained PAT (<code>Webhooks:write</code>) for webhook management | User Codespace secrets | <code>CODEX_ADMIN_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 4 | <code>_GITHUB_APP_ID</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | Numeric GitHub App ID for RS256 JWT auth | User Codespace secrets | <code>_GITHUB_APP_ID</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 5 | <code>_GITHUB_APP_PRIVATE_KEY</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | PEM RSA-2048 private key for GitHub App | User Codespace secrets (multi-line value) | <code>_GITHUB_APP_PRIVATE_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 6 | <code>_GITHUB_APP_INSTALLATION_ID</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | App installation ID for generating installation tokens | User Codespace secrets | <code>_GITHUB_APP_INSTALLATION_ID</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 7 | <code>_GITHUB_APP_CLIENT_SECRET</code> |  <strong>Confirmed</strong> (user secret, 2026-03-07) | GitHub App OAuth client secret | User Codespace secrets | <code>_GITHUB_APP_CLIENT_SECRET</code> (org secret ) | <!-- pragma: allowlist secret -->
-| 8 | <code>WEBHOOK_SECRET</code> |  <strong>Confirmed</strong> (user secret, 2026-03-06) | HMAC-SHA256 shared secret for webhook signature verification | User Codespace secrets | <code>CODEX_WEBHOOK_SECRET</code> (repo secret ) | <!-- pragma: allowlist secret -->
-| 9 | <code>WEBHOOK_RECEIVER_URL</code> |  <strong>Confirmed</strong> (user secret + repo var, 2026-03-06) | Webhook receiver URL (also auto-set as repo var by <code>post-start.sh</code>) | User Codespace secrets | Repo variable <code>WEBHOOK_RECEIVER_URL</code>  | <!-- pragma: allowlist secret --></p>
+| 1 | <code>CODEX_MASTER_KEY</code> | <strong>Confirmed</strong> (org-level, 2026-03-06) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | <code>CODEX_MASTER_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 2 | <code>CODEX_BACKUP_KEY</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | Fallback PAT for 401/403 retries | User Codespace secrets | <code>CODEX_BACKUP_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 3 | <code>CODEX_ADMIN_KEY</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | Fine-grained PAT (<code>Webhooks:write</code>) for webhook management | User Codespace secrets | <code>CODEX_ADMIN_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 4 | <code>_GITHUB_APP_ID</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | Numeric GitHub App ID for RS256 JWT auth | User Codespace secrets | <code>_GITHUB_APP_ID</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 5 | <code>_GITHUB_APP_PRIVATE_KEY</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | PEM RSA-2048 private key for GitHub App | User Codespace secrets (multi-line value) | <code>_GITHUB_APP_PRIVATE_KEY</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 6 | <code>_GITHUB_APP_INSTALLATION_ID</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | App installation ID for generating installation tokens | User Codespace secrets | <code>_GITHUB_APP_INSTALLATION_ID</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 7 | <code>_GITHUB_APP_CLIENT_SECRET</code> | <strong>Confirmed</strong> (user secret, 2026-03-07) | GitHub App OAuth client secret | User Codespace secrets | <code>_GITHUB_APP_CLIENT_SECRET</code> (org secret ) | <!-- pragma: allowlist secret -->
+| 8 | <code>WEBHOOK_SECRET</code> | <strong>Confirmed</strong> (user secret, 2026-03-06) | HMAC-SHA256 shared secret for webhook signature verification | User Codespace secrets | <code>CODEX_WEBHOOK_SECRET</code> (repo secret ) | <!-- pragma: allowlist secret -->
+| 9 | <code>WEBHOOK_RECEIVER_URL</code> | <strong>Confirmed</strong> (user secret + repo var, 2026-03-06) | Webhook receiver URL (also auto-set as repo var by <code>post-start.sh</code>) | User Codespace secrets | Repo variable <code>WEBHOOK_RECEIVER_URL</code> | <!-- pragma: allowlist secret --></p>
 <blockquote>
 <p><strong>SAR-G01 COMPLETE (2026-03-07)</strong> — All 9 Codespace secrets confirmed set by @mbaetiong.
 Secrets are stored as <strong>user-level</strong> Codespace secrets (not org-level), which works identically for personal Codespace sessions.</p>
-<p><strong>Note:</strong> Secrets 4–7 use the same <code>_GITHUB_APP_*</code> naming as the corresponding org Actions secrets (leading underscore is the standard convention for these system/infrastructure secrets).<br/>
+<p><strong>Note:</strong> Secrets 4–7 use the same <code>_GITHUB_APP_*</code> naming as the corresponding org Actions secrets (leading underscore is the standard convention for these system/infrastructure secrets).
 See <a href="../../agent/CODESPACE_COPILOT_AGENT_GUIDE/"><code>docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md</code></a> for detailed setup instructions.</p>
 <p><strong>Note (2026-03-06):</strong> <code>CODEX_MASTER_KEY</code> was briefly set as a <em>repository-level</em> Codespace secret (overriding the org secret). That repo-level override has been <strong>removed</strong> by @mbaetiong — the org-level Codespace secret is now active directly. Secret was re-rotated at this time.</p>
 </blockquote>
@@ -3837,14 +3836,14 @@ See <a href="../../agent/CODESPACE_COPILOT_AGENT_GUIDE/"><code>docs/agent/CODESP
 No further admin action is required for Codespace agent sessions.</p>
 <p>For reference, the CLI commands used were:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># All secrets are now set — commands below are for documentation/recovery only</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_BACKUP_KEY<span class="w">             </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_ADMIN_KEY<span class="w">              </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_ID<span class="w">              </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_PRIVATE_KEY<span class="w">     </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_INSTALLATION_ID<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_CLIENT_SECRET<span class="w">   </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>WEBHOOK_SECRET<span class="w">               </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>WEBHOOK_RECEIVER_URL<span class="w">         </span>--app<span class="w"> </span>codespaces<span class="w">  </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_BACKUP_KEY<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_ADMIN_KEY<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_ID<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_PRIVATE_KEY<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_INSTALLATION_ID<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_GITHUB_APP_CLIENT_SECRET<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>WEBHOOK_SECRET<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>WEBHOOK_RECEIVER_URL<span class="w"> </span>--app<span class="w"> </span>codespaces<span class="w"> </span><span class="c1"># user-level</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="9-workflow-defined-env-variables">9. Workflow-Defined <code>env:</code> Variables<a class="headerlink" href="#9-workflow-defined-env-variables" title="Permanent link">¶</a></h2>
@@ -3962,12 +3961,12 @@ No further admin action is required for Codespace agent sessions.</p>
 <!-- anchor: -issue-4-—-stale-secrets->-90-day-rotation-guideline-—-**resolved-2026-03-06** -->
 <p>| Secret | Previous Age | Resolution | <!-- pragma: allowlist secret -->
 |---|---|---|
-| <code>CODEX_MASTER_KEY</code> | Rotated 2026-03-05 |  Re-rotated 2026-03-06 (~2 h before export). Next due ~2026-06-04. |
-| <code>CODEX_BACKUP_KEY</code> | 5+ days |  Re-rotated 2026-03-06 (~2 h before export). |
-| <code>_CODEX_BOT_RUNNER</code> | 7 months |  Rotated 2026-03-06 (~45 min before export). |
-| <code>CODEX_ENVIRONMENT_RUNNER</code> | 7 months |  Rotated 2026-03-06 (~48 min before export). |
-| <code>CODEX_RUNNER_TOKEN</code> | 7 months |  Rotated 2026-03-06 (~50 min before export). | <!-- pragma: allowlist secret -->
-| <code>CODEX_RUNNER_SHA256</code> | 7 months |  Rotated 2026-03-06 (~50 min before export). |</p>
+| <code>CODEX_MASTER_KEY</code> | Rotated 2026-03-05 | Re-rotated 2026-03-06 (~2 h before export). Next due ~2026-06-04. |
+| <code>CODEX_BACKUP_KEY</code> | 5+ days | Re-rotated 2026-03-06 (~2 h before export). |
+| <code>_CODEX_BOT_RUNNER</code> | 7 months | Rotated 2026-03-06 (~45 min before export). |
+| <code>CODEX_ENVIRONMENT_RUNNER</code> | 7 months | Rotated 2026-03-06 (~48 min before export). |
+| <code>CODEX_RUNNER_TOKEN</code> | 7 months | Rotated 2026-03-06 (~50 min before export). | <!-- pragma: allowlist secret -->
+| <code>CODEX_RUNNER_SHA256</code> | 7 months | Rotated 2026-03-06 (~50 min before export). |</p>
 <h3 id="issue-5-codex_admin_key-missing-resolved-2026-03-06">Issue 5 — <code>CODEX_ADMIN_KEY</code> missing — <strong>RESOLVED 2026-03-06</strong><a class="headerlink" href="#issue-5-codex_admin_key-missing-resolved-2026-03-06" title="Permanent link">¶</a></h3>
 <!-- anchor: -issue-5-—-codex_admin_key-missing-—-**resolved-2026-03-06** -->
 <table>
@@ -4042,61 +4041,61 @@ No further admin action is required for Codespace agent sessions.</p>
 <h3 id="variables-api-returns-403-404">"Variables API returns 403 / 404"<a class="headerlink" href="#variables-api-returns-403-404" title="Permanent link">¶</a></h3>
 <!-- anchor: "variables-api-returns-403---404" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Symptom: VariableManager or brain_client raises AuthenticationError on variable read/write
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Cause:   GITHUB_TOKEN used instead of CODEX_MASTER_KEY  # pragma: allowlist secret
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Cause: GITHUB_TOKEN used instead of CODEX_MASTER_KEY # pragma: allowlist secret
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>Fix:
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>  1. Confirm CODEX_MASTER_KEY is set as an org secret (§3)  # pragma: allowlist secret
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>  2. Confirm copilot-setup-steps.yml "🔑 Export Auth Tokens" step is running  # pragma: allowlist secret
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>  3. In code, use: from scripts.tools.variable_manager import VariableManager; vm = VariableManager()
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix  # pragma: allowlist secret
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> 1. Confirm CODEX_MASTER_KEY is set as an org secret (§3) # pragma: allowlist secret
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> 2. Confirm copilot-setup-steps.yml " Export Auth Tokens" step is running # pragma: allowlist secret
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> 3. In code, use: from scripts.tools.variable_manager import VariableManager; vm = VariableManager()
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix # pragma: allowlist secret
 </code></pre></div>
 <h3 id="webhooks-return-403-on-createupdate">"Webhooks return 403 on create/update"<a class="headerlink" href="#webhooks-return-403-on-createupdate" title="Permanent link">¶</a></h3>
 <!-- anchor: "webhooks-return-403-on-create-update" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Symptom: webhook_configurator.py fails with HTTP 403 on webhook API calls
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Cause:   GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed  # pragma: allowlist secret
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Cause: GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed # pragma: allowlist secret
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Fix:
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>  1. Confirm CODEX_MASTER_KEY has admin:repo_hook scope, OR
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>  2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret  # pragma: allowlist secret
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section  # pragma: allowlist secret
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> 1. Confirm CODEX_MASTER_KEY has admin:repo_hook scope, OR
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> 2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret # pragma: allowlist secret
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section # pragma: allowlist secret
 </code></pre></div>
 <h3 id="python-version-mismatch-between-jobs">"Python version mismatch between jobs"<a class="headerlink" href="#python-version-mismatch-between-jobs" title="Permanent link">¶</a></h3>
 <!-- anchor: "python-version-mismatch-between-jobs" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Symptom: Tests pass in some jobs, fail in others due to Python syntax/type differences
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Status:   RESOLVED (2026-03-06) — CODEX_ENV_PYTHON_VERSION updated to 3.12 (Issue 2)
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>Status: RESOLVED (2026-03-06) — CODEX_ENV_PYTHON_VERSION updated to 3.12 (Issue 2)
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>Both CODEX_PYTHON_VERSION (repo var) and CODEX_ENV_PYTHON_VERSION (env var) are now 3.12.
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>If you still see version mismatches, confirm no other variable overrides exist.
 </code></pre></div>
 <h3 id="codex_env_node_version-appears-as-in-logs">"CODEX_ENV_NODE_VERSION appears as *** in logs"<a class="headerlink" href="#codex_env_node_version-appears-as-in-logs" title="Permanent link">¶</a></h3>
 <!-- anchor: "codex_env_node_version-appears-as-***-in-logs" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>Symptom: Node.js version appears masked in CI logs
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Status:   RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and  # pragma: allowlist secret
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>         recreated as an env variable. Value is now readable in logs and by the Variables API.
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>Status: RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and # pragma: allowlist secret
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> recreated as an env variable. Value is now readable in logs and by the Variables API.
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>Current required value: `22` (major-only).
 </code></pre></div>
 <h3 id="codespace-starts-but-cli-api-server-not-running">"Codespace starts but CLI API server not running"<a class="headerlink" href="#codespace-starts-but-cli-api-server-not-running" title="Permanent link">¶</a></h3>
 <!-- anchor: "codespace-starts-but-cli-api-server-not-running" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Symptom: post-start.sh health check fails; uvicorn :8765 not reachable
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Cause:   CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets  # pragma: allowlist secret
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8  # pragma: allowlist secret
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>         Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Cause: CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets # pragma: allowlist secret
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Fix: All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8 # pragma: allowlist secret
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
 </code></pre></div>
 <h3 id="codex_ci_failure_rate-shows-stale-value">"CODEX_CI_FAILURE_RATE shows stale value"<a class="headerlink" href="#codex_ci_failure_rate-shows-stale-value" title="Permanent link">¶</a></h3>
 <!-- anchor: "codex_ci_failure_rate-shows-stale-value" -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Symptom: CODEX_CI_FAILURE_RATE hasn't updated in &gt; 24 hours
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Cause:   ci-health-monitor.yml workflow not running, or CODEX_MASTER_KEY lacked write access
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Cause: ci-health-monitor.yml workflow not running, or CODEX_MASTER_KEY lacked write access
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>Fix:
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>  1. Check .github/workflows/ci-health-monitor.yml is enabled
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>  2. Verify CODEX_MASTER_KEY has variables:write permission
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>  Format: "&lt;float&gt;:&lt;status&gt;" — e.g. "6.3:ok", "15.2:degraded", "22.1:critical"
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> 1. Check .github/workflows/ci-health-monitor.yml is enabled
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> 2. Verify CODEX_MASTER_KEY has variables:write permission
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> Format: "&lt;float&gt;:&lt;status&gt;" — e.g. "6.3:ok", "15.2:degraded", "22.1:critical"
 </code></pre></div>
 <h3 id="secret-rotation-codex_master_key-codex_backup_key">"Secret rotation — CODEX_MASTER_KEY / CODEX_BACKUP_KEY"<a class="headerlink" href="#secret-rotation-codex_master_key-codex_backup_key" title="Permanent link">¶</a></h3>
 <!-- anchor: "secret-rotation-—-codex_master_key---codex_backup_key" -->
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Full runbook: docs/ops/secrets_rotation_runbook.md  # pragma: allowlist secret
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Full runbook: docs/ops/secrets_rotation_runbook.md # pragma: allowlist secret
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>Quick summary:
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>  1. Generate new 32-byte base64 key offline
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>  2. Copy current CODEX_MASTER_KEY → set as CODEX_BACKUP_KEY (opens grace window)
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>  3. Set new key as CODEX_MASTER_KEY
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>  4. Wait 48 hours (grace window) then verify
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>  5. Update CODEX_BACKUP_KEY to new value (closes grace window)
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> 1. Generate new 32-byte base64 key offline
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> 2. Copy current CODEX_MASTER_KEY set as CODEX_BACKUP_KEY (opens grace window)
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> 3. Set new key as CODEX_MASTER_KEY
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> 4. Wait 48 hours (grace window) then verify
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> 5. Update CODEX_BACKUP_KEY to new value (closes grace window)
 </code></pre></div>
 <h3 id="incorrect-variable-format">"Incorrect variable format"<a class="headerlink" href="#incorrect-variable-format" title="Permanent link">¶</a></h3>
 <!-- anchor: "incorrect-variable-format" -->
@@ -4190,7 +4189,7 @@ No further admin action is required for Codespace agent sessions.</p>
 </tbody>
 </table>
 <hr/>
-<h2 id="13-previously-missing-all-resolved-2026-03-07">13.  Previously Missing — All Resolved (2026-03-07)<a class="headerlink" href="#13-previously-missing-all-resolved-2026-03-07" title="Permanent link">¶</a></h2>
+<h2 id="13-previously-missing-all-resolved-2026-03-07">13. Previously Missing — All Resolved (2026-03-07)<a class="headerlink" href="#13-previously-missing-all-resolved-2026-03-07" title="Permanent link">¶</a></h2>
 <!-- anchor: 13.--previously-missing-—-all-resolved-2026-03-07 -->
 <p>All previously-blocked items are now <strong>resolved</strong>. This section is retained as an audit trail.</p>
 <hr/>
@@ -4212,15 +4211,15 @@ For webhook delivery to work, port 8765 must be set to <strong>public</strong> v
 See <a href="#8-codespace-secrets">§8</a> for the complete confirmed status table.</p>
 <p>| Codespace Secret | Resolution | <!-- pragma: allowlist secret -->
 |---|---|
-| <code>CODEX_MASTER_KEY</code> |  Org-level (2026-03-06) |
-| <code>CODEX_BACKUP_KEY</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>CODEX_ADMIN_KEY</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>_GITHUB_APP_ID</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>_GITHUB_APP_PRIVATE_KEY</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>_GITHUB_APP_INSTALLATION_ID</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>_GITHUB_APP_CLIENT_SECRET</code> |  User secret (2026-03-07) | <!-- pragma: allowlist secret -->
-| <code>WEBHOOK_SECRET</code> |  User secret (2026-03-06) | <!-- pragma: allowlist secret -->
-| <code>WEBHOOK_RECEIVER_URL</code> |  User secret + repo var (2026-03-06) | <!-- pragma: allowlist secret --></p>
+| <code>CODEX_MASTER_KEY</code> | Org-level (2026-03-06) |
+| <code>CODEX_BACKUP_KEY</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>CODEX_ADMIN_KEY</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_ID</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_PRIVATE_KEY</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_INSTALLATION_ID</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>_GITHUB_APP_CLIENT_SECRET</code> | User secret (2026-03-07) | <!-- pragma: allowlist secret -->
+| <code>WEBHOOK_SECRET</code> | User secret (2026-03-06) | <!-- pragma: allowlist secret -->
+| <code>WEBHOOK_RECEIVER_URL</code> | User secret + repo var (2026-03-06) | <!-- pragma: allowlist secret --></p>
 <hr/>
 <h3 id="autonomous-agent-config-variables-8-items-resolved-2026-03-07">Autonomous Agent Config Variables (8 items) — <strong>RESOLVED 2026-03-07</strong><a class="headerlink" href="#autonomous-agent-config-variables-8-items-resolved-2026-03-07" title="Permanent link">¶</a></h3>
 <!-- anchor: -autonomous-agent-config-variables-8-items-—-**resolved-2026-03-07** -->
@@ -4257,7 +4256,7 @@ refer to the historical CLI commands preserved in the sub-sections above.</p>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Rotate <code>_CODEX_BOT_RUNNER</code>, <code>CODEX_ENVIRONMENT_RUNNER</code>, <code>CODEX_RUNNER_TOKEN</code>, <code>CODEX_RUNNER_SHA256</code> before <strong>2026-06-04</strong></li>
 </ul>
 <hr/>
-<p><em>Supersedes: <code>.codex/runtime_variables.md</code> · <code>docs/security/CURRENT_EXPECTED_VARIABLES.md</code> · <code>.codex/QUICK_REFERENCE_TOKEN_STATUS.md</code></em><br/>
+<p><em>Supersedes: <code>.codex/runtime_variables.md</code> · <code>docs/security/CURRENT_EXPECTED_VARIABLES.md</code> · <code>.codex/QUICK_REFERENCE_TOKEN_STATUS.md</code></em>
 <em>Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ; SAR-G01 all 9 Codespace secrets confirmed ; §13 converted to resolved archive; v0.2.1)</em></p>
 </article>
 </div>
@@ -4288,6 +4287,6 @@ refer to the historical CLI commands preserved in the sub-sections above.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

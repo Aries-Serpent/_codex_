@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/REPOSITORY_MAPPING/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex Repository File Mapping (v0.2.1) - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2446,7 +2446,7 @@
 <a class="md-nav__link" href="#directory-purposes">
 <span class="md-ellipsis">
       
-        📁 Directory Purposes
+        Directory Purposes
       
     </span>
 </a>
@@ -2504,11 +2504,11 @@
 <a class="md-nav__link" href="#file-naming-conventions">
 <span class="md-ellipsis">
       
-        🎨 File Naming Conventions
+        File Naming Conventions
       
     </span>
 </a>
-<nav aria-label="🎨 File Naming Conventions" class="md-nav">
+<nav aria-label="File Naming Conventions" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#status-reports">
@@ -2611,11 +2611,11 @@
 <a class="md-nav__link" href="#build-artifacts">
 <span class="md-ellipsis">
       
-        🏗️ Build Artifacts
+        Build Artifacts
       
     </span>
 </a>
-<nav aria-label="🏗️ Build Artifacts" class="md-nav">
+<nav aria-label="Build Artifacts" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#generated-by-tests">
@@ -2676,8 +2676,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <!-- archive: this file is a historical record; content is intentionally preserved -->
-<p><strong>Generated</strong>: 2026-06-22<br/>
-<strong>Purpose</strong>: Quick reference for navigating the <em>codex</em> repository structure<br/>
+<p><strong>Generated</strong>: 2026-06-22
+<strong>Purpose</strong>: Quick reference for navigating the <em>codex</em> repository structure
 <strong>Audience</strong>: AI agents, contributors, maintainers</p>
 <h2 id="quick-navigation-matrix">Quick Navigation Matrix<a class="headerlink" href="#quick-navigation-matrix" title="Permanent link">¶</a></h2>
 <h3 id="core-entry-points">Core Entry Points<a class="headerlink" href="#core-entry-points" title="Permanent link">¶</a></h3>
@@ -2768,74 +2768,74 @@
 </table>
 <h3 id="source-code-structure">Source Code Structure<a class="headerlink" href="#source-code-structure" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>src/codex_ml/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── tokenization/
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   ├── base.py                    # ByteLevelTokenizer (max_length validation)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│   └── __init__.py
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── reproducibility/
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   ├── seed_manager.py            # SeedManager (PYTHONHASHSEED warning)
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│   └── __init__.py
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── tracking/
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   ├── writers.py                 # MLflow integration (_flatten_dict escaping)
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   └── __init__.py
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>├── config/
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>│   ├── deprecation.py             # Legacy config warnings
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│   └── __init__.py
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>└── ...
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> tokenization/
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> base.py # ByteLevelTokenizer (max_length validation)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> __init__.py
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> reproducibility/
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> seed_manager.py # SeedManager (PYTHONHASHSEED warning)
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> __init__.py
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> tracking/
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> writers.py # MLflow integration (_flatten_dict escaping)
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> __init__.py
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> config/
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> deprecation.py # Legacy config warnings
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> __init__.py
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> ...
 </code></pre></div>
 <h3 id="test-structure">Test Structure<a class="headerlink" href="#test-structure" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>tests/
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── tokenization/
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>│   └── test_base.py               # Tokenizer validation tests
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>├── reproducibility/
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>│   └── test_seed_manager.py       # Seed manager tests
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>├── tracking/
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>│   └── test_enhanced_writers.py   # MLflow writer tests (tmp_path fixture)
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>├── config/
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>│   └── test_deprecation.py        # Deprecation warning tests
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>└── ...
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> tokenization/
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> test_base.py # Tokenizer validation tests
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> reproducibility/
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> test_seed_manager.py # Seed manager tests
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> tracking/
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> test_enhanced_writers.py # MLflow writer tests (tmp_path fixture)
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> config/
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> test_deprecation.py # Deprecation warning tests
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> ...
 </code></pre></div>
 <h3 id="audit-pipeline-files">Audit Pipeline Files<a class="headerlink" href="#audit-pipeline-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>.copilot-space/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>└── workflow.yaml                  # Pipeline configuration (v0.2.1)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> workflow.yaml # Pipeline configuration (v0.2.1)
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>scripts/space_traversal/
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>├── audit_runner.py                # Main orchestrator (S1-S7)
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>├── detectors/
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>│   ├── ml_serving.py              # ML serving detector
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>│   ├── status_reporting.py        # Status reporting detector
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>│   ├── archival_bundling.py       # Archival detector
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>│   └── ...                        # 36 more detectors
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>└── templates/
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    └── audit/
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>        └── capability_matrix.md.j2 # Report template
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> audit_runner.py # Main orchestrator (S1-S7)
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> detectors/
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> ml_serving.py # ML serving detector
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> status_reporting.py # Status reporting detector
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> archival_bundling.py # Archival detector
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> ... # 36 more detectors
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> templates/
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> audit/
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> capability_matrix.md.j2 # Report template
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>audit_artifacts/
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>├── context_index.json             # S1 output: file inventory
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>├── facets.json                    # S2 output: domain clusters
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>├── capabilities_raw.json          # S3 output: detected capabilities
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>├── capabilities_scored.json       # S4 output: scored capabilities
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>├── gaps.json                      # S5 output: low-maturity items
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>└── _scoring_warnings.json         # Validation warnings
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> context_index.json # S1 output: file inventory
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> facets.json # S2 output: domain clusters
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> capabilities_raw.json # S3 output: detected capabilities
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> capabilities_scored.json # S4 output: scored capabilities
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> gaps.json # S5 output: low-maturity items
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> _scoring_warnings.json # Validation warnings
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>reports/
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>├── capability_matrix_&lt;ts&gt;.md      # S6 output: human-readable
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>├── capability_matrix_&lt;ts&gt;.json    # S6 output: machine-readable
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>└── codex_status_update_&lt;date&gt;.md  # S6 output: daily status
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> capability_matrix_&lt;ts&gt;.md # S6 output: human-readable
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> capability_matrix_&lt;ts&gt;.json # S6 output: machine-readable
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> codex_status_update_&lt;date&gt;.md # S6 output: daily status
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>audit_run_manifest.json            # S7 output: integrity manifest
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>audit_run_manifest.json # S7 output: integrity manifest
 </code></pre></div>
 <h3 id="documentation-structure">Documentation Structure<a class="headerlink" href="#documentation-structure" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>docs/
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>├── SPACE_TRAVERSAL_GUIDE.md       # Complete audit pipeline guide
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>├── DUPLICATE_DETECTION.md         # Duplicate detection system
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>├── QUALITY_GATES.md               # Quality gate documentation
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>├── CLI.md                         # CLI usage guide
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>├── INFERENCE_SERVING_GUIDE.md     # Inference serving guide
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>├── api/                           # API reference (auto-generated)
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>├── architecture/                  # Architecture diagrams
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>└── diagrams/
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    ├── audit_pipeline_v0.2.1.mmd  # Audit pipeline flowchart
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    └── architecture.mmd           # System architecture
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> SPACE_TRAVERSAL_GUIDE.md # Complete audit pipeline guide
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> DUPLICATE_DETECTION.md # Duplicate detection system
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> QUALITY_GATES.md # Quality gate documentation
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> CLI.md # CLI usage guide
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> INFERENCE_SERVING_GUIDE.md # Inference serving guide
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> api/ # API reference (auto-generated)
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> architecture/ # Architecture diagrams
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> diagrams/
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> audit_pipeline_v0.2.1.mmd # Audit pipeline flowchart
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> architecture.mmd # System architecture
 </code></pre></div>
 <h2 id="update-cycles">Update Cycles<a class="headerlink" href="#update-cycles" title="Permanent link">¶</a></h2>
 <h3 id="daily">Daily<a class="headerlink" href="#daily" title="Permanent link">¶</a></h3>
@@ -2871,43 +2871,43 @@
 <h2 id="critical-file-relationships">Critical File Relationships<a class="headerlink" href="#critical-file-relationships" title="Permanent link">¶</a></h2>
 <h3 id="verification-chain-pr-2449">Verification Chain (PR #2449)<a class="headerlink" href="#verification-chain-pr-2449" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>status_update_2025-12-09.md
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    ├── references → src/codex_ml/tokenization/base.py (lines 62-66)
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    ├── references → src/codex_ml/reproducibility/seed_manager.py (lines 107-115)
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    ├── references → tests/tracking/test_enhanced_writers.py (lines 142-162)
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    └── references → tests/config/test_deprecation.py (multiple test cases)
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a> references src/codex_ml/tokenization/base.py (lines 62-66)
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> references src/codex_ml/reproducibility/seed_manager.py (lines 107-115)
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> references tests/tracking/test_enhanced_writers.py (lines 142-162)
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> references tests/config/test_deprecation.py (multiple test cases)
 </code></pre></div>
 <h3 id="audit-pipeline-chain">Audit Pipeline Chain<a class="headerlink" href="#audit-pipeline-chain" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>.copilot-space/workflow.yaml (config)
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>    ↓
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>scripts/space_traversal/audit_runner.py (orchestrator)
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    ↓
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>audit_artifacts/*.json (stage outputs S1-S5)
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    ↓
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>templates/audit/capability_matrix.md.j2 (template)
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    ↓
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>reports/capability_matrix_&lt;ts&gt;.md (rendered report)
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    ↓
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>audit_run_manifest.json (integrity manifest)
 </code></pre></div>
 <h3 id="configuration-validation-chain">Configuration Validation Chain<a class="headerlink" href="#configuration-validation-chain" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>configs/*.yaml (Hydra configs)
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    ↓
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>tools/validate_configs.py (validator)
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    ↓
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>noxfile.py (config_validation session)
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    ↓
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>CI/CD (automated check)
 </code></pre></div>
 <h3 id="test-execution-chain">Test Execution Chain<a class="headerlink" href="#test-execution-chain" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>pytest.ini (configuration)
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    ↓
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>tests/**/*.py (test suites)
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    ↓
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>noxfile.py (test session)
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    ↓
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>CI/CD (GitHub Actions)
 </code></pre></div>
-<h2 id="directory-purposes">📁 Directory Purposes<a class="headerlink" href="#directory-purposes" title="Permanent link">¶</a></h2>
+<h2 id="directory-purposes">Directory Purposes<a class="headerlink" href="#directory-purposes" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -2984,26 +2984,26 @@
 <h2 id="external-integration-points">External Integration Points<a class="headerlink" href="#external-integration-points" title="Permanent link">¶</a></h2>
 <h3 id="github-actions-workflows">GitHub Actions Workflows<a class="headerlink" href="#github-actions-workflows" title="Permanent link">¶</a></h3>
 <ul>
-<li><code>.github/workflows/status_validation.yml</code> → <code>tools/status/codex_status_cli.py</code></li>
-<li><code>.github/workflows/security_gates.yml</code> → <code>tools/security/scan_repo.py</code></li>
-<li><code>.github/workflows/nox_gates.yml</code> → <code>noxfile.py</code></li>
+<li><code>.github/workflows/status_validation.yml</code> <code>tools/status/codex_status_cli.py</code></li>
+<li><code>.github/workflows/security_gates.yml</code> <code>tools/security/scan_repo.py</code></li>
+<li><code>.github/workflows/nox_gates.yml</code> <code>noxfile.py</code></li>
 </ul>
 <h3 id="pre-commit-hooks">Pre-commit Hooks<a class="headerlink" href="#pre-commit-hooks" title="Permanent link">¶</a></h3>
 <ul>
-<li><code>.pre-commit-config.yaml</code> → ruff, black, isort, bandit, detect-secrets</li>
+<li><code>.pre-commit-config.yaml</code> ruff, black, isort, bandit, detect-secrets</li>
 </ul>
 <h3 id="mlflow-integration">MLflow Integration<a class="headerlink" href="#mlflow-integration" title="Permanent link">¶</a></h3>
 <ul>
-<li><code>src/codex_ml/tracking/writers.py</code> → MLflow API</li>
-<li><code>configs/tracking/*.yaml</code> → Tracking configuration</li>
+<li><code>src/codex_ml/tracking/writers.py</code> MLflow API</li>
+<li><code>configs/tracking/*.yaml</code> Tracking configuration</li>
 </ul>
 <h3 id="hydra-configuration">Hydra Configuration<a class="headerlink" href="#hydra-configuration" title="Permanent link">¶</a></h3>
 <ul>
-<li><code>configs/</code> → Application configs</li>
-<li><code>hydra/</code> → Hydra-specific configs</li>
-<li><code>src/codex_ml/config/</code> → Config dataclasses</li>
+<li><code>configs/</code> Application configs</li>
+<li><code>hydra/</code> Hydra-specific configs</li>
+<li><code>src/codex_ml/config/</code> Config dataclasses</li>
 </ul>
-<h2 id="file-naming-conventions">🎨 File Naming Conventions<a class="headerlink" href="#file-naming-conventions" title="Permanent link">¶</a></h2>
+<h2 id="file-naming-conventions">File Naming Conventions<a class="headerlink" href="#file-naming-conventions" title="Permanent link">¶</a></h2>
 <h3 id="status-reports">Status Reports<a class="headerlink" href="#status-reports" title="Permanent link">¶</a></h3>
 <ul>
 <li>Format: <code>status_update_YYYY-MM-DD.md</code></li>
@@ -3064,32 +3064,32 @@
 </code></pre></div>
 <h2 id="dependency-graph-key-files">Dependency Graph (Key Files)<a class="headerlink" href="#dependency-graph-key-files" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>pyproject.toml
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    ├── defines → console_scripts (CLI entry points)
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    ├── defines → dependencies (runtime requirements)
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    └── defines → optional-dependencies (extras)
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> defines console_scripts (CLI entry points)
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> defines dependencies (runtime requirements)
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> defines optional-dependencies (extras)
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>noxfile.py
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    ├── uses → pyproject.toml (version info)
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>    ├── defines → test sessions
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    ├── defines → lint sessions
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    └── defines → build sessions
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> uses pyproject.toml (version info)
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> defines test sessions
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> defines lint sessions
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> defines build sessions
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>.pre-commit-config.yaml
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    ├── uses → pyproject.toml (hooks config)
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    └── defines → pre-commit hooks
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> uses pyproject.toml (hooks config)
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> defines pre-commit hooks
 <a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
 <a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>.copilot-space/workflow.yaml
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    ├── defines → audit weights
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    ├── defines → capability thresholds
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>    └── defines → detector overrides
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> defines audit weights
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> defines capability thresholds
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> defines detector overrides
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>scripts/space_traversal/audit_runner.py
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>    ├── reads → .copilot-space/workflow.yaml
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>    ├── reads → scripts/space_traversal/detectors/*.py
-<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>    ├── writes → audit_artifacts/*.json
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>    └── writes → audit_run_manifest.json
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a> reads .copilot-space/workflow.yaml
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> reads scripts/space_traversal/detectors/*.py
+<a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a> writes audit_artifacts/*.json
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a> writes audit_run_manifest.json
 </code></pre></div>
-<h2 id="build-artifacts">🏗️ Build Artifacts<a class="headerlink" href="#build-artifacts" title="Permanent link">¶</a></h2>
+<h2 id="build-artifacts">Build Artifacts<a class="headerlink" href="#build-artifacts" title="Permanent link">¶</a></h2>
 <h3 id="generated-by-tests">Generated by Tests<a class="headerlink" href="#generated-by-tests" title="Permanent link">¶</a></h3>
 <ul>
 <li><code>.pytest_cache/</code> - Pytest cache (gitignored)</li>
@@ -3150,8 +3150,8 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-06-22<br/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-06-22
 <strong>Maintained By</strong>: Codex Repository Team</p>
 </article>
 </div>
@@ -3182,6 +3182,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

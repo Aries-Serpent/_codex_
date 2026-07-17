@@ -21,7 +21,7 @@ v0.2.2 marks the completion of the **Site-First Documentation Initiative**, a co
 #### Lane 2: Date & Metadata Accuracy ✅
 - **Scope:** 1,947 markdown files audited for metadata freshness
 - **Remediation:** **347 stale dates updated** (>30 days old) to 2026-07-13
-- **Version Consistency:** v0.2.1 → v0.2.2 verified across all files
+- **Version Consistency:** v0.2.0 → v0.2.2 verified across all files
 - **Metadata Patterns:** Missing metadata documented for future compliance
 - **Result:** All dates synchronized to 2026-07-13
 

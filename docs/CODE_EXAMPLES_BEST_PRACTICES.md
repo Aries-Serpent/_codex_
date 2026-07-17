@@ -1,6 +1,6 @@
 # Code Examples: Best Practices & Templates
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Phase 12 WS5 - Code Example Validation**  
 **Status**: 174/348 examples validated (50% of Phase 12 target)  

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/FINAL_GAP_ANALYSIS/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Comprehensive Gap Analysis - Final Iteration - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2671,9 +2671,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Date</strong>: 2025-12-11<br/>
-<strong>Analysis Type</strong>: Complete codebase scan<br/>
-<strong>Scope</strong>: All gaps, risks, and incomplete implementations<br/>
+<p><strong>Date</strong>: 2025-12-11
+<strong>Analysis Type</strong>: Complete codebase scan
+<strong>Scope</strong>: All gaps, risks, and incomplete implementations
 <strong>Status</strong>: Production Readiness Assessment</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2681,7 +2681,7 @@
 <h3 id="key-findings">Key Findings<a class="headerlink" href="#key-findings" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Zero Critical Gaps</strong> (P0)</li>
-<li>️ <strong>Zero Minor TODOs</strong> (Plugin quarantine fully implemented)</li>
+<li><strong>Zero Minor TODOs</strong> (Plugin quarantine fully implemented)</li>
 <li><strong>Test Coverage</strong>: 1,310 test files</li>
 <li><strong>Documentation</strong>: 120KB+ added in recent work</li>
 <li><strong>Security</strong>: Zero vulnerabilities</li>
@@ -2691,7 +2691,7 @@
 <h2 id="detailed-analysis">Detailed Analysis<a class="headerlink" href="#detailed-analysis" title="Permanent link">¶</a></h2>
 <h3 id="1-code-quality-assessment">1. Code Quality Assessment<a class="headerlink" href="#1-code-quality-assessment" title="Permanent link">¶</a></h3>
 <h4 id="todosfixmes-found">TODOs/FIXMEs Found<a class="headerlink" href="#todosfixmes-found" title="Permanent link">¶</a></h4>
-<p><strong>Total</strong>: 2 entries (both intentional abstract methods)<br/>
+<p><strong>Total</strong>: 2 entries (both intentional abstract methods)
 <strong>Actual TODOs</strong>: 0 (all resolved)</p>
 <table>
 <thead>
@@ -2719,10 +2719,10 @@
 </tr>
 </tbody>
 </table>
-<h4 id="real-todo-resolved">~~Real TODO~~  <strong>RESOLVED</strong><a class="headerlink" href="#real-todo-resolved" title="Permanent link">¶</a></h4>
-<p><strong>Location</strong>: <code>src/codex_ml/plugins/plugin_sandbox.py</code><br/>
-<strong>Original Issue</strong>: <code>TODO: Check quarantine duration</code><br/>
-<strong>Status</strong>:  <strong>FULLY IMPLEMENTED</strong> (see plugin_sandbox.py lines 80-103, 267-287)</p>
+<h4 id="real-todo-resolved">~~Real TODO~~ <strong>RESOLVED</strong><a class="headerlink" href="#real-todo-resolved" title="Permanent link">¶</a></h4>
+<p><strong>Location</strong>: <code>src/codex_ml/plugins/plugin_sandbox.py</code>
+<strong>Original Issue</strong>: <code>TODO: Check quarantine duration</code>
+<strong>Status</strong>: <strong>FULLY IMPLEMENTED</strong> (see plugin_sandbox.py lines 80-103, 267-287)</p>
 <p><strong>Implementation Details</strong>:
 - Added <code>quarantined_at</code> timestamp tracking in <code>PluginHealth</code>
 - Added <code>is_quarantine_expired()</code> method for automatic expiration
@@ -2741,15 +2741,15 @@
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">return</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">quarantine_duration</span>
 </code></pre></div></p>
 <h2 id="2-abstract-methods-verification">2. Abstract Methods Verification<a class="headerlink" href="#2-abstract-methods-verification" title="Permanent link">¶</a></h2>
-<p><strong>Status</strong>:  <strong>ALL VERIFIED AS CORRECT PATTERNS</strong></p>
+<p><strong>Status</strong>: <strong>ALL VERIFIED AS CORRECT PATTERNS</strong></p>
 <p>From previous analysis:
 - All 12 P0 "stubs" are intentional abstract base class patterns
 - Enhanced stub_cleanup.py now correctly identifies these with AST analysis
 - No false positives in current analysis</p>
 <h3 id="3-capability-gaps-status">3. Capability Gaps Status<a class="headerlink" href="#3-capability-gaps-status" title="Permanent link">¶</a></h3>
 <p><strong>From codex_gap_registry.yaml</strong>:
-- Training gradient accumulation:  Resolved (implemented in training/config.py:123)
-- Tokenization parity tests:  Resolved (tests exist in tests/tokenization/)</p>
+- Training gradient accumulation: Resolved (implemented in training/config.py:123)
+- Tokenization parity tests: Resolved (tests exist in tests/tokenization/)</p>
 <p><strong>All gaps marked as resolved with resolution dates and evidence.</strong></p>
 <h3 id="4-security-analysis">4. Security Analysis<a class="headerlink" href="#4-security-analysis" title="Permanent link">¶</a></h3>
 <h4 id="recent-fixes">Recent Fixes<a class="headerlink" href="#recent-fixes" title="Permanent link">¶</a></h4>
@@ -2775,7 +2775,7 @@
 <ul>
 <li>Dependency analyzer: Reduced memory with pattern filtering</li>
 <li>Print-to-logger: Cached AST.unparse availability</li>
-<li>Stub cleanup: O(n²) → O(n) complexity improvement</li>
+<li>Stub cleanup: O(n²) O(n) complexity improvement</li>
 <li>Planning components: Extracted helper functions for caching</li>
 </ul>
 <h4 id="current-performance">Current Performance<a class="headerlink" href="#current-performance" title="Permanent link">¶</a></h4>
@@ -2866,7 +2866,7 @@
 </ul>
 <h4 id="status">Status<a class="headerlink" href="#status" title="Permanent link">¶</a></h4>
 <ul>
-<li>️ Workflows disabled by default (intentional for cost control)</li>
+<li>Workflows disabled by default (intentional for cost control)</li>
 <li>Ready for enablement with self-hosted runners</li>
 <li>Determinism workflow defined</li>
 <li>Pre-release deployment workflow ready</li>
@@ -2914,7 +2914,7 @@
 <tr>
 <td>Plugin quarantine duration</td>
 <td>LOW</td>
-<td>️ TODO documented, not blocking</td>
+<td>TODO documented, not blocking</td>
 </tr>
 </tbody>
 </table>
@@ -2924,7 +2924,7 @@
 - Plugin quarantine duration checking (P2 priority, feature enhancement)</p>
 <hr/>
 <h2 id="implementation-status-by-category">Implementation Status by Category<a class="headerlink" href="#implementation-status-by-category" title="Permanent link">¶</a></h2>
-<h3 id="code-quality-100">Code Quality:  100%<a class="headerlink" href="#code-quality-100" title="Permanent link">¶</a></h3>
+<h3 id="code-quality-100">Code Quality: 100%<a class="headerlink" href="#code-quality-100" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All code review comments addressed</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Linting passing (ruff, black, isort)</li>
@@ -2932,7 +2932,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> No unreachable code</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Optimized algorithms (O(n) complexity)</li>
 </ul>
-<h3 id="security-100">Security:  100%<a class="headerlink" href="#security-100" title="Permanent link">¶</a></h3>
+<h3 id="security-100">Security: 100%<a class="headerlink" href="#security-100" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Zero known vulnerabilities</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> XSS fixed</li>
@@ -2940,7 +2940,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Secret scanning configured</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Security allowlist maintained</li>
 </ul>
-<h3 id="testing-100">Testing:  100%<a class="headerlink" href="#testing-100" title="Permanent link">¶</a></h3>
+<h3 id="testing-100">Testing: 100%<a class="headerlink" href="#testing-100" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 1,310 test files</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 72% coverage</li>
@@ -2948,7 +2948,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Multiple test categories</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Security tests present</li>
 </ul>
-<h3 id="documentation-100">Documentation:  100%<a class="headerlink" href="#documentation-100" title="Permanent link">¶</a></h3>
+<h3 id="documentation-100">Documentation: 100%<a class="headerlink" href="#documentation-100" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 77KB new documentation</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 693+ files indexed</li>
@@ -2956,7 +2956,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Contributor onboarding guide</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> AI Agent debugging guides</li>
 </ul>
-<h3 id="ai-agent-infrastructure-95">AI Agent Infrastructure:  95%<a class="headerlink" href="#ai-agent-infrastructure-95" title="Permanent link">¶</a></h3>
+<h3 id="ai-agent-infrastructure-95">AI Agent Infrastructure: 95%<a class="headerlink" href="#ai-agent-infrastructure-95" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Workflow navigator operational</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Prompt library comprehensive</li>
@@ -2964,7 +2964,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Architecture documented</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Memory system (future enhancement, not blocking)</li>
 </ul>
-<h3 id="cicd-90">CI/CD:  90%<a class="headerlink" href="#cicd-90" title="Permanent link">¶</a></h3>
+<h3 id="cicd-90">CI/CD: 90%<a class="headerlink" href="#cicd-90" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Workflows defined</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Self-hosted runner policy</li>
@@ -3038,7 +3038,7 @@
 </ul>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<h3 id="status-production-ready">Status:  <strong>PRODUCTION READY</strong><a class="headerlink" href="#status-production-ready" title="Permanent link">¶</a></h3>
+<h3 id="status-production-ready">Status: <strong>PRODUCTION READY</strong><a class="headerlink" href="#status-production-ready" title="Permanent link">¶</a></h3>
 <p>The repository has achieved production readiness with:
 - <strong>Zero critical gaps</strong>
 - <strong>Zero security vulnerabilities</strong>
@@ -3200,9 +3200,9 @@
 </table>
 <p><strong>Total</strong>: 10 commits, well-documented, atomic changes</p>
 <hr/>
-<p><strong>Document Version</strong>: 1.0.0<br/>
-<strong>Author</strong>: GitHub Copilot<br/>
-<strong>Status</strong>: Final - Production Ready<br/>
+<p><strong>Document Version</strong>: 1.0.0
+<strong>Author</strong>: GitHub Copilot
+<strong>Status</strong>: Final - Production Ready
 <strong>Last Updated</strong>: 2025-12-11</p>
 </article>
 </div>
@@ -3233,6 +3233,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # End-to-End Tutorial
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Last Updated:** 2026-07-11
 
 > Complete walkthrough from project setup to first successful run

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/WORKFLOW_FIX_QUICK_REFERENCE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Workflow Fix Quick Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2358,7 +2358,7 @@
 <a class="md-nav__link" href="#semgrep_sarifyml">
 <span class="md-ellipsis">
       
-        🛡️ semgrep_sarif.yml
+        semgrep_sarif.yml
       
     </span>
 </a>
@@ -2445,9 +2445,9 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="tldr">TL;DR<a class="headerlink" href="#tldr" title="Permanent link">¶</a></h2>
-<p>Fixed 3 truncated CI workflows<br/>
- Commit created locally, needs push<br/>
-️  May need manual workflow approval after push  </p>
+<p>Fixed 3 truncated CI workflows
+ Commit created locally, needs push
+ May need manual workflow approval after push</p>
 <hr/>
 <h2 id="what-was-fixed">What Was Fixed<a class="headerlink" href="#what-was-fixed" title="Permanent link">¶</a></h2>
 <table>
@@ -2482,19 +2482,19 @@
 <td>rust_swarm_ci.yml</td>
 <td>268 lines (complete)</td>
 <td>No change</td>
-<td>️ Needs approval</td>
+<td>Needs approval</td>
 </tr>
 <tr>
 <td>test-rag.yml</td>
 <td>118 lines (complete)</td>
 <td>No change</td>
-<td>️ Needs approval</td>
+<td>Needs approval</td>
 </tr>
 <tr>
 <td>documentation-link-checker.yml</td>
 <td>195 lines (complete)</td>
 <td>No change</td>
-<td>️ Needs approval</td>
+<td>Needs approval</td>
 </tr>
 </tbody>
 </table>
@@ -2508,7 +2508,7 @@
 <ol>
 <li>Go to: https://github.com/Aries-Serpent/<em>codex</em>/actions</li>
 <li>Look for workflows with yellow "Approval required" badge</li>
-<li>Click "Review pending deployments" → Approve</li>
+<li>Click "Review pending deployments" Approve</li>
 </ol>
 <h3 id="3-monitor-results">3. Monitor Results<a class="headerlink" href="#3-monitor-results" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Watch for new workflow runs</span>
@@ -2534,7 +2534,7 @@
 <li>Validates timestamp usage</li>
 <li>Reports audit coverage</li>
 </ul>
-<h3 id="semgrep_sarifyml">🛡️ semgrep_sarif.yml<a class="headerlink" href="#semgrep_sarifyml" title="Permanent link">¶</a></h3>
+<h3 id="semgrep_sarifyml">semgrep_sarif.yml<a class="headerlink" href="#semgrep_sarifyml" title="Permanent link">¶</a></h3>
 <ul>
 <li>Runs <strong>Semgrep SAST</strong> (Static Application Security Testing)</li>
 <li>Uploads results to <strong>GitHub Security</strong> tab</li>
@@ -2576,12 +2576,12 @@
 </code></pre></div>
 <hr/>
 <h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
-<p>All workflows have valid YAML syntax<br/>
- Truncated workflows are now complete<br/>
- Commit ready to push<br/>
- Workflows run successfully after push<br/>
- Security reports generated<br/>
- No high-severity security issues (or addressed)  </p>
+<p>All workflows have valid YAML syntax
+ Truncated workflows are now complete
+ Commit ready to push
+ Workflows run successfully after push
+ Security reports generated
+ No high-severity security issues (or addressed)</p>
 <hr/>
 <h2 id="next-workflow-runs-should-show">Next Workflow Runs Should Show<a class="headerlink" href="#next-workflow-runs-should-show" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a> security-scan (security-audit)          - Completed with reports
@@ -2592,10 +2592,10 @@
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> documentation-link-checker (check-links) - No broken links
 </code></pre></div>
 <hr/>
-<p><strong>Date</strong>: 2026-01-11<br/>
-<strong>Branch</strong>: copilot/sub-pr-2782-again<br/>
-<strong>Commit</strong>: 375cabf8c<br/>
-<strong>Status</strong>:  READY TO PUSH</p>
+<p><strong>Date</strong>: 2026-01-11
+<strong>Branch</strong>: copilot/sub-pr-2782-again
+<strong>Commit</strong>: 375cabf8c
+<strong>Status</strong>: READY TO PUSH</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2625,6 +2625,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

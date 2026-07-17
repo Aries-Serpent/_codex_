@@ -1,6 +1,6 @@
 # Codebase-Wide Autonomy: PR Template · WEC · Workflows · Discussions · Elevated Privileges
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -128,10 +128,10 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) is the **single source of t
 ### 3.1 Template Anatomy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " PR Template (v0.2.1)", " Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " PR Template (v0.2.0)", " Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
 
 graph LR
- subgraph TEMPLATE[" PR Template (v0.2.1)"]
+ subgraph TEMPLATE[" PR Template (v0.2.0)"]
  META[" Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
  PRE[" Agent Pre-Load Checklist\n• AGENTIC_REPO_STATE.md\n• CODEBASE_AGENCY_POLICY.md\n• .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n• pda_iterations.jsonl\n• agent_context.json\n• store_memory (session memories)"]
  P045[" P-045 Wrap-Up Gate\n• ruff check --fix\n• mypy baseline\n• sync_tracked_files\n• auto_fix_common_issues\n• actionlint *.yml\n• git diff --diff-filter=U (must be EMPTY)"]

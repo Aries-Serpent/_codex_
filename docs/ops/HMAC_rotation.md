@@ -1,6 +1,6 @@
 # HMAC Key Rotation Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Document**: `docs/ops/HMAC_rotation.md`
 **Version**: 1.0

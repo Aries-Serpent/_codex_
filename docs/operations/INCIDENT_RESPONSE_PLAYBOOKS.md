@@ -1,6 +1,6 @@
 # Incident Response Playbooks
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: 2.0.0
 **Effective Date**: 2026-06-14

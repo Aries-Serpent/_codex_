@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/RAG_ENHANCEMENT_PLANSETS/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>RAG Enhancement Plansets &amp; Promptsets - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2603,9 +2603,9 @@
 <h1 id="rag-enhancement-plansets-promptsets">RAG Enhancement Plansets &amp; Promptsets<a class="headerlink" href="#rag-enhancement-plansets-promptsets" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Created:</strong> 2026-01-08<br/>
-<strong>Agent:</strong> GitHub Copilot<br/>
-<strong>Status:</strong>  Execution In Progress<br/>
+<p><strong>Created:</strong> 2026-01-08
+<strong>Agent:</strong> GitHub Copilot
+<strong>Status:</strong> Execution In Progress
 <strong>Target:</strong> 100% Test Coverage + Production Enhancements</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2678,7 +2678,7 @@
 <p><strong>Goal:</strong> Complete integration coverage and tenant isolation</p>
 <p><strong>Tasks:</strong>
 - [ ] Create <code>tests/test_rag_integration.py</code>
-- [ ] Test end-to-end pipeline (docs → index → query)
+- [ ] Test end-to-end pipeline (docs index query)
 - [ ] Test multi-tenant isolation
 - [ ] Test concurrent operations
 - [ ] Test index updates and versioning
@@ -2860,166 +2860,166 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Execute Planset 1 (CI/CD Integration):
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>1. Create GitHub Actions workflow at .github/workflows/test-rag.yml:
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>   - Trigger on push/PR to paths: src/codex/rag/**, tests/test_rag_**
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>   - Install dependencies: pip install -e ".[rag,test]"
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>   - Run pytest with coverage: --cov=src/codex/rag --cov-report=xml --cov-report=html
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>   - Upload coverage to codecov
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>   - Fail if coverage &lt;90%
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> - Trigger on push/PR to paths: src/codex/rag/**, tests/test_rag_**
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> - Install dependencies: pip install -e ".[rag,test]"
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> - Run pytest with coverage: --cov=src/codex/rag --cov-report=xml --cov-report=html
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> - Upload coverage to codecov
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> - Fail if coverage &lt;90%
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>2. Create performance benchmarks:
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>   - Generate test corpus (1k, 10k chunks)
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>   - Benchmark indexing: chunks/second
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>   - Benchmark queries: latency percentiles
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>   - Measure cache hit rates
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>   - Save results to docs/PERFORMANCE_BENCHMARKS.md
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> - Generate test corpus (1k, 10k chunks)
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> - Benchmark indexing: chunks/second
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> - Benchmark queries: latency percentiles
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> - Measure cache hit rates
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> - Save results to docs/PERFORMANCE_BENCHMARKS.md
 <a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
 <a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>3. Validate:
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>   - Run tests locally first
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>   - Ensure all pass
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>   - Generate coverage report
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>   - Commit with message: "Add CI integration and performance benchmarks"
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> - Run tests locally first
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> - Ensure all pass
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> - Generate coverage report
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> - Commit with message: "Add CI integration and performance benchmarks"
 </code></pre></div>
 <h3 id="promptset-2-100-coverage">Promptset 2: 100% Coverage<a class="headerlink" href="#promptset-2-100-coverage" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Execute Planset 2 (Path to 100% Coverage):
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>1. Create tests/test_rag_error_handling.py:
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>   - Test all exception paths in indexer, retriever, embeddings
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>   - Mock file I/O errors (PermissionError, OSError)
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>   - Mock network errors for OpenAI (TimeoutError, ConnectionError)
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>   - Test cache corruption scenarios
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>   - Test import errors (patch sys.modules)
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>   - Test concurrent access (threading)
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> - Test all exception paths in indexer, retriever, embeddings
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> - Mock file I/O errors (PermissionError, OSError)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> - Mock network errors for OpenAI (TimeoutError, ConnectionError)
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> - Test cache corruption scenarios
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> - Test import errors (patch sys.modules)
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> - Test concurrent access (threading)
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>2. Create tests/test_rag_integration.py:
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>   - Full pipeline: create corpus → build index → query → verify provenance
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>   - Multi-tenant: create 3 tenants, verify isolation
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>   - Concurrent: build 2 indices simultaneously
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>   - Updates: modify corpus, rebuild, verify changes
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> - Full pipeline: create corpus build index query verify provenance
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> - Multi-tenant: create 3 tenants, verify isolation
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> - Concurrent: build 2 indices simultaneously
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> - Updates: modify corpus, rebuild, verify changes
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>3. Create tests/test_rag_edge_cases.py:
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>   - Extreme parameters: top_k=10000, chunk_size=10
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>   - Large files: generate 100MB file, index successfully
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>   - Many files: 1000 small files
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>   - Malformed metadata: invalid JSON, missing fields
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> - Extreme parameters: top_k=10000, chunk_size=10
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> - Large files: generate 100MB file, index successfully
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> - Many files: 1000 small files
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> - Malformed metadata: invalid JSON, missing fields
 <a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>4. Create tests/test_rag_docs_examples.py:
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>   - Extract all code examples from docs/EXPANDED_CONTEXT_RAG.md
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>   - Convert to test functions
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>   - Add assertions for expected behavior
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> - Extract all code examples from docs/EXPANDED_CONTEXT_RAG.md
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a> - Convert to test functions
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> - Add assertions for expected behavior
 <a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
 <a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>5. Validate:
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>   - Run: pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=term-missing
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>   - Target: 98-100% coverage
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>   - Fix any remaining gaps
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>   - Commit with message: "Achieve 100% test coverage for RAG modules"
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> - Run: pytest tests/test_rag_*.py --cov=src/codex/rag --cov-report=term-missing
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> - Target: 98-100% coverage
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a> - Fix any remaining gaps
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> - Commit with message: "Achieve 100% test coverage for RAG modules"
 </code></pre></div>
 <h3 id="promptset-3-query-enhancements">Promptset 3: Query Enhancements<a class="headerlink" href="#promptset-3-query-enhancements" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Execute Planset 3 (Query Enhancement Features):
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>1. Create src/codex/rag/query_rewriter.py:
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>   - Class QueryRewriter with methods:
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>     - expand_synonyms(query) using WordNet/custom dict
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>     - expand_with_embeddings(query, model, top_k=5)
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>     - correct_spelling(query) using SymSpell
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>   - Configuration: enable_synonyms, enable_expansion, enable_spelling
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>   - Cache expanded queries
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> - Class QueryRewriter with methods:
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> - expand_synonyms(query) using WordNet/custom dict
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> - expand_with_embeddings(query, model, top_k=5)
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> - correct_spelling(query) using SymSpell
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> - Configuration: enable_synonyms, enable_expansion, enable_spelling
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> - Cache expanded queries
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>2. Create src/codex/rag/reranker.py:
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>   - Class CrossEncoderReranker:
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>     - Use cross-encoder/ms-marco-MiniLM-L-6-v2
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>     - rerank(query, results, top_k) method
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>     - Batch processing for efficiency
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>     - Fallback to original scores if model fails
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>   - Add caching layer for query-result pairs
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> - Class CrossEncoderReranker:
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> - Use cross-encoder/ms-marco-MiniLM-L-6-v2
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> - rerank(query, results, top_k) method
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> - Batch processing for efficiency
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> - Fallback to original scores if model fails
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> - Add caching layer for query-result pairs
 <a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
 <a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>3. Create tests for both:
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>   - Query rewriter: test each expansion method
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>   - Reranker: test ranking improvement, batch processing
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> - Query rewriter: test each expansion method
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> - Reranker: test ranking improvement, batch processing
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>4. Update Retriever to use rewriter + reranker:
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>   - Add optional query_rewriter parameter
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>   - Add optional reranker parameter
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>   - Pipeline: rewrite → retrieve → rerank
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> - Add optional query_rewriter parameter
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> - Add optional reranker parameter
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> - Pipeline: rewrite retrieve rerank
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
 <a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>5. Validate:
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>   - Test query accuracy improves
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>   - Measure latency impact
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>   - Document usage in docs/EXPANDED_CONTEXT_RAG.md
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>   - Commit with message: "Add query rewriting and cross-encoder re-ranking"
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a> - Test query accuracy improves
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> - Measure latency impact
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> - Document usage in docs/EXPANDED_CONTEXT_RAG.md
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a> - Commit with message: "Add query rewriting and cross-encoder re-ranking"
 </code></pre></div>
 <h3 id="promptset-4-advanced-features">Promptset 4: Advanced Features<a class="headerlink" href="#promptset-4-advanced-features" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Execute Planset 4 (Advanced Features):
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>1. Create src/codex/rag/hybrid_retriever.py:
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>   - Implement BM25 sparse retrieval (rank_bm25 library)
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>   - Implement Reciprocal Rank Fusion (RRF)
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>   - Class HybridRetriever:
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>     - Combines dense (FAISS) + sparse (BM25)
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>     - Configurable weights (default: 0.5/0.5)
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>     - query() returns fused results
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> - Implement BM25 sparse retrieval (rank_bm25 library)
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> - Implement Reciprocal Rank Fusion (RRF)
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> - Class HybridRetriever:
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> - Combines dense (FAISS) + sparse (BM25)
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> - Configurable weights (default: 0.5/0.5)
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> - query() returns fused results
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>2. Create src/codex/rag/hierarchical.py:
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>   - Implement hierarchical chunking:
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>     - Parent chunks (2000 chars)
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>     - Child chunks (500 chars)
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>     - Store relationships in metadata
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>   - On retrieval: return child + parent context
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>   - Update indexer to support hierarchy
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> - Implement hierarchical chunking:
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> - Parent chunks (2000 chars)
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> - Child chunks (500 chars)
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> - Store relationships in metadata
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> - On retrieval: return child + parent context
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> - Update indexer to support hierarchy
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
 <a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>3. Create tests:
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>   - test_rag_hybrid.py: test BM25, RRF, fusion
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>   - test_rag_hierarchical.py: test parent-child, context expansion
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> - test_rag_hybrid.py: test BM25, RRF, fusion
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> - test_rag_hierarchical.py: test parent-child, context expansion
 <a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
 <a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>4. Validate:
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>   - Benchmark hybrid vs dense-only (expect +15% recall)
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>   - Test hierarchical context preservation
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>   - Document in docs/EXPANDED_CONTEXT_RAG.md
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>   - Commit with message: "Add hybrid search and hierarchical chunking"
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> - Benchmark hybrid vs dense-only (expect +15% recall)
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> - Test hierarchical context preservation
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> - Document in docs/EXPANDED_CONTEXT_RAG.md
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> - Commit with message: "Add hybrid search and hierarchical chunking"
 </code></pre></div>
 <h3 id="promptset-5-monitoring-gpu">Promptset 5: Monitoring &amp; GPU<a class="headerlink" href="#promptset-5-monitoring-gpu" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Execute Planset 5 (Monitoring &amp; Optimization):
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>1. Create src/codex/rag/analytics.py:
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>   - Class RAGAnalytics:
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>     - Track queries: frequency, latency, results
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>     - Measure retrieval quality: precision@k, recall@k
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>     - Store in SQLite: .codex/rag_analytics.db
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>     - Generate reports: top queries, slow queries, cache stats
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>   - Add dashboard script: scripts/rag_analytics_dashboard.py
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> - Class RAGAnalytics:
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> - Track queries: frequency, latency, results
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> - Measure retrieval quality: precision@k, recall@k
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> - Store in SQLite: .codex/rag_analytics.db
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> - Generate reports: top queries, slow queries, cache stats
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> - Add dashboard script: scripts/rag_analytics_dashboard.py
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>2. Create src/codex/rag/gpu_utils.py:
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>   - Function detect_gpu(): returns bool
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>   - Function get_faiss_gpu_resources(): returns GPU config
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>   - Automatic fallback to CPU if GPU unavailable
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> - Function detect_gpu(): returns bool
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> - Function get_faiss_gpu_resources(): returns GPU config
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> - Automatic fallback to CPU if GPU unavailable
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>3. Update indexer.py and retriever.py:
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>   - Add use_gpu parameter (default: auto-detect)
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>   - Use faiss.StandardGpuResources() when available
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>   - Graceful fallback with logging
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> - Add use_gpu parameter (default: auto-detect)
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> - Use faiss.StandardGpuResources() when available
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> - Graceful fallback with logging
 <a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
 <a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>4. Create tests:
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>   - test_rag_analytics.py: test tracking, reporting
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>   - test_rag_gpu.py: mock GPU, test fallback
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> - test_rag_analytics.py: test tracking, reporting
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> - test_rag_gpu.py: mock GPU, test fallback
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
 <a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>5. Create documentation:
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>   - docs/GPU_ACCELERATION.md: setup guide, benchmarks
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>   - Update docs/EXPANDED_CONTEXT_RAG.md: analytics section
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a> - docs/GPU_ACCELERATION.md: setup guide, benchmarks
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> - Update docs/EXPANDED_CONTEXT_RAG.md: analytics section
 <a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>
 <a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>6. Validate:
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>   - Test analytics tracking
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>   - Test GPU detection (mock)
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>   - Document setup process
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>   - Commit with message: "Add analytics and GPU acceleration support"
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> - Test analytics tracking
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> - Test GPU detection (mock)
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a> - Document setup process
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a> - Commit with message: "Add analytics and GPU acceleration support"
 </code></pre></div>
 <hr/>
 <h2 id="execution-order">Execution Order<a class="headerlink" href="#execution-order" title="Permanent link">¶</a></h2>
 <p>Execute plansets in order:</p>
 <ol>
-<li><strong>Planset 1</strong> (Pre-commits 1-4): CI &amp; Performance → ~2-3 hours</li>
-<li><strong>Planset 2</strong> (Pre-commits 5-10): 100% Coverage → ~3-4 hours</li>
-<li><strong>Planset 3</strong> (Pre-commits 11-14): Query Enhancements → ~2-3 hours</li>
-<li><strong>Planset 4</strong> (Pre-commits 15-18): Advanced Features → ~3-4 hours</li>
-<li><strong>Planset 5</strong> (Pre-commits 19-22): Monitoring &amp; GPU → ~2-3 hours</li>
+<li><strong>Planset 1</strong> (Pre-commits 1-4): CI &amp; Performance ~2-3 hours</li>
+<li><strong>Planset 2</strong> (Pre-commits 5-10): 100% Coverage ~3-4 hours</li>
+<li><strong>Planset 3</strong> (Pre-commits 11-14): Query Enhancements ~2-3 hours</li>
+<li><strong>Planset 4</strong> (Pre-commits 15-18): Advanced Features ~3-4 hours</li>
+<li><strong>Planset 5</strong> (Pre-commits 19-22): Monitoring &amp; GPU ~2-3 hours</li>
 </ol>
 <p><strong>Total Estimated</strong>: 11 pre-commit cycles (12-17 hours of development)</p>
 <hr/>
@@ -3046,7 +3046,7 @@
 <hr/>
 <h2 id="status-tracking">Status Tracking<a class="headerlink" href="#status-tracking" title="Permanent link">¶</a></h2>
 <p>Track progress in PR description and comments. Update after each pre-commit cycle.</p>
-<p><strong>Current Status:</strong>  Ready for Execution<br/>
+<p><strong>Current Status:</strong> Ready for Execution
 <strong>Next Action:</strong> Begin Planset 1, Pre-commit 1-2</p>
 </article>
 </div>
@@ -3077,6 +3077,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

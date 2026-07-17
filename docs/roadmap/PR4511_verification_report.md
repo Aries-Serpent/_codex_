@@ -1,6 +1,6 @@
 # Verification Report — PR #4511 AI Findings
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-05-20T00:20Z
 **Branch:** `copilot/fix-kwargs-naming-convention`

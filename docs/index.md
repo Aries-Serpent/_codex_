@@ -1,5 +1,5 @@
 # Documentation Hub
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 

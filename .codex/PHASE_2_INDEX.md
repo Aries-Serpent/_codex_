@@ -1,7 +1,7 @@
 # PHASE 2: Release Packaging - Final Security Scan
 ## Deliverables Index & Quick Reference
 
-**Release:** codex-ml v0.2.1  
+**Release:** codex-ml v0.2.0  
 **Status:** ✅ **APPROVED FOR PUBLICATION**  
 **Execution Date:** 2026-07-11  
 **Security Clearance:** APPROVED  
@@ -214,8 +214,8 @@ CVE-2024-56326 (jinja2)
 
 1. **Tag Release**
    ```bash
-   git tag -a v0.2.1 -m "Release v0.2.1 - Security scan approved"
-   git push origin v0.2.1
+   git tag -a v0.2.0 -m "Release v0.2.0 - Security scan approved"
+   git push origin v0.2.0
    ```
 
 2. **Publish to PyPI**
@@ -259,7 +259,7 @@ For questions about this security scan:
 
 **Approval Authority:** Automated Security Pipeline  
 **Approval Date:** 2026-07-11T07:52:35Z  
-**Release Version:** v0.2.1  
+**Release Version:** v0.2.0  
 **Status:** ✅ **APPROVED FOR PUBLICATION**
 
 ---

@@ -1,6 +1,6 @@
 # Cognitive Codebase AI Evolution Center
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22
 **Purpose**: Permanent, queryable archive of the _codex_ AI agency evolution — from conception through emergence to autonomous operation.

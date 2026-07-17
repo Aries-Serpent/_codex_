@@ -1,6 +1,6 @@
 # Plugin Development Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide explains how to extend `_codex_` with custom datasets, metrics, and
 logging sinks using the existing registry patterns.

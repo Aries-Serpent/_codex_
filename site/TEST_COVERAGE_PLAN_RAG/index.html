@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/TEST_COVERAGE_PLAN_RAG/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Test Coverage Plan: Path to 100% - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2719,23 +2719,23 @@
 <h4 id="missing-test-cases">Missing Test Cases:<a class="headerlink" href="#missing-test-cases" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Test 1: Files with problematic encoding</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">def</span> <span class="nf">test_build_index_with_encoding_errors</span><span class="p">():</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="sd">"""Test handling files with encoding issues"""</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="c1"># Create file with non-UTF-8 bytes</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="c1"># Verify graceful handling</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    <span class="k">pass</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="sd">"""Test handling files with encoding issues"""</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> <span class="c1"># Create file with non-UTF-8 bytes</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> <span class="c1"># Verify graceful handling</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1"># Test 2: Large file handling</span>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">def</span> <span class="nf">test_build_index_with_large_files</span><span class="p">():</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="sd">"""Test memory efficiency with very large files"""</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="c1"># Create 100MB+ file</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="c1"># Verify streaming/chunking doesn't crash</span>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="k">pass</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w"> </span><span class="sd">"""Test memory efficiency with very large files"""</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> <span class="c1"># Create 100MB+ file</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> <span class="c1"># Verify streaming/chunking doesn't crash</span>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> <span class="k">pass</span>
 <a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
 <a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="c1"># Test 3: Concurrent index building</span>
 <a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="k">def</span> <span class="nf">test_concurrent_index_building</span><span class="p">():</span>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="sd">"""Test thread-safety of index building"""</span>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="c1"># Build multiple indices concurrently</span>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="k">pass</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w"> </span><span class="sd">"""Test thread-safety of index building"""</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> <span class="c1"># Build multiple indices concurrently</span>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> <span class="k">pass</span>
 </code></pre></div>
 <h2 id="2-retriever-module-srccodexragretrieverpy">2. Retriever Module (<code>src/codex/rag/retriever.py</code>)<a class="headerlink" href="#2-retriever-module-srccodexragretrieverpy" title="Permanent link">¶</a></h2>
 <h3 id="uncovered-linesbranches_1">Uncovered Lines/Branches:<a class="headerlink" href="#uncovered-linesbranches_1" title="Permanent link">¶</a></h3>
@@ -2759,25 +2759,25 @@
 <h4 id="missing-test-cases_1">Missing Test Cases:<a class="headerlink" href="#missing-test-cases_1" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Test 1: Corrupted FAISS index</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">def</span> <span class="nf">test_retriever_with_corrupted_faiss_index</span><span class="p">():</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="sd">"""Test handling corrupted FAISS binary"""</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="c1"># Create index, corrupt faiss file</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="c1"># Verify error handling</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="k">pass</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="sd">"""Test handling corrupted FAISS binary"""</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="c1"># Create index, corrupt faiss file</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="c1"># Verify error handling</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1"># Test 2: Version mismatch</span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">def</span> <span class="nf">test_retriever_with_version_mismatch</span><span class="p">():</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">    </span><span class="sd">"""Test handling indices from different FAISS versions"""</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="k">pass</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w"> </span><span class="sd">"""Test handling indices from different FAISS versions"""</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="c1"># Test 3: Query performance edge cases</span>
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="k">def</span> <span class="nf">test_retriever_query_with_extreme_parameters</span><span class="p">():</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="sd">"""Test with very large top_k, extreme min_score"""</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="k">pass</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w"> </span><span class="sd">"""Test with very large top_k, extreme min_score"""</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="k">pass</span>
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="c1"># Test 4: Metadata edge cases</span>
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="k">def</span> <span class="nf">test_extract_file_with_malformed_metadata</span><span class="p">():</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">    </span><span class="sd">"""Test file extraction with various malformed metadata"""</span>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    <span class="k">pass</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w"> </span><span class="sd">"""Test file extraction with various malformed metadata"""</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> <span class="k">pass</span>
 </code></pre></div>
 <h2 id="3-embeddings-module-srccodexragembeddingspy">3. Embeddings Module (<code>src/codex/rag/embeddings.py</code>)<a class="headerlink" href="#3-embeddings-module-srccodexragembeddingspy" title="Permanent link">¶</a></h2>
 <h3 id="uncovered-linesbranches_2">Uncovered Lines/Branches:<a class="headerlink" href="#uncovered-linesbranches_2" title="Permanent link">¶</a></h3>
@@ -2805,69 +2805,69 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Test 1: OpenAI API errors</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nd">@patch</span><span class="p">(</span><span class="s2">"codex.rag.embeddings.OpenAI"</span><span class="p">)</span>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">def</span> <span class="nf">test_openai_provider_rate_limit</span><span class="p">(</span><span class="n">mock_openai</span><span class="p">):</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="sd">"""Test handling of rate limit errors"""</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="c1"># Mock rate limit exception</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="c1"># Verify proper error propagation</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="k">pass</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="sd">"""Test handling of rate limit errors"""</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="c1"># Mock rate limit exception</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="c1"># Verify proper error propagation</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1"># Test 2: Network failures</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="nd">@patch</span><span class="p">(</span><span class="s2">"codex.rag.embeddings.OpenAI"</span><span class="p">)</span>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="k">def</span> <span class="nf">test_openai_provider_network_timeout</span><span class="p">(</span><span class="n">mock_openai</span><span class="p">):</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="sd">"""Test handling of network timeouts"""</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="k">pass</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="sd">"""Test handling of network timeouts"""</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># Test 3: Cache metadata corruption</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="k">def</span> <span class="nf">test_cached_provider_with_corrupted_metadata</span><span class="p">():</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="sd">"""Test handling of corrupted metadata JSON"""</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    <span class="c1"># Create cache with corrupted .meta.json</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="c1"># Verify regeneration</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    <span class="k">pass</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="sd">"""Test handling of corrupted metadata JSON"""</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> <span class="c1"># Create cache with corrupted .meta.json</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> <span class="c1"># Verify regeneration</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="c1"># Test 4: Concurrent cache access</span>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="k">def</span> <span class="nf">test_cached_provider_concurrent_access</span><span class="p">():</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">    </span><span class="sd">"""Test thread-safety of cache"""</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    <span class="c1"># Multiple threads accessing same cache key</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    <span class="k">pass</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="sd">"""Test thread-safety of cache"""</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> <span class="c1"># Multiple threads accessing same cache key</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> <span class="k">pass</span>
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
 <a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="c1"># Test 5: Model loading failures</span>
 <a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="k">def</span> <span class="nf">test_local_provider_model_download_failure</span><span class="p">():</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">    </span><span class="sd">"""Test graceful handling of model download failures"""</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>    <span class="c1"># Mock network error during model init</span>
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>    <span class="k">pass</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w"> </span><span class="sd">"""Test graceful handling of model download failures"""</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a> <span class="c1"># Mock network error during model init</span>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a> <span class="k">pass</span>
 </code></pre></div>
 <h2 id="4-integration-tests">4. Integration Tests<a class="headerlink" href="#4-integration-tests" title="Permanent link">¶</a></h2>
 <h3 id="missing-scenarios">Missing Scenarios:<a class="headerlink" href="#missing-scenarios" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Test 1: Full RAG pipeline</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">def</span> <span class="nf">test_full_rag_pipeline_end_to_end</span><span class="p">():</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="sd">"""Test complete RAG workflow from docs to retrieval"""</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="c1"># 1. Index large corpus</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="c1"># 2. Query with various patterns</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="c1"># 3. Verify provenance accuracy</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="c1"># 4. Test cache effectiveness</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="k">pass</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="sd">"""Test complete RAG workflow from docs to retrieval"""</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> <span class="c1"># 1. Index large corpus</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> <span class="c1"># 2. Query with various patterns</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="c1"># 3. Verify provenance accuracy</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="c1"># 4. Test cache effectiveness</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="k">pass</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># Test 2: Multi-tenant isolation</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="k">def</span> <span class="nf">test_multi_tenant_isolation</span><span class="p">():</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">    </span><span class="sd">"""Verify tenant isolation in storage"""</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="c1"># Create indices for multiple tenants</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="c1"># Verify no cross-tenant access</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="k">pass</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w"> </span><span class="sd">"""Verify tenant isolation in storage"""</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="c1"># Create indices for multiple tenants</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="c1"># Verify no cross-tenant access</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="k">pass</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="c1"># Test 3: Index updates</span>
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="k">def</span> <span class="nf">test_index_incremental_updates</span><span class="p">():</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">    </span><span class="sd">"""Test updating an existing index"""</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    <span class="c1"># Create index</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    <span class="c1"># Add new documents</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="c1"># Verify proper merging</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    <span class="k">pass</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w"> </span><span class="sd">"""Test updating an existing index"""</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> <span class="c1"># Create index</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> <span class="c1"># Add new documents</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> <span class="c1"># Verify proper merging</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> <span class="k">pass</span>
 <a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
 <a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="c1"># Test 4: Performance benchmarks</span>
 <a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="k">def</span> <span class="nf">test_performance_benchmarks</span><span class="p">():</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">    </span><span class="sd">"""Benchmark query performance at scale"""</span>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="c1"># Index 10k, 100k chunks</span>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>    <span class="c1"># Measure query latency</span>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="c1"># Verify acceptable performance</span>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="k">pass</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w"> </span><span class="sd">"""Benchmark query performance at scale"""</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a> <span class="c1"># Index 10k, 100k chunks</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> <span class="c1"># Measure query latency</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a> <span class="c1"># Verify acceptable performance</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> <span class="k">pass</span>
 </code></pre></div>
 <h2 id="prioritized-action-items-for-100-coverage">Prioritized Action Items for 100% Coverage<a class="headerlink" href="#prioritized-action-items-for-100-coverage" title="Permanent link">¶</a></h2>
 <h3 id="priority-1-critical-path-coverage-target-95">Priority 1: Critical Path Coverage (Target: 95%)<a class="headerlink" href="#priority-1-critical-path-coverage-target-95" title="Permanent link">¶</a></h3>
@@ -2963,34 +2963,34 @@
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span><span class="nt">test</span><span class="p">:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e ".[rag,test]"</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests with coverage</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w">          </span><span class="no">pytest tests/test_rag_*.py \</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w">            </span><span class="no">--cov=src/codex/rag \</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w">            </span><span class="no">--cov-report=xml \</span>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w">            </span><span class="no">--cov-report=term-missing \</span>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="w">            </span><span class="no">--cov-fail-under=90</span>
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload coverage</span>
-<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v3</span>
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="w">          </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./coverage.xml</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span><span class="nt">test</span><span class="p">:</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install -e ".[rag,test]"</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests with coverage</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pytest tests/test_rag_*.py \</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--cov=src/codex/rag \</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--cov-report=xml \</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--cov-report=term-missing \</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--cov-fail-under=90</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload coverage</span>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v3</span>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="w"> </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./coverage.xml</span>
 </code></pre></div>
 <h2 id="pre-commit-hook">Pre-commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># .pre-commit-config.yaml</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>-<span class="w"> </span>repo:<span class="w"> </span><span class="nb">local</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span>hooks:
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">    </span>-<span class="w"> </span>id:<span class="w"> </span>rag-test-coverage
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">      </span>name:<span class="w"> </span>RAG<span class="w"> </span>Module<span class="w"> </span>Test<span class="w"> </span>Coverage
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">      </span>entry:<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">'pytest tests/test_rag_*.py --cov=src/codex/rag --cov-fail-under=90 || exit 1'</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">      </span>language:<span class="w"> </span>system
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">      </span>pass_filenames:<span class="w"> </span><span class="nb">false</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">      </span>always_run:<span class="w"> </span><span class="nb">true</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span>hooks:
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span>-<span class="w"> </span>id:<span class="w"> </span>rag-test-coverage
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span>name:<span class="w"> </span>RAG<span class="w"> </span>Module<span class="w"> </span>Test<span class="w"> </span>Coverage
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span>entry:<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">'pytest tests/test_rag_*.py --cov=src/codex/rag --cov-fail-under=90 || exit 1'</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w"> </span>language:<span class="w"> </span>system
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w"> </span>pass_filenames:<span class="w"> </span><span class="nb">false</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w"> </span>always_run:<span class="w"> </span><span class="nb">true</span>
 </code></pre></div>
 <h2 id="promptsets-for-reaching-100">Promptsets for Reaching 100%<a class="headerlink" href="#promptsets-for-reaching-100" title="Permanent link">¶</a></h2>
 <h3 id="promptset-1-error-handling-tests">Promptset 1: Error Handling Tests<a class="headerlink" href="#promptset-1-error-handling-tests" title="Permanent link">¶</a></h3>
@@ -3011,7 +3011,7 @@
 <h3 id="promptset-2-integration-tests">Promptset 2: Integration Tests<a class="headerlink" href="#promptset-2-integration-tests" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Create integration tests for expanded context RAG workflow:
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>1. End-to-end pipeline: docs → indexing → caching → retrieval
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>1. End-to-end pipeline: docs indexing caching retrieval
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>2. Multi-tenant isolation and concurrent operations
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>3. Index updates and versioning
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>4. Cache effectiveness and invalidation
@@ -3058,26 +3058,26 @@
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c1"># Run with HTML report</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>pytest<span class="w"> </span>tests/test_rag_*.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">  </span>--cov<span class="o">=</span>src/codex/rag<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w">  </span>--cov-report<span class="o">=</span>html<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span>--cov-report<span class="o">=</span>term-missing
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w"> </span>--cov<span class="o">=</span>src/codex/rag<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="w"> </span>--cov-report<span class="o">=</span>html<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
 <a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="c1"># View coverage report</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>open<span class="w"> </span>htmlcov/index.html
 <a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>
 <a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="c1"># Check specific module</span>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>pytest<span class="w"> </span>tests/test_rag_*.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">  </span>--cov<span class="o">=</span>src/codex/rag/indexer.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w">  </span>--cov-report<span class="o">=</span>term-missing
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w"> </span>--cov<span class="o">=</span>src/codex/rag/indexer.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 <a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>
 <a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="c1"># Generate badge</span>
 <a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>coverage-badge<span class="w"> </span>-o<span class="w"> </span>coverage.svg<span class="w"> </span>-f
 <a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>
 <a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="c1"># Branch coverage (more strict)</span>
 <a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>pytest<span class="w"> </span>tests/test_rag_*.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="w">  </span>--cov<span class="o">=</span>src/codex/rag<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="w">  </span>--cov-branch<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a><span class="w">  </span>--cov-report<span class="o">=</span>term-missing
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="w"> </span>--cov<span class="o">=</span>src/codex/rag<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="w"> </span>--cov-branch<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a><span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 </code></pre></div>
 <h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
 <h3 id="90-coverage-achieved">90% Coverage (ACHIEVED )<a class="headerlink" href="#90-coverage-achieved" title="Permanent link">¶</a></h3>
@@ -3120,12 +3120,12 @@
 <h3 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># tests/conftest.py</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="k">def</span> <span class="nf">pytest_sessionfinish</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">exitstatus</span><span class="p">):</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">    </span><span class="sd">"""Report coverage at end of session"""</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">option</span><span class="o">.</span><span class="n">cov</span><span class="p">:</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"COVERAGE SUMMARY"</span><span class="p">)</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>        <span class="c1"># Generate summary</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span><span class="sd">"""Report coverage at end of session"""</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">option</span><span class="o">.</span><span class="n">cov</span><span class="p">:</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"COVERAGE SUMMARY"</span><span class="p">)</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> <span class="c1"># Generate summary</span>
 </code></pre></div>
 <h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">¶</a></h2>
 <ul>
@@ -3169,6 +3169,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

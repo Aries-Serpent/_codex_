@@ -165,7 +165,7 @@
 - **T+1w (2026-07-31):** Checkpoint 1 (feature finalized, infra prep, security planning)
 - **T+2w (2026-08-07):** Checkpoint 2 (canary live, mTLS live, MFA live)
 - **T+3w (2026-08-14):** Checkpoint 3 (A/B testing, cache optimization, SIEM)
-- **T+6w (2026-08-25):** WS1 gate (v0.2.1 GA deployment)
+- **T+6w (2026-08-25):** WS1 gate (v0.2.0 GA deployment)
 - **T+8w (2026-09-04):** WS2 gate (infrastructure GA)
 - **T+12w (2026-09-18):** WS3+WS4 gates (security GA + orchestration complete)
 
@@ -280,7 +280,7 @@
 | 2026-07-17T20:00Z | Phase 12 ends, Phase 13 WS4 ops live | workflow-health-monitor | ⏳ EXECUTING |
 | 2026-07-24T20:10Z | **PHASE 14 KICKOFF** (all WS1-4) | orchestrator-agent | 🚀 AUTHORIZED |
 | 2026-07-31T20:10Z | Checkpoint 1 (T+1w) | agent-orchestrator | 📋 PLANNED |
-| 2026-08-25T20:10Z | WS1 complete (v0.2.1 GA) | orchestrator-agent | 📋 PLANNED |
+| 2026-08-25T20:10Z | WS1 complete (v0.2.0 GA) | orchestrator-agent | 📋 PLANNED |
 | 2026-09-04T20:10Z | WS2 complete (Infrastructure GA) | workflow-health-monitor | 📋 PLANNED |
 | 2026-09-18T20:10Z | **PHASE 14 COMPLETE** (all WS gates) | agent-orchestrator | 📋 PLANNED |
 

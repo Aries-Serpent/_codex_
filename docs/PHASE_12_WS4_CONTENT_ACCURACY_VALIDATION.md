@@ -1,6 +1,6 @@
 # Phase 12 WS4 - Content Accuracy Validation & Freshness Improvements
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 
 **Status:** Phase 2-3 IN PROGRESS
 **Date:** 2026-07-16

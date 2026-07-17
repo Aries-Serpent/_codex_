@@ -1,6 +1,6 @@
 # Phase 2.3 Migration Report — Accountability Report Chunking
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:** 2026-06-23T02:51:08Z
 **Status:** COMPLETE

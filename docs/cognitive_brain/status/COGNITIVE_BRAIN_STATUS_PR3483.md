@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3483
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 # SC2016/SC2012 Fix + Repo Variable Expansion + Mermaid Codebase Audit
@@ -55,7 +55,7 @@ graph TB
  end
 
  subgraph STATE["Current Repository State"]
- REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+ REG["AGENT_REGISTRY.yaml v0.2.0\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
  GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
  WF["96 workflows (fixed from stale 91)"]
  end

@@ -1,6 +1,6 @@
 # Ops: Triage Guide for Status/Validation Failures (v1.2)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
  Roles: [Primary: On-call], [Secondary: CI Maintainer]  Energy: 5

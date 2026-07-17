@@ -1,6 +1,6 @@
 # Repository Webhook Registry — Aries-Serpent/_codex_
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Audit date:2026-07-13
 **Audited by:** Copilot agent W-123 (`@agent-infra list-webhooks`)

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/DEPLOYMENT_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>codex Deployment Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2701,10 +2701,10 @@
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
 <blockquote>
-<p><strong>Last Updated: 2026-06-27
-</strong>Status:<strong> Phase 3 - Documentation Enhancement Campaign<br/>
-</strong>Reading Level:<strong> 8th Grade (Flesch-Kincaid)<br/>
-</strong>Scope:** Local Development → Docker → Cloud (AWS/Azure/GCP)</p>
+<p><strong>Last Updated: 2026-07-16
+</strong>Status:<strong> Phase 3 - Documentation Enhancement Campaign
+</strong>Reading Level:<strong> 8th Grade (Flesch-Kincaid)
+</strong>Scope:** Local Development Docker Cloud (AWS/Azure/GCP)</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2732,20 +2732,20 @@
 <h3 id="lets-go">Let's Go!<a class="headerlink" href="#lets-go" title="Permanent link">¶</a></h3>
 <p><strong>Step 1: Start the server</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">8000</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w"> </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
 </code></pre></div></p>
 <p><strong>Step 2: Make a prediction</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># In a new terminal</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"text": "This is a test"}'</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"text": "This is a test"}'</span>
 </code></pre></div></p>
 <p><strong>Step 3: See the response</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p">{</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">"predictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.92</span><span class="p">],</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">"latency_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"experiment_1"</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span><span class="nt">"predictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.92</span><span class="p">],</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">"latency_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"experiment_1"</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>You just deployed a model!</strong></p>
@@ -2764,28 +2764,28 @@
 <p><strong>Step 2: Start the server</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Option A: Simple (8-second startup)</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span>--model<span class="w"> </span>runs/my_model/model.pt
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span>--model<span class="w"> </span>runs/my_model/model.pt
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="c1"># Option B: Detailed logging</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span>--model<span class="w"> </span>runs/my_model/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span>--verbose
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span>--model<span class="w"> </span>runs/my_model/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span>--verbose
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># Option C: Custom port</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.serving.cli<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">  </span>--model<span class="w"> </span>runs/my_model/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">9000</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span>--model<span class="w"> </span>runs/my_model/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span>--port<span class="w"> </span><span class="m">9000</span>
 </code></pre></div></p>
 <p><strong>Step 3: Make requests</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Option 1: Using curl</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"text": "test input"}'</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"text": "test input"}'</span>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="c1"># Option 2: Using Python</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>import<span class="w"> </span>requests
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="nv">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>requests.post<span class="o">(</span><span class="s1">'http://localhost:8000/predict'</span>,
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">  </span><span class="nv">json</span><span class="o">={</span><span class="s1">'text'</span>:<span class="w"> </span><span class="s1">'test input'</span><span class="o">})</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="nv">json</span><span class="o">={</span><span class="s1">'text'</span>:<span class="w"> </span><span class="s1">'test input'</span><span class="o">})</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>print<span class="o">(</span>response.json<span class="o">())</span>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
 <a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="c1"># Option 3: Using a client script</span>
@@ -2807,10 +2807,10 @@
 <h2 id="docker-deployment-testing">Docker Deployment (Testing)<a class="headerlink" href="#docker-deployment-testing" title="Permanent link">¶</a></h2>
 <h3 id="why-docker">Why Docker?<a class="headerlink" href="#why-docker" title="Permanent link">¶</a></h3>
 <ul>
-<li>🐳 Works same on all machines</li>
+<li>Works same on all machines</li>
 <li>Isolated environment (safer)</li>
 <li>Easy to scale</li>
-<li>📦 Reproducible deployments</li>
+<li>Reproducible deployments</li>
 </ul>
 <h3 id="prerequisites_1">Prerequisites<a class="headerlink" href="#prerequisites_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="w"> </span>Docker<span class="w"> </span>installed:<span class="w"> </span>docker<span class="w"> </span>--version
@@ -2835,8 +2835,8 @@
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="c"># Run server</span>
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a><span class="k">CMD</span><span class="w"> </span><span class="o">[</span><span class="s2">"python"</span>,<span class="w"> </span><span class="s2">"-m"</span>,<span class="w"> </span><span class="s2">"codex_ml.serving.cli"</span>,<span class="w"> </span><span class="s2">"serve"</span>,<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w">     </span><span class="s2">"--model"</span>,<span class="w"> </span><span class="s2">"/app/runs/experiment_1/model.pt"</span>,<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w">     </span><span class="s2">"--host"</span>,<span class="w"> </span><span class="s2">"0.0.0.0"</span><span class="o">]</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="w"> </span><span class="s2">"--model"</span>,<span class="w"> </span><span class="s2">"/app/runs/experiment_1/model.pt"</span>,<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a><span class="w"> </span><span class="s2">"--host"</span>,<span class="w"> </span><span class="s2">"0.0.0.0"</span><span class="o">]</span>
 </code></pre></div></p>
 <p><strong>Step 2: Build image</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Build (takes 2-3 minutes first time)</span>
@@ -2848,18 +2848,18 @@
 <p><strong>Step 3: Run container</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Run the container</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/runs:/app/runs<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">  </span>codex-model:1.0
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/runs:/app/runs<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w"> </span>codex-model:1.0
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="c1"># Note: </span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># - `-p 8000:8000` means "port 8000 inside container → port 8000 outside"</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># - `-p 8000:8000` means "port 8000 inside container port 8000 outside"</span>
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="c1"># - `-v $(pwd)/runs:/app/runs` means "mount local runs/ directory"</span>
 </code></pre></div></p>
 <p><strong>Step 4: Test it</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Make a prediction</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"text": "test"}'</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"text": "test"}'</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="c1"># Expected: 200 OK with predictions</span>
 </code></pre></div></p>
@@ -2891,40 +2891,40 @@
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.8'</span>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="nt">services</span><span class="p">:</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">  </span><span class="nt">model_v1</span><span class="p">:</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8001:8000"</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MODEL_PATH=/app/runs/experiment_1/model.pt</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./runs:/app/runs</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="nt">model_v1</span><span class="p">:</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w"> </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8001:8000"</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w"> </span><span class="nt">environment</span><span class="p">:</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MODEL_PATH=/app/runs/experiment_1/model.pt</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w"> </span><span class="nt">volumes</span><span class="p">:</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./runs:/app/runs</span>
 <a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">  </span><span class="nt">model_v2</span><span class="p">:</span>
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8002:8000"</span>
-<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MODEL_PATH=/app/runs/experiment_2/model.pt</span>
-<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./runs:/app/runs</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w"> </span><span class="nt">model_v2</span><span class="p">:</span>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w"> </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w"> </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8002:8000"</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w"> </span><span class="nt">environment</span><span class="p">:</span>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MODEL_PATH=/app/runs/experiment_2/model.pt</span>
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w"> </span><span class="nt">volumes</span><span class="p">:</span>
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./runs:/app/runs</span>
 <a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a>
-<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w">  </span><span class="nt">load_balancer</span><span class="p">:</span>
-<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx:latest</span>
-<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"80:80"</span>
-<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./nginx.conf:/etc/nginx/nginx.conf</span>
-<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
-<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model_v1</span>
-<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model_v2</span>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w"> </span><span class="nt">load_balancer</span><span class="p">:</span>
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx:latest</span>
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w"> </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"80:80"</span>
+<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w"> </span><span class="nt">volumes</span><span class="p">:</span>
+<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./nginx.conf:/etc/nginx/nginx.conf</span>
+<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w"> </span><span class="nt">depends_on</span><span class="p">:</span>
+<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model_v1</span>
+<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">model_v2</span>
 </code></pre></div>
 <p><strong>Run with docker-compose:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Start all services</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>docker-compose<span class="w"> </span>up
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1"># In another terminal, test:</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>curl<span class="w"> </span>http://localhost:80/predict<span class="w">  </span><span class="c1"># Load balancer routes to v1 or v2</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>curl<span class="w"> </span>http://localhost:80/predict<span class="w"> </span><span class="c1"># Load balancer routes to v1 or v2</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="cloud-deployment-production">Cloud Deployment (Production)<a class="headerlink" href="#cloud-deployment-production" title="Permanent link">¶</a></h2>
@@ -2969,14 +2969,14 @@
 <h2 id="aws-deployment-sagemaker">AWS Deployment (SageMaker)<a class="headerlink" href="#aws-deployment-sagemaker" title="Permanent link">¶</a></h2>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>Your Computer
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>    ↓
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>   API Request
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    ↓
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>   AWS API Gateway
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>    ↓
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>   AWS SageMaker Endpoint
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>    ↓
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>   Your Model (Running)
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a> API Request
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a> AWS API Gateway
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> AWS SageMaker Endpoint
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> Your Model (Running)
 </code></pre></div>
 <h3 id="step-by-step-30-minutes">Step-by-Step (30 minutes)<a class="headerlink" href="#step-by-step-30-minutes" title="Permanent link">¶</a></h3>
 <p><strong>Step 1: Create AWS Account</strong>
@@ -3003,7 +3003,7 @@
 <a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Upload model</span>
 <a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w">  </span>s3://my-codex-models/model.pt
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a><span class="w"> </span>s3://my-codex-models/model.pt
 <a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
 <a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="c1"># Verify</span>
 <a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://my-codex-models/
@@ -3015,19 +3015,19 @@
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="s">from codex_ml.models import load_checkpoint</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>
 <a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="s">def model_fn(model_dir):</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="s">    model = load_checkpoint(f"{model_dir}/model.pt")</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="s">    return model</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="s"> model = load_checkpoint(f"{model_dir}/model.pt")</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="s"> return model</span>
 <a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>
 <a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a><span class="s">def predict_fn(data, model):</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="s">    return model(data)</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a><span class="s"> return model(data)</span>
 <a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>
 <a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="s">def input_fn(request_body, request_content_type):</span>
-<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="s">    import json</span>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="s">    return json.loads(request_body)</span>
+<a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a><span class="s"> import json</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="s"> return json.loads(request_body)</span>
 <a href="#__codelineno-20-16" id="__codelineno-20-16" name="__codelineno-20-16"></a>
 <a href="#__codelineno-20-17" id="__codelineno-20-17" name="__codelineno-20-17"></a><span class="s">def output_fn(prediction, accept):</span>
-<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a><span class="s">    import json</span>
-<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a><span class="s">    return json.dumps(prediction.tolist()), accept</span>
+<a href="#__codelineno-20-18" id="__codelineno-20-18" name="__codelineno-20-18"></a><span class="s"> import json</span>
+<a href="#__codelineno-20-19" id="__codelineno-20-19" name="__codelineno-20-19"></a><span class="s"> return json.dumps(prediction.tolist()), accept</span>
 <a href="#__codelineno-20-20" id="__codelineno-20-20" name="__codelineno-20-20"></a><span class="s">EOF</span>
 <a href="#__codelineno-20-21" id="__codelineno-20-21" name="__codelineno-20-21"></a>
 <a href="#__codelineno-20-22" id="__codelineno-20-22" name="__codelineno-20-22"></a><span class="c1"># Package for SageMaker</span>
@@ -3037,23 +3037,23 @@
 <p><strong>Step 5: Deploy via SageMaker</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Use AWS console or CLI</span>
 <a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>aws<span class="w"> </span>sagemaker<span class="w"> </span>create-model<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w">  </span>--model-name<span class="w"> </span>codex-model-1<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w">  </span>--primary-container<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w">    </span><span class="nv">Image</span><span class="o">=</span><span class="m">763104330519</span>.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.9-cpu-py38,<span class="se">\</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="w">    </span><span class="nv">ModelDataUrl</span><span class="o">=</span>s3://my-codex-models/model.tar.gz
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w"> </span>--model-name<span class="w"> </span>codex-model-1<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w"> </span>--primary-container<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="w"> </span><span class="nv">Image</span><span class="o">=</span><span class="m">763104330519</span>.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.9-cpu-py38,<span class="se">\</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="w"> </span><span class="nv">ModelDataUrl</span><span class="o">=</span>s3://my-codex-models/model.tar.gz
 <a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>
 <a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="c1"># Create endpoint</span>
 <a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>aws<span class="w"> </span>sagemaker<span class="w"> </span>create-endpoint<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="w">  </span>--endpoint-name<span class="w"> </span>codex-model-endpoint<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="w">  </span>--endpoint-config-name<span class="w"> </span>codex-model-config
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="w"> </span>--endpoint-name<span class="w"> </span>codex-model-endpoint<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="w"> </span>--endpoint-config-name<span class="w"> </span>codex-model-config
 </code></pre></div></p>
 <p><strong>Step 6: Make predictions</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Invoke the endpoint</span>
 <a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>aws<span class="w"> </span>sagemaker-runtime<span class="w"> </span>invoke-endpoint<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">  </span>--endpoint-name<span class="w"> </span>codex-model-endpoint<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">  </span>--body<span class="w"> </span><span class="s1">'{"text": "test"}'</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w">  </span>--content-type<span class="w"> </span>application/json<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="w">  </span>response.json
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w"> </span>--endpoint-name<span class="w"> </span>codex-model-endpoint<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w"> </span>--body<span class="w"> </span><span class="s1">'{"text": "test"}'</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w"> </span>--content-type<span class="w"> </span>application/json<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="w"> </span>response.json
 <a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>
 <a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="c1"># View response</span>
 <a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>cat<span class="w"> </span>response.json
@@ -3081,9 +3081,9 @@
 <p><strong>Step 3: Create Azure Container Registry</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># Create registry</span>
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>az<span class="w"> </span>acr<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="w">  </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="w">  </span>--name<span class="w"> </span>mycodexregistry<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="w">  </span>--sku<span class="w"> </span>Basic
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="w"> </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="w"> </span>--name<span class="w"> </span>mycodexregistry<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="w"> </span>--sku<span class="w"> </span>Basic
 <a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>
 <a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="c1"># Login to registry</span>
 <a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>az<span class="w"> </span>acr<span class="w"> </span>login<span class="w"> </span>--name<span class="w"> </span>mycodexregistry
@@ -3094,7 +3094,7 @@
 <a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>
 <a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="c1"># Tag for Azure</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>docker<span class="w"> </span>tag<span class="w"> </span>codex-model:1.0<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="w">  </span>mycodexregistry.azurecr.io/codex-model:1.0
+<a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="w"> </span>mycodexregistry.azurecr.io/codex-model:1.0
 <a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a>
 <a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a><span class="c1"># Push</span>
 <a href="#__codelineno-25-9" id="__codelineno-25-9" name="__codelineno-25-9"></a>docker<span class="w"> </span>push<span class="w"> </span>mycodexregistry.azurecr.io/codex-model:1.0
@@ -3102,17 +3102,17 @@
 <p><strong>Step 5: Deploy to Azure Container Instances (ACI)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># Deploy</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>az<span class="w"> </span>container<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w">  </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w">  </span>--name<span class="w"> </span>codex-model-container<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a><span class="w">  </span>--image<span class="w"> </span>mycodexregistry.azurecr.io/codex-model:1.0<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a><span class="w">  </span>--ports<span class="w"> </span><span class="m">8000</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a><span class="w">  </span>--registry-login-server<span class="w"> </span>mycodexregistry.azurecr.io
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w"> </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w"> </span>--name<span class="w"> </span>codex-model-container<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a><span class="w"> </span>--image<span class="w"> </span>mycodexregistry.azurecr.io/codex-model:1.0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a><span class="w"> </span>--ports<span class="w"> </span><span class="m">8000</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a><span class="w"> </span>--registry-login-server<span class="w"> </span>mycodexregistry.azurecr.io
 <a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>
 <a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a><span class="c1"># Get the URL</span>
 <a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a>az<span class="w"> </span>container<span class="w"> </span>show<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="w">  </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="w">  </span>--name<span class="w"> </span>codex-model-container<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a><span class="w">  </span>--query<span class="w"> </span>ipAddress.fqdn
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="w"> </span>--resource-group<span class="w"> </span>my-group<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="w"> </span>--name<span class="w"> </span>codex-model-container<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-13" id="__codelineno-26-13" name="__codelineno-26-13"></a><span class="w"> </span>--query<span class="w"> </span>ipAddress.fqdn
 <a href="#__codelineno-26-14" id="__codelineno-26-14" name="__codelineno-26-14"></a>
 <a href="#__codelineno-26-15" id="__codelineno-26-15" name="__codelineno-26-15"></a><span class="c1"># Test</span>
 <a href="#__codelineno-26-16" id="__codelineno-26-16" name="__codelineno-26-16"></a>curl<span class="w"> </span>http://&lt;fqdn&gt;:8000/health
@@ -3141,17 +3141,17 @@
 <p><strong>Step 3: Build and push image</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># Build for GCP</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a>gcloud<span class="w"> </span>builds<span class="w"> </span>submit<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w">  </span>--tag<span class="w"> </span>gcr.io/my-project-id/codex-model:1.0<span class="w"> </span>.
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w"> </span>--tag<span class="w"> </span>gcr.io/my-project-id/codex-model:1.0<span class="w"> </span>.
 <a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a>
 <a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a><span class="c1"># This automatically pushes to Google Container Registry</span>
 </code></pre></div></p>
 <p><strong>Step 4: Deploy to Cloud Run</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># Deploy</span>
 <a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>gcloud<span class="w"> </span>run<span class="w"> </span>deploy<span class="w"> </span>codex-model<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w">  </span>--image<span class="w"> </span>gcr.io/my-project-id/codex-model:1.0<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w">  </span>--platform<span class="w"> </span>managed<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="w">  </span>--region<span class="w"> </span>us-central1<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="w">  </span>--allow-unauthenticated
+<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w"> </span>--image<span class="w"> </span>gcr.io/my-project-id/codex-model:1.0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w"> </span>--platform<span class="w"> </span>managed<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="w"> </span>--region<span class="w"> </span>us-central1<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="w"> </span>--allow-unauthenticated
 <a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a>
 <a href="#__codelineno-29-8" id="__codelineno-29-8" name="__codelineno-29-8"></a><span class="c1"># Get URL (will be provided)</span>
 <a href="#__codelineno-29-9" id="__codelineno-29-9" name="__codelineno-29-9"></a><span class="c1"># https://codex-model-xxxxx.run.app</span>
@@ -3159,8 +3159,8 @@
 <p><strong>Step 5: Test it</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># Make prediction</span>
 <a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://codex-model-xxxxx.run.app/predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"text": "test"}'</span>
+<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"text": "test"}'</span>
 </code></pre></div></p>
 <p><strong>Cost estimate:</strong>
 - Free tier: 2M requests/month (free!)
@@ -3223,15 +3223,15 @@
 <h3 id="validate-before-deployment">Validate Before Deployment<a class="headerlink" href="#validate-before-deployment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="c1"># Run pre-deployment checks</span>
 <a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a>python<span class="w"> </span>scripts/deployment/pre_deploy_check.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a><span class="w">  </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a><span class="w">  </span>--output<span class="w"> </span>results/deployment_check.json
+<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a><span class="w"> </span>--model<span class="w"> </span>runs/experiment_1/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a><span class="w"> </span>--output<span class="w"> </span>results/deployment_check.json
 <a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a>
 <a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a><span class="c1"># Expected output:</span>
 <a href="#__codelineno-31-7" id="__codelineno-31-7" name="__codelineno-31-7"></a><span class="c1"># {</span>
-<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a><span class="c1">#   "model_loads": true,</span>
-<a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a><span class="c1">#   "latency_p95_ms": 145,</span>
-<a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a><span class="c1">#   "memory_mb": 2048,</span>
-<a href="#__codelineno-31-11" id="__codelineno-31-11" name="__codelineno-31-11"></a><span class="c1">#   "status": "READY"</span>
+<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a><span class="c1"># "model_loads": true,</span>
+<a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a><span class="c1"># "latency_p95_ms": 145,</span>
+<a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a><span class="c1"># "memory_mb": 2048,</span>
+<a href="#__codelineno-31-11" id="__codelineno-31-11" name="__codelineno-31-11"></a><span class="c1"># "status": "READY"</span>
 <a href="#__codelineno-31-12" id="__codelineno-31-12" name="__codelineno-31-12"></a><span class="c1"># }</span>
 </code></pre></div>
 <hr/>
@@ -3296,25 +3296,25 @@
 <h3 id="optimize-latency">Optimize Latency<a class="headerlink" href="#optimize-latency" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a><span class="c1"># In deployment config</span>
 <a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a><span class="nt">serving</span><span class="p">:</span>
-<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="w">  </span><span class="nt">model</span><span class="p">:</span>
-<a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a><span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Cache model in memory</span>
-<a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a><span class="w">    </span><span class="nt">preload</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Load on startup</span>
-<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a><span class="w">  </span><span class="nt">server</span><span class="p">:</span>
-<a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a><span class="w">    </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w">  </span><span class="c1"># Number of workers</span>
-<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w">  </span><span class="c1"># Request timeout</span>
-<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a><span class="w">  </span><span class="nt">batch</span><span class="p">:</span>
-<a href="#__codelineno-40-10" id="__codelineno-40-10" name="__codelineno-40-10"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Batch similar requests</span>
-<a href="#__codelineno-40-11" id="__codelineno-40-11" name="__codelineno-40-11"></a><span class="w">    </span><span class="nt">max_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-40-12" id="__codelineno-40-12" name="__codelineno-40-12"></a><span class="w">    </span><span class="nt">wait_ms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">  </span><span class="c1"># Wait up to 100ms for batch</span>
+<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="w"> </span><span class="nt">model</span><span class="p">:</span>
+<a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a><span class="w"> </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Cache model in memory</span>
+<a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a><span class="w"> </span><span class="nt">preload</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Load on startup</span>
+<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a><span class="w"> </span><span class="nt">server</span><span class="p">:</span>
+<a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a><span class="w"> </span><span class="nt">workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span><span class="w"> </span><span class="c1"># Number of workers</span>
+<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># Request timeout</span>
+<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a><span class="w"> </span><span class="nt">batch</span><span class="p">:</span>
+<a href="#__codelineno-40-10" id="__codelineno-40-10" name="__codelineno-40-10"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Batch similar requests</span>
+<a href="#__codelineno-40-11" id="__codelineno-40-11" name="__codelineno-40-11"></a><span class="w"> </span><span class="nt">max_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-40-12" id="__codelineno-40-12" name="__codelineno-40-12"></a><span class="w"> </span><span class="nt">wait_ms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"> </span><span class="c1"># Wait up to 100ms for batch</span>
 </code></pre></div>
 <h3 id="optimize-cost">Optimize Cost<a class="headerlink" href="#optimize-cost" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-41-1" id="__codelineno-41-1" name="__codelineno-41-1"></a><span class="c1"># Use autoscaling</span>
 <a href="#__codelineno-41-2" id="__codelineno-41-2" name="__codelineno-41-2"></a><span class="nt">cloud</span><span class="p">:</span>
-<a href="#__codelineno-41-3" id="__codelineno-41-3" name="__codelineno-41-3"></a><span class="w">  </span><span class="nt">autoscale</span><span class="p">:</span>
-<a href="#__codelineno-41-4" id="__codelineno-41-4" name="__codelineno-41-4"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-41-5" id="__codelineno-41-5" name="__codelineno-41-5"></a><span class="w">    </span><span class="nt">min_instances</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">  </span><span class="c1"># Scale down to save cost</span>
-<a href="#__codelineno-41-6" id="__codelineno-41-6" name="__codelineno-41-6"></a><span class="w">    </span><span class="nt">max_instances</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">  </span><span class="c1"># Scale up for traffic</span>
-<a href="#__codelineno-41-7" id="__codelineno-41-7" name="__codelineno-41-7"></a><span class="w">    </span><span class="nt">target_cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">70</span><span class="w">    </span><span class="c1"># Target CPU usage</span>
+<a href="#__codelineno-41-3" id="__codelineno-41-3" name="__codelineno-41-3"></a><span class="w"> </span><span class="nt">autoscale</span><span class="p">:</span>
+<a href="#__codelineno-41-4" id="__codelineno-41-4" name="__codelineno-41-4"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-41-5" id="__codelineno-41-5" name="__codelineno-41-5"></a><span class="w"> </span><span class="nt">min_instances</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w"> </span><span class="c1"># Scale down to save cost</span>
+<a href="#__codelineno-41-6" id="__codelineno-41-6" name="__codelineno-41-6"></a><span class="w"> </span><span class="nt">max_instances</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"> </span><span class="c1"># Scale up for traffic</span>
+<a href="#__codelineno-41-7" id="__codelineno-41-7" name="__codelineno-41-7"></a><span class="w"> </span><span class="nt">target_cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">70</span><span class="w"> </span><span class="c1"># Target CPU usage</span>
 </code></pre></div>
 <hr/>
 <h2 id="rollback-procedure">Rollback Procedure<a class="headerlink" href="#rollback-procedure" title="Permanent link">¶</a></h2>
@@ -3342,8 +3342,8 @@
 <p><strong>Step 3: Investigate</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a><span class="c1"># Analyze what went wrong</span>
 <a href="#__codelineno-44-2" id="__codelineno-44-2" name="__codelineno-44-2"></a>python<span class="w"> </span>scripts/deployment/analyze_failure.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a><span class="w">  </span>--new-model<span class="w"> </span>runs/experiment_2/model.pt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-44-4" id="__codelineno-44-4" name="__codelineno-44-4"></a><span class="w">  </span>--old-model<span class="w"> </span>runs/experiment_1/model.pt
+<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a><span class="w"> </span>--new-model<span class="w"> </span>runs/experiment_2/model.pt<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-44-4" id="__codelineno-44-4" name="__codelineno-44-4"></a><span class="w"> </span>--old-model<span class="w"> </span>runs/experiment_1/model.pt
 </code></pre></div></p>
 <hr/>
 <h2 id="key-takeaways">Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permanent link">¶</a></h2>
@@ -3431,8 +3431,8 @@
 <ul>
 <li><a href="../FAQ/">FAQ</a> - Common questions</li>
 <li><a href="README.md">Full Documentation</a> - Complete guide</li>
-<li>🐛 <a href="https://github.com/Aries-Serpent/_codex_/issues">Report Issues</a></li>
-<li>💬 <a href="https://github.com/Aries-Serpent/_codex_/discussions">Ask Questions</a></li>
+<li><a href="https://github.com/Aries-Serpent/_codex_/issues">Report Issues</a></li>
+<li><a href="https://github.com/Aries-Serpent/_codex_/discussions">Ask Questions</a></li>
 </ul>
 <hr/>
 <h2 id="document-metadata">Document Metadata<a class="headerlink" href="#document-metadata" title="Permanent link">¶</a></h2>
@@ -3450,7 +3450,7 @@
 </tr>
 <tr>
 <td><strong>Last Updated</strong></td>
-<td>2026-06-27</td>
+<td>2026-07-16</td>
 </tr>
 <tr>
 <td><strong>Quality Score</strong></td>
@@ -3475,8 +3475,8 @@
 </tbody>
 </table>
 <hr/>
-<p><strong>Maintained by:</strong> <em>codex</em> Documentation Team<br/>
-**Last updated: 2026-06-27</p>
+<p><strong>Maintained by:</strong> <em>codex</em> Documentation Team
+**Last updated: 2026-07-16</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3506,6 +3506,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

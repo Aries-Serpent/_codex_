@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/T1_SOLUTION/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>T1 Coverage Gate Implementation - Solution Summary - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2431,8 +2431,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <!-- archive: this file is a historical record; content is intentionally preserved -->
-<p><strong>Generated</strong>: 2026-06-22T00:00:00Z<br/>
-<strong>Author</strong>: Copilot (based on guidance from @mbaetiong)<br/>
+<p><strong>Generated</strong>: 2026-06-22T00:00:00Z
+<strong>Author</strong>: Copilot (based on guidance from @mbaetiong)
 <strong>Commit</strong>: 2021bae000000000000000000000000000000000000</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document summarizes the concrete fixes applied to implement T1 (Coverage Gate Enforcement) as part of Phase 1 Foundation of the autonomous transformation plan. These changes establish the infrastructure for deterministic, coverage-enforced testing with prompt sanitization.</p>
@@ -2581,7 +2581,7 @@
 <h3 id="6-teststest_sanitizepy">6. tests/test_sanitize.py<a class="headerlink" href="#6-teststest_sanitizepy" title="Permanent link">¶</a></h3>
 <p><strong>Created</strong>: Comprehensive sanitization tests</p>
 <p>5 test cases covering:
-- Script tag escaping (<code>&lt;script&gt;</code> → <code>&amp;lt;script&amp;gt;</code>)
+- Script tag escaping (<code>&lt;script&gt;</code> <code>&amp;lt;script&amp;gt;</code>)
 - None input handling (returns empty string)
 - Quote escaping (both single and double)
 - Ampersand escaping
@@ -2592,11 +2592,11 @@
 - Easy to extend with new test cases
 - Fast execution (no external dependencies)</p>
 <h2 id="validation-results">Validation Results<a class="headerlink" href="#validation-results" title="Permanent link">¶</a></h2>
-<p><strong>All tests passing</strong>: 5/5 sanitize tests pass<br/>
-<strong>Sanitization working</strong>: CLI correctly escapes malicious input<br/>
-<strong>Coverage gate enforced</strong>: pytest.ini and noxfile.py configured<br/>
-<strong>Deterministic fixture</strong>: autouse=True ensures all tests use it<br/>
-️ <strong>Overall coverage</strong>: Currently 1.19% (needs additional tests)</p>
+<p><strong>All tests passing</strong>: 5/5 sanitize tests pass
+ <strong>Sanitization working</strong>: CLI correctly escapes malicious input
+ <strong>Coverage gate enforced</strong>: pytest.ini and noxfile.py configured
+ <strong>Deterministic fixture</strong>: autouse=True ensures all tests use it
+ <strong>Overall coverage</strong>: Currently 1.19% (needs additional tests)</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
 <h3 id="immediate-t1-completion">Immediate (T1 Completion)<a class="headerlink" href="#immediate-t1-completion" title="Permanent link">¶</a></h3>
 <ol>
@@ -2674,6 +2674,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

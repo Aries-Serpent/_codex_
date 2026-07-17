@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/codex/PRE_FLIGHT_CHECKLIST/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Pre-flight Checklist for Codex Operations - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2450,18 +2450,18 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Purpose</strong>: Address CODEX-005 (planning deficit). Reduces rework from 50% → 15%.<br/>
-<strong>Usage</strong>: Copy, fill, commit before complex operations.<br/>
+<p><strong>Purpose</strong>: Address CODEX-005 (planning deficit). Reduces rework from 50% 15%.
+<strong>Usage</strong>: Copy, fill, commit before complex operations.
 <strong>Status</strong>: Mandatory for patch applications; recommended for all operations.</p>
 </blockquote>
 <h2 id="pre-flight-checklist-template">Pre-flight Checklist Template<a class="headerlink" href="#pre-flight-checklist-template" title="Permanent link">¶</a></h2>
 <p><strong>Copy this section and fill out for each operation:</strong></p>
 <p>```text</p>
 <h2 id="operation-describe-your-task-in-one-sentence">Operation: [DESCRIBE YOUR TASK IN ONE SENTENCE]<a class="headerlink" href="#operation-describe-your-task-in-one-sentence" title="Permanent link">¶</a></h2>
-<p><strong>Date (UTC)</strong>: [YYYY-MM-DD HH:MM:SS]<br/>
-<strong>Operator</strong>: [YOUR NAME]<br/>
-<strong>Branch</strong>: [GIT BRANCH NAME]<br/>
-<strong>PR Number</strong>: [PR OR N/A]  </p>
+<p><strong>Date (UTC)</strong>: [YYYY-MM-DD HH:MM:SS] 
+<strong>Operator</strong>: [YOUR NAME] 
+<strong>Branch</strong>: [GIT BRANCH NAME] 
+<strong>PR Number</strong>: [PR OR N/A] </p>
 <h3 id="phase-1-context-collection">Phase 1: Context Collection<a class="headerlink" href="#phase-1-context-collection" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Read ALL source files that will be modified</li>
@@ -2531,9 +2531,9 @@
 <p>```text</p>
 <h2 id="operation-apply-security-fix-patch-from-pr-1234-to-srcauthhandlerpy">Operation: Apply security fix patch from PR #1234 to src/auth/handler.py<a class="headerlink" href="#operation-apply-security-fix-patch-from-pr-1234-to-srcauthhandlerpy" title="Permanent link">¶</a></h2>
 <p><strong>Date 2026-07-13
-</strong>Operator<strong>: mbaetiong<br/>
-</strong>Branch<strong>: 0D_base_<br/>
-</strong>PR Number**: 1234  </p>
+</strong>Operator<strong>: mbaetiong 
+</strong>Branch<strong>: 0D_base_ 
+</strong>PR Number**: 1234 </p>
 <h3 id="phase-1-context-collection_1">Phase 1: Context Collection<a class="headerlink" href="#phase-1-context-collection_1" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Read ALL source files: src/auth/handler.py, src/auth/utils.py, tests/test_auth.py</li>
@@ -2544,7 +2544,7 @@
 </ul>
 <h3 id="phase-2-tool-inventory_1">Phase 2: Tool Inventory<a class="headerlink" href="#phase-2-tool-inventory_1" title="Permanent link">¶</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Operations: Validate patch → Apply patch → Run tests → Commit</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Operations: Validate patch Apply patch Run tests Commit</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Tools: git apply, bash script, pytest</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Tool availability: git apply , bash , pytest </li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> No conflicts detected</li>
@@ -2604,7 +2604,7 @@
 <p><strong>Owner Approval</strong>: Signed: mbaetiong Date: 2026-07-13
 ```text</p>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-07-13<br/>
+<p><strong>Last Updated</strong>: 2026-07-13
 <strong>Status</strong>: Reference template for CODEX-005 mitigation</p>
 </article>
 </div>
@@ -2635,6 +2635,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

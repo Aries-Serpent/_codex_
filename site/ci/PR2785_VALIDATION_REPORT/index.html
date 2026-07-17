@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/PR2785_VALIDATION_REPORT/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>PR #2785 Validation Report - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2566,7 +2566,7 @@
 <a class="md-nav__link" href="#what-needs-attention">
 <span class="md-ellipsis">
       
-        What Needs Attention ️
+        What Needs Attention
       
     </span>
 </a>
@@ -2607,7 +2607,7 @@
 </strong>Branch<strong>: <code>copilot/sub-pr-2782-692a999c-b097-4e37-96f8-231971bec2cd</code>
 </strong>Commit**: <code>4ff8eb1f</code> (code fixes)</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
-<p><strong>STATUS</strong>: ️ PARTIAL VALIDATION (Environment Limitations)</p>
+<p><strong>STATUS</strong>: PARTIAL VALIDATION (Environment Limitations)</p>
 <p>Unable to complete full RAG test validation due to:
 - Network isolation: Cannot download HuggingFace models (sentence-transformers/all-MiniLM-L6-v2)
 - Disk space constraints: Had to clean up 4GB to proceed</p>
@@ -2620,8 +2620,8 @@
 <h2 id="phase-1-rag-module-tests-6-previously-failing-tests">Phase 1: RAG Module Tests (6 Previously Failing Tests)<a class="headerlink" href="#phase-1-rag-module-tests-6-previously-failing-tests" title="Permanent link">¶</a></h2>
 <h3 id="test-execution-results">Test Execution Results<a class="headerlink" href="#test-execution-results" title="Permanent link">¶</a></h3>
 <p><strong>Tests Run</strong>: 4 of 6
-<strong>Passed</strong>: 2 
-<strong>Failed</strong>: 1  (due to network/environment)
+<strong>Passed</strong>: 2
+<strong>Failed</strong>: 1 (due to network/environment)
 <strong>Skipped</strong>: 1</p>
 <h4 id="detailed-results">Detailed Results<a class="headerlink" href="#detailed-results" title="Permanent link">¶</a></h4>
 <ol>
@@ -2630,7 +2630,7 @@
 <p>Code fix successful: Assertion now checks for correct error message</p>
 </li>
 <li>
-<p><strong>test_merge_operation_nonexistent_indices</strong> - PASSED  </p>
+<p><strong>test_merge_operation_nonexistent_indices</strong> - PASSED</p>
 </li>
 <li>
 <p>Code fix successful: Handles nonexistent indices correctly</p>
@@ -2642,19 +2642,19 @@
 <li><strong>Error</strong>: <code>We couldn't connect to 'https://huggingface.co' to load the files</code></li>
 <li><strong>Expected Behavior</strong>: The code itself is correct, but test requires network access</li>
 <li>
-<p><strong>Code Status</strong>:  Assertion logic is correct based on code review</p>
+<p><strong>Code Status</strong>: Assertion logic is correct based on code review</p>
 </li>
 <li>
-<p>⏭️ <strong>test_list_operation_multiple_tenants</strong> - NOT RUN</p>
+<p><strong>test_list_operation_multiple_tenants</strong> - NOT RUN</p>
 </li>
 <li>
 <p>Stopped after first failure (-x flag)</p>
 </li>
 <li>
-<p>⏭️ <strong>test_cache_expiration</strong> (in test_rag_cached_retriever.py) - NOT RUN</p>
+<p><strong>test_cache_expiration</strong> (in test_rag_cached_retriever.py) - NOT RUN</p>
 </li>
 <li>
-<p>⏭️ <strong>test_very_large_top_k</strong> (in test_rag_retriever.py) - NOT RUN</p>
+<p><strong>test_very_large_top_k</strong> (in test_rag_retriever.py) - NOT RUN</p>
 </li>
 </ol>
 <h3 id="analysis-of-fixes">Analysis of Fixes<a class="headerlink" href="#analysis-of-fixes" title="Permanent link">¶</a></h3>
@@ -2662,16 +2662,16 @@
 <p><strong>File</strong>: <code>tests/test_rag_tenant_management.py</code>
 - Lines 352: Changed assertion to expect "Found" instead of checking success
 - Line 353: Added check for len(list_result.details["indices"]) == 2
--  Assertions are now correctly structured</p>
+- Assertions are now correctly structured</p>
 <p><strong>File</strong>: <code>src/codex/rag/retriever.py</code>
 - Cache miss tracking logic fixed
--  Code review confirms fix is correct</p>
+- Code review confirms fix is correct</p>
 <p><strong>File</strong>: <code>src/codex/rag/utils.py</code>
 - Meta tensor handling enhanced
--  Code review confirms fix is correct</p>
+- Code review confirms fix is correct</p>
 <hr/>
 <h2 id="phase-2-full-rag-test-suite">Phase 2: Full RAG Test Suite<a class="headerlink" href="#phase-2-full-rag-test-suite" title="Permanent link">¶</a></h2>
-<p><strong>STATUS</strong>:  NOT EXECUTED - Blocked by network dependency</p>
+<p><strong>STATUS</strong>: NOT EXECUTED - Blocked by network dependency</p>
 <p><strong>Reason</strong>: All RAG tests require downloading sentence-transformers model from HuggingFace, which is not accessible in this environment.</p>
 <p><strong>Recommendation</strong>: Run full RAG suite in CI environment with:
 - Internet access to huggingface.co
@@ -2685,28 +2685,28 @@
 - cargo 1.92.0 (344c4567c 2025-10-21)</p>
 <h3 id="rust-clippy">Rust Clippy<a class="headerlink" href="#rust-clippy" title="Permanent link">¶</a></h3>
 <p><strong>Command</strong>: <code>cargo clippy --all-targets --all-features</code>
-<strong>Result</strong>:  PASSED - No warnings or errors</p>
+<strong>Result</strong>: PASSED - No warnings or errors</p>
 <p><strong>Output</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Finished `dev` profile [unoptimized + debuginfo] target(s) in 24.15s
 </code></pre></div></p>
 <h3 id="rust-library-tests">Rust Library Tests<a class="headerlink" href="#rust-library-tests" title="Permanent link">¶</a></h3>
 <p><strong>Command</strong>: <code>cargo test --lib --release</code>
-<strong>Result</strong>:  PASSED - 30/30 tests passed, 1 ignored</p>
+<strong>Result</strong>: PASSED - 30/30 tests passed, 1 ignored</p>
 <p><strong>Summary</strong>:
--  30 passed
-- ⏭️ 1 ignored (performance test)
--  0 failed</p>
+- 30 passed
+- 1 ignored (performance test)
+- 0 failed</p>
 <p><strong>Test Categories</strong>:
-- Compression: 6 tests 
-- FFI Bridge: 3 tests 
-- Metrics: 8 tests 
-- Swarm Engine: 4 tests 
-- Task Manager: 6 tests 
-- Telemetry: 6 tests 
-- Library: 1 test </p>
+- Compression: 6 tests
+- FFI Bridge: 3 tests
+- Metrics: 8 tests
+- Swarm Engine: 4 tests
+- Task Manager: 6 tests
+- Telemetry: 6 tests
+- Library: 1 test</p>
 <h3 id="rust-benchmark-compilation">Rust Benchmark Compilation<a class="headerlink" href="#rust-benchmark-compilation" title="Permanent link">¶</a></h3>
 <p><strong>Command</strong>: <code>cargo bench --no-run</code>
-<strong>Result</strong>:  PASSED - All benchmarks compiled successfully</p>
+<strong>Result</strong>: PASSED - All benchmarks compiled successfully</p>
 <p><strong>Output</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Finished `bench` profile [optimized] target(s) in 44.39s
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Executable benches src/lib.rs (target/release/deps/codex_engine-9c10962d820d6b6e)
@@ -2716,7 +2716,7 @@
 <h2 id="phase-4-security-audit">Phase 4: Security Audit<a class="headerlink" href="#phase-4-security-audit" title="Permanent link">¶</a></h2>
 <h3 id="rust-security-audit">Rust Security Audit<a class="headerlink" href="#rust-security-audit" title="Permanent link">¶</a></h3>
 <p><strong>Command</strong>: <code>cargo audit</code>
-<strong>Result</strong>: ️ 1 KNOWN VULNERABILITY</p>
+<strong>Result</strong>: 1 KNOWN VULNERABILITY</p>
 <p><strong>Advisory</strong>: RUSTSEC-2025-0020
 - <strong>Crate</strong>: pyo3 0.22.6
 - <strong>Issue</strong>: Risk of buffer overflow in <code>PyString::from_object</code>
@@ -2725,16 +2725,16 @@
 - <strong>URL</strong>: https://rustsec.org/advisories/RUSTSEC-2025-0020</p>
 <p><strong>Dependency Tree</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>pyo3 0.22.6
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── pyo3-async-runtimes 0.22.0
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>│   └── codex-swarm-engine 0.1.0
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>└── codex-swarm-engine 0.1.0
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> pyo3-async-runtimes 0.22.0
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> codex-swarm-engine 0.1.0
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> codex-swarm-engine 0.1.0
 </code></pre></div></p>
 <p><strong>Impact Assessment</strong>:
 - This is a known issue in pyo3 0.22.6
 - <strong>Action Required</strong>: Upgrade pyo3 to 0.24.1+ in Cargo.toml
 - Check if codex-swarm-engine uses <code>PyString::from_object</code> directly</p>
 <h3 id="python-security">Python Security<a class="headerlink" href="#python-security" title="Permanent link">¶</a></h3>
-<p><strong>Status</strong>:  NOT EXECUTED (Requires bandit or similar tools)</p>
+<p><strong>Status</strong>: NOT EXECUTED (Requires bandit or similar tools)</p>
 <hr/>
 <h2 id="code-quality-checks">Code Quality Checks<a class="headerlink" href="#code-quality-checks" title="Permanent link">¶</a></h2>
 <h3 id="files-modified-in-pr-2785">Files Modified in PR #2785<a class="headerlink" href="#files-modified-in-pr-2785" title="Permanent link">¶</a></h3>
@@ -2788,9 +2788,9 @@
 <p><strong>After</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">operation</span> <span class="o">==</span> <span class="n">IndexOperation</span><span class="o">.</span><span class="n">DELETE</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="k">assert</span> <span class="s2">"No indices found"</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">message</span>  <span class="c1"># Added specific check</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="k">assert</span> <span class="s2">"No indices found"</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">message</span> <span class="c1"># Added specific check</span>
 </code></pre></div></p>
-<p><strong>Status</strong>:  CORRECT - Test now validates the exact error message</p>
+<p><strong>Status</strong>: CORRECT - Test now validates the exact error message</p>
 <h2 id="fix-2-test_merge_operation_nonexistent_indices">Fix 2: test_merge_operation_nonexistent_indices<a class="headerlink" href="#fix-2-test_merge_operation_nonexistent_indices" title="Permanent link">¶</a></h2>
 <p><strong>File</strong>: tests/test_rag_tenant_management.py
 <strong>Lines</strong>: 208-220</p>
@@ -2801,9 +2801,9 @@
 <p><strong>After</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">operation</span> <span class="o">==</span> <span class="n">IndexOperation</span><span class="o">.</span><span class="n">MERGE</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="k">assert</span> <span class="s2">"No indices found"</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">message</span>  <span class="c1"># Added specific check</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="k">assert</span> <span class="s2">"No indices found"</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">message</span> <span class="c1"># Added specific check</span>
 </code></pre></div></p>
-<p><strong>Status</strong>:  CORRECT - Test now validates error handling properly</p>
+<p><strong>Status</strong>: CORRECT - Test now validates error handling properly</p>
 <h2 id="fix-3-test_list_operation_success">Fix 3: test_list_operation_success<a class="headerlink" href="#fix-3-test_list_operation_success" title="Permanent link">¶</a></h2>
 <p><strong>File</strong>: tests/test_rag_tenant_management.py
 <strong>Lines</strong>: 335-358</p>
@@ -2813,27 +2813,27 @@
 </code></pre></div></p>
 <p><strong>After</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">assert</span> <span class="n">list_result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">assert</span> <span class="s2">"Found"</span> <span class="ow">in</span> <span class="n">list_result</span><span class="o">.</span><span class="n">message</span>  <span class="c1"># Added message validation</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_result</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s2">"indices"</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># Added count check</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="k">assert</span> <span class="s2">"Found"</span> <span class="ow">in</span> <span class="n">list_result</span><span class="o">.</span><span class="n">message</span> <span class="c1"># Added message validation</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_result</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s2">"indices"</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span> <span class="c1"># Added count check</span>
 </code></pre></div></p>
-<p><strong>Status</strong>:  CORRECT - More thorough validation</p>
+<p><strong>Status</strong>: CORRECT - More thorough validation</p>
 <h2 id="fix-4-cache-miss-tracking-in-retrieverpy">Fix 4: Cache miss tracking in retriever.py<a class="headerlink" href="#fix-4-cache-miss-tracking-in-retrieverpy" title="Permanent link">¶</a></h2>
 <p><strong>File</strong>: src/codex/rag/retriever.py
 <strong>Lines</strong>: ~370-395 (approximate)</p>
 <p><strong>Problem</strong>: Cache miss wasn't being tracked correctly in some code paths</p>
 <p><strong>Fix</strong>: Simplified branching logic to ensure cache metrics are always recorded</p>
-<p><strong>Status</strong>:  CORRECT - Logic flow now guarantees metric recording</p>
+<p><strong>Status</strong>: CORRECT - Logic flow now guarantees metric recording</p>
 <h3 id="fix-5-meta-tensor-handling-in-utilspy">Fix 5: Meta tensor handling in utils.py<a class="headerlink" href="#fix-5-meta-tensor-handling-in-utilspy" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: src/codex/rag/utils.py
 <strong>Lines</strong>: Multiple additions for defensive checks</p>
 <p><strong>Problem</strong>: Missing checks for tensor availability could cause errors</p>
 <p><strong>Fix</strong>: Added proper guards and type checks before accessing tensors</p>
-<p><strong>Status</strong>:  CORRECT - More robust error handling</p>
+<p><strong>Status</strong>: CORRECT - More robust error handling</p>
 <hr/>
 <h2 id="final-recommendations">Final Recommendations<a class="headerlink" href="#final-recommendations" title="Permanent link">¶</a></h2>
 <h3 id="immediate-actions-priority-1">Immediate Actions (Priority 1)<a class="headerlink" href="#immediate-actions-priority-1" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Upgrade pyo3 dependency</strong> ️</li>
+<li><strong>Upgrade pyo3 dependency</strong></li>
 <li>Current: 0.22.6</li>
 <li>Target: &gt;= 0.24.1</li>
 <li>Reason: Buffer overflow vulnerability (RUSTSEC-2025-0020)</li>
@@ -2841,7 +2841,7 @@
 <p>File: Cargo.toml</p>
 </li>
 <li>
-<p><strong>Run full RAG test suite in CI</strong> </p>
+<p><strong>Run full RAG test suite in CI</strong></p>
 </li>
 <li>Environment needs: Internet access to huggingface.co</li>
 <li>Or: Pre-cache models for offline testing</li>
@@ -2898,25 +2898,25 @@
 <li>Full RAG test suite (network/HuggingFace dependency)</li>
 <li>Python security scan (not run)</li>
 </ol>
-<h3 id="what-needs-attention">What Needs Attention ️<a class="headerlink" href="#what-needs-attention" title="Permanent link">¶</a></h3>
+<h3 id="what-needs-attention">What Needs Attention<a class="headerlink" href="#what-needs-attention" title="Permanent link">¶</a></h3>
 <ol>
-<li>️ pyo3 vulnerability (RUSTSEC-2025-0020) - Upgrade to 0.24.1+</li>
-<li>️ Run remaining 4 RAG tests in proper environment</li>
+<li>pyo3 vulnerability (RUSTSEC-2025-0020) - Upgrade to 0.24.1+</li>
+<li>Run remaining 4 RAG tests in proper environment</li>
 </ol>
 <hr/>
 <h2 id="confidence-assessment">Confidence Assessment<a class="headerlink" href="#confidence-assessment" title="Permanent link">¶</a></h2>
-<p><strong>Code Quality</strong>:  HIGH
+<p><strong>Code Quality</strong>: HIGH
 - All Rust tests pass
 - Code review confirms fixes are correct
 - No Rust compilation warnings</p>
-<p><strong>Test Fixes</strong>:  HIGH<br/>
+<p><strong>Test Fixes</strong>: HIGH
 - 2/4 tests passed that could execute
 - Assertions are now properly structured
 - Logic matches expected behavior</p>
-<p><strong>Security</strong>: ️ MEDIUM
+<p><strong>Security</strong>: MEDIUM
 - 1 known Rust vulnerability needs upgrade
 - Python security not yet scanned</p>
-<p><strong>Overall PR Status</strong>:  READY TO MERGE (with caveat)
+<p><strong>Overall PR Status</strong>: READY TO MERGE (with caveat)
 - Code changes are correct
 - Rust ecosystem is healthy
 - Only blocker: Need CI run for full RAG suite validation
@@ -2926,7 +2926,7 @@
 <p>All detailed logs saved to:
 - <code>/tmp/phase1_part1.log</code> - RAG tests execution
 - <code>/tmp/rust_clippy.log</code> - Clippy output
-- <code>/tmp/rust_test.log</code> - Rust tests output<br/>
+- <code>/tmp/rust_test.log</code> - Rust tests output
 - <code>/tmp/rust_bench.log</code> - Benchmark compilation
 - <code>/tmp/rust_audit.log</code> - Security audit</p>
 <hr/>
@@ -2963,6 +2963,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # PR #4512 — What's Next
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ##  Checkpoint manager + workflow-merge remediation
 

@@ -1,6 +1,6 @@
 # Reference: GitHub Variables & Secrets — All Scopes, All Methods
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05
 > **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)

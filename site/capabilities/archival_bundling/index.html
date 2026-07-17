@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/archival_bundling/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Archival &amp; Bundling Capability Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2598,51 +2598,49 @@
 <hr/>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <h3 id="bundling-pipeline">Bundling Pipeline<a class="headerlink" href="#bundling-pipeline" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│   Source    │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│  Artifacts  │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└──────┬──────┘
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>       │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>       ▼
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>┌─────────────┐
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│  Metadata   │◄── Environment Info
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│ Collection  │◄── Dependency List
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└──────┬──────┘◄── Git Info
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>       │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>       ▼
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>┌─────────────┐
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│  Packaging  │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   Engine    │──► Compression
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└──────┬──────┘──► Deduplication
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>       │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>       ▼
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>┌─────────────┐
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│   Archive   │
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│   Storage   │──► Local/Remote
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Source 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> Artifacts 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Metadata Environment Info
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Collection Dependency List
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Git Info
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Packaging 
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> Engine Compression
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> Deduplication
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> Archive 
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> Storage Local/Remote
 </code></pre></div>
 <h3 id="bundle-structure">Bundle Structure<a class="headerlink" href="#bundle-structure" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>experiment_bundle_v0.2.1.tar.gz
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── manifest.json          # Bundle metadata
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>├── models/
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>│   ├── model.pkl
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>│   └── model_config.json
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>├── data/
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>│   ├── train_dataset.parquet
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>│   └── validation_dataset.parquet
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>├── configs/
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>│   ├── hyperparameters.yaml
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>│   └── training_config.yaml
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>├── environment/
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>│   ├── requirements.txt
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>│   ├── environment.yaml
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>│   └── system_info.json
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>├── code/
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>│   ├── training_script.py
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>│   └── preprocessing.py
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>└── logs/
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    ├── training.log
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    └── metrics.json
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> manifest.json # Bundle metadata
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> models/
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> model.pkl
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> model_config.json
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> data/
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> train_dataset.parquet
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> validation_dataset.parquet
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> configs/
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> hyperparameters.yaml
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> training_config.yaml
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> environment/
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> requirements.txt
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> environment.yaml
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> system_info.json
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> code/
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> training_script.py
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> preprocessing.py
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> logs/
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> training.log
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> metrics.json
 </code></pre></div>
 <hr/>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">¶</a></h2>
@@ -2653,17 +2651,17 @@
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="c1"># Bundle current experiment</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="n">bundle</span> <span class="o">=</span> <span class="n">bundle_experiment</span><span class="p">(</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"exp_2025_01_15"</span><span class="p">,</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">include_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"exp_2025_01_15"</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="n">include_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="p">)</span>
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="c1"># Returns: BundleMetadata</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1"># bundle.path: "/artifacts/bundles/exp_2025_01_15_v0.2.1.tar.gz"</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># bundle.size: 1024567890  # bytes</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># bundle.size: 1024567890 # bytes</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="c1"># bundle.checksum: "sha256:abc123..."</span>
 </code></pre></div>
 <h2 id="create_bundle"><code>create_bundle()</code><a class="headerlink" href="#create_bundle" title="Permanent link">¶</a></h2>
@@ -2672,17 +2670,17 @@
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="c1"># Custom bundle</span>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="n">bundle</span> <span class="o">=</span> <span class="n">create_bundle</span><span class="p">(</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"model_deployment_v2"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model.pkl"</span><span class="p">},</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"config"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"config.yaml"</span><span class="p">},</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"preprocessor"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"preprocessor.pkl"</span><span class="p">}</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="p">],</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>        <span class="s2">"purpose"</span><span class="p">:</span> <span class="s2">"production_deployment"</span><span class="p">,</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>        <span class="s2">"approved_by"</span><span class="p">:</span> <span class="s2">"ml_team"</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="p">}</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"model_deployment_v2"</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model.pkl"</span><span class="p">},</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"config"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"config.yaml"</span><span class="p">},</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"preprocessor"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"preprocessor.pkl"</span><span class="p">}</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> <span class="p">],</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> <span class="s2">"purpose"</span><span class="p">:</span> <span class="s2">"production_deployment"</span><span class="p">,</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"2.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="s2">"approved_by"</span><span class="p">:</span> <span class="s2">"ml_team"</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="p">}</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="extract_bundle"><code>extract_bundle()</code><a class="headerlink" href="#extract_bundle" title="Permanent link">¶</a></h2>
@@ -2691,9 +2689,9 @@
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="c1"># Extract bundle</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">artifacts</span> <span class="o">=</span> <span class="n">extract_bundle</span><span class="p">(</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"exp_2025_01_15_v0.2.1.tar.gz"</span><span class="p">,</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/restored/exp_2025_01_15"</span><span class="p">,</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"exp_2025_01_15_v0.2.1.tar.gz"</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/restored/exp_2025_01_15"</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">True</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1"># Access extracted artifacts</span>
@@ -2706,49 +2704,49 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="c1"># List recent bundles</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="n">bundles</span> <span class="o">=</span> <span class="n">list_bundles</span><span class="p">(</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">experiment_pattern</span><span class="o">=</span><span class="s2">"exp_2025_*"</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">min_date</span><span class="o">=</span><span class="s2">"2025-01-01"</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">max_date</span><span class="o">=</span><span class="s2">"2025-01-31"</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">sort_by</span><span class="o">=</span><span class="s2">"created"</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">experiment_pattern</span><span class="o">=</span><span class="s2">"exp_2025_*"</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="n">min_date</span><span class="o">=</span><span class="s2">"2025-01-01"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">max_date</span><span class="o">=</span><span class="s2">"2025-01-31"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="n">sort_by</span><span class="o">=</span><span class="s2">"created"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="p">)</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
 <a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="n">bundles</span><span class="p">:</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">size_mb</span><span class="si">}</span><span class="s2">MB, </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">created</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">size_mb</span><span class="si">}</span><span class="s2">MB, </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">created</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <h3 id="bundle-settings">Bundle Settings<a class="headerlink" href="#bundle-settings" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># config/archival.yaml</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="nt">archival</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="c1"># Storage location</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">storage</span><span class="p">:</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="nt">local</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/data/artifacts/bundles</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3://ml-artifacts/bundles</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="c1"># Storage location</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">storage</span><span class="p">:</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">local</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/data/artifacts/bundles</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3://ml-artifacts/bundles</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="c1"># Compression settings</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">  </span><span class="nt">compression</span><span class="p">:</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">    </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gzip</span><span class="w">  </span><span class="c1"># gzip, bzip2, xz, lz4</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">    </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w">         </span><span class="c1"># 1-9 for gzip</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span><span class="c1"># Compression settings</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="nt">compression</span><span class="p">:</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w"> </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gzip</span><span class="w"> </span><span class="c1"># gzip, bzip2, xz, lz4</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w"> </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span><span class="w"> </span><span class="c1"># 1-9 for gzip</span>
 <a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">  </span><span class="c1"># Deduplication</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">  </span><span class="nt">deduplication</span><span class="p">:</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">    </span><span class="nt">block_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">    </span><span class="nt">hash_algorithm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sha256</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span><span class="c1"># Deduplication</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w"> </span><span class="nt">deduplication</span><span class="p">:</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w"> </span><span class="nt">block_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w"> </span><span class="nt">hash_algorithm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sha256</span>
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w">  </span><span class="c1"># Metadata</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w">  </span><span class="nt">metadata</span><span class="p">:</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w">    </span><span class="nt">include_git_info</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w">    </span><span class="nt">include_environment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="w">    </span><span class="nt">include_dependencies</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w">    </span><span class="nt">include_system_info</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w"> </span><span class="c1"># Metadata</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w"> </span><span class="nt">metadata</span><span class="p">:</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w"> </span><span class="nt">include_git_info</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="w"> </span><span class="nt">include_environment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a><span class="w"> </span><span class="nt">include_dependencies</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w"> </span><span class="nt">include_system_info</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="w">  </span><span class="c1"># Retention policy</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w">  </span><span class="nt">retention</span><span class="p">:</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w">    </span><span class="nt">keep_latest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w">    </span><span class="nt">keep_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a><span class="w">    </span><span class="nt">cleanup_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">86400</span><span class="w">  </span><span class="c1"># seconds</span>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a><span class="w"> </span><span class="c1"># Retention policy</span>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a><span class="w"> </span><span class="nt">retention</span><span class="p">:</span>
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w"> </span><span class="nt">keep_latest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w"> </span><span class="nt">keep_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a><span class="w"> </span><span class="nt">cleanup_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">86400</span><span class="w"> </span><span class="c1"># seconds</span>
 </code></pre></div>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Storage paths</span>
@@ -2774,18 +2772,18 @@
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="c1"># Bundle everything</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="n">bundle</span> <span class="o">=</span> <span class="n">bundle_experiment</span><span class="p">(</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="n">experiment_id</span><span class="o">=</span><span class="n">trainer</span><span class="o">.</span><span class="n">experiment_id</span><span class="p">,</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># Include datasets</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="n">include_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># Include training scripts</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># Include dependencies</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="n">include_logs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># Include training logs</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>        <span class="s2">"model_type"</span><span class="p">:</span> <span class="s2">"transformer"</span><span class="p">,</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>        <span class="s2">"dataset"</span><span class="p">:</span> <span class="s2">"wikitext-103"</span><span class="p">,</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>        <span class="s2">"final_loss"</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">final_loss</span><span class="p">,</span>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a>        <span class="s2">"training_time"</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">elapsed_time</span>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a>    <span class="p">}</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">experiment_id</span><span class="o">=</span><span class="n">trainer</span><span class="o">.</span><span class="n">experiment_id</span><span class="p">,</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="n">include_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Include datasets</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="n">include_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Include training scripts</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Include dependencies</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="n">include_logs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Include training logs</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> <span class="s2">"model_type"</span><span class="p">:</span> <span class="s2">"transformer"</span><span class="p">,</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> <span class="s2">"dataset"</span><span class="p">:</span> <span class="s2">"wikitext-103"</span><span class="p">,</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> <span class="s2">"final_loss"</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">final_loss</span><span class="p">,</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a> <span class="s2">"training_time"</span><span class="p">:</span> <span class="n">results</span><span class="o">.</span><span class="n">elapsed_time</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a> <span class="p">}</span>
 <a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="p">)</span>
 <a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a>
 <a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bundle created: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -2797,22 +2795,22 @@
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="c1"># Bundle model v1</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="n">bundle_v1</span> <span class="o">=</span> <span class="n">create_bundle</span><span class="p">(</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"model_comparison"</span><span class="p">,</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model_v1.pkl"</span><span class="p">},</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"metrics"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"metrics_v1.json"</span><span class="p">}</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    <span class="p">]</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"model_comparison"</span><span class="p">,</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model_v1.pkl"</span><span class="p">},</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"metrics"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"metrics_v1.json"</span><span class="p">}</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="p">]</span>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="p">)</span>
 <a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
 <a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a><span class="c1"># Bundle model v2</span>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a><span class="n">bundle_v2</span> <span class="o">=</span> <span class="n">create_bundle</span><span class="p">(</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"model_comparison"</span><span class="p">,</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>    <span class="n">version</span><span class="o">=</span><span class="s2">"2.0.0"</span><span class="p">,</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>    <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model_v2.pkl"</span><span class="p">},</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"metrics"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"metrics_v2.json"</span><span class="p">}</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>    <span class="p">]</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"model_comparison"</span><span class="p">,</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> <span class="n">version</span><span class="o">=</span><span class="s2">"2.0.0"</span><span class="p">,</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> <span class="n">artifacts</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"model_v2.pkl"</span><span class="p">},</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"metrics"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"metrics_v2.json"</span><span class="p">}</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> <span class="p">]</span>
 <a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a><span class="p">)</span>
 <a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>
 <a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a><span class="c1"># Compare bundles</span>
@@ -2826,15 +2824,15 @@
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1"># Validate bundle integrity</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="n">validation</span> <span class="o">=</span> <span class="n">validate_bundle</span><span class="p">(</span><span class="s2">"exp_2025_01_15_v0.2.1.tar.gz"</span><span class="p">)</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">validation</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bundle corrupted: </span><span class="si">{</span><span class="n">validation</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bundle corrupted: </span><span class="si">{</span><span class="n">validation</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="c1"># Extract bundle</span>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="n">artifacts</span> <span class="o">=</span> <span class="n">extract_bundle</span><span class="p">(</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"exp_2025_01_15_v0.2.1.tar.gz"</span><span class="p">,</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/tmp/restored"</span><span class="p">,</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    <span class="n">restore_environment</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Recreate conda env</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"exp_2025_01_15_v0.2.1.tar.gz"</span><span class="p">,</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/tmp/restored"</span><span class="p">,</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> <span class="n">restore_environment</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Recreate conda env</span>
 <a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a><span class="p">)</span>
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
 <a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a><span class="c1"># Use restored artifacts</span>
@@ -2857,27 +2855,27 @@
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="c1"># Auto-archive completed experiments</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="k">def</span> <span class="nf">archive_completed_experiments</span><span class="p">():</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    <span class="n">experiments</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_experiments</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s2">"completed"</span><span class="p">)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a> <span class="n">experiments</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_experiments</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s2">"completed"</span><span class="p">)</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">:</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>        <span class="c1"># Bundle if not already bundled</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">manager</span><span class="o">.</span><span class="n">has_bundle</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>            <span class="n">bundle</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">bundle_experiment</span><span class="p">(</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>                <span class="n">experiment_id</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>                <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>                <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>            <span class="p">)</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bundled </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">size_mb</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">MB"</span><span class="p">)</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">:</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> <span class="c1"># Bundle if not already bundled</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">manager</span><span class="o">.</span><span class="n">has_bundle</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> <span class="n">bundle</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">bundle_experiment</span><span class="p">(</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> <span class="n">experiment_id</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> <span class="n">compression</span><span class="o">=</span><span class="s2">"gzip"</span><span class="p">,</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="p">)</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bundled </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">size_mb</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">MB"</span><span class="p">)</span>
 <a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>
 <a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="c1"># Cleanup old bundles</span>
 <a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="k">def</span> <span class="nf">cleanup_old_bundles</span><span class="p">():</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a>    <span class="n">cutoff_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a> <span class="n">cutoff_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
 <a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a>
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a>    <span class="n">old_bundles</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_bundles</span><span class="p">(</span><span class="n">max_date</span><span class="o">=</span><span class="n">cutoff_date</span><span class="p">)</span>
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a>    <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="n">old_bundles</span><span class="p">:</span>
-<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a>        <span class="k">if</span> <span class="n">bundle</span><span class="o">.</span><span class="n">retention_policy</span> <span class="o">==</span> <span class="s2">"delete"</span><span class="p">:</span>
-<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a>            <span class="n">manager</span><span class="o">.</span><span class="n">delete_bundle</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Deleted old bundle: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a> <span class="n">old_bundles</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">list_bundles</span><span class="p">(</span><span class="n">max_date</span><span class="o">=</span><span class="n">cutoff_date</span><span class="p">)</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a> <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="n">old_bundles</span><span class="p">:</span>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a> <span class="k">if</span> <span class="n">bundle</span><span class="o">.</span><span class="n">retention_policy</span> <span class="o">==</span> <span class="s2">"delete"</span><span class="p">:</span>
+<a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a> <span class="n">manager</span><span class="o">.</span><span class="n">delete_bundle</span><span class="p">(</span><span class="n">bundle</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Deleted old bundle: </span><span class="si">{</span><span class="n">bundle</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a>
 <a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="c1"># Run archival pipeline</span>
 <a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="n">archive_completed_experiments</span><span class="p">()</span>
@@ -2980,11 +2978,11 @@
 - Use remote storage</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># High compression for large bundles</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">bundle</span> <span class="o">=</span> <span class="n">bundle_experiment</span><span class="p">(</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"large_exp"</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">compression</span><span class="o">=</span><span class="s2">"xz"</span><span class="p">,</span>          <span class="c1"># Better compression</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">compression_level</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>        <span class="c1"># Maximum</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                <span class="c1"># Deduplicate</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">exclude_patterns</span><span class="o">=</span><span class="p">[</span><span class="s2">"*.tmp"</span><span class="p">,</span> <span class="s2">"cache/*"</span><span class="p">]</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"large_exp"</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="n">compression</span><span class="o">=</span><span class="s2">"xz"</span><span class="p">,</span> <span class="c1"># Better compression</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="n">compression_level</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="c1"># Maximum</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">dedup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Deduplicate</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">exclude_patterns</span><span class="o">=</span><span class="p">[</span><span class="s2">"*.tmp"</span><span class="p">,</span> <span class="s2">"cache/*"</span><span class="p">]</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="extraction-failures">Extraction Failures<a class="headerlink" href="#extraction-failures" title="Permanent link">¶</a></h2>
@@ -2996,10 +2994,10 @@
 - Use recovery mode</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Extract with recovery</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">artifacts</span> <span class="o">=</span> <span class="n">extract_bundle</span><span class="p">(</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"corrupted_bundle.tar.gz"</span><span class="p">,</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/tmp/recovery"</span><span class="p">,</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Skip if corrupt</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="n">continue_on_error</span><span class="o">=</span><span class="kc">True</span>   <span class="c1"># Extract what's possible</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> <span class="n">bundle_path</span><span class="o">=</span><span class="s2">"corrupted_bundle.tar.gz"</span><span class="p">,</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/tmp/recovery"</span><span class="p">,</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="n">verify_checksums</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># Skip if corrupt</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> <span class="n">continue_on_error</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Extract what's possible</span>
 <a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="missing-dependencies">Missing Dependencies<a class="headerlink" href="#missing-dependencies" title="Permanent link">¶</a></h2>
@@ -3010,10 +3008,10 @@
 - Document external dependencies</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Bundle with full environment</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="n">bundle</span> <span class="o">=</span> <span class="n">bundle_experiment</span><span class="p">(</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>    <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"exp_001"</span><span class="p">,</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>    <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">pack_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Include conda env</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    <span class="n">freeze_pip</span><span class="o">=</span><span class="kc">True</span>         <span class="c1"># Freeze pip deps</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> <span class="n">experiment_id</span><span class="o">=</span><span class="s2">"exp_001"</span><span class="p">,</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> <span class="n">include_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="n">pack_environment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># Include conda env</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> <span class="n">freeze_pip</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Freeze pip deps</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -3064,6 +3062,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 # Agentic System Final KPI Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated**: 2026-06-22 | Aries-Serpent/_codex_
 >
 > **Scope**: SoftGROUNDED conversion, Phases 1–6 (complete)
-> **Registry**: v0.2.1 · 152 agents · GROUNDED: 8 · PARTIAL: 142 · SOFT: 2
+> **Registry**: v0.2.0 · 152 agents · GROUNDED: 8 · PARTIAL: 142 · SOFT: 2
 > **ED Gate Score**: 5/5 D_CAPABLE threshold met
 
 ---
@@ -16,7 +16,7 @@ The SoftGROUNDED conversion is **complete**. All 6 phases have been implemented,
 the ED transition gate passes 5/5 conditions, and the agentic repository system
 now operates with hard enforcement on critical agent behaviors.
 
-| Metric | Before (v0.2.1) | After (v0.2.1) | Target | Status |
+| Metric | Before (v0.2.0) | After (v0.2.0) | Target | Status |
 |--------|:---------------:|:--------------:|:------:|:------:|
 | Total agents registered | 128 | 152 | 151+ | |
 | GROUNDED (Tier-1) agents | 0 | 8 | ≥8 | |
@@ -38,7 +38,7 @@ now operates with hard enforcement on critical agent behaviors.
 
 | KPI | Value |
 |-----|-------|
-| AGENT_REGISTRY.yaml version | v0.2.1 |
+| AGENT_REGISTRY.yaml version | v0.2.0 |
 | Total agents | 152 (128 original + 23 FS-only + orchestrator) |
 | New schema fields added | 4 (`enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from`) |
 | Schema validation passing | All 152 agents |
@@ -99,7 +99,7 @@ now operates with hard enforcement on critical agent behaviors.
 
 | ID | Condition | Status | Notes |
 |----|-----------|:------:|-------|
-| C1 | `AGENT_REGISTRY.yaml` present | | v0.2.1, 152 agents |
+| C1 | `AGENT_REGISTRY.yaml` present | | v0.2.0, 152 agents |
 | C2 | `CODEX_MANIFEST.json` valid + current | | Refreshed in CI on each registry PR |
 | C3 | SOFT tier count ≤ 2 | | 2 SOFT agents (codex_reviewer, zendesk-architect-agent) |
 | C4 | `agent-handoff-gate.yml` deployed | | Promoted to Tier-1 |

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/CHATGPT_ASSISTANT_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex ML - ChatGPT Assistant Setup Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2617,13 +2617,13 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Version:</strong> 1.0.0<br/>
+<p><strong>Version:</strong> 1.0.0
 <strong>Date:2026-07-13
 </strong>Purpose:** Enable ChatGPT Codex Assistant to effectively leverage the repository</p>
 <hr/>
 <h2 id="quick-reference-for-chatgpt">Quick Reference for ChatGPT<a class="headerlink" href="#quick-reference-for-chatgpt" title="Permanent link">¶</a></h2>
 <h3 id="system-status">System Status<a class="headerlink" href="#system-status" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Status:  PRODUCTION READY
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Status: PRODUCTION READY
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>Azure MLOps Level: 4 (Perfect 71/71 - 100%)
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>Components: 38 major systems
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>Test Coverage: 90% (125+ tests, 100% pass rate)
@@ -2634,11 +2634,11 @@
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>./setup.sh
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Maintenance (routine)</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>./maintenance.sh<span class="w"> </span>all<span class="w">           </span><span class="c1"># Run all checks</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>./maintenance.sh<span class="w"> </span>health<span class="w">        </span><span class="c1"># System health only</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>./maintenance.sh<span class="w"> </span>features<span class="w">      </span><span class="c1"># Feature store check</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>./maintenance.sh<span class="w"> </span>k8s<span class="w">           </span><span class="c1"># Kubernetes status</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>./maintenance.sh<span class="w"> </span>security<span class="w">      </span><span class="c1"># Security scans</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>./maintenance.sh<span class="w"> </span>all<span class="w"> </span><span class="c1"># Run all checks</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>./maintenance.sh<span class="w"> </span>health<span class="w"> </span><span class="c1"># System health only</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>./maintenance.sh<span class="w"> </span>features<span class="w"> </span><span class="c1"># Feature store check</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>./maintenance.sh<span class="w"> </span>k8s<span class="w"> </span><span class="c1"># Kubernetes status</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>./maintenance.sh<span class="w"> </span>security<span class="w"> </span><span class="c1"># Security scans</span>
 </code></pre></div>
 <hr/>
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">¶</a></h2>
@@ -2679,33 +2679,33 @@
 <h2 id="file-structure-for-chatgpt">File Structure for ChatGPT<a class="headerlink" href="#file-structure-for-chatgpt" title="Permanent link">¶</a></h2>
 <h3 id="critical-files">Critical Files<a class="headerlink" href="#critical-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>_codex_/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├── setup.sh                    ← Run first
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├── maintenance.sh              ← Run routinely
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>├── .codex/archive/deprecated/AGENTS.md                   ← Full agent guide
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>├── README.md                   ← Project overview
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>│
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>├── .github/
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>│   ├── COPILOT_INTEGRATION_GUIDE.md  ← How this was built
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>│   └── prompts/followup_execution_plan/
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>│       ├── AZURE_MLOPS_CAPABILITY_ASSESSMENT.md  ← 71/71 proof
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>│       ├── COMPARISON_RATING.md                   ← Before/after
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>│       └── IMPLEMENTATION_ROADMAP.md              ← 30 prompts
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>│
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>├── docs/
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>│   └── IMPLEMENTATION_COMPLETE.md  ← Comprehensive summary
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>│
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>├── manifests/k8s/              ← Kubernetes (12 files)
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>│   ├── base/
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>│   └── overlays/
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>│
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>├── src/codex_ml/
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>│   ├── features/               ← Feature store (3 files)
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>│   ├── events/                 ← Cloud events (5 files)
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>│   ├── monitoring/             ← Health &amp; metrics
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>│   └── training/               ← Training pipeline
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>│
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>└── scripts/
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>    └── k8s_deploy.sh           ← K8s deployment
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> setup.sh Run first
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> maintenance.sh Run routinely
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> .codex/archive/deprecated/AGENTS.md Full agent guide
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> README.md Project overview
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> .github/
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> COPILOT_INTEGRATION_GUIDE.md How this was built
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> prompts/followup_execution_plan/
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> AZURE_MLOPS_CAPABILITY_ASSESSMENT.md 71/71 proof
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> COMPARISON_RATING.md Before/after
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> IMPLEMENTATION_ROADMAP.md 30 prompts
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> docs/
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> IMPLEMENTATION_COMPLETE.md Comprehensive summary
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> manifests/k8s/ Kubernetes (12 files)
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> base/
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> overlays/
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> src/codex_ml/
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a> features/ Feature store (3 files)
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a> events/ Cloud events (5 files)
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a> monitoring/ Health &amp; metrics
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a> training/ Training pipeline
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> scripts/
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> k8s_deploy.sh K8s deployment
 </code></pre></div>
 <h3 id="documentation-map">Documentation Map<a class="headerlink" href="#documentation-map" title="Permanent link">¶</a></h3>
 <table>
@@ -2814,14 +2814,14 @@
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="kn">import</span> <span class="nn">importlib.util</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="n">components</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="s1">'features'</span><span class="p">:</span> <span class="s1">'src.codex_ml.features'</span><span class="p">,</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="s1">'events'</span><span class="p">:</span> <span class="s1">'src.codex_ml.events'</span><span class="p">,</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="s1">'k8s'</span><span class="p">:</span> <span class="s1">'manifests/k8s/base'</span><span class="p">,</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="s1">'features'</span><span class="p">:</span> <span class="s1">'src.codex_ml.features'</span><span class="p">,</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="s1">'events'</span><span class="p">:</span> <span class="s1">'src.codex_ml.events'</span><span class="p">,</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="s1">'k8s'</span><span class="p">:</span> <span class="s1">'manifests/k8s/base'</span><span class="p">,</span>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="p">}</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="n">exists</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">''</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="n">exists</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="s1">''</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="pattern-2-verify-capability-coverage">Pattern 2: Verify Capability Coverage<a class="headerlink" href="#pattern-2-verify-capability-coverage" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Count implemented capabilities</span>
@@ -2831,13 +2831,13 @@
 </code></pre></div>
 <h2 id="pattern-3-list-all-files">Pattern 3: List All Files<a class="headerlink" href="#pattern-3-list-all-files" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># K8s manifests</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>find<span class="w"> </span>manifests/k8s<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.yaml"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w">  </span><span class="c1"># Expected: 12</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>find<span class="w"> </span>manifests/k8s<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.yaml"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="c1"># Expected: 12</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Feature store files</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>find<span class="w"> </span>src/codex_ml/features<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.py"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w">  </span><span class="c1"># Expected: 3</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>find<span class="w"> </span>src/codex_ml/features<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.py"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="c1"># Expected: 3</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="c1"># Event files</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>find<span class="w"> </span>src/codex_ml/events<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.py"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w">  </span><span class="c1"># Expected: 5</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>find<span class="w"> </span>src/codex_ml/events<span class="w"> </span>-name<span class="w"> </span><span class="s2">"*.py"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="c1"># Expected: 5</span>
 </code></pre></div>
 <hr/>
 <h2 id="troubleshooting-for-chatgpt">Troubleshooting for ChatGPT<a class="headerlink" href="#troubleshooting-for-chatgpt" title="Permanent link">¶</a></h2>
@@ -2867,7 +2867,7 @@
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c1"># Validate each manifest individually</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="k">for</span><span class="w"> </span>f<span class="w"> </span><span class="k">in</span><span class="w"> </span>manifests/k8s/base/*.yaml<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">    </span>kubectl<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w"> </span>kubectl<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$f</span><span class="s2">"</span>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="k">done</span>
 </code></pre></div></p>
 <hr/>
@@ -3009,8 +3009,8 @@
 </table>
 <hr/>
 <p><strong>Last Updated:2026-07-13
-</strong>Status:<strong> Production Ready <br/>
-</strong>Capabilities:** 71/71 (100%) </p>
+</strong>Status:<strong> Production Ready
+</strong>Capabilities:** 71/71 (100%)</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3040,6 +3040,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

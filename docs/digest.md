@@ -1,6 +1,6 @@
 # Codebase Context Digest
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-01-07T15:24:53.546749
 **Token Budget:** 100,000

@@ -1,6 +1,6 @@
 # Deployment Readiness Checklist — `Aries-Serpent/_codex_`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 <!-- session: S92 | date: 2026-07-13
@@ -75,9 +75,9 @@ These items MUST be closed before changing `pyproject.toml` version away from `0
 ### B-04 — `pyproject.toml` version is `0.0.0-template` *(P0)*
 - **Symptom**: No version tag; `pip install .` produces `0.0.0.dev0`.
 - **Impact**: Cannot publish to PyPI, cannot tag a Docker image, cannot pin versions in downstream projects.
-- **Fix**: Set semantic version (e.g. `0.9.0-rc1`) once B-01 and B-02 are resolved. Create git tag `v0.2.1-rc1`.
+- **Fix**: Set semantic version (e.g. `0.9.0-rc1`) once B-01 and B-02 are resolved. Create git tag `v0.2.0-rc1`.
 - **Owner**: Release — target S95
-- **S94 Status**: RESOLVED — `pyproject.toml` version set to `0.9.0-rc1`. Git tag `v0.2.1-rc1` to be created at merge time.
+- **S94 Status**: RESOLVED — `pyproject.toml` version set to `0.9.0-rc1`. Git tag `v0.2.0-rc1` to be created at merge time.
 
 ### B-05 — No `CHANGELOG.md` at repo root *(P1)*
 - **Symptom**: Version history scattered across `.codex/change_log.md`, agent status docs, and commit messages.

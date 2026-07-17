@@ -1,9 +1,9 @@
 # Component Dependencies
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-01-20
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Total Components**: 57 modules across 5 layers
 
 ---

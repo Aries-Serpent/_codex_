@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/adr/ADR-003-continuous-learning-architecture/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
-<title>ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
+<title>ADR-003: Event-Driven Continuous Learning via Drift Trigger EvalGate Promote - Codex Docs v0.2.1</title>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote
+              ADR-003: Event-Driven Continuous Learning via Drift Trigger EvalGate Promote
             
           </span>
 </div>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2360,7 +2360,7 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="adr-003-event-driven-continuous-learning-via-drift-trigger-evalgate-promote">ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote<a class="headerlink" href="#adr-003-event-driven-continuous-learning-via-drift-trigger-evalgate-promote" title="Permanent link">¶</a></h1>
+<h1 id="adr-003-event-driven-continuous-learning-via-drift-trigger-evalgate-promote">ADR-003: Event-Driven Continuous Learning via Drift Trigger EvalGate Promote<a class="headerlink" href="#adr-003-event-driven-continuous-learning-via-drift-trigger-evalgate-promote" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
@@ -2378,20 +2378,20 @@ root cause began.</p>
 following constraints:</p>
 <ol>
 <li><strong>Trigger on evidence, not on schedule</strong> — retraining should fire when drift
-   signals exceed thresholds, not on a fixed calendar interval. This avoids both
-   premature retraining (wasted compute) and delayed retraining (prolonged
-   quality loss).</li>
+ signals exceed thresholds, not on a fixed calendar interval. This avoids both
+ premature retraining (wasted compute) and delayed retraining (prolonged
+ quality loss).</li>
 <li><strong>Safety gate before promotion</strong> — an automatically retrained model must meet
-   quality thresholds before it replaces the production model. Blind auto-promotion
-   is not acceptable.</li>
+ quality thresholds before it replaces the production model. Blind auto-promotion
+ is not acceptable.</li>
 <li><strong>Loose coupling between stages</strong> — each stage (drift monitoring, retraining,
-   evaluation, promotion) must be independently replaceable without refactoring
-   adjacent stages.</li>
+ evaluation, promotion) must be independently replaceable without refactoring
+ adjacent stages.</li>
 <li><strong>Feedback from production</strong> — production inference outcomes should flow back
-   into the learning loop, not be discarded after the prediction is served.</li>
+ into the learning loop, not be discarded after the prediction is served.</li>
 <li><strong>CI/CD integration</strong> — the system must be operable via GitHub Actions
-   <code>repository_dispatch</code> events so the full pipeline can be triggered, monitored,
-   and audited within the existing CI infrastructure.</li>
+ <code>repository_dispatch</code> events so the full pipeline can be triggered, monitored,
+ and audited within the existing CI infrastructure.</li>
 </ol>
 <hr/>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">¶</a></h2>
@@ -2405,12 +2405,12 @@ window. When any metric crosses its threshold, it emits a structured drift event
 <h3 id="stage-2-retrainingtrigger-orient">Stage 2: RetrainingTrigger (Orient)<a class="headerlink" href="#stage-2-retrainingtrigger-orient" title="Permanent link">¶</a></h3>
 <p><code>RetrainingTrigger</code> subscribes to drift events and applies debounce logic:
 - Multiple drift events within a configurable cooldown window are collapsed into
-  a single retraining job, preventing repeated triggering during a transient
-  distribution shift.
+ a single retraining job, preventing repeated triggering during a transient
+ distribution shift.
 - Emits a <code>retrain_requested</code> event with the triggering evidence attached for
-  audit logging.
+ audit logging.
 - Can also be invoked programmatically (e.g., from a CI cron job or operator
-  command) to support scheduled and manual retraining alongside event-driven.</p>
+ command) to support scheduled and manual retraining alongside event-driven.</p>
 <h3 id="stage-3-autoretrainpipeline-evalgate-decide">Stage 3: AutoRetrainPipeline + EvalGate (Decide)<a class="headerlink" href="#stage-3-autoretrainpipeline-evalgate-decide" title="Permanent link">¶</a></h3>
 <p><code>AutoRetrainPipeline</code> executes the full training workflow against the latest
 available data, producing a candidate model artefact.</p>
@@ -2441,24 +2441,24 @@ just at the trigger level.</p>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <p><strong>Positive:</strong>
 - Decoupled stages: replacing the retraining framework (e.g., switching from
-  scikit-learn to PyTorch Lightning) requires changes only to <code>AutoRetrainPipeline</code>,
-  not to <code>DriftMonitor</code>, <code>EvalGate</code>, or <code>ModelPromoter</code>.
+ scikit-learn to PyTorch Lightning) requires changes only to <code>AutoRetrainPipeline</code>,
+ not to <code>DriftMonitor</code>, <code>EvalGate</code>, or <code>ModelPromoter</code>.
 - <code>EvalGate</code> prevents regressions from reaching production; no human approval
-  required for routine retraining, but automated safety is maintained.
+ required for routine retraining, but automated safety is maintained.
 - <code>repository_dispatch</code> provides a standards-compliant integration point that
-  works with any CI system supporting GitHub webhooks.
+ works with any CI system supporting GitHub webhooks.
 - Feedback loop closes the production-training gap without requiring a separate
-  online learning infrastructure.</p>
+ online learning infrastructure.</p>
 <p><strong>Negative / Trade-offs:</strong>
 - Event-driven systems are harder to trace than synchronous pipelines; distributed
-  tracing (ADR-0001) is recommended to correlate drift event → retrain job → gate
-  result → promotion.
+ tracing (ADR-0001) is recommended to correlate drift event retrain job gate
+ result promotion.
 - <code>EvalGate</code> thresholds must be calibrated per model family; a single global
-  threshold will be either too strict (blocking valid retrains) or too loose
-  (promoting degraded models) for heterogeneous model types.
+ threshold will be either too strict (blocking valid retrains) or too loose
+ (promoting degraded models) for heterogeneous model types.
 - Feedback loop introduces a data-flywheel dependency: if production labels are
-  noisy or delayed, the retrained model may regress. Label quality monitoring is
-  a prerequisite for reliable continuous learning.</p>
+ noisy or delayed, the retrained model may regress. Label quality monitoring is
+ a prerequisite for reliable continuous learning.</p>
 <hr/>
 <h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">¶</a></h2>
 <table>
@@ -2516,6 +2516,6 @@ just at the trigger level.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

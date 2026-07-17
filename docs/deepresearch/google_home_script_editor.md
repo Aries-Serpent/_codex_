@@ -1,6 +1,6 @@
 # DeepResearch: Google Home Script Editor — Automations, Templates, and File Formats
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -198,7 +198,7 @@ is "production-ready" only when it passes device availability check + schema lin
 | **Primary** | Model smart-home loads (lights, HVAC, locks) as G2E consumption nodes |
 | **Secondary** | Use Google Home Script Editor starters (e.g. `device.state.EnergyStorage`) to trigger PD optimization |
 | **Capabilities** | Add `google_home_device_loads` module; parse Google Home energy-reporting traits |
-| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v0.2.1); enhance to v0.2.1 |
+| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v0.2.0); enhance to v0.2.0 |
 | **Type** | Enhancement of `.github/agents/energy-conversion-agent.md` |
 | **Enhancement** | Add "Smart Home Energy Integration" section; map `device.command.OnOff` to load-shedding PD setpoints |
 

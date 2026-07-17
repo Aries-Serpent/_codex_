@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ARCHITECTURE_COMPREHENSIVE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Comprehensive System Architecture — Codex ML Platform - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2740,10 +2740,10 @@
 <h1 id="comprehensive-system-architecture-codex-ml-platform">Comprehensive System Architecture — Codex ML Platform<a class="headerlink" href="#comprehensive-system-architecture-codex-ml-platform" title="Permanent link">¶</a></h1>
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
-<p><strong>Version:</strong> 5.0.0<br/>
+<p><strong>Version:</strong> 5.0.0
 <strong>Last Updated: 2026-07-10
-</strong>Status:<strong> Complete — Phase 5 Track 4<br/>
-</strong>Session:** S250-doc-arch  </p>
+</strong>Status:<strong> Complete — Phase 5 Track 4
+</strong>Session:** S250-doc-arch</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>The Codex ML Platform is a comprehensive, production-grade machine learning framework built on a <strong>5-layer architecture</strong> designed for autonomy, reproducibility, and scalability. This document provides a complete architectural overview including system design, component interactions, data flows, and key design patterns.</p>
@@ -2759,9 +2759,9 @@
 <p><strong>Purpose:</strong> Centralized configuration management and workflow orchestration.</p>
 <p><strong>Components:</strong>
 - <strong>Hydra Configuration System</strong> — Single source of truth for all parameters
-  - Multi-level config composition (base → experiment → run-specific)
-  - Type-safe schema validation via OmegaConf
-  - Dynamic defaults and sweeps for hyperparameter tuning</p>
+ - Multi-level config composition (base experiment run-specific)
+ - Type-safe schema validation via OmegaConf
+ - Dynamic defaults and sweeps for hyperparameter tuning</p>
 <ul>
 <li><strong>Workflow Orchestrator</strong> — DAG-based task scheduling</li>
 <li>Dependency resolution and parallel execution</li>
@@ -2782,24 +2782,24 @@
 - <strong>Observer Pattern</strong> — Config change notifications</p>
 <p><strong>Data Structures:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nt">ConfigurationStore</span><span class="p">:</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">base_configs/</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">defaults.yaml</span><span class="w">           </span><span class="c1"># Base parameters</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">training.yaml</span><span class="w">           </span><span class="c1"># Training-specific</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">inference.yaml</span><span class="w">          </span><span class="c1"># Inference-specific</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">experiments/</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">exp_001_baseline.yaml</span><span class="w">   </span><span class="c1"># Experiment override</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">exp_002_variant_a.yaml</span><span class="w">  </span><span class="c1"># Variant override</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">runtime/</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">run_2026_07_10.yaml</span><span class="w">     </span><span class="c1"># Runtime captures</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base_configs/</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">defaults.yaml</span><span class="w"> </span><span class="c1"># Base parameters</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">training.yaml</span><span class="w"> </span><span class="c1"># Training-specific</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inference.yaml</span><span class="w"> </span><span class="c1"># Inference-specific</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">experiments/</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exp_001_baseline.yaml</span><span class="w"> </span><span class="c1"># Experiment override</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exp_002_variant_a.yaml</span><span class="w"> </span><span class="c1"># Variant override</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">runtime/</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">run_2026_07_10.yaml</span><span class="w"> </span><span class="c1"># Runtime captures</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="12-layer-2-data-pipeline-ingestion">1.2 Layer 2: Data Pipeline &amp; Ingestion<a class="headerlink" href="#12-layer-2-data-pipeline-ingestion" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Robust, reproducible data handling with format auto-detection.</p>
 <p><strong>Components:</strong>
 - <strong>File Ingestor</strong> — Multi-format support
-  - CSV, JSON, Parquet, HDF5, Apache Arrow
-  - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
-  - Large file streaming (&gt;100GB support)</p>
+ - CSV, JSON, Parquet, HDF5, Apache Arrow
+ - Automatic encoding detection (UTF-8, Latin-1, GB18030, etc.)
+ - Large file streaming (&gt;100GB support)</p>
 <ul>
 <li><strong>CSV Ingestor</strong> — Specialized CSV handling</li>
 <li>Dialect detection (delimiter, quote char, encoding)</li>
@@ -2823,23 +2823,23 @@
 <li>Drift detection</li>
 </ul>
 <p><strong>Data Flow:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Raw Input → Format Detection → Parsing → Validation → Normalization → Output
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>                                                    ↓
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>                                            Error Handling &amp; Logging
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Raw Input Format Detection Parsing Validation Normalization Output
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> Error Handling &amp; Logging
 </code></pre></div></p>
 <p><strong>Key Methods:</strong>
-- <code>ingest(path: str, config: Config) → Dataset</code> — Main ingestion entry point
-- <code>detect_format(bytes: bytes) → Format</code> — Format auto-detection
-- <code>split_document(text: str, strategy: str) → List[str]</code> — Document splitting</p>
+- <code>ingest(path: str, config: Config) Dataset</code> — Main ingestion entry point
+- <code>detect_format(bytes: bytes) Format</code> — Format auto-detection
+- <code>split_document(text: str, strategy: str) List[str]</code> — Document splitting</p>
 <hr/>
 <h3 id="13-layer-3-machine-learning-core">1.3 Layer 3: Machine Learning Core<a class="headerlink" href="#13-layer-3-machine-learning-core" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Training, evaluation, and inference with reproducibility guarantees.</p>
 <p><strong>Components:</strong>
 - <strong>Training Engine</strong>
-  - PyTorch-based distributed training
-  - Gradient accumulation and mixed precision
-  - Learning rate scheduling and warmup
-  - Early stopping with patience</p>
+ - PyTorch-based distributed training
+ - Gradient accumulation and mixed precision
+ - Learning rate scheduling and warmup
+ - Early stopping with patience</p>
 <ul>
 <li><strong>Evaluation Framework</strong></li>
 <li>Multiple metric support (accuracy, F1, AUROC, custom)</li>
@@ -2864,26 +2864,26 @@
 </ul>
 <p><strong>Training Loop Pseudocode:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>  <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">if</span> <span class="n">validation_interval_reached</span><span class="p">:</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>      <span class="n">val_metrics</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>      <span class="k">if</span> <span class="n">val_metrics</span><span class="o">.</span><span class="n">best</span><span class="p">:</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        <span class="n">checkpoint_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">val_metrics</span><span class="p">)</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="k">if</span> <span class="n">validation_interval_reached</span><span class="p">:</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="n">val_metrics</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="k">if</span> <span class="n">val_metrics</span><span class="o">.</span><span class="n">best</span><span class="p">:</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="n">checkpoint_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">val_metrics</span><span class="p">)</span>
 </code></pre></div></p>
 <hr/>
 <h3 id="14-layer-4-rag-knowledge-graph">1.4 Layer 4: RAG &amp; Knowledge Graph<a class="headerlink" href="#14-layer-4-rag-knowledge-graph" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> Retrieval-augmented generation with semantic search.</p>
 <p><strong>Components:</strong>
 - <strong>Vector Store</strong>
-  - FAISS for dense vector search (CPU/GPU)
-  - BM25 for sparse keyword search
-  - Hybrid search combining both approaches</p>
+ - FAISS for dense vector search (CPU/GPU)
+ - BM25 for sparse keyword search
+ - Hybrid search combining both approaches</p>
 <ul>
 <li><strong>Embedding Service</strong></li>
 <li>Multi-model support (BERT, BGE, OpenAI)</li>
@@ -2907,18 +2907,18 @@
 <li>Link prediction</li>
 </ul>
 <p><strong>Retrieval Flow:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Query → Encoding → Vector Search → Reranking → Context Window → LLM Prompt
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>          ↓
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>      Keyword Search (parallel)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Query Encoding Vector Search Reranking Context Window LLM Prompt
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> Keyword Search (parallel)
 </code></pre></div></p>
 <hr/>
 <h3 id="15-layer-5-api-integration">1.5 Layer 5: API &amp; Integration<a class="headerlink" href="#15-layer-5-api-integration" title="Permanent link">¶</a></h3>
 <p><strong>Purpose:</strong> External-facing interfaces and system integration.</p>
 <p><strong>Components:</strong>
 - <strong>REST API</strong> (FastAPI)
-  - OpenAPI/Swagger documentation
-  - Request/response validation
-  - Authentication and rate limiting</p>
+ - OpenAPI/Swagger documentation
+ - Request/response validation
+ - Authentication and rate limiting</p>
 <ul>
 <li><strong>gRPC Services</strong> (High-performance)</li>
 <li>Streaming support for large payloads</li>
@@ -2944,263 +2944,276 @@
 <hr/>
 <h2 id="2-component-interaction-diagram">2. Component Interaction Diagram<a class="headerlink" href="#2-component-interaction-diagram" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>graph TB
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    subgraph Layer1["Layer 1: Configuration &amp; Orchestration"]
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>        A["Hydra Config\nManager"]
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>        B["Workflow\nOrchestrator"]
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        C["State\nManager"]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    end
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    subgraph Layer2["Layer 2: Data Pipeline"]
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        D["File\nIngestor"]
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        E["Data\nValidator"]
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        F["Text\nProcessor"]
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    end
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    subgraph Layer3["Layer 3: ML Core"]
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        G["Training\nEngine"]
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        H["Evaluation\nFramework"]
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>        I["Model\nRegistry"]
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    end
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    subgraph Layer4["Layer 4: RAG &amp; Knowledge"]
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>        J["Vector\nStore"]
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>        K["Embedding\nService"]
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>        L["Knowledge\nGraph"]
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    end
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    subgraph Layer5["Layer 5: API &amp; Integration"]
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>        M["REST API"]
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>        N["gRPC\nServices"]
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>        O["CLI\nInterface"]
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>    end
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>    A --&gt;|config| B
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>    B --&gt;|orchestrate| C
-<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>    B --&gt;|load| D
-<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>    D --&gt;|validate| E
-<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>    E --&gt;|process| F
-<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>    F --&gt;|train| G
-<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>    G --&gt;|evaluate| H
-<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a>    H --&gt;|register| I
-<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a>    I --&gt;|store embedding| K
-<a href="#__codelineno-4-41" id="__codelineno-4-41" name="__codelineno-4-41"></a>    K --&gt;|populate| J
-<a href="#__codelineno-4-42" id="__codelineno-4-42" name="__codelineno-4-42"></a>    J --&gt;|search| L
-<a href="#__codelineno-4-43" id="__codelineno-4-43" name="__codelineno-4-43"></a>
-<a href="#__codelineno-4-44" id="__codelineno-4-44" name="__codelineno-4-44"></a>    M --&gt;|query| J
-<a href="#__codelineno-4-45" id="__codelineno-4-45" name="__codelineno-4-45"></a>    N --&gt;|grpc| G
-<a href="#__codelineno-4-46" id="__codelineno-4-46" name="__codelineno-4-46"></a>    O --&gt;|command| B
-<a href="#__codelineno-4-47" id="__codelineno-4-47" name="__codelineno-4-47"></a>
-<a href="#__codelineno-4-48" id="__codelineno-4-48" name="__codelineno-4-48"></a>    C --&gt;|checkpoint| I
-<a href="#__codelineno-4-49" id="__codelineno-4-49" name="__codelineno-4-49"></a>    I --&gt;|retrieve| G
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a> subgraph Layer1["Layer 1: Configuration &amp; Orchestration"]
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> A["Hydra Config\nManager"]
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> B["Workflow\nOrchestrator"]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> C["State\nManager"]
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> end
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> subgraph Layer2["Layer 2: Data Pipeline"]
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> D["File\nIngestor"]
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> E["Data\nValidator"]
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> F["Text\nProcessor"]
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> end
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> subgraph Layer3["Layer 3: ML Core"]
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> G["Training\nEngine"]
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> H["Evaluation\nFramework"]
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> I["Model\nRegistry"]
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> end
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> subgraph Layer4["Layer 4: RAG &amp; Knowledge"]
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a> J["Vector\nStore"]
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> K["Embedding\nService"]
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a> L["Knowledge\nGraph"]
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> end
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> subgraph Layer5["Layer 5: API &amp; Integration"]
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a> M["REST API"]
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> N["gRPC\nServices"]
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a> O["CLI\nInterface"]
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> end
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a> A --&gt;|config| B
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a> B --&gt;|orchestrate| C
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a> B --&gt;|load| D
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>
+<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a> D --&gt;|validate| E
+<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a>
+<a href="#__codelineno-4-41" id="__codelineno-4-41" name="__codelineno-4-41"></a> E --&gt;|process| F
+<a href="#__codelineno-4-42" id="__codelineno-4-42" name="__codelineno-4-42"></a>
+<a href="#__codelineno-4-43" id="__codelineno-4-43" name="__codelineno-4-43"></a> F --&gt;|train| G
+<a href="#__codelineno-4-44" id="__codelineno-4-44" name="__codelineno-4-44"></a>
+<a href="#__codelineno-4-45" id="__codelineno-4-45" name="__codelineno-4-45"></a> G --&gt;|evaluate| H
+<a href="#__codelineno-4-46" id="__codelineno-4-46" name="__codelineno-4-46"></a>
+<a href="#__codelineno-4-47" id="__codelineno-4-47" name="__codelineno-4-47"></a> H --&gt;|register| I
+<a href="#__codelineno-4-48" id="__codelineno-4-48" name="__codelineno-4-48"></a>
+<a href="#__codelineno-4-49" id="__codelineno-4-49" name="__codelineno-4-49"></a> I --&gt;|store embedding| K
+<a href="#__codelineno-4-50" id="__codelineno-4-50" name="__codelineno-4-50"></a>
+<a href="#__codelineno-4-51" id="__codelineno-4-51" name="__codelineno-4-51"></a> K --&gt;|populate| J
+<a href="#__codelineno-4-52" id="__codelineno-4-52" name="__codelineno-4-52"></a>
+<a href="#__codelineno-4-53" id="__codelineno-4-53" name="__codelineno-4-53"></a> J --&gt;|search| L
+<a href="#__codelineno-4-54" id="__codelineno-4-54" name="__codelineno-4-54"></a>
+<a href="#__codelineno-4-55" id="__codelineno-4-55" name="__codelineno-4-55"></a> M --&gt;|query| J
+<a href="#__codelineno-4-56" id="__codelineno-4-56" name="__codelineno-4-56"></a>
+<a href="#__codelineno-4-57" id="__codelineno-4-57" name="__codelineno-4-57"></a> N --&gt;|grpc| G
+<a href="#__codelineno-4-58" id="__codelineno-4-58" name="__codelineno-4-58"></a>
+<a href="#__codelineno-4-59" id="__codelineno-4-59" name="__codelineno-4-59"></a> O --&gt;|command| B
+<a href="#__codelineno-4-60" id="__codelineno-4-60" name="__codelineno-4-60"></a>
+<a href="#__codelineno-4-61" id="__codelineno-4-61" name="__codelineno-4-61"></a> C --&gt;|checkpoint| I
+<a href="#__codelineno-4-62" id="__codelineno-4-62" name="__codelineno-4-62"></a>
+<a href="#__codelineno-4-63" id="__codelineno-4-63" name="__codelineno-4-63"></a> I --&gt;|retrieve| G
 </code></pre></div>
 <hr/>
 <h2 id="3-data-flow-architecture">3. Data Flow Architecture<a class="headerlink" href="#3-data-flow-architecture" title="Permanent link">¶</a></h2>
 <h3 id="31-training-data-flow">3.1 Training Data Flow<a class="headerlink" href="#31-training-data-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>sequenceDiagram
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>    participant User
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    participant CLI
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    participant Orchestrator
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    participant DataPipeline
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    participant TrainingEngine
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    participant ModelRegistry
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    participant MLflow
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    User-&gt;&gt;CLI: python main.py train config=baseline
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    CLI-&gt;&gt;Orchestrator: execute_training(config)
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    Orchestrator-&gt;&gt;DataPipeline: load_data(config)
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    DataPipeline-&gt;&gt;DataPipeline: ingest → validate → split
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    DataPipeline--&gt;&gt;Orchestrator: dataset
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> participant User
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> participant CLI
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> participant Orchestrator
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> participant DataPipeline
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> participant TrainingEngine
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> participant ModelRegistry
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> participant MLflow
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> User-&gt;&gt;CLI: python main.py train config=baseline
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> CLI-&gt;&gt;Orchestrator: execute_training(config)
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> Orchestrator-&gt;&gt;DataPipeline: load_data(config)
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> DataPipeline-&gt;&gt;DataPipeline: ingest validate split
 <a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    loop Epoch
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>        Orchestrator-&gt;&gt;TrainingEngine: train_epoch(dataset)
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>        TrainingEngine-&gt;&gt;TrainingEngine: forward pass → compute loss
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        TrainingEngine-&gt;&gt;ModelRegistry: checkpoint(model, metrics)
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>        ModelRegistry-&gt;&gt;MLflow: log_metrics(metrics)
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>    end
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>    Orchestrator-&gt;&gt;ModelRegistry: finalize_model(version)
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>    ModelRegistry--&gt;&gt;MLflow: register_model(model, version)
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>    MLflow--&gt;&gt;User:  Training Complete
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> DataPipeline--&gt;&gt;Orchestrator: dataset
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> loop Epoch
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> Orchestrator-&gt;&gt;TrainingEngine: train_epoch(dataset)
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> TrainingEngine-&gt;&gt;TrainingEngine: forward pass compute loss
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> TrainingEngine-&gt;&gt;ModelRegistry: checkpoint(model, metrics)
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> ModelRegistry-&gt;&gt;MLflow: log_metrics(metrics)
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> end
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> Orchestrator-&gt;&gt;ModelRegistry: finalize_model(version)
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a> ModelRegistry--&gt;&gt;MLflow: register_model(model, version)
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a> MLflow--&gt;&gt;User: Training Complete
 </code></pre></div>
 <h3 id="32-inference-data-flow">3.2 Inference Data Flow<a class="headerlink" href="#32-inference-data-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>sequenceDiagram
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    participant Client
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    participant REST_API
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    participant InferenceEngine
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    participant VectorStore
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    participant EmbeddingService
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    participant LLM
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    Client-&gt;&gt;REST_API: POST /infer {query, model_id}
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>    REST_API-&gt;&gt;InferenceEngine: infer(query, model_id)
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>    alt Use RAG
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>        InferenceEngine-&gt;&gt;EmbeddingService: embed_query(query)
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>        EmbeddingService--&gt;&gt;InferenceEngine: query_embedding
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>        InferenceEngine-&gt;&gt;VectorStore: search_top_k(query_embedding, k=5)
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>        VectorStore--&gt;&gt;InferenceEngine: [context_docs]
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>    end
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> participant Client
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> participant REST_API
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> participant InferenceEngine
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> participant VectorStore
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> participant EmbeddingService
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> participant LLM
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a> Client-&gt;&gt;REST_API: POST /infer {query, model_id}
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> REST_API-&gt;&gt;InferenceEngine: infer(query, model_id)
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a> alt Use RAG
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a> InferenceEngine-&gt;&gt;EmbeddingService: embed_query(query)
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> EmbeddingService--&gt;&gt;InferenceEngine: query_embedding
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> InferenceEngine-&gt;&gt;VectorStore: search_top_k(query_embedding, k=5)
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>    InferenceEngine-&gt;&gt;LLM: generate(query, context)
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    LLM--&gt;&gt;InferenceEngine: response
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>    InferenceEngine-&gt;&gt;REST_API: response + metadata
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>    REST_API--&gt;&gt;Client: {response, latency, tokens}
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a> VectorStore--&gt;&gt;InferenceEngine: [context_docs]
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> end
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a> InferenceEngine-&gt;&gt;LLM: generate(query, context)
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a> LLM--&gt;&gt;InferenceEngine: response
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> InferenceEngine-&gt;&gt;REST_API: response + metadata
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> REST_API--&gt;&gt;Client: {response, latency, tokens}
 </code></pre></div>
 <hr/>
 <h2 id="4-key-design-patterns">4. Key Design Patterns<a class="headerlink" href="#4-key-design-patterns" title="Permanent link">¶</a></h2>
 <h3 id="41-factory-pattern-component-creation">4.1 Factory Pattern (Component Creation)<a class="headerlink" href="#41-factory-pattern-component-creation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">class</span> <span class="nc">ComponentFactory</span><span class="p">:</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">    </span><span class="sd">"""Factory for creating components from config."""</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w"> </span><span class="sd">"""Factory for creating components from config."""</span>
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="nd">@staticmethod</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">ModelConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">        </span><span class="sd">"""Create model instance from config."""</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>        <span class="n">model_class</span> <span class="o">=</span> <span class="n">get_class</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>        <span class="k">return</span> <span class="n">model_class</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="nd">@staticmethod</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">ModelConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="sd">"""Create model instance from config."""</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="n">model_class</span> <span class="o">=</span> <span class="n">get_class</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="k">return</span> <span class="n">model_class</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="nd">@staticmethod</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="k">def</span> <span class="nf">create_optimizer</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">OptimizerConfig</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">        </span><span class="sd">"""Create optimizer from config."""</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>        <span class="n">optimizer_class</span> <span class="o">=</span> <span class="n">get_class</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>        <span class="k">return</span> <span class="n">optimizer_class</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> <span class="nd">@staticmethod</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> <span class="k">def</span> <span class="nf">create_optimizer</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">OptimizerConfig</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span><span class="sd">"""Create optimizer from config."""</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> <span class="n">optimizer_class</span> <span class="o">=</span> <span class="n">get_class</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a> <span class="k">return</span> <span class="n">optimizer_class</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="42-chain-of-responsibility-validation-pipeline">4.2 Chain of Responsibility (Validation Pipeline)<a class="headerlink" href="#42-chain-of-responsibility-validation-pipeline" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">class</span> <span class="nc">ValidationChain</span><span class="p">:</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">    </span><span class="sd">"""Pipeline of validators."""</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="sd">"""Pipeline of validators."""</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">validators</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>            <span class="n">SchemaValidator</span><span class="p">(),</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>            <span class="n">TypeValidator</span><span class="p">(),</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>            <span class="n">RangeValidator</span><span class="p">(),</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>            <span class="n">BusinessRuleValidator</span><span class="p">(),</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>        <span class="p">]</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">validators</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">SchemaValidator</span><span class="p">(),</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">TypeValidator</span><span class="p">(),</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">RangeValidator</span><span class="p">(),</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">BusinessRuleValidator</span><span class="p">(),</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="p">]</span>
 <a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidationResult</span><span class="p">:</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">ValidationResult</span><span class="p">(</span><span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>        <span class="k">for</span> <span class="n">validator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">:</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">passed</span><span class="p">:</span>
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>                <span class="k">break</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>        <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidationResult</span><span class="p">:</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">ValidationResult</span><span class="p">(</span><span class="n">passed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a> <span class="k">for</span> <span class="n">validator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">:</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">passed</span><span class="p">:</span>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> <span class="k">break</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> <span class="k">return</span> <span class="n">result</span>
 </code></pre></div>
 <h3 id="43-observer-pattern-config-change-notification">4.3 Observer Pattern (Config Change Notification)<a class="headerlink" href="#43-observer-pattern-config-change-notification" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">class</span> <span class="nc">ConfigManager</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">    </span><span class="sd">"""Config manager with change notifications."""</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="sd">"""Config manager with change notifications."""</span>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">observers</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">:</span> <span class="n">ConfigObserver</span><span class="p">):</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">:</span> <span class="n">ConfigObserver</span><span class="p">):</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">new_config</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">notify_observers</span><span class="p">(</span><span class="s2">"config_updated"</span><span class="p">,</span> <span class="n">new_config</span><span class="p">)</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">new_config</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="bp">self</span><span class="o">.</span><span class="n">notify_observers</span><span class="p">(</span><span class="s2">"config_updated"</span><span class="p">,</span> <span class="n">new_config</span><span class="p">)</span>
 <a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="k">def</span> <span class="nf">notify_observers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>        <span class="k">for</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="p">:</span>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>            <span class="n">observer</span><span class="o">.</span><span class="n">on_config_change</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="k">def</span> <span class="nf">notify_observers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> <span class="k">for</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="p">:</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> <span class="n">observer</span><span class="o">.</span><span class="n">on_config_change</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="44-strategy-pattern-multiple-implementations">4.4 Strategy Pattern (Multiple Implementations)<a class="headerlink" href="#44-strategy-pattern-multiple-implementations" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">class</span> <span class="nc">DataProcessingStrategy</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">    </span><span class="sd">"""Abstract strategy for data processing."""</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="sd">"""Abstract strategy for data processing."""</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="nd">@abstractmethod</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>        <span class="k">pass</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="nd">@abstractmethod</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="k">pass</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="k">class</span> <span class="nc">LocalProcessing</span><span class="p">(</span><span class="n">DataProcessingStrategy</span><span class="p">):</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">    </span><span class="sd">"""Process data locally."""</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>        <span class="k">return</span> <span class="n">local_process</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="sd">"""Process data locally."""</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="k">return</span> <span class="n">local_process</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
 <a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a><span class="k">class</span> <span class="nc">DistributedProcessing</span><span class="p">(</span><span class="n">DataProcessingStrategy</span><span class="p">):</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w">    </span><span class="sd">"""Process data on distributed cluster."""</span>
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>        <span class="k">return</span> <span class="n">distributed_process</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="w"> </span><span class="sd">"""Process data on distributed cluster."""</span>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a> <span class="k">return</span> <span class="n">distributed_process</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="5-deployment-architecture">5. Deployment Architecture<a class="headerlink" href="#5-deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="51-single-machine-deployment">5.1 Single Machine Deployment<a class="headerlink" href="#51-single-machine-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>│         Single Machine Setup            │
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>├─────────────────────────────────────────┤
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>│                                         │
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>│  ┌──────────────┐  ┌────────────────┐  │
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>│  │   Python    │  │   PyTorch      │  │
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>│  │   Process   │  │   CPU/GPU      │  │
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>│  └──────────────┘  └────────────────┘  │
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>│                                         │
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>│  ┌──────────────┐  ┌────────────────┐  │
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>│  │   Database  │  │   Cache        │  │
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>│  │   SQLite    │  │   Redis/Local  │  │
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>│  └──────────────┘  └────────────────┘  │
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>│                                         │
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>│  ┌──────────────┐  ┌────────────────┐  │
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>│  │   Storage   │  │   Logs         │  │
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>│  │   Local FS  │  │   Local/File   │  │
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>│  └──────────────┘  └────────────────┘  │
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>│                                         │
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>└─────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a> Single Machine Setup 
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> Python PyTorch 
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> Process CPU/GPU 
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> Database Cache 
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a> SQLite Redis/Local 
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> Storage Logs 
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> Local FS Local/File 
 </code></pre></div>
 <h3 id="52-distributed-deployment">5.2 Distributed Deployment<a class="headerlink" href="#52-distributed-deployment" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>┌──────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>│              Kubernetes Cluster Deployment                    │
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>├──────────────────────────────────────────────────────────────┤
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>│                                                                │
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐│
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>│  │  Master Node   │   │  Worker Node 1 │   │  Worker Node 2 ││
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>│  │  (Orchestrator)│   │  (GPU/Compute) │   │  (GPU/Compute) ││
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>│  │                │   │                │   │                ││
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>│  │  - Scheduler   │   │  - Training    │   │  - Training    ││
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>│  │  - State Mgmt  │   │  - Inference   │   │  - Inference   ││
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>│  └────────────────┘   └────────────────┘   └────────────────┘│
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>│        │                       │                    │          │
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>│  ┌─────────────────────────────────────────────────────────┐  │
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>│  │         Shared Storage (S3 or NFS)                      │  │
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>│  │         - Models                                        │  │
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>│  │         - Datasets                                      │  │
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>│  │         - Checkpoints                                  │  │
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>│  └─────────────────────────────────────────────────────────┘  │
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>│        │                       │                    │          │
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>│  ┌─────────────────────────────────────────────────────────┐  │
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>│  │         Monitoring &amp; Logging Stack                      │  │
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>│  │         - Prometheus (metrics)                          │  │
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>│  │         - ELK Stack (logs)                              │  │
-<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>│  │         - Grafana (dashboards)                          │  │
-<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a>│  └─────────────────────────────────────────────────────────┘  │
-<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>│                                                                │
-<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a>└──────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a> Kubernetes Cluster Deployment 
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> Master Node Worker Node 1 Worker Node 2 
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> (Orchestrator) (GPU/Compute) (GPU/Compute) 
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> - Scheduler - Training - Training 
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> - State Mgmt - Inference - Inference 
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> Shared Storage (S3 or NFS) 
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> - Models 
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> - Datasets 
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> - Checkpoints 
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> Monitoring &amp; Logging Stack 
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> - Prometheus (metrics) 
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> - ELK Stack (logs) 
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> - Grafana (dashboards) 
 </code></pre></div>
 <hr/>
 <h2 id="6-security-architecture">6. Security Architecture<a class="headerlink" href="#6-security-architecture" title="Permanent link">¶</a></h2>
 <h3 id="61-defense-in-depth-layers">6.1 Defense-in-Depth Layers<a class="headerlink" href="#61-defense-in-depth-layers" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>│     Layer 1: API Authentication         │
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>│     (JWT, OAuth2, API Keys)             │
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>└─────────────────────────────────────────┘
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>              ↓
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>│     Layer 2: Authorization (RBAC)       │
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>│     (Role-based access control)         │
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>└─────────────────────────────────────────┘
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>              ↓
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>│     Layer 3: Data Encryption            │
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>│     (TLS in transit, AES at rest)       │
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>└─────────────────────────────────────────┘
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>              ↓
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>│     Layer 4: Input Validation           │
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>│     (Schema, type, business rules)      │
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>└─────────────────────────────────────────┘
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>              ↓
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>┌─────────────────────────────────────────┐
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>│     Layer 5: Secrets Management         │
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>│     (Vault, env vars, encrypted storage)│
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a>└─────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a> Layer 1: API Authentication 
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a> (JWT, OAuth2, API Keys) 
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> Layer 2: Authorization (RBAC) 
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> (Role-based access control) 
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> Layer 3: Data Encryption 
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> (TLS in transit, AES at rest) 
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> Layer 4: Input Validation 
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> (Schema, type, business rules) 
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> Layer 5: Secrets Management 
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> (Vault, env vars, encrypted storage)
 </code></pre></div>
 <h3 id="62-secrets-management">6.2 Secrets Management<a class="headerlink" href="#62-secrets-management" title="Permanent link">¶</a></h3>
 <p><strong>Approach:</strong> Environment-based secrets with encryption at rest.</p>
@@ -3285,33 +3298,32 @@
 </table>
 <h3 id="82-latency-profile">8.2 Latency Profile<a class="headerlink" href="#82-latency-profile" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>API Request Latency Breakdown (Inference):
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>├─ Auth &amp; validation: 1-5ms
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>├─ Load model: 0ms (cached)
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>├─ Embedding: 10-50ms
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>├─ Vector search: 5-20ms
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>├─ LLM generation: 500-2000ms
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>└─ Serialization: 1-5ms
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>   Total: 520-2070ms (p50), 1000-3000ms (p95)
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a> Auth &amp; validation: 1-5ms
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> Load model: 0ms (cached)
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> Embedding: 10-50ms
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> Vector search: 5-20ms
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> LLM generation: 500-2000ms
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> Serialization: 1-5ms
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> Total: 520-2070ms (p50), 1000-3000ms (p95)
 </code></pre></div>
 <hr/>
 <h2 id="9-observability-monitoring">9. Observability &amp; Monitoring<a class="headerlink" href="#9-observability-monitoring" title="Permanent link">¶</a></h2>
 <h3 id="91-logging-architecture">9.1 Logging Architecture<a class="headerlink" href="#91-logging-architecture" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>Application Logs
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>├─ Model Logs (training metrics, checkpoints)
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>├─ Data Logs (ingestion, validation)
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>├─ API Logs (requests, responses, errors)
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>└─ System Logs (resource usage, errors)
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>      ↓
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>    Logger (Python logging)
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>      ↓
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>  ┌─────────────────────────────────┐
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>  │ Multiple Handlers               │
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>  ├─────────────────────────────────┤
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>  │ - File (local rotation)         │
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>  │ - Console (stdout)              │
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>  │ - CloudWatch (AWS)              │
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a>  │ - Datadog/ELK (centralized)     │
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>  └─────────────────────────────────┘
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a> Model Logs (training metrics, checkpoints)
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> Data Logs (ingestion, validation)
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> API Logs (requests, responses, errors)
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> System Logs (resource usage, errors)
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a> Logger (Python logging)
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> Multiple Handlers 
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> - File (local rotation) 
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a> - Console (stdout) 
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a> - CloudWatch (AWS) 
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a> - Datadog/ELK (centralized) 
 </code></pre></div>
 <h3 id="92-metrics-collection">9.2 Metrics Collection<a class="headerlink" href="#92-metrics-collection" title="Permanent link">¶</a></h3>
 <p><strong>Key metrics by layer:</strong></p>
@@ -3375,54 +3387,54 @@
 <p><strong>Base configuration structure:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># config/defaults.yaml</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="nt">hydra</span><span class="p">:</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.1</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">    </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w"> </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.1</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span><span class="nt">dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}</span>
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>
 <a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="c1"># Data configuration</span>
 <a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="nt">data</span><span class="p">:</span>
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="w">  </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/train.csv</span>
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="w">  </span><span class="nt">val_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/val.csv</span>
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w">  </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="w"> </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/train.csv</span>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="w"> </span><span class="nt">val_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/val.csv</span>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w"> </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
 <a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>
 <a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="c1"># Model configuration</span>
 <a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="nt">model</span><span class="p">:</span>
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w">  </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex.models.TransformerModel</span>
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="w">    </span><span class="nt">hidden_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768</span>
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a><span class="w">    </span><span class="nt">num_layers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="w">    </span><span class="nt">num_heads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w">    </span><span class="nt">dropout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w"> </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex.models.TransformerModel</span>
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w"> </span><span class="nt">params</span><span class="p">:</span>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="w"> </span><span class="nt">hidden_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768</span>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a><span class="w"> </span><span class="nt">num_layers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="w"> </span><span class="nt">num_heads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w"> </span><span class="nt">dropout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
 <a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>
 <a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a><span class="c1"># Training configuration</span>
 <a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a><span class="w">  </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-4</span>
-<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a><span class="w">  </span><span class="nt">optimizer</span><span class="p">:</span>
-<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a><span class="w">    </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.AdamW</span>
-<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span>
-<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a><span class="w">      </span><span class="nt">beta1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
-<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a><span class="w">      </span><span class="nt">beta2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.999</span>
-<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a><span class="w">  </span><span class="nt">scheduler</span><span class="p">:</span>
-<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a><span class="w">    </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.lr_scheduler.CosineAnnealingLR</span>
-<a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a><span class="w">    </span><span class="nt">params</span><span class="p">:</span>
-<a href="#__codelineno-16-35" id="__codelineno-16-35" name="__codelineno-16-35"></a><span class="w">      </span><span class="nt">T_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a><span class="w"> </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a><span class="w"> </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-4</span>
+<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a><span class="w"> </span><span class="nt">optimizer</span><span class="p">:</span>
+<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a><span class="w"> </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.AdamW</span>
+<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a><span class="w"> </span><span class="nt">params</span><span class="p">:</span>
+<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a><span class="w"> </span><span class="nt">beta1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
+<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a><span class="w"> </span><span class="nt">beta2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.999</span>
+<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a><span class="w"> </span><span class="nt">scheduler</span><span class="p">:</span>
+<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a><span class="w"> </span><span class="nt">class_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.lr_scheduler.CosineAnnealingLR</span>
+<a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a><span class="w"> </span><span class="nt">params</span><span class="p">:</span>
+<a href="#__codelineno-16-35" id="__codelineno-16-35" name="__codelineno-16-35"></a><span class="w"> </span><span class="nt">T_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 <a href="#__codelineno-16-36" id="__codelineno-16-36" name="__codelineno-16-36"></a>
 <a href="#__codelineno-16-37" id="__codelineno-16-37" name="__codelineno-16-37"></a><span class="c1"># Evaluation configuration</span>
 <a href="#__codelineno-16-38" id="__codelineno-16-38" name="__codelineno-16-38"></a><span class="nt">evaluation</span><span class="p">:</span>
-<a href="#__codelineno-16-39" id="__codelineno-16-39" name="__codelineno-16-39"></a><span class="w">  </span><span class="nt">metrics</span><span class="p">:</span>
-<a href="#__codelineno-16-40" id="__codelineno-16-40" name="__codelineno-16-40"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">accuracy</span>
-<a href="#__codelineno-16-41" id="__codelineno-16-41" name="__codelineno-16-41"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">f1</span>
-<a href="#__codelineno-16-42" id="__codelineno-16-42" name="__codelineno-16-42"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auroc</span>
-<a href="#__codelineno-16-43" id="__codelineno-16-43" name="__codelineno-16-43"></a><span class="w">  </span><span class="nt">eval_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># steps</span>
+<a href="#__codelineno-16-39" id="__codelineno-16-39" name="__codelineno-16-39"></a><span class="w"> </span><span class="nt">metrics</span><span class="p">:</span>
+<a href="#__codelineno-16-40" id="__codelineno-16-40" name="__codelineno-16-40"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">accuracy</span>
+<a href="#__codelineno-16-41" id="__codelineno-16-41" name="__codelineno-16-41"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">f1</span>
+<a href="#__codelineno-16-42" id="__codelineno-16-42" name="__codelineno-16-42"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auroc</span>
+<a href="#__codelineno-16-43" id="__codelineno-16-43" name="__codelineno-16-43"></a><span class="w"> </span><span class="nt">eval_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># steps</span>
 <a href="#__codelineno-16-44" id="__codelineno-16-44" name="__codelineno-16-44"></a>
 <a href="#__codelineno-16-45" id="__codelineno-16-45" name="__codelineno-16-45"></a><span class="c1"># Inference configuration</span>
 <a href="#__codelineno-16-46" id="__codelineno-16-46" name="__codelineno-16-46"></a><span class="nt">inference</span><span class="p">:</span>
-<a href="#__codelineno-16-47" id="__codelineno-16-47" name="__codelineno-16-47"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span>
-<a href="#__codelineno-16-48" id="__codelineno-16-48" name="__codelineno-16-48"></a><span class="w">  </span><span class="nt">use_rag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-16-49" id="__codelineno-16-49" name="__codelineno-16-49"></a><span class="w">  </span><span class="nt">rag_top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
-<a href="#__codelineno-16-50" id="__codelineno-16-50" name="__codelineno-16-50"></a><span class="w">  </span><span class="nt">max_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<a href="#__codelineno-16-47" id="__codelineno-16-47" name="__codelineno-16-47"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span>
+<a href="#__codelineno-16-48" id="__codelineno-16-48" name="__codelineno-16-48"></a><span class="w"> </span><span class="nt">use_rag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-16-49" id="__codelineno-16-49" name="__codelineno-16-49"></a><span class="w"> </span><span class="nt">rag_top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<a href="#__codelineno-16-50" id="__codelineno-16-50" name="__codelineno-16-50"></a><span class="w"> </span><span class="nt">max_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
 </code></pre></div>
 <hr/>
 <h2 id="12-extension-points">12. Extension Points<a class="headerlink" href="#12-extension-points" title="Permanent link">¶</a></h2>
@@ -3432,16 +3444,16 @@
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="kn">from</span> <span class="nn">codex.models</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="k">class</span> <span class="nc">CustomModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">    </span><span class="sd">"""Custom model implementation."""</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="sd">"""Custom model implementation."""</span>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_encoder</span><span class="p">()</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_decoder</span><span class="p">()</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_encoder</span><span class="p">()</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_decoder</span><span class="p">()</span>
 <a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>        <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a> <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="122-custom-handlers">12.2 Custom Handlers<a class="headerlink" href="#122-custom-handlers" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Register custom handler</span>
@@ -3449,18 +3461,18 @@
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="nd">@register_ingestor</span><span class="p">(</span><span class="s2">"custom_format"</span><span class="p">)</span>
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="k">class</span> <span class="nc">CustomIngestor</span><span class="p">:</span>
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>    <span class="k">def</span> <span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>        <span class="c1"># Custom logic</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>        <span class="k">return</span> <span class="n">data</span>
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a> <span class="k">def</span> <span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> <span class="c1"># Custom logic</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a> <span class="k">return</span> <span class="n">data</span>
 </code></pre></div>
 <h3 id="123-custom-validators">12.3 Custom Validators<a class="headerlink" href="#123-custom-validators" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="kn">from</span> <span class="nn">codex.validation</span> <span class="kn">import</span> <span class="n">register_validator</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>
 <a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="nd">@register_validator</span><span class="p">(</span><span class="s2">"custom_rule"</span><span class="p">)</span>
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="k">def</span> <span class="nf">validate_custom</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">meets_condition</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">"Custom validation failed"</span><span class="p">)</span>
-<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>    <span class="k">return</span> <span class="n">data</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">meets_condition</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a> <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">"Custom validation failed"</span><span class="p">)</span>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a> <span class="k">return</span> <span class="n">data</span>
 </code></pre></div>
 <hr/>
 <h2 id="13-disaster-recovery">13. Disaster Recovery<a class="headerlink" href="#13-disaster-recovery" title="Permanent link">¶</a></h2>
@@ -3481,8 +3493,8 @@
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Restore from checkpoint</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>python<span class="w"> </span>main.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w">  </span>++checkpoint<span class="o">=</span>checkpoints/epoch_50<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w">  </span>train.resume<span class="o">=</span><span class="nb">true</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="w"> </span>++checkpoint<span class="o">=</span>checkpoints/epoch_50<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w"> </span>train.resume<span class="o">=</span><span class="nb">true</span>
 </code></pre></div></p>
 <p><strong>Database recovery:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># List backup versions</span>
@@ -3517,8 +3529,8 @@
 <li>See also: ADR directory for specific architectural decisions</li>
 </ul>
 <hr/>
-<p><strong>Document maintained by:</strong> @mbaetiong<br/>
-<strong>Last review:</strong> 2026-07-10<br/>
+<p><strong>Document maintained by:</strong> @mbaetiong
+<strong>Last review:</strong> 2026-07-10
 <strong>Next review:</strong> 2026-08-10</p>
 </article>
 </div>
@@ -3549,6 +3561,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PRODUCTION_CHECKLIST/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Production Checklist - Aries-Serpent v0.2.1 - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2457,9 +2457,9 @@
 <h1 id="production-checklist-aries-serpent-v021">Production Checklist - Aries-Serpent v0.2.1<a class="headerlink" href="#production-checklist-aries-serpent-v021" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Document Type:</strong> Operations &amp; Deployment Verification<br/>
-<strong>Audience:</strong> DevOps Engineers, Release Managers, Operations Teams<br/>
-**Last Updated: 2026-07-09</p>
+<p><strong>Document Type:</strong> Operations &amp; Deployment Verification
+<strong>Audience:</strong> DevOps Engineers, Release Managers, Operations Teams
+**Last Updated: 2026-07-16</p>
 <h2 id="pre-deployment-checklist">Pre-Deployment Checklist<a class="headerlink" href="#pre-deployment-checklist" title="Permanent link">¶</a></h2>
 <h3 id="1-code-quality-testing">1. Code Quality &amp; Testing<a class="headerlink" href="#1-code-quality-testing" title="Permanent link">¶</a></h3>
 <p><strong>Testing:</strong>
@@ -2557,11 +2557,11 @@
 - [ ] Trace visualization tested</p>
 <p><strong>Alerting:</strong>
 - [ ] Alerts configured for:
-  - [ ] High CPU/memory
-  - [ ] Database connection errors
-  - [ ] API error rate &gt;1%
-  - [ ] Response time &gt;1s
-  - [ ] Disk space &lt;20%
+ - [ ] High CPU/memory
+ - [ ] Database connection errors
+ - [ ] API error rate &gt;1%
+ - [ ] Response time &gt;1s
+ - [ ] Disk space &lt;20%
 - [ ] On-call notification tested
 - [ ] Alert escalation paths defined</p>
 <h3 id="6-configuration-management">6. Configuration Management<a class="headerlink" href="#6-configuration-management" title="Permanent link">¶</a></h3>
@@ -2675,11 +2675,11 @@
 <li class="task-list-item">
 <p><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Phase 2:</strong> Gradual Rollout</p>
 </li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 10% traffic → monitor for 5 min</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 25% traffic → monitor for 5 min</li>
-<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 50% traffic → monitor for 10 min</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 10% traffic monitor for 5 min</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 25% traffic monitor for 5 min</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 50% traffic monitor for 10 min</li>
 <li class="task-list-item">
-<p><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 100% traffic → continue monitoring</p>
+<p><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> 100% traffic continue monitoring</p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Phase 3:</strong> Validation</p>
@@ -2733,13 +2733,13 @@
 </code></pre></div>
 <h2 id="success-criteria">Success Criteria<a class="headerlink" href="#success-criteria" title="Permanent link">¶</a></h2>
 <p>Deployment is successful when:</p>
-<p>All health checks pass for 30 minutes<br/>
- Error rate &lt; 0.1%<br/>
- Response times &lt; baseline + 10%<br/>
- No customer-facing issues<br/>
- All monitoring alerts normal<br/>
- Database replication healthy<br/>
- No security issues detected  </p>
+<p>All health checks pass for 30 minutes
+ Error rate &lt; 0.1%
+ Response times &lt; baseline + 10%
+ No customer-facing issues
+ All monitoring alerts normal
+ Database replication healthy
+ No security issues detected</p>
 <h2 id="post-deployment-review">Post-Deployment Review<a class="headerlink" href="#post-deployment-review" title="Permanent link">¶</a></h2>
 <p>Schedule review meeting within 24 hours:</p>
 <ul>
@@ -2769,8 +2769,8 @@
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>kubectl<span class="w"> </span>rollout<span class="w"> </span>undo<span class="w"> </span>deployment/api
 </code></pre></div>
 <hr/>
-<p><strong>Status:</strong>  COMPLETE<br/>
-**Last Updated: 2026-07-09</p>
+<p><strong>Status:</strong> COMPLETE
+**Last Updated: 2026-07-16</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2800,6 +2800,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

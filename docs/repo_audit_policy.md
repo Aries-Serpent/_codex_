@@ -1,6 +1,6 @@
 # Repo Audit Policy Integration (Track D)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This repository ships an offline-first audit workflow that maps the `repo_audit_policy_codex` requirements to concrete gates and prompts.
 

@@ -265,7 +265,7 @@ python -c "from codex_utils import *; print('Utils loaded successfully')"
 - Verify production PyPI upload process
 
 ### Future Release Automation
-- **v0.2.1+**: Automated via GitHub Actions + Trusted Publishers
+- **v0.2.0+**: Automated via GitHub Actions + Trusted Publishers
 - **v0.3.0+**: Full automation with OIDC only (no tokens)
 - **Enterprise**: Multi-repository publishing
 

@@ -1,6 +1,6 @@
 # Report: `_codex_` Daily Status Update — Example (v1.2)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
  Roles: [Primary: Example Author], [Secondary: QA Reviewer] Energy: 5

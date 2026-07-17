@@ -1,6 +1,6 @@
 # AST Standardization Implementation - Final Status Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -387,7 +387,7 @@ from codex.ast import BaselineManager, DeltaAnalyzer
 
 # Store baseline
 baseline = BaselineManager("audit_artifacts/baseline.db")
-baseline.store_snapshot(parsed_nodes, version="v0.2.1")
+baseline.store_snapshot(parsed_nodes, version="v0.2.0")
 
 # Compute delta
 analyzer = DeltaAnalyzer(baseline)

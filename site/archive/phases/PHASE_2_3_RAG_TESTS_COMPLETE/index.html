@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_2_3_RAG_TESTS_COMPLETE/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 2.3 Completion Report: RAG System Test Suite - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2678,71 +2678,59 @@
 <h3 id="priority-modules-tested">Priority Modules Tested<a class="headerlink" href="#priority-modules-tested" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>embeddings.py</strong> (13KB, Priority 100)</li>
-<li>29 tests covering:<ul>
+<li>29 tests covering:</li>
 <li>LocalSentenceTransformerProvider (initialization, encoding, dimensions)</li>
 <li>OpenAIEmbeddingProvider (API integration, batching, error handling)</li>
 <li>CachedEmbeddingProvider (cache hit/miss, statistics)</li>
-</ul>
-</li>
 <li>
 <p><strong>Coverage Target: 70%+</strong></p>
 </li>
 <li>
 <p><strong>indexer.py</strong> (26KB, Priority 100)</p>
 </li>
-<li>32 tests covering:<ul>
+<li>32 tests covering:</li>
 <li>chunk_text() function (overlap, boundaries, validation)</li>
 <li>embed_chunks() function (batching, model profiles)</li>
 <li>persist_index() and load_index() (FAISS operations, metadata)</li>
-</ul>
-</li>
 <li>
 <p><strong>Coverage Target: 70%+</strong></p>
 </li>
 <li>
 <p><strong>retriever.py</strong> (22KB, Priority 95)</p>
 </li>
-<li>41 tests covering:<ul>
+<li>41 tests covering:</li>
 <li>Retriever class (initialization, query, search)</li>
 <li>Semantic search (top-k, scoring, thresholds)</li>
 <li>Provenance tracking (metadata, timestamps, file extraction)</li>
-</ul>
-</li>
 <li>
 <p><strong>Coverage Target: 70%+</strong></p>
 </li>
 <li>
 <p><strong>prompt.py</strong> (11KB, Priority 85)</p>
 </li>
-<li>20 tests covering:<ul>
+<li>20 tests covering:</li>
 <li>Token counting and truncation helpers</li>
 <li>PromptTemplate and PromptConfig</li>
 <li>build_prompt() convenience function</li>
-</ul>
-</li>
 <li>
 <p><strong>Coverage Target: 70%+</strong></p>
 </li>
 <li>
 <p><strong>postprocess.py</strong> (5KB, Priority 75)</p>
 </li>
-<li>19 tests covering:<ul>
+<li>19 tests covering:</li>
 <li>OutputProcessor (scrubbing, evidence extraction, citations)</li>
 <li>postprocess_output() function</li>
 <li>Redaction rules and safety markers</li>
-</ul>
-</li>
 <li>
 <p><strong>Coverage Target: 65%+</strong></p>
 </li>
 <li>
 <p><strong>utils.py</strong> (7KB, Priority 70)</p>
 </li>
-<li>13 tests covering:<ul>
+<li>13 tests covering:</li>
 <li>safe_model_load() utility (meta device handling)</li>
 <li>ProvenanceMetadata (serialization, conversion)</li>
-</ul>
-</li>
 <li><strong>Coverage Target: 65%+</strong></li>
 </ol>
 <h2 id="test-quality-metrics">Test Quality Metrics<a class="headerlink" href="#test-quality-metrics" title="Permanent link">¶</a></h2>
@@ -2815,7 +2803,7 @@
 <li><strong>Starting Coverage</strong>: ~15-17% (before Phase 2)</li>
 <li><strong>Phase 2.1 Complete</strong>: ~23-27%</li>
 <li><strong>Phase 2.2 Complete</strong>: ~33-39%</li>
-<li><strong>Phase 2.3 Complete</strong>: ~47-50% </li>
+<li><strong>Phase 2.3 Complete</strong>: ~47-50%</li>
 <li><strong>Target Achievement</strong>: <strong>ON TRACK</strong></li>
 </ul>
 <h2 id="technical-highlights">Technical Highlights<a class="headerlink" href="#technical-highlights" title="Permanent link">¶</a></h2>
@@ -2849,7 +2837,7 @@
 </ul>
 <h3 id="5-integration-tests">5. Integration Tests<a class="headerlink" href="#5-integration-tests" title="Permanent link">¶</a></h3>
 <ul>
-<li>End-to-end RAG pipeline (indexing → retrieval → prompting)</li>
+<li>End-to-end RAG pipeline (indexing retrieval prompting)</li>
 <li>Multi-tenancy support</li>
 <li>Error handling and edge cases</li>
 <li>Performance characteristics (chunking, batching)</li>
@@ -2888,7 +2876,7 @@
 <h3 id="test-failures-optional-dependencies">Test Failures (Optional Dependencies)<a class="headerlink" href="#test-failures-optional-dependencies" title="Permanent link">¶</a></h3>
 <p>Some tests fail due to missing optional dependencies in CI:
 - <code>sentence-transformers</code> - Not installed
-- <code>faiss-cpu</code> - Not installed<br/>
+- <code>faiss-cpu</code> - Not installed
 - <code>openai</code> - Not installed</p>
 <p><strong>Resolution</strong>: Tests are designed to pass when mocked appropriately. Actual dependency failures are expected behavior in CI without optional packages.</p>
 <h3 id="patching-challenges">Patching Challenges<a class="headerlink" href="#patching-challenges" title="Permanent link">¶</a></h3>
@@ -2959,10 +2947,10 @@
 <li><strong>Commit</strong>: <code>5444dfa</code></li>
 <li><strong>Files Added</strong>: 6 test files (2,699 lines)</li>
 <li><strong>Tests Added</strong>: 154</li>
-<li><strong>Status</strong>:  Committed and pushed</li>
+<li><strong>Status</strong>: Committed and pushed</li>
 </ul>
 <hr/>
-<p><strong>Phase 2.3 Status</strong>: COMPLETE 
+<p><strong>Phase 2.3 Status</strong>: COMPLETE
 <strong>Coverage Gain</strong>: +8-10% (47-50% total)
 <strong>Next Phase</strong>: Phase 3.1 - Model Training Tests</p>
 </article>
@@ -2994,6 +2982,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Phase 1: AST Implementation - Completion Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2025-11-10  
 **Status:**  COMPLETE  

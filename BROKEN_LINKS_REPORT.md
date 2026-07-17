@@ -497,57 +497,57 @@
 
 ### audit/API_Reference_v1.4.0.md
 
-- Line 349: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 350: `[Troubleshooting Guide](./Troubleshooting_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.1.md
+- Line 349: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 350: `[Troubleshooting Guide](./Troubleshooting_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.0.md
 
 ### audit/INDEX.md
 
-- Line 10: `[API_Reference_v0.2.1](API_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.1.md
-- Line 11: `[Audit_Pipeline_Reference_v0.2.1](Audit_Pipeline_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Audit_Pipeline_Reference_v0.2.1.md
-- Line 12: `[Configuration_v0.2.1](Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 17: `[Troubleshooting_v0.2.1](Troubleshooting_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.1.md
+- Line 10: `[API_Reference_v0.2.0](API_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.0.md
+- Line 11: `[Audit_Pipeline_Reference_v0.2.0](Audit_Pipeline_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Audit_Pipeline_Reference_v0.2.0.md
+- Line 12: `[Configuration_v0.2.0](Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 17: `[Troubleshooting_v0.2.0](Troubleshooting_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.0.md
 
 ### audit/Integration_Examples.md
 
-- Line 554: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 556: `[API Reference](./API_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.1.md
+- Line 554: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 556: `[API Reference](./API_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.0.md
 
 ### audit/Migration_v1.3_to_v1.4.md
 
-- Line 300: `[Troubleshooting Guide](./Troubleshooting_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.1.md
-- Line 316: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 394: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 395: `[Troubleshooting Guide](./Troubleshooting_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.1.md
-- Line 396: `[API Reference](./API_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.1.md
+- Line 300: `[Troubleshooting Guide](./Troubleshooting_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.0.md
+- Line 316: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 394: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 395: `[Troubleshooting Guide](./Troubleshooting_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.0.md
+- Line 396: `[API Reference](./API_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.0.md
 
 ### audit/Performance_Tuning.md
 
-- Line 408: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 409: `[Troubleshooting Guide](./Troubleshooting_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.1.md
-- Line 410: `[API Reference](./API_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.1.md
+- Line 408: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 409: `[Troubleshooting Guide](./Troubleshooting_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Troubleshooting_v0.2.0.md
+- Line 410: `[API Reference](./API_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.0.md
 
 ### audit/Troubleshooting_v1.4.0.md
 
-- Line 506: `[Configuration Guide](./Configuration_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.1.md
-- Line 508: `[API Reference](./API_Reference_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.1.md
+- Line 506: `[Configuration Guide](./Configuration_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/Configuration_v0.2.0.md
+- Line 508: `[API Reference](./API_Reference_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/audit/API_Reference_v0.2.0.md
 
 ### bridge/README.md
 
@@ -666,13 +666,13 @@
 
 ### diagrams/ARCHITECTURE_DIAGRAMS.md
 
-- Line 21: `[`audit_pipeline_v0.2.1.mmd`](audit_pipeline_v0.2.1.mmd)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/diagrams/audit_pipeline_v0.2.1.mmd
+- Line 21: `[`audit_pipeline_v0.2.0.mmd`](audit_pipeline_v0.2.0.mmd)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/diagrams/audit_pipeline_v0.2.0.mmd
 
 ### diagrams/README.md
 
-- Line 20: `[`audit_pipeline_v0.2.1.mmd`](audit_pipeline_v0.2.1.mmd)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/diagrams/audit_pipeline_v0.2.1.mmd
+- Line 20: `[`audit_pipeline_v0.2.0.mmd`](audit_pipeline_v0.2.0.mmd)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/diagrams/audit_pipeline_v0.2.0.mmd
 
 ### evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md
 
@@ -1168,18 +1168,18 @@
 
 ### validation/INDEX.md
 
-- Line 34: `[Next_Iteration_Prompt_v0.2.1](Next_Iteration_Prompt_v0.2.1.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/Next_Iteration_Prompt_v0.2.1.md
-- Line 71: `[v0.2.1_Status_Report](v0.2.1_Status_Report.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.1_Status_Report.md
-- Line 72: `[v0.2.1_Refactor_Report](v0.2.1_Refactor_Report.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.1_Refactor_Report.md
-- Line 73: `[v0.2.1_Strict_Validation_Report](v0.2.1_Strict_Validation_Report.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.1_Strict_Validation_Report.md
-- Line 74: `[v0.2.1_Validation_Log](v0.2.1_Validation_Log.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.1_Validation_Log.md
-- Line 75: `[v0.2.1_Consolidation_Report](v0.2.1_Consolidation_Report.md)`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.1_Consolidation_Report.md
+- Line 34: `[Next_Iteration_Prompt_v0.2.0](Next_Iteration_Prompt_v0.2.0.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/Next_Iteration_Prompt_v0.2.0.md
+- Line 71: `[v0.2.0_Status_Report](v0.2.0_Status_Report.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.0_Status_Report.md
+- Line 72: `[v0.2.0_Refactor_Report](v0.2.0_Refactor_Report.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.0_Refactor_Report.md
+- Line 73: `[v0.2.0_Strict_Validation_Report](v0.2.0_Strict_Validation_Report.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.0_Strict_Validation_Report.md
+- Line 74: `[v0.2.0_Validation_Log](v0.2.0_Validation_Log.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.0_Validation_Log.md
+- Line 75: `[v0.2.0_Consolidation_Report](v0.2.0_Consolidation_Report.md)`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/validation/v0.2.0_Consolidation_Report.md
 
 ### workflows/PHASE1_TRACKING.md
 

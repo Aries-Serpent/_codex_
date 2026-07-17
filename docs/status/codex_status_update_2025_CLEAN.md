@@ -1,6 +1,6 @@
 # Codex Status Update 2026-07-13
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 09:00:51 | Author: mbaetiong
 

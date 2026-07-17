@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_4_ITERATION_IMPROVEMENT_SUMMARY/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 4 Iteration &amp; Improvement Summary - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2472,11 +2472,11 @@
 <a class="md-nav__link" href="#deliverables-generated">
 <span class="md-ellipsis">
       
-        📁 Deliverables Generated
+        Deliverables Generated
       
     </span>
 </a>
-<nav aria-label="📁 Deliverables Generated" class="md-nav">
+<nav aria-label="Deliverables Generated" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#reports-created">
@@ -2543,11 +2543,11 @@
 <a class="md-nav__link" href="#key-learnings">
 <span class="md-ellipsis">
       
-        🎓 Key Learnings
+        Key Learnings
       
     </span>
 </a>
-<nav aria-label="🎓 Key Learnings" class="md-nav">
+<nav aria-label="Key Learnings" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-pattern-tests-vs-integration-tests">
@@ -2632,11 +2632,11 @@
 <a class="md-nav__link" href="#references">
 <span class="md-ellipsis">
       
-        📞 References
+        References
       
     </span>
 </a>
-<nav aria-label="📞 References" class="md-nav">
+<nav aria-label="References" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#documentation">
@@ -2771,7 +2771,7 @@
 <h3 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Finding</strong>: 2.55% coverage matches expectations</li>
-<li><strong>Status</strong>:  Validates Phase 4.1 report accuracy</li>
+<li><strong>Status</strong>: Validates Phase 4.1 report accuracy</li>
 <li><strong>Conclusion</strong>: Test strategy needs adjustment for Phase 5</li>
 </ul>
 <hr/>
@@ -2872,22 +2872,22 @@
 <h4 id="what-not-to-do-phase-4-approach">What NOT to Do (Phase 4 Approach)<a class="headerlink" href="#what-not-to-do-phase-4-approach" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Pattern test - validates structure, not production code</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">def</span> <span class="nf">test_scope_hierarchical_admin_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="sd">"""Test hierarchical admin scope implies write + read."""</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="n">permission</span> <span class="o">=</span> <span class="s2">"admin"</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="k">if</span> <span class="n">permission</span> <span class="o">==</span> <span class="s2">"admin"</span><span class="p">:</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        <span class="n">implied</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"write"</span><span class="p">,</span> <span class="s2">"read"</span><span class="p">]</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="c1"># Uses mocks, doesn't test actual code</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="sd">"""Test hierarchical admin scope implies write + read."""</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> <span class="n">permission</span> <span class="o">=</span> <span class="s2">"admin"</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> <span class="k">if</span> <span class="n">permission</span> <span class="o">==</span> <span class="s2">"admin"</span><span class="p">:</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> <span class="n">implied</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"write"</span><span class="p">,</span> <span class="s2">"read"</span><span class="p">]</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> <span class="c1"># Uses mocks, doesn't test actual code</span>
 </code></pre></div>
 <h2 id="what-to-do-phase-5-approach">What TO Do (Phase 5 Approach)<a class="headerlink" href="#what-to-do-phase-5-approach" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Module integration test - tests production code</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">def</span> <span class="nf">test_token_scope_hierarchical_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="sd">"""Test TokenScope admin permission includes write and read."""</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="kn">from</span> <span class="nn">src.security.scope_validator</span> <span class="kn">import</span> <span class="n">TokenScope</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="sd">"""Test TokenScope admin permission includes write and read."""</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="kn">from</span> <span class="nn">src.security.scope_validator</span> <span class="kn">import</span> <span class="n">TokenScope</span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">scope</span> <span class="o">=</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">ADMIN_REPO</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="c1"># Test actual conditional branches in TokenScope class</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="k">assert</span> <span class="n">scope</span> <span class="o">&amp;</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">WRITE_REPO</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="k">assert</span> <span class="n">scope</span> <span class="o">&amp;</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">READ_REPO</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="n">scope</span> <span class="o">=</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">ADMIN_REPO</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> <span class="c1"># Test actual conditional branches in TokenScope class</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="k">assert</span> <span class="n">scope</span> <span class="o">&amp;</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">WRITE_REPO</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="k">assert</span> <span class="n">scope</span> <span class="o">&amp;</span> <span class="n">TokenScope</span><span class="o">.</span><span class="n">READ_REPO</span>
 </code></pre></div>
 <h2 id="phase-5-focus-areas">Phase 5 Focus Areas<a class="headerlink" href="#phase-5-focus-areas" title="Permanent link">¶</a></h2>
 <h3 id="priority-1-training-module-integration-target-8-coverage">Priority 1: Training Module Integration (Target: +8% coverage)<a class="headerlink" href="#priority-1-training-module-integration-target-8-coverage" title="Permanent link">¶</a></h3>
@@ -2933,7 +2933,7 @@
 <li><strong>Timeline</strong>: 3-4 phases</li>
 </ul>
 <hr/>
-<h2 id="deliverables-generated">📁 Deliverables Generated<a class="headerlink" href="#deliverables-generated" title="Permanent link">¶</a></h2>
+<h2 id="deliverables-generated">Deliverables Generated<a class="headerlink" href="#deliverables-generated" title="Permanent link">¶</a></h2>
 <h3 id="reports-created">Reports Created<a class="headerlink" href="#reports-created" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>coverage_validation_report.md</strong> - Comprehensive validation analysis</li>
@@ -2945,13 +2945,13 @@
 </ol>
 <h3 id="files-available-for-review">Files Available for Review<a class="headerlink" href="#files-available-for-review" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>/home/runner/work/_codex_/_codex_/
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>├──<span class="w"> </span>coverage_validation_report.md<span class="w">          </span><span class="c1"># Detailed validation report</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>├──<span class="w"> </span>coverage_phase4.json<span class="w">                   </span><span class="c1"># JSON coverage data</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>├──<span class="w"> </span>coverage_gaps.txt<span class="w">                      </span><span class="c1"># Gap analysis</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>├──<span class="w"> </span>pytest_phase4.log<span class="w">                      </span><span class="c1"># Test execution log</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>├──<span class="w"> </span>PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md<span class="w">  </span><span class="c1"># This summary</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>└──<span class="w"> </span>htmlcov/phase4_complete/
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">    </span>└──<span class="w"> </span>index.html<span class="w">                         </span><span class="c1"># HTML coverage report</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span>coverage_validation_report.md<span class="w"> </span><span class="c1"># Detailed validation report</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span>coverage_phase4.json<span class="w"> </span><span class="c1"># JSON coverage data</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span>coverage_gaps.txt<span class="w"> </span><span class="c1"># Gap analysis</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span>pytest_phase4.log<span class="w"> </span><span class="c1"># Test execution log</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span>PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md<span class="w"> </span><span class="c1"># This summary</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span>htmlcov/phase4_complete/
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span>index.html<span class="w"> </span><span class="c1"># HTML coverage report</span>
 </code></pre></div>
 <hr/>
 <h2 id="completion-status">Completion Status<a class="headerlink" href="#completion-status" title="Permanent link">¶</a></h2>
@@ -2980,7 +2980,7 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Commit reports (pending)</li>
 </ul>
 <hr/>
-<h2 id="key-learnings">🎓 Key Learnings<a class="headerlink" href="#key-learnings" title="Permanent link">¶</a></h2>
+<h2 id="key-learnings">Key Learnings<a class="headerlink" href="#key-learnings" title="Permanent link">¶</a></h2>
 <h3 id="1-pattern-tests-vs-integration-tests">1. Pattern Tests vs Integration Tests<a class="headerlink" href="#1-pattern-tests-vs-integration-tests" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Pattern Tests</strong>: Validate branch structure, not production code</li>
@@ -2995,7 +2995,7 @@
 </ul>
 <h3 id="3-test-strategy-evolution">3. Test Strategy Evolution<a class="headerlink" href="#3-test-strategy-evolution" title="Permanent link">¶</a></h3>
 <ul>
-<li>Phase 4: Established excellent test patterns </li>
+<li>Phase 4: Established excellent test patterns</li>
 <li>Phase 5: Must shift to module integration</li>
 <li>Phase 6+: Combine both approaches</li>
 </ul>
@@ -3029,7 +3029,7 @@
 <li>Coverage gaps reduced by 50+%</li>
 </ul>
 <hr/>
-<h2 id="references">📞 References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">¶</a></h3>
 <ul>
 <li>Phase 4.1 Summary</li>
@@ -3051,7 +3051,7 @@
 </ul>
 <hr/>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
-<p><strong>Phase 4 Iteration &amp; Improvement</strong>:  <strong>COMPLETE</strong></p>
+<p><strong>Phase 4 Iteration &amp; Improvement</strong>: <strong>COMPLETE</strong></p>
 <h3 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h3>
 <ul>
 <li>All 560 tests passing (100% success rate)</li>
@@ -3074,9 +3074,9 @@
 - Timeline: 3-4 phases
 - Tests: 100-150 integration tests</p>
 <hr/>
-<p><strong>Report Date</strong>: 2026-07-13<br/>
-<strong>Status</strong>:  Complete<br/>
-<strong>Next Action</strong>: Begin Phase 5 planning and execution<br/>
+<p><strong>Report Date</strong>: 2026-07-13
+<strong>Status</strong>: Complete
+<strong>Next Action</strong>: Begin Phase 5 planning and execution
 <strong>Prepared By</strong>: AI Agent (Copilot)</p>
 </article>
 </div>
@@ -3107,6 +3107,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

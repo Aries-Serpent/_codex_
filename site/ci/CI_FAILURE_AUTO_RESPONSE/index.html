@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/CI_FAILURE_AUTO_RESPONSE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI Failure Auto-Response - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2378,8 +2378,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Owner:</strong> @mbaetiong<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Owner:</strong> @mbaetiong
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-11
 </strong>Workflow:** <a href="../.github/workflows/ci-failure-issue-creator.yml"><code>.github/workflows/ci-failure-issue-creator.yml</code></a></p>
 </blockquote>
@@ -2390,153 +2390,185 @@ automatically:</p>
 <ol>
 <li><strong>Opens a GitHub Issue</strong> to track the failure (all severities).</li>
 <li><strong>For critical failures</strong> — creates a dedicated fix branch and opens a PR with an
-   <code>@copilot</code> command so the Copilot Coding Agent begins the investigation immediately.</li>
+ <code>@copilot</code> command so the Copilot Coding Agent begins the investigation immediately.</li>
 <li><strong>Enforces a single-branch rule</strong> — at most one <code>fix/ci-*</code> branch exists at any
-   given time. Additional failures are <em>queued</em> (issue opened, no second branch created).</li>
+ given time. Additional failures are <em>queued</em> (issue opened, no second branch created).</li>
 <li><strong>Posts every outcome</strong> to the ** PR Status Dashboard** via
-   <code>pr_comment_consolidator.py</code> — all state is visible in one place.</li>
+ <code>pr_comment_consolidator.py</code> — all state is visible in one place.</li>
 <li><strong>Auto-closes</strong> the tracking issue when the workflow passes on <code>main</code> again.</li>
 </ol>
 <hr/>
 <h2 id="1-end-to-end-process-map">1. End-to-End Process Map<a class="headerlink" href="#1-end-to-end-process-map" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing  CI Workflow completes on main, Job: close-on-fix'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    A([ CI Workflow completes on main]) --&gt; B{conclusion?}
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing CI Workflow completes on main, Job: close-on-fix'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    B -- success --&gt; Z1[Job: close-on-fix]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    Z1 --&gt; Z2{Open ci-failure\nissue for this workflow?}
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    Z2 -- Yes --&gt; Z3[ Auto-close issue\n+ post comment]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    Z2 -- No  --&gt; Z4([End — nothing to close])
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    B -- failure --&gt; C
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    subgraph LOCK [" Global Serialisation Lock (one instance at a time)"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        C[Job: triage\nClassify + Deduplicate]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> A([ CI Workflow completes on main]) --&gt; B{conclusion?}
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> B -- success --&gt; Z1[Job: close-on-fix]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Z1 --&gt; Z2{Open ci-failure\nissue for this workflow?}
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> Z2 -- Yes --&gt; Z3[ Auto-close issue\n+ post comment]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Z2 -- No --&gt; Z4([End — nothing to close])
 <a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        C --&gt; D{L1: open ci-failure\nissue already exists?}
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        D -- Yes --&gt; E1[action = skip]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        D -- No --&gt; F{L2: any fix/ci-*\nbranch active?}
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        F -- Yes --&gt; E2[action = queue\nSingle-branch rule active]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        F -- No  --&gt; E3[action = new_issue]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    end
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    E1 --&gt; DASH
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    E2 --&gt; ISS
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    E3 --&gt; ISS
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    ISS[Job: create-issue\nOpen labelled GitHub Issue]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    ISS --&gt; SEV{severity?}
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    SEV -- normal   --&gt; DASH
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    SEV -- critical --&gt; FPR[Job: create-fix-pr\nCreate fix/ci-* branch\nOpen PR + @copilot command]
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    FPR --&gt; DASH
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> B -- failure --&gt; C
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> subgraph LOCK [" Global Serialisation Lock (one instance at a time)"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> C[Job: triage\nClassify + Deduplicate]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> C --&gt; D{L1: open ci-failure\nissue already exists?}
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> D -- Yes --&gt; E1[action = skip]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> D -- No --&gt; F{L2: any fix/ci-*\nbranch active?}
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> F -- Yes --&gt; E2[action = queue\nSingle-branch rule active]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> F -- No --&gt; E3[action = new_issue]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> end
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> E1 --&gt; DASH
 <a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    DASH[Job: post-dashboard\nUpdate PR Status Dashboard\nvia pr_comment_consolidator.py]
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    DASH --&gt; END([End])
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> E2 --&gt; ISS
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> E3 --&gt; ISS
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> ISS[Job: create-issue\nOpen labelled GitHub Issue]
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> ISS --&gt; SEV{severity?}
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> SEV -- normal --&gt; DASH
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> SEV -- critical --&gt; FPR[Job: create-fix-pr\nCreate fix/ci-* branch\nOpen PR + @copilot command]
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> FPR --&gt; DASH
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> DASH[Job: post-dashboard\nUpdate PR Status Dashboard\nvia pr_comment_consolidator.py]
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> DASH --&gt; END([End])
 </code></pre></div>
 <hr/>
 <h2 id="2-single-branch-rule-state-diagram">2. Single-Branch Rule — State Diagram<a class="headerlink" href="#2-single-branch-rule-state-diagram" title="Permanent link">¶</a></h2>
-<p>Only <strong>one</strong> <code>fix/ci-*</code> branch may exist at a time.<br/>
+<p>Only <strong>one</strong> <code>fix/ci-*</code> branch may exist at a time.
 Subsequent failures are queued until the active branch merges.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>stateDiagram-v2
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    direction LR
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    [*]          --&gt; Idle          : system start
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    Idle         --&gt; Triaging      : workflow_run.failure on main
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>stateDiagram-v2
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> direction LR
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> [*] --&gt; Idle : system start
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    Triaging     --&gt; Skipped       : existing issue found (L1)
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    Triaging     --&gt; Queued        : fix branch active (L2 — single-branch rule)
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    Triaging     --&gt; IssueOpened   : no existing tracker
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> Idle --&gt; Triaging : workflow_run.failure on main
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> Triaging --&gt; Skipped : existing issue found (L1)
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    IssueOpened  --&gt; FixPROpen     : severity == critical
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    IssueOpened  --&gt; AwaitingFix   : severity == normal
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    FixPROpen    --&gt; CopilotActive : @copilot assigned
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    CopilotActive --&gt; FixMerged   : PR approved + merged to main
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> Triaging --&gt; Queued : fix branch active (L2 — single-branch rule)
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> Triaging --&gt; IssueOpened : no existing tracker
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> IssueOpened --&gt; FixPROpen : severity == critical
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    AwaitingFix  --&gt; FixMerged    : developer merges fix
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> IssueOpened --&gt; AwaitingFix : severity == normal
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    FixMerged    --&gt; IssueClosed  : workflow_run.success on main
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    Queued       --&gt; Triaging     : active fix branch merges (re-triggered)
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    IssueClosed  --&gt; Idle
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    Skipped      --&gt; Idle
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> FixPROpen --&gt; CopilotActive : @copilot assigned
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> CopilotActive --&gt; FixMerged : PR approved + merged to main
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> AwaitingFix --&gt; FixMerged : developer merges fix
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    note right of Queued
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>      Dashboard shows queue state.
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>      Issue opened with "QUEUED" label.
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>      No second branch created.
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>    end note
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> FixMerged --&gt; IssueClosed : workflow_run.success on main
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> Queued --&gt; Triaging : active fix branch merges (re-triggered)
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> IssueClosed --&gt; Idle
 <a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>    note right of FixPROpen
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>      Branch: fix/ci-&lt;slug&gt;-&lt;ts&gt;
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>      PR body: @copilot instructions
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>      Issue cross-linked to PR
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    end note
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> Skipped --&gt; Idle
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> note right of Queued
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a> Dashboard shows queue state.
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a> Issue opened with "QUEUED" label.
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a> No second branch created.
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a> end note
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a> note right of FixPROpen
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a> Branch: fix/ci-&lt;slug&gt;-&lt;ts&gt;
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a> PR body: @copilot instructions
+<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a> Issue cross-linked to PR
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a> end note
 </code></pre></div>
 <hr/>
 <h2 id="3-severity-classification">3. Severity Classification<a class="headerlink" href="#3-severity-classification" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name,  Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>flowchart LR
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    WF([Workflow Name]) --&gt; SC{Pattern match}
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name, Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart LR
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    SC --&gt;|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    SC --&gt;|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    SC --&gt;|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    SC --&gt;|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    S1 &amp; S2 &amp; S3 --&gt; FPR[ Fix PR\n+ @copilot]
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    S4 --&gt; ISO[ Issue only\nManual fix]
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> WF([Workflow Name]) --&gt; SC{Pattern match}
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> SC --&gt;|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> SC --&gt;|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> SC --&gt;|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> SC --&gt;|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> S1 &amp; S2 &amp; S3 --&gt; FPR[ Fix PR\n+ @copilot]
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> S4 --&gt; ISO[ Issue only\nManual fix]
 </code></pre></div>
 <hr/>
 <h2 id="4-actor-interaction-sequence-diagram">4. Actor Interaction — Sequence Diagram<a class="headerlink" href="#4-actor-interaction-sequence-diagram" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: &gt;&gt; DEV : issue opened, manual '}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>sequenceDiagram
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    actor CI   as CI Workflow (main)
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    participant WR as workflow_run trigger
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    participant T  as triage job ( locked)
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    participant GH as GitHub API
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    participant DB as PR Status Dashboard
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    participant CP as @copilot Agent
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    actor DEV  as Developer
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    CI  -&gt;&gt; WR : concludes: failure
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    WR  -&gt;&gt; T  : acquire global lock → start
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    T   -&gt;&gt; GH : list open ci-failure issues (L1)
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    T   -&gt;&gt; GH : list all branches — find fix/ci-* (L2)
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    alt No existing issue AND no fix branch
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>        T  -&gt;&gt; GH : create GitHub Issue
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>        alt severity == critical
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>            T  -&gt;&gt; GH : create fix/ci-&lt;slug&gt; branch
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>            T  -&gt;&gt; GH : open PR (head=fix/ci-*, base=main)
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>            T  -&gt;&gt; CP : @copilot diagnose and fix
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>            CP -&gt;&gt; GH : push commits to fix branch
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>            DEV -&gt;&gt; GH : review + approve PR
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>            GH -&gt;&gt; CI : merge fix/ci-* → main
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>        else severity == normal
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>            T  --&gt;&gt; DEV : issue opened, manual fix required
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>        end
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>    else Fix branch already active  (single-branch rule)
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>        T  -&gt;&gt; GH : create GitHub Issue (queued state)
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>        Note over T,GH : No new branch. Queue shown on dashboard.
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>    else Existing issue already open
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>        Note over T : Skip — no duplicate issue or branch
-<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>    end
-<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>
-<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>    T   -&gt;&gt; DB : update PR Status Dashboard section
-<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>    WR  --&gt;&gt; T : release global lock
-<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>    CI  -&gt;&gt; WR : concludes: success (after fix)
-<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a>    WR  -&gt;&gt; GH : auto-close matching ci-failure issues
-<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>    GH  -&gt;&gt; DB : post  resolved section to dashboard
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>sequenceDiagram
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> actor CI as CI Workflow (main)
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> participant WR as workflow_run trigger
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> participant T as triage job ( locked)
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> participant GH as GitHub API
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> participant DB as PR Status Dashboard
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> participant CP as @copilot Agent
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a> actor DEV as Developer
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> CI -&gt;&gt; WR : concludes: failure
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> WR -&gt;&gt; T : acquire global lock start
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> T -&gt;&gt; GH : list open ci-failure issues (L1)
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> T -&gt;&gt; GH : list all branches — find fix/ci-* (L2)
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> alt No existing issue AND no fix branch
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> T -&gt;&gt; GH : create GitHub Issue
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> alt severity == critical
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> T -&gt;&gt; GH : create fix/ci-&lt;slug&gt; branch
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a> T -&gt;&gt; GH : open PR (head=fix/ci-*, base=main)
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> T -&gt;&gt; CP : @copilot diagnose and fix
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a> CP -&gt;&gt; GH : push commits to fix branch
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> DEV -&gt;&gt; GH : review + approve PR
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> GH -&gt;&gt; CI : merge fix/ci-* main
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> else severity == normal
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> T --&gt;&gt; DEV : issue opened, manual fix required
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a> end
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> else Fix branch already active (single-branch rule)
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a> T -&gt;&gt; GH : create GitHub Issue (queued state)
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> Note over T,GH : No new branch. Queue shown on dashboard.
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a> else Existing issue already open
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a> Note over T : Skip — no duplicate issue or branch
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a> end
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a> T -&gt;&gt; DB : update PR Status Dashboard section
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>
+<a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a> WR --&gt;&gt; T : release global lock
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>
+<a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a> CI -&gt;&gt; WR : concludes: success (after fix)
+<a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a> WR -&gt;&gt; GH : auto-close matching ci-failure issues
+<a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a> GH -&gt;&gt; DB : post resolved section to dashboard
 </code></pre></div>
 <hr/>
 <h2 id="5-dashboard-integration">5. Dashboard Integration<a class="headerlink" href="#5-dashboard-integration" title="Permanent link">¶</a></h2>
 <p>Every outcome writes <strong>one section</strong> to the ** PR Status Dashboard** comment on the
-active PR.  No additional standalone comments are posted.</p>
+active PR. No additional standalone comments are posted.</p>
 <table>
 <thead>
 <tr>
@@ -2553,21 +2585,21 @@ active PR.  No additional standalone comments are posted.</p>
 </tr>
 <tr>
 <td>Skip (existing issue)</td>
-<td>️ warning</td>
+<td>warning</td>
 <td><code>\</code>CodeQL Analysis` failed — existing tracker covers this`</td>
 </tr>
 <tr>
 <td>Queued (branch active)</td>
-<td>️ warning</td>
+<td>warning</td>
 <td><code>\</code>CodeQL Analysis` failed — queued (single-branch rule active)`</td>
 </tr>
 <tr>
-<td>Normal failure → new issue</td>
+<td>Normal failure new issue</td>
 <td>failure</td>
 <td><code>\</code>Data Quality Suite` failed — issue opened, manual fix required`</td>
 </tr>
 <tr>
-<td>Critical → fix PR opened</td>
+<td>Critical fix PR opened</td>
 <td>failure</td>
 <td><code>CRITICAL \</code>Auth Tests` failed — fix PR opened, @copilot assigned`</td>
 </tr>
@@ -2576,21 +2608,22 @@ active PR.  No additional standalone comments are posted.</p>
 <hr/>
 <h2 id="6-single-branch-queue-visualisation">6. Single-Branch Queue Visualisation<a class="headerlink" href="#6-single-branch-queue-visualisation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Timeline'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>gantt
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    title  Single-Branch Rule — Failure Queue Timeline
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    dateFormat HH:mm
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    axisFormat %H:%M
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    section Active Fix
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    fix/ci-auth-tests (PR #N)   : active, a1, 09:00, 60m
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    section Queued Failures
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    CodeQL fails → Issue #M     : crit, q1, 09:05, 55m
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    Docker Build fails → Issue #P : crit, q2, 09:20, 40m
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    section Resolution
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    fix/ci-auth-tests merged    : milestone, m1, 10:00, 0m
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    Queue processed (next triage) : q3, 10:00, 5m
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>gantt
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a> title Single-Branch Rule — Failure Queue Timeline
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> dateFormat HH:mm
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> axisFormat %H:%M
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> section Active Fix
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> fix/ci-auth-tests (PR #N) : active, a1, 09:00, 60m
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> section Queued Failures
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> CodeQL fails Issue #M : crit, q1, 09:05, 55m
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> Docker Build fails Issue #P : crit, q2, 09:20, 40m
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> section Resolution
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> fix/ci-auth-tests merged : milestone, m1, 10:00, 0m
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> Queue processed (next triage) : q3, 10:00, 5m
 </code></pre></div>
 <blockquote>
 <p><strong>Queue rule:</strong> Issues <code>#M</code> and <code>#P</code> are opened immediately with a "QUEUED" note
@@ -2600,17 +2633,21 @@ linking to the active fix branch. No second <code>fix/ci-*</code> branch is crea
 <hr/>
 <h2 id="7-job-dependency-graph">7. Job Dependency Graph<a class="headerlink" href="#7-job-dependency-graph" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing triage\n holds global lock, create-issue\nall non-skip failures'}}%%
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>graph LR
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    T[triage\n holds global lock]
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    T --&gt; CI[create-issue\nall non-skip failures]
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    T --&gt; CF[close-on-fix\nsuccess path only]
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>graph LR
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> T[triage\n holds global lock]
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> T --&gt; CI[create-issue\nall non-skip failures]
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    CI --&gt; FP[create-fix-pr\ncritical + new_issue only]
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> T --&gt; CF[close-on-fix\nsuccess path only]
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    CI  --&gt; PD[post-dashboard]
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    FP  --&gt; PD
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    T   --&gt; PD
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> CI --&gt; FP[create-fix-pr\ncritical + new_issue only]
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> CI --&gt; PD[post-dashboard]
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> FP --&gt; PD
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> T --&gt; PD
 </code></pre></div>
 <hr/>
 <h2 id="8-configuration-reference">8. Configuration Reference<a class="headerlink" href="#8-configuration-reference" title="Permanent link">¶</a></h2>
@@ -2665,11 +2702,11 @@ linking to the active fix branch. No second <code>fix/ci-*</code> branch is crea
 <p>To monitor an additional workflow, add its <strong>exact <code>name:</code> field value</strong> to the
 <code>workflows:</code> list in <code>.github/workflows/ci-failure-issue-creator.yml</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">workflow_run</span><span class="p">:</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">    </span><span class="nt">workflows</span><span class="p">:</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">New</span><span class="nv"> </span><span class="s">Workflow"</span><span class="w">   </span><span class="c1"># ← add here</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">completed</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">workflow_run</span><span class="p">:</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">workflows</span><span class="p">:</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">New</span><span class="nv"> </span><span class="s">Workflow"</span><span class="w"> </span><span class="c1"># add here</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">completed</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <hr/>
 <h2 id="10-troubleshooting">10. Troubleshooting<a class="headerlink" href="#10-troubleshooting" title="Permanent link">¶</a></h2>
@@ -2706,7 +2743,7 @@ linking to the active fix branch. No second <code>fix/ci-*</code> branch is crea
 </table>
 <hr/>
 <blockquote>
-<p><em>This document is maintained alongside <code>.github/workflows/ci-failure-issue-creator.yml</code>.<br/>
+<p><em>This document is maintained alongside <code>.github/workflows/ci-failure-issue-creator.yml</code>.
 Update both when changing the process logic.</em></p>
 </blockquote>
 </article>
@@ -2738,6 +2775,6 @@ Update both when changing the process logic.</em></p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

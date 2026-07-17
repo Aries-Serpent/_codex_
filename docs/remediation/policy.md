@@ -1,6 +1,6 @@
 # [Playbook]: Gate Policy and Tuning
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5

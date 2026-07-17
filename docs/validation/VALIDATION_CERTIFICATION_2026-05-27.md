@@ -1,9 +1,9 @@
 # Codebase Validation Certification Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
-**Aries-Serpent/_codex_ v0.2.1 | 2026-05-27**
+**Aries-Serpent/_codex_ v0.2.0 | 2026-05-27**
 
 ---
 
@@ -78,7 +78,7 @@ Using **Status Quality Rubric v1.2**, final scores:
 - `pyproject.toml` defines enterprise dependencies (Hydra, MLflow, Ray Serve, FastAPI)
 - `.github/workflows/` contains 39+ production-grade CI/CD pipelines
 - `.codex/CODEBASE_AGENCY_POLICY.md` mandates enterprise standards
-- `docs/system/CODEBASE_COGNITIVE_MAP.md` v0.2.1 documents architecture at scale
+- `docs/system/CODEBASE_COGNITIVE_MAP.md` v0.2.0 documents architecture at scale
 
 **Certification:** VERIFIED — Production confirmed by metrics, architecture, and governance.
 
@@ -180,8 +180,8 @@ Using **Status Quality Rubric v1.2**, final scores:
 **Status:** TESTED — 22K+ tests, 100% pass rate, automated gates
 
 #### 3.4 Documentation
-- **Architecture:** `docs/system/CODEBASE_COGNITIVE_MAP.md` (v0.2.1)
-- **Diagrams:** `docs/CODEBASE_MERMAID_MAPS.md` (v0.2.1, S1259)
+- **Architecture:** `docs/system/CODEBASE_COGNITIVE_MAP.md` (v0.2.0)
+- **Diagrams:** `docs/CODEBASE_MERMAID_MAPS.md` (v0.2.0, S1259)
 - **Rubrics:** 3 scoring/quality rubrics documented
 - **Roadmaps:** Phase plans through Phase 10
 
@@ -355,7 +355,7 @@ Using **Status Quality Rubric v1.2**, final scores:
 - **Auditor:** GitHub Copilot Task Agent
 - **Audit Date:** 2026-05-27T17:21:41.527+00:00
 - **Repository:** `Aries-Serpent/_codex_`
-- **Codebase Version:** v0.2.1 Pre-Release
+- **Codebase Version:** v0.2.0 Pre-Release
 
 ### Certification Results
 
@@ -388,7 +388,7 @@ Using **Status Quality Rubric v1.2**, final scores:
 
 **RECOMMENDATION: APPROVED FOR PRODUCTION USE**
 
-The `_codex_` v0.2.1 platform meets all Production requirements. The claim "Production, AI-augmented ML platform designed for production use with sophisticated autonomy, security, and observability built-in" is **95% accurate** and **100% actionable**.
+The `_codex_` v0.2.0 platform meets all Production requirements. The claim "Production, AI-augmented ML platform designed for production use with sophisticated autonomy, security, and observability built-in" is **95% accurate** and **100% actionable**.
 
 **Gaps Identified & Addressed:**
 1. Observability roadmap — Created `docs/observability/MONITORING_ROADMAP.md`

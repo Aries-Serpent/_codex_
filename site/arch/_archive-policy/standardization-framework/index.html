@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/_archive-policy/standardization-framework/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Archive Standardization Framework - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2291,7 +2291,7 @@
 <a class="md-nav__link" href="#1-schema-versioning-v1-v2">
 <span class="md-ellipsis">
       
-        1. Schema Versioning (v1 → v2)
+        1. Schema Versioning (v1 v2)
       
     </span>
 </a>
@@ -2374,7 +2374,7 @@
 <h2 id="executive-overview">Executive Overview<a class="headerlink" href="#executive-overview" title="Permanent link">¶</a></h2>
 <p>The standardization framework elevates the <em>codex</em> archive system from baseline production implementation to industry-aligned, fully auditable methodology framework aligned with SLSA L3, in-toto, and SAA standards while maintaining complete <strong>backward compatibility</strong> with v1 records.</p>
 <h2 id="standardization-pillars">Standardization Pillars<a class="headerlink" href="#standardization-pillars" title="Permanent link">¶</a></h2>
-<h3 id="1-schema-versioning-v1-v2">1. Schema Versioning (v1 → v2)<a class="headerlink" href="#1-schema-versioning-v1-v2" title="Permanent link">¶</a></h3>
+<h3 id="1-schema-versioning-v1-v2">1. Schema Versioning (v1 v2)<a class="headerlink" href="#1-schema-versioning-v1-v2" title="Permanent link">¶</a></h3>
 <p><strong>Objective</strong>: Enable schema evolution without breaking existing deployments</p>
 <p><strong>Implementation Details</strong>:</p>
 <table>
@@ -2406,17 +2406,17 @@
 <p><strong>Example v2 Record</strong>:
 <code>json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442...",
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "slsa_level": "L3",
-    "signature": "MEUCIQDx...",
-    "issuer": "https://token.actions.githubusercontent.com"
-  }
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442...",
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "slsa_level": "L3",
+ "signature": "MEUCIQDx...",
+ "issuer": "https://token.actions.githubusercontent.com"
+ }
 }</code>text</p>
 <h3 id="2-cryptographic-signing-sigstore-keyless">2. Cryptographic Signing (Sigstore Keyless)<a class="headerlink" href="#2-cryptographic-signing-sigstore-keyless" title="Permanent link">¶</a></h3>
 <p><strong>Objective</strong>: Achieve SLSA L3 cryptographic identity binding</p>
@@ -2455,15 +2455,15 @@
 <p><strong>Identity Flow</strong>:
 <code>text
 GitHub Actions Job
-  ↓ (id-token permission)
+ (id-token permission)
 GitHub OIDC Provider
-  ↓ (SIGSTORE_ID_TOKEN)
+ (SIGSTORE_ID_TOKEN)
 _codex_ archive store()
-  ↓ (calls Fulcio)
+ (calls Fulcio)
 Ephemeral Certificate
-  ↓ (signs evidence record)
+ (signs evidence record)
 Signature + Certificate
-  ↓ (uploaded to Rekor)
+ (uploaded to Rekor)
 Transparency Log Entry</code>text</p>
 <h3 id="3-schema-validation">3. Schema Validation<a class="headerlink" href="#3-schema-validation" title="Permanent link">¶</a></h3>
 <p><strong>Objective</strong>: Ensure all records conform to their declared schema version</p>
@@ -2471,7 +2471,7 @@ Transparency Log Entry</code>text</p>
 <ol>
 <li><strong>On Write</strong>: Record validated against target schema before appending to JSONL</li>
 <li><strong>On Read</strong>: Record validated before use (cached validators for performance)</li>
-<li><strong>On Migrate</strong>: Both source and target schemas validated during v1→v2 migration</li>
+<li><strong>On Migrate</strong>: Both source and target schemas validated during v1v2 migration</li>
 </ol>
 <p><strong>Tool</strong>: <code>EvidenceSchemaValidator</code> class</p>
 <h3 id="4-standardization-metadata">4. Standardization Metadata<a class="headerlink" href="#4-standardization-metadata" title="Permanent link">¶</a></h3>
@@ -2479,14 +2479,14 @@ Transparency Log Entry</code>text</p>
 <p><strong>Metadata Fields</strong>:</p>
 <p><code>text
 StandardizationMetadata(
-    schema_version: str = "2.0",                      # v2 identifier
-    slsa_level: str = "L3",                           # SLSA compliance
-    signature: Optional[str] = None,                  # Sigstore signature
-    certificate_chain: Optional[list[str]] = None,    # Fulcio certs
-    issuer: Optional[str] = None,                     # OIDC issuer
-    signed_at: Optional[str] = None,                  # Signature timestamp
-    in_toto_attestation_id: Optional[str] = None,     # Link metadata (Phase 2+)
-    merkle_proof: Optional[Dict[str, Any]] = None     # Tree proof (Phase 3+)
+ schema_version: str = "2.0", # v2 identifier
+ slsa_level: str = "L3", # SLSA compliance
+ signature: Optional[str] = None, # Sigstore signature
+ certificate_chain: Optional[list[str]] = None, # Fulcio certs
+ issuer: Optional[str] = None, # OIDC issuer
+ signed_at: Optional[str] = None, # Signature timestamp
+ in_toto_attestation_id: Optional[str] = None, # Link metadata (Phase 2+)
+ merkle_proof: Optional[Dict[str, Any]] = None # Tree proof (Phase 3+)
 )</code>text</p>
 <h2 id="standardization-guarantees">Standardization Guarantees<a class="headerlink" href="#standardization-guarantees" title="Permanent link">¶</a></h2>
 <table>
@@ -2540,14 +2540,14 @@ StandardizationMetadata(
 <h2 id="github-actions-integration">GitHub Actions Integration<a class="headerlink" href="#github-actions-integration" title="Permanent link">¶</a></h2>
 <p>```yaml
 permissions:
-  id-token: write  # ← REQUIRED for OIDC token
-  contents: read</p>
+ id-token: write # REQUIRED for OIDC token
+ contents: read</p>
 <p>steps:
-  - name: Archive with standardization
-    env:
-      CODEX_STANDARDIZATION_ENABLED: "true"
-      CODEX_ENABLE_SIGNING: "true"
-    run: python -m codex.cli archive store <em>codex</em> file.py --reason "test" --by "${{ github.actor }}"
+ - name: Archive with standardization
+ env:
+ CODEX_STANDARDIZATION_ENABLED: "true"
+ CODEX_ENABLE_SIGNING: "true"
+ run: python -m codex.cli archive store <em>codex</em> file.py --reason "test" --by "${{ github.actor }}"
 ```text</p>
 <h2 id="compliance-mapping">Compliance Mapping<a class="headerlink" href="#compliance-mapping" title="Permanent link">¶</a></h2>
 <h3 id="slsa-l3-alignment">SLSA L3 Alignment<a class="headerlink" href="#slsa-l3-alignment" title="Permanent link">¶</a></h3>
@@ -2639,19 +2639,19 @@ permissions:
 <ol>
 <li>
 <p><strong>Disable standardization</strong>:
-   <code>bash
-   export CODEX_STANDARDIZATION_ENABLED=false</code></p>
+ <code>bash
+ export CODEX_STANDARDIZATION_ENABLED=false</code></p>
 </li>
 <li>
 <p><strong>Revert database migrations</strong> (if applied):
-   <code>bash
-   # SQLite: No explicit rollback needed (columns optional)
-   # Postgres/MariaDB: Use `ALTER TABLE DROP COLUMN` if necessary</code></p>
+ <code>bash
+ # SQLite: No explicit rollback needed (columns optional)
+ # Postgres/MariaDB: Use `ALTER TABLE DROP COLUMN` if necessary</code></p>
 </li>
 <li>
 <p><strong>Restore from backup</strong>:
-   <code>bash
-   cp .codex/evidence/archive_ops.jsonl.backup .codex/evidence/archive_ops.jsonl</code></p>
+ <code>bash
+ cp .codex/evidence/archive_ops.jsonl.backup .codex/evidence/archive_ops.jsonl</code></p>
 </li>
 </ol>
 <h2 id="validation-testing">Validation &amp; Testing<a class="headerlink" href="#validation-testing" title="Permanent link">¶</a></h2>
@@ -2663,8 +2663,8 @@ permissions:
 <p>pytest tests/archive/test_standardization.py -v</p>
 <h1 id="validate-evidence-log">Validate evidence log<a class="headerlink" href="#validate-evidence-log" title="Permanent link">¶</a></h1>
 <p>python -m codex.cli archive validate-standardization \
-  --check-schema-version \
-  --check-signatures
+ --check-schema-version \
+ --check-signatures
 ```text</p>
 <h2 id="post-deployment-verification">Post-Deployment Verification<a class="headerlink" href="#post-deployment-verification" title="Permanent link">¶</a></h2>
 <p>```bash</p>
@@ -2685,7 +2685,7 @@ python -m codex.cli archive show-standardization-status</p>
 <h1 id="_2">============================================================<a class="headerlink" href="#_2" title="Permanent link">¶</a></h1>
 <h1 id="standard-version-20">Standard Version: 2.0<a class="headerlink" href="#standard-version-20" title="Permanent link">¶</a></h1>
 <h1 id="slsa-level-l3">SLSA Level: L3<a class="headerlink" href="#slsa-level-l3" title="Permanent link">¶</a></h1>
-<h1 id="signing-enabled-yes">Signing Enabled:  Yes<a class="headerlink" href="#signing-enabled-yes" title="Permanent link">¶</a></h1>
+<h1 id="signing-enabled-yes">Signing Enabled: Yes<a class="headerlink" href="#signing-enabled-yes" title="Permanent link">¶</a></h1>
 <h1 id="schema-versions-supported-10-20">Schema Versions Supported: 1.0, 2.0<a class="headerlink" href="#schema-versions-supported-10-20" title="Permanent link">¶</a></h1>
 <h1 id="_3"><a class="headerlink" href="#_3" title="Permanent link">¶</a></h1>
 <h1 id="compliance">Compliance:<a class="headerlink" href="#compliance" title="Permanent link">¶</a></h1>
@@ -2699,7 +2699,7 @@ python -m codex.cli archive show-standardization-status</p>
 <p>python -m codex.cli archive validate-standardization --check-schema-version</p>
 <h1 id="validate-signatures">Validate signatures<a class="headerlink" href="#validate-signatures" title="Permanent link">¶</a></h1>
 <p>python -m codex.cli archive validate-standardization --check-signatures</p>
-<h1 id="attempt-repair-migrate-v1v2">Attempt repair (migrate v1→v2)<a class="headerlink" href="#attempt-repair-migrate-v1v2" title="Permanent link">¶</a></h1>
+<h1 id="attempt-repair-migrate-v1v2">Attempt repair (migrate v1v2)<a class="headerlink" href="#attempt-repair-migrate-v1v2" title="Permanent link">¶</a></h1>
 <p>python -m codex.cli archive validate-standardization --check-schema-version --repair
 ```text</p>
 <h2 id="migrate-to-v2-schema">Migrate to v2 Schema<a class="headerlink" href="#migrate-to-v2-schema" title="Permanent link">¶</a></h2>
@@ -2707,25 +2707,25 @@ python -m codex.cli archive show-standardization-status</p>
 <h1 id="interactive-migration-with-confirmation">Interactive migration with confirmation<a class="headerlink" href="#interactive-migration-with-confirmation" title="Permanent link">¶</a></h1>
 <p>python -m codex.cli archive migrate-evidence-to-v2</p>
 <h1 id="output_1">Output:<a class="headerlink" href="#output_1" title="Permanent link">¶</a></h1>
-<h1 id="this-will-modify-codexevidencearchive_opsjsonl-continue-yn-y">️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y<a class="headerlink" href="#this-will-modify-codexevidencearchive_opsjsonl-continue-yn-y" title="Permanent link">¶</a></h1>
-<h1 id="starting-migration-v1-v2">Starting migration v1 → v2...<a class="headerlink" href="#starting-migration-v1-v2" title="Permanent link">¶</a></h1>
-<h1 id="backed-up-original-to-codexevidencearchive_opsjsonlbackup">📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup<a class="headerlink" href="#backed-up-original-to-codexevidencearchive_opsjsonlbackup" title="Permanent link">¶</a></h1>
+<h1 id="this-will-modify-codexevidencearchive_opsjsonl-continue-yn-y">This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y<a class="headerlink" href="#this-will-modify-codexevidencearchive_opsjsonl-continue-yn-y" title="Permanent link">¶</a></h1>
+<h1 id="starting-migration-v1-v2">Starting migration v1 v2...<a class="headerlink" href="#starting-migration-v1-v2" title="Permanent link">¶</a></h1>
+<h1 id="backed-up-original-to-codexevidencearchive_opsjsonlbackup">Backed up original to: .codex/evidence/archive_ops.jsonl.backup<a class="headerlink" href="#backed-up-original-to-codexevidencearchive_opsjsonlbackup" title="Permanent link">¶</a></h1>
 <h1 id="migration-complete-1234-records-converted">Migration complete: 1234 records converted<a class="headerlink" href="#migration-complete-1234-records-converted" title="Permanent link">¶</a></h1>
 <h1 id="v1-records-0">v1 records: 0<a class="headerlink" href="#v1-records-0" title="Permanent link">¶</a></h1>
 <h1 id="v2-records-1234">v2 records: 1234<a class="headerlink" href="#v2-records-1234" title="Permanent link">¶</a></h1>
 <p>```text</p>
 <h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">¶</a></h2>
-<p><strong>Q: Will v1 records break?</strong><br/>
+<p><strong>Q: Will v1 records break?</strong>
 A: No. v1 records remain fully supported and valid.</p>
-<p><strong>Q: Can I disable signing?</strong><br/>
+<p><strong>Q: Can I disable signing?</strong>
 A: Yes, via <code>CODEX_ENABLE_SIGNING=false</code>, but SLSA L3 requires signing.</p>
-<p><strong>Q: What if Sigstore is unavailable?</strong><br/>
+<p><strong>Q: What if Sigstore is unavailable?</strong>
 A: Archives will fail if signing enabled but Sigstore unreachable. Fallback to <code>CODEX_ENABLE_SIGNING=false</code> for continuity.</p>
-<p><strong>Q: Can I verify signatures offline?</strong><br/>
+<p><strong>Q: Can I verify signatures offline?</strong>
 A: No—signature verification requires Rekor transparency log access.</p>
-<p><strong>Q: Will standardization impact performance?</strong><br/>
+<p><strong>Q: Will standardization impact performance?</strong>
 A: Minor overhead (~5-10%) for signing operations, negligible for reads.</p>
-<p><strong>Q: How do I verify backward compatibility?</strong><br/>
+<p><strong>Q: How do I verify backward compatibility?</strong>
 A: Run the test suite: <code>pytest tests/archive/test_standardization.py::TestBackwardCompatibility</code></p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
@@ -2781,6 +2781,6 @@ A: Run the test suite: <code>pytest tests/archive/test_standardization.py::TestB
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

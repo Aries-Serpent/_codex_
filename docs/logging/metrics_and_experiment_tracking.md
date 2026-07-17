@@ -1,6 +1,6 @@
 # Metrics & Experiment Tracking in `_codex_` (Scaffolding)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -50,7 +50,7 @@ python tools/codex_experiment_index.py \
 
 ## 3. Task Sequence Integration
 
-`codex_task_sequence.yaml` (v0.2.1) includes a Finalization step to regenerate
+`codex_task_sequence.yaml` (v0.2.0) includes a Finalization step to regenerate
 the experiment index so recent runs are reflected in the summary artifacts.
 
 ## 4. Future Extensions

@@ -552,7 +552,7 @@ https://aries-serpent.github.io/_codex_/cognitive_app/
 
 ## Section 8: Next Steps
 
-### Immediate (v0.2.1)
+### Immediate (v0.2.0)
 - [ ] Deploy to GitHub Pages
 - [ ] Monitor for runtime errors
 - [ ] Gather user feedback

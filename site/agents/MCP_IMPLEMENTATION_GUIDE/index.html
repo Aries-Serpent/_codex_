@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agents/MCP_IMPLEMENTATION_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>MCP Implementation Guide for AI Agents - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2454,33 +2454,33 @@
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">¶</a></h2>
 <h3 id="mcp-module-locations">MCP Module Locations<a class="headerlink" href="#mcp-module-locations" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>src/mcp/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── __init__.py          # Package exports
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── auth.py              # Authentication (MCPAuthenticator)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>├── config.py            # Configuration (MCPConfig)
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>├── errors.py            # Error hierarchy (MCPError)
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>├── lifecycle.py         # Lifecycle management (LifecycleManager)
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├── observability.py     # Metrics/tracing (MetricsRegistry, Tracer)
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>├── rate_limit.py        # Rate limiting (TokenBucketRateLimiter)
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├── registry.py          # Tool registry (ToolRegistry)
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>├── versioning.py        # Version compatibility
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>└── server/
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    ├── __init__.py      # MCPServer, JsonRpcError, Tool
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    ├── stdio.py         # StdioTransport
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    └── json_rpc.py      # JsonRpcHandler
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> __init__.py # Package exports
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> auth.py # Authentication (MCPAuthenticator)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> config.py # Configuration (MCPConfig)
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> errors.py # Error hierarchy (MCPError)
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> lifecycle.py # Lifecycle management (LifecycleManager)
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> observability.py # Metrics/tracing (MetricsRegistry, Tracer)
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> rate_limit.py # Rate limiting (TokenBucketRateLimiter)
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> registry.py # Tool registry (ToolRegistry)
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> versioning.py # Version compatibility
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> server/
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> __init__.py # MCPServer, JsonRpcError, Tool
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> stdio.py # StdioTransport
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> json_rpc.py # JsonRpcHandler
 </code></pre></div>
 <h3 id="test-locations">Test Locations<a class="headerlink" href="#test-locations" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>tests/mcp/
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── test_server.py
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>├── test_auth.py
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>├── test_config.py
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>├── test_lifecycle.py / test_lifecycle_management.py
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>├── test_observability.py
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>├── test_rate_limit.py
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>├── test_registry.py
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>├── test_versioning.py
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>├── test_stdio.py
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>├── test_json_rpc.py / test_json_rpc_handler.py
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>└── test_integration.py
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> test_server.py
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> test_auth.py
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> test_config.py
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> test_lifecycle.py / test_lifecycle_management.py
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> test_observability.py
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> test_rate_limit.py
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> test_registry.py
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> test_versioning.py
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> test_stdio.py
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> test_json_rpc.py / test_json_rpc_handler.py
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> test_integration.py
 </code></pre></div>
 <h2 id="implementation-patterns">Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Permanent link">¶</a></h2>
 <h3 id="1-adding-a-new-mcp-capability">1. Adding a New MCP Capability<a class="headerlink" href="#1-adding-a-new-mcp-capability" title="Permanent link">¶</a></h3>
@@ -2501,29 +2501,29 @@
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="nd">@dataclass</span>
 <a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="k">class</span> <span class="nc">CapabilityConfig</span><span class="p">:</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">    </span><span class="sd">"""Configuration for the capability."""</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="n">setting1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    <span class="n">setting2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="sd">"""Configuration for the capability."""</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> <span class="n">setting1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> <span class="n">setting2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
 <a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="k">class</span> <span class="nc">NewCapability</span><span class="p">:</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">    </span><span class="sd">"""Implementation of the new capability."""</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="sd">"""Implementation of the new capability."""</span>
 <a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CapabilityConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">CapabilityConfig</span><span class="p">()</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CapabilityConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">CapabilityConfig</span><span class="p">()</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>    <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w">        </span><span class="sd">"""Perform the capability action.</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a> <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w"> </span><span class="sd">"""Perform the capability action.</span>
 <a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="sd">        Args:</span>
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="sd">            param: Input parameter.</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="sd"> param: Input parameter.</span>
 <a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="sd">        Returns:</span>
-<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="sd">            Result of the action.</span>
-<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="sd">        """</span>
-<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Doing something with: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
-<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Result: </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="sd"> Returns:</span>
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="sd"> Result of the action.</span>
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="sd"> """</span>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Doing something with: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a> <span class="k">return</span> <span class="sa">f</span><span class="s2">"Result: </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">"</span>
 </code></pre></div>
 <h2 id="2-adding-tests-for-a-capability">2. Adding Tests for a Capability<a class="headerlink" href="#2-adding-tests-for-a-capability" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># tests/mcp/test_new_capability.py</span>
@@ -2535,30 +2535,30 @@
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="k">class</span> <span class="nc">TestNewCapability</span><span class="p">:</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="sd">"""Test suite for NewCapability."""</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span><span class="sd">"""Test suite for NewCapability."""</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="k">def</span> <span class="nf">test_init_with_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="sd">"""Test initialization with default config."""</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>        <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="k">assert</span> <span class="n">cap</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">setting1</span> <span class="o">==</span> <span class="s2">"default"</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> <span class="k">def</span> <span class="nf">test_init_with_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w"> </span><span class="sd">"""Test initialization with default config."""</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="k">assert</span> <span class="n">cap</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">setting1</span> <span class="o">==</span> <span class="s2">"default"</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="k">def</span> <span class="nf">test_init_with_custom_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">        </span><span class="sd">"""Test initialization with custom config."""</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>        <span class="n">config</span> <span class="o">=</span> <span class="n">CapabilityConfig</span><span class="p">(</span><span class="n">setting1</span><span class="o">=</span><span class="s2">"custom"</span><span class="p">,</span> <span class="n">setting2</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>        <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>        <span class="k">assert</span> <span class="n">cap</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">setting1</span> <span class="o">==</span> <span class="s2">"custom"</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="k">def</span> <span class="nf">test_init_with_custom_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w"> </span><span class="sd">"""Test initialization with custom config."""</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> <span class="n">config</span> <span class="o">=</span> <span class="n">CapabilityConfig</span><span class="p">(</span><span class="n">setting1</span><span class="o">=</span><span class="s2">"custom"</span><span class="p">,</span> <span class="n">setting2</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a> <span class="k">assert</span> <span class="n">cap</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">setting1</span> <span class="o">==</span> <span class="s2">"custom"</span>
 <a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    <span class="k">def</span> <span class="nf">test_do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">        </span><span class="sd">"""Test the main capability action."""</span>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>        <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="s2">"test"</span><span class="p">)</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>        <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">"Result: test"</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a> <span class="k">def</span> <span class="nf">test_do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w"> </span><span class="sd">"""Test the main capability action."""</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a> <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="s2">"test"</span><span class="p">)</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a> <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">"Result: test"</span>
 <a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>    <span class="k">def</span> <span class="nf">test_do_something_with_empty_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">        </span><span class="sd">"""Test with empty input."""</span>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>        <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>        <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">"Result: "</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> <span class="k">def</span> <span class="nf">test_do_something_with_empty_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w"> </span><span class="sd">"""Test with empty input."""</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> <span class="n">cap</span> <span class="o">=</span> <span class="n">NewCapability</span><span class="p">()</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="s2">"Result: "</span>
 </code></pre></div>
 <h2 id="3-updating-the-server-to-support-new-methods">3. Updating the Server to Support New Methods<a class="headerlink" href="#3-updating-the-server-to-support-new-methods" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># In src/mcp/server/__init__.py, add to MCPServer.__init__:</span>
@@ -2567,18 +2567,18 @@
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1"># Add the handler method:</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">handle_new_method</span><span class="p">(</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> <span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">    </span><span class="sd">"""Handler for mcp.newMethod.</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="sd">"""Handler for mcp.newMethod.</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="sd">    Args:</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="sd">        params: Method parameters.</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="sd"> params: Method parameters.</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="sd">    Returns:</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="sd">        Method result.</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="sd">    """</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    <span class="c1"># Implementation here</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"ok"</span><span class="p">}</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="sd"> Returns:</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="sd"> Method result.</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="sd"> """</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> <span class="c1"># Implementation here</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"ok"</span><span class="p">}</span>
 </code></pre></div>
 <h2 id="common-tasks">Common Tasks<a class="headerlink" href="#common-tasks" title="Permanent link">¶</a></h2>
 <h3 id="task-1-add-a-new-tool-to-the-registry">Task 1: Add a New Tool to the Registry<a class="headerlink" href="#task-1-add-a-new-tool-to-the-registry" title="Permanent link">¶</a></h3>
@@ -2589,8 +2589,8 @@
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="c1"># Register a tool</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="n">tool</span> <span class="o">=</span> <span class="n">Tool</span><span class="p">(</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">"my_tool"</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">"Does something useful"</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="n">name</span><span class="o">=</span><span class="s2">"my_tool"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="n">description</span><span class="o">=</span><span class="s2">"Does something useful"</span>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="p">)</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span>
 </code></pre></div>
@@ -2599,17 +2599,17 @@
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="c1"># Create limiter</span>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="n">limiter</span> <span class="o">=</span> <span class="n">TokenBucketRateLimiter</span><span class="p">(</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">rate</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>  <span class="c1"># 10 requests per second</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">capacity</span><span class="o">=</span><span class="mi">20</span>  <span class="c1"># Burst capacity</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">rate</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="c1"># 10 requests per second</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">capacity</span><span class="o">=</span><span class="mi">20</span> <span class="c1"># Burst capacity</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="p">)</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="c1"># Check rate limit</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="k">if</span> <span class="n">limiter</span><span class="o">.</span><span class="n">acquire</span><span class="p">():</span>
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    <span class="c1"># Proceed with request</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>    <span class="k">pass</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> <span class="c1"># Proceed with request</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> <span class="k">pass</span>
 <a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>    <span class="c1"># Rate limited</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Rate limit exceeded"</span><span class="p">)</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a> <span class="c1"># Rate limited</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Rate limit exceeded"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="task-3-add-observability">Task 3: Add Observability<a class="headerlink" href="#task-3-add-observability" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">src.mcp.observability</span> <span class="kn">import</span> <span class="n">get_mcp_metrics</span><span class="p">,</span> <span class="n">get_tracer</span>
@@ -2621,8 +2621,8 @@
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="c1"># Add tracing</span>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">tracer</span> <span class="o">=</span> <span class="n">get_tracer</span><span class="p">()</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="k">with</span> <span class="n">tracer</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">"handle_request"</span><span class="p">)</span> <span class="k">as</span> <span class="n">span</span><span class="p">:</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="c1"># Do work</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="n">span</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mcp.listTools"</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> <span class="c1"># Do work</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> <span class="n">span</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mcp.listTools"</span>
 </code></pre></div>
 <h2 id="task-4-manage-server-lifecycle">Task 4: Manage Server Lifecycle<a class="headerlink" href="#task-4-manage-server-lifecycle" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>from src.mcp.lifecycle import get_lifecycle_manager, ServerState
@@ -2704,6 +2704,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

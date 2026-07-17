@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/CI_TRIAGE_REPRO_S145/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>CI Triage Reproducibility Reference — S145 - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2669,7 +2669,7 @@
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document is the standardised reference for every diagnostic performed during
-session S145.  Each check has its own section with:</p>
+session S145. Each check has its own section with:</p>
 <ul>
 <li><strong>Root cause</strong> — what failed and why</li>
 <li><strong>Repro command</strong> — exact shell command to reproduce the symptom</li>
@@ -2709,7 +2709,7 @@ individually via <code>--check &lt;N&gt;</code> or all at once.</p>
 <h3 id="root-cause">Root Cause<a class="headerlink" href="#root-cause" title="Permanent link">¶</a></h3>
 <p>Shell's <code>[</code> (test) command performs <strong>lexicographic</strong> string comparison with <code>\&gt;</code> and <code>\&lt;</code>.
 Applying it to floating-point values (e.g., <code>'99.65' \&gt; '99.6'</code>) produces incorrect
-results for strings like <code>100.0 \&gt; 99.6</code> → <code>false</code> (because <code>'1' &lt; '9'</code> lexicographically).
+results for strings like <code>100.0 \&gt; 99.6</code> <code>false</code> (because <code>'1' &lt; '9'</code> lexicographically).
 actionlint/shellcheck flag this as SC2072.</p>
 <h3 id="repro">Repro<a class="headerlink" href="#repro" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh<span class="w"> </span>--check<span class="w"> </span><span class="m">1</span>
@@ -2759,11 +2759,11 @@ actionlint/shellcheck flag this as SC2072.</p>
 <h3 id="root-cause_1">Root Cause<a class="headerlink" href="#root-cause_1" title="Permanent link">¶</a></h3>
 <p>Both files contain a guarded OTel import inside a <code>try:</code> block:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="kn">from</span> <span class="nn">codex.monitoring.otel_metrics</span> <span class="kn">import</span> <span class="n">compute_coherence</span><span class="p">,</span> <span class="n">workflow_coherence_score</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="n">_OTEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">))</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a> <span class="kn">from</span> <span class="nn">codex.monitoring.otel_metrics</span> <span class="kn">import</span> <span class="n">compute_coherence</span><span class="p">,</span> <span class="n">workflow_coherence_score</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a> <span class="n">_OTEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">_OTEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a> <span class="n">_OTEL_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
 <p><code>ruff --select I</code> (isort mode) flagged the import block as out of canonical order.
 The pre-merge-validation workflow runs <code>ruff check --select I,E,F</code> which triggers I001.</p>
@@ -2804,18 +2804,18 @@ The pre-merge-validation workflow runs <code>ruff check --select I,E,F</code> wh
 </tbody>
 </table>
 <h3 id="root-cause_2">Root Cause<a class="headerlink" href="#root-cause_2" title="Permanent link">¶</a></h3>
-<p><code>.mypy_baseline</code> contained <code>0</code>.  The CI gate runs:</p>
+<p><code>.mypy_baseline</code> contained <code>0</code>. The CI gate runs:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># scripts/ci/mypy_baseline.py logic:</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">if</span> <span class="n">current_count</span> <span class="o">&gt;</span> <span class="n">stored_baseline</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># regression</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># regression</span>
 </code></pre></div>
-<p>The codebase had 282 type errors, so <code>282 &gt; 0</code> → gate failed.
+<p>The codebase had 282 type errors, so <code>282 &gt; 0</code> gate failed.
 The baseline was accidentally zeroed in a previous session.</p>
 <h2 id="repro_2">Repro<a class="headerlink" href="#repro_2" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh<span class="w"> </span>--check<span class="w"> </span><span class="m">3</span>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="c1"># or directly:</span>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>cat<span class="w"> </span>.mypy_baseline
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>python<span class="w"> </span>scripts/ci/mypy_baseline.py<span class="w">  </span><span class="c1"># shows current count</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>python<span class="w"> </span>scripts/ci/mypy_baseline.py<span class="w"> </span><span class="c1"># shows current count</span>
 </code></pre></div>
 <h2 id="fix_2">Fix<a class="headerlink" href="#fix_2" title="Permanent link">¶</a></h2>
 <p>After auditing that existing errors are pre-existing (not regressions):</p>
@@ -2853,7 +2853,7 @@ ratchet it down incrementally as errors are fixed.</p>
 </tbody>
 </table>
 <h3 id="root-cause_3">Root Cause<a class="headerlink" href="#root-cause_3" title="Permanent link">¶</a></h3>
-<p>This is the canonical first-line diagnostic.  Patterns 1–16 cover unused imports,
+<p>This is the canonical first-line diagnostic. Patterns 1–16 cover unused imports,
 unused variables, YAML indentation, coverage thresholds, tokenizer fallbacks,
 test assertions, redundant imports, CodeQL alerts, unsorted imports, bandit,
 f-string placeholders, line length, W-series warnings, link checker config,
@@ -2864,8 +2864,8 @@ mypy baseline freshness, and stub duplicate definitions.</p>
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span>--check-only
 </code></pre></div>
 <h2 id="fix_3">Fix<a class="headerlink" href="#fix_3" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w">        </span><span class="c1"># apply all fixable patterns</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span>--pattern<span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="c1"># apply one pattern</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span><span class="c1"># apply all fixable patterns</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span>--pattern<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="c1"># apply one pattern</span>
 </code></pre></div>
 <h3 id="verification_3">Verification<a class="headerlink" href="#verification_3" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>python<span class="w"> </span>scripts/ci/auto_fix_common_issues.py<span class="w"> </span>--check-only
@@ -2897,14 +2897,14 @@ mypy baseline freshness, and stub duplicate definitions.</p>
 </table>
 <h3 id="root-cause_4">Root Cause<a class="headerlink" href="#root-cause_4" title="Permanent link">¶</a></h3>
 <p>The workflow embeds a base64-encoded Python script to extract metrics from
-<code>/tmp/telemetry_report.json</code>.  The original script used <code>chr(34)</code> obfuscation:</p>
+<code>/tmp/telemetry_report.json</code>. The original script used <code>chr(34)</code> obfuscation:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># BUGGY — constructs the string '"failed_runs"' (with embedded quotes):</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'FAILED_RUNS=</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span><span class="o">+</span><span class="s2">"failed_runs"</span><span class="o">+</span><span class="nb">chr</span><span class="p">(</span><span class="mi">34</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="c1"># chr(34) == '"', so this calls: s.get('"failed_runs"', 0)</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="c1"># The actual JSON key is 'failed_runs' (no quotes) → always returns 0</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="c1"># The actual JSON key is 'failed_runs' (no quotes) always returns 0</span>
 </code></pre></div>
 <p><code>failure_rate</code> used plain <code>'failure_rate'</code> (single-quote string) and worked
-correctly.  Only <code>failed_runs</code> and <code>total_runs</code> used <code>chr(34)</code> — always returning 0.</p>
+correctly. Only <code>failed_runs</code> and <code>total_runs</code> used <code>chr(34)</code> — always returning 0.</p>
 <p><strong>Observable symptom:</strong> GitHub issue body showed <code>Total Runs: 0, Failed Runs: 0</code>
 alongside a non-zero <code>Failure Rate: 11.7%</code> — mathematically impossible unless the
 counts and rate came from different code paths.</p>
@@ -2945,12 +2945,12 @@ counts and rate came from different code paths.</p>
 <p>Expected output:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>=== BUGGY ===
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>FAILURE_RATE=11.7
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>FAILED_RUNS=0          ← always 0 (wrong key)
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>TOTAL_RUNS=0           ← always 0 (wrong key)
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>FAILED_RUNS=0 always 0 (wrong key)
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>TOTAL_RUNS=0 always 0 (wrong key)
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>=== FIXED ===
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>FAILURE_RATE=11.7
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>FAILED_RUNS=21         ← correct
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>TOTAL_RUNS=180         ← correct
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>FAILED_RUNS=21 correct
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>TOTAL_RUNS=180 correct
 </code></pre></div></p>
 <h2 id="fix_4">Fix<a class="headerlink" href="#fix_4" title="Permanent link">¶</a></h2>
 <p>Re-encode the extraction script with plain string keys:</p>
@@ -2958,14 +2958,14 @@ counts and rate came from different code paths.</p>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="s2">import base64</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="s2">script = '''import json,sys</span>
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="s2">try:</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="s2">    d=json.load(open(\'/tmp/telemetry_report.json\'))</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="s2">    s=d.get(\'summary\',{})</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="s2">    rate=s.get(\'failure_rate\',0)</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="s2">    print(f\'FAILURE_RATE={rate*100:.1f}\')</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="s2">    print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="s2">    print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="s2"> d=json.load(open(\'/tmp/telemetry_report.json\'))</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="s2"> s=d.get(\'summary\',{})</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="s2"> rate=s.get(\'failure_rate\',0)</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="s2"> print(f\'FAILURE_RATE={rate*100:.1f}\')</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="s2"> print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="s2"> print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')</span>
 <a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="s2">except Exception:</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="s2">    print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="s2"> print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')</span>
 <a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a><span class="s2">'''</span>
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="s2">print(base64.b64encode(script.encode()).decode())</span>
 <a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="s2">"</span>
@@ -2973,7 +2973,7 @@ counts and rate came from different code paths.</p>
 </code></pre></div>
 <h2 id="verification_4">Verification<a class="headerlink" href="#verification_4" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh<span class="w"> </span>--check<span class="w"> </span><span class="m">5</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="c1"># Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7%  TOTAL_RUNS=180  FAILED_RUNS=21"</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="c1"># Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7% TOTAL_RUNS=180 FAILED_RUNS=21"</span>
 </code></pre></div>
 <hr/>
 <h2 id="check-6">Check 6 — coherence-snapshot.yml: threshold misalignment<a class="headerlink" href="#check-6" title="Permanent link">¶</a></h2>
@@ -3023,7 +3023,7 @@ counts and rate came from different code paths.</p>
 </tbody>
 </table>
 <p>A score of <strong>99.65</strong> would set <code>--status success</code> (dashboard looks green) but then
-immediately fail the enforcement step (job fails red).  Users see contradictory
+immediately fail the enforcement step (job fails red). Users see contradictory
 signals.</p>
 <h3 id="repro_5">Repro<a class="headerlink" href="#repro_5" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh<span class="w"> </span>--check<span class="w"> </span><span class="m">6</span>
@@ -3069,8 +3069,8 @@ signals.</p>
 <h3 id="root-cause_6">Root Cause<a class="headerlink" href="#root-cause_6" title="Permanent link">¶</a></h3>
 <p><code>scripts/ci/session_wrapup_autofix.py</code> injected an auto-generated bullet into the
 <code>### Fixed (S145 — ... — PR #3606)</code> section that referenced <code>PR #3613</code>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="gu">### Fixed (S145 — 2026-03-17 — PR #3606 CI triage)          ← header: #3606</span>
-<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="k">-</span><span class="w"> </span>Auto-fix: session_wrapup_autofix.py updated ... for PR <span class="ni">#3613</span>  ← bullet: <span class="ni">#3613</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="gu">### Fixed (S145 — 2026-03-17 — PR #3606 CI triage) header: #3606</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="k">-</span><span class="w"> </span>Auto-fix: session_wrapup_autofix.py updated ... for PR <span class="ni">#3613</span> bullet: <span class="ni">#3613</span>
 </code></pre></div>
 <p>This breaks traceability: a reader cannot determine which PR the section belongs to.</p>
 <h3 id="repro_6">Repro<a class="headerlink" href="#repro_6" title="Permanent link">¶</a></h3>
@@ -3175,6 +3175,6 @@ to the correct PR number.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

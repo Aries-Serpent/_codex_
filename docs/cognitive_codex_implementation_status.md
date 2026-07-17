@@ -1,6 +1,6 @@
 # Implementation Status Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -265,7 +265,7 @@ This document tracks the implementation status of all components, features, and 
 
 ### Core Documentation
 
-- [x] `PRD.md` - Product Requirements Document (updated to v0.2.1)
+- [x] `PRD.md` - Product Requirements Document (updated to v0.2.0)
 - [x] `DEV_TEST_COMPREHENSIVE_WALKTHROUGH.md` - Complete testing guide (23KB)
 - [x] `IMPLEMENTATION_STATUS.md` - This document
 - [x] `CODEX_INTEGRATION_MASTER_PLAN.md` - Full integration strategy

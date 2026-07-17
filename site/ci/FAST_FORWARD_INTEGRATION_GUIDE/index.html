@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/FAST_FORWARD_INTEGRATION_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Fast-Forward Safe Files + Auto-Approve Workflows Integration Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2489,7 +2489,7 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p>This document explains how to use <strong>fast-forward-safe-files.yml</strong> and <strong>auto-approve-workflows.yml</strong> together to enable <strong>immediate deployment of discussion-posting workflows</strong> from PR → main, without waiting for full PR merge.</p>
+<p>This document explains how to use <strong>fast-forward-safe-files.yml</strong> and <strong>auto-approve-workflows.yml</strong> together to enable <strong>immediate deployment of discussion-posting workflows</strong> from PR main, without waiting for full PR merge.</p>
 <h2 id="the-problem-it-solves">The Problem It Solves<a class="headerlink" href="#the-problem-it-solves" title="Permanent link">¶</a></h2>
 <p>GitHub Actions workflows only take effect <strong>from the default branch (main)</strong>. When you define a new workflow (like <code>post-phase-4-5-to-discussion.yml</code>) in a PR:</p>
 <ul>
@@ -2505,33 +2505,31 @@
 <li><strong>auto-approve-workflows.yml</strong> — Auto-approves the fast-forward PR, completing the loop</li>
 </ol>
 <h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│ Edit .github/workflows/post-*.yml in PR          │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│ (e.g., post-phase-4-5-to-discussion.yml)        │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└────────────────────┬────────────────────────────┘
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>                     │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>                     ↓
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│ Run: fast-forward-safe-files.yml                 │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│ Input: PR number, dry_run=false                 │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│ → Creates "fast-forward/pr-XXXX-{sha}" branch   │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│ → Opens Fast-Forward PR for review             │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>└────────────────────┬────────────────────────────┘
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>                     │
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>                     ↓
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│ auto-approve-workflows.yml fires (workflow_run) │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>│ → Detects "wec:auto-approve" or "once" label   │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>│ → Approves pending workflow runs                │
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>│ → Merges the Fast-Forward PR                    │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>└────────────────────┬────────────────────────────┘
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>                     │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>                     ↓
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>│ Workflow file now ACTIVE on main                │
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>│ → workflow_dispatch button works immediately    │
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>│ → Schedule triggers become active               │
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>└─────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Edit .github/workflows/post-*.yml in PR 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (e.g., post-phase-4-5-to-discussion.yml) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Run: fast-forward-safe-files.yml 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Input: PR number, dry_run=false 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> Creates "fast-forward/pr-XXXX-{sha}" branch 
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> Opens Fast-Forward PR for review 
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> auto-approve-workflows.yml fires (workflow_run) 
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> Detects "wec:auto-approve" or "once" label 
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> Approves pending workflow runs 
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> Merges the Fast-Forward PR 
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> Workflow file now ACTIVE on main 
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> workflow_dispatch button works immediately 
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> Schedule triggers become active 
 </code></pre></div>
 <h2 id="usage-workflow">Usage Workflow<a class="headerlink" href="#usage-workflow" title="Permanent link">¶</a></h2>
 <h3 id="step-1-edit-the-workflow-in-a-pr">Step 1: Edit the Workflow in a PR<a class="headerlink" href="#step-1-edit-the-workflow-in-a-pr" title="Permanent link">¶</a></h3>
@@ -2547,17 +2545,17 @@
 1. Go to: https://github.com/Aries-Serpent/<em>codex</em>/actions/workflows/fast-forward-safe-files.yml
 2. Click <strong>"Run workflow"</strong> button
 3. Fill in:
-   - <strong>PR number</strong>: <code>3856</code> (or your PR number)
-   - <strong>dry_run</strong>: <code>false</code> (to apply for real)
-   - <strong>merge_mode</strong>: <code>create-pr</code> (default — safe)
+ - <strong>PR number</strong>: <code>3856</code> (or your PR number)
+ - <strong>dry_run</strong>: <code>false</code> (to apply for real)
+ - <strong>merge_mode</strong>: <code>create-pr</code> (default — safe)
 4. Click the green <strong>"Run workflow"</strong> button</p>
 <p><strong>Via GitHub CLI:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>fast-forward-safe-files.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span>--ref<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span><span class="m">3856</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">merge_mode</span><span class="o">=</span>create-pr
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span>--ref<span class="w"> </span>main<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span><span class="m">3856</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">merge_mode</span><span class="o">=</span>create-pr
 </code></pre></div>
 <h3 id="step-3-monitor-the-fast-forward">Step 3: Monitor the Fast-Forward<a class="headerlink" href="#step-3-monitor-the-fast-forward" title="Permanent link">¶</a></h3>
 <ol>
@@ -2569,15 +2567,15 @@
 <p>To auto-approve the fast-forward PR:</p>
 <p><strong>One-time approval:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>auto-approve-workflows.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span>&lt;FF_PR_NUMBER&gt;<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">enable_one_session</span><span class="o">=</span><span class="nb">true</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span>&lt;FF_PR_NUMBER&gt;<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">enable_one_session</span><span class="o">=</span><span class="nb">true</span>
 </code></pre></div></p>
 <p><strong>Persistent approval</strong> (auto-approve future sessions too):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>auto-approve-workflows.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span>&lt;FF_PR_NUMBER&gt;<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">enable_persistent</span><span class="o">=</span><span class="nb">true</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span>&lt;FF_PR_NUMBER&gt;<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">enable_persistent</span><span class="o">=</span><span class="nb">true</span>
 </code></pre></div></p>
 <h3 id="step-5-verify-workflow-is-active">Step 5: Verify Workflow is Active<a class="headerlink" href="#step-5-verify-workflow-is-active" title="Permanent link">¶</a></h3>
 <p>Once merged to main:</p>
@@ -2639,7 +2637,7 @@
 <a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="c1"># Within 5 minutes, PR #3860 is merged to main</span>
 <a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>
 <a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="c1"># 8. Verify</span>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="c1"># Go to Actions → post-phase-4-5-to-discussion.yml</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="c1"># Go to Actions post-phase-4-5-to-discussion.yml</span>
 <a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="c1"># "Run workflow" button is now ACTIVE </span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
@@ -2661,12 +2659,12 @@
 <h2 id="advanced-direct-push-mode">Advanced: Direct-Push Mode<a class="headerlink" href="#advanced-direct-push-mode" title="Permanent link">¶</a></h2>
 <p>By default, fast-forward creates a PR (safe). For immediate main push:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>fast-forward-safe-files.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span><span class="m">3856</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">merge_mode</span><span class="o">=</span>direct-push<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">pr_number</span><span class="o">=</span><span class="m">3856</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">merge_mode</span><span class="o">=</span>direct-push<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span>-f<span class="w"> </span><span class="nv">dry_run</span><span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
-<p>️ <strong>Use with caution</strong> — Commits directly to main, bypassing PR review.</p>
+<p><strong>Use with caution</strong> — Commits directly to main, bypassing PR review.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Fast-Forward Workflow</strong>: <code>.github/workflows/fast-forward-safe-files.yml</code></li>
@@ -2706,6 +2704,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

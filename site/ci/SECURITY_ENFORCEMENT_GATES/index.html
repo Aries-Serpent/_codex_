@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/SECURITY_ENFORCEMENT_GATES/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Security Enforcement Gates — codex Repository - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2732,50 +2732,49 @@
 <h1 id="security-enforcement-gates-codex-repository">Security Enforcement Gates — <em>codex</em> Repository<a class="headerlink" href="#security-enforcement-gates-codex-repository" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Version</strong>: 1.0<br/>
-<strong>Date</strong>: 2026-06-27<br/>
-<strong>Status</strong>: Phase 4, Lane 2 — ACTIVE<br/>
+<p><strong>Version</strong>: 1.0
+<strong>Date</strong>: 2026-06-27
+<strong>Status</strong>: Phase 4, Lane 2 — ACTIVE
 <strong>Owner</strong>: Security Automation Team</p>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document specifies the security enforcement gates that block or warn on code changes based on SAST findings. Each gate is implemented as a GitHub Actions workflow step that parses security tool output and fails the job if severity thresholds are exceeded.</p>
 <hr/>
 <h2 id="gate-architecture">Gate Architecture<a class="headerlink" href="#gate-architecture" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│                   Code Change (Push / PR)                       │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>└────────────────────────────────┬────────────────────────────────┘
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>                                 │
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>         ┌───────────────────────┼────────────────────────────┐
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>         │                       │                            │
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>         ▼                       ▼                            ▼
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    ┌─────────┐            ┌──────────┐             ┌─────────────┐
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    │ Semgrep │            │ pip-audit│             │  Bandit     │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    │  SAST   │            │  Vulns   │             │ Security    │
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    └────┬────┘            └────┬─────┘             └─────┬───────┘
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>         │                      │                        │
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>         │ [HIGH/CRITICAL]      │ [CRITICAL]             │ [CRITICAL]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>         │                      │                        │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>         └──────────────┬───────┴────────────────────────┘
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>                        │
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>                        ▼
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>              ┌──────────────────────┐
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>              │ Parse Severity Level │
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>              └──────┬───────────────┘
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>                     │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>         ┌───────────┴───────────┐
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>         │                       │
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>     [BLOCK]              [WARN/ADVISORY]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>         │                       │
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>         ▼                       ▼
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    Fail Job              Continue with warning
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    Exit code 1           (advisory only)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Code Change (Push / PR) 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Semgrep pip-audit Bandit 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> SAST Vulns Security 
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> [HIGH/CRITICAL] [CRITICAL] [CRITICAL]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> Parse Severity Level 
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> [BLOCK] [WARN/ADVISORY]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> Fail Job Continue with warning
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> Exit code 1 (advisory only)
 </code></pre></div>
 <hr/>
 <h2 id="gate-1-semgrep-sast">Gate 1: Semgrep SAST<a class="headerlink" href="#gate-1-semgrep-sast" title="Permanent link">¶</a></h2>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
-<p><strong>Workflow</strong>: <code>.github/workflows/semgrep_sarif.yml</code><br/>
-<strong>Trigger</strong>: Push (main, develop, copilot/<em>), PR (main, develop), scheduled (daily 3 AM), manual dispatch<br/>
-</em><em>Runtime</em><em>: ~10 minutes<br/>
+<p><strong>Workflow</strong>: <code>.github/workflows/semgrep_sarif.yml</code>
+<strong>Trigger</strong>: Push (main, develop, copilot/<em>), PR (main, develop), scheduled (daily 3 AM), manual dispatch
+</em><em>Runtime</em><em>: ~10 minutes
 </em><em>Permissions</em>*: <code>contents:read</code>, <code>security-events:write</code></p>
 <h3 id="enforcement-rules">Enforcement Rules<a class="headerlink" href="#enforcement-rules" title="Permanent link">¶</a></h3>
 <table>
@@ -2826,17 +2825,17 @@
 - Mitigation controls documented in PR description</p>
 <h3 id="configuration-profiles">Configuration Profiles<a class="headerlink" href="#configuration-profiles" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="no">p/security-audit      # Top security rules</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="no">p/python              # Python-specific checks</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="no">p/owasp-top-ten       # OWASP Top 10</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="no">p/security-audit # Top security rules</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="no">p/python # Python-specific checks</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="no">p/owasp-top-ten # OWASP Top 10</span>
 </code></pre></div>
 <p>See: <a href="https://semgrep.dev/r">Semgrep Registry</a></p>
 <hr/>
 <h2 id="gate-2-pip-audit-dependency-vulnerabilities">Gate 2: pip-audit (Dependency Vulnerabilities)<a class="headerlink" href="#gate-2-pip-audit-dependency-vulnerabilities" title="Permanent link">¶</a></h2>
 <h3 id="configuration_1">Configuration<a class="headerlink" href="#configuration_1" title="Permanent link">¶</a></h3>
-<p><strong>Workflow</strong>: <code>.github/workflows/scheduled-dependency-audit.yml</code> (dependency-audit job)<br/>
-<strong>Trigger</strong>: PR (changes to <code>requirements*.txt</code>, <code>pyproject.toml</code>), scheduled (weekly Monday)<br/>
-<strong>Runtime</strong>: ~5 minutes<br/>
+<p><strong>Workflow</strong>: <code>.github/workflows/scheduled-dependency-audit.yml</code> (dependency-audit job)
+<strong>Trigger</strong>: PR (changes to <code>requirements*.txt</code>, <code>pyproject.toml</code>), scheduled (weekly Monday)
+<strong>Runtime</strong>: ~5 minutes
 <strong>Permissions</strong>: <code>contents:read</code>, <code>security-events:write</code></p>
 <h3 id="enforcement-rules_1">Enforcement Rules<a class="headerlink" href="#enforcement-rules_1" title="Permanent link">¶</a></h3>
 <table>
@@ -2877,19 +2876,19 @@
 </table>
 <h3 id="detection-logic">Detection Logic<a class="headerlink" href="#detection-logic" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>pip-audit<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>--format<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>ci_pip_audit.json
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>ci_pip_audit.json
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># Parse CRITICAL severity from JSON output</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">if</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s1">'CRITICAL'</span><span class="w"> </span>pip_audit_output.txt<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::error::CRITICAL CVE detected"</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="c1"># Block PR</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::error::CRITICAL CVE detected"</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="c1"># Block PR</span>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">fi</span>
 </code></pre></div>
 <h3 id="output-formats">Output Formats<a class="headerlink" href="#output-formats" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>JSON</strong> → <code>.codex/reports/ci_pip_audit.json</code> (machine-readable)</li>
-<li><strong>CycloneDX</strong> → <code>.codex/reports/ci_pip_audit_cyclonedx.json</code> (SBOM-compatible)</li>
-<li><strong>Text</strong> → Logged to workflow summary for human review</li>
+<li><strong>JSON</strong> <code>.codex/reports/ci_pip_audit.json</code> (machine-readable)</li>
+<li><strong>CycloneDX</strong> <code>.codex/reports/ci_pip_audit_cyclonedx.json</code> (SBOM-compatible)</li>
+<li><strong>Text</strong> Logged to workflow summary for human review</li>
 </ol>
 <h3 id="remediation-workflow">Remediation Workflow<a class="headerlink" href="#remediation-workflow" title="Permanent link">¶</a></h3>
 <ol>
@@ -2905,9 +2904,9 @@
 <hr/>
 <h2 id="gate-3-bandit-python-security">Gate 3: Bandit (Python Security)<a class="headerlink" href="#gate-3-bandit-python-security" title="Permanent link">¶</a></h2>
 <h3 id="configuration_2">Configuration<a class="headerlink" href="#configuration_2" title="Permanent link">¶</a></h3>
-<p><strong>Workflow</strong>: <code>.github/workflows/code-quality-coverage-suite.yml</code> (bandit step)<br/>
-<strong>Trigger</strong>: PR (changes to src/ or scripts/), push (main), dispatch<br/>
-<strong>Runtime</strong>: ~2 minutes<br/>
+<p><strong>Workflow</strong>: <code>.github/workflows/code-quality-coverage-suite.yml</code> (bandit step)
+<strong>Trigger</strong>: PR (changes to src/ or scripts/), push (main), dispatch
+<strong>Runtime</strong>: ~2 minutes
 <strong>Permissions</strong>: <code>contents:read</code></p>
 <h3 id="enforcement-rules_2">Enforcement Rules<a class="headerlink" href="#enforcement-rules_2" title="Permanent link">¶</a></h3>
 <table>
@@ -2948,16 +2947,16 @@
 </table>
 <h3 id="detection-logic_1">Detection Logic<a class="headerlink" href="#detection-logic_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>bandit<span class="w"> </span>-r<span class="w"> </span>src/<span class="w"> </span>--configfile<span class="w"> </span>.bandit<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span>-f<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>bandit-report.json<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span>-f<span class="w"> </span>txt<span class="w"> </span>-o<span class="w"> </span>bandit-output.txt
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>-o<span class="w"> </span>bandit-report.json<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span>-f<span class="w"> </span>txt<span class="w"> </span>-o<span class="w"> </span>bandit-output.txt
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="c1"># Count CRITICAL and HIGH</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="nv">CRITICAL_COUNT</span><span class="o">=</span><span class="k">$(</span>jq<span class="w"> </span><span class="s1">'[.results[] | select(.severity == "HIGH" and .confidence == "HIGH")] | length'</span><span class="w"> </span>bandit-report.json<span class="k">)</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="nv">HIGH_COUNT</span><span class="o">=</span><span class="k">$(</span>jq<span class="w"> </span><span class="s1">'[.results[] | select(.severity == "HIGH")] | length'</span><span class="w"> </span>bandit-report.json<span class="k">)</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$CRITICAL_COUNT</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::error::Bandit found </span><span class="si">${</span><span class="nv">CRITICAL_COUNT</span><span class="si">}</span><span class="s2"> CRITICAL issues"</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="w">  </span><span class="c1"># Block PR</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::error::Bandit found </span><span class="si">${</span><span class="nv">CRITICAL_COUNT</span><span class="si">}</span><span class="s2"> CRITICAL issues"</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="c1"># Block PR</span>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="k">fi</span>
 </code></pre></div>
 <h3 id="configuration-file">Configuration File<a class="headerlink" href="#configuration-file" title="Permanent link">¶</a></h3>
@@ -2978,9 +2977,9 @@
 <hr/>
 <h2 id="gate-4-codeql-analysis">Gate 4: CodeQL Analysis<a class="headerlink" href="#gate-4-codeql-analysis" title="Permanent link">¶</a></h2>
 <h3 id="configuration_3">Configuration<a class="headerlink" href="#configuration_3" title="Permanent link">¶</a></h3>
-<p><strong>Workflow</strong>: <code>.github/workflows/security-scanning-suite.yml</code> (codeql-scan job)<br/>
-<strong>Trigger</strong>: Push (main, develop, copilot/<em>), PR (main, develop), scheduled (daily 2 AM + Sunday 3 AM)<br/>
-</em><em>Runtime</em><em>: ~40-50 minutes<br/>
+<p><strong>Workflow</strong>: <code>.github/workflows/security-scanning-suite.yml</code> (codeql-scan job)
+<strong>Trigger</strong>: Push (main, develop, copilot/<em>), PR (main, develop), scheduled (daily 2 AM + Sunday 3 AM)
+</em><em>Runtime</em><em>: ~40-50 minutes
 </em><em>Permissions</em>*: <code>actions:read</code>, <code>contents:read</code>, <code>security-events:write</code></p>
 <h3 id="enforcement-model">Enforcement Model<a class="headerlink" href="#enforcement-model" title="Permanent link">¶</a></h3>
 <p><strong>Advisory Mode</strong> (current):
@@ -3008,7 +3007,7 @@
 </tr>
 <tr>
 <td>JavaScript</td>
-<td>️ Optional</td>
+<td>Optional</td>
 <td>true (may fail)</td>
 </tr>
 </tbody>
@@ -3058,23 +3057,23 @@
 <h3 id="pr-check-status">PR Check Status<a class="headerlink" href="#pr-check-status" title="Permanent link">¶</a></h3>
 <p>When a PR is opened, all gates run in parallel:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>GitHub PR
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>  ├─ Semgrep SAST (10 min)
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>  │   └─ [BLOCK] if HIGH/CRITICAL found
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>  ├─ pip-audit (5 min)
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>  │   └─ [BLOCK] if CRITICAL CVE found
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>  ├─ Bandit (2 min)
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>  │   └─ [BLOCK] if CRITICAL issue found
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>  └─ CodeQL (45 min)
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>      └─ [WARN] if HIGH/MEDIUM found
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> Semgrep SAST (10 min)
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> [BLOCK] if HIGH/CRITICAL found
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a> pip-audit (5 min)
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> [BLOCK] if CRITICAL CVE found
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Bandit (2 min)
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> [BLOCK] if CRITICAL issue found
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> CodeQL (45 min)
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> [WARN] if HIGH/MEDIUM found
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>Result: PR can merge only if all gates pass
 </code></pre></div>
 <h3 id="branch-protection-rules">Branch Protection Rules<a class="headerlink" href="#branch-protection-rules" title="Permanent link">¶</a></h3>
 <p><strong>Main Branch</strong> (<code>main</code>):
-- Require semgrep 
-- Require pip-audit 
-- Require bandit 
-- Require CodeQL (advisory → blocking after Phase 4)
+- Require semgrep
+- Require pip-audit
+- Require bandit
+- Require CodeQL (advisory blocking after Phase 4)
 - Require status checks to pass
 - Dismiss stale PR approvals on new commits</p>
 <p><strong>Develop Branch</strong> (<code>develop</code>):
@@ -3318,8 +3317,8 @@
 <li><strong>Security Posture</strong>: <code>.codex/SECURITY_POSTURE.md</code></li>
 </ul>
 <hr/>
-<p><strong>Last Updated</strong>: 2026-06-27<br/>
-<strong>Next Review</strong>: 2026-09-27 (quarterly)<br/>
+<p><strong>Last Updated</strong>: 2026-06-27
+<strong>Next Review</strong>: 2026-09-27 (quarterly)
 <strong>Contact</strong>: @security-team</p>
 </article>
 </div>
@@ -3350,6 +3349,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

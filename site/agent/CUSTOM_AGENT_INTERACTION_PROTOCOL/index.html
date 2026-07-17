@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/CUSTOM_AGENT_INTERACTION_PROTOCOL/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Multi-Agent Interaction Protocol Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2353,7 +2353,7 @@
 <a class="md-nav__link" href="#channel-1-task-delegation-delegator-target">
 <span class="md-ellipsis">
       
-        Channel 1: Task Delegation (Delegator → Target)
+        Channel 1: Task Delegation (Delegator Target)
       
     </span>
 </a>
@@ -2362,7 +2362,7 @@
 <a class="md-nav__link" href="#channel-2-result-return-target-delegator">
 <span class="md-ellipsis">
       
-        Channel 2: Result Return (Target → Delegator)
+        Channel 2: Result Return (Target Delegator)
       
     </span>
 </a>
@@ -2550,10 +2550,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Document:</strong> Multi-Agent Interaction &amp; Handoff Protocol<br/>
-<strong>Version:</strong> 1.0.0<br/>
-<strong>Generated:</strong> 2026-06-26<br/>
-<strong>Purpose:</strong> Define standards for agent-to-agent communication, state handoff, and delegation workflows  </p>
+<p><strong>Document:</strong> Multi-Agent Interaction &amp; Handoff Protocol
+<strong>Version:</strong> 1.0.0
+<strong>Generated:</strong> 2026-06-26
+<strong>Purpose:</strong> Define standards for agent-to-agent communication, state handoff, and delegation workflows</p>
 </blockquote>
 <hr/>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2578,73 +2578,72 @@
 </ol>
 <h3 id="communication-flow">Communication Flow<a class="headerlink" href="#communication-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Delegating Agent (Primary)
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    ↓
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>[Package Task Context] ← All needed info (scope, constraints, reference data)
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    ↓
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>[Select Target Agent(s)] ← From capability matching
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    ↓
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>[Issue Delegation] ← Send task with structured metadata
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    ↓
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>[Package Task Context] All needed info (scope, constraints, reference data)
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>[Select Target Agent(s)] From capability matching
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>[Issue Delegation] Send task with structured metadata
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>Target Agent(s) (Specialist)
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    ├→ [Receive &amp; Parse] ← Validate task specification
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    ├→ [Execute] ← Do the work
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    ├→ [Produce Results] ← Structured output
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    └→ [Signal Completion] ← Status + results to primary
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    ↓
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>[Verify Results] ← Delegating agent validates
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    ↓
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>[Handle Result] ← Integrate or escalate
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> [Receive &amp; Parse] Validate task specification
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> [Execute] Do the work
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> [Produce Results] Structured output
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> [Signal Completion] Status + results to primary
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>[Verify Results] Delegating agent validates
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>[Handle Result] Integrate or escalate
 </code></pre></div>
 <hr/>
 <h2 id="agent-lifecycle-states">Agent Lifecycle States<a class="headerlink" href="#agent-lifecycle-states" title="Permanent link">¶</a></h2>
 <h3 id="state-definitions">State Definitions<a class="headerlink" href="#state-definitions" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>│ IDLE                                            │
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>│ Agent ready, no work assigned                   │
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>│ (memory state: task_queue = empty)              │
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        ↓
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>│ RECEIVING                                       │
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>│ Accepting task delegation                       │
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>│ (memory state: task_context being captured)     │
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>        ↓
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>│ VALIDATING                                      │
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>│ Checking task specification and prerequisites   │
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>│ (memory state: capability_match assessment)     │
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>        ↓ (if invalid) → ESCALATING
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>        ↓ (if valid)
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>│ EXECUTING                                       │
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>│ Performing assigned work                        │
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>│ (memory state: progress tracking)               │
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>        ↓ (if success)
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>│ VERIFYING                                       │
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>│ Self-checking results before handoff            │
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>│ (memory state: validation results)              │
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>        ↓ (if verified)
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>│ RETURNING                                       │
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>│ Returning results to delegating agent           │
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>│ (memory state: return_payload prepared)         │
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>        ↓
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>┌─────────────────────────────────────────────────┐
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>│ IDLE (again)                                    │
-<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>│ Ready for next task                             │
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>│ (memory state: results archived)                │
-<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>└─────────────────────────────────────────────────┘
-<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>Exceptional paths:
-<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a>  EXECUTING → ESCALATING (blocker found)
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>           → FAILING (capability mismatch)
-<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>  VALIDATING → ESCALATING (prerequisites missing)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a> IDLE 
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> Agent ready, no work assigned 
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> (memory state: task_queue = empty) 
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> RECEIVING 
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> Accepting task delegation 
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> (memory state: task_context being captured) 
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> VALIDATING 
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> Checking task specification and prerequisites 
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> (memory state: capability_match assessment) 
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> (if invalid) ESCALATING
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> (if valid)
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> EXECUTING 
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> Performing assigned work 
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> (memory state: progress tracking) 
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> (if success)
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> VERIFYING 
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> Self-checking results before handoff 
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> (memory state: validation results) 
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> (if verified)
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> RETURNING 
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> Returning results to delegating agent 
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> (memory state: return_payload prepared) 
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a> IDLE (again) 
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a> Ready for next task 
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a> (memory state: results archived) 
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>
+<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>Exceptional paths:
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a> EXECUTING ESCALATING (blocker found)
+<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a> FAILING (capability mismatch)
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a> VALIDATING ESCALATING (prerequisites missing)
 </code></pre></div>
 <h3 id="state-transition-rules">State Transition Rules<a class="headerlink" href="#state-transition-rules" title="Permanent link">¶</a></h3>
 <table>
@@ -2715,137 +2714,137 @@
 </table>
 <hr/>
 <h2 id="communication-channels">Communication Channels<a class="headerlink" href="#communication-channels" title="Permanent link">¶</a></h2>
-<h3 id="channel-1-task-delegation-delegator-target">Channel 1: Task Delegation (Delegator → Target)<a class="headerlink" href="#channel-1-task-delegation-delegator-target" title="Permanent link">¶</a></h3>
+<h3 id="channel-1-task-delegation-delegator-target">Channel 1: Task Delegation (Delegator Target)<a class="headerlink" href="#channel-1-task-delegation-delegator-target" title="Permanent link">¶</a></h3>
 <p><strong>Structure:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">"delegation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="nt">"delegating_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"primary-agent-id"</span><span class="p">,</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">    </span><span class="nt">"target_agents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"specialist-agent-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"specialist-agent-2"</span><span class="p">],</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:30:00Z"</span><span class="p">,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">    </span><span class="nt">"task"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix|analyze|verify|generate"</span><span class="p">,</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ci-cd|testing|documentation|security|config"</span><span class="p">,</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">      </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"description of what needs to be done"</span><span class="p">,</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">      </span><span class="nt">"constraints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">        </span><span class="nt">"time_limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"seconds"</span><span class="p">,</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">        </span><span class="nt">"parallelizable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">        </span><span class="nt">"blocking_precedence"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">    </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">      </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"path1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"path2"</span><span class="p">],</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">      </span><span class="nt">"prior_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">      </span><span class="nt">"reference_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">    </span><span class="nt">"success_criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">      </span><span class="s2">"criterion 1"</span><span class="p">,</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">      </span><span class="s2">"criterion 2"</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">    </span><span class="p">]</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="nt">"delegation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">"delegating_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"primary-agent-id"</span><span class="p">,</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">"target_agents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"specialist-agent-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"specialist-agent-2"</span><span class="p">],</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:30:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nt">"task"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix|analyze|verify|generate"</span><span class="p">,</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ci-cd|testing|documentation|security|config"</span><span class="p">,</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"description of what needs to be done"</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="nt">"constraints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="nt">"time_limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"seconds"</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="nt">"parallelizable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="nt">"blocking_precedence"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"path1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"path2"</span><span class="p">],</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w"> </span><span class="nt">"prior_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="nt">"reference_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="nt">"success_criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="s2">"criterion 1"</span><span class="p">,</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="s2">"criterion 2"</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="p">]</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="p">}</span>
 </code></pre></div>
 <p><strong>Example:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p">{</span>
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">"delegation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="nt">"delegating_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unified-coverage-agent"</span><span class="p">,</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="nt">"target_agents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"autonomous-test-healer-agent"</span><span class="p">],</span>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"task-20260626-001"</span><span class="p">,</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:30:00Z"</span><span class="p">,</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="nt">"task"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix"</span><span class="p">,</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"testing"</span><span class="p">,</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">      </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fix failing tests in tests/monitoring/"</span><span class="p">,</span>
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">      </span><span class="nt">"constraints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="nt">"time_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="nt">"parallelizable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">        </span><span class="nt">"blocking_precedence"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w">    </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">      </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">        </span><span class="s2">"tests/monitoring/test_*.py"</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">      </span><span class="p">],</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">      </span><span class="nt">"prior_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">        </span><span class="nt">"test_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">        </span><span class="nt">"failing_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">        </span><span class="nt">"failure_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"import_error"</span><span class="p">,</span><span class="w"> </span><span class="s2">"assertion_failure"</span><span class="p">]</span>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">      </span><span class="p">},</span>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w">      </span><span class="nt">"reference_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w">        </span><span class="nt">"recent_changes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commit abc123"</span><span class="p">,</span>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w">        </span><span class="nt">"baseline_passing_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w">    </span><span class="nt">"success_criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w">      </span><span class="s2">"All 42 tests passing"</span><span class="p">,</span>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w">      </span><span class="s2">"Coverage &gt;= 90%"</span><span class="p">,</span>
-<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="w">      </span><span class="s2">"No flaky failures"</span>
-<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="w">    </span><span class="p">]</span>
-<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w"> </span><span class="nt">"delegation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">"delegating_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unified-coverage-agent"</span><span class="p">,</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">"target_agents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"autonomous-test-healer-agent"</span><span class="p">],</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w"> </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"task-20260626-001"</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:30:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w"> </span><span class="nt">"task"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix"</span><span class="p">,</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w"> </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"testing"</span><span class="p">,</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fix failing tests in tests/monitoring/"</span><span class="p">,</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w"> </span><span class="nt">"constraints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w"> </span><span class="nt">"time_limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w"> </span><span class="nt">"parallelizable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w"> </span><span class="nt">"blocking_precedence"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="w"> </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w"> </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w"> </span><span class="s2">"tests/monitoring/test_*.py"</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w"> </span><span class="p">],</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w"> </span><span class="nt">"prior_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w"> </span><span class="nt">"test_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w"> </span><span class="nt">"failing_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w"> </span><span class="nt">"failure_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"import_error"</span><span class="p">,</span><span class="w"> </span><span class="s2">"assertion_failure"</span><span class="p">]</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="w"> </span><span class="nt">"reference_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="w"> </span><span class="nt">"recent_changes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commit abc123"</span><span class="p">,</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a><span class="w"> </span><span class="nt">"baseline_passing_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a><span class="w"> </span><span class="nt">"success_criteria"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a><span class="w"> </span><span class="s2">"All 42 tests passing"</span><span class="p">,</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a><span class="w"> </span><span class="s2">"Coverage &gt;= 90%"</span><span class="p">,</span>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a><span class="w"> </span><span class="s2">"No flaky failures"</span>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a><span class="w"> </span><span class="p">]</span>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
-<h3 id="channel-2-result-return-target-delegator">Channel 2: Result Return (Target → Delegator)<a class="headerlink" href="#channel-2-result-return-target-delegator" title="Permanent link">¶</a></h3>
+<h3 id="channel-2-result-return-target-delegator">Channel 2: Result Return (Target Delegator)<a class="headerlink" href="#channel-2-result-return-target-delegator" title="Permanent link">¶</a></h3>
 <p><strong>Structure:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="p">{</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="nt">"target_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:45:00Z"</span><span class="p">,</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success|partial|failure"</span><span class="p">,</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">    </span><span class="nt">"execution_time_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">    </span><span class="nt">"outcome"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix|analysis|verification|generation"</span><span class="p">,</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">      </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brief summary of what was done"</span><span class="p">,</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">      </span><span class="nt">"details"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Detailed findings/changes"</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w">    </span><span class="nt">"changes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w">      </span><span class="nt">"files_modified"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"path1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"path2"</span><span class="p">],</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w">      </span><span class="nt">"lines_changed"</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w">      </span><span class="nt">"commits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"sha1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sha2"</span><span class="p">]</span>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w">    </span><span class="nt">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w">      </span><span class="nt">"before"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"passing_tests"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w"> </span><span class="nt">"coverage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.85</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w">      </span><span class="nt">"after"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"passing_tests"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="nt">"coverage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.92</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w">      </span><span class="nt">"improvement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w">        </span><span class="nt">"tests_fixed"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w">        </span><span class="nt">"coverage_gain"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.07</span>
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w">    </span><span class="nt">"verification"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w">      </span><span class="nt">"passed_all_criteria"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a><span class="w">      </span><span class="nt">"criteria_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w">        </span><span class="nt">"criterion_1"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="w">        </span><span class="nt">"criterion_2"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="w">    </span><span class="nt">"next_steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a><span class="w">      </span><span class="s2">"Manual review of failing test X"</span><span class="p">,</span>
-<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a><span class="w">      </span><span class="s2">"Consider refactoring test suite Y"</span>
-<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a><span class="w">    </span><span class="p">]</span>
-<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span><span class="nt">"target_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:45:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w"> </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success|partial|failure"</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w"> </span><span class="nt">"execution_time_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w"> </span><span class="nt">"outcome"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fix|analysis|verification|generation"</span><span class="p">,</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w"> </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brief summary of what was done"</span><span class="p">,</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w"> </span><span class="nt">"details"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Detailed findings/changes"</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="w"> </span><span class="nt">"changes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a><span class="w"> </span><span class="nt">"files_modified"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"path1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"path2"</span><span class="p">],</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="w"> </span><span class="nt">"lines_changed"</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a><span class="w"> </span><span class="nt">"commits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"sha1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sha2"</span><span class="p">]</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a><span class="w"> </span><span class="nt">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a><span class="w"> </span><span class="nt">"before"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"passing_tests"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w"> </span><span class="nt">"coverage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.85</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a><span class="w"> </span><span class="nt">"after"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"passing_tests"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="nt">"coverage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.92</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a><span class="w"> </span><span class="nt">"improvement"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="w"> </span><span class="nt">"tests_fixed"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="w"> </span><span class="nt">"coverage_gain"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.07</span>
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a><span class="w"> </span><span class="nt">"verification"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="w"> </span><span class="nt">"passed_all_criteria"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a><span class="w"> </span><span class="nt">"criteria_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a><span class="w"> </span><span class="nt">"criterion_1"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a><span class="w"> </span><span class="nt">"criterion_2"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a><span class="w"> </span><span class="nt">"next_steps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a><span class="w"> </span><span class="s2">"Manual review of failing test X"</span><span class="p">,</span>
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a><span class="w"> </span><span class="s2">"Consider refactoring test suite Y"</span>
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a><span class="w"> </span><span class="p">]</span>
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
 <h3 id="channel-3-status-updates-during-execution">Channel 3: Status Updates (During Execution)<a class="headerlink" href="#channel-3-status-updates-during-execution" title="Permanent link">¶</a></h3>
 <p><strong>Asynchronous progress signals</strong> (for long-running tasks):</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">{</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">"status_update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">    </span><span class="nt">"target_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:35:00Z"</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="nt">"progress"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">      </span><span class="nt">"phase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXECUTING"</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">      </span><span class="nt">"percentage_complete"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">      </span><span class="nt">"current_activity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Analyzing test failures in module X"</span><span class="p">,</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">      </span><span class="nt">"estimated_remaining_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="nt">"interim_metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">      </span><span class="nt">"items_processed"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">      </span><span class="nt">"items_total"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">      </span><span class="nt">"errors_encountered"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">"status_update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">"target_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:35:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nt">"progress"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nt">"phase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXECUTING"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">"percentage_complete"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nt">"current_activity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Analyzing test failures in module X"</span><span class="p">,</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">"estimated_remaining_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nt">"interim_metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="nt">"items_processed"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="nt">"items_total"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="nt">"errors_encountered"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
@@ -2853,64 +2852,64 @@
 <h3 id="single-agent-handoff-sequential">Single-Agent Handoff (Sequential)<a class="headerlink" href="#single-agent-handoff-sequential" title="Permanent link">¶</a></h3>
 <p><strong>Scenario:</strong> Agent A completes work, Agent B continues from results.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Agent A (Primary)
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>    ↓
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>[Execute] → [Result: modified files, analysis]
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    ↓
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>[Execute] [Result: modified files, analysis]
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>[Package State]
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    - What was done
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    - What changed
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    - What's ready for next step
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    - What still needs work
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>    ↓
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> - What was done
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> - What changed
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> - What's ready for next step
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> - What still needs work
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>[Delegate to Agent B]
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>    ← Task: "Continue from Agent A results"
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    ← Context: Previous state included
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>    ↓
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> Task: "Continue from Agent A results"
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a> Context: Previous state included
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
 <a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>Agent B (Specialist)
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>    ↓
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>[Receive State] → Validate input from A
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>    ↓
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>[Continue Work] → Pick up where A left off
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    ↓
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>[Return Results] → New state to A
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>[Receive State] Validate input from A
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>[Continue Work] Pick up where A left off
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>[Return Results] New state to A
 </code></pre></div>
 <p><strong>Example: CI Failure Triage</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>1. ci-testing-agent (diagnoses: "Timeout in test_x.py:142")
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>   ↓ returns diagnosis + logs
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> returns diagnosis + logs
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>2. autonomous-test-healer-agent (receives diagnosis)
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>   ↓ attempts fix based on known patterns
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>   ↓ returns fixed tests
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> attempts fix based on known patterns
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> returns fixed tests
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>3. ci-testing-agent validates fixes
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>   ↓ all tests pass
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> all tests pass
 </code></pre></div>
 <hr/>
 <h3 id="parallel-handoff-concurrent">Parallel Handoff (Concurrent)<a class="headerlink" href="#parallel-handoff-concurrent" title="Permanent link">¶</a></h3>
 <p><strong>Scenario:</strong> Multiple agents work in parallel on independent tasks.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Primary Agent
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    ├→ [Delegate to Agent A] → Independent task A
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    ├→ [Delegate to Agent B] → Independent task B
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    └→ [Delegate to Agent C] → Independent task C
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    ↓
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    ├→ Agent A: [Execute] → [Return Result A]
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    ├→ Agent B: [Execute] → [Return Result B]
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    └→ Agent C: [Execute] → [Return Result C]
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    ↓
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> [Delegate to Agent A] Independent task A
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> [Delegate to Agent B] Independent task B
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> [Delegate to Agent C] Independent task C
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> Agent A: [Execute] [Return Result A]
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> Agent B: [Execute] [Return Result B]
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> Agent C: [Execute] [Return Result C]
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>Primary Agent
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    ├→ [Collect Result A]
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    ├→ [Collect Result B]
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>    ├→ [Collect Result C]
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>    ↓
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a>    [Merge Results] → Consolidated outcome
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>    ↓
-<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>    [Verify No Conflicts] → Validate consistency
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    ↓
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a>    [Return Unified Result]
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> [Collect Result A]
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> [Collect Result B]
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> [Collect Result C]
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a> [Merge Results] Consolidated outcome
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a>
+<a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a> [Verify No Conflicts] Validate consistency
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a> [Return Unified Result]
 </code></pre></div>
 <p><strong>Example: Multi-Domain Testing Audit</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>unified-coverage-agent delegates:
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>├→ autonomous-test-healer-agent: Fix failing tests
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>├→ fragile-test-guardian: Stabilize flaky tests
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>└→ test-enhancement-agent: Add edge cases
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> autonomous-test-healer-agent: Fix failing tests
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> fragile-test-guardian: Stabilize flaky tests
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a> test-enhancement-agent: Add edge cases
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>All 3 work in parallel.
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>
@@ -2923,84 +2922,84 @@
 <h3 id="cascading-handoff-dependent-sequential">Cascading Handoff (Dependent Sequential)<a class="headerlink" href="#cascading-handoff-dependent-sequential" title="Permanent link">¶</a></h3>
 <p><strong>Scenario:</strong> Agent B depends on Agent A's output.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Agent A (must complete first)
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>    ↓
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>[Execute] → [Result: structured output]
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    ↓
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>[Validate Result] → Check success criteria
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    ↓ (if failed)
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    └→ [Escalate] → Don't pass bad output to B
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    ↓ (if passed)
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    [Package for Agent B]
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    ↓
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>[Delegate to Agent B] → "Here are A's results, continue"
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    ↓
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>[Execute] [Result: structured output]
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>[Validate Result] Check success criteria
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> (if failed)
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> [Escalate] Don't pass bad output to B
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> (if passed)
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> [Package for Agent B]
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>[Delegate to Agent B] "Here are A's results, continue"
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
 <a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>Agent B (dependent)
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    ↓
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>[Receive A's Results] → Import into task context
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>    ↓
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>[Execute] → Do work based on A's output
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>    ↓
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>[Receive A's Results] Import into task context
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>[Execute] Do work based on A's output
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
 <a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>[Return Results]
 </code></pre></div>
-<p><strong>Example: Config Migration → Validation</strong></p>
+<p><strong>Example: Config Migration Validation</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>1. config-migration-assistant
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>   ↓ migrates legacy config to Hydra
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>   ↓ returns: migrated config files
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a> migrates legacy config to Hydra
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> returns: migrated config files
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>2. config-validator (receives migrated files)
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>   ↓ validates Hydra format correctness
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>   ↓ returns: validation report + any needed fixes
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> validates Hydra format correctness
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> returns: validation report + any needed fixes
 </code></pre></div>
 <hr/>
 <h2 id="result-verification">Result Verification<a class="headerlink" href="#result-verification" title="Permanent link">¶</a></h2>
 <h3 id="verification-checklist">Verification Checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h3>
 <p>Every agent should verify results before returning:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a> Type Check
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>  - Result matches declared type (fix|analysis|verification)
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>  - Data structures well-formed
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> - Result matches declared type (fix|analysis|verification)
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> - Data structures well-formed
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> Completeness Check
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>  - All success criteria addressed
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>  - No partial work without explanation
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>  - Changes documented
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> - All success criteria addressed
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> - No partial work without explanation
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> - Changes documented
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> Consistency Check
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>  - No conflicting changes
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>  - Logical coherence maintained
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>  - References up-to-date
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> - No conflicting changes
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> - Logical coherence maintained
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> - References up-to-date
 <a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
 <a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> Quality Check
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>  - Code/docs follow style guide
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>  - No regressions introduced
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>  - Performance acceptable
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> - Code/docs follow style guide
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> - No regressions introduced
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a> - Performance acceptable
 <a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>
 <a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> Audit Trail Check
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>  - Changes tracked with commit SHAs
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>  - Rationale documented
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>  - Timestamps accurate
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> - Changes tracked with commit SHAs
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> - Rationale documented
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> - Timestamps accurate
 </code></pre></div>
 <h3 id="self-verification-pattern">Self-Verification Pattern<a class="headerlink" href="#self-verification-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Pseudo-code for agent verification</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="k">def</span> <span class="nf">verify_results</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">success_criteria</span><span class="p">):</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>        <span class="s1">'type_valid'</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">),</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>        <span class="s1">'completeness'</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>            <span class="n">criterion</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">for</span> <span class="n">criterion</span> <span class="ow">in</span> <span class="n">success_criteria</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>        <span class="p">),</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>        <span class="s1">'consistency'</span><span class="p">:</span> <span class="n">validate_consistency</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>        <span class="s1">'quality'</span><span class="p">:</span> <span class="n">validate_quality</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>        <span class="s1">'audit_trail'</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>            <span class="n">commit_sha</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'commits'</span><span class="p">,</span> <span class="p">[])</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>            <span class="k">for</span> <span class="n">commit_sha</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'applied_shas'</span><span class="p">,</span> <span class="p">[])</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>        <span class="p">)</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>    <span class="p">}</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="s1">'type_valid'</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">),</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="s1">'completeness'</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">criterion</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">for</span> <span class="n">criterion</span> <span class="ow">in</span> <span class="n">success_criteria</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="p">),</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a> <span class="s1">'consistency'</span><span class="p">:</span> <span class="n">validate_consistency</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a> <span class="s1">'quality'</span><span class="p">:</span> <span class="n">validate_quality</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> <span class="s1">'audit_trail'</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> <span class="n">commit_sha</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'commits'</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> <span class="k">for</span> <span class="n">commit_sha</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'applied_shas'</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a> <span class="p">)</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a> <span class="p">}</span>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">checks</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>        <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'VERIFIED'</span><span class="p">,</span> <span class="s1">'checks'</span><span class="p">:</span> <span class="n">checks</span><span class="p">}</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>    <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>        <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'FAILED'</span><span class="p">,</span> <span class="s1">'checks'</span><span class="p">:</span> <span class="n">checks</span><span class="p">,</span> <span class="s1">'issues'</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>            <span class="n">reason</span> <span class="k">for</span> <span class="n">reason</span><span class="p">,</span> <span class="n">passed</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">passed</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>        <span class="p">]}</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">checks</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'VERIFIED'</span><span class="p">,</span> <span class="s1">'checks'</span><span class="p">:</span> <span class="n">checks</span><span class="p">}</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a> <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'FAILED'</span><span class="p">,</span> <span class="s1">'checks'</span><span class="p">:</span> <span class="n">checks</span><span class="p">,</span> <span class="s1">'issues'</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> <span class="n">reason</span> <span class="k">for</span> <span class="n">reason</span><span class="p">,</span> <span class="n">passed</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">passed</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> <span class="p">]}</span>
 </code></pre></div>
 <hr/>
 <h2 id="error-handling-escalation">Error Handling &amp; Escalation<a class="headerlink" href="#error-handling-escalation" title="Permanent link">¶</a></h2>
@@ -3061,132 +3060,130 @@
 </table>
 <h3 id="escalation-path">Escalation Path<a class="headerlink" href="#escalation-path" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>Agent encounters issue
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>    ↓
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>[Can I fix this?]
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    ├→ YES: Self-correct and continue
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    ├→ NO, temporary: Retry with backoff
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    ├→ NO, permanent: Request clarification from delegator
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    ├→ NO, blocker: Escalate to orchestrator
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>    └→ NO, critical: Signal human escalation
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>    ↓
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> YES: Self-correct and continue
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> NO, temporary: Retry with backoff
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a> NO, permanent: Request clarification from delegator
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> NO, blocker: Escalate to orchestrator
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> NO, critical: Signal human escalation
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>
 <a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>Delegator receives escalation
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>    ↓
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>
 <a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>[Can I resolve this?]
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>    ├→ YES: Provide clarification/fix to agent
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>    ├→ NO: Pass to orchestrator
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>    └→ CRITICAL: Signal human admin
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> YES: Provide clarification/fix to agent
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a> NO: Pass to orchestrator
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> CRITICAL: Signal human admin
 </code></pre></div>
 <h3 id="escalation-signal-format">Escalation Signal Format<a class="headerlink" href="#escalation-signal-format" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="p">{</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">  </span><span class="nt">"escalation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">    </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="nt">"source_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:45:00Z"</span><span class="p">,</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">    </span><span class="nt">"severity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low|medium|high|critical"</span><span class="p">,</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">    </span><span class="nt">"issue_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"capability_mismatch|blocker|timeout|resource_exhausted"</span><span class="p">,</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">    </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What went wrong"</span><span class="p">,</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">    </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">      </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">      </span><span class="nt">"last_successful_state"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">      </span><span class="nt">"error_logs"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">    </span><span class="p">},</span>
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">    </span><span class="nt">"recommended_action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Retry|Reselect|Clarify|Escalate"</span><span class="p">,</span>
-<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w">    </span><span class="nt">"can_retry"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">    </span><span class="nt">"retry_backoff_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w"> </span><span class="nt">"escalation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span><span class="nt">"task_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unique-uuid"</span><span class="p">,</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w"> </span><span class="nt">"source_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"specialist-agent-id"</span><span class="p">,</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-06-26T18:45:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="nt">"severity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low|medium|high|critical"</span><span class="p">,</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w"> </span><span class="nt">"issue_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"capability_mismatch|blocker|timeout|resource_exhausted"</span><span class="p">,</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w"> </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What went wrong"</span><span class="p">,</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w"> </span><span class="nt">"context"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w"> </span><span class="nt">"files_involved"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w"> </span><span class="nt">"last_successful_state"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="nt">"error_logs"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w"> </span><span class="nt">"recommended_action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Retry|Reselect|Clarify|Escalate"</span><span class="p">,</span>
+<a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="w"> </span><span class="nt">"can_retry"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w"> </span><span class="nt">"retry_backoff_seconds"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="p">}</span>
 </code></pre></div>
 <hr/>
 <h2 id="state-machine-diagrams">State Machine Diagrams<a class="headerlink" href="#state-machine-diagrams" title="Permanent link">¶</a></h2>
 <h3 id="single-agent-workflow">Single Agent Workflow<a class="headerlink" href="#single-agent-workflow" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>     ┌─────┐
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>     │IDLE │◄────────────┐
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>     └──┬──┘             │
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>        │ task          │
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>        │ delegated     │
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>        ▼                │
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>  ┌──────────┐           │
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>  │RECEIVING │           │
-<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>  └──┬───────┘           │
-<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>     │                   │
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>     ├─ invalid ──┐      │
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>     │            ▼      │
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a>     │      ┌──────────┐ │
-<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>     │      │ESCALATING│ │
-<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>     │      └──────────┘ │
-<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>     │                   │
-<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>     ├─ valid            │
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>     ▼                   │
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>┌──────────┐             │
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>│VALIDATING│             │
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>└──┬───────┘             │
-<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>   │ valid               │
-<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>   ▼                     │
-<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>┌──────────┐             │
-<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a>│EXECUTING │             │
-<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a>└──┬───────┘             │
-<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a>   │ complete            │
-<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a>   ▼                     │
-<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a>┌──────────┐             │
-<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a>│VERIFYING │             │
-<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a>└──┬───────┘             │
-<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a>   │ verified            │
-<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a>   ▼                     │
-<a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a>┌──────────┐             │
-<a href="#__codelineno-16-35" id="__codelineno-16-35" name="__codelineno-16-35"></a>│RETURNING │─────────────┘
-<a href="#__codelineno-16-36" id="__codelineno-16-36" name="__codelineno-16-36"></a>└──────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a> IDLE 
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> task 
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> delegated 
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> RECEIVING 
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a> invalid 
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a> ESCALATING 
+<a href="#__codelineno-16-14" id="__codelineno-16-14" name="__codelineno-16-14"></a>
+<a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>
+<a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a> valid 
+<a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>VALIDATING 
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a> valid 
+<a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>
+<a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>
+<a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>EXECUTING 
+<a href="#__codelineno-16-25" id="__codelineno-16-25" name="__codelineno-16-25"></a>
+<a href="#__codelineno-16-26" id="__codelineno-16-26" name="__codelineno-16-26"></a> complete 
+<a href="#__codelineno-16-27" id="__codelineno-16-27" name="__codelineno-16-27"></a>
+<a href="#__codelineno-16-28" id="__codelineno-16-28" name="__codelineno-16-28"></a>
+<a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a>VERIFYING 
+<a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a>
+<a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a> verified 
+<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a>
+<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a>
+<a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a>RETURNING 
 </code></pre></div>
 <h3 id="parallel-agent-workflow">Parallel Agent Workflow<a class="headerlink" href="#parallel-agent-workflow" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>        Delegator
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>           │
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    ┌──────┼──────┐
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>    │      │      │
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>    ▼      ▼      ▼
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>  Agent1 Agent2 Agent3
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>   EXE    EXE    EXE
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>    │      │      │
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>    └──────┼──────┘
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>           │
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>      [Merge Results]
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>           │
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>      [Verify Consistency]
-<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>           │
-<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a>    Return to Delegator
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a> Delegator
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a> Agent1 Agent2 Agent3
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> EXE EXE EXE
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> [Merge Results]
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> [Verify Consistency]
+<a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a> Return to Delegator
 </code></pre></div>
 <h3 id="cascading-agent-workflow">Cascading Agent Workflow<a class="headerlink" href="#cascading-agent-workflow" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>   Agent-A
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>      │
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>      ├─ EXECUTING
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>      │
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>      ├─ VERIFYING
-<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>      │
-<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a>      ├─ RETURNING
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>      │
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a>      ▼ (A's output)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a> Agent-A
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> EXECUTING
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> VERIFYING
+<a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
+<a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a> RETURNING
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a> (A's output)
 <a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a>
-<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a>   Delegator
-<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>      │
-<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a>      ├─ [Validate A's output]
-<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>      │
-<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a>      ├─ [Package for B]
-<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>      │
-<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a>      ▼ (dispatch B)
+<a href="#__codelineno-18-11" id="__codelineno-18-11" name="__codelineno-18-11"></a> Delegator
+<a href="#__codelineno-18-12" id="__codelineno-18-12" name="__codelineno-18-12"></a>
+<a href="#__codelineno-18-13" id="__codelineno-18-13" name="__codelineno-18-13"></a> [Validate A's output]
+<a href="#__codelineno-18-14" id="__codelineno-18-14" name="__codelineno-18-14"></a>
+<a href="#__codelineno-18-15" id="__codelineno-18-15" name="__codelineno-18-15"></a> [Package for B]
+<a href="#__codelineno-18-16" id="__codelineno-18-16" name="__codelineno-18-16"></a>
+<a href="#__codelineno-18-17" id="__codelineno-18-17" name="__codelineno-18-17"></a> (dispatch B)
 <a href="#__codelineno-18-18" id="__codelineno-18-18" name="__codelineno-18-18"></a>
-<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a>   Agent-B
-<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>      │
-<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a>      ├─ RECEIVING (gets A's output)
-<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a>      │
-<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a>      ├─ EXECUTING (with A's context)
-<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>      │
-<a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a>      ├─ VERIFYING
-<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a>      │
-<a href="#__codelineno-18-27" id="__codelineno-18-27" name="__codelineno-18-27"></a>      ├─ RETURNING
-<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a>      │
-<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a>      ▼
+<a href="#__codelineno-18-19" id="__codelineno-18-19" name="__codelineno-18-19"></a> Agent-B
+<a href="#__codelineno-18-20" id="__codelineno-18-20" name="__codelineno-18-20"></a>
+<a href="#__codelineno-18-21" id="__codelineno-18-21" name="__codelineno-18-21"></a> RECEIVING (gets A's output)
+<a href="#__codelineno-18-22" id="__codelineno-18-22" name="__codelineno-18-22"></a>
+<a href="#__codelineno-18-23" id="__codelineno-18-23" name="__codelineno-18-23"></a> EXECUTING (with A's context)
+<a href="#__codelineno-18-24" id="__codelineno-18-24" name="__codelineno-18-24"></a>
+<a href="#__codelineno-18-25" id="__codelineno-18-25" name="__codelineno-18-25"></a> VERIFYING
+<a href="#__codelineno-18-26" id="__codelineno-18-26" name="__codelineno-18-26"></a>
+<a href="#__codelineno-18-27" id="__codelineno-18-27" name="__codelineno-18-27"></a> RETURNING
+<a href="#__codelineno-18-28" id="__codelineno-18-28" name="__codelineno-18-28"></a>
+<a href="#__codelineno-18-29" id="__codelineno-18-29" name="__codelineno-18-29"></a>
 <a href="#__codelineno-18-30" id="__codelineno-18-30" name="__codelineno-18-30"></a>
-<a href="#__codelineno-18-31" id="__codelineno-18-31" name="__codelineno-18-31"></a>   Delegator
-<a href="#__codelineno-18-32" id="__codelineno-18-32" name="__codelineno-18-32"></a>      │
-<a href="#__codelineno-18-33" id="__codelineno-18-33" name="__codelineno-18-33"></a>      └─ [Merge final results]
+<a href="#__codelineno-18-31" id="__codelineno-18-31" name="__codelineno-18-31"></a> Delegator
+<a href="#__codelineno-18-32" id="__codelineno-18-32" name="__codelineno-18-32"></a>
+<a href="#__codelineno-18-33" id="__codelineno-18-33" name="__codelineno-18-33"></a> [Merge final results]
 </code></pre></div>
 <hr/>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">¶</a></h2>
@@ -3225,6 +3222,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

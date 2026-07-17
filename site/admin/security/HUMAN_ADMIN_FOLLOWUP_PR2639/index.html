@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/security/HUMAN_ADMIN_FOLLOWUP_PR2639/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2353,7 +2353,7 @@
 <a class="md-nav__link" href="#phase-3-configure-github-secrets-est-10-min">
 <span class="md-ellipsis">
       
-        🔑 PHASE 3: Configure GitHub Secrets (Est. 10 min)
+        PHASE 3: Configure GitHub Secrets (Est. 10 min)
       
     </span>
 </a>
@@ -2552,11 +2552,11 @@
 <a class="md-nav__link" href="#verification-checklist_1">
 <span class="md-ellipsis">
       
-        ️ Verification Checklist
+        Verification Checklist
       
     </span>
 </a>
-<nav aria-label="️ Verification Checklist" class="md-nav">
+<nav aria-label="Verification Checklist" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#implementation-review">
@@ -2601,7 +2601,7 @@
 <a class="md-nav__link" href="#physics-alignment">
 <span class="md-ellipsis">
       
-        ⚛️ Physics Alignment
+        Physics Alignment
       
     </span>
 </a>
@@ -2633,20 +2633,20 @@
 <article class="md-content__inner md-typeset">
 <h1 id="human-admin-follow-up-token-encryption-system-setup">HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup<a class="headerlink" href="#human-admin-follow-up-token-encryption-system-setup" title="Permanent link">¶</a></h1>
 <p><strong>Version:</strong> v0.2.1</p>
-<p><strong>Repository</strong>: Aries-Serpent/<em>codex</em><br/>
-<strong>PR</strong>: #2639 / #2660<br/>
-<strong>Branch</strong>: copilot/sub-pr-2639<br/>
-<strong>Status</strong>:  Implementation Complete - <strong>ACTION REQUIRED</strong><br/>
-<strong>Generated</strong>: 2026-06-22<br/>
-<strong>Priority</strong>:  <strong>HIGH</strong> - Security Enhancement</p>
+<p><strong>Repository</strong>: Aries-Serpent/<em>codex</em>
+<strong>PR</strong>: #2639 / #2660
+<strong>Branch</strong>: copilot/sub-pr-2639
+<strong>Status</strong>: Implementation Complete - <strong>ACTION REQUIRED</strong>
+<strong>Generated</strong>: 2026-06-22
+<strong>Priority</strong>: <strong>HIGH</strong> - Security Enhancement</p>
 <hr/>
 <h2 id="executive-summary">EXECUTIVE SUMMARY<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>The secure token encryption system has been <strong>fully implemented</strong> and is ready for production use. This system provides military-grade encryption (AES-256-GCM) for GitHub tokens used by Copilot Agent automation.</p>
 <p><strong>What's Been Done</strong>:
--  Core encryption/decryption tools created
--  Comprehensive documentation written<br/>
--  Bootstrap workflows implemented
--  5-pass security review completed (ZERO concerns)</p>
+- Core encryption/decryption tools created
+- Comprehensive documentation written
+- Bootstrap workflows implemented
+- 5-pass security review completed (ZERO concerns)</p>
 <p><strong>What You Need To Do</strong>:
 1. <strong>Review and test</strong> the implementation
 2. <strong>Generate and encrypt</strong> your GitHub token
@@ -2661,13 +2661,13 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>/path/to/_codex_
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
 <a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Review core tools</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>cat<span class="w"> </span>scripts/security/token_encryption_tool.py<span class="w">      </span><span class="c1"># 13KB encryption tool</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>cat<span class="w"> </span>scripts/security/copilot_token_decoder.py<span class="w">      </span><span class="c1"># 11.5KB decoder module</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>cat<span class="w"> </span>.github/security-tools/bootstrap_extractor.py<span class="w">  </span><span class="c1"># 6.3KB bootstrap system</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>cat<span class="w"> </span>scripts/security/token_encryption_tool.py<span class="w"> </span><span class="c1"># 13KB encryption tool</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>cat<span class="w"> </span>scripts/security/copilot_token_decoder.py<span class="w"> </span><span class="c1"># 11.5KB decoder module</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>cat<span class="w"> </span>.github/security-tools/bootstrap_extractor.py<span class="w"> </span><span class="c1"># 6.3KB bootstrap system</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1"># Review documentation</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>cat<span class="w"> </span>docs/admin/security/ADMIN_TOKEN_SETUP.md<span class="w">       </span><span class="c1"># 7.5KB admin guide</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>cat<span class="w"> </span>docs/admin/security/COPILOT_TOKEN_USAGE.md<span class="w">     </span><span class="c1"># 10.2KB copilot guide</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>cat<span class="w"> </span>docs/admin/security/ADMIN_TOKEN_SETUP.md<span class="w"> </span><span class="c1"># 7.5KB admin guide</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>cat<span class="w"> </span>docs/admin/security/COPILOT_TOKEN_USAGE.md<span class="w"> </span><span class="c1"># 10.2KB copilot guide</span>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="c1"># Review workflow</span>
 <a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>cat<span class="w"> </span>.github/workflows/security-tools-bootstrap.yml<span class="w"> </span><span class="c1"># 5.7KB workflow</span>
@@ -2700,12 +2700,10 @@
 <li>Configure:</li>
 <li><strong>Note</strong>: <code>_codex_ Copilot Agent Token - Created 2025-12-29</code></li>
 <li><strong>Expiration</strong>: 90 days</li>
-<li><strong>Scopes</strong>:<ul>
-<li>☑️ <code>repo</code> (Full control of private repositories)</li>
-<li>☑️ <code>workflow</code> (Update GitHub Action workflows)</li>
-<li>☑️ <code>admin:org</code> (Full control of orgs and teams) - if needed</li>
-</ul>
-</li>
+<li><strong>Scopes</strong>:</li>
+<li><code>repo</code> (Full control of private repositories)</li>
+<li><code>workflow</code> (Update GitHub Action workflows)</li>
+<li><code>admin:org</code> (Full control of orgs and teams) - if needed</li>
 <li>Click <strong>Generate token</strong></li>
 <li><strong>CRITICAL</strong>: Copy the token immediately (format: <code>ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code>) <!-- pragma: allowlist secret --></li>
 </ol>
@@ -2733,18 +2731,18 @@
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> COPY THESE VALUES TO GITHUB SECRETS:
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>🥇 RECOMMENDED - Base64 Encoding:
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>   Secret Name:  CODEX_GHP_TOKEN_BASE64
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a> RECOMMENDED - Base64 Encoding:
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> Secret Name: CODEX_GHP_TOKEN_BASE64
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>[... more secret values ...]
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>💾 Setup script saved to: /home/user/codex_token_setup.sh
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> Setup script saved to: /home/user/codex_token_setup.sh
 </code></pre></div></p>
 <h2 id="task-23-save-secret-values">Task 2.3: Save Secret Values<a class="headerlink" href="#task-23-save-secret-values" title="Permanent link">¶</a></h2>
 <p><strong>IMPORTANT</strong>: Keep the terminal window open or save the output to a secure location. You'll need these values in the next phase.</p>
 <hr/>
-<h3 id="phase-3-configure-github-secrets-est-10-min">🔑 PHASE 3: Configure GitHub Secrets (Est. 10 min)<a class="headerlink" href="#phase-3-configure-github-secrets-est-10-min" title="Permanent link">¶</a></h3>
+<h3 id="phase-3-configure-github-secrets-est-10-min">PHASE 3: Configure GitHub Secrets (Est. 10 min)<a class="headerlink" href="#phase-3-configure-github-secrets-est-10-min" title="Permanent link">¶</a></h3>
 <p>Choose ONE of these methods:</p>
 <h4 id="option-a-automated-setup-recommended">Option A: Automated Setup (RECOMMENDED)<a class="headerlink" href="#option-a-automated-setup-recommended" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Ensure you're authenticated with GitHub CLI</span>
@@ -2761,38 +2759,38 @@
 <h2 id="option-b-manual-via-github-cli">Option B: Manual via GitHub CLI<a class="headerlink" href="#option-b-manual-via-github-cli" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Set secrets one by one</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_BASE64<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_BASE64_VALUE"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_BASE64_VALUE"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_SHA256<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_SHA256_HASH"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_SHA256_HASH"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="c1"># If using AES encryption (most secure):</span>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_AES_KEY<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_AES_KEY"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_AES_KEY"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
 <a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_AES_CIPHERTEXT<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_CIPHERTEXT"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_CIPHERTEXT"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_AES_NONCE<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_NONCE"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_NONCE"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>
 <a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_AES_TAG<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_TAG"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_TAG"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>
 <a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_AES_AUTH_DATA<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_AUTH_DATA"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_AUTH_DATA"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>
 <a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a><span class="c1"># Or use combined config (single secret):</span>
 <a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_GHP_TOKEN_CONFIG<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"YOUR_COMBINED_CONFIG"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a><span class="w">  </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"YOUR_COMBINED_CONFIG"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a><span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 </code></pre></div>
 <h2 id="option-c-manual-via-web-ui">Option C: Manual via Web UI<a class="headerlink" href="#option-c-manual-via-web-ui" title="Permanent link">¶</a></h2>
 <ol>
@@ -2818,11 +2816,11 @@
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>python3<span class="w"> </span>scripts/security/copilot_token_decoder.py
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="c1"># Expected output:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="c1"># 🔓 _codex_ Token Decoder Test</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="c1"># _codex_ Token Decoder Test</span>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="c1"># ==============================================================</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="c1"># Detected encoding type: base64</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="c1">#  Token retrieved successfully: ghp_xxxxxx...xxxx</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1">#  Token format and hash verified</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="c1"># Token retrieved successfully: ghp_xxxxxx...xxxx</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1"># Token format and hash verified</span>
 <a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="c1"># ==============================================================</span>
 </code></pre></div>
 <h2 id="task-42-test-in-workflow-optional">Task 4.2: Test in Workflow (Optional)<a class="headerlink" href="#task-42-test-in-workflow-optional" title="Permanent link">¶</a></h2>
@@ -2840,8 +2838,8 @@
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>Aries-Serpent/_codex_
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># Expected to see:</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># CODEX_GHP_TOKEN_BASE64       Updated YYYY-MM-DD</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># CODEX_GHP_TOKEN_SHA256       Updated YYYY-MM-DD</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># CODEX_GHP_TOKEN_BASE64 Updated YYYY-MM-DD</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># CODEX_GHP_TOKEN_SHA256 Updated YYYY-MM-DD</span>
 <a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># [... and any AES secrets if configured ...]</span>
 </code></pre></div>
 <hr/>
@@ -2860,7 +2858,7 @@
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>rm<span class="w"> </span>~/codex_token_setup.sh
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Clear terminal history if token was visible</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nb">history</span><span class="w"> </span>-c<span class="w">  </span><span class="c1"># Clears history in current session</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nb">history</span><span class="w"> </span>-c<span class="w"> </span><span class="c1"># Clears history in current session</span>
 </code></pre></div>
 <h2 id="task-53-document-rotation-date">Task 5.3: Document Rotation Date<a class="headerlink" href="#task-53-document-rotation-date" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Create a reminder for token rotation (90 iterations)</span>
@@ -2976,17 +2974,17 @@
 - <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">GitHub Secrets Documentation</a>
 - <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">AES-256-GCM Encryption</a></p>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-06-22T00:00:00Z<br/>
-<strong>Maintainer</strong>: @mbaetiong<br/>
-<strong>Status</strong>:  <strong>READY FOR ADMIN ACTION</strong></p>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-06-22T00:00:00Z
+<strong>Maintainer</strong>: @mbaetiong
+<strong>Status</strong>: <strong>READY FOR ADMIN ACTION</strong></p>
 <hr/>
 <h2 id="mission-overview">Mission Overview<a class="headerlink" href="#mission-overview" title="Permanent link">¶</a></h2>
 <p><strong>Objective</strong>: Guide human administrator through complete token encryption system deployment from code review to production activation.</p>
-<p><strong>Energy Level</strong>:  (5/5 - Security Critical)</p>
-<p><strong>Status</strong>:  Awaiting Admin Action</p>
+<p><strong>Energy Level</strong>: (5/5 - Security Critical)</p>
+<p><strong>Status</strong>: Awaiting Admin Action</p>
 <hr/>
-<h2 id="verification-checklist_1">️ Verification Checklist<a class="headerlink" href="#verification-checklist_1" title="Permanent link">¶</a></h2>
+<h2 id="verification-checklist_1">Verification Checklist<a class="headerlink" href="#verification-checklist_1" title="Permanent link">¶</a></h2>
 <h3 id="implementation-review">Implementation Review<a class="headerlink" href="#implementation-review" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> All 8 security files present in repository</li>
@@ -3056,7 +3054,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="physics-alignment">⚛️ Physics Alignment<a class="headerlink" href="#physics-alignment" title="Permanent link">¶</a></h2>
+<h2 id="physics-alignment">Physics Alignment<a class="headerlink" href="#physics-alignment" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -3067,17 +3065,17 @@
 </thead>
 <tbody>
 <tr>
-<td>Path ️</td>
+<td>Path</td>
 <td>Structured 5-phase deployment journey</td>
-<td>Review → Generate → Configure → Verify → Cleanup</td>
+<td>Review Generate Configure Verify Cleanup</td>
 </tr>
 <tr>
 <td>Fields</td>
 <td>System state transformation to production-ready</td>
-<td>Pre-deployment → Token encrypted → Secrets configured → System active</td>
+<td>Pre-deployment Token encrypted Secrets configured System active</td>
 </tr>
 <tr>
-<td>Patterns ️</td>
+<td>Patterns</td>
 <td>Recognition of deployment milestones</td>
 <td>Phase checkboxes, verification steps, completion sign-off</td>
 </tr>
@@ -3087,7 +3085,7 @@
 <td>3 parallel setup paths ensure deployment success</td>
 </tr>
 <tr>
-<td>Balance ️</td>
+<td>Balance</td>
 <td>Thoroughness vs time efficiency</td>
 <td>Comprehensive 5-phase process completable in &lt;60 minutes</td>
 </tr>
@@ -3136,11 +3134,11 @@
 <h2 id="redundancy-patterns">Redundancy Patterns<a class="headerlink" href="#redundancy-patterns" title="Permanent link">¶</a></h2>
 <p><strong>Rollback Strategy</strong>: If deployment encounters issues, system remains in pre-deployment state (safe). Original plaintext token only revoked after successful verification.</p>
 <p><strong>Parallel Paths</strong>:
-- If automated setup script fails → Use GitHub CLI manual commands
-- If GitHub CLI unavailable → Use web UI manual configuration
-- If encryption tool fails → Use Base64 encoding (simpler fallback)
-- If local verification fails → Test in workflow environment
-- If workflow test fails → Revert to environment variable testing</p>
+- If automated setup script fails Use GitHub CLI manual commands
+- If GitHub CLI unavailable Use web UI manual configuration
+- If encryption tool fails Use Base64 encoding (simpler fallback)
+- If local verification fails Test in workflow environment
+- If workflow test fails Revert to environment variable testing</p>
 <p><strong>Recovery Procedures</strong>:
 1. <strong>Encryption Tool Error</strong>: Verify Python 3.8+, install <code>cryptography</code>, check token format (starts with <code>ghp_</code>)
 2. <strong>Secret Configuration Failure</strong>: Verify GitHub CLI authentication, check repository permissions, use web UI as fallback
@@ -3176,6 +3174,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

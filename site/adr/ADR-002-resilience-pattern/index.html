@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/adr/ADR-002-resilience-pattern/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR-002: Three-Layer Resilience: Circuit Breaker + Retry + Graceful Degradation - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2366,15 +2366,15 @@ endpoints, feature stores, A/B experiment APIs, and downstream enrichment APIs.
 These calls exhibit the following failure modes in production:</p>
 <ol>
 <li><strong>Transient failures</strong> — network hiccups, brief endpoint restarts, or momentary
-   overload that resolve within seconds.</li>
+ overload that resolve within seconds.</li>
 <li><strong>Sustained failures</strong> — a dependency enters a degraded state for minutes or
-   longer (rolling deployment, region failover, capacity event).</li>
+ longer (rolling deployment, region failover, capacity event).</li>
 <li><strong>Cascading failures</strong> — upstream slowness causes the caller to hold open
-   connections, consuming thread pool and memory, which then causes the caller's
-   own latency to spike and triggers failures in its callers.</li>
+ connections, consuming thread pool and memory, which then causes the caller's
+ own latency to spike and triggers failures in its callers.</li>
 <li><strong>Silent quality degradation</strong> — when a dependency is unavailable, the system
-   must continue returning useful (possibly lower-quality) responses rather than
-   hard-failing.</li>
+ must continue returning useful (possibly lower-quality) responses rather than
+ hard-failing.</li>
 </ol>
 <p>A single fault-tolerance mechanism cannot address all four modes simultaneously.
 Timeout-only approaches do not prevent cascading failures from consuming
@@ -2387,17 +2387,17 @@ independent Python classes that can be stacked in any order:</p>
 <h3 id="layer-1-circuitbreaker-prevents-cascading-failures">Layer 1: CircuitBreaker — prevents cascading failures<a class="headerlink" href="#layer-1-circuitbreaker-prevents-cascading-failures" title="Permanent link">¶</a></h3>
 <p>The circuit breaker monitors call outcomes at the service boundary and transitions
 through three states:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>CLOSED → (failure_threshold exceeded) → OPEN → (timeout elapsed) → HALF-OPEN
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>HALF-OPEN → (probe success) → CLOSED
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>HALF-OPEN → (probe failure) → OPEN
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>CLOSED (failure_threshold exceeded) OPEN (timeout elapsed) HALF-OPEN
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>HALF-OPEN (probe success) CLOSED
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>HALF-OPEN (probe failure) OPEN
 </code></pre></div>
 <ul>
 <li>In <code>OPEN</code> state, calls fail fast without hitting the downstream service, giving
-  it time to recover.</li>
+ it time to recover.</li>
 <li>The <code>HALF-OPEN</code> probe allows graceful recovery without requiring manual
-  intervention.</li>
+ intervention.</li>
 <li>Configurable <code>failure_threshold</code>, <code>recovery_timeout</code>, and <code>success_threshold</code>
-  (number of consecutive successes in HALF-OPEN required to reset to CLOSED).</li>
+ (number of consecutive successes in HALF-OPEN required to reset to CLOSED).</li>
 </ul>
 <h3 id="layer-2-retrywithbackoff-handles-transient-failures">Layer 2: RetryWithBackoff — handles transient failures<a class="headerlink" href="#layer-2-retrywithbackoff-handles-transient-failures" title="Permanent link">¶</a></h3>
 <p>Exponential back-off with full jitter is applied to transient failures:</p>
@@ -2413,15 +2413,15 @@ whitelist so only known-transient exceptions are retried (not programming errors
 returns a typed fallback value instead of propagating an exception:</p>
 <ul>
 <li>Fallback values are typed and domain-specific (e.g., neutral feature vector,
-  default probability, cached last-known-good response).</li>
+ default probability, cached last-known-good response).</li>
 <li>Degradation events are logged and counted so on-call engineers are alerted
-  even when end-users experience no hard failure.</li>
+ even when end-users experience no hard failure.</li>
 </ul>
 <h3 id="composition">Composition<a class="headerlink" href="#composition" title="Permanent link">¶</a></h3>
 <p>The layers are designed to compose without coupling:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>CircuitBreaker(service_boundary)
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>  └── RetryWithBackoff(individual_call)
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>        └── GracefulDegradation(feature_group)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> RetryWithBackoff(individual_call)
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> GracefulDegradation(feature_group)
 </code></pre></div>
 <p>The circuit breaker wraps the entire service boundary. Retry wraps each individual
 RPC/HTTP call within that boundary. Graceful degradation wraps the feature group
@@ -2430,19 +2430,19 @@ or model prediction block that may rely on the call's result.</p>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <p><strong>Positive:</strong>
 - Each layer is independently testable and replaceable; swapping the retry policy
-  does not require changes to circuit-breaker or degradation logic.
+ does not require changes to circuit-breaker or degradation logic.
 - The three layers address all four failure modes identified in the context.
 - Full jitter prevents retry storms in multi-instance deployments.
 - Typed fallbacks make graceful degradation explicit and verifiable in tests.</p>
 <p><strong>Negative / Trade-offs:</strong>
 - Three layers add wrapping overhead; developers must understand which layer to
-  apply at which abstraction boundary.
+ apply at which abstraction boundary.
 - Circuit breaker state is <strong>per-process</strong> in the current implementation; a
-  multi-replica deployment will have independent breaker states. Shared state
-  (e.g., Redis-backed breaker) is not implemented and would require additional
-  infrastructure.
+ multi-replica deployment will have independent breaker states. Shared state
+ (e.g., Redis-backed breaker) is not implemented and would require additional
+ infrastructure.
 - Graceful degradation hides real errors from end-users; monitoring and alerting
-  must be in place or silent degradation accumulates undetected.</p>
+ must be in place or silent degradation accumulates undetected.</p>
 <hr/>
 <h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">¶</a></h2>
 <table>
@@ -2500,6 +2500,6 @@ or model prediction block that may rely on the call's result.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

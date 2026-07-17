@@ -1,6 +1,6 @@
 # Planset Registry — Historical Archive
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -503,7 +503,7 @@
 ```
 Component: MSVRadarChart.tsx (10.5KB, 349 lines)
 Location: cognitive_app/src/components/quantum-viz/
-Framework: React + TypeScript + Recharts v0.2.1
+Framework: React + TypeScript + Recharts v0.2.0
 
 5 MSV Dimensions (from AAIS V3.0):
   1. Correctness Awareness  — Tests, CodeQL, validation (95/100)
@@ -551,7 +551,7 @@ Current Scores (PS-14 Implementation):
 **AAIS Impact**: +0.3 points (93.2 93.5, Path to 97.0 progress)
 
 **Effort**: 3 iteration-days (4-5 estimated, completed in 3)
-**Dependencies**: cognitive_app infrastructure, Recharts v0.2.1 (already present)
+**Dependencies**: cognitive_app infrastructure, Recharts v0.2.0 (already present)
 
 **Files Modified**: 69 files (2 new, 67 test guards, CacheManager plan doc)
 

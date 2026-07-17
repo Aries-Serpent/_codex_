@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/SECRETS_RUNBOOK/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Secrets Runbook - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2441,9 +2441,9 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <h2 id="core-principles">Core Principles<a class="headerlink" href="#core-principles" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Never commit secrets</strong> to the repository.</li>
-<li><strong>Token chain for all write ops</strong>: <code>CODEX_MASTER_KEY</code> → <code>CODEX_BACKUP_KEY</code> → <code>github.token</code></li>
+<li><strong>Token chain for all write ops</strong>: <code>CODEX_MASTER_KEY</code> <code>CODEX_BACKUP_KEY</code> <code>github.token</code></li>
 <li><strong>Use least privilege</strong> — scope API keys to test environments where possible.</li>
-<li>Use <code>report_progress</code> tool (never <code>git push</code>) for all commits.  # pragma: allowlist secret</li>
+<li>Use <code>report_progress</code> tool (never <code>git push</code>) for all commits. # pragma: allowlist secret</li>
 <li><code>DISABLE_SECRET_FILTER</code> must <strong>never</strong> be set to <code>true</code> in production.</li>
 </ul>
 <hr/>
@@ -2490,21 +2490,21 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <h3 id="codex_master_key-codex_backup_key-codex_admin_key">CODEX_MASTER_KEY / CODEX_BACKUP_KEY / CODEX_ADMIN_KEY<a class="headerlink" href="#codex_master_key-codex_backup_key-codex_admin_key" title="Permanent link">¶</a></h3>
 <ol>
 <li>Generate new Fernet key:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</span>
-</code></pre></div></li>
-<li>Navigate to <strong>GitHub → Organization Settings → Secrets and variables → Secrets</strong></li>
+   <code>bash
+   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</code></li>
+<li>Navigate to <strong>GitHub Organization Settings Secrets and variables Secrets</strong></li>
 <li>Update <code>CODEX_MASTER_KEY</code> (and separately <code>CODEX_BACKUP_KEY</code>, <code>CODEX_ADMIN_KEY</code>)</li>
 <li>Verify the next CI run succeeds (any workflow using write ops)</li>
 <li>Record rotation in <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code></li>
 </ol>
-<p><strong>Rotation frequency</strong>: Every 90 days<br/>
+<p><strong>Rotation frequency</strong>: Every 90 days
 <strong>Emergency rotation</strong>: Immediately if compromised — use <code>AGENT_KILL_SWITCH=1</code> to halt all agents first</p>
 <h3 id="github-app-keys-github_app">GitHub App Keys (<em>GITHUB_APP</em>*)<a class="headerlink" href="#github-app-keys-github_app" title="Permanent link">¶</a></h3>
 <ol>
-<li>Navigate to <strong>GitHub → Organization Settings → GitHub Apps → <code>_codex_</code> app → Generate new private key</strong></li>
+<li>Navigate to <strong>GitHub Organization Settings GitHub Apps <code>_codex_</code> app Generate new private key</strong></li>
 <li>Download the new <code>.pem</code> file</li>
 <li>Update <code>_GITHUB_APP_PRIVATE_KEY</code> in org secrets with the new PEM content</li>
-<li>If rotating client secret: <strong>Edit → Rotate secret</strong> in the GitHub App settings</li>
+<li>If rotating client secret: <strong>Edit Rotate secret</strong> in the GitHub App settings</li>
 <li>Update <code>_GITHUB_APP_CLIENT_SECRET</code> in org secrets</li>
 <li>Trigger a test <code>actions/create-github-app-token@v1</code> workflow to verify</li>
 </ol>
@@ -2520,10 +2520,10 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <p><strong>Rotation frequency</strong>: Every 90 days</p>
 <h3 id="runner-token-codex_runner_token-_codex_bot_runner-_codex_action_runner">Runner Token (CODEX_RUNNER_TOKEN / _CODEX_BOT_RUNNER / _CODEX_ACTION_RUNNER)<a class="headerlink" href="#runner-token-codex_runner_token-_codex_bot_runner-_codex_action_runner" title="Permanent link">¶</a></h3>
 <ol>
-<li>Navigate to <strong>GitHub → Settings → Actions → Runners</strong></li>
+<li>Navigate to <strong>GitHub Settings Actions Runners</strong></li>
 <li>Re-register the runner with a new token</li>
 <li>Update the environment secret <code>CODEX_RUNNER_TOKEN</code> and repo secret <code>_CODEX_BOT_RUNNER</code></li>
-<li>For org-level <code>_CODEX_ACTION_RUNNER</code>: update in <strong>Organization Settings → Actions → Runners</strong></li>
+<li>For org-level <code>_CODEX_ACTION_RUNNER</code>: update in <strong>Organization Settings Actions Runners</strong></li>
 </ol>
 <p><strong>Rotation frequency</strong>: Every 90 days or on runner recycle</p>
 <hr/>
@@ -2546,7 +2546,7 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <hr/>
 <h2 id="audit-monitoring">Audit &amp; Monitoring<a class="headerlink" href="#audit-monitoring" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>GitHub Audit Log</strong>: Settings → Security → Audit log → filter by "secret"</li>
+<li><strong>GitHub Audit Log</strong>: Settings Security Audit log filter by "secret"</li>
 <li><strong>CI Failure Rate</strong>: Monitor <code>CODEX_CI_FAILURE_RATE</code> variable (threshold: <code>CODEX_CI_FAILURE_THRESHOLD = 10.0</code>)</li>
 <li><strong>Last Green SHA</strong>: <code>CODEX_CI_LAST_GREEN_SHA</code> — updated automatically by CI agent</li>
 <li><strong>Accountability</strong>: <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code></li>
@@ -2555,14 +2555,14 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <hr/>
 <h2 id="setting-new-variables">Setting New Variables<a class="headerlink" href="#setting-new-variables" title="Permanent link">¶</a></h2>
 <h3 id="repository-variables">Repository Variables<a class="headerlink" href="#repository-variables" title="Permanent link">¶</a></h3>
-<p><strong>GitHub UI</strong>: Settings → Secrets and variables → Actions → Variables → <strong>New repository variable</strong></p>
+<p><strong>GitHub UI</strong>: Settings Secrets and variables Actions Variables <strong>New repository variable</strong></p>
 <p>Naming conventions (from <code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>):
 - <code>CODEX_*</code> — repository-specific configuration
 - <code>COGNITIVE_*</code> — cognitive brain system
 - <code>COPILOT_*</code> — Copilot agent settings
 - <code>AGENT_*</code> — agent runner controls</p>
 <h3 id="environment-variables-aries_serpent_codex_">Environment Variables (Aries_Serpent_codex_)<a class="headerlink" href="#environment-variables-aries_serpent_codex_" title="Permanent link">¶</a></h3>
-<p><strong>GitHub UI</strong>: Settings → Environments → <code>Aries_Serpent_codex_</code> → Variables → <strong>Add variable</strong></p>
+<p><strong>GitHub UI</strong>: Settings Environments <code>Aries_Serpent_codex_</code> Variables <strong>Add variable</strong></p>
 <p>These are injected into the Copilot sandbox. Sensitive section at <code>copilot-setup-steps.yml:141-147</code> must use <code>run: |</code> (pipe) with brace-free shell syntax.</p>
 <h3 id="agents-settings-page">Agents Settings Page<a class="headerlink" href="#agents-settings-page" title="Permanent link">¶</a></h3>
 <p><strong>GitHub UI</strong>: <code>https://github.com/Aries-Serpent/_codex_/settings/variables/agents</code></p>
@@ -2685,6 +2685,6 @@ Full inventory: <a href="../SECRETS_AND_ENVIRONMENT_VARIABLES/"><code>docs/SECRE
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

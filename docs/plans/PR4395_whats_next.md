@@ -1,6 +1,6 @@
 # PR #4395 — What's Next (archived — PR merged 2026-05-11T17:57Z)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **PR:** [#4395](https://github.com/Aries-Serpent/_codex_/pull/4395) — **MERGED** 2026-05-11T17:57Z by @mbaetiong
 > **Session:** S944S951 (final) | **Branch:** `copilot/update-status-date-in-roadmap` (closed)

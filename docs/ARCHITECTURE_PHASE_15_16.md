@@ -1,8 +1,8 @@
 # Phase 15-16 Architecture Documentation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **v0.2.1-final**: Complete MLOps platform with autonomous cognitive brain system, integrated decision engine, and production-grade API layer.
+> **v0.2.0-final**: Complete MLOps platform with autonomous cognitive brain system, integrated decision engine, and production-grade API layer.
 
 **Last Updated**: 2026-07-11 | **Authors**: Phase 17 Lane 5 Documentation Team
 

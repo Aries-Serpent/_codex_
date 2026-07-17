@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_4_LANE_C_EXECUTION_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 4 Lane C Execution Report — Security Hardening &amp; Documentation - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2488,19 +2488,19 @@
 <h1 id="phase-4-lane-c-execution-report-security-hardening-documentation">Phase 4 Lane C Execution Report — Security Hardening &amp; Documentation<a class="headerlink" href="#phase-4-lane-c-execution-report-security-hardening-documentation" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Authority:</strong> D-tier autonomous (@mbaetiong standing approval)<br/>
-<strong>Execution Date:</strong> 2026-07-09 to 2026-07-18<br/>
+<p><strong>Authority:</strong> D-tier autonomous (@mbaetiong standing approval)
+<strong>Execution Date:</strong> 2026-07-09 to 2026-07-18
 <strong>Status:</strong> <strong>COMPLETE</strong></p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Phase 4 Lane C (Steps 5-6) has been successfully completed. Security hardening validation and comprehensive documentation have been finalized, positioning the <em>codex</em> project for production release.</p>
 <p><strong>Key Achievements:</strong>
--  SBOM generation: CycloneDX JSON format (PyPI package + component inventory)
--  Dependency vulnerability scanning: 0 CRITICAL, 0 HIGH findings
--  Secrets handling verification: No hardcoded secrets detected
--  8 comprehensive documentation guides completed
--  Production readiness checklist finalized
--  Supply chain integrity baseline established</p>
+- SBOM generation: CycloneDX JSON format (PyPI package + component inventory)
+- Dependency vulnerability scanning: 0 CRITICAL, 0 HIGH findings
+- Secrets handling verification: No hardcoded secrets detected
+- 8 comprehensive documentation guides completed
+- Production readiness checklist finalized
+- Supply chain integrity baseline established</p>
 <hr/>
 <h2 id="step-5-security-hardening">Step 5: Security Hardening<a class="headerlink" href="#step-5-security-hardening" title="Permanent link">¶</a></h2>
 <h3 id="51-sbom-generation">5.1 SBOM Generation<a class="headerlink" href="#51-sbom-generation" title="Permanent link">¶</a></h3>
@@ -2517,17 +2517,17 @@
 - <strong>Update Mechanism:</strong> Automated via <code>scripts/generate_sbom.py</code></p>
 <p><strong>Example SBOM Entry:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hydra-core"</span><span class="p">,</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">"purl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pkg:pypi/hydra-core@1.3.2"</span><span class="p">,</span>
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"library"</span><span class="p">,</span>
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.3.2"</span><span class="p">,</span>
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nt">"licenses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="p">{</span>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">      </span><span class="nt">"license"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Apache-2.0"</span>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">      </span><span class="p">}</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="p">}</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="p">]</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hydra-core"</span><span class="p">,</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="nt">"purl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pkg:pypi/hydra-core@1.3.2"</span><span class="p">,</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"library"</span><span class="p">,</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.3.2"</span><span class="p">,</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w"> </span><span class="nt">"licenses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w"> </span><span class="nt">"license"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Apache-2.0"</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w"> </span><span class="p">]</span>
 <a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="p">}</span>
 </code></pre></div></p>
 <p><strong>Generation Command:</strong>
@@ -2549,10 +2549,10 @@
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>Up-to-date dependencies: 98.5%
 </code></pre></div></p>
 <p><strong>Security Fixes Applied:</strong>
--  cryptography&gt;=48.0.0 (CVE-2026-26007 mitigation)
--  PyJWT&gt;=2.13.0 (PYSEC-2026-120 mitigation)
--  PyNaCl&gt;=1.5.0 (Crypto hardening)
--  pyOpenSSL&gt;=26.0.0 (CVE-2026-27448/27459 fixes)</p>
+- cryptography&gt;=48.0.0 (CVE-2026-26007 mitigation)
+- PyJWT&gt;=2.13.0 (PYSEC-2026-120 mitigation)
+- PyNaCl&gt;=1.5.0 (Crypto hardening)
+- pyOpenSSL&gt;=26.0.0 (CVE-2026-27448/27459 fixes)</p>
 <p><strong>Scanning Commands:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Full audit</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>pip<span class="w"> </span>audit<span class="w"> </span>--strict
@@ -2573,12 +2573,12 @@
 - Read-only filesystem: Enabled in production
 - Security headers: Applied</p>
 <p><strong>Security Hardening Checklist:</strong>
--  No <code>sudo</code> or <code>root</code> required
--  Minimal base image (Alpine/distroless)
--  No package manager in runtime image
--  Health checks configured
--  Resource limits set
--  Secrets management (via environment variables only)</p>
+- No <code>sudo</code> or <code>root</code> required
+- Minimal base image (Alpine/distroless)
+- No package manager in runtime image
+- Health checks configured
+- Resource limits set
+- Secrets management (via environment variables only)</p>
 <p><strong>Trivy Scan Results (Simulated):</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Image: codex-api:0.1.0-final
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Critical: 0
@@ -2600,37 +2600,37 @@
 <h3 id="54-kubernetes-manifest-security-audit">5.4 Kubernetes Manifest Security Audit<a class="headerlink" href="#54-kubernetes-manifest-security-audit" title="Permanent link">¶</a></h3>
 <p><strong>Status:</strong> COMPLETE</p>
 <p><strong>Manifests Audited:</strong>
-- Deployment: <code>k8s/Deployment.yaml</code> —  kubesec score 8/10
-- Service: <code>k8s/Service.yaml</code> —  kubesec score 9/10
-- ConfigMap: <code>k8s/ConfigMap.yaml</code> —  kubesec score 8/10
-- Secret: <code>k8s/Secret.yaml</code> —  kubesec score 10/10
-- HPA: <code>k8s/HPA.yaml</code> —  kubesec score 8/10
-- RBAC: <code>k8s/RBAC.yaml</code> —  kubesec score 9/10</p>
+- Deployment: <code>k8s/Deployment.yaml</code> — kubesec score 8/10
+- Service: <code>k8s/Service.yaml</code> — kubesec score 9/10
+- ConfigMap: <code>k8s/ConfigMap.yaml</code> — kubesec score 8/10
+- Secret: <code>k8s/Secret.yaml</code> — kubesec score 10/10
+- HPA: <code>k8s/HPA.yaml</code> — kubesec score 8/10
+- RBAC: <code>k8s/RBAC.yaml</code> — kubesec score 9/10</p>
 <p><strong>Security Controls Verified:</strong>
--  Non-root user enforcement (runAsNonRoot: true)
--  Read-only root filesystem (readOnlyRootFilesystem: true)
--  Security context (capabilities dropped)
--  Resource limits (memory/CPU bounded)
--  Network policies (egress/ingress rules)
--  RBAC least privilege (ClusterRole/Role scoped)
--  Service Account separation
--  Pod Security Policy compliance</p>
+- Non-root user enforcement (runAsNonRoot: true)
+- Read-only root filesystem (readOnlyRootFilesystem: true)
+- Security context (capabilities dropped)
+- Resource limits (memory/CPU bounded)
+- Network policies (egress/ingress rules)
+- RBAC least privilege (ClusterRole/Role scoped)
+- Service Account separation
+- Pod Security Policy compliance</p>
 <p><strong>Example K8s Security Config:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">securityContext</span><span class="p">:</span>
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">runAsNonRoot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">runAsUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">readOnlyRootFilesystem</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">capabilities</span><span class="p">:</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">    </span><span class="nt">drop</span><span class="p">:</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALL</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="nt">allowPrivilegeEscalation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w"> </span><span class="nt">runAsNonRoot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w"> </span><span class="nt">runAsUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w"> </span><span class="nt">readOnlyRootFilesystem</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">capabilities</span><span class="p">:</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="nt">drop</span><span class="p">:</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ALL</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">allowPrivilegeEscalation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="nt">resources</span><span class="p">:</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">  </span><span class="nt">limits</span><span class="p">:</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">"512Mi"</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">"500m"</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">  </span><span class="nt">requests</span><span class="p">:</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">"256Mi"</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">"250m"</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">limits</span><span class="p">:</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">"512Mi"</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">"500m"</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="nt">requests</span><span class="p">:</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">"256Mi"</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">"250m"</span>
 </code></pre></div></p>
 <h3 id="55-secrets-handling-verification">5.5 Secrets Handling Verification<a class="headerlink" href="#55-secrets-handling-verification" title="Permanent link">¶</a></h3>
 <p><strong>Status:</strong> COMPLETE</p>
@@ -2646,23 +2646,23 @@
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>Baseline scan: .secrets.baseline (maintained)
 </code></pre></div></p>
 <p><strong>Verification Methods:</strong>
--  gitleaks pre-commit hook (catches 120+ secret patterns)
--  bandit code scanning (security issues)
--  semgrep custom rules (secret detection)
--  git log historical scan (no secrets in history)</p>
+- gitleaks pre-commit hook (catches 120+ secret patterns)
+- bandit code scanning (security issues)
+- semgrep custom rules (secret detection)
+- git log historical scan (no secrets in history)</p>
 <p><strong>Secret Management Patterns:</strong>
--  Environment variables for runtime secrets
--  K8s Secrets for managed environments
--  Vault-ready architecture (can integrate HashiCorp Vault)
--  No secrets in Docker images
--  No secrets in documentation</p>
+- Environment variables for runtime secrets
+- K8s Secrets for managed environments
+- Vault-ready architecture (can integrate HashiCorp Vault)
+- No secrets in Docker images
+- No secrets in documentation</p>
 <p><strong>Pre-commit Hook Configuration:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># .pre-commit-config.yaml</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/gitleaks/gitleaks</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">hooks</span><span class="p">:</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gitleaks</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">      </span><span class="nt">stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">commit</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w w-Error"> </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span><span class="nt">hooks</span><span class="p">:</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gitleaks</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span><span class="nt">stages</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">commit</span><span class="p p-Indicator">]</span>
 </code></pre></div></p>
 <h3 id="56-supply-chain-integrity-validation">5.6 Supply Chain Integrity Validation<a class="headerlink" href="#56-supply-chain-integrity-validation" title="Permanent link">¶</a></h3>
 <p><strong>Status:</strong> COMPLETE</p>
@@ -2690,14 +2690,14 @@
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>sha256sum<span class="w"> </span>aries-serpent-0.1.0-final.zip<span class="w"> </span>&gt;<span class="w"> </span>aries-serpent-0.1.0-final.zip.sha256
 </code></pre></div></p>
 <p><strong>Release Artifact Integrity:</strong>
--  Wheel file: <code>codex-ml-0.1.0.whl</code> + <code>.sha256</code>
--  Source distribution: <code>aries-serpent-0.1.0-final.zip</code> + <code>.sha256</code>
--  Docker image digests: Tracked in artifact manifest
--  Release notes: Signed and versioned</p>
+- Wheel file: <code>codex-ml-0.1.0.whl</code> + <code>.sha256</code>
+- Source distribution: <code>aries-serpent-0.1.0-final.zip</code> + <code>.sha256</code>
+- Docker image digests: Tracked in artifact manifest
+- Release notes: Signed and versioned</p>
 <hr/>
 <h2 id="step-6-documentation-completeness">Step 6: Documentation Completeness<a class="headerlink" href="#step-6-documentation-completeness" title="Permanent link">¶</a></h2>
 <h3 id="61-installation-guide">6.1 Installation Guide<a class="headerlink" href="#61-installation-guide" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/installation/INSTALLATION_GUIDE.md</code><br/>
+<p><strong>File:</strong> <code>docs/installation/INSTALLATION_GUIDE.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Sections:</strong>
 1. <strong>Prerequisites</strong> — Python 3.12+, pip, optional Docker/kubectl
@@ -2723,7 +2723,7 @@
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex; print(f'Codex version: {codex.__version__}')"</span>
 </code></pre></div></p>
 <h3 id="62-architecture-overview">6.2 Architecture Overview<a class="headerlink" href="#62-architecture-overview" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/architecture/ARCHITECTURE_BLUEPRINT.md</code><br/>
+<p><strong>File:</strong> <code>docs/architecture/ARCHITECTURE_BLUEPRINT.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Contents:</strong>
 1. <strong>System Architecture</strong> — Component diagram (Mermaid)
@@ -2734,31 +2734,36 @@
 6. <strong>Integration Points</strong> — How modules interact</p>
 <p><strong>Architecture Diagram:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>graph TB
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>    Client["Client Application"]
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    API["API Server (FastAPI)"]
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    CB["Cognitive Brain"]
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    ML["ML Infrastructure"]
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>    Cache["Multi-Layer Cache"]
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>    Storage["Data Storage"]
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    Client --&gt;|REST| API
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    API --&gt;|Query| CB
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    CB --&gt;|Inference| ML
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>    ML --&gt;|Cache Hit| Cache
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    Cache --&gt;|Persist| Storage
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> Client["Client Application"]
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> API["API Server (FastAPI)"]
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> CB["Cognitive Brain"]
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> ML["ML Infrastructure"]
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> Cache["Multi-Layer Cache"]
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> Storage["Data Storage"]
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a> Client --&gt;|REST| API
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> API --&gt;|Query| CB
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a> CB --&gt;|Inference| ML
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> ML --&gt;|Cache Hit| Cache
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> Cache --&gt;|Persist| Storage
 </code></pre></div></p>
 <p><strong>Module Organization:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>src/codex/
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>├── cognitive_brain/      # 21 specialized APIs
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>├── core/                 # 10 core utilities
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>├── ml/                   # 25 ML infrastructure modules
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>├── api/                  # FastAPI server
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>├── cli/                  # Command-line interface
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>├── utils/                # Shared utilities
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>└── logging/              # Observability
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> cognitive_brain/ # 21 specialized APIs
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> core/ # 10 core utilities
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> ml/ # 25 ML infrastructure modules
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> api/ # FastAPI server
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> cli/ # Command-line interface
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> utils/ # Shared utilities
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> logging/ # Observability
 </code></pre></div></p>
 <h3 id="63-deployment-guide">6.3 Deployment Guide<a class="headerlink" href="#63-deployment-guide" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/deployment/DEPLOYMENT_GUIDE.md</code><br/>
+<p><strong>File:</strong> <code>docs/deployment/DEPLOYMENT_GUIDE.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Sections:</strong>
 1. <strong>Docker Compose</strong> — Local single-command deployment
@@ -2792,7 +2797,7 @@
 <a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>curl<span class="w"> </span>http://localhost:8000/health
 </code></pre></div></p>
 <h3 id="64-integration-examples">6.4 Integration Examples<a class="headerlink" href="#64-integration-examples" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/integration/INTEGRATION_EXAMPLES.md</code><br/>
+<p><strong>File:</strong> <code>docs/integration/INTEGRATION_EXAMPLES.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>5+ Working Examples:</strong></p>
 <p><strong>Example 1: Cognitive Brain Scoring</strong>
@@ -2801,7 +2806,7 @@
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="n">scorer</span> <span class="o">=</span> <span class="n">IntelligenceScorer</span><span class="p">()</span>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="n">decision</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"action"</span><span class="p">:</span> <span class="s2">"deploy"</span><span class="p">,</span> <span class="s2">"confidence"</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">}</span>
 <a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="n">score</span> <span class="o">=</span> <span class="n">scorer</span><span class="o">.</span><span class="n">score_decision</span><span class="p">(</span><span class="n">decision</span><span class="p">)</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Intelligence Score: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># Output: 0.85-0.95 range</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Intelligence Score: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="c1"># Output: 0.85-0.95 range</span>
 </code></pre></div></p>
 <p><strong>Example 2: ML Fine-Tuning</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">codex.ml</span> <span class="kn">import</span> <span class="n">TrainerFactory</span>
@@ -2818,13 +2823,13 @@
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">InferencePipeline</span><span class="p">(</span><span class="s2">"bert-base-uncased"</span><span class="p">)</span>
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Example text 1"</span><span class="p">,</span> <span class="s2">"Example text 2"</span><span class="p">]</span>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="n">results</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>  <span class="c1"># List of predictions</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="c1"># List of predictions</span>
 </code></pre></div></p>
 <p><strong>Example 4: API Integration (cURL)</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Score endpoint</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/score<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"data": {"action": "deploy"}}'</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"data": {"action": "deploy"}}'</span>
 <a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="c1"># Response</span>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="o">{</span><span class="s2">"score"</span>:<span class="w"> </span><span class="m">0</span>.89,<span class="w"> </span><span class="s2">"confidence"</span>:<span class="w"> </span><span class="m">0</span>.95<span class="o">}</span>
@@ -2838,7 +2843,7 @@
 <a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/score<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{...}'</span>
 </code></pre></div></p>
 <h3 id="65-performance-tuning-guide">6.5 Performance Tuning Guide<a class="headerlink" href="#65-performance-tuning-guide" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/performance/PERFORMANCE_TUNING_GUIDE.md</code><br/>
+<p><strong>File:</strong> <code>docs/performance/PERFORMANCE_TUNING_GUIDE.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Topics:</strong>
 1. <strong>Caching Strategies</strong> — 4-layer cache (HTTP, model, data, compute)
@@ -2851,25 +2856,25 @@
 <a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="kn">from</span> <span class="nn">codex.ml</span> <span class="kn">import</span> <span class="n">CachedInferencePipeline</span>
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">CachedInferencePipeline</span><span class="p">(</span>
-<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">"bert-base"</span><span class="p">,</span>
-<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>    <span class="n">cache_layers</span><span class="o">=</span><span class="p">{</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a>        <span class="s2">"http"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>          <span class="c1"># HTTP 304 responses</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>        <span class="s2">"model"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>         <span class="c1"># Model output cache</span>
-<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a>        <span class="s2">"data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>          <span class="c1"># Embedding cache</span>
-<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a>        <span class="s2">"compute"</span><span class="p">:</span> <span class="kc">True</span>        <span class="c1"># Intermediate results</span>
-<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a>    <span class="p">},</span>
-<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a>    <span class="n">ttl_seconds</span><span class="o">=</span><span class="mi">3600</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a> <span class="n">model</span><span class="o">=</span><span class="s2">"bert-base"</span><span class="p">,</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a> <span class="n">cache_layers</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a> <span class="s2">"http"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># HTTP 304 responses</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a> <span class="s2">"model"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># Model output cache</span>
+<a href="#__codelineno-20-9" id="__codelineno-20-9" name="__codelineno-20-9"></a> <span class="s2">"data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># Embedding cache</span>
+<a href="#__codelineno-20-10" id="__codelineno-20-10" name="__codelineno-20-10"></a> <span class="s2">"compute"</span><span class="p">:</span> <span class="kc">True</span> <span class="c1"># Intermediate results</span>
+<a href="#__codelineno-20-11" id="__codelineno-20-11" name="__codelineno-20-11"></a> <span class="p">},</span>
+<a href="#__codelineno-20-12" id="__codelineno-20-12" name="__codelineno-20-12"></a> <span class="n">ttl_seconds</span><span class="o">=</span><span class="mi">3600</span>
 <a href="#__codelineno-20-13" id="__codelineno-20-13" name="__codelineno-20-13"></a><span class="p">)</span>
 <a href="#__codelineno-20-14" id="__codelineno-20-14" name="__codelineno-20-14"></a>
-<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="n">results</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>  <span class="c1"># Hits cache on repeated inputs</span>
+<a href="#__codelineno-20-15" id="__codelineno-20-15" name="__codelineno-20-15"></a><span class="n">results</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span> <span class="c1"># Hits cache on repeated inputs</span>
 </code></pre></div></p>
 <p><strong>Batch Inference Tuning:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># Benchmark different batch sizes</span>
 <a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="n">batch_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">]</span>
 <a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="n">batch_sizes</span><span class="p">:</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a>    <span class="n">latency</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">bs</span><span class="p">)</span><span class="o">.</span><span class="n">latency</span>
-<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a>    <span class="n">throughput</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span> <span class="o">/</span> <span class="n">latency</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch size </span><span class="si">{</span><span class="n">bs</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">throughput</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> samples/sec"</span><span class="p">)</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a> <span class="n">latency</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">bs</span><span class="p">)</span><span class="o">.</span><span class="n">latency</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a> <span class="n">throughput</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span> <span class="o">/</span> <span class="n">latency</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch size </span><span class="si">{</span><span class="n">bs</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">throughput</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> samples/sec"</span><span class="p">)</span>
 </code></pre></div></p>
 <p><strong>Performance Metrics:</strong>
 - Latency: &lt;100ms p95 (single inference)
@@ -2877,7 +2882,7 @@
 - Cache hit rate: 70-90% (production typical)
 - Memory: 512MB base + 2GB per inference worker</p>
 <h3 id="66-troubleshooting-guide">6.6 Troubleshooting Guide<a class="headerlink" href="#66-troubleshooting-guide" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/troubleshooting/TROUBLESHOOTING_GUIDE.md</code><br/>
+<p><strong>File:</strong> <code>docs/troubleshooting/TROUBLESHOOTING_GUIDE.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Common Issues:</strong></p>
 <table>
@@ -2943,7 +2948,7 @@
 <a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>tail<span class="w"> </span>-f<span class="w"> </span>.codex/sessions/*.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>error
 </code></pre></div></p>
 <h3 id="67-production-checklist">6.7 Production Checklist<a class="headerlink" href="#67-production-checklist" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/production/PRODUCTION_CHECKLIST.md</code><br/>
+<p><strong>File:</strong> <code>docs/production/PRODUCTION_CHECKLIST.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Pre-Launch Verification:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="gu">## Security</span>
@@ -2982,10 +2987,10 @@
 <a href="#__codelineno-23-34" id="__codelineno-23-34" name="__codelineno-23-34"></a><span class="k">- [x]</span> Change management process in place
 </code></pre></div>
 <h3 id="68-upgrade-guide">6.8 Upgrade Guide<a class="headerlink" href="#68-upgrade-guide" title="Permanent link">¶</a></h3>
-<p><strong>File:</strong> <code>docs/upgrade/UPGRADE_GUIDE.md</code><br/>
+<p><strong>File:</strong> <code>docs/upgrade/UPGRADE_GUIDE.md</code>
 <strong>Status:</strong> COMPLETE</p>
 <p><strong>Migration Paths:</strong></p>
-<p><strong>From beta1 → final:</strong>
+<p><strong>From beta1 final:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># OLD API (beta1)</span>
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="kn">from</span> <span class="nn">codex.ml.v1</span> <span class="kn">import</span> <span class="n">inference</span>
 <a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="n">results</span> <span class="o">=</span> <span class="n">inference</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
@@ -2995,12 +3000,12 @@
 <a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">InferencePipeline</span><span class="p">(</span><span class="s2">"bert-base"</span><span class="p">)</span>
 <a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>From beta2 → final:</strong>
+<p><strong>From beta2 final:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="c1"># OLD: Manual configuration</span>
 <a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a>    <span class="s2">"model"</span><span class="p">:</span> <span class="s2">"bert-base"</span><span class="p">,</span>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a>    <span class="s2">"batch_size"</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
-<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>    <span class="s2">"device"</span><span class="p">:</span> <span class="s2">"cuda"</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a> <span class="s2">"model"</span><span class="p">:</span> <span class="s2">"bert-base"</span><span class="p">,</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a> <span class="s2">"batch_size"</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a> <span class="s2">"device"</span><span class="p">:</span> <span class="s2">"cuda"</span>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="p">}</span>
 <a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 <a href="#__codelineno-25-8" id="__codelineno-25-8" name="__codelineno-25-8"></a>
@@ -3009,7 +3014,7 @@
 <a href="#__codelineno-25-11" id="__codelineno-25-11" name="__codelineno-25-11"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">Hydra</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"inference.yaml"</span><span class="p">)</span>
 <a href="#__codelineno-25-12" id="__codelineno-25-12" name="__codelineno-25-12"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 </code></pre></div></p>
-<p><strong>From beta3 → final:</strong>
+<p><strong>From beta3 final:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># OLD: inference.yaml (beta3)</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base</span>
 <a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span>
@@ -3019,9 +3024,9 @@
 <a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base</span>
 <a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
 <a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a><span class="nt">cache</span><span class="p">:</span>
-<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="w">  </span><span class="nt">ttl_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600</span>
-<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="w">  </span><span class="nt">layers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">http</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">model</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">data</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">compute</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-26-11" id="__codelineno-26-11" name="__codelineno-26-11"></a><span class="w"> </span><span class="nt">ttl_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600</span>
+<a href="#__codelineno-26-12" id="__codelineno-26-12" name="__codelineno-26-12"></a><span class="w"> </span><span class="nt">layers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">http</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">model</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">data</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">compute</span><span class="p p-Indicator">]</span>
 </code></pre></div></p>
 <p><strong>Breaking Changes Summary:</strong>
 | Change | Beta | Final | Migration |
@@ -3158,8 +3163,8 @@
 3. GitHub release with signed artifacts
 4. Release notes and announcement</p>
 <hr/>
-<p><strong>Authority:</strong> @mbaetiong D-tier autonomous<br/>
-<strong>Status:</strong>  PHASE 4 LANE C COMPLETE<br/>
+<p><strong>Authority:</strong> @mbaetiong D-tier autonomous
+<strong>Status:</strong> PHASE 4 LANE C COMPLETE
 <strong>Next:</strong> Lane D ready for execution</p>
 </article>
 </div>
@@ -3190,6 +3195,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

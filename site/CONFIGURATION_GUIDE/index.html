@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/CONFIGURATION_GUIDE/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Configuration Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2530,7 +2530,7 @@
 <a class="md-nav__link" href="#consolidated-from-docsconfigurationconfig_usagemd">
 <span class="md-ellipsis">
       
-        📎 Consolidated from: docs/configuration/CONFIG_USAGE.md
+        Consolidated from: docs/configuration/CONFIG_USAGE.md
       
     </span>
 </a>
@@ -2552,139 +2552,139 @@
 <strong>Framework</strong>: Hydra / OmegaConf</p>
 <h2 id="configuration-structure">Configuration Structure<a class="headerlink" href="#configuration-structure" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>configs/
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>├── training/
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   ├── default.yaml
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│   ├── bert.yaml
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│   ├── gpt.yaml
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│   └── tokenizer/  # pragma: allowlist secret
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>│       └── offline/
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│           └── tiny_vocab.yaml
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>├── data/
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   ├── default.yaml
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│   └── preprocessing.yaml
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>├── hardware/
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│   ├── default.yaml
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   ├── cuda.yaml
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   └── cpu.yaml
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└── experiment/
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    ├── base_experiment.yaml
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    └── hyperparameter_sweep.yaml
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> training/
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> default.yaml
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> bert.yaml
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> gpt.yaml
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> tokenizer/ # pragma: allowlist secret
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> offline/
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> tiny_vocab.yaml
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> data/
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> default.yaml
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> preprocessing.yaml
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> hardware/
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> default.yaml
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> cuda.yaml
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> cpu.yaml
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> experiment/
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> base_experiment.yaml
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> hyperparameter_sweep.yaml
 </code></pre></div>
 <h2 id="core-configuration-files">Core Configuration Files<a class="headerlink" href="#core-configuration-files" title="Permanent link">¶</a></h2>
 <h3 id="1-training-configuration-configstrainingdefaultyaml">1. Training Configuration (<code>configs/training/default.yaml</code>)<a class="headerlink" href="#1-training-configuration-configstrainingdefaultyaml" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Model configuration</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="nt">model</span><span class="p">:</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base-uncased</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="nt">pretrained</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">  </span><span class="nt">dropout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base-uncased</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span><span class="nt">pretrained</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w"> </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w"> </span><span class="nt">dropout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="c1"># Training hyperparameters</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">  </span><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2e-5</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">  </span><span class="nt">warmup_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">  </span><span class="nt">warmup_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">  </span><span class="nt">weight_decay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">  </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w"> </span><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w"> </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2e-5</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w"> </span><span class="nt">warmup_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w"> </span><span class="nt">warmup_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w"> </span><span class="nt">weight_decay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w"> </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w">  </span><span class="c1"># Advanced options</span>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w">  </span><span class="nt">gradient_checkpointing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w">  </span><span class="nt">mixed_precision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># or 'fp16', 'bf16'</span>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">  </span><span class="nt">max_grad_norm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="w"> </span><span class="c1"># Advanced options</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="w"> </span><span class="nt">gradient_checkpointing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="w"> </span><span class="nt">mixed_precision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># or 'fp16', 'bf16'</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w"> </span><span class="nt">max_grad_norm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
 <a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="c1"># Optimization</span>
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="nt">optimizer</span><span class="p">:</span>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">adamw</span><span class="w">  </span><span class="c1"># adamw, adam, sgd</span>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="w">  </span><span class="nt">betas</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.9</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.999</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">  </span><span class="nt">eps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-8</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">adamw</span><span class="w"> </span><span class="c1"># adamw, adam, sgd</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="w"> </span><span class="nt">betas</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.9</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.999</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w"> </span><span class="nt">eps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-8</span>
 <a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>
 <a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a><span class="c1"># Learning rate scheduler</span>
 <a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="nt">scheduler</span><span class="p">:</span>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linear</span><span class="w">  </span><span class="c1"># linear, cosine, constant</span>
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="w">  </span><span class="nt">num_cycles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w">  </span><span class="nt">pct_start</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linear</span><span class="w"> </span><span class="c1"># linear, cosine, constant</span>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="w"> </span><span class="nt">num_cycles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="w"> </span><span class="nt">pct_start</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
 <a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
 <a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="c1"># Logging</span>
 <a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="nt">logging</span><span class="p">:</span>
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="w">  </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="w">  </span><span class="nt">log_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./logs</span>
-<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="w">  </span><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="w"> </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="w"> </span><span class="nt">log_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./logs</span>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="w"> </span><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 <a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>
 <a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="c1"># Checkpointing</span>
 <a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a><span class="nt">checkpoint</span><span class="p">:</span>
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="w">  </span><span class="nt">save_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./checkpoints</span>
-<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a><span class="w">  </span><span class="nt">save_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a><span class="w">  </span><span class="nt">keep_last_n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a><span class="w">  </span><span class="nt">save_best</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a><span class="w">  </span><span class="nt">metric</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eval_loss</span>
-<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a><span class="w">  </span><span class="nt">metric_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">min</span><span class="w">  </span><span class="c1"># min or max</span>
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="w"> </span><span class="nt">save_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./checkpoints</span>
+<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a><span class="w"> </span><span class="nt">save_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a><span class="w"> </span><span class="nt">keep_last_n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a><span class="w"> </span><span class="nt">save_best</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a><span class="w"> </span><span class="nt">metric</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">eval_loss</span>
+<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a><span class="w"> </span><span class="nt">metric_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">min</span><span class="w"> </span><span class="c1"># min or max</span>
 </code></pre></div>
 <h2 id="2-data-configuration-configsdatadefaultyaml">2. Data Configuration (<code>configs/data/default.yaml</code>)<a class="headerlink" href="#2-data-configuration-configsdatadefaultyaml" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Dataset paths</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nt">data</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/train.jsonl</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">eval_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/eval.jsonl</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">test_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/test.jsonl</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/train.jsonl</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">eval_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/eval.jsonl</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">test_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/test.jsonl</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="c1"># Data loading</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">  </span><span class="nt">prefetch_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="nt">pin_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="c1"># Data loading</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">prefetch_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="nt">pin_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="c1"># Preprocessing</span>
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="nt">preprocessing</span><span class="p">:</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">  </span><span class="c1"># Text processing</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">  </span><span class="nt">lowercase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">  </span><span class="nt">remove_special_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">  </span><span class="nt">remove_punctuation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="c1"># Text processing</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w"> </span><span class="nt">lowercase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="nt">remove_special_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nt">remove_punctuation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">  </span><span class="c1"># Normalization</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">  </span><span class="nt">normalize_whitespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">  </span><span class="nt">remove_extra_spaces</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w"> </span><span class="c1"># Normalization</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="nt">normalize_whitespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w"> </span><span class="nt">remove_extra_spaces</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">  </span><span class="c1"># Length filtering</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">  </span><span class="nt">min_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">  </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="c1"># Length filtering</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="nt">min_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
 <a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w">  </span><span class="c1"># Sampling</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">  </span><span class="nt">max_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">  </span><span class="c1"># null = all samples</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">  </span><span class="nt">sample_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">  </span><span class="c1"># Use fraction of data</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w"> </span><span class="c1"># Sampling</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w"> </span><span class="nt">max_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span><span class="c1"># null = all samples</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w"> </span><span class="nt">sample_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"> </span><span class="c1"># Use fraction of data</span>
 <a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
 <a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="c1"># Data splits</span>
 <a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="nt">splits</span><span class="p">:</span>
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">  </span><span class="nt">train_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span>
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w">  </span><span class="nt">eval_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
-<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w">  </span><span class="nt">test_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
-<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w">  </span><span class="nt">random_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w"> </span><span class="nt">train_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w"> </span><span class="nt">eval_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a><span class="w"> </span><span class="nt">test_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a><span class="w"> </span><span class="nt">random_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
 </code></pre></div>
 <h2 id="3-hardware-configuration-configshardwarecudayaml">3. Hardware Configuration (<code>configs/hardware/cuda.yaml</code>)<a class="headerlink" href="#3-hardware-configuration-configshardwarecudayaml" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Device configuration</span>
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nt">device</span><span class="p">:</span>
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span><span class="w">  </span><span class="c1"># cuda, cpu, tpu</span>
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="nt">device_ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># For multi-GPU</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span><span class="w"> </span><span class="c1"># cuda, cpu, tpu</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w"> </span><span class="nt">device_ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># For multi-GPU</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="c1"># Distributed training</span>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nt">distributed</span><span class="p">:</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">  </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nccl</span><span class="w">  </span><span class="c1"># nccl, gloo</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">  </span><span class="nt">num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w"> </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nccl</span><span class="w"> </span><span class="c1"># nccl, gloo</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span><span class="nt">num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="c1"># GPU optimization</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="nt">gpu</span><span class="p">:</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">  </span><span class="nt">enable_tf32</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># for A100</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">  </span><span class="nt">cudnn_benchmark</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">  </span><span class="nt">memory_fraction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w"> </span><span class="nt">enable_tf32</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># for A100</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w"> </span><span class="nt">cudnn_benchmark</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w"> </span><span class="nt">memory_fraction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="c1"># Ray configuration (for distributed training)</span>
 <a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="nt">ray</span><span class="p">:</span>
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w">  </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">  </span><span class="nt">use_gpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">  </span><span class="nt">resources_per_worker</span><span class="p">:</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w">    </span><span class="nt">GPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">    </span><span class="nt">CPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a><span class="w"> </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w"> </span><span class="nt">use_gpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w"> </span><span class="nt">resources_per_worker</span><span class="p">:</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="w"> </span><span class="nt">GPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w"> </span><span class="nt">CPU</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
 </code></pre></div>
 <h2 id="using-configurations">Using Configurations<a class="headerlink" href="#using-configurations" title="Permanent link">¶</a></h2>
 <h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">¶</a></h3>
@@ -2696,7 +2696,7 @@
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Use configuration from subdirectory</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>python<span class="w"> </span>train.py<span class="w"> </span>--config-path<span class="w"> </span>configs/training/tokenizer/offline<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">                 </span>--config-name<span class="w"> </span>tiny_vocab
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span>--config-name<span class="w"> </span>tiny_vocab
 </code></pre></div>
 <h2 id="command-line-overrides">Command-Line Overrides<a class="headerlink" href="#command-line-overrides" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Override single parameter</span>
@@ -2704,28 +2704,28 @@
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Override nested parameters</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>python<span class="w"> </span>train.py<span class="w"> </span>training.batch_size<span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">               </span>training.learning_rate<span class="o">=</span>1e-5<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">               </span>data.num_workers<span class="o">=</span><span class="m">8</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span>training.learning_rate<span class="o">=</span>1e-5<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span>data.num_workers<span class="o">=</span><span class="m">8</span>
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="c1"># Override with dot notation</span>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>python<span class="w"> </span>train.py<span class="w"> </span>model.name<span class="o">=</span>roberta-base<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">               </span>model.max_length<span class="o">=</span><span class="m">1024</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span>model.max_length<span class="o">=</span><span class="m">1024</span>
 </code></pre></div>
 <h2 id="multi-run-sweeps">Multi-Run Sweeps<a class="headerlink" href="#multi-run-sweeps" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Sweep over multiple values</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>python<span class="w"> </span>train.py<span class="w"> </span>-m<span class="w"> </span>training.batch_size<span class="o">=</span><span class="m">32</span>,64,128<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">                  </span>training.learning_rate<span class="o">=</span>1e-5,2e-5
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span>training.learning_rate<span class="o">=</span>1e-5,2e-5
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="c1"># Cartesian product of parameters</span>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>python<span class="w"> </span>train.py<span class="w"> </span>-m<span class="w"> </span>training.batch_size<span class="o">=</span><span class="m">32</span>,64<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">                  </span>training.learning_rate<span class="o">=</span>1e-5,2e-5
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span>training.learning_rate<span class="o">=</span>1e-5,2e-5
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="c1"># Runs: 4 experiments (2x2)</span>
 </code></pre></div>
 <h2 id="composition-defaults">Composition &amp; Defaults<a class="headerlink" href="#composition-defaults" title="Permanent link">¶</a></h2>
 <h3 id="multi-config-composition">Multi-Config Composition<a class="headerlink" href="#multi-config-composition" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Compose from multiple files</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>python<span class="w"> </span>train.py<span class="w"> </span>--config-path<span class="w"> </span>configs<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">               </span>-c<span class="w"> </span><span class="nv">training</span><span class="o">=</span>bert,data<span class="o">=</span>default,hardware<span class="o">=</span>cuda
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span>-c<span class="w"> </span><span class="nv">training</span><span class="o">=</span>bert,data<span class="o">=</span>default,hardware<span class="o">=</span>cuda
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="c1"># Override specific sections</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>python<span class="w"> </span>train.py<span class="w"> </span>+model.cache_dir<span class="o">=</span>/tmp/cache
@@ -2733,19 +2733,19 @@
 <h2 id="config-groups">Config Groups<a class="headerlink" href="#config-groups" title="Permanent link">¶</a></h2>
 <p>Create hierarchical configs with defaults:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>configs/
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>├── training/
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>│   ├── default.yaml
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>│   ├── bert.yaml
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>│   └── gpt.yaml
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>├── data/
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>│   ├── default.yaml
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>│   └── large.yaml
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>└── config.yaml
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> training/
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> default.yaml
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> bert.yaml
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> gpt.yaml
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> data/
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> default.yaml
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> large.yaml
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> config.yaml
 </code></pre></div>
 <p>In <code>config.yaml</code>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="c1"># Other config...</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="nt">experiment_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exp_001</span>
@@ -2754,14 +2754,14 @@
 <h3 id="interpolation">Interpolation<a class="headerlink" href="#interpolation" title="Permanent link">¶</a></h3>
 <p>Reference other values in config:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nt">model</span><span class="p">:</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base-uncased</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">  </span><span class="nt">cache_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./cache/${model.name}</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert-base-uncased</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="nt">cache_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./cache/${model.name}</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">  </span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./output/${model.name}/${now:%Y-%m-%d_%H-%M-%S}</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w"> </span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./output/${model.name}/${now:%Y-%m-%d_%H-%M-%S}</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a><span class="nt">data</span><span class="p">:</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w">  </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/${data_type}/train.jsonl</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="w"> </span><span class="nt">train_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data/${data_type}/train.jsonl</span>
 </code></pre></div>
 <h3 id="variable-resolution">Variable Resolution<a class="headerlink" href="#variable-resolution" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>python<span class="w"> </span>train.py<span class="w"> </span><span class="nv">data_type</span><span class="o">=</span>bert_pretokenized
@@ -2773,9 +2773,9 @@
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="nd">@dataclass</span>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="k">class</span> <span class="nc">TrainingConfig</span><span class="p">:</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2e-5</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2e-5</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="c1"># Create config from dataclass</span>
 <a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="n">config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">structured</span><span class="p">(</span><span class="n">TrainingConfig</span><span class="p">)</span>
@@ -2785,32 +2785,32 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch size: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Learning rate: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">learning_rate</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch size: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Learning rate: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">learning_rate</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="type-safe-access">Type-Safe Access<a class="headerlink" href="#type-safe-access" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="c1"># Type-safe conversion</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="n">train_cfg</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_container</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="c1"># Type-safe conversion</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="n">train_cfg</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_container</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">train_cfg</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">]</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>    <span class="n">lr</span> <span class="o">=</span> <span class="n">train_cfg</span><span class="p">[</span><span class="s1">'learning_rate'</span><span class="p">]</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">train_cfg</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">]</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a> <span class="n">lr</span> <span class="o">=</span> <span class="n">train_cfg</span><span class="p">[</span><span class="s1">'learning_rate'</span><span class="p">]</span>
 </code></pre></div>
 <h3 id="config-validation">Config Validation<a class="headerlink" href="#config-validation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">validator</span>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="k">class</span> <span class="nc">TrainingParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">'batch_size'</span><span class="p">)</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>    <span class="k">def</span> <span class="nf">batch_size_positive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a>        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be positive'</span><span class="p">)</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a>        <span class="k">return</span> <span class="n">v</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a> <span class="nd">@validator</span><span class="p">(</span><span class="s1">'batch_size'</span><span class="p">)</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a> <span class="k">def</span> <span class="nf">batch_size_positive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be positive'</span><span class="p">)</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a> <span class="k">return</span> <span class="n">v</span>
 <a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a>
 <a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="c1"># Validate</span>
 <a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="n">cfg_dict</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_container</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
@@ -2820,39 +2820,39 @@
 <h3 id="production-configuration">Production Configuration<a class="headerlink" href="#production-configuration" title="Permanent link">¶</a></h3>
 <p>Create <code>configs/hardware/production.yaml</code>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nt">device</span><span class="p">:</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span><span class="nt">device_ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cuda</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w"> </span><span class="nt">device_ids</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="nt">distributed</span><span class="p">:</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w">  </span><span class="nt">num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w">  </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nccl</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w"> </span><span class="nt">num_processes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w"> </span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nccl</span>
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
 <a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w">  </span><span class="nt">mixed_precision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bf16</span>
-<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w">  </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w"> </span><span class="nt">mixed_precision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bf16</span>
+<a href="#__codelineno-16-13" id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w"> </span><span class="nt">gradient_accumulation_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 </code></pre></div></p>
 <p>Run production:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a>python<span class="w"> </span>train.py<span class="w"> </span>--config-path<span class="w"> </span>configs/hardware<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w">               </span>--config-name<span class="w"> </span>production
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w"> </span>--config-name<span class="w"> </span>production
 </code></pre></div></p>
 <h3 id="development-configuration">Development Configuration<a class="headerlink" href="#development-configuration" title="Permanent link">¶</a></h3>
 <p>Create <code>configs/hardware/dev.yaml</code>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="nt">device</span><span class="p">:</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu</span>
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>
 <a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="nt">distributed</span><span class="p">:</span>
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>
 <a href="#__codelineno-18-7" id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
-<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="w">  </span><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="w">  </span><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-18-8" id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="w"> </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<a href="#__codelineno-18-9" id="__codelineno-18-9" name="__codelineno-18-9"></a><span class="w"> </span><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-18-10" id="__codelineno-18-10" name="__codelineno-18-10"></a><span class="w"> </span><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 </code></pre></div></p>
 <p>Run development:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>python<span class="w"> </span>train.py<span class="w"> </span>--config-path<span class="w"> </span>configs/hardware<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w">               </span>--config-name<span class="w"> </span>dev
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w"> </span>--config-name<span class="w"> </span>dev
 </code></pre></div></p>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
 <ol>
@@ -2864,8 +2864,8 @@
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="c1"># Good: Use clear defaults with documentation</span>
 <a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
-<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2877,8 +2877,8 @@
 <p><strong>Document All Parameters</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Document purpose and recommended values</span>
 <a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w">  </span><span class="c1"># Tune based on GPU memory (32-256)</span>
-<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2e-5</span><span class="w">  </span><span class="c1"># Lower for fine-tuning (1e-6 to 5e-5)</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span><span class="w"> </span><span class="c1"># Tune based on GPU memory (32-256)</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2e-5</span><span class="w"> </span><span class="c1"># Lower for fine-tuning (1e-6 to 5e-5)</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2891,13 +2891,13 @@
 <p><strong>Create Experiment Presets</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="c1"># configs/experiment/quick_test.yaml</span>
 <a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert</span>
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/hardware</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu</span>
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bert</span>
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/hardware</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu</span>
 <a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>
 <a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="w">  </span><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="w">  </span><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a><span class="nt">num_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a><span class="nt">log_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -2909,7 +2909,7 @@
 <li><a href="../distributed_training_guide/">Training Guide</a></li>
 </ul>
 <hr/>
-<h2 id="consolidated-from-docsconfigurationconfig_usagemd">📎 Consolidated from: docs/configuration/CONFIG_USAGE.md<a class="headerlink" href="#consolidated-from-docsconfigurationconfig_usagemd" title="Permanent link">¶</a></h2>
+<h2 id="consolidated-from-docsconfigurationconfig_usagemd">Consolidated from: docs/configuration/CONFIG_USAGE.md<a class="headerlink" href="#consolidated-from-docsconfigurationconfig_usagemd" title="Permanent link">¶</a></h2>
 <h1 id="configuration-usage-guide">Configuration Usage Guide<a class="headerlink" href="#configuration-usage-guide" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated: 2026-07-11
 </strong>PS-01 Status:** Cycle 3 (Validation &amp; Testing)</p>
@@ -2924,41 +2924,41 @@
 <a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/model"</span><span class="p">)</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="c1"># Access config values</span>
-<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># or cfg["model"]["name"]</span>
+<a href="#__codelineno-25-7" id="__codelineno-25-7" name="__codelineno-25-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c1"># or cfg["model"]["name"]</span>
 </code></pre></div>
 <h2 id="with-overrides">With Overrides<a class="headerlink" href="#with-overrides" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># Override specific values</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a>    <span class="s2">"base"</span><span class="p">,</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a>    <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
-<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>    <span class="n">overrides</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a>        <span class="s2">"training.epochs=10"</span><span class="p">,</span>
-<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>        <span class="s2">"training.device=cuda"</span><span class="p">,</span>
-<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a>        <span class="s2">"training.batch_size=16"</span>
-<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a>    <span class="p">]</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a> <span class="s2">"base"</span><span class="p">,</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a> <span class="n">overrides</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a> <span class="s2">"training.epochs=10"</span><span class="p">,</span>
+<a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a> <span class="s2">"training.device=cuda"</span><span class="p">,</span>
+<a href="#__codelineno-26-8" id="__codelineno-26-8" name="__codelineno-26-8"></a> <span class="s2">"training.batch_size=16"</span>
+<a href="#__codelineno-26-9" id="__codelineno-26-9" name="__codelineno-26-9"></a> <span class="p">]</span>
 <a href="#__codelineno-26-10" id="__codelineno-26-10" name="__codelineno-26-10"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="configuration-structure_1">Configuration Structure<a class="headerlink" href="#configuration-structure_1" title="Permanent link">¶</a></h2>
 <h3 id="directory-organization">Directory Organization<a class="headerlink" href="#directory-organization" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>conf/
-<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a>├── errors/           # Error definitions
-<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a>│   └── defaults.yaml
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a>├── model/            # Model configurations
-<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a>│   ├── base.yaml
-<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>│   ├── toy.yaml
-<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a>│   └── offline/
-<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a>├── training/         # Training configurations
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a>│   ├── base.yaml
-<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a>│   ├── continual/
-<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a>│   └── offline/
-<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>├── evaluation/       # Evaluation configurations
-<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a>│   ├── base.yaml
-<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a>│   └── reasoning/
-<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a>└── data/             # Data configurations
-<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>    ├── base.yaml
-<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a>    ├── tiny.yaml
-<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a>    └── offline/
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a> errors/ # Error definitions
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a> defaults.yaml
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a> model/ # Model configurations
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a> base.yaml
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a> toy.yaml
+<a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a> offline/
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a> training/ # Training configurations
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a> base.yaml
+<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a> continual/
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a> offline/
+<a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a> evaluation/ # Evaluation configurations
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a> base.yaml
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a> reasoning/
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a> data/ # Data configurations
+<a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a> base.yaml
+<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a> tiny.yaml
+<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a> offline/
 </code></pre></div>
 <hr/>
 <h2 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Permanent link">¶</a></h2>
@@ -2972,8 +2972,8 @@
 <h2 id="pattern-2-hydra-interpolation">Pattern 2: Hydra Interpolation<a class="headerlink" href="#pattern-2-hydra-interpolation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># conf/training/base.yaml</span>
 <a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w">  </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span><span class="w">  </span><span class="c1"># Reference same value</span>
+<a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="w"> </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span><span class="w"> </span><span class="c1"># Reference same value</span>
 <a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a>
 <a href="#__codelineno-29-6" id="__codelineno-29-6" name="__codelineno-29-6"></a><span class="c1"># Backward compatibility</span>
 <a href="#__codelineno-29-7" id="__codelineno-29-7" name="__codelineno-29-7"></a><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span>
@@ -2982,13 +2982,13 @@
 <h2 id="pattern-3-nested-config-composition">Pattern 3: Nested Config Composition<a class="headerlink" href="#pattern-3-nested-config-composition" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># conf/experiment/my_experiment.yaml</span>
 <a href="#__codelineno-30-2" id="__codelineno-30-2" name="__codelineno-30-2"></a><span class="nt">defaults</span><span class="p">:</span>
-<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
-<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
-<a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tiny</span>
+<a href="#__codelineno-30-3" id="__codelineno-30-3" name="__codelineno-30-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
+<a href="#__codelineno-30-4" id="__codelineno-30-4" name="__codelineno-30-4"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/training</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
+<a href="#__codelineno-30-5" id="__codelineno-30-5" name="__codelineno-30-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tiny</span>
 <a href="#__codelineno-30-6" id="__codelineno-30-6" name="__codelineno-30-6"></a>
 <a href="#__codelineno-30-7" id="__codelineno-30-7" name="__codelineno-30-7"></a><span class="c1"># Override specific values</span>
 <a href="#__codelineno-30-8" id="__codelineno-30-8" name="__codelineno-30-8"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-30-9" id="__codelineno-30-9" name="__codelineno-30-9"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<a href="#__codelineno-30-9" id="__codelineno-30-9" name="__codelineno-30-9"></a><span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
 </code></pre></div>
 <p><strong>Use Case:</strong> Compose experiments from reusable components</p>
 <h2 id="pattern-4-error-handling">Pattern 4: Error Handling<a class="headerlink" href="#pattern-4-error-handling" title="Permanent link">¶</a></h2>
@@ -2997,11 +2997,11 @@
 <a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a><span class="n">loader</span> <span class="o">=</span> <span class="n">get_loader</span><span class="p">()</span>
 <a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a>
 <a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"nonexistent"</span><span class="p">,</span> <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"nonexistent"</span><span class="p">,</span> <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a href="#__codelineno-31-7" id="__codelineno-31-7" name="__codelineno-31-7"></a><span class="k">except</span> <span class="n">MissingConfigException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a>    <span class="c1"># Get structured error</span>
-<a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a>    <span class="n">error</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_error</span><span class="p">(</span><span class="s2">"config_errors"</span><span class="p">,</span> <span class="s2">"missing_config"</span><span class="p">)</span>
-<a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">missing_cfg_file</span><span class="p">))</span>
+<a href="#__codelineno-31-8" id="__codelineno-31-8" name="__codelineno-31-8"></a> <span class="c1"># Get structured error</span>
+<a href="#__codelineno-31-9" id="__codelineno-31-9" name="__codelineno-31-9"></a> <span class="n">error</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_error</span><span class="p">(</span><span class="s2">"config_errors"</span><span class="p">,</span> <span class="s2">"missing_config"</span><span class="p">)</span>
+<a href="#__codelineno-31-10" id="__codelineno-31-10" name="__codelineno-31-10"></a> <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">missing_cfg_file</span><span class="p">))</span>
 </code></pre></div>
 <p><strong>Use Case:</strong> Graceful error handling with structured messages</p>
 <hr/>
@@ -3020,13 +3020,13 @@
 <a href="#__codelineno-32-11" id="__codelineno-32-11" name="__codelineno-32-11"></a>
 <a href="#__codelineno-32-12" id="__codelineno-32-12" name="__codelineno-32-12"></a><span class="c1"># Override for specific run</span>
 <a href="#__codelineno-32-13" id="__codelineno-32-13" name="__codelineno-32-13"></a><span class="n">train_cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span>
-<a href="#__codelineno-32-14" id="__codelineno-32-14" name="__codelineno-32-14"></a>    <span class="s2">"base"</span><span class="p">,</span>
-<a href="#__codelineno-32-15" id="__codelineno-32-15" name="__codelineno-32-15"></a>    <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
-<a href="#__codelineno-32-16" id="__codelineno-32-16" name="__codelineno-32-16"></a>    <span class="n">overrides</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-32-17" id="__codelineno-32-17" name="__codelineno-32-17"></a>        <span class="sa">f</span><span class="s2">"training.output_dir=runs/experiment_</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<a href="#__codelineno-32-18" id="__codelineno-32-18" name="__codelineno-32-18"></a>        <span class="s2">"training.epochs=50"</span><span class="p">,</span>
-<a href="#__codelineno-32-19" id="__codelineno-32-19" name="__codelineno-32-19"></a>        <span class="s2">"training.device=cuda"</span>
-<a href="#__codelineno-32-20" id="__codelineno-32-20" name="__codelineno-32-20"></a>    <span class="p">]</span>
+<a href="#__codelineno-32-14" id="__codelineno-32-14" name="__codelineno-32-14"></a> <span class="s2">"base"</span><span class="p">,</span>
+<a href="#__codelineno-32-15" id="__codelineno-32-15" name="__codelineno-32-15"></a> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
+<a href="#__codelineno-32-16" id="__codelineno-32-16" name="__codelineno-32-16"></a> <span class="n">overrides</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-32-17" id="__codelineno-32-17" name="__codelineno-32-17"></a> <span class="sa">f</span><span class="s2">"training.output_dir=runs/experiment_</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-32-18" id="__codelineno-32-18" name="__codelineno-32-18"></a> <span class="s2">"training.epochs=50"</span><span class="p">,</span>
+<a href="#__codelineno-32-19" id="__codelineno-32-19" name="__codelineno-32-19"></a> <span class="s2">"training.device=cuda"</span>
+<a href="#__codelineno-32-20" id="__codelineno-32-20" name="__codelineno-32-20"></a> <span class="p">]</span>
 <a href="#__codelineno-32-21" id="__codelineno-32-21" name="__codelineno-32-21"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="evaluation-pipeline">Evaluation Pipeline<a class="headerlink" href="#evaluation-pipeline" title="Permanent link">¶</a></h2>
@@ -3040,9 +3040,9 @@
 <a href="#__codelineno-33-8" id="__codelineno-33-8" name="__codelineno-33-8"></a>
 <a href="#__codelineno-33-9" id="__codelineno-33-9" name="__codelineno-33-9"></a><span class="c1"># Override metrics</span>
 <a href="#__codelineno-33-10" id="__codelineno-33-10" name="__codelineno-33-10"></a><span class="n">eval_cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span>
-<a href="#__codelineno-33-11" id="__codelineno-33-11" name="__codelineno-33-11"></a>    <span class="s2">"base"</span><span class="p">,</span>
-<a href="#__codelineno-33-12" id="__codelineno-33-12" name="__codelineno-33-12"></a>    <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/evaluation"</span><span class="p">,</span>
-<a href="#__codelineno-33-13" id="__codelineno-33-13" name="__codelineno-33-13"></a>    <span class="n">overrides</span><span class="o">=</span><span class="p">[</span><span class="s2">"metrics.use_weighted_accuracy=true"</span><span class="p">]</span>
+<a href="#__codelineno-33-11" id="__codelineno-33-11" name="__codelineno-33-11"></a> <span class="s2">"base"</span><span class="p">,</span>
+<a href="#__codelineno-33-12" id="__codelineno-33-12" name="__codelineno-33-12"></a> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/evaluation"</span><span class="p">,</span>
+<a href="#__codelineno-33-13" id="__codelineno-33-13" name="__codelineno-33-13"></a> <span class="n">overrides</span><span class="o">=</span><span class="p">[</span><span class="s2">"metrics.use_weighted_accuracy=true"</span><span class="p">]</span>
 <a href="#__codelineno-33-14" id="__codelineno-33-14" name="__codelineno-33-14"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="experimentation">Experimentation<a class="headerlink" href="#experimentation" title="Permanent link">¶</a></h2>
@@ -3060,23 +3060,23 @@
 <h2 id="override-syntax">Override Syntax<a class="headerlink" href="#override-syntax" title="Permanent link">¶</a></h2>
 <h3 id="simple-values">Simple Values<a class="headerlink" href="#simple-values" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="n">overrides</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a>    <span class="s2">"key=value"</span><span class="p">,</span>
-<a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a>    <span class="s2">"nested.key=value"</span><span class="p">,</span>
-<a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a>    <span class="s2">"training.epochs=10"</span>
+<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a> <span class="s2">"key=value"</span><span class="p">,</span>
+<a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a> <span class="s2">"nested.key=value"</span><span class="p">,</span>
+<a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a> <span class="s2">"training.epochs=10"</span>
 <a href="#__codelineno-35-5" id="__codelineno-35-5" name="__codelineno-35-5"></a><span class="p">]</span>
 </code></pre></div>
 <h3 id="complex-values">Complex Values<a class="headerlink" href="#complex-values" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a><span class="n">overrides</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a>    <span class="s2">"list_key=[1,2,3]"</span><span class="p">,</span>
-<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a>    <span class="s2">"dict_key={a: 1, b: 2}"</span><span class="p">,</span>
-<a href="#__codelineno-36-4" id="__codelineno-36-4" name="__codelineno-36-4"></a>    <span class="s2">"bool_key=true"</span><span class="p">,</span>
-<a href="#__codelineno-36-5" id="__codelineno-36-5" name="__codelineno-36-5"></a>    <span class="s2">"float_key=0.001"</span>
+<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a> <span class="s2">"list_key=[1,2,3]"</span><span class="p">,</span>
+<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a> <span class="s2">"dict_key={a: 1, b: 2}"</span><span class="p">,</span>
+<a href="#__codelineno-36-4" id="__codelineno-36-4" name="__codelineno-36-4"></a> <span class="s2">"bool_key=true"</span><span class="p">,</span>
+<a href="#__codelineno-36-5" id="__codelineno-36-5" name="__codelineno-36-5"></a> <span class="s2">"float_key=0.001"</span>
 <a href="#__codelineno-36-6" id="__codelineno-36-6" name="__codelineno-36-6"></a><span class="p">]</span>
 </code></pre></div>
 <h3 id="interpolation-in-overrides">Interpolation in Overrides<a class="headerlink" href="#interpolation-in-overrides" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-37-1" id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="n">overrides</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a>    <span class="s2">"training.output_dir=runs/$</span><span class="si">{model.name}</span><span class="s2">"</span><span class="p">,</span>
-<a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a>    <span class="s2">"training.checkpoint_dir=$</span><span class="si">{training.output_dir}</span><span class="s2">/checkpoints"</span>
+<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a> <span class="s2">"training.output_dir=runs/$</span><span class="si">{model.name}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a> <span class="s2">"training.checkpoint_dir=$</span><span class="si">{training.output_dir}</span><span class="s2">/checkpoints"</span>
 <a href="#__codelineno-37-4" id="__codelineno-37-4" name="__codelineno-37-4"></a><span class="p">]</span>
 </code></pre></div>
 <hr/>
@@ -3092,15 +3092,15 @@
 <li>
 <p><strong>Leverage Hydra interpolation for DRY</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-39-1" id="__codelineno-39-1" name="__codelineno-39-1"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-39-3" id="__codelineno-39-3" name="__codelineno-39-3"></a><span class="w">  </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span>
+<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-39-3" id="__codelineno-39-3" name="__codelineno-39-3"></a><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Organize configs by logical groups</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a>conf/model/     # Model-specific
-<a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a>conf/training/  # Training-specific
-<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a>conf/data/      # Data-specific
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a>conf/model/ # Model-specific
+<a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a>conf/training/ # Training-specific
+<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a>conf/data/ # Data-specific
 </code></pre></div></p>
 </li>
 <li>
@@ -3111,9 +3111,9 @@
 <li>
 <p><strong>Handle errors gracefully</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-42-1" id="__codelineno-42-1" name="__codelineno-42-1"></a>try:
-<a href="#__codelineno-42-2" id="__codelineno-42-2" name="__codelineno-42-2"></a>    cfg = load_config("config", allow_fallback=False)
+<a href="#__codelineno-42-2" id="__codelineno-42-2" name="__codelineno-42-2"></a> cfg = load_config("config", allow_fallback=False)
 <a href="#__codelineno-42-3" id="__codelineno-42-3" name="__codelineno-42-3"></a>except MissingConfigException:
-<a href="#__codelineno-42-4" id="__codelineno-42-4" name="__codelineno-42-4"></a>    # Handle missing config
+<a href="#__codelineno-42-4" id="__codelineno-42-4" name="__codelineno-42-4"></a> # Handle missing config
 </code></pre></div></p>
 </li>
 </ol>
@@ -3123,7 +3123,7 @@
 <p><strong>Don't hardcode config paths</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="c1"># Bad</span>
 <a href="#__codelineno-43-2" id="__codelineno-43-2" name="__codelineno-43-2"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"configs/training/base.yaml"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <a href="#__codelineno-43-4" id="__codelineno-43-4" name="__codelineno-43-4"></a>
 <a href="#__codelineno-43-5" id="__codelineno-43-5" name="__codelineno-43-5"></a><span class="c1"># Good</span>
 <a href="#__codelineno-43-6" id="__codelineno-43-6" name="__codelineno-43-6"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">)</span>
@@ -3133,25 +3133,25 @@
 <p><strong>Don't duplicate config values</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a><span class="c1"># Bad</span>
 <a href="#__codelineno-44-2" id="__codelineno-44-2" name="__codelineno-44-2"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-44-4" id="__codelineno-44-4" name="__codelineno-44-4"></a><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">  </span><span class="c1"># Duplication!</span>
+<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-44-4" id="__codelineno-44-4" name="__codelineno-44-4"></a><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"> </span><span class="c1"># Duplication!</span>
 <a href="#__codelineno-44-5" id="__codelineno-44-5" name="__codelineno-44-5"></a>
 <a href="#__codelineno-44-6" id="__codelineno-44-6" name="__codelineno-44-6"></a><span class="c1"># Good</span>
 <a href="#__codelineno-44-7" id="__codelineno-44-7" name="__codelineno-44-7"></a><span class="nt">training</span><span class="p">:</span>
-<a href="#__codelineno-44-8" id="__codelineno-44-8" name="__codelineno-44-8"></a><span class="w">  </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-44-8" id="__codelineno-44-8" name="__codelineno-44-8"></a><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <a href="#__codelineno-44-9" id="__codelineno-44-9" name="__codelineno-44-9"></a><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${training.epochs}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Don't skip error handling</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-45-1" id="__codelineno-45-1" name="__codelineno-45-1"></a><span class="c1"># Bad</span>
-<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"config"</span><span class="p">)</span>  <span class="c1"># May fail silently</span>
+<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"config"</span><span class="p">)</span> <span class="c1"># May fail silently</span>
 <a href="#__codelineno-45-3" id="__codelineno-45-3" name="__codelineno-45-3"></a>
 <a href="#__codelineno-45-4" id="__codelineno-45-4" name="__codelineno-45-4"></a><span class="c1"># Good</span>
 <a href="#__codelineno-45-5" id="__codelineno-45-5" name="__codelineno-45-5"></a><span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-45-6" id="__codelineno-45-6" name="__codelineno-45-6"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a href="#__codelineno-45-6" id="__codelineno-45-6" name="__codelineno-45-6"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="n">allow_fallback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a href="#__codelineno-45-7" id="__codelineno-45-7" name="__codelineno-45-7"></a><span class="k">except</span> <span class="n">MissingConfigException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a href="#__codelineno-45-8" id="__codelineno-45-8" name="__codelineno-45-8"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Config not found: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">missing_cfg_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-45-8" id="__codelineno-45-8" name="__codelineno-45-8"></a> <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Config not found: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">missing_cfg_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -3161,7 +3161,7 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-46-1" id="__codelineno-46-1" name="__codelineno-46-1"></a><span class="kn">import</span> <span class="nn">yaml</span>
 <a href="#__codelineno-46-2" id="__codelineno-46-2" name="__codelineno-46-2"></a>
 <a href="#__codelineno-46-3" id="__codelineno-46-3" name="__codelineno-46-3"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"configs/training/base.yaml"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-46-4" id="__codelineno-46-4" name="__codelineno-46-4"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<a href="#__codelineno-46-4" id="__codelineno-46-4" name="__codelineno-46-4"></a> <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <a href="#__codelineno-46-5" id="__codelineno-46-5" name="__codelineno-46-5"></a>
 <a href="#__codelineno-46-6" id="__codelineno-46-6" name="__codelineno-46-6"></a><span class="n">epochs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">"training"</span><span class="p">][</span><span class="s2">"epochs"</span><span class="p">]</span>
 </code></pre></div>
@@ -3194,9 +3194,9 @@
 <a href="#__codelineno-49-5" id="__codelineno-49-5" name="__codelineno-49-5"></a><span class="c1"># Build overrides dynamically</span>
 <a href="#__codelineno-49-6" id="__codelineno-49-6" name="__codelineno-49-6"></a><span class="n">overrides</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-49-7" id="__codelineno-49-7" name="__codelineno-49-7"></a><span class="k">if</span> <span class="n">use_gpu</span><span class="p">:</span>
-<a href="#__codelineno-49-8" id="__codelineno-49-8" name="__codelineno-49-8"></a>    <span class="n">overrides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"training.device=cuda"</span><span class="p">)</span>
+<a href="#__codelineno-49-8" id="__codelineno-49-8" name="__codelineno-49-8"></a> <span class="n">overrides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"training.device=cuda"</span><span class="p">)</span>
 <a href="#__codelineno-49-9" id="__codelineno-49-9" name="__codelineno-49-9"></a><span class="k">if</span> <span class="n">debug_mode</span><span class="p">:</span>
-<a href="#__codelineno-49-10" id="__codelineno-49-10" name="__codelineno-49-10"></a>    <span class="n">overrides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"training.epochs=1"</span><span class="p">)</span>
+<a href="#__codelineno-49-10" id="__codelineno-49-10" name="__codelineno-49-10"></a> <span class="n">overrides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"training.epochs=1"</span><span class="p">)</span>
 <a href="#__codelineno-49-11" id="__codelineno-49-11" name="__codelineno-49-11"></a>
 <a href="#__codelineno-49-12" id="__codelineno-49-12" name="__codelineno-49-12"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="n">overrides</span><span class="p">)</span>
 </code></pre></div>
@@ -3208,9 +3208,9 @@
 <a href="#__codelineno-50-5" id="__codelineno-50-5" name="__codelineno-50-5"></a><span class="c1"># Get specific error definition</span>
 <a href="#__codelineno-50-6" id="__codelineno-50-6" name="__codelineno-50-6"></a><span class="n">error</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_error</span><span class="p">(</span><span class="s2">"config_errors"</span><span class="p">,</span> <span class="s2">"missing_config"</span><span class="p">)</span>
 <a href="#__codelineno-50-7" id="__codelineno-50-7" name="__codelineno-50-7"></a><span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-<a href="#__codelineno-50-8" id="__codelineno-50-8" name="__codelineno-50-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Code: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-50-9" id="__codelineno-50-9" name="__codelineno-50-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Message: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-50-10" id="__codelineno-50-10" name="__codelineno-50-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resolution: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">resolution</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-50-8" id="__codelineno-50-8" name="__codelineno-50-8"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Code: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-50-9" id="__codelineno-50-9" name="__codelineno-50-9"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Message: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-50-10" id="__codelineno-50-10" name="__codelineno-50-10"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resolution: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">resolution</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="testing-configurations">Testing Configurations<a class="headerlink" href="#testing-configurations" title="Permanent link">¶</a></h2>
@@ -3219,30 +3219,30 @@
 <a href="#__codelineno-51-2" id="__codelineno-51-2" name="__codelineno-51-2"></a><span class="kn">from</span> <span class="nn">codex.utils.config_loader</span> <span class="kn">import</span> <span class="n">load_config</span>
 <a href="#__codelineno-51-3" id="__codelineno-51-3" name="__codelineno-51-3"></a>
 <a href="#__codelineno-51-4" id="__codelineno-51-4" name="__codelineno-51-4"></a><span class="k">def</span> <span class="nf">test_training_config</span><span class="p">():</span>
-<a href="#__codelineno-51-5" id="__codelineno-51-5" name="__codelineno-51-5"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">)</span>
+<a href="#__codelineno-51-5" id="__codelineno-51-5" name="__codelineno-51-5"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">)</span>
 <a href="#__codelineno-51-6" id="__codelineno-51-6" name="__codelineno-51-6"></a>
-<a href="#__codelineno-51-7" id="__codelineno-51-7" name="__codelineno-51-7"></a>    <span class="k">assert</span> <span class="n">cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<a href="#__codelineno-51-8" id="__codelineno-51-8" name="__codelineno-51-8"></a>    <span class="k">assert</span> <span class="s2">"training"</span> <span class="ow">in</span> <span class="n">cfg</span>
-<a href="#__codelineno-51-9" id="__codelineno-51-9" name="__codelineno-51-9"></a>    <span class="k">assert</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a href="#__codelineno-51-7" id="__codelineno-51-7" name="__codelineno-51-7"></a> <span class="k">assert</span> <span class="n">cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a href="#__codelineno-51-8" id="__codelineno-51-8" name="__codelineno-51-8"></a> <span class="k">assert</span> <span class="s2">"training"</span> <span class="ow">in</span> <span class="n">cfg</span>
+<a href="#__codelineno-51-9" id="__codelineno-51-9" name="__codelineno-51-9"></a> <span class="k">assert</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span> <span class="o">&gt;</span> <span class="mi">0</span>
 <a href="#__codelineno-51-10" id="__codelineno-51-10" name="__codelineno-51-10"></a>
 <a href="#__codelineno-51-11" id="__codelineno-51-11" name="__codelineno-51-11"></a><span class="k">def</span> <span class="nf">test_config_overrides</span><span class="p">():</span>
-<a href="#__codelineno-51-12" id="__codelineno-51-12" name="__codelineno-51-12"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span>
-<a href="#__codelineno-51-13" id="__codelineno-51-13" name="__codelineno-51-13"></a>        <span class="s2">"base"</span><span class="p">,</span>
-<a href="#__codelineno-51-14" id="__codelineno-51-14" name="__codelineno-51-14"></a>        <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
-<a href="#__codelineno-51-15" id="__codelineno-51-15" name="__codelineno-51-15"></a>        <span class="n">overrides</span><span class="o">=</span><span class="p">[</span><span class="s2">"training.epochs=5"</span><span class="p">]</span>
-<a href="#__codelineno-51-16" id="__codelineno-51-16" name="__codelineno-51-16"></a>    <span class="p">)</span>
+<a href="#__codelineno-51-12" id="__codelineno-51-12" name="__codelineno-51-12"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span>
+<a href="#__codelineno-51-13" id="__codelineno-51-13" name="__codelineno-51-13"></a> <span class="s2">"base"</span><span class="p">,</span>
+<a href="#__codelineno-51-14" id="__codelineno-51-14" name="__codelineno-51-14"></a> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">,</span>
+<a href="#__codelineno-51-15" id="__codelineno-51-15" name="__codelineno-51-15"></a> <span class="n">overrides</span><span class="o">=</span><span class="p">[</span><span class="s2">"training.epochs=5"</span><span class="p">]</span>
+<a href="#__codelineno-51-16" id="__codelineno-51-16" name="__codelineno-51-16"></a> <span class="p">)</span>
 <a href="#__codelineno-51-17" id="__codelineno-51-17" name="__codelineno-51-17"></a>
-<a href="#__codelineno-51-18" id="__codelineno-51-18" name="__codelineno-51-18"></a>    <span class="k">assert</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span> <span class="o">==</span> <span class="mi">5</span>
+<a href="#__codelineno-51-18" id="__codelineno-51-18" name="__codelineno-51-18"></a> <span class="k">assert</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span> <span class="o">==</span> <span class="mi">5</span>
 </code></pre></div>
 <h3 id="in-integration-tests">In Integration Tests<a class="headerlink" href="#in-integration-tests" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-52-1" id="__codelineno-52-1" name="__codelineno-52-1"></a><span class="k">def</span> <span class="nf">test_training_pipeline_with_config</span><span class="p">():</span>
-<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a>    <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">)</span>
+<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a> <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="s2">"conf/training"</span><span class="p">)</span>
 <a href="#__codelineno-52-3" id="__codelineno-52-3" name="__codelineno-52-3"></a>
-<a href="#__codelineno-52-4" id="__codelineno-52-4" name="__codelineno-52-4"></a>    <span class="c1"># Use config in training</span>
-<a href="#__codelineno-52-5" id="__codelineno-52-5" name="__codelineno-52-5"></a>    <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">cfg</span><span class="p">)</span>
-<a href="#__codelineno-52-6" id="__codelineno-52-6" name="__codelineno-52-6"></a>    <span class="n">results</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<a href="#__codelineno-52-4" id="__codelineno-52-4" name="__codelineno-52-4"></a> <span class="c1"># Use config in training</span>
+<a href="#__codelineno-52-5" id="__codelineno-52-5" name="__codelineno-52-5"></a> <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">cfg</span><span class="p">)</span>
+<a href="#__codelineno-52-6" id="__codelineno-52-6" name="__codelineno-52-6"></a> <span class="n">results</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 <a href="#__codelineno-52-7" id="__codelineno-52-7" name="__codelineno-52-7"></a>
-<a href="#__codelineno-52-8" id="__codelineno-52-8" name="__codelineno-52-8"></a>    <span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">epochs_completed</span> <span class="o">==</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span>
+<a href="#__codelineno-52-8" id="__codelineno-52-8" name="__codelineno-52-8"></a> <span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">epochs_completed</span> <span class="o">==</span> <span class="n">cfg</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">epochs</span>
 </code></pre></div>
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
@@ -3256,7 +3256,7 @@
 <li><strong>PS-01 Planset:</strong> <code>.github/plans/PLANSET_01_CONFIGURATION_CONSOLIDATION.md</code></li>
 </ul>
 <hr/>
-<p><strong>Maintained By:</strong> PS-01 Configuration Consolidation<br/>
+<p><strong>Maintained By:</strong> PS-01 Configuration Consolidation
 <strong>Questions:</strong> File an issue with "configuration" label</p>
 </article>
 </div>
@@ -3287,6 +3287,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

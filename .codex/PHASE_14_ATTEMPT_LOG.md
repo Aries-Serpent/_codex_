@@ -91,10 +91,10 @@ This log tracks all agent attempts (fixes, optimizations, implementations) acros
 
 ### Attempt #4 (orchestrator-agent) — [2026-08-25T20:10:00Z - TARGET]
 
-**Commit:** [TBD — Checkpoint 4; WS1 feature GA v0.2.1 completion]
+**Commit:** [TBD — Checkpoint 4; WS1 feature GA v0.2.0 completion]
 
 **Work Performed:**
-- [TBD: Feature rollout 100% complete; v0.2.1 GA reached]
+- [TBD: Feature rollout 100% complete; v0.2.0 GA reached]
 - [TBD: A/B testing analysis complete; winner selected]
 - [TBD: Feature metrics published; revenue impact quantified]
 
@@ -148,7 +148,7 @@ This log tracks all agent attempts (fixes, optimizations, implementations) acros
 | **Checkpoint 1** | 2026-07-31 | ⏳ PENDING | — | WS1-3 planning finalized |
 | **Checkpoint 2** | 2026-08-07 | ⏳ PENDING | — | Canary + infra + security go-live |
 | **Checkpoint 3** | 2026-08-14 | ⏳ PENDING | — | A/B testing + cache optimization |
-| **Checkpoint 4** | 2026-08-25 | ⏳ PENDING | — | WS1 v0.2.1 GA |
+| **Checkpoint 4** | 2026-08-25 | ⏳ PENDING | — | WS1 v0.2.0 GA |
 | **Checkpoint 5** | 2026-09-04 | ⏳ PENDING | — | WS2 infrastructure GA |
 | **Final Report** | 2026-09-18 | ⏳ PENDING | — | WS3 complete + Phase 15 ready |
 

@@ -7223,8 +7223,8 @@
     },
     {
       "file": "docs/diagrams/README.md",
-      "url": "audit_pipeline_v0.2.1.mmd",
-      "error": "File not found: audit_pipeline_v0.2.1.mmd",
+      "url": "audit_pipeline_v0.2.0.mmd",
+      "error": "File not found: audit_pipeline_v0.2.0.mmd",
       "suggestions": [],
       "confidence": 0.5
     },
@@ -7489,43 +7489,43 @@
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "Next_Iteration_Prompt_v0.2.1.md",
-      "error": "File not found: Next_Iteration_Prompt_v0.2.1.md",
+      "url": "Next_Iteration_Prompt_v0.2.0.md",
+      "error": "File not found: Next_Iteration_Prompt_v0.2.0.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "v0.2.1_Status_Report.md",
-      "error": "File not found: v0.2.1_Status_Report.md",
+      "url": "v0.2.0_Status_Report.md",
+      "error": "File not found: v0.2.0_Status_Report.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "v0.2.1_Refactor_Report.md",
-      "error": "File not found: v0.2.1_Refactor_Report.md",
+      "url": "v0.2.0_Refactor_Report.md",
+      "error": "File not found: v0.2.0_Refactor_Report.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "v0.2.1_Strict_Validation_Report.md",
-      "error": "File not found: v0.2.1_Strict_Validation_Report.md",
+      "url": "v0.2.0_Strict_Validation_Report.md",
+      "error": "File not found: v0.2.0_Strict_Validation_Report.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "v0.2.1_Validation_Log.md",
-      "error": "File not found: v0.2.1_Validation_Log.md",
+      "url": "v0.2.0_Validation_Log.md",
+      "error": "File not found: v0.2.0_Validation_Log.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/validation/INDEX.md",
-      "url": "v0.2.1_Consolidation_Report.md",
-      "error": "File not found: v0.2.1_Consolidation_Report.md",
+      "url": "v0.2.0_Consolidation_Report.md",
+      "error": "File not found: v0.2.0_Consolidation_Report.md",
       "suggestions": [],
       "confidence": 0.5
     },
@@ -7699,8 +7699,8 @@
     },
     {
       "file": "docs/diagrams/ARCHITECTURE_DIAGRAMS.md",
-      "url": "audit_pipeline_v0.2.1.mmd",
-      "error": "File not found: audit_pipeline_v0.2.1.mmd",
+      "url": "audit_pipeline_v0.2.0.mmd",
+      "error": "File not found: audit_pipeline_v0.2.0.mmd",
       "suggestions": [],
       "confidence": 0.5
     },
@@ -11843,8 +11843,8 @@
     },
     {
       "file": ".codex/PHASE_3_TAG_AND_RELEASE_COMPLETE.md",
-      "url": "sbom/cyclonedx-v0.2.1.json",
-      "error": "File not found: sbom/cyclonedx-v0.2.1.json",
+      "url": "sbom/cyclonedx-v0.2.0.json",
+      "error": "File not found: sbom/cyclonedx-v0.2.0.json",
       "suggestions": [],
       "confidence": 0.5
     },
@@ -12816,29 +12816,29 @@
     },
     {
       "file": "docs/audit/INDEX.md",
-      "url": "API_Reference_v0.2.1.md",
-      "error": "File not found: API_Reference_v0.2.1.md",
+      "url": "API_Reference_v0.2.0.md",
+      "error": "File not found: API_Reference_v0.2.0.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/audit/INDEX.md",
-      "url": "Audit_Pipeline_Reference_v0.2.1.md",
-      "error": "File not found: Audit_Pipeline_Reference_v0.2.1.md",
+      "url": "Audit_Pipeline_Reference_v0.2.0.md",
+      "error": "File not found: Audit_Pipeline_Reference_v0.2.0.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/audit/INDEX.md",
-      "url": "Configuration_v0.2.1.md",
-      "error": "File not found: Configuration_v0.2.1.md",
+      "url": "Configuration_v0.2.0.md",
+      "error": "File not found: Configuration_v0.2.0.md",
       "suggestions": [],
       "confidence": 0.5
     },
     {
       "file": "docs/audit/INDEX.md",
-      "url": "Troubleshooting_v0.2.1.md",
-      "error": "File not found: Troubleshooting_v0.2.1.md",
+      "url": "Troubleshooting_v0.2.0.md",
+      "error": "File not found: Troubleshooting_v0.2.0.md",
       "suggestions": [],
       "confidence": 0.5
     },

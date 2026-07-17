@@ -1,6 +1,6 @@
 # _codex_ Roadmap
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -496,7 +496,7 @@
 ---
 
 **Roadmap Status**: Active & Current
-**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v0.2.1)
+**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v0.2.0)
 **Next Projected Update**: 2026-06-06 (planned: Phase 9 completion milestone)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1

@@ -1,6 +1,6 @@
 # [Type]: [Specific Topic/Feature Name]
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: [YYYY-MM-DDTHH:MM:SSZ] | Author: [@username]
 > PR: #NNNN | Branch: `branch-name` (if applicable)

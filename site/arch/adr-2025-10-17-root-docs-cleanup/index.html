@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/arch/adr-2025-10-17-root-docs-cleanup/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>ADR: Retire legacy status reports from the repository root - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2341,26 +2341,26 @@ removal intent alongside deterministic tombstone identifiers for traceability.</
 <p>Archive the following files from the repository root effective 2025-10-17, using the plan recorded at
 <code>.codex/evidence/artifacts/archive_plan_root_cleanup_2025-10-17.json</code>:</p>
 <ul>
-<li><code>docs/reference/codex_questions.md</code> → tombstone <code>8e3531b9-c839-4a07-9dec-507c36136eb1</code></li>
-<li><code>_codex_status_update-0C_base_-2025-09-27.md</code> → tombstone <code>ff1f4dc7-e9a9-4db1-9730-cd268ed4fd09</code></li>
-<li><code>_codex_status_update-2025-10-06.md</code> → tombstone <code>1bd4c1f1-6165-4d8e-8a25-5121b511d577</code></li>
-<li><code>_codex_status_update-2025-10-16.md</code> → tombstone <code>2d4d2f9d-e63f-4e69-8bb6-fe1158435431</code></li>
-<li><code>done_resolution_plans_10-6_to_10-7.md</code> → tombstone <code>b131ecc9-21a2-4cb0-bf75-e56921b157bd</code></li>
-<li><code>CODEBASE_AUDIT_2025-09-27_ITERATION3.md</code> → tombstone <code>a778bb0d-fd03-4642-a92d-55f28c68b193</code></li>
-<li><code>_codex_codex-ready-sequence-and-patches-2025-09-27.md</code> → tombstone <code>94ba1b35-5745-40d6-8f08-8b3d0a62f786</code></li>
-<li><code>codex_ready_sequence-2025-10-16.md</code> → tombstone <code>4c758c95-3c0b-4b5d-8bc7-27cc5c6f79d9</code></li>
-<li><code>todo_resolution_plans_10-6_to_10-7.txt</code> → tombstone <code>a6195756-ef7c-42de-b7dc-435bbbdca91e</code></li>
+<li><code>docs/reference/codex_questions.md</code> tombstone <code>8e3531b9-c839-4a07-9dec-507c36136eb1</code></li>
+<li><code>_codex_status_update-0C_base_-2025-09-27.md</code> tombstone <code>ff1f4dc7-e9a9-4db1-9730-cd268ed4fd09</code></li>
+<li><code>_codex_status_update-2025-10-06.md</code> tombstone <code>1bd4c1f1-6165-4d8e-8a25-5121b511d577</code></li>
+<li><code>_codex_status_update-2025-10-16.md</code> tombstone <code>2d4d2f9d-e63f-4e69-8bb6-fe1158435431</code></li>
+<li><code>done_resolution_plans_10-6_to_10-7.md</code> tombstone <code>b131ecc9-21a2-4cb0-bf75-e56921b157bd</code></li>
+<li><code>CODEBASE_AUDIT_2025-09-27_ITERATION3.md</code> tombstone <code>a778bb0d-fd03-4642-a92d-55f28c68b193</code></li>
+<li><code>_codex_codex-ready-sequence-and-patches-2025-09-27.md</code> tombstone <code>94ba1b35-5745-40d6-8f08-8b3d0a62f786</code></li>
+<li><code>codex_ready_sequence-2025-10-16.md</code> tombstone <code>4c758c95-3c0b-4b5d-8bc7-27cc5c6f79d9</code></li>
+<li><code>todo_resolution_plans_10-6_to_10-7.txt</code> tombstone <code>a6195756-ef7c-42de-b7dc-435bbbdca91e</code></li>
 </ul>
 <p>The archive operations are tracked in <code>.codex/evidence/archive_ops.jsonl</code>, including the attestation pointer recorded at
 <code>2025-10-17T06:36:49Z</code>.</p>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>Positive</strong>: reduces noise in the repository root, clarifies the authoritative locations for status updates, and keeps
-  newcomers focused on current documentation.</li>
+ newcomers focused on current documentation.</li>
 <li><strong>Negative</strong>: local clones lose immediate access to historical status snapshots; contributors must consult the archive bucket
-  when referencing historical planning material.</li>
+ when referencing historical planning material.</li>
 <li><strong>Risks/Mitigations</strong>: communicated the change in the changelog, retained tombstone identifiers for recovery, and captured
-  provenance artefacts so the audit trail links back to the decision and plan.</li>
+ provenance artefacts so the audit trail links back to the decision and plan.</li>
 </ul>
 <h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">¶</a></h2>
 <ul>
@@ -2403,6 +2403,6 @@ removal intent alongside deterministic tombstone identifiers for traceability.</
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

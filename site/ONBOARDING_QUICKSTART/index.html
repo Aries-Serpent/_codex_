@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ONBOARDING_QUICKSTART/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex ML: 5-Minute Onboarding Quickstart - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2419,11 +2419,11 @@
 <a class="md-nav__link" href="#what-to-do-next">
 <span class="md-ellipsis">
       
-        🧭 What to Do Next?
+        What to Do Next?
       
     </span>
 </a>
-<nav aria-label="🧭 What to Do Next?" class="md-nav">
+<nav aria-label="What to Do Next?" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#interested-in-agents-automation">
@@ -2447,7 +2447,7 @@
 <a class="md-nav__link" href="#interested-in-infrastructure-deployment">
 <span class="md-ellipsis">
       
-        🏗️ Interested in Infrastructure &amp; Deployment?
+        Interested in Infrastructure &amp; Deployment?
       
     </span>
 </a>
@@ -2474,7 +2474,7 @@
 <a class="md-nav__link" href="#ready-to-contribute">
 <span class="md-ellipsis">
       
-        🤝 Ready to Contribute?
+        Ready to Contribute?
       
     </span>
 </a>
@@ -2553,11 +2553,11 @@
 <a class="md-nav__link" href="#next-steps-learning-paths">
 <span class="md-ellipsis">
       
-        🎓 Next Steps: Learning Paths
+        Next Steps: Learning Paths
       
     </span>
 </a>
-<nav aria-label="🎓 Next Steps: Learning Paths" class="md-nav">
+<nav aria-label="Next Steps: Learning Paths" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#beginner-path-2-4-hours">
@@ -2636,8 +2636,8 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Total Setup Time:</strong> 5 minutes (local) or 15 minutes (Docker)<br/>
-<strong>Audience:</strong> New developers, ML engineers, AI researchers<br/>
+<p><strong>Total Setup Time:</strong> 5 minutes (local) or 15 minutes (Docker)
+<strong>Audience:</strong> New developers, ML engineers, AI researchers
 **Updated: 2026-06-27</p>
 </blockquote>
 <hr/>
@@ -2645,7 +2645,7 @@
 <h3 id="local-setup-recommended">Local Setup (Recommended)<a class="headerlink" href="#local-setup-recommended" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>_codex_
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">  </span><span class="c1"># or .venv\Scripts\activate on Windows</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w"> </span><span class="c1"># or .venv\Scripts\activate on Windows</span>
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>python<span class="w"> </span>-m<span class="w"> </span>codex.cli<span class="w"> </span>train<span class="w"> </span>--config<span class="w"> </span>config/examples/minimal.yaml
 </code></pre></div>
@@ -2665,8 +2665,8 @@
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>git<span class="w"> </span>--version
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="c1"># Check C++ compiler (for PyTorch)</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>gcc<span class="w"> </span>--version<span class="w">  </span><span class="c1"># Linux</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>clang<span class="w"> </span>--version<span class="w">  </span><span class="c1"># macOS</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>gcc<span class="w"> </span>--version<span class="w"> </span><span class="c1"># Linux</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>clang<span class="w"> </span>--version<span class="w"> </span><span class="c1"># macOS</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># Windows: Install Microsoft C++ Build Tools</span>
 </code></pre></div>
 <table>
@@ -2717,7 +2717,7 @@
 </code></pre></div>
 <h3 id="step-3-install-dependencies-2-min">Step 3: Install Dependencies (2 min)<a class="headerlink" href="#step-3-install-dependencies-2-min" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w">  </span><span class="c1"># Install in editable mode with dev dependencies</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w"> </span><span class="c1"># Install in editable mode with dev dependencies</span>
 </code></pre></div>
 <p><strong>Expected:</strong> Should complete without errors. Total size ~1.5 GB.</p>
 <h3 id="step-4-run-first-example-1-min">Step 4: Run First Example (1 min)<a class="headerlink" href="#step-4-run-first-example-1-min" title="Permanent link">¶</a></h3>
@@ -2765,34 +2765,34 @@
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from codex.cli import app; print('Import successful!')"</span>
 </code></pre></div>
 <hr/>
-<h2 id="what-to-do-next">🧭 What to Do Next?<a class="headerlink" href="#what-to-do-next" title="Permanent link">¶</a></h2>
+<h2 id="what-to-do-next">What to Do Next?<a class="headerlink" href="#what-to-do-next" title="Permanent link">¶</a></h2>
 <h3 id="interested-in-agents-automation">Interested in Agents &amp; Automation?<a class="headerlink" href="#interested-in-agents-automation" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../cognitive_brain/">Cognitive Brain Guide</a>
+<p>Read <a href="./cognitive_brain/README.md">Cognitive Brain Guide</a>
 - 145+ autonomous agents
 - Decision-making patterns
 - Self-healing CI/CD</p>
 <h3 id="interested-in-machine-learning">Interested in Machine Learning?<a class="headerlink" href="#interested-in-machine-learning" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../training/">ML Training Guide</a>
+<p>Read <a href="../training/">ML Training Guide</a>
 - Distributed training with PyTorch
 - Hyperparameter tuning with Hydra
 - Evaluation &amp; benchmarking</p>
-<h3 id="interested-in-infrastructure-deployment">🏗️ Interested in Infrastructure &amp; Deployment?<a class="headerlink" href="#interested-in-infrastructure-deployment" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../infrastructure/">Infrastructure Guide</a>
+<h3 id="interested-in-infrastructure-deployment">Interested in Infrastructure &amp; Deployment?<a class="headerlink" href="#interested-in-infrastructure-deployment" title="Permanent link">¶</a></h3>
+<p>Read <a href="../infrastructure/">Infrastructure Guide</a>
 - Ray Serve for model serving
 - Kubernetes deployment
 - Cloud storage integration</p>
 <h3 id="interested-in-configuration-customization">Interested in Configuration &amp; Customization?<a class="headerlink" href="#interested-in-configuration-customization" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../configuration/HYDRA_GUIDE/">Configuration Guide</a>
+<p>Read <a href="../configuration/HYDRA_GUIDE/">Configuration Guide</a>
 - Hydra defaults and sweeps
 - Environment variables
 - Plugin architecture</p>
 <h3 id="want-to-understand-the-architecture">Want to Understand the Architecture?<a class="headerlink" href="#want-to-understand-the-architecture" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../architecture/INDEX/">Architecture Deep Dive</a>
+<p>Read <a href="../architecture/INDEX/">Architecture Deep Dive</a>
 - 5-layer architecture
 - Design patterns
 - Extension points</p>
-<h3 id="ready-to-contribute">🤝 Ready to Contribute?<a class="headerlink" href="#ready-to-contribute" title="Permanent link">¶</a></h3>
-<p>→ Read <a href="../CONTRIBUTING.md">Contributing Guide</a>
+<h3 id="ready-to-contribute">Ready to Contribute?<a class="headerlink" href="#ready-to-contribute" title="Permanent link">¶</a></h3>
+<p>Read <a href="../CONTRIBUTING.md">Contributing Guide</a>
 - Development workflow
 - Code standards
 - PR process</p>
@@ -2851,12 +2851,12 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>chmod<span class="w"> </span>+x<span class="w"> </span>.venv/bin/activate
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 </code></pre></div></p>
-<p><strong>More issues?</strong> → See <a href="../TROUBLESHOOTING/">Troubleshooting Guide</a></p>
+<p><strong>More issues?</strong> See <a href="../TROUBLESHOOTING/">Troubleshooting Guide</a></p>
 <hr/>
-<h2 id="next-steps-learning-paths">🎓 Next Steps: Learning Paths<a class="headerlink" href="#next-steps-learning-paths" title="Permanent link">¶</a></h2>
+<h2 id="next-steps-learning-paths">Next Steps: Learning Paths<a class="headerlink" href="#next-steps-learning-paths" title="Permanent link">¶</a></h2>
 <h3 id="beginner-path-2-4-hours">Beginner Path (2-4 hours)<a class="headerlink" href="#beginner-path-2-4-hours" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Installation &amp; First Run</strong> ← You are here</li>
+<li><strong>Installation &amp; First Run</strong> You are here</li>
 <li><strong><a href="../LEARNING_PATHS/#beginner-path">Navigate the Codebase</a></strong></li>
 <li><strong>Run the First Example</strong></li>
 <li><strong>Understand Hydra Configuration</strong></li>
@@ -2875,7 +2875,7 @@
 <li><strong>Performance Optimization</strong></li>
 <li><strong>Security &amp; Hardening</strong></li>
 </ol>
-<p>→ Full paths: <a href="../LEARNING_PATHS/">Learning Paths</a></p>
+<p>Full paths: <a href="../LEARNING_PATHS/">Learning Paths</a></p>
 <hr/>
 <h2 id="key-resources">Key Resources<a class="headerlink" href="#key-resources" title="Permanent link">¶</a></h2>
 <table>
@@ -2930,18 +2930,18 @@
 <hr/>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Setup issues?</strong> → <a href="../TROUBLESHOOTING/">Troubleshooting Guide</a></li>
-<li><strong>Architecture questions?</strong> → <a href="../architecture/INDEX/">Architecture Guide</a></li>
-<li><strong>Configuration help?</strong> → <a href="../configuration/HYDRA_GUIDE/">Configuration Guide</a></li>
-<li><strong>Contributing?</strong> → <a href="../CONTRIBUTING.md">Contributing Guide</a></li>
-<li><strong>Found a bug?</strong> → <a href="https://github.com/Aries-Serpent/_codex_/issues">Open an Issue</a></li>
+<li><strong>Setup issues?</strong> <a href="../TROUBLESHOOTING/">Troubleshooting Guide</a></li>
+<li><strong>Architecture questions?</strong> <a href="../architecture/INDEX/">Architecture Guide</a></li>
+<li><strong>Configuration help?</strong> <a href="../configuration/HYDRA_GUIDE/">Configuration Guide</a></li>
+<li><strong>Contributing?</strong> <a href="../CONTRIBUTING.md">Contributing Guide</a></li>
+<li><strong>Found a bug?</strong> <a href="https://github.com/Aries-Serpent/_codex_/issues">Open an Issue</a></li>
 </ul>
 <hr/>
 <h2 id="youre-ready">You're Ready!<a class="headerlink" href="#youre-ready" title="Permanent link">¶</a></h2>
-<p>You've successfully set up Codex ML! 🎉</p>
+<p>You've successfully set up Codex ML!</p>
 <p><strong>Next:</strong> Pick a path above based on your interests and start exploring.</p>
 <p><strong>Questions?</strong> Check <a href="../TROUBLESHOOTING/">Troubleshooting</a> or open an issue.</p>
-<p><strong>Happy coding!</strong> </p>
+<p><strong>Happy coding!</strong></p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2971,6 +2971,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # MCP (Model Context Protocol) Setup Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-16
 
@@ -321,7 +321,7 @@ This would require creating a custom MCP server script that:
 ## Integration with IDE
 
 ### VS Code Integration (Future)
-MCP support in VS Code is coming soon. Once available:
+MCP support is planned for future versions.
 
 1. Install MCP extension from marketplace
 2. Configure similar to Claude Desktop

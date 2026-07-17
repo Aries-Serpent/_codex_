@@ -1,12 +1,12 @@
 # Codebase-Wide Mermaid Architecture Maps
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Version:** 1.4.1 (S1292a · 2026-06-03)
 > **Updated: 2026-07-11
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight
-> **Previous:** v0.2.1 S1259 · 2026-05-23
+> **Previous:** v0.2.0 S1259 · 2026-05-23
 
 ---
 
@@ -809,7 +809,7 @@ graph LR
  subgraph "Phase 10 In Progress"
  P10A[Coverage maintenance gate — 17.57% overall baseline 2026-07-13
  P10B[Fill src/ coverage gaps — security 90.72% 2026-07-13
- P10C[Update all living docs to v0.2.1 baseline 2026-07-13
+ P10C[Update all living docs to v0.2.0 baseline 2026-07-13
  P10D[Adaptive Learning Phase 8.3 80 to 100 percent]
  P10E[ITA service coverage tests added 2026-07-13
  P10F[MSP Gateway coverage tests added 2026-07-13
@@ -878,7 +878,7 @@ graph TD
  end
 
  subgraph "Phase 10C — Documentation Alignment"
- DA1[CODEBASE_MERMAID_MAPS v0.2.1 2026-07-13
+ DA1[CODEBASE_MERMAID_MAPS v0.2.0 2026-07-13
  DA2[ARCHITECTURE.md metrics refresh 2026-07-13
  DA3[docs/diagrams/*.mmd updated 2026-07-13
  DA4[AGENT_NAVIGATION.md — Phase 10 agents ]
@@ -944,7 +944,7 @@ graph LR
  S1B[ITA service tests\ntests/services/ita/ ]
  S1C[MSP Gateway tests\ntests/services/msp_gateway/ ]
  S1D[Training module tests\ntests/training/ targeted ]
- S1E[Docs + mermaid maps\nv0.2.1 refresh ]
+ S1E[Docs + mermaid maps\nv0.2.0 refresh ]
  end
 
  subgraph "Completed in S1293"
@@ -1040,7 +1040,7 @@ Task:
 Constraints: No suppression comments unless a true false-positive with justification.
 ```
 
-### P11-PLACEHOLDER: Audit TODO/FIXME/placeholder in production code
+### 
 ```
 You are continuing Phase 11 code hardening on Aries-Serpent/_codex_.
 Context: Production code must contain no unintentional TODO/FIXME stubs or NotImplementedError raises.

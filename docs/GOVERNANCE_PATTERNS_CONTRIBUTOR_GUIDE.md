@@ -1,6 +1,6 @@
 # Governance Patterns Contributor Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Purpose**: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.
 > **Authority**: Phase D Tier 2 operational guidance (autonomous execution)
@@ -263,7 +263,7 @@ This 6-step workflow ensures governance patterns are properly vetted before inte
 **Action**: Create a GitHub Discussion in the `Governance Patterns` category
 
 **Deliverables**:
-- Discussion title: `[DRAFT] Pattern Proposal: [Pattern Name]`
+- Discussion title: `Pattern Proposal: [Pattern Name]`
 - Discussion body: Complete pattern proposal using the [Pattern Creation Template](#pattern-creation-template)
 - Tagging: Label with `governance-pattern-proposal` and target category label (e.g., `category:governance-policy`)
 

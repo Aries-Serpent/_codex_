@@ -1,6 +1,6 @@
-# Next Iteration Prompt v0.2.1
+# Next Iteration Prompt v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated**: 2026-06-22
 > **Current Branch**: `copilot/sub-pr-2390`

@@ -1,6 +1,6 @@
 # Tech Debt
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Auto-generated index** — 2026-03-24 | Edit this file to add descriptions.
 > Directory: `docs/tech_debt/`

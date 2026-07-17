@@ -1,6 +1,6 @@
 # ARCHIVED: Consolidated Architecture Document Available
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Status**: ARCHIVED - Please use the consolidated document instead
 > **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](architecture/ARCHITECTURE_CONSOLIDATED.md)
@@ -92,7 +92,7 @@ _codex_/
  connectors/ # Storage connectors
  plugins/ # Plugin system
  scripts/ # Utility scripts (195+ files)
- space_traversal/ # Audit pipeline v0.2.1
+ space_traversal/ # Audit pipeline v0.2.0
  tests/ # Test suite (2,079+ files)
  docs/ # Documentation (693+ files)
  mcp/ # MCP (Model Context Protocol) docs
@@ -176,7 +176,7 @@ agents/
 
 #### 3. Audit Pipeline (`scripts/space_traversal/`)
 
-**Purpose**: Deterministic capability tracking and trend analysis (v0.2.1).
+**Purpose**: Deterministic capability tracking and trend analysis (v0.2.0).
 
 **Components**:
 ```
@@ -242,7 +242,7 @@ flowchart TB
  Config[Configuration]
  end
 
- subgraph Pipeline[" Audit Pipeline v0.2.1"]
+ subgraph Pipeline[" Audit Pipeline v0.2.0"]
  Runner[Audit Runner]
  Scanner[Code Scanner]
  Metrics[Metrics Collector]

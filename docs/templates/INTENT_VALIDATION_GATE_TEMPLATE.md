@@ -1,6 +1,6 @@
 # Intent Validation & Plan of Action Approval Gate (Iteration-Based)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Template Version**: 2.0.0-iteration-based
 > **Generated**: 2026-06-22T00:00:00Z
@@ -347,7 +347,7 @@ Structure the entire response using these sections and headings:
 ```markdown
 # [Task Title]: Intent Validation & Plan of Action
 
-> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v0.2.1
+> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v0.2.0
 
 ---
 

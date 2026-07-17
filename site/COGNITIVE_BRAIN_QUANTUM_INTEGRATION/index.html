@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/COGNITIVE_BRAIN_QUANTUM_INTEGRATION/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Architecture - Quantum Agent Integration - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2718,7 +2718,7 @@
 <a class="md-nav__link" href="#existing-cognitive-brain-quantum-enhanced">
 <span class="md-ellipsis">
       
-        Existing Cognitive Brain → Quantum Enhanced
+        Existing Cognitive Brain Quantum Enhanced
       
     </span>
 </a>
@@ -2759,26 +2759,30 @@
 <p>The Cognitive Brain has been enhanced with a <strong>Quantum Agent Framework</strong> that implements agent behavior as a controlled dynamical system with energy minimization. This document describes how the quantum agent framework integrates with the existing 8-layer cognitive brain architecture.</p>
 <h2 id="integration-architecture">Integration Architecture<a class="headerlink" href="#integration-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing UI Layer 100%, AI Generation Layer 100%'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Cognitive Brain v3.1 - Quantum Enhanced"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        UI[UI Layer 100%]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        AI[AI Generation Layer 100%]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        EXEC[Interactive Execution Layer 100%]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        QUANTUM[Quantum Processing Layer 100%]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        AGENTS[Agent Orchestration Layer 100%]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        MEMORY[Memory Management Layer 100%]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        CODEGEN[Code Generation Layer]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        WORKFLOW[Workflow Orchestration Layer 100%]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        QAF[Quantum Agent Framework NEW]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    end
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    QAF --&gt; AGENTS
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    QAF --&gt; AI
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    QAF --&gt; QUANTUM
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    AGENTS --&gt; WORKFLOW
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph "Cognitive Brain v3.1 - Quantum Enhanced"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> UI[UI Layer 100%]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> AI[AI Generation Layer 100%]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> EXEC[Interactive Execution Layer 100%]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> QUANTUM[Quantum Processing Layer 100%]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> AGENTS[Agent Orchestration Layer 100%]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> MEMORY[Memory Management Layer 100%]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> CODEGEN[Code Generation Layer]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> WORKFLOW[Workflow Orchestration Layer 100%]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> QAF[Quantum Agent Framework NEW]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> end
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> QAF --&gt; AGENTS
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> QAF --&gt; AI
 <a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>    style QAF fill:#ff9,stroke:#333,stroke-width:4px
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    style AGENTS fill:#9f9,stroke:#333,stroke-width:2px
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> QAF --&gt; QUANTUM
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> AGENTS --&gt; WORKFLOW
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> style QAF fill:#ff9,stroke:#333,stroke-width:4px
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> style AGENTS fill:#9f9,stroke:#333,stroke-width:2px
 </code></pre></div>
 <h2 id="quantum-agent-framework-components">Quantum Agent Framework Components<a class="headerlink" href="#quantum-agent-framework-components" title="Permanent link">¶</a></h2>
 <h3 id="1-agent-configuration-state">1. Agent Configuration State (θ)<a class="headerlink" href="#1-agent-configuration-state" title="Permanent link">¶</a></h3>
@@ -2789,7 +2793,7 @@
 - <strong>Agent Orchestration</strong>: Manages multiple θ configurations
 - <strong>Memory Layer</strong>: Persists θ_sources and θ_instr</p>
 <p><strong>Data Flow</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>User Input → Agent Selection → Load θ → Generate Response
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>User Input Agent Selection Load θ Generate Response
 </code></pre></div></p>
 <h3 id="2-source-hilbert-space-h_s">2. Source Hilbert Space (ℋ_S)<a class="headerlink" href="#2-source-hilbert-space-h_s" title="Permanent link">¶</a></h3>
 <p><strong>Representation</strong>: Source basis states |s_i⟩</p>
@@ -2805,8 +2809,8 @@
 <p><strong>Optimization</strong>: θ* = argmin_{θ∈Ω} E(θ)</p>
 <p><strong>Energy Components</strong>:
 1. <strong>Hallucination Loss</strong> (λ_hall = 1.0)
-   - Tracked in AI Generation Layer
-   - Validated against sources in Quantum Layer</p>
+ - Tracked in AI Generation Layer
+ - Validated against sources in Quantum Layer</p>
 <ol>
 <li><strong>Formatting Loss</strong> (λ_fmt = 0.5)</li>
 <li>Enforced in Code Generation Layer</li>
@@ -2827,7 +2831,7 @@
 <li>Validated in Interactive Execution</li>
 </ol>
 <p><strong>Optimization Flow</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Initial θ_0 → Gradient Steps → Converged θ* → Production Use
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Initial θ_0 Gradient Steps Converged θ* Production Use
 </code></pre></div></p>
 <h3 id="4-policy-function-_">4. Policy Function π_θ<a class="headerlink" href="#4-policy-function-_" title="Permanent link">¶</a></h3>
 <p><strong>Implementation</strong>: AI Generation Layer</p>
@@ -2864,7 +2868,7 @@
 - Multi-step reasoning with energy tracking
 - Quantum state superposition for candidate outputs</p>
 <p><strong>Execution Flow</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Query → Generate Candidates → Measure Energy → Select Optimal → Execute
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>Query Generate Candidates Measure Energy Select Optimal Execute
 </code></pre></div></p>
 <h3 id="layer-4-quantum-processing-layer-100-tested">Layer 4: Quantum Processing Layer (100% tested)<a class="headerlink" href="#layer-4-quantum-processing-layer-100-tested" title="Permanent link">¶</a></h3>
 <p><strong>Quantum Enhancement</strong>:
@@ -2891,9 +2895,9 @@
 - Cache energy computation results</p>
 <p><strong>Storage Schema</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="p">{</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="nt">"agentConfigs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"θ_id"</span><span class="p">:</span><span class="w"> </span><span class="err">θ</span><span class="p">},</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nt">"sourceMetrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"s_i"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">reliabili</span><span class="kc">t</span><span class="err">y</span><span class="p">,</span><span class="w"> </span><span class="err">access_cou</span><span class="kc">nt</span><span class="p">}},</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">  </span><span class="nt">"energyHistory"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="kc">t</span><span class="p">,</span><span class="w"> </span><span class="nt">"E"</span><span class="p">:</span><span class="w"> </span><span class="err">E(θ)</span><span class="p">}]</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="nt">"agentConfigs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"θ_id"</span><span class="p">:</span><span class="w"> </span><span class="err">θ</span><span class="p">},</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="nt">"sourceMetrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"s_i"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">reliabili</span><span class="kc">t</span><span class="err">y</span><span class="p">,</span><span class="w"> </span><span class="err">access_cou</span><span class="kc">nt</span><span class="p">}},</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span><span class="nt">"energyHistory"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="kc">t</span><span class="p">,</span><span class="w"> </span><span class="nt">"E"</span><span class="p">:</span><span class="w"> </span><span class="err">E(θ)</span><span class="p">}]</span>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="p">}</span>
 </code></pre></div></p>
 <h3 id="layer-7-code-generation-layer">Layer 7: Code Generation Layer<a class="headerlink" href="#layer-7-code-generation-layer" title="Permanent link">¶</a></h3>
@@ -2902,7 +2906,7 @@
 - Energy-guided template selection
 - Source-grounded code generation</p>
 <p><strong>Generation Flow</strong>:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Query → Select Template → Apply θ_prompts → Generate → Validate Format → Minimize E
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Query Select Template Apply θ_prompts Generate Validate Format Minimize E
 </code></pre></div></p>
 <h3 id="layer-8-workflow-orchestration-layer-100-tested">Layer 8: Workflow Orchestration Layer (100% tested)<a class="headerlink" href="#layer-8-workflow-orchestration-layer-100-tested" title="Permanent link">¶</a></h3>
 <p><strong>Quantum Enhancement</strong>:
@@ -2925,9 +2929,9 @@
 <h3 id="optimization-configure-phase">Optimization (Configure Phase)<a class="headerlink" href="#optimization-configure-phase" title="Permanent link">¶</a></h3>
 <p><strong>Energy Minimization</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="k">await</span><span class="w"> </span><span class="nx">agent</span><span class="p">.</span><span class="nx">optimizeConfiguration</span><span class="p">({</span>
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="nx">hallucinationThreshold</span><span class="o">:</span><span class="w"> </span><span class="kt">0.1</span><span class="p">,</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">  </span><span class="nx">maxResponseTokens</span><span class="o">:</span><span class="w"> </span><span class="kt">3000</span><span class="p">,</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">  </span><span class="nx">requiredSources</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'verified'</span><span class="p">],</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w"> </span><span class="nx">hallucinationThreshold</span><span class="o">:</span><span class="w"> </span><span class="kt">0.1</span><span class="p">,</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w"> </span><span class="nx">maxResponseTokens</span><span class="o">:</span><span class="w"> </span><span class="kt">3000</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span><span class="nx">requiredSources</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'verified'</span><span class="p">],</span>
 <a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="p">});</span>
 <a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="c1">// Finds θ* = argmin E(θ)</span>
 </code></pre></div></p>
@@ -2938,13 +2942,13 @@
 <p><strong>Function</strong>: Semantic search in ℋ_S</p>
 <p><strong>Integration</strong>: Memory + Quantum Layers</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">retrieval</span><span class="o">:</span><span class="w"> </span><span class="kt">CapabilityOperator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'semantic-retrieval'</span><span class="p">,</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'retrieval'</span><span class="p">,</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w">  </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">sources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">θ_sources</span><span class="p">;</span>
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">relevant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">filterByProjection</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">sources</span><span class="p">);</span>
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">retrieveContent</span><span class="p">(</span><span class="nx">relevant</span><span class="p">);</span>
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="w">  </span><span class="p">},</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'semantic-retrieval'</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'retrieval'</span><span class="p">,</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="w"> </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">sources</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">θ_sources</span><span class="p">;</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">relevant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">filterByProjection</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">sources</span><span class="p">);</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">retrieveContent</span><span class="p">(</span><span class="nx">relevant</span><span class="p">);</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="w"> </span><span class="p">},</span>
 <a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="p">};</span>
 </code></pre></div>
 <h3 id="reasoning-operator">Reasoning Operator<a class="headerlink" href="#reasoning-operator" title="Permanent link">¶</a></h3>
@@ -2952,12 +2956,12 @@
 <p><strong>Function</strong>: Multi-step logical inference</p>
 <p><strong>Integration</strong>: AI Generation + Interactive Execution</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">reasoning</span><span class="o">:</span><span class="w"> </span><span class="kt">CapabilityOperator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'chain-of-thought'</span><span class="p">,</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'reasoning'</span><span class="p">,</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">  </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">generateReasoningSteps</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">executeSteps</span><span class="p">(</span><span class="nx">steps</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">  </span><span class="p">},</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'chain-of-thought'</span><span class="p">,</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'reasoning'</span><span class="p">,</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w"> </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">generateReasoningSteps</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">executeSteps</span><span class="p">(</span><span class="nx">steps</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w"> </span><span class="p">},</span>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="p">};</span>
 </code></pre></div>
 <h3 id="generation-operator">Generation Operator<a class="headerlink" href="#generation-operator" title="Permanent link">¶</a></h3>
@@ -2965,11 +2969,11 @@
 <p><strong>Function</strong>: Content generation via π_θ</p>
 <p><strong>Integration</strong>: AI Generation + Code Generation</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">generation</span><span class="o">:</span><span class="w"> </span><span class="kt">CapabilityOperator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'code-generation'</span><span class="p">,</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'generation'</span><span class="p">,</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">  </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sparkClient</span><span class="p">.</span><span class="nx">generateCode</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">  </span><span class="p">},</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'code-generation'</span><span class="p">,</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'generation'</span><span class="p">,</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w"> </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sparkClient</span><span class="p">.</span><span class="nx">generateCode</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w"> </span><span class="p">},</span>
 <a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="p">};</span>
 </code></pre></div>
 <h3 id="validation-operator">Validation Operator<a class="headerlink" href="#validation-operator" title="Permanent link">¶</a></h3>
@@ -2977,13 +2981,13 @@
 <p><strong>Function</strong>: Energy component computation</p>
 <p><strong>Integration</strong>: All Layers</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">validation</span><span class="o">:</span><span class="w"> </span><span class="kt">CapabilityOperator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'energy-validator'</span><span class="p">,</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'validation'</span><span class="p">,</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">  </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">query</span><span class="p">.</span><span class="nx">metadata</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">computeEnergy</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">response</span><span class="p">,</span><span class="w"> </span><span class="nx">energy</span><span class="w"> </span><span class="p">};</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w">  </span><span class="p">},</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'energy-validator'</span><span class="p">,</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'validation'</span><span class="p">,</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span><span class="nx">operator</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">(</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">query</span><span class="p">.</span><span class="nx">metadata</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">computeEnergy</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span><span class="w"> </span><span class="nx">context</span><span class="p">);</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">response</span><span class="p">,</span><span class="w"> </span><span class="nx">energy</span><span class="w"> </span><span class="p">};</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w"> </span><span class="p">},</span>
 <a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="p">};</span>
 </code></pre></div>
 <h2 id="energy-monitoring-dashboard">Energy Monitoring Dashboard<a class="headerlink" href="#energy-monitoring-dashboard" title="Permanent link">¶</a></h2>
@@ -2995,10 +2999,10 @@
 - Optimization progress</p>
 <p><strong>UI Component</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a>&lt;EnergyDashboard&gt;
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>  &lt;TotalEnergy value={E_total} /&gt;
-<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>  &lt;ComponentChart components={[L_hall, L_fmt, L_src, L_coh]} /&gt;
-<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a>  &lt;HistoryGraph data={energyHistory} /&gt;
-<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a>  &lt;OptimizationProgress current={θ_current} optimal={θ_star} /&gt;
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a> &lt;TotalEnergy value={E_total} /&gt;
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a> &lt;ComponentChart components={[L_hall, L_fmt, L_src, L_coh]} /&gt;
+<a href="#__codelineno-18-4" id="__codelineno-18-4" name="__codelineno-18-4"></a> &lt;HistoryGraph data={energyHistory} /&gt;
+<a href="#__codelineno-18-5" id="__codelineno-18-5" name="__codelineno-18-5"></a> &lt;OptimizationProgress current={θ_current} optimal={θ_star} /&gt;
 <a href="#__codelineno-18-6" id="__codelineno-18-6" name="__codelineno-18-6"></a>&lt;/EnergyDashboard&gt;
 </code></pre></div></p>
 <h2 id="source-visualization">Source Visualization<a class="headerlink" href="#source-visualization" title="Permanent link">¶</a></h2>
@@ -3010,10 +3014,10 @@
 - Reliability indicators</p>
 <p><strong>UI Component</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a>&lt;SourceSpace&gt;
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>  &lt;BasisStates sources={θ_sources} /&gt;
-<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>  &lt;RelevanceScores query={currentQuery} /&gt;
-<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a>  &lt;SelectedSources selected={projectedSources} /&gt;
-<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>  &lt;ReliabilityMatrix sources={θ_sources} /&gt;
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a> &lt;BasisStates sources={θ_sources} /&gt;
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a> &lt;RelevanceScores query={currentQuery} /&gt;
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a> &lt;SelectedSources selected={projectedSources} /&gt;
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a> &lt;ReliabilityMatrix sources={θ_sources} /&gt;
 <a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>&lt;/SourceSpace&gt;
 </code></pre></div></p>
 <h2 id="multi-agent-workflows">Multi-Agent Workflows<a class="headerlink" href="#multi-agent-workflows" title="Permanent link">¶</a></h2>
@@ -3021,9 +3025,9 @@
 <p><strong>Concept</strong>: Multiple agents share ℋ_S, coordinate via energy minimization</p>
 <p><strong>Implementation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">workflow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">QuantumMultiAgentWorkflow</span><span class="p">([</span>
-<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w">  </span><span class="nx">researchAgent</span><span class="p">,</span><span class="w">  </span><span class="c1">// λ_src = 1.5</span>
-<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w">  </span><span class="nx">codeAgent</span><span class="p">,</span><span class="w">      </span><span class="c1">// λ_fmt = 1.2</span>
-<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="w">  </span><span class="nx">reviewAgent</span><span class="p">,</span><span class="w">    </span><span class="c1">// λ_coh = 1.5</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="w"> </span><span class="nx">researchAgent</span><span class="p">,</span><span class="w"> </span><span class="c1">// λ_src = 1.5</span>
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="w"> </span><span class="nx">codeAgent</span><span class="p">,</span><span class="w"> </span><span class="c1">// λ_fmt = 1.2</span>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="w"> </span><span class="nx">reviewAgent</span><span class="p">,</span><span class="w"> </span><span class="c1">// λ_coh = 1.5</span>
 <a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="p">]);</span>
 <a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>
 <a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="c1">// Each agent optimizes local θ_i</span>
@@ -3037,9 +3041,9 @@
 <p><strong>Concept</strong>: Agents share quantum state, correlated outputs</p>
 <p><strong>Implementation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">entangledPair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createEntangledAgents</span><span class="p">(</span>
-<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w">  </span><span class="nx">agent1Config</span><span class="p">,</span>
-<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w">  </span><span class="nx">agent2Config</span><span class="p">,</span>
-<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w">  </span><span class="nx">correlationStrength</span><span class="o">:</span><span class="w"> </span><span class="kt">0.8</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w"> </span><span class="nx">agent1Config</span><span class="p">,</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="w"> </span><span class="nx">agent2Config</span><span class="p">,</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="w"> </span><span class="nx">correlationStrength</span><span class="o">:</span><span class="w"> </span><span class="kt">0.8</span>
 <a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="p">);</span>
 <a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>
 <a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a><span class="c1">// Measuring agent1 constrains agent2</span>
@@ -3063,9 +3067,9 @@
 4. Source projection and retrieval</p>
 <h3 id="end-to-end-tests">End-to-End Tests<a class="headerlink" href="#end-to-end-tests" title="Permanent link">¶</a></h3>
 <p><strong>Workflows</strong>:
-1. User query → Agent selection → Response generation
-2. Configuration optimization → Production deployment
-3. Multi-agent research task → Aggregated results</p>
+1. User query Agent selection Response generation
+2. Configuration optimization Production deployment
+3. Multi-agent research task Aggregated results</p>
 <h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h2>
 <h3 id="optimization-speed">Optimization Speed<a class="headerlink" href="#optimization-speed" title="Permanent link">¶</a></h3>
 <p><strong>Target</strong>: θ* convergence in &lt; 100 iterations</p>
@@ -3097,8 +3101,8 @@
 <p><strong>Concept</strong>: Escape local energy minima via quantum tunneling</p>
 <p><strong>Implementation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">θ_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">agent</span><span class="p">.</span><span class="nx">quantumOptimize</span><span class="p">(</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w">  </span><span class="nx">enableTunneling</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
-<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="w">  </span><span class="nx">tunnelingProbability</span><span class="o">:</span><span class="w"> </span><span class="kt">0.1</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w"> </span><span class="nx">enableTunneling</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="w"> </span><span class="nx">tunnelingProbability</span><span class="o">:</span><span class="w"> </span><span class="kt">0.1</span>
 <a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="p">);</span>
 <a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="c1">// Occasionally jump to distant θ to explore configuration space</span>
 </code></pre></div></p>
@@ -3115,14 +3119,14 @@
 <p><strong>Concept</strong>: Pareto-optimal configurations for competing objectives</p>
 <p><strong>Implementation</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">pareto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">agent</span><span class="p">.</span><span class="nx">paretoOptimize</span><span class="p">([</span>
-<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="w">  </span><span class="nx">E_hallucination</span><span class="p">,</span>
-<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w">  </span><span class="nx">E_speed</span><span class="p">,</span>
-<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="w">  </span><span class="nx">E_cost</span><span class="p">,</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="w"> </span><span class="nx">E_hallucination</span><span class="p">,</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="w"> </span><span class="nx">E_speed</span><span class="p">,</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="w"> </span><span class="nx">E_cost</span><span class="p">,</span>
 <a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a><span class="p">]);</span>
 <a href="#__codelineno-25-6" id="__codelineno-25-6" name="__codelineno-25-6"></a><span class="c1">// Returns Pareto frontier of non-dominated configurations</span>
 </code></pre></div></p>
 <h2 id="migration-guide">Migration Guide<a class="headerlink" href="#migration-guide" title="Permanent link">¶</a></h2>
-<h3 id="existing-cognitive-brain-quantum-enhanced">Existing Cognitive Brain → Quantum Enhanced<a class="headerlink" href="#existing-cognitive-brain-quantum-enhanced" title="Permanent link">¶</a></h3>
+<h3 id="existing-cognitive-brain-quantum-enhanced">Existing Cognitive Brain Quantum Enhanced<a class="headerlink" href="#existing-cognitive-brain-quantum-enhanced" title="Permanent link">¶</a></h3>
 <p><strong>Step 1</strong>: Install quantum framework
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>npm<span class="w"> </span>install<span class="w"> </span><span class="c1"># Updates include quantum-agent-framework</span>
 </code></pre></div></p>
@@ -3137,7 +3141,7 @@
 <p><strong>Step 3</strong>: Enable energy monitoring
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1">// Add to agent orchestration</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="nx">agent</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'energyUpdate'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w">  </span><span class="nx">updateDashboard</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">energyComponents</span><span class="p">);</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w"> </span><span class="nx">updateDashboard</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">energyComponents</span><span class="p">);</span>
 <a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="p">});</span>
 </code></pre></div></p>
 <p><strong>Step 4</strong>: Optimize configurations
@@ -3156,16 +3160,16 @@
 <li><strong>Multi-Agent Coordination</strong>: Quantum-inspired orchestration</li>
 <li><strong>Production Ready</strong>: 100% test coverage, comprehensive documentation</li>
 </ol>
-<p><strong>Status</strong>:  Integrated with Cognitive Brain v3.1</p>
+<p><strong>Status</strong>: Integrated with Cognitive Brain v3.1</p>
 <p><strong>Next Steps</strong>:
 1. Deploy quantum-enhanced agents to production
 2. Monitor energy metrics in live environment
 3. Collect feedback for weight optimization
 4. Explore advanced quantum features (superposition, entanglement)</p>
 <hr/>
-<p><strong>Version</strong>: 3.1.0<br/>
-<strong>Date</strong>: 2026-01-06<br/>
-<strong>Author</strong>: GitHub Copilot<br/>
+<p><strong>Version</strong>: 3.1.0
+<strong>Date</strong>: 2026-01-06
+<strong>Author</strong>: GitHub Copilot
 <strong>Review</strong>: Comprehensive integration complete</p>
 </article>
 </div>
@@ -3196,6 +3200,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Agent Integration Guide — PR Merge Readiness Protocol
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Status:** Production Ready
 **Audience:** Copilot coding agents, CI/CD automation

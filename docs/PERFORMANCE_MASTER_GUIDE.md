@@ -1,6 +1,6 @@
 # Performance Optimization & Reliability Master Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Consolidated Master Document** for Codex Performance
 > **Created**: 2026-07-08

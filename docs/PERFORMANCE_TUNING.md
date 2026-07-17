@@ -1,6 +1,6 @@
-# Performance Tuning Guide - Aries-Serpent v0.2.1
+# Performance Tuning Guide - Aries-Serpent v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Document Type:** Operations & Optimization Guide  
 **Audience:** DevOps Engineers, Performance Engineers  

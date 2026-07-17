@@ -9,7 +9,7 @@ generated_utc: 2025-10-29T16:45:54Z
 
 # File Survey: Branch 0D_base_ / PR #1926
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 

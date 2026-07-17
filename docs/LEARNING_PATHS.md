@@ -1,8 +1,8 @@
 # Codex ML: Structured Learning Paths
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-> **Version:** v0.2.1 Pre-Release
+> **Version:** v0.2.0 Pre-Release
 > **Last Updated: 2026-06-27
 > **Total Estimated Time:** 20-40 hours depending on path
 

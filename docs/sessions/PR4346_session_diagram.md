@@ -1,6 +1,6 @@
 # Session Diagram — PR #4346 · S864 · 2026-05-08
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
@@ -20,7 +20,7 @@ flowchart TD
 
  DIAG[" Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
 
- FIX[" Fixes Applied\n① .secrets.baseline v0.2.1 committed\n run_validation.sh detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
+ FIX[" Fixes Applied\n① .secrets.baseline v0.2.0 committed\n run_validation.sh detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
 
  DOCS[" Living Docs Updated\n• PR4346_whats_next.md — S864 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S864 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 

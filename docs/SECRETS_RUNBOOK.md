@@ -1,6 +1,6 @@
 # Secrets Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last Updated**: 2026-06-03T18:02:00Z | **Maintainer**: @mbaetiong
 > Full inventory: [`docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md`](./SECRETS_AND_ENVIRONMENT_VARIABLES.md)

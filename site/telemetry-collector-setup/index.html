@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/telemetry-collector-setup/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2303,11 +2303,11 @@
 <a class="md-nav__link" href="#installation-setup">
 <span class="md-ellipsis">
       
-        📦 INSTALLATION &amp; SETUP
+        INSTALLATION &amp; SETUP
       
     </span>
 </a>
-<nav aria-label="📦 INSTALLATION &amp; SETUP" class="md-nav">
+<nav aria-label="INSTALLATION &amp; SETUP" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-core-modules">
@@ -2405,11 +2405,11 @@
 <a class="md-nav__link" href="#alert-rules">
 <span class="md-ellipsis">
       
-        🔔 ALERT RULES
+        ALERT RULES
       
     </span>
 </a>
-<nav aria-label="🔔 ALERT RULES" class="md-nav">
+<nav aria-label="ALERT RULES" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#critical-alerts-severity-critical">
@@ -2494,11 +2494,11 @@
 <a class="md-nav__link" href="#testing-validation">
 <span class="md-ellipsis">
       
-        🧪 TESTING &amp; VALIDATION
+        TESTING &amp; VALIDATION
       
     </span>
 </a>
-<nav aria-label="🧪 TESTING &amp; VALIDATION" class="md-nav">
+<nav aria-label="TESTING &amp; VALIDATION" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#unit-tests-30-tests">
@@ -2703,7 +2703,7 @@
 <a class="md-nav__link" href="#support-documentation">
 <span class="md-ellipsis">
       
-        📞 SUPPORT &amp; DOCUMENTATION
+        SUPPORT &amp; DOCUMENTATION
       
     </span>
 </a>
@@ -2727,10 +2727,10 @@
 <h1 id="approval-telemetry-collector-phase-12-wave-2-d32-deployment">Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment<a class="headerlink" href="#approval-telemetry-collector-phase-12-wave-2-d32-deployment" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Authority:</strong> @mbaetiong (D-tier)<br/>
-<strong>Status:</strong>  Production Ready<br/>
-<strong>Version:</strong> 1.0.0<br/>
-<strong>Created:</strong> 2026-07-03  </p>
+<p><strong>Authority:</strong> @mbaetiong (D-tier)
+<strong>Status:</strong> Production Ready
+<strong>Version:</strong> 1.0.0
+<strong>Created:</strong> 2026-07-03</p>
 <hr/>
 <h2 id="executive-summary">EXECUTIVE SUMMARY<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>This deliverable implements a complete telemetry collection infrastructure for monitoring approval workflows in the Codex agent ecosystem. The system collects <strong>17 approval-specific metrics</strong>, enforces cardinality limits for 150+ agent ecosystem, and provides real-time SLA monitoring integrated with the approval service (D2.2) and RBAC (D1.2).</p>
@@ -2844,36 +2844,36 @@
 <p><strong>5-tier retention policies enforced</strong></p>
 </li>
 <li>hot: 7 days (real-time alerting)</li>
-<li>warm: 90 days (operational analytics) </li>
+<li>warm: 90 days (operational analytics)</li>
 <li>cold: 7 years (legal hold)</li>
 <li>Implemented in metadata tagging</li>
 </ul>
 <hr/>
-<h2 id="installation-setup">📦 INSTALLATION &amp; SETUP<a class="headerlink" href="#installation-setup" title="Permanent link">¶</a></h2>
+<h2 id="installation-setup">INSTALLATION &amp; SETUP<a class="headerlink" href="#installation-setup" title="Permanent link">¶</a></h2>
 <h3 id="1-core-modules">1. Core Modules<a class="headerlink" href="#1-core-modules" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Copy telemetry collector to observability scripts</span>
 <a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>cp<span class="w"> </span>scripts/observability/approval_telemetry_collector.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">   </span>src/codex/observability/approval_telemetry.py
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span>src/codex/observability/approval_telemetry.py
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># Copy event schema validator</span>
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>cp<span class="w"> </span>scripts/observability/approval_event_schema.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">   </span>src/codex/observability/approval_events.py
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w"> </span>src/codex/observability/approval_events.py
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># Copy SLA monitoring</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>cp<span class="w"> </span>scripts/observability/sla_monitoring.py<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">   </span>src/codex/observability/approval_sla.py
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w"> </span>src/codex/observability/approval_sla.py
 </code></pre></div>
 <h3 id="2-grafana-dashboard">2. Grafana Dashboard<a class="headerlink" href="#2-grafana-dashboard" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Import dashboard into Grafana</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://grafana:3000/api/dashboards/db<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span>-d<span class="w"> </span>@manifests/monitoring/grafana/approval-sla-dashboard.json
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w"> </span>-d<span class="w"> </span>@manifests/monitoring/grafana/approval-sla-dashboard.json
 </code></pre></div>
 <h3 id="3-prometheus-rules">3. Prometheus Rules<a class="headerlink" href="#3-prometheus-rules" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Add alert rules to Prometheus</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>cp<span class="w"> </span>manifests/monitoring/prometheus/approval-alert-rules.yml<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">   </span>/etc/prometheus/rules/approval-alerts.yml
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span>/etc/prometheus/rules/approval-alerts.yml
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Reload Prometheus</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://prometheus:9090/-/reload
@@ -2902,117 +2902,117 @@
 <h3 id="example-workflow-integration">Example Workflow Integration<a class="headerlink" href="#example-workflow-integration" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># 1. When approver makes a decision, approval service calls:</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"release-manager-001"</span><span class="p">,</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mf">14400.0</span><span class="p">,</span>  <span class="c1"># 4 hours SLA</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a> <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="n">approver_id</span><span class="o">=</span><span class="s2">"release-manager-001"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span> <span class="c1"># 1 hour</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a> <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> <span class="n">sla_seconds</span><span class="o">=</span><span class="mf">14400.0</span><span class="p">,</span> <span class="c1"># 4 hours SLA</span>
 <a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="p">)</span>
 <a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
 <a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="c1"># 2. Telemetry collector:</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="c1">#    - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="c1">#    - Checks SLA: 3600 &lt;= 14400 → sla_met=true</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="c1">#    - Creates event with sla_status="met"</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="c1"># - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="c1"># - Checks SLA: 3600 &lt;= 14400 sla_met=true</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="c1"># - Creates event with sla_status="met"</span>
 <a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
 <a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="c1"># 3. SLA monitor:</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="c1">#    - Tracks stage latency against 4h per-stage SLA</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="c1">#    - If sla_met=false, triggers escalation callback</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="c1">#    - Updates compliance statistics</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="c1"># - Tracks stage latency against 4h per-stage SLA</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="c1"># - If sla_met=false, triggers escalation callback</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="c1"># - Updates compliance statistics</span>
 <a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
 <a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="c1"># 4. Prometheus scrapes metrics every 30s</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="c1">#    - Alert rule checks: histogram_quantile(0.95, ...) &gt; 14400</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="c1">#    - If violated, alert fires and routes to pagerduty</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="c1"># - Alert rule checks: histogram_quantile(0.95, ...) &gt; 14400</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="c1"># - If violated, alert fires and routes to pagerduty</span>
 <a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
 <a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="c1"># 5. Grafana dashboard updates in real-time</span>
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="c1">#    - SLA compliance % by category</span>
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="c1">#    - Approval latency trends</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="c1"># - SLA compliance % by category</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="c1"># - Approval latency trends</span>
 </code></pre></div>
 <hr/>
 <h2 id="metrics-reference">METRICS REFERENCE<a class="headerlink" href="#metrics-reference" title="Permanent link">¶</a></h2>
 <h3 id="17-approval-metrics">17 Approval Metrics<a class="headerlink" href="#17-approval-metrics" title="Permanent link">¶</a></h3>
 <h4 id="workflow-metrics-8">Workflow Metrics (8)<a class="headerlink" href="#workflow-metrics-8" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>approval_request_submitted_total
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>  Labels: policy_category, requester_role
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>  Type: Counter
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a> Labels: policy_category, requester_role
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a> Type: Counter
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>approval_request_latency_seconds
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>  Labels: policy_id, approval_stage, policy_category
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>  Type: Histogram (p50, p95, p99)
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>  SLA Threshold: 4h per-stage (14400s)
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> Labels: policy_id, approval_stage, policy_category
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> Type: Histogram (p50, p95, p99)
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> SLA Threshold: 4h per-stage (14400s)
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>approval_request_resolved_total
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>  Labels: policy_id, resolution_status, policy_category
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>  Type: Counter
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a> Labels: policy_id, resolution_status, policy_category
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a> Type: Counter
 <a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>approval_decision_time_seconds
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>  Labels: policy_id, approver_role, policy_category
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>  Type: Histogram
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>  SLA Threshold: 4h (14400s)
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a> Labels: policy_id, approver_role, policy_category
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> Type: Histogram
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> SLA Threshold: 4h (14400s)
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>approval_chain_depth_histogram
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>  Type: Histogram
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> Type: Histogram
 <a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>
 <a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>approval_rejection_count_total
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>  Labels: policy_id, rejection_reason, approver_role
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>  Type: Counter
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a> Labels: policy_id, rejection_reason, approver_role
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a> Type: Counter
 <a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>
 <a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>approval_override_count_total
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>  Labels: policy_id, authority_level, override_reason
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>  Type: Counter
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> Labels: policy_id, authority_level, override_reason
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a> Type: Counter
 <a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>
 <a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>approval_sla_breached_total
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>  Labels: policy_id, policy_category, breach_type
-<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>  Type: Counter
-<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>  SLA Threshold: 0 breaches
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a> Labels: policy_id, policy_category, breach_type
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a> Type: Counter
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a> SLA Threshold: 0 breaches
 </code></pre></div>
 <h4 id="escalation-metrics-3">Escalation Metrics (3)<a class="headerlink" href="#escalation-metrics-3" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>escalation_triggered_total
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>  Labels: trigger_type, policy_category
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>  Type: Counter
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>  SLA Threshold: ≤4h
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> Labels: trigger_type, policy_category
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> Type: Counter
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> SLA Threshold: ≤4h
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>escalation_time_to_resolution_seconds
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>  Labels: escalation_level, policy_category
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>  Type: Histogram
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>  SLA Threshold: 4h per level
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> Labels: escalation_level, policy_category
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> Type: Histogram
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> SLA Threshold: 4h per level
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>escalation_authority_override_count_total
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>  Labels: authority_level, escalation_reason
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>  Type: Counter
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> Labels: authority_level, escalation_reason
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> Type: Counter
 </code></pre></div>
 <h4 id="authorization-metrics-3">Authorization Metrics (3)<a class="headerlink" href="#authorization-metrics-3" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>approval_authority_decision_latency_seconds
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>  Labels: approver_role, policy_category, approval_stage
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>  Type: Histogram
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>  SLA Threshold: 4h
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> Labels: approver_role, policy_category, approval_stage
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> Type: Histogram
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> SLA Threshold: 4h
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>approval_authority_error_count_total
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>  Labels: approver_role, error_type
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  Type: Counter
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> Labels: approver_role, error_type
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> Type: Counter
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
 <a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>approval_delegation_count_total
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  Labels: source_role, target_role, policy_category
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>  Type: Counter
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> Labels: source_role, target_role, policy_category
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> Type: Counter
 </code></pre></div>
 <h4 id="audit-metrics-3">Audit Metrics (3)<a class="headerlink" href="#audit-metrics-3" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>approval_audit_log_entries_total
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  Labels: event_type, policy_category
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  Type: Counter
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> Labels: event_type, policy_category
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Type: Counter
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
 <a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>approval_policy_violation_count_total
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>  Labels: violation_type, policy_id
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  Type: Counter
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> Labels: violation_type, policy_id
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> Type: Counter
 <a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>approval_unauthorized_attempt_count_total
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  Labels: agent_id
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  Type: Counter
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> Labels: agent_id
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> Type: Counter
 </code></pre></div>
 <hr/>
-<h2 id="alert-rules">🔔 ALERT RULES<a class="headerlink" href="#alert-rules" title="Permanent link">¶</a></h2>
+<h2 id="alert-rules">ALERT RULES<a class="headerlink" href="#alert-rules" title="Permanent link">¶</a></h2>
 <h3 id="critical-alerts-severity-critical">Critical Alerts (Severity: critical)<a class="headerlink" href="#critical-alerts-severity-critical" title="Permanent link">¶</a></h3>
 <ol>
 <li><strong>ApprovalP95ExceedsSLA</strong> — p95 latency exceeds 4h SLA</li>
@@ -3051,43 +3051,43 @@
 <td><strong>D</strong> (Deployment)</td>
 <td>4h</td>
 <td>12h</td>
-<td>Release Mgr → DevOps → Owner</td>
+<td>Release Mgr DevOps Owner</td>
 </tr>
 <tr>
 <td><strong>S</strong> (Security)</td>
 <td>4h</td>
 <td>12h</td>
-<td>Security Lead → Manager → Owner</td>
+<td>Security Lead Manager Owner</td>
 </tr>
 <tr>
 <td><strong>R</strong> (Resource)</td>
 <td>4h</td>
 <td>12h</td>
-<td>DBA/DevOps → Budget → Owner</td>
+<td>DBA/DevOps Budget Owner</td>
 </tr>
 <tr>
 <td><strong>C</strong> (Config)</td>
 <td>4h</td>
 <td>12h</td>
-<td>Relevant Owner → Product → Owner</td>
+<td>Relevant Owner Product Owner</td>
 </tr>
 <tr>
 <td><strong>G</strong> (Capability)</td>
 <td>4h</td>
 <td>12h</td>
-<td>Service Owner → Security → Owner</td>
+<td>Service Owner Security Owner</td>
 </tr>
 <tr>
 <td><strong>I</strong> (Incident)</td>
 <td>2h</td>
 <td>2h (emergency)</td>
-<td>Incident Cmdr → VP → Owner</td>
+<td>Incident Cmdr VP Owner</td>
 </tr>
 <tr>
 <td><strong>A</strong> (Audit)</td>
 <td>8h</td>
 <td>24h</td>
-<td>Compliance → Legal → Owner</td>
+<td>Compliance Legal Owner</td>
 </tr>
 <tr>
 <td><strong>E</strong> (Escalation)</td>
@@ -3119,7 +3119,7 @@
 <li>Enforce cardinality limits per dimension</li>
 </ul>
 <hr/>
-<h2 id="testing-validation">🧪 TESTING &amp; VALIDATION<a class="headerlink" href="#testing-validation" title="Permanent link">¶</a></h2>
+<h2 id="testing-validation">TESTING &amp; VALIDATION<a class="headerlink" href="#testing-validation" title="Permanent link">¶</a></h2>
 <h3 id="unit-tests-30-tests">Unit Tests (30+ tests)<a class="headerlink" href="#unit-tests-30-tests" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestApprovalTelemetryCollector<span class="w"> </span>-v
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestApprovalEventValidator<span class="w"> </span>-v
@@ -3153,38 +3153,38 @@
 <a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="c1"># User requests a deployment approval</span>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_request_submitted</span><span class="p">(</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>    <span class="n">requester_id</span><span class="o">=</span><span class="s2">"agent-orchestrator"</span><span class="p">,</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>    <span class="n">requester_role</span><span class="o">=</span><span class="s2">"release-operator"</span><span class="p">,</span>
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>  <span class="c1"># 4h per-stage</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> <span class="n">requester_id</span><span class="o">=</span><span class="s2">"agent-orchestrator"</span><span class="p">,</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> <span class="n">requester_role</span><span class="o">=</span><span class="s2">"release-operator"</span><span class="p">,</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a> <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span> <span class="c1"># 4h per-stage</span>
 <a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="p">)</span>
 <a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
 <a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="c1"># Stage 1: Release Manager approves</span>
 <a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
-<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"rm-001"</span><span class="p">,</span>
-<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
-<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1h</span>
-<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a> <span class="n">approver_id</span><span class="o">=</span><span class="s2">"rm-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a> <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a> <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="c1"># 1h</span>
+<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a> <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a> <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
 <a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a><span class="p">)</span>
 <a href="#__codelineno-12-31" id="__codelineno-12-31" name="__codelineno-12-31"></a>
 <a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a><span class="c1"># Stage 2: Security Lead approves</span>
 <a href="#__codelineno-12-33" id="__codelineno-12-33" name="__codelineno-12-33"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
-<a href="#__codelineno-12-34" id="__codelineno-12-34" name="__codelineno-12-34"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
-<a href="#__codelineno-12-35" id="__codelineno-12-35" name="__codelineno-12-35"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
-<a href="#__codelineno-12-36" id="__codelineno-12-36" name="__codelineno-12-36"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
-<a href="#__codelineno-12-37" id="__codelineno-12-37" name="__codelineno-12-37"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"sl-001"</span><span class="p">,</span>
-<a href="#__codelineno-12-38" id="__codelineno-12-38" name="__codelineno-12-38"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"security-lead"</span><span class="p">,</span>
-<a href="#__codelineno-12-39" id="__codelineno-12-39" name="__codelineno-12-39"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
-<a href="#__codelineno-12-40" id="__codelineno-12-40" name="__codelineno-12-40"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">5400</span><span class="p">,</span>  <span class="c1"># 1.5h</span>
-<a href="#__codelineno-12-41" id="__codelineno-12-41" name="__codelineno-12-41"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<a href="#__codelineno-12-42" id="__codelineno-12-42" name="__codelineno-12-42"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
+<a href="#__codelineno-12-34" id="__codelineno-12-34" name="__codelineno-12-34"></a> <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-35" id="__codelineno-12-35" name="__codelineno-12-35"></a> <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-36" id="__codelineno-12-36" name="__codelineno-12-36"></a> <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-37" id="__codelineno-12-37" name="__codelineno-12-37"></a> <span class="n">approver_id</span><span class="o">=</span><span class="s2">"sl-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-38" id="__codelineno-12-38" name="__codelineno-12-38"></a> <span class="n">approver_role</span><span class="o">=</span><span class="s2">"security-lead"</span><span class="p">,</span>
+<a href="#__codelineno-12-39" id="__codelineno-12-39" name="__codelineno-12-39"></a> <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-12-40" id="__codelineno-12-40" name="__codelineno-12-40"></a> <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">5400</span><span class="p">,</span> <span class="c1"># 1.5h</span>
+<a href="#__codelineno-12-41" id="__codelineno-12-41" name="__codelineno-12-41"></a> <span class="n">stage</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-12-42" id="__codelineno-12-42" name="__codelineno-12-42"></a> <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
 <a href="#__codelineno-12-43" id="__codelineno-12-43" name="__codelineno-12-43"></a><span class="p">)</span>
 <a href="#__codelineno-12-44" id="__codelineno-12-44" name="__codelineno-12-44"></a>
 <a href="#__codelineno-12-45" id="__codelineno-12-45" name="__codelineno-12-45"></a><span class="c1"># Approval complete</span>
@@ -3198,20 +3198,20 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># If decision takes 18000s (5 hours), exceeds 4h SLA</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">sla_monitor</span><span class="o">.</span><span class="n">record_stage_decision</span><span class="p">(</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">18000</span><span class="p">,</span>  <span class="c1"># 5 hours</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">18000</span><span class="p">,</span> <span class="c1"># 5 hours</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">)</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
 <a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="c1"># Output: {</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="c1">#   "sla_status": "breached",</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="c1">#   "exceeded_by": 3600.0,  # 1 hour over threshold</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="c1">#   "escalation_triggered": True,</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="c1"># "sla_status": "breached",</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="c1"># "exceeded_by": 3600.0, # 1 hour over threshold</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="c1"># "escalation_triggered": True,</span>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="c1"># }</span>
 <a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="c1"># Escalation callback fires → escalates to Release Manager's manager</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="c1"># Escalation callback fires escalates to Release Manager's manager</span>
 </code></pre></div>
 <h3 id="example-3-generate-compliance-report">Example 3: Generate Compliance Report<a class="headerlink" href="#example-3-generate-compliance-report" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">src.codex.observability.approval_sla</span> <span class="kn">import</span> <span class="n">ComplianceReporter</span>
@@ -3261,11 +3261,11 @@
 <h3 id="per-policy-analysis">Per-Policy Analysis<a class="headerlink" href="#per-policy-analysis" title="Permanent link">¶</a></h3>
 <p>For 150 agents, 8 policy categories, 10 approver roles:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>baseline_timeseries = (
-<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>  8 categories                    # policy_category
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>  × 10 approver_roles             # approver_role
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>  × 4 approval_stages             # approval_stage
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>  × 5 metrics (request, latency,  # metric combinations
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>      resolution, decision, chain)
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a> 8 categories # policy_category
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a> × 10 approver_roles # approver_role
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a> × 4 approval_stages # approval_stage
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> × 5 metrics (request, latency, # metric combinations
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> resolution, decision, chain)
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>) ≈ 1,600 timeseries (MANAGED DOWN to ~800)
 </code></pre></div>
 <h3 id="control-strategy">Control Strategy<a class="headerlink" href="#control-strategy" title="Permanent link">¶</a></h3>
@@ -3297,7 +3297,7 @@
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Safe: </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'cardinality_safe'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
 <a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="k">if</span> <span class="n">cardinality</span><span class="p">[</span><span class="s1">'warning'</span><span class="p">]:</span>
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"️  </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'warning'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'warning'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <hr/>
 <h2 id="common-issues-troubleshooting">COMMON ISSUES &amp; TROUBLESHOOTING<a class="headerlink" href="#common-issues-troubleshooting" title="Permanent link">¶</a></h2>
@@ -3334,12 +3334,12 @@
 - Ensure sla_met matches latency vs sla_seconds calculation
 - Check approval_chain is array of stages with sequential stage numbers</p>
 <hr/>
-<h2 id="support-documentation">📞 SUPPORT &amp; DOCUMENTATION<a class="headerlink" href="#support-documentation" title="Permanent link">¶</a></h2>
-<p><strong>TELEMETRY_SCHEMA.md</strong> — Complete specification of 100+ metrics<br/>
-<strong>APPROVAL_POLICIES.md</strong> — SLA thresholds and approval rules<br/>
-<strong>approval-sla-dashboard.json</strong> — Grafana dashboard definition<br/>
-<strong>approval-alert-rules.yml</strong> — Prometheus alert rules (15 rules)<br/>
-<strong>test_approval_telemetry.py</strong> — 40+ integration tests with examples  </p>
+<h2 id="support-documentation">SUPPORT &amp; DOCUMENTATION<a class="headerlink" href="#support-documentation" title="Permanent link">¶</a></h2>
+<p><strong>TELEMETRY_SCHEMA.md</strong> — Complete specification of 100+ metrics
+<strong>APPROVAL_POLICIES.md</strong> — SLA thresholds and approval rules
+<strong>approval-sla-dashboard.json</strong> — Grafana dashboard definition
+<strong>approval-alert-rules.yml</strong> — Prometheus alert rules (15 rules)
+<strong>test_approval_telemetry.py</strong> — 40+ integration tests with examples</p>
 <hr/>
 <h2 id="deployment-checklist">DEPLOYMENT CHECKLIST<a class="headerlink" href="#deployment-checklist" title="Permanent link">¶</a></h2>
 <ul class="task-list">
@@ -3356,10 +3356,10 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Documentation reviewed and links verified</li>
 </ul>
 <hr/>
-<p><strong>Status:</strong>  Phase 12 Wave 2 D3.2 — COMPLETE<br/>
-<strong>Delivered:</strong> 2026-07-03<br/>
-<strong>Authority:</strong> @mbaetiong (D-tier)<br/>
-<strong>Handoff:</strong> Ready for D1.2 &amp; D2.2 integration  </p>
+<p><strong>Status:</strong> Phase 12 Wave 2 D3.2 — COMPLETE
+<strong>Delivered:</strong> 2026-07-03
+<strong>Authority:</strong> @mbaetiong (D-tier)
+<strong>Handoff:</strong> Ready for D1.2 &amp; D2.2 integration</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3389,6 +3389,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

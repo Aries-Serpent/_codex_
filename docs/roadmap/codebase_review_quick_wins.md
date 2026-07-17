@@ -1,6 +1,6 @@
 # Codebase Review — Top 5 Quick Wins & Agentic Behavior Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated:** 2026-05-19T01:41Z
 **Session:** S1071-review-codebase-quick-wins

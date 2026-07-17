@@ -1,6 +1,6 @@
 # Archive Policy Consolidation — PR Execution Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Source: Codex automation status update 2026-07-13
 > Scope: Publish and merge the already-prepared archive policy consolidation commit (`cfba4786`).

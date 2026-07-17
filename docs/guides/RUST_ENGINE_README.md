@@ -1,6 +1,6 @@
 # Codex Swarm Engine (Rust)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -140,7 +140,7 @@ cargo doc --open
 
 ## Compliance
 
-- AI Agent Policy v0.2.1
+- AI Agent Policy v0.2.0
 - Cognitive Brain Integration (Phase 11)
 - Zero additional cost (GitHub Team + Copilot Pro+)
 - Production-ready architecture

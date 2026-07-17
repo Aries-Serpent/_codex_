@@ -1,6 +1,6 @@
 # ISOLATED_DEPLOYMENT
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Goal
 
@@ -13,7 +13,7 @@ Run the system in a local isolated repository with allowlist-only networking and
 3. Enforce deny-by-default network policy.
 4. Allow only explicitly approved hosts where required.
 
-> Pre-release note: treat this as v0.2.1 pre-release deployment guidance pending P0 campaign closure (lock/profile alignment, hash-verified manifests, strict no-network bootstrap path).
+> Pre-release note: treat this as v0.2.0 pre-release deployment guidance pending P0 campaign closure (lock/profile alignment, hash-verified manifests, strict no-network bootstrap path).
 
 ## Recommended Allowlist Seed (Example)
 

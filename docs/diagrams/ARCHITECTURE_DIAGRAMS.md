@@ -1,6 +1,6 @@
 # Architecture Diagrams Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Last updated: 2026-07-11
 > **Coverage:** 44 diagrams (Phase 1-4: 85%+ target reached)
@@ -18,7 +18,7 @@ Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the
 | [`architecture.mmd`](architecture.mmd) | Full system architecture: ML core, tokenization, RAG, cognitive brain, logging, CI self-healing | S1292 |
 | [`ci_self_healing_flow.mmd`](ci_self_healing_flow.mmd) | CI auto-fix pipeline: push agent-auth validation merge gate | S1292 |
 | [`runtime_logic_map.mmd`](runtime_logic_map.mmd) | Runtime flow: CLI entry, training, tokenization, quantum orchestrator | S178 |
-| [`audit_pipeline_v0.2.1.mmd`](audit_pipeline_v0.2.1.mmd) | 7-stage audit pipeline: context facets capabilities scoring gaps report manifest | v0.2.1 |
+| [`audit_pipeline_v0.2.0.mmd`](audit_pipeline_v0.2.0.mmd) | 7-stage audit pipeline: context facets capabilities scoring gaps report manifest | v0.2.0 |
 
 ---
 

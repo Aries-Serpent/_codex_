@@ -1,8 +1,8 @@
 # Phase 3 Lane 5: QA Walkthrough Agent Accountability Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
-**Agent**: qa-walkthrough-agent v0.2.1
+**Agent**: qa-walkthrough-agent v0.2.0
 **Execution**: 2026-07-09T04:45:45Z 2026-07-09T05:26:00Z
 **Duration**: 41 minutes (of 45-minute window)
 **Status**: **COMPLETE & DELIVERED**
@@ -206,7 +206,7 @@
 
 ## Session Metadata
 
-**Agent ID**: qa-walkthrough-agent v0.2.1
+**Agent ID**: qa-walkthrough-agent v0.2.0
 **Session Type**: Autonomous D-tier validation
 **Session Duration**: 41 minutes
 **Time Budget**: 45 minutes Within budget
@@ -260,5 +260,5 @@
 ---
 
 **Generated**: 2026-07-09T05:26Z
-**Agent**: qa-walkthrough-agent v0.2.1
+**Agent**: qa-walkthrough-agent v0.2.0
 **Report**: Phase 3 Lane 5 Accountability Report

@@ -1,6 +1,6 @@
-# [Wave 3]: Split-Brain Convergence & Canonical Imports (v0.2.1)
+# [Wave 3]: Split-Brain Convergence & Canonical Imports (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
@@ -11,7 +11,7 @@
 
 ## Executive Summary
 
-**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v0.2.1. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
+**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v0.2.0. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
 
 **Action**: Introduce canonical `src.*` import shims that forward to legacy modules to preserve runtime while enabling continued migration toward consolidated architecture.
 
@@ -21,9 +21,9 @@
 
 ## Background: The Split-Brain Architecture
 
-### Discovery (v0.2.1 Post-Refactor Analysis)
+### Discovery (v0.2.0 Post-Refactor Analysis)
 
-During v0.2.1 refactoring (99 42 legacy imports, 57.6% reduction), code review identified:
+During v0.2.0 refactoring (99 42 legacy imports, 57.6% reduction), code review identified:
 
 1. **Root `training/` contains**:
  - `engine_hf_trainer.py`
@@ -58,7 +58,7 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 | C | Revert refactors; keep root as canonical | Medium/High (rework) | Contradicts convergence plan | Rejected |
 
 **Rationale for Option A**:
-- Preserves v0.2.1 refactoring work (57 occurrences eliminated)
+- Preserves v0.2.0 refactoring work (57 occurrences eliminated)
 - No runtime breakage (shims bridge the gap)
 - Clear path to full consolidation (move + remove shims)
 - Maintains momentum toward 99% readiness
@@ -173,17 +173,17 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 - [ ] Wave3 convergence document complete
 - [ ] Convergence plan aligns to Option A timeline
 - [ ] Rollback procedures documented
-- [ ] Next iteration prompt generated (v0.2.1)
+- [ ] Next iteration prompt generated (v0.2.0)
 
 ---
 
 ## Impact on Production Readiness
 
-### Before (v0.2.1)
+### Before (v0.2.0)
 - **75% ready**: Infrastructure complete, refactoring done but broken
 - **Blocker**: Runtime import failures expected
 
-### After (v0.2.1)
+### After (v0.2.0)
 - **≥85% ready**: Shims resolve imports, system operational
 - **Path to 99%**: Clear roadmap via file consolidation
 
@@ -195,7 +195,7 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 
 ---
 
-## Next Steps (v0.2.1)
+## Next Steps (v0.2.0)
 
 ### Phase 1: File Consolidation (Optional)
 
@@ -286,17 +286,17 @@ from src.training.engine_hf_trainer import run_hf_trainer
 
 ## Conclusion
 
-Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.1 through canonical `src.*` import shims. This approach:
-- Preserves all v0.2.1 refactoring work
+Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.0 through canonical `src.*` import shims. This approach:
+- Preserves all v0.2.0 refactoring work
 - Eliminates runtime import failures
 - Maintains clear path to full consolidation
 - Raises production readiness to ≥85%
 
-The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.1.
+The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.0.
 
 ---
 
 **Document Version**: 1.0
 **Status**: Active
-**Next Review**: After v0.2.1 file consolidation
+**Next Review**: After v0.2.0 file consolidation
 **Maintainer**: @mbaetiong

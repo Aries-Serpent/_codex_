@@ -125,7 +125,7 @@ When ready to proceed with PyPI publication:
 
 2. **Upload to PyPI**
    - Option A: `python3 -m twine upload dist/codex_ml-0.2.1*`
-   - Option B: `git tag v0.2.1 && git push origin v0.2.1`
+   - Option B: `git tag v0.2.0 && git push origin v0.2.0`
 
 3. **Verify Installation**
    - `pip install codex-ml==0.2.1`

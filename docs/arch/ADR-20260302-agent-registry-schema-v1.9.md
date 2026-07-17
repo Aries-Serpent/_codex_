@@ -1,6 +1,6 @@
-# ADR-20260302: Agent Registry Schema Extension (v0.2.1)
+# ADR-20260302: Agent Registry Schema Extension (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T07:00:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
@@ -8,7 +8,7 @@
 
 ## 1. Context
 
-The AGENT_REGISTRY.yaml (v0.2.1) tracked 128 agents with basic metadata
+The AGENT_REGISTRY.yaml (v0.2.0) tracked 128 agents with basic metadata
 (name, description, location, status) but lacked enforcement semantics.
 The SoftGROUNDED conversion plan (docs/plans/Agentic_AI_System/soft_to_GROUNDED.md)
 required every agent to declare its enforcement posture so that CI gates,
@@ -41,7 +41,7 @@ to validate the registry structure in CI. Introduce CODEX_MANIFEST.json at
 the repository root to provide SHA-256 integrity verification of the
 registry file.
 
-Version the registry at v0.2.1 with 152 agents (128 original + 24 newly
+Version the registry at v0.2.0 with 152 agents (128 original + 24 newly
 registered agents discovered during the frequency-sorted audit).
 
 ## 4. Decision Drivers

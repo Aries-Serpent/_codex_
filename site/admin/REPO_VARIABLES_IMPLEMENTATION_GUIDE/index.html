@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Repository Variables — Implementation Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2577,9 +2577,9 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Source:</strong> <a href="https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714">PR #3483 comment #issuecomment-3988416714</a><br/>
-<strong>Author:</strong> Copilot variable analysis (2026-03-03)<br/>
-<strong>Version:</strong> 1.0.0<br/>
+<p><strong>Source:</strong> <a href="https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714">PR #3483 comment #issuecomment-3988416714</a>
+<strong>Author:</strong> Copilot variable analysis (2026-03-03)
+<strong>Version:</strong> 1.0.0
 <strong>Last Updated: 2026-07-11
 </strong>Human Admin Action Guide:** <a href="../HUMAN_ADMIN_REPO_VARIABLES_SETUP/"><code>HUMAN_ADMIN_REPO_VARIABLES_SETUP.md</code></a></p>
 </blockquote>
@@ -2601,34 +2601,43 @@
 <p>The repository variables feed three subsystems: the <strong>Cognitive Brain</strong> (memory injection pipeline),
 the <strong>Copilot CLI</strong> (FastAPI cognitive_app at port 8765), and the <strong>CI/CD health</strong> automation layer.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Repository Variables", " Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph GH["GitHub Repository Variables"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        direction TB
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        CB_GROUP[" Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        CLI_GROUP["🖥️ Copilot CLI\nCLI_BASE_URL\nCLI_ENABLED\nSESSION_RESTORE_ENABLED\nMAX_AUTONOMY_LEVEL\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED"]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        CI_GROUP[" CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        STATIC_GROUP[" Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    end
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    subgraph CONSUMERS["Workflow / Code Consumers"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        CHATOPS["chatops_copilot_trigger.yml\n(session injection)"]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        ADMIN["admin_setup_verification.yml\n(bootstrap validation)"]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        HEALTH["ci-health-monitor.yml\n(failure rate writer)"]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        AGENT_AUTH["agent-auth-delegation.yml\n(preflight + activation)"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        REGISTRY["agent-registry-validation.yml\n(FAISS rebuild trigger)"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        FRONTEND["cognitive_app / ApiClient.tsx\n(VITE_CLI_API_URL)"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        MANIFEST["scripts/ci/generate_manifest.py\n(context injection)"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    end
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    CB_GROUP --&gt; CHATOPS
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    CB_GROUP --&gt; ADMIN
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    CB_GROUP --&gt; MANIFEST
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    CLI_GROUP --&gt; FRONTEND
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    CLI_GROUP --&gt; AGENT_AUTH
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    CI_GROUP --&gt; HEALTH
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    CI_GROUP --&gt; REGISTRY
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    STATIC_GROUP --&gt; ADMIN
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    STATIC_GROUP --&gt; CHATOPS
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph GH["GitHub Repository Variables"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> direction TB
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> CB_GROUP[" Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> CLI_GROUP[" Copilot CLI\nCLI_BASE_URL\nCLI_ENABLED\nSESSION_RESTORE_ENABLED\nMAX_AUTONOMY_LEVEL\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED"]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> CI_GROUP[" CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> STATIC_GROUP[" Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> end
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> subgraph CONSUMERS["Workflow / Code Consumers"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> CHATOPS["chatops_copilot_trigger.yml\n(session injection)"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> ADMIN["admin_setup_verification.yml\n(bootstrap validation)"]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> HEALTH["ci-health-monitor.yml\n(failure rate writer)"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> AGENT_AUTH["agent-auth-delegation.yml\n(preflight + activation)"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> REGISTRY["agent-registry-validation.yml\n(FAISS rebuild trigger)"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> FRONTEND["cognitive_app / ApiClient.tsx\n(VITE_CLI_API_URL)"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> MANIFEST["scripts/ci/generate_manifest.py\n(context injection)"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> end
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> CB_GROUP --&gt; CHATOPS
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> CB_GROUP --&gt; ADMIN
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> CB_GROUP --&gt; MANIFEST
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> CLI_GROUP --&gt; FRONTEND
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> CLI_GROUP --&gt; AGENT_AUTH
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> CI_GROUP --&gt; HEALTH
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> CI_GROUP --&gt; REGISTRY
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> STATIC_GROUP --&gt; ADMIN
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> STATIC_GROUP --&gt; CHATOPS
 </code></pre></div>
 <hr/>
 <h2 id="2-current-variable-status">2. Current Variable Status<a class="headerlink" href="#2-current-variable-status" title="Permanent link">¶</a></h2>
@@ -2757,32 +2766,40 @@ workflow-level override without code changes.</p>
 </tbody>
 </table>
 <h3 id="purpose-details">Purpose Details<a class="headerlink" href="#purpose-details" title="Permanent link">¶</a></h3>
-<p><strong><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></strong><br/>
+<p><strong><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></strong>
 Mirrors <code>CONTEXT_WINDOW_BUDGET = 32_000</code> in <code>scripts/ci/generate_manifest.py:59</code>.
 Externalising this allows CI to override the injection ceiling without a code change.
 Consumed by <code>sanitize_for_injection()</code> — raises <code>ValueError</code> when safe payload exceeds budget.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># scripts/ci/generate_manifest.py (current hardcoded constant — wire to var)</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">CONTEXT_WINDOW_BUDGET</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"</span><span class="p">,</span> <span class="mi">32_000</span><span class="p">))</span>
 </code></pre></div>
-<p><strong><code>COGNITIVE_BRAIN_LTM_RETENTION_DAYS</code></strong><br/>
+<p><strong><code>COGNITIVE_BRAIN_LTM_RETENTION_DAYS</code></strong>
 Aligns with <code>AUDIT_RETENTION_DAYS = 90</code>. Consumed by <code>scripts/ci/prune_corpus.py</code>
 (90-day corpus retention). Externalising enables tuning without commits.</p>
-<p><strong><code>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE</code></strong><br/>
+<p><strong><code>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE</code></strong>
 Gate threshold before a memory pattern is injected into a Copilot session.
 Referenced by <code>AgentBrainInterface.query_patterns()</code> in <code>src/codex/cognitive/brain_interface.py</code>.</p>
-<p><strong><code>COGNITIVE_BRAIN_MEMORY_TIER</code></strong><br/>
+<p><strong><code>COGNITIVE_BRAIN_MEMORY_TIER</code></strong>
 Controls which SQLite tiers are active for session recall. STM = short-term (deque),
 LTM = long-term (SQLite persist), <code>both</code> = full recall pipeline.</p>
 <h2 id="wiring-diagram">Wiring Diagram<a class="headerlink" href="#wiring-diagram" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000", "generate_manifest.py\nCONTEXT_WINDOW_BUDGET"'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>flowchart LR
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    VAR_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000"] --&gt; MANIFEST["generate_manifest.py\nCONTEXT_WINDOW_BUDGET"]
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    VAR_LTM["COGNITIVE_BRAIN_LTM_RETENTION_DAYS\n= 90"] --&gt; PRUNE["prune_corpus.py\nretention_days"]
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    VAR_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\n= 0.75"] --&gt; BRAIN["brain_interface.py\nquery_patterns(min_confidence)"]
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    VAR_TIER["COGNITIVE_BRAIN_MEMORY_TIER\n= both"] --&gt; BRAIN
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    MANIFEST --&gt; INJECT["sanitize_for_injection()\nSession context payload"]
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    BRAIN --&gt; INJECT
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    INJECT --&gt; SESSION["Copilot Agent Session\n&lt;repository_memories&gt;"]
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart LR
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> VAR_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000"] --&gt; MANIFEST["generate_manifest.py\nCONTEXT_WINDOW_BUDGET"]
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> VAR_LTM["COGNITIVE_BRAIN_LTM_RETENTION_DAYS\n= 90"] --&gt; PRUNE["prune_corpus.py\nretention_days"]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> VAR_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\n= 0.75"] --&gt; BRAIN["brain_interface.py\nquery_patterns(min_confidence)"]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> VAR_TIER["COGNITIVE_BRAIN_MEMORY_TIER\n= both"] --&gt; BRAIN
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> MANIFEST --&gt; INJECT["sanitize_for_injection()\nSession context payload"]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a> BRAIN --&gt; INJECT
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> INJECT --&gt; SESSION["Copilot Agent Session\n&lt;repository_memories&gt;"]
 </code></pre></div>
 <hr/>
 <h2 id="4-new-variables-copilot-cli">4. New Variables — Copilot CLI<a class="headerlink" href="#4-new-variables-copilot-cli" title="Permanent link">¶</a></h2>
@@ -2821,7 +2838,7 @@ feature-flagging of CLI capabilities without code changes.</p>
 </tbody>
 </table>
 <h3 id="purpose-details_1">Purpose Details<a class="headerlink" href="#purpose-details_1" title="Permanent link">¶</a></h3>
-<p><strong><code>COPILOT_CLI_BASE_URL</code></strong><br/>
+<p><strong><code>COPILOT_CLI_BASE_URL</code></strong>
 The cognitive_app API endpoint. Currently hardcoded in three frontend files:
 - <code>cognitive_app/src/components/cli/ApiClient.tsx:40</code> — <code>CLI_API</code> constant
 - <code>cognitive_app/src/components/cli/XtermTerminal.tsx:13</code> — <code>API_BASE</code> constant
@@ -2829,25 +2846,32 @@ The cognitive_app API endpoint. Currently hardcoded in three frontend files:
 <p><code>ApiClient.tsx</code> already reads <code>VITE_CLI_API_URL</code> (commit <code>cf85ef5</code>); <code>XtermTerminal.tsx</code> also
 reads <code>VITE_CLI_API_URL</code> at line 13. Setting this repo variable allows CI integration tests to
 point at a test server without modifying code.</p>
-<p><strong><code>COPILOT_CLI_ENABLED</code></strong><br/>
+<p><strong><code>COPILOT_CLI_ENABLED</code></strong>
 Feature flag. When <code>false</code>, workflows skip CLI startup and API health checks.
 Useful for environments where port 8765 is blocked.</p>
-<p><strong><code>COPILOT_AGENT_SESSION_RESTORE_ENABLED</code></strong><br/>
+<p><strong><code>COPILOT_AGENT_SESSION_RESTORE_ENABLED</code></strong>
 When <code>true</code>, <code>session-log-retrieval-agent</code> injects prior session context at session start.
 Enables true memory continuity across Copilot coding agent sessions.</p>
-<p><strong><code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code></strong><br/>
+<p><strong><code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code></strong>
 Caps the autonomy tier the agent may act at within a session. <code>E</code> = advisory only;
 <code>D</code> = autonomous with human approval required (controlled by <code>e-to-d-transition-gate.yml</code>).
 Currently the gate score is 5/5 (D_CAPABLE unlocked) — this variable is the runtime cap.</p>
 <h3 id="wiring-diagram_1">Wiring Diagram<a class="headerlink" href="#wiring-diagram_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "COPILOT_CLI_BASE_URL\n= http://localhost:8765", "ApiClient.tsx\nXtermTerminal.tsx"'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>flowchart TD
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    VAR_URL["COPILOT_CLI_BASE_URL\n= http://localhost:8765"] --&gt; |VITE_CLI_API_URL| FE_API["ApiClient.tsx\nXtermTerminal.tsx"]
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    VAR_URL --&gt; |CI integration tests| TEST_SERVER["test API server\n(port override)"]
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    VAR_ENABLED["COPILOT_CLI_ENABLED\n= true"] --&gt; |feature gate| WORKFLOW_STEP["copilot-setup-steps.yml\nStart CLI API Server step"]
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    VAR_RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED\n= true"] --&gt; SESSION_AGENT["session-log-retrieval-agent\nContext injection at session start"]
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    VAR_AUTONOMY["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\n= E"] --&gt; |runtime cap| GATE["e-to-d-transition-gate.yml\nFSM autonomy control"]
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    GATE --&gt; |D_CAPABLE score 5/5| AGENT_ACTIONS["Autonomous agent actions\n(require human approval at tier D)"]
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>flowchart TD
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a> VAR_URL["COPILOT_CLI_BASE_URL\n= http://localhost:8765"] --&gt; |VITE_CLI_API_URL| FE_API["ApiClient.tsx\nXtermTerminal.tsx"]
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> VAR_URL --&gt; |CI integration tests| TEST_SERVER["test API server\n(port override)"]
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a> VAR_ENABLED["COPILOT_CLI_ENABLED\n= true"] --&gt; |feature gate| WORKFLOW_STEP["copilot-setup-steps.yml\nStart CLI API Server step"]
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a> VAR_RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED\n= true"] --&gt; SESSION_AGENT["session-log-retrieval-agent\nContext injection at session start"]
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> VAR_AUTONOMY["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\n= E"] --&gt; |runtime cap| GATE["e-to-d-transition-gate.yml\nFSM autonomy control"]
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> GATE --&gt; |D_CAPABLE score 5/5| AGENT_ACTIONS["Autonomous agent actions\n(require human approval at tier D)"]
 </code></pre></div>
 <hr/>
 <h2 id="5-new-variables-cicd-health">5. New Variables — CI/CD Health<a class="headerlink" href="#5-new-variables-cicd-health" title="Permanent link">¶</a></h2>
@@ -2897,46 +2921,53 @@ index management.</p>
 </tbody>
 </table>
 <h3 id="purpose-details_2">Purpose Details<a class="headerlink" href="#purpose-details_2" title="Permanent link">¶</a></h3>
-<p><strong><code>CODEX_CI_FAILURE_THRESHOLD</code></strong><br/>
+<p><strong><code>CODEX_CI_FAILURE_THRESHOLD</code></strong>
 The numeric rate at which <code>CODEX_CI_FAILURE_RATE</code> status flips to <code>degraded</code>.
 <code>ci-health-monitor.yml</code> currently compares against a hardcoded value; externalising it
 allows threshold adjustment without a workflow commit.</p>
-<p><strong><code>CODEX_CI_LAST_GREEN_SHA</code></strong><br/>
+<p><strong><code>CODEX_CI_LAST_GREEN_SHA</code></strong>
 Auto-set by a post-green-push workflow step. Enables bisect commands like:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>git<span class="w"> </span>bisect<span class="w"> </span>good<span class="w"> </span><span class="s2">"</span><span class="nv">$CODEX_CI_LAST_GREEN_SHA</span><span class="s2">"</span>
 </code></pre></div></p>
-<p><strong><code>AGENT_HANDOFF_TIMEOUT_SECONDS</code></strong><br/>
+<p><strong><code>AGENT_HANDOFF_TIMEOUT_SECONDS</code></strong>
 Maximum wait time in <code>agent-handoff-gate.yml</code> before a handoff is declared failed.
 Currently hardcoded in the workflow step; externalising enables tuning.</p>
-<p><strong><code>EMBEDDING_INDEX_AUTO_REBUILD</code></strong><br/>
+<p><strong><code>EMBEDDING_INDEX_AUTO_REBUILD</code></strong>
 Controls whether <code>agent-registry-validation.yml</code> triggers <code>embedding-index-rebuild.yml</code>
 on push to main via <code>gh workflow run</code>. Already wired at lines 231–238 of the validation
 workflow — this variable becomes the guard condition.</p>
-<p><strong><code>AUTO_PROMOTE_TIER_ENABLED</code></strong><br/>
+<p><strong><code>AUTO_PROMOTE_TIER_ENABLED</code></strong>
 Gates <code>scripts/ci/auto_promote_tier.py</code>. Start at <code>false</code> until promotion logic is
 fully validated. Flip to <code>true</code> to enable automatic agent tier elevation.</p>
 <h3 id="ci-health-state-machine">CI Health State Machine<a class="headerlink" href="#ci-health-state-machine" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *, *'}}%%
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>stateDiagram-v2
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    [*] --&gt; ok : failure_rate &lt; THRESHOLD(10.0)
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    ok --&gt; degraded : failure_rate &gt;= THRESHOLD(10.0)
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    degraded --&gt; critical : failure_rate &gt;= 2×THRESHOLD(20.0)
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    critical --&gt; degraded : failure_rate &lt; 2×THRESHOLD
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    degraded --&gt; ok : failure_rate &lt; THRESHOLD
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    ok --&gt; [*] : CODEX_CI_LAST_GREEN_SHA written
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    note right of ok
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>        CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:ok"
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>        CODEX_CI_LAST_GREEN_SHA = HEAD_SHA
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    end note
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    note right of degraded
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>        CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:degraded"
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>        Self-healing CI escalates
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    end note
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>    note right of critical
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:critical"
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>        Emergency response agent triggered
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>    end note
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>stateDiagram-v2
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> [*] --&gt; ok : failure_rate &lt; THRESHOLD(10.0)
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> ok --&gt; degraded : failure_rate &gt;= THRESHOLD(10.0)
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a> degraded --&gt; critical : failure_rate &gt;= 2×THRESHOLD(20.0)
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> critical --&gt; degraded : failure_rate &lt; 2×THRESHOLD
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> degraded --&gt; ok : failure_rate &lt; THRESHOLD
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> ok --&gt; [*] : CODEX_CI_LAST_GREEN_SHA written
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> note right of ok
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:ok"
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> CODEX_CI_LAST_GREEN_SHA = HEAD_SHA
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> end note
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> note right of degraded
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:degraded"
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> Self-healing CI escalates
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> end note
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> note right of critical
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a> CODEX_CI_FAILURE_RATE = "&lt;rate&gt;:critical"
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a> Emergency response agent triggered
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a> end note
 </code></pre></div>
 <hr/>
 <h2 id="5a-new-variables-codespaces-prebuild">5a. New Variables — Codespaces Prebuild<a class="headerlink" href="#5a-new-variables-codespaces-prebuild" title="Permanent link">¶</a></h2>
@@ -3019,7 +3050,7 @@ list directory is missing/corrupted during <code>onCreateCommand</code>
 </tbody>
 </table>
 <h3 id="setup-instructions">Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permanent link">¶</a></h3>
-<p><strong>Via GitHub UI</strong> (Settings → Secrets and variables → Actions → Variables):</p>
+<p><strong>Via GitHub UI</strong> (Settings Secrets and variables Actions Variables):</p>
 <ol class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODESPACES_APT_UPDATE_RETRY</code> = <code>true</code></li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <code>CODESPACES_APT_CLEANUP_AGGRESSIVE</code> = <code>true</code></li>
@@ -3037,14 +3068,22 @@ list directory is missing/corrupted during <code>onCreateCommand</code>
 </code></pre></div>
 <h3 id="wiring-diagram_2">Wiring Diagram<a class="headerlink" href="#wiring-diagram_2" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "CODESPACES_APT_UPDATE_RETRY\n= true", "on-create.sh\napt_update_with_retry()"'}}%%
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>flowchart TD
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --&gt; ONCREATE["on-create.sh\napt_update_with_retry()"]
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --&gt; ONCREATE
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    ONCREATE --&gt; |repairs| APT["/var/lib/apt/lists/partial\n(recreated, chmod 0755)"]
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    APT --&gt; |update succeeds| INSTALL["apt-get install build-essential …"]
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    INSTALL --&gt; |cleanup only on success| PRUNE["rm -rf /var/lib/apt/lists/*"]
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    DBPATH["CODEX_DB_PATH / CODEX_SESSION_LOG_DIR"] --&gt; DEVJSON["devcontainer.json containerEnv"]
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    POOL["CODEX_SQLITE_POOL = 1"] --&gt; DEVJSON
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>flowchart TD
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --&gt; ONCREATE["on-create.sh\napt_update_with_retry()"]
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --&gt; ONCREATE
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> ONCREATE --&gt; |repairs| APT["/var/lib/apt/lists/partial\n(recreated, chmod 0755)"]
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> APT --&gt; |update succeeds| INSTALL["apt-get install build-essential …"]
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> INSTALL --&gt; |cleanup only on success| PRUNE["rm -rf /var/lib/apt/lists/*"]
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> DBPATH["CODEX_DB_PATH / CODEX_SESSION_LOG_DIR"] --&gt; DEVJSON["devcontainer.json containerEnv"]
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> POOL["CODEX_SQLITE_POOL = 1"] --&gt; DEVJSON
 </code></pre></div>
 <hr/>
 <h2 id="6-session-number-auto-increment">6. Session Number Auto-Increment<a class="headerlink" href="#6-session-number-auto-increment" title="Permanent link">¶</a></h2>
@@ -3054,37 +3093,41 @@ to maintain meaningful recall ordering.</p>
 <p>Add the following step to <code>chatops_copilot_trigger.yml</code> (or <code>agent-auth-delegation.yml</code>)
 immediately after reading the current session number:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Increment COGNITIVE_BRAIN_SESSION_NUMBER</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="nt">env</span><span class="p">:</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">    </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODEX_MASTER_KEY }}</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">    </span><span class="no">CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">    </span><span class="no">NEXT=$((CURRENT + 1))</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">    </span><span class="no">gh api \</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">      </span><span class="no">--method PATCH \</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">      </span><span class="no">-H "Accept: application/vnd.github+json" \</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">      </span><span class="no">/repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">      </span><span class="no">-f name='COGNITIVE_BRAIN_SESSION_NUMBER' \</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w">      </span><span class="no">-f value="$NEXT"</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w">    </span><span class="no">echo "Session number incremented: $CURRENT → $NEXT"</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w w-Error"> </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span><span class="nt">GH_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODEX_MASTER_KEY }}</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NEXT=$((CURRENT + 1))</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh api \</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--method PATCH \</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-H "Accept</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">application/vnd.github+json" \</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-f name='COGNITIVE_BRAIN_SESSION_NUMBER' \</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-f value="$NEXT"</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "Session number incremented</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$CURRENT $NEXT"</span>
 </code></pre></div>
 <h3 id="auto-increment-flow">Auto-Increment Flow<a class="headerlink" href="#auto-increment-flow" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: &gt;&gt;WF: N
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    WF'}}%%
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>sequenceDiagram
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>    participant PR as PR event
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    participant WF as chatops_copilot_trigger.yml
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    participant GH as GitHub Variables API
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    participant BRAIN as Cognitive Brain Session
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    PR-&gt;&gt;WF: PR comment / @copilot trigger
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>    WF-&gt;&gt;GH: GET COGNITIVE_BRAIN_SESSION_NUMBER (current = N)
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>    GH--&gt;&gt;WF: N
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    WF-&gt;&gt;GH: PATCH COGNITIVE_BRAIN_SESSION_NUMBER = N+1
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    GH--&gt;&gt;WF: 204 No Content
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    WF-&gt;&gt;BRAIN: Inject session context with SESSION_NUMBER = N+1
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    BRAIN--&gt;&gt;PR: Session activated (number N+1)
-<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>    Note over WF,GH: Requires CODEX_MASTER_KEY with\nvariables: read+write permission
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> WF'}}%%
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>sequenceDiagram
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> participant PR as PR event
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> participant WF as chatops_copilot_trigger.yml
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> participant GH as GitHub Variables API
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> participant BRAIN as Cognitive Brain Session
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> PR-&gt;&gt;WF: PR comment / @copilot trigger
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> WF-&gt;&gt;GH: GET COGNITIVE_BRAIN_SESSION_NUMBER (current = N)
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> GH--&gt;&gt;WF: N
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> WF-&gt;&gt;GH: PATCH COGNITIVE_BRAIN_SESSION_NUMBER = N+1
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>
+<a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a> GH--&gt;&gt;WF: 204 No Content
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> WF-&gt;&gt;BRAIN: Inject session context with SESSION_NUMBER = N+1
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> BRAIN--&gt;&gt;PR: Session activated (number N+1)
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> Note over WF,GH: Requires CODEX_MASTER_KEY with\nvariables: read+write permission
 </code></pre></div>
 <hr/>
 <h2 id="7-ci-failure-rate-lifecycle">7. CI Failure Rate Lifecycle<a class="headerlink" href="#7-ci-failure-rate-lifecycle" title="Permanent link">¶</a></h2>
@@ -3092,33 +3135,38 @@ immediately after reading the current session number:</p>
 The format spec <code>&lt;float&gt;:&lt;status&gt;</code> must be parsed consistently by all consumers.</p>
 <h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total", "ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"'}}%%
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>flowchart TD
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    TELEMETRY["telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total"] --&gt; MONITOR
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>flowchart TD
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    MONITOR["ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"] --&gt; |PATCH API| VAR["CODEX_CI_FAILURE_RATE\n= '11.0:degraded'"]
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> TELEMETRY["telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total"] --&gt; MONITOR
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    VAR --&gt; |parsed by| ALERT["ci-health-alert-agent\nthreshold check vs\nCODEX_CI_FAILURE_THRESHOLD"]
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    VAR --&gt; |displayed in| BOOTSTRAP["copilot-agent-vars-bootstrap.yml\nSession context echo"]
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    VAR --&gt; |read by| SESSION["Copilot Coding Agent\nSession pre-flight summary"]
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> MONITOR["ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"] --&gt; |PATCH API| VAR["CODEX_CI_FAILURE_RATE\n= '11.0:degraded'"]
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> VAR --&gt; |parsed by| ALERT["ci-health-alert-agent\nthreshold check vs\nCODEX_CI_FAILURE_THRESHOLD"]
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    ALERT --&gt; |rate &gt;= threshold| ESCALATE["Self-Healing Escalation\nPost PR comment\niterative-self-healing-ci.yml"]
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    ALERT --&gt; |rate &lt; threshold| CLEAR["Status: ok\nCODEX_CI_LAST_GREEN_SHA updated"]
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    subgraph FORMAT["Format: &amp;lt;float&amp;gt;:&amp;lt;status&amp;gt;"]
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>        F1["'5.2:ok'"]
-<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>        F2["'11.0:degraded'"]
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>        F3["'22.5:critical'"]
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>    end
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> VAR --&gt; |displayed in| BOOTSTRAP["copilot-agent-vars-bootstrap.yml\nSession context echo"]
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> VAR --&gt; |read by| SESSION["Copilot Coding Agent\nSession pre-flight summary"]
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> ALERT --&gt; |rate &gt;= threshold| ESCALATE["Self-Healing Escalation\nPost PR comment\niterative-self-healing-ci.yml"]
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> ALERT --&gt; |rate &lt; threshold| CLEAR["Status: ok\nCODEX_CI_LAST_GREEN_SHA updated"]
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> subgraph FORMAT["Format: &amp;lt;float&amp;gt;:&amp;lt;status&amp;gt;"]
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> F1["'5.2:ok'"]
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> F2["'11.0:degraded'"]
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> F3["'22.5:critical'"]
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a> end
 </code></pre></div>
 <h3 id="parser-reference-bash">Parser Reference (Bash)<a class="headerlink" href="#parser-reference-bash" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Parse CODEX_CI_FAILURE_RATE in any workflow step</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nv">RATE_RAW</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="p">{ vars.CODEX_CI_FAILURE_RATE </span><span class="si">}</span><span class="s2">}"</span><span class="w">          </span><span class="c1"># e.g. "11.0:degraded"</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nv">RATE_FLOAT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RATE_RAW</span><span class="p">%%:*</span><span class="si">}</span><span class="s2">"</span><span class="w">                           </span><span class="c1"># "11.0"</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nv">RATE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RATE_RAW</span><span class="p">##*:</span><span class="si">}</span><span class="s2">"</span><span class="w">                          </span><span class="c1"># "degraded"</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nv">THRESHOLD</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="p">{ vars.CODEX_CI_FAILURE_THRESHOLD </span><span class="si">}</span><span class="s2">}"</span><span class="w">    </span><span class="c1"># "10.0"</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="nv">RATE_RAW</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="p">{ vars.CODEX_CI_FAILURE_RATE </span><span class="si">}</span><span class="s2">}"</span><span class="w"> </span><span class="c1"># e.g. "11.0:degraded"</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nv">RATE_FLOAT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RATE_RAW</span><span class="p">%%:*</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="c1"># "11.0"</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nv">RATE_STATUS</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RATE_RAW</span><span class="p">##*:</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="c1"># "degraded"</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nv">THRESHOLD</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="p">{ vars.CODEX_CI_FAILURE_THRESHOLD </span><span class="si">}</span><span class="s2">}"</span><span class="w"> </span><span class="c1"># "10.0"</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>
 <a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="k">if</span><span class="w"> </span><span class="o">((</span><span class="w"> </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$RATE_FLOAT</span><span class="s2"> &gt;= </span><span class="nv">$THRESHOLD</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="w"> </span>-l<span class="k">)</span><span class="w"> </span><span class="o">))</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::warning::CI failure rate </span><span class="si">${</span><span class="nv">RATE_FLOAT</span><span class="si">}</span><span class="s2">% exceeds threshold </span><span class="si">${</span><span class="nv">THRESHOLD</span><span class="si">}</span><span class="s2">%"</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"::warning::CI failure rate </span><span class="si">${</span><span class="nv">RATE_FLOAT</span><span class="si">}</span><span class="s2">% exceeds threshold </span><span class="si">${</span><span class="nv">THRESHOLD</span><span class="si">}</span><span class="s2">%"</span>
 <a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="k">fi</span>
 </code></pre></div>
 <hr/>
@@ -3174,26 +3222,40 @@ The format spec <code>&lt;float&gt;:&lt;status&gt;</code> must be parsed consist
 <h2 id="9-variable-dependency-map">9. Variable Dependency Map<a class="headerlink" href="#9-variable-dependency-map" title="Permanent link">¶</a></h2>
 <p>Shows which variables must exist before others can function correctly.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_CI_FAILURE_THRESHOLD", "CODEX_CI_FAILURE_RATE\n(parser)"'}}%%
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>graph LR
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>    THRESHOLD["CODEX_CI_FAILURE_THRESHOLD"] --&gt; |required by| RATE["CODEX_CI_FAILURE_RATE\n(parser)"]
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    RATE --&gt; |feeds| LAST_GREEN["CODEX_CI_LAST_GREEN_SHA\n(written when ok)"]
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    MAX_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"] --&gt; |required by| MANIFEST_SCRIPT["generate_manifest.py\nsanitize_for_injection()"]
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    LTM_DAYS["COGNITIVE_BRAIN_LTM_RETENTION_DAYS"] --&gt; |required by| PRUNE_SCRIPT["prune_corpus.py"]
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    MIN_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE"] --&gt; |required by| BRAIN_IFACE["brain_interface.py\nquery_patterns()"]
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    MEM_TIER["COGNITIVE_BRAIN_MEMORY_TIER"] --&gt; BRAIN_IFACE
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    MANIFEST_SCRIPT --&gt; |builds| INJECTION_PAYLOAD["Session injection payload\n&lt;repository_memories&gt;"]
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    BRAIN_IFACE --&gt; INJECTION_PAYLOAD
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    SESSION_NUM["COGNITIVE_BRAIN_SESSION_NUMBER"] --&gt; |tags| INJECTION_PAYLOAD
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>    CLI_URL["COPILOT_CLI_BASE_URL"] --&gt; |VITE_CLI_API_URL| FE["cognitive_app frontend"]
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>    CLI_ENABLED["COPILOT_CLI_ENABLED"] --&gt; |gates| SERVER_START["CLI server startup step"]
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>    MAX_AUTON["COPILOT_AGENT_MAX_AUTONOMY_LEVEL"] --&gt; |caps| E_TO_D["e-to-d-transition-gate.yml"]
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>    RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED"] --&gt; |gates| SESSION_AGENT["session-log-retrieval-agent"]
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>graph LR
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> THRESHOLD["CODEX_CI_FAILURE_THRESHOLD"] --&gt; |required by| RATE["CODEX_CI_FAILURE_RATE\n(parser)"]
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> RATE --&gt; |feeds| LAST_GREEN["CODEX_CI_LAST_GREEN_SHA\n(written when ok)"]
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> MAX_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"] --&gt; |required by| MANIFEST_SCRIPT["generate_manifest.py\nsanitize_for_injection()"]
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> LTM_DAYS["COGNITIVE_BRAIN_LTM_RETENTION_DAYS"] --&gt; |required by| PRUNE_SCRIPT["prune_corpus.py"]
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> MIN_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE"] --&gt; |required by| BRAIN_IFACE["brain_interface.py\nquery_patterns()"]
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> MEM_TIER["COGNITIVE_BRAIN_MEMORY_TIER"] --&gt; BRAIN_IFACE
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> MANIFEST_SCRIPT --&gt; |builds| INJECTION_PAYLOAD["Session injection payload\n&lt;repository_memories&gt;"]
 <a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>    AUTO_PROMOTE["AUTO_PROMOTE_TIER_ENABLED"] --&gt; |gates| PROMOTE_SCRIPT["auto_promote_tier.py"]
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>    EMBED_REBUILD["EMBEDDING_INDEX_AUTO_REBUILD"] --&gt; |gates| FAISS["embedding-index-rebuild.yml"]
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>    HANDOFF_TO["AGENT_HANDOFF_TIMEOUT_SECONDS"] --&gt; |configures| HANDOFF["agent-handoff-gate.yml"]
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> BRAIN_IFACE --&gt; INJECTION_PAYLOAD
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> SESSION_NUM["COGNITIVE_BRAIN_SESSION_NUMBER"] --&gt; |tags| INJECTION_PAYLOAD
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> CLI_URL["COPILOT_CLI_BASE_URL"] --&gt; |VITE_CLI_API_URL| FE["cognitive_app frontend"]
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>
+<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a> CLI_ENABLED["COPILOT_CLI_ENABLED"] --&gt; |gates| SERVER_START["CLI server startup step"]
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a> MAX_AUTON["COPILOT_AGENT_MAX_AUTONOMY_LEVEL"] --&gt; |caps| E_TO_D["e-to-d-transition-gate.yml"]
+<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a>
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a> RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED"] --&gt; |gates| SESSION_AGENT["session-log-retrieval-agent"]
+<a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a>
+<a href="#__codelineno-12-31" id="__codelineno-12-31" name="__codelineno-12-31"></a> AUTO_PROMOTE["AUTO_PROMOTE_TIER_ENABLED"] --&gt; |gates| PROMOTE_SCRIPT["auto_promote_tier.py"]
+<a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a>
+<a href="#__codelineno-12-33" id="__codelineno-12-33" name="__codelineno-12-33"></a> EMBED_REBUILD["EMBEDDING_INDEX_AUTO_REBUILD"] --&gt; |gates| FAISS["embedding-index-rebuild.yml"]
+<a href="#__codelineno-12-34" id="__codelineno-12-34" name="__codelineno-12-34"></a>
+<a href="#__codelineno-12-35" id="__codelineno-12-35" name="__codelineno-12-35"></a> HANDOFF_TO["AGENT_HANDOFF_TIMEOUT_SECONDS"] --&gt; |configures| HANDOFF["agent-handoff-gate.yml"]
 </code></pre></div>
 <hr/>
 <h2 id="document-maintenance">Document Maintenance<a class="headerlink" href="#document-maintenance" title="Permanent link">¶</a></h2>
@@ -3256,6 +3318,6 @@ The format spec <code>&lt;float&gt;:&lt;status&gt;</code> must be parsed consist
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

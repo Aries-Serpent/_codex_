@@ -1,6 +1,6 @@
 # Research Note 13 — CI Failure Triage (#4100) Adaptive-Energy Deep Research Cross-Walk
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## NotebookLM Metadata
 

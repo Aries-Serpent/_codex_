@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/PR_WORKFLOW_COMMENT_PLAN/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>PR Workflow Comment Plan - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2396,22 +2396,32 @@ acts as the canonical thread for a given commit. All other comment types append
 <hr/>
 <h2 id="section-2-unified-sha-digest-architecture">Section 2 — Unified SHA-Digest Architecture<a class="headerlink" href="#section-2-unified-sha-digest-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing New push — HEAD_SHA = sha12, post_rescue_comment.py: CREATE\n&lt;!-- ci-rescue-sha:PR:sha12 --&gt;'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    A[New push — HEAD_SHA = sha12] --&gt; B{ci-rescue-sha comment exists?}
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    B -- No --&gt; C[post_rescue_comment.py: CREATE\n&lt;!-- ci-rescue-sha:PR:sha12 --&gt;]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    B -- Yes --&gt; D[Append &lt;details&gt; section]
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    A[New push — HEAD_SHA = sha12] --&gt; B{ci-rescue-sha comment exists?}
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    E[ci_rescue.py RCA] --&gt; F{rescue-sha anchor exists?}
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    F -- Yes --&gt; G[Append RCA as &lt;details&gt;\nto rescue-sha comment]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    F -- No --&gt; H[Create ci-rescue-rca comment\n as fallback]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    B -- No --&gt; C[post_rescue_comment.py: CREATE\n&lt;!-- ci-rescue-sha:PR:sha12 --&gt;]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    B -- Yes --&gt; D[Append &lt;details&gt; section]
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    I[copilot-healing result] --&gt; J[SECTION_TITLE+SECTION_CONTENT\nto post_rescue_comment.py\nAPPEND_ONLY=true]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    J --&gt; K[Append to rescue-sha anchor]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    C --&gt; D
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    G --&gt; D
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    K --&gt; D
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    D --&gt; L[Single unified thread\nper commit SHA]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    E[ci_rescue.py RCA] --&gt; F{rescue-sha anchor exists?}
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    F -- Yes --&gt; G[Append RCA as &lt;details&gt;\nto rescue-sha comment]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>    F -- No --&gt; H[Create ci-rescue-rca comment\n as fallback]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    I[copilot-healing result] --&gt; J[SECTION_TITLE+SECTION_CONTENT\nto post_rescue_comment.py\nAPPEND_ONLY=true]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    J --&gt; K[Append to rescue-sha anchor]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    C --&gt; D
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>    G --&gt; D
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    K --&gt; D
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    D --&gt; L[Single unified thread\nper commit SHA]
 </code></pre></div>
 <hr/>
 <h2 id="section-3-complete-workflow-comment-inventory">Section 3 — Complete Workflow Comment Inventory<a class="headerlink" href="#section-3-complete-workflow-comment-inventory" title="Permanent link">¶</a></h2>
@@ -2844,17 +2854,28 @@ anchor instead of spawning separate comments.</p>
 - No PR has more than 1 comment per HEAD_SHA (excluding dashboard/review-gate comments)
 - All RCA content appears inside the rescue-sha thread</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing CI failure detected, post_rescue_comment.py runs'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>flowchart TD
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    A[CI failure detected] --&gt; B[post_rescue_comment.py runs]
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    B --&gt; C{rescue-sha anchor exists?}
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    C -- Yes --&gt; D[Append &lt;details&gt; section to anchor]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    C -- No --&gt; E[Create anchor comment]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    E --&gt; D
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    D --&gt; F[Single thread per SHA]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    G[ci_rescue.py RCA] --&gt; H{rescue-sha anchor exists?}
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    H -- Yes --&gt; I[_find_rescue_sha_comment + PATCH]
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    H -- No --&gt; J[Fallback: create ci-rescue-rca]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    I --&gt; F
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>flowchart TD
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    A[CI failure detected] --&gt; B[post_rescue_comment.py runs]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    B --&gt; C{rescue-sha anchor exists?}
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    C -- Yes --&gt; D[Append &lt;details&gt; section to anchor]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    C -- No --&gt; E[Create anchor comment]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    E --&gt; D
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    D --&gt; F[Single thread per SHA]
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    G[ci_rescue.py RCA] --&gt; H{rescue-sha anchor exists?}
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    H -- Yes --&gt; I[_find_rescue_sha_comment + PATCH]
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    H -- No --&gt; J[Fallback: create ci-rescue-rca]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    I --&gt; F
 </code></pre></div>
 <hr/>
 <h3 id="agent-wec-lifecycle-agent">Agent: <code>wec-lifecycle-agent</code><a class="headerlink" href="#agent-wec-lifecycle-agent" title="Permanent link">¶</a></h3>
@@ -2881,23 +2902,40 @@ drives the checkbox-triggered workflow lifecycle (trigger on check, cancel on un
 - Opt-in workflows are dispatched within 60 seconds of being checked
 - In-progress opt-in workflow runs are cancelled within 60 seconds of being unchecked</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR body edited, detect-wec-changes job'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>flowchart TD
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    A[PR body edited] --&gt; B[detect-wec-changes job]
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    B --&gt; C{Any changes?}
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    C -- No --&gt; D[Exit — no action needed]
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    C -- Yes --&gt; E[newly_checked list]
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    C -- Yes --&gt; F[newly_unchecked list]
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    E --&gt; G[dispatch-checked job]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    F --&gt; H[cancel-unchecked job]
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    G --&gt; I[wec_enforcer.py --dispatch-checked]
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    H --&gt; J[wec_enforcer.py --cancel-unchecked]
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    I --&gt; K[Workflow runs dispatched]
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    J --&gt; L[In-progress runs cancelled]
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    A --&gt; M[validate-wec-integrity job]
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    M --&gt; N[wec_enforcer.py --validate-body]
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    N --&gt; O{Always-required items checked?}
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    O -- Yes --&gt; P[ WEC valid]
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    O -- No --&gt; Q[ Fail — missing required items]
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart TD
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    A[PR body edited] --&gt; B[detect-wec-changes job]
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    B --&gt; C{Any changes?}
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    C -- No --&gt; D[Exit — no action needed]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    C -- Yes --&gt; E[newly_checked list]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    C -- Yes --&gt; F[newly_unchecked list]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    E --&gt; G[dispatch-checked job]
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    F --&gt; H[cancel-unchecked job]
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    G --&gt; I[wec_enforcer.py --dispatch-checked]
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    H --&gt; J[wec_enforcer.py --cancel-unchecked]
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>    I --&gt; K[Workflow runs dispatched]
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    J --&gt; L[In-progress runs cancelled]
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    A --&gt; M[validate-wec-integrity job]
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    M --&gt; N[wec_enforcer.py --validate-body]
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>    N --&gt; O{Always-required items checked?}
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>    O -- Yes --&gt; P[ WEC valid]
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>    O -- No --&gt; Q[ Fail — missing required items]
 </code></pre></div>
 <hr/>
 <h2 id="section-6-implementation-checklist">Section 6 — Implementation Checklist<a class="headerlink" href="#section-6-implementation-checklist" title="Permanent link">¶</a></h2>
@@ -2944,6 +2982,6 @@ drives the checkbox-triggered workflow lifecycle (trigger on check, cancel on un
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

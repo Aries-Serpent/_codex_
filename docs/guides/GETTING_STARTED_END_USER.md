@@ -1,6 +1,6 @@
 ## Getting Started Guide for End Users & Business Users
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-07-08
 **Target Audience:** Business analysts, non-technical users, decision makers, SMEs

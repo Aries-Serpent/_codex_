@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/INSTALLATION/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Installation Guide - Aries-Serpent ML v0.1.0 - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2420,7 +2420,7 @@
 <a class="md-nav__link" href="#linux-ubuntudebianfedora">
 <span class="md-ellipsis">
       
-        🐧 Linux (Ubuntu/Debian/Fedora)
+        Linux (Ubuntu/Debian/Fedora)
       
     </span>
 </a>
@@ -2429,7 +2429,7 @@
 <a class="md-nav__link" href="#macos-intel-apple-silicon">
 <span class="md-ellipsis">
       
-        🍎 macOS (Intel &amp; Apple Silicon)
+        macOS (Intel &amp; Apple Silicon)
       
     </span>
 </a>
@@ -2447,7 +2447,7 @@
 <a class="md-nav__link" href="#docker-all-platforms">
 <span class="md-ellipsis">
       
-        🐳 Docker (All Platforms)
+        Docker (All Platforms)
       
     </span>
 </a>
@@ -2456,7 +2456,7 @@
 <a class="md-nav__link" href="#kubernetes-enterprise">
 <span class="md-ellipsis">
       
-        ☸️ Kubernetes (Enterprise)
+        Kubernetes (Enterprise)
       
     </span>
 </a>
@@ -2786,8 +2786,8 @@
 <h1 id="installation-guide-aries-serpent-ml-v010">Installation Guide - Aries-Serpent ML v0.1.0<a class="headerlink" href="#installation-guide-aries-serpent-ml-v010" title="Permanent link">¶</a></h1>
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
-<p><strong>Document Type:</strong> User Guide<br/>
-<strong>Audience:</strong> Developers, DevOps Engineers, System Administrators, ML Engineers<br/>
+<p><strong>Document Type:</strong> User Guide
+<strong>Audience:</strong> Developers, DevOps Engineers, System Administrators, ML Engineers
 <strong>Last Updated: 2026-07-10
 </strong>Version:** 0.1.0</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2966,7 +2966,7 @@
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>docker<span class="w"> </span>--version
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="c1"># (Optional) Check CUDA availability</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>nvidia-smi<span class="w">  </span><span class="c1"># if GPU support needed</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>nvidia-smi<span class="w"> </span><span class="c1"># if GPU support needed</span>
 </code></pre></div>
 <hr/>
 <h2 id="installation-methods">Installation Methods<a class="headerlink" href="#installation-methods" title="Permanent link">¶</a></h2>
@@ -2975,22 +2975,22 @@
 <p><strong>Best for:</strong> Most users, production deployments, reproducible environments</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Create virtual environment (highly recommended)</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>codex-env
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nb">source</span><span class="w"> </span>codex-env/bin/activate<span class="w">  </span><span class="c1"># On Windows: codex-env\Scripts\activate</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nb">source</span><span class="w"> </span>codex-env/bin/activate<span class="w"> </span><span class="c1"># On Windows: codex-env\Scripts\activate</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Upgrade pip to latest</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1"># Install with your chosen profile</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">      </span><span class="c1"># Most common ⭐</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0<span class="w"> </span><span class="c1"># Most common ⭐</span>
 <a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># OR</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">         </span><span class="c1"># Lightweight</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0<span class="w"> </span><span class="c1"># Lightweight</span>
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="c1"># OR</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">         </span><span class="c1"># Development</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0<span class="w"> </span><span class="c1"># Development</span>
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># Verify installation</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(codex_ml.__version__)"</span>
 </code></pre></div>
-<p><strong>Installation time:</strong> 2-5 minutes (runtime), 1-2 minutes (core)<br/>
+<p><strong>Installation time:</strong> 2-5 minutes (runtime), 1-2 minutes (core)
 <strong>Estimated size:</strong> See <a href="#installation-profiles">Installation Profiles</a></p>
 <h3 id="method-2-source-installation-for-contributors">Method 2: Source Installation (For Contributors)<a class="headerlink" href="#method-2-source-installation-for-contributors" title="Permanent link">¶</a></h3>
 <p><strong>Best for:</strong> Development, testing, contributing to the project</p>
@@ -3000,7 +3000,7 @@
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="c1"># Create and activate virtual environment</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w"> </span><span class="c1"># On Windows: venv\Scripts\activate</span>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># Install in development mode with all dependencies</span>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[full]"</span>
@@ -3011,7 +3011,7 @@
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="c1"># Run smoke test</span>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>codex-ml<span class="w"> </span>--help
 </code></pre></div>
-<p><strong>Installation time:</strong> 5-15 minutes (includes compilation)<br/>
+<p><strong>Installation time:</strong> 5-15 minutes (includes compilation)
 <strong>Best combined with:</strong> Pre-commit hooks setup</p>
 <h3 id="method-3-docker-installation-containerized">Method 3: Docker Installation (Containerized)<a class="headerlink" href="#method-3-docker-installation-containerized" title="Permanent link">¶</a></h3>
 <p><strong>Best for:</strong> Reproducible environments, CI/CD, cloud deployment</p>
@@ -3023,13 +3023,13 @@
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Run with mounted working directory</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/workspace<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">  </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span>codex-ml<span class="w"> </span>train<span class="w"> </span>config.yaml
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w"> </span>codex-ml<span class="w"> </span>train<span class="w"> </span>config.yaml
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="c1"># Build locally from Dockerfile</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
 </code></pre></div>
-<p><strong>Container size:</strong> ~1.5 GB (pre-built image)<br/>
+<p><strong>Container size:</strong> ~1.5 GB (pre-built image)
 <strong>Requires:</strong> Docker or Docker Desktop</p>
 <h3 id="method-4-offline-installation-air-gapped-environments">Method 4: Offline Installation (Air-Gapped Environments)<a class="headerlink" href="#method-4-offline-installation-air-gapped-environments" title="Permanent link">¶</a></h3>
 <p><strong>Best for:</strong> Restricted network environments, corporate networks</p>
@@ -3050,7 +3050,7 @@
 <p><strong>See also:</strong> <code>docs/release/OFFLINE_DEPLOYMENT.md</code> for detailed air-gapped setup</p>
 <hr/>
 <h2 id="platform-specific-instructions">Platform-Specific Instructions<a class="headerlink" href="#platform-specific-instructions" title="Permanent link">¶</a></h2>
-<h3 id="linux-ubuntudebianfedora">🐧 Linux (Ubuntu/Debian/Fedora)<a class="headerlink" href="#linux-ubuntudebianfedora" title="Permanent link">¶</a></h3>
+<h3 id="linux-ubuntudebianfedora">Linux (Ubuntu/Debian/Fedora)<a class="headerlink" href="#linux-ubuntudebianfedora" title="Permanent link">¶</a></h3>
 <h4 id="ubuntudebian">Ubuntu/Debian<a class="headerlink" href="#ubuntudebian" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Update system packages</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> </span>-y
@@ -3095,7 +3095,7 @@
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import torch; print(torch.cuda.is_available())"</span>
 </code></pre></div>
 <hr/>
-<h3 id="macos-intel-apple-silicon">🍎 macOS (Intel &amp; Apple Silicon)<a class="headerlink" href="#macos-intel-apple-silicon" title="Permanent link">¶</a></h3>
+<h3 id="macos-intel-apple-silicon">macOS (Intel &amp; Apple Silicon)<a class="headerlink" href="#macos-intel-apple-silicon" title="Permanent link">¶</a></h3>
 <h4 id="prerequisites-for-macos">Prerequisites for macOS<a class="headerlink" href="#prerequisites-for-macos" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Install Homebrew if not already installed</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">"</span>
@@ -3174,7 +3174,7 @@
 <a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="nb">Get-ExecutionPolicy</span> <span class="n">-List</span>
 </code></pre></div>
 <hr/>
-<h3 id="docker-all-platforms">🐳 Docker (All Platforms)<a class="headerlink" href="#docker-all-platforms" title="Permanent link">¶</a></h3>
+<h3 id="docker-all-platforms">Docker (All Platforms)<a class="headerlink" href="#docker-all-platforms" title="Permanent link">¶</a></h3>
 <h4 id="using-pre-built-image-easiest">Using Pre-Built Image (Easiest)<a class="headerlink" href="#using-pre-built-image-easiest" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Pull the latest image</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime
@@ -3187,7 +3187,7 @@
 <a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
 <a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="c1"># With GPU support (requires nvidia-docker)</span>
 <a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="s2">"import torch; print(f'GPU available: {torch.cuda.is_available()}')"</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="s2">"import torch; print(f'GPU available: {torch.cuda.is_available()}')"</span>
 </code></pre></div>
 <h4 id="building-locally">Building Locally<a class="headerlink" href="#building-locally" title="Permanent link">¶</a></h4>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Clone the repository</span>
@@ -3207,22 +3207,22 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># docker-compose.yml</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.8'</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="nt">services</span><span class="p">:</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">  </span><span class="nt">codex</span><span class="p">:</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex:latest</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.:/workspace</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w">    </span><span class="nt">working_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/workspace</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin/bash</span>
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w">    </span><span class="nt">stdin_open</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w">    </span><span class="nt">tty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span><span class="nt">codex</span><span class="p">:</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w"> </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex:latest</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w"> </span><span class="nt">volumes</span><span class="p">:</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.:/workspace</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w"> </span><span class="nt">working_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/workspace</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin/bash</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w"> </span><span class="nt">stdin_open</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w"> </span><span class="nt">tty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Run with docker-compose</span>
 <a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>codex
 <a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>codex<span class="w"> </span>codex-ml<span class="w"> </span>--help
 </code></pre></div>
 <hr/>
-<h3 id="kubernetes-enterprise">☸️ Kubernetes (Enterprise)<a class="headerlink" href="#kubernetes-enterprise" title="Permanent link">¶</a></h3>
+<h3 id="kubernetes-enterprise">Kubernetes (Enterprise)<a class="headerlink" href="#kubernetes-enterprise" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Create namespace</span>
 <a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>codex
 <a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
@@ -3264,22 +3264,22 @@
 <a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 <a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="s">packages = ['pydantic', 'hydra', 'omegaconf', 'typer', 'click']</span>
 <a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="s">for pkg in packages:</span>
-<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a><span class="s">    try:</span>
-<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="s">        __import__(pkg)</span>
-<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="s">        print(f' {pkg}')</span>
-<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="s">    except ImportError:</span>
-<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="s">        print(f' {pkg}')</span>
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a><span class="s"> try:</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="s"> __import__(pkg)</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="s"> print(f' {pkg}')</span>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="s"> except ImportError:</span>
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="s"> print(f' {pkg}')</span>
 <a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a><span class="s">EOF</span>
 <a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a>
 <a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a><span class="c1"># 3. Runtime-specific packages (if runtime/full profile)</span>
 <a href="#__codelineno-21-20" id="__codelineno-21-20" name="__codelineno-21-20"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 <a href="#__codelineno-21-21" id="__codelineno-21-21" name="__codelineno-21-21"></a><span class="s">try:</span>
-<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a><span class="s">    import torch</span>
-<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a><span class="s">    print(f' PyTorch {torch.__version__}')</span>
-<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a><span class="s">    if torch.cuda.is_available():</span>
-<a href="#__codelineno-21-25" id="__codelineno-21-25" name="__codelineno-21-25"></a><span class="s">        print(f'  - GPU available: {torch.cuda.get_device_name(0)}')</span>
+<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a><span class="s"> import torch</span>
+<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a><span class="s"> print(f' PyTorch {torch.__version__}')</span>
+<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a><span class="s"> if torch.cuda.is_available():</span>
+<a href="#__codelineno-21-25" id="__codelineno-21-25" name="__codelineno-21-25"></a><span class="s"> print(f' - GPU available: {torch.cuda.get_device_name(0)}')</span>
 <a href="#__codelineno-21-26" id="__codelineno-21-26" name="__codelineno-21-26"></a><span class="s">except ImportError:</span>
-<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a><span class="s">    print('ℹ PyTorch not installed (core profile)')</span>
+<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a><span class="s"> print('ℹ PyTorch not installed (core profile)')</span>
 <a href="#__codelineno-21-28" id="__codelineno-21-28" name="__codelineno-21-28"></a><span class="s">EOF</span>
 <a href="#__codelineno-21-29" id="__codelineno-21-29" name="__codelineno-21-29"></a>
 <a href="#__codelineno-21-30" id="__codelineno-21-30" name="__codelineno-21-30"></a><span class="c1"># 4. Test CLI commands</span>
@@ -3289,7 +3289,7 @@
 <a href="#__codelineno-21-34" id="__codelineno-21-34" name="__codelineno-21-34"></a>
 <a href="#__codelineno-21-35" id="__codelineno-21-35" name="__codelineno-21-35"></a><span class="c1"># 5. Run smoke tests (if full profile)</span>
 <a href="#__codelineno-21-36" id="__codelineno-21-36" name="__codelineno-21-36"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-x<span class="w"> </span>--tb<span class="o">=</span>short<span class="w"> </span>-k<span class="w"> </span><span class="s2">"test_smoke"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-21-37" id="__codelineno-21-37" name="__codelineno-21-37"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ℹ Smoke tests skipped (full profile only)"</span>
+<a href="#__codelineno-21-37" id="__codelineno-21-37" name="__codelineno-21-37"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ℹ Smoke tests skipped (full profile only)"</span>
 </code></pre></div>
 <h3 id="platform-specific-verification">Platform-Specific Verification<a class="headerlink" href="#platform-specific-verification" title="Permanent link">¶</a></h3>
 <p><strong>Linux/macOS:</strong>
@@ -3310,7 +3310,7 @@
 </code></pre></div></p>
 <p><strong>Docker:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(codex_ml.__version__)"</span>
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(codex_ml.__version__)"</span>
 </code></pre></div></p>
 <h3 id="test-by-profile">Test by Profile<a class="headerlink" href="#test-by-profile" title="Permanent link">¶</a></h3>
 <p><strong>Core Profile Test:</strong>
@@ -3431,26 +3431,26 @@
 <p>** Includes:<strong>
 - Everything in Core + Runtime profiles
 - </strong>Development Tools:<strong>
-  - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
-  - Linting: ruff, black, isort, mypy
-  - Pre-commit hooks, git integration
-  - Type checking at 3.12+ level
+ - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
+ - Linting: ruff, black, isort, mypy
+ - Pre-commit hooks, git integration
+ - Type checking at 3.12+ level
 - </strong>Documentation:<strong> MkDocs, Sphinx support
 - </strong>Profiling &amp; Analysis:<strong>
-  - Memory/CPU profiling
-  - Mutation testing (mutmut)
-  - Coverage analysis and gap-fill
+ - Memory/CPU profiling
+ - Mutation testing (mutmut)
+ - Coverage analysis and gap-fill
 - </strong>ML Training:<strong>
-  - Distributed training utilities
-  - Experiment tracking (MLflow)
-  - Hyperparameter tuning
+ - Distributed training utilities
+ - Experiment tracking (MLflow)
+ - Hyperparameter tuning
 - </strong>Data Science:<strong>
-  - Jupyter notebook support
-  - Advanced visualization
+ - Jupyter notebook support
+ - Advanced visualization
 - </strong>Cognitive Brain:**
-  - OODA loop execution engine
-  - Pattern matching and learning
-  - Autonomous decision-making</p>
+ - OODA loop execution engine
+ - Pattern matching and learning
+ - Autonomous decision-making</p>
 <p>** Best for:**
 - Local development environments
 - Research and experimentation
@@ -3573,8 +3573,8 @@
 <a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a>codex-ml<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND
 <a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a>
 <a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a><span class="c1"># Aliases</span>
-<a href="#__codelineno-35-5" id="__codelineno-35-5" name="__codelineno-35-5"></a>codex-cli<span class="w">        </span><span class="c1"># Alternative entry point</span>
-<a href="#__codelineno-35-6" id="__codelineno-35-6" name="__codelineno-35-6"></a>codex-ml-cli<span class="w">     </span><span class="c1"># Explicit naming</span>
+<a href="#__codelineno-35-5" id="__codelineno-35-5" name="__codelineno-35-5"></a>codex-cli<span class="w"> </span><span class="c1"># Alternative entry point</span>
+<a href="#__codelineno-35-6" id="__codelineno-35-6" name="__codelineno-35-6"></a>codex-ml-cli<span class="w"> </span><span class="c1"># Explicit naming</span>
 <a href="#__codelineno-35-7" id="__codelineno-35-7" name="__codelineno-35-7"></a>
 <a href="#__codelineno-35-8" id="__codelineno-35-8" name="__codelineno-35-8"></a><span class="c1"># Help and info</span>
 <a href="#__codelineno-35-9" id="__codelineno-35-9" name="__codelineno-35-9"></a>codex-ml<span class="w"> </span>--help
@@ -3676,10 +3676,10 @@
 <a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="c1"># Initialize OODA loop orchestrator</span>
 <a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a><span class="n">orchestrator</span> <span class="o">=</span> <span class="n">OODAOrchestrator</span><span class="p">()</span>
 <a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a>
-<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a><span class="c1"># Observe → Orient → Decide → Act</span>
+<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a><span class="c1"># Observe Orient Decide Act</span>
 <a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a>    <span class="n">observation</span><span class="o">=</span><span class="s2">"Input data"</span><span class="p">,</span>
-<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"mode"</span><span class="p">:</span> <span class="s2">"inference"</span><span class="p">}</span>
+<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a> <span class="n">observation</span><span class="o">=</span><span class="s2">"Input data"</span><span class="p">,</span>
+<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"mode"</span><span class="p">:</span> <span class="s2">"inference"</span><span class="p">}</span>
 <a href="#__codelineno-40-10" id="__codelineno-40-10" name="__codelineno-40-10"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -3707,8 +3707,8 @@
 <a href="#__codelineno-42-2" id="__codelineno-42-2" name="__codelineno-42-2"></a>pip<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>codex
 <a href="#__codelineno-42-3" id="__codelineno-42-3" name="__codelineno-42-3"></a>
 <a href="#__codelineno-42-4" id="__codelineno-42-4" name="__codelineno-42-4"></a><span class="c1"># 2. Verify virtual environment is activated</span>
-<a href="#__codelineno-42-5" id="__codelineno-42-5" name="__codelineno-42-5"></a>which<span class="w"> </span>python<span class="w">  </span><span class="c1"># Should show path in your venv</span>
-<a href="#__codelineno-42-6" id="__codelineno-42-6" name="__codelineno-42-6"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$VIRTUAL_ENV</span><span class="w">  </span><span class="c1"># Should show venv path</span>
+<a href="#__codelineno-42-5" id="__codelineno-42-5" name="__codelineno-42-5"></a>which<span class="w"> </span>python<span class="w"> </span><span class="c1"># Should show path in your venv</span>
+<a href="#__codelineno-42-6" id="__codelineno-42-6" name="__codelineno-42-6"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$VIRTUAL_ENV</span><span class="w"> </span><span class="c1"># Should show venv path</span>
 <a href="#__codelineno-42-7" id="__codelineno-42-7" name="__codelineno-42-7"></a>
 <a href="#__codelineno-42-8" id="__codelineno-42-8" name="__codelineno-42-8"></a><span class="c1"># 3. Reinstall entry points</span>
 <a href="#__codelineno-42-9" id="__codelineno-42-9" name="__codelineno-42-9"></a>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
@@ -3721,7 +3721,7 @@
 <p><strong>Solutions:</strong></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="c1"># 1. Create fresh virtual environment</span>
 <a href="#__codelineno-43-2" id="__codelineno-43-2" name="__codelineno-43-2"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>fresh-env
-<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a><span class="nb">source</span><span class="w"> </span>fresh-env/bin/activate<span class="w">  </span><span class="c1"># or fresh-env\Scripts\activate on Windows</span>
+<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a><span class="nb">source</span><span class="w"> </span>fresh-env/bin/activate<span class="w"> </span><span class="c1"># or fresh-env\Scripts\activate on Windows</span>
 <a href="#__codelineno-43-4" id="__codelineno-43-4" name="__codelineno-43-4"></a>
 <a href="#__codelineno-43-5" id="__codelineno-43-5" name="__codelineno-43-5"></a><span class="c1"># 2. Upgrade pip first</span>
 <a href="#__codelineno-43-6" id="__codelineno-43-6" name="__codelineno-43-6"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
@@ -3767,7 +3767,7 @@
 <a href="#__codelineno-45-10" id="__codelineno-45-10" name="__codelineno-45-10"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex:0.1.0<span class="w"> </span>.
 <a href="#__codelineno-45-11" id="__codelineno-45-11" name="__codelineno-45-11"></a>
 <a href="#__codelineno-45-12" id="__codelineno-45-12" name="__codelineno-45-12"></a><span class="c1"># 4. Check Docker daemon</span>
-<a href="#__codelineno-45-13" id="__codelineno-45-13" name="__codelineno-45-13"></a>docker<span class="w"> </span>ps<span class="w">  </span><span class="c1"># Verify Docker is running</span>
+<a href="#__codelineno-45-13" id="__codelineno-45-13" name="__codelineno-45-13"></a>docker<span class="w"> </span>ps<span class="w"> </span><span class="c1"># Verify Docker is running</span>
 </code></pre></div>
 <h3 id="platform-specific-issues">Platform-Specific Issues<a class="headerlink" href="#platform-specific-issues" title="Permanent link">¶</a></h3>
 <h4 id="macos-python312-command-not-found">macOS: "Python3.12 command not found"<a class="headerlink" href="#macos-python312-command-not-found" title="Permanent link">¶</a></h4>
@@ -3791,7 +3791,7 @@
 <a href="#__codelineno-47-8" id="__codelineno-47-8" name="__codelineno-47-8"></a><span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">"codex-env\Scripts\activate.bat"</span>
 </code></pre></div>
 <h4 id="linux-missing-development-headers">Linux: Missing Development Headers<a class="headerlink" href="#linux-missing-development-headers" title="Permanent link">¶</a></h4>
-<p><strong>Symptoms:</strong> <code>error: Microsoft Visual C++ 14.0 or greater is required</code> (on Windows)<br/>
+<p><strong>Symptoms:</strong> <code>error: Microsoft Visual C++ 14.0 or greater is required</code> (on Windows)
 or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-48-1" id="__codelineno-48-1" name="__codelineno-48-1"></a><span class="c1"># Ubuntu/Debian</span>
 <a href="#__codelineno-48-2" id="__codelineno-48-2" name="__codelineno-48-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12-dev<span class="w"> </span>build-essential
@@ -3824,8 +3824,8 @@ or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
 <a href="#__codelineno-50-5" id="__codelineno-50-5" name="__codelineno-50-5"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python
 <a href="#__codelineno-50-6" id="__codelineno-50-6" name="__codelineno-50-6"></a>
 <a href="#__codelineno-50-7" id="__codelineno-50-7" name="__codelineno-50-7"></a><span class="c1"># 3. Check disk I/O</span>
-<a href="#__codelineno-50-8" id="__codelineno-50-8" name="__codelineno-50-8"></a>iotop<span class="w">  </span><span class="c1"># Linux</span>
-<a href="#__codelineno-50-9" id="__codelineno-50-9" name="__codelineno-50-9"></a>iostat<span class="w">  </span><span class="c1"># macOS</span>
+<a href="#__codelineno-50-8" id="__codelineno-50-8" name="__codelineno-50-8"></a>iotop<span class="w"> </span><span class="c1"># Linux</span>
+<a href="#__codelineno-50-9" id="__codelineno-50-9" name="__codelineno-50-9"></a>iostat<span class="w"> </span><span class="c1"># macOS</span>
 <a href="#__codelineno-50-10" id="__codelineno-50-10" name="__codelineno-50-10"></a>
 <a href="#__codelineno-50-11" id="__codelineno-50-11" name="__codelineno-50-11"></a><span class="c1"># 4. Enable verbose logging</span>
 <a href="#__codelineno-50-12" id="__codelineno-50-12" name="__codelineno-50-12"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOG_LEVEL</span><span class="o">=</span>DEBUG
@@ -3853,33 +3853,33 @@ or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
 <a href="#__codelineno-51-19" id="__codelineno-51-19" name="__codelineno-51-19"></a><span class="s2">print(f'PyTorch: {torch.__version__}')</span>
 <a href="#__codelineno-51-20" id="__codelineno-51-20" name="__codelineno-51-20"></a><span class="s2">print(f'CUDA Available: {torch.cuda.is_available()}')</span>
 <a href="#__codelineno-51-21" id="__codelineno-51-21" name="__codelineno-51-21"></a><span class="s2">if torch.cuda.is_available():</span>
-<a href="#__codelineno-51-22" id="__codelineno-51-22" name="__codelineno-51-22"></a><span class="s2">    print(f'GPU: {torch.cuda.get_device_name(0)}')</span>
-<a href="#__codelineno-51-23" id="__codelineno-51-23" name="__codelineno-51-23"></a><span class="s2">    print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')</span>
+<a href="#__codelineno-51-22" id="__codelineno-51-22" name="__codelineno-51-22"></a><span class="s2"> print(f'GPU: {torch.cuda.get_device_name(0)}')</span>
+<a href="#__codelineno-51-23" id="__codelineno-51-23" name="__codelineno-51-23"></a><span class="s2"> print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')</span>
 <a href="#__codelineno-51-24" id="__codelineno-51-24" name="__codelineno-51-24"></a><span class="s2">"</span>
 </code></pre></div>
 <hr/>
 <h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">¶</a></h2>
 <h3 id="documentation-resources">Documentation Resources<a class="headerlink" href="#documentation-resources" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>🏠 Main README:</strong> <a href="../README.md">README.md</a></li>
+<li>** Main README:** <a href="../README.md">README.md</a></li>
 <li>** Quick Start ML:** <a href="../quickstart/QUICK_START_ML/">./quickstart/QUICK_START_ML.md</a></li>
 <li>** Cognitive Brain Guide:** <a href="../quickstart/QUICK_START_COGNITIVE_BRAIN/">./quickstart/QUICK_START_COGNITIVE_BRAIN.md</a></li>
 <li>** Configuration Guide:** <a href="configuration/">docs/configuration/</a></li>
-<li><strong>🐳 Docker Guide:</strong> <a href="../../docker/Dockerfile.api">docker/README.md</a></li>
-<li><strong>☸️ Kubernetes Guide:</strong> <a href="../../k8s/Deployment.yaml">k8s/README.md</a></li>
+<li>** Docker Guide:** <a href="../../docker/Dockerfile.api">docker/README.md</a></li>
+<li>** Kubernetes Guide:** <a href="../../k8s/Deployment.yaml">k8s/README.md</a></li>
 </ul>
 <h3 id="community-support">Community Support<a class="headerlink" href="#community-support" title="Permanent link">¶</a></h3>
 <ul>
 <li>** Issues:** <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a></li>
-<li><strong>💬 Discussions:</strong> <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a></li>
-<li><strong>🐛 Bug Reports:</strong> <a href="https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md">Report a Bug</a></li>
+<li>** Discussions:** <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a></li>
+<li>** Bug Reports:** <a href="https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md">Report a Bug</a></li>
 <li>** Feature Requests:** <a href="https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md">Request a Feature</a></li>
 </ul>
 <h3 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>📦 PyPI Package:</strong> https://pypi.org/project/codex-ml/</li>
-<li><strong>🐳 Docker Hub:</strong> https://ghcr.io/aries-serpent/codex</li>
-<li>** Full Documentation:** </li>
+<li>** PyPI Package:** https://pypi.org/project/codex-ml/</li>
+<li>** Docker Hub:** https://ghcr.io/aries-serpent/codex</li>
+<li>** Full Documentation:**</li>
 <li>** Contributing Guide:** <a href="../CONTRIBUTING.md">CONTRIBUTING.md</a></li>
 </ul>
 <hr/>
@@ -3936,7 +3936,7 @@ or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
 <p>codex-ml is open source and available under the <a href="../LICENSE">MIT License</a>.</p>
 <hr/>
 <p><strong>Last Updated: 2026-07-10
-</strong>Installation Status:<strong>  Ready for Production<br/>
+</strong>Installation Status:<strong> Ready for Production
 </strong>Support Level:** Production</p>
 </article>
 </div>
@@ -3967,6 +3967,6 @@ or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

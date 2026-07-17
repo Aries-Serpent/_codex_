@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/RAG_QUICKSTART/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>RAG Quickstart Guide - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2569,7 +2569,7 @@
 <h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Fast Semantic Search</strong>: Query code and docs using natural language</li>
-<li>🏢 <strong>Multi-Tenant</strong>: Isolated workspaces for different projects/customers</li>
+<li><strong>Multi-Tenant</strong>: Isolated workspaces for different projects/customers</li>
 <li><strong>Smart Caching</strong>: 100x faster repeated queries with LRU cache</li>
 <li><strong>Full Provenance</strong>: Track every result back to source with line numbers</li>
 <li><strong>No API Keys</strong>: Uses local sentence-transformers (offline-capable)</li>
@@ -2600,15 +2600,15 @@
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="c1"># Index your documentation</span>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="n">index_path</span> <span class="o">=</span> <span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">files</span><span class="o">=</span><span class="p">[</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        <span class="n">Path</span><span class="p">(</span><span class="s2">"README.md"</span><span class="p">),</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="n">Path</span><span class="p">(</span><span class="s2">"docs/guide.md"</span><span class="p">),</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>        <span class="n">Path</span><span class="p">(</span><span class="s2">"docs/api.md"</span><span class="p">)</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    <span class="p">],</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span><span class="p">,</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="n">Path</span><span class="p">(</span><span class="s2">"README.md"</span><span class="p">),</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="n">Path</span><span class="p">(</span><span class="s2">"docs/guide.md"</span><span class="p">),</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a> <span class="n">Path</span><span class="p">(</span><span class="s2">"docs/api.md"</span><span class="p">)</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a> <span class="p">],</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a> <span class="n">overlap</span><span class="o">=</span><span class="mi">128</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="p">)</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
 <a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Index created at: </span><span class="si">{</span><span class="n">index_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -2624,8 +2624,8 @@
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="c1"># Create retriever</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">retriever</span> <span class="o">=</span> <span class="n">Retriever</span><span class="p">(</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="p">)</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1"># Search with natural language</span>
@@ -2633,33 +2633,33 @@
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="c1"># Display results</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2"> (lines </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'start_line'</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'end_line'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2"> (lines </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'start_line'</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'end_line'</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Score: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 </code></pre></div>
 <p><strong>Output</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>1. README.md (lines 15-18)
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>   Score: 0.423
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>   ## Installation
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> Score: 0.423
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a> ## Installation
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>   Install Codex RAG with pip:
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>   ```bash
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>   pip install -e .
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>   ```...
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> Install Codex RAG with pip:
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> ```bash
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> pip install -e .
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a> ```...
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>2. docs/guide.md (lines 8-12)
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>   Score: 0.512
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>   Getting started is easy. First, install the required dependencies...
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> Score: 0.512
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> Getting started is easy. First, install the required dependencies...
 </code></pre></div></p>
 <h2 id="step-3-use-caching-for-speed">Step 3: Use Caching for Speed<a class="headerlink" href="#step-3-use-caching-for-speed" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">codex.rag</span> <span class="kn">import</span> <span class="n">CachedRetriever</span>
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="c1"># Create cached retriever (100x faster for repeated queries!)</span>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="n">cached</span> <span class="o">=</span> <span class="n">CachedRetriever</span><span class="p">(</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span><span class="p">,</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="n">cache_ttl</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>       <span class="c1"># 1 hour cache</span>
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>    <span class="n">cache_maxsize</span><span class="o">=</span><span class="mi">1000</span>    <span class="c1"># Up to 1000 queries</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"my_docs"</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"quickstart"</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a> <span class="n">cache_ttl</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="c1"># 1 hour cache</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a> <span class="n">cache_maxsize</span><span class="o">=</span><span class="mi">1000</span> <span class="c1"># Up to 1000 queries</span>
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="p">)</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="c1"># First query - cache miss (~100-200ms)</span>
@@ -2683,9 +2683,9 @@
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="n">python_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"src/**/*.py"</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="n">files</span><span class="o">=</span><span class="n">python_files</span><span class="p">,</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"codebase"</span><span class="p">,</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"myproject"</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> <span class="n">files</span><span class="o">=</span><span class="n">python_files</span><span class="p">,</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"codebase"</span><span class="p">,</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"myproject"</span>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="p">)</span>
 <a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="c1"># Search for async functions</span>
@@ -2693,7 +2693,7 @@
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"async database operations"</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>
 <a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">80</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][:</span><span class="mi">80</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="use-case-2-multi-tenant-documentation">Use Case 2: Multi-Tenant Documentation<a class="headerlink" href="#use-case-2-multi-tenant-documentation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">codex.rag</span> <span class="kn">import</span> <span class="n">manage_tenant_indices</span>
@@ -2701,13 +2701,13 @@
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Create separate indices for different customers</span>
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="k">for</span> <span class="n">customer</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"acme"</span><span class="p">,</span> <span class="s2">"globex"</span><span class="p">,</span> <span class="s2">"initech"</span><span class="p">]:</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">manage_tenant_indices</span><span class="p">(</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>        <span class="n">tenant_id</span><span class="o">=</span><span class="n">customer</span><span class="p">,</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>        <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>        <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"docs"</span><span class="p">],</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>        <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">"docs/</span><span class="si">{</span><span class="n">customer</span><span class="si">}</span><span class="s2">/"</span><span class="p">)],</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="p">)</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Created index for </span><span class="si">{</span><span class="n">customer</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">manage_tenant_indices</span><span class="p">(</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="n">customer</span><span class="p">,</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"docs"</span><span class="p">],</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">"docs/</span><span class="si">{</span><span class="n">customer</span><span class="si">}</span><span class="s2">/"</span><span class="p">)],</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> <span class="p">)</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Created index for </span><span class="si">{</span><span class="n">customer</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>
 <a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="c1"># Query customer-specific docs</span>
 <a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="n">retriever_acme</span> <span class="o">=</span> <span class="n">Retriever</span><span class="p">(</span><span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"acme"</span><span class="p">)</span>
@@ -2722,25 +2722,25 @@
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>
 <a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="c1"># Create separate indices</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="n">manage_tenant_indices</span><span class="p">(</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>    <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"api_docs"</span><span class="p">],</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"docs/api/"</span><span class="p">)]</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a> <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"api_docs"</span><span class="p">],</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"docs/api/"</span><span class="p">)]</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="p">)</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>
 <a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="n">manage_tenant_indices</span><span class="p">(</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>    <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>    <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"tutorials"</span><span class="p">],</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"docs/tutorials/"</span><span class="p">)]</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="n">operation</span><span class="o">=</span><span class="s2">"create"</span><span class="p">,</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"tutorials"</span><span class="p">],</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">"docs/tutorials/"</span><span class="p">)]</span>
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a><span class="p">)</span>
 <a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>
 <a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a><span class="c1"># Merge for comprehensive search</span>
 <a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a><span class="n">result</span> <span class="o">=</span> <span class="n">manage_tenant_indices</span><span class="p">(</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>    <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>    <span class="n">operation</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>    <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"api_docs"</span><span class="p">,</span> <span class="s2">"tutorials"</span><span class="p">],</span>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>    <span class="n">merge_name</span><span class="o">=</span><span class="s2">"all_docs"</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> <span class="n">tenant_id</span><span class="o">=</span><span class="s2">"project"</span><span class="p">,</span>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> <span class="n">operation</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"api_docs"</span><span class="p">,</span> <span class="s2">"tutorials"</span><span class="p">],</span>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> <span class="n">merge_name</span><span class="o">=</span><span class="s2">"all_docs"</span>
 <a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a><span class="p">)</span>
 <a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>
 <a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Merged </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index_names</span><span class="p">)</span><span class="si">}</span><span class="s2"> indices into 'all_docs'"</span><span class="p">)</span>
@@ -2750,33 +2750,33 @@
 <h3 id="index-settings">Index Settings<a class="headerlink" href="#index-settings" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Custom chunk sizes for different content types</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">files</span><span class="o">=</span><span class="n">docs</span><span class="p">,</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"large_docs"</span><span class="p">,</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>      <span class="c1"># Larger chunks for context</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="n">overlap</span><span class="o">=</span><span class="mi">256</span>           <span class="c1"># More overlap for continuity</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">files</span><span class="o">=</span><span class="n">docs</span><span class="p">,</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"large_docs"</span><span class="p">,</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="c1"># Larger chunks for context</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="n">overlap</span><span class="o">=</span><span class="mi">256</span> <span class="c1"># More overlap for continuity</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="p">)</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    <span class="n">files</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"code_snippets"</span><span class="p">,</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>       <span class="c1"># Smaller chunks for precision</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    <span class="n">overlap</span><span class="o">=</span><span class="mi">50</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="n">files</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"code_snippets"</span><span class="p">,</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="c1"># Smaller chunks for precision</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="n">overlap</span><span class="o">=</span><span class="mi">50</span>
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="retrieval-settings">Retrieval Settings<a class="headerlink" href="#retrieval-settings" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Adjust search parameters</span>
 <a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    <span class="s2">"error handling patterns"</span><span class="p">,</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>              <span class="c1"># More results</span>
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>    <span class="n">min_score</span><span class="o">=</span><span class="mf">0.7</span>          <span class="c1"># Higher similarity threshold</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="s2">"error handling patterns"</span><span class="p">,</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="c1"># More results</span>
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> <span class="n">min_score</span><span class="o">=</span><span class="mf">0.7</span> <span class="c1"># Higher similarity threshold</span>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="p">)</span>
 </code></pre></div>
 <h2 id="cache-settings">Cache Settings<a class="headerlink" href="#cache-settings" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">cached</span> <span class="o">=</span> <span class="n">CachedRetriever</span><span class="p">(</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>    <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>    <span class="n">cache_ttl</span><span class="o">=</span><span class="mi">7200</span><span class="p">,</span>        <span class="c1"># 2 hours</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    <span class="n">cache_maxsize</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>    <span class="c1"># 5000 queries</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    <span class="n">normalize_queries</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Better cache hits</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> <span class="n">index_name</span><span class="o">=</span><span class="s2">"docs"</span><span class="p">,</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> <span class="n">cache_ttl</span><span class="o">=</span><span class="mi">7200</span><span class="p">,</span> <span class="c1"># 2 hours</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="n">cache_maxsize</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="c1"># 5000 queries</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="n">normalize_queries</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Better cache hits</span>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -2810,30 +2810,30 @@
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="n">index_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">".codex/tenants/mytenant/myindex"</span><span class="p">)</span>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">index_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Index doesn't exist. Build it first!"</span><span class="p">)</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>    <span class="n">build_index_from_files</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Index doesn't exist. Build it first!"</span><span class="p">)</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a> <span class="n">build_index_from_files</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="issue-slow-queries">Issue: Slow queries<a class="headerlink" href="#issue-slow-queries" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Use CachedRetriever for repeated queries</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="n">cached</span> <span class="o">=</span> <span class="n">CachedRetriever</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="c1"># Or reduce top_k</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"query"</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Faster than top_k=50</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"query"</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># Faster than top_k=50</span>
 </code></pre></div>
 <h2 id="issue-out-of-memory">Issue: Out of memory<a class="headerlink" href="#issue-out-of-memory" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Reduce chunk size or process files in batches</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">file_batches</span><span class="p">:</span>
-<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>    <span class="n">build_index_from_files</span><span class="p">(</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>        <span class="n">files</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
-<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a>        <span class="n">index_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"batch_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>        <span class="n">chunk_size</span><span class="o">=</span><span class="mi">500</span>  <span class="c1"># Smaller chunks = less memory</span>
-<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a>    <span class="p">)</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a> <span class="n">build_index_from_files</span><span class="p">(</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a> <span class="n">files</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a> <span class="n">index_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"batch_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">500</span> <span class="c1"># Smaller chunks = less memory</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a> <span class="p">)</span>
 <a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a>
 <a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="c1"># Then merge</span>
 <a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="n">manage_tenant_indices</span><span class="p">(</span>
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a>    <span class="n">operation</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a>    <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"batch_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">)],</span>
-<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>    <span class="n">merge_name</span><span class="o">=</span><span class="s2">"final_index"</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a> <span class="n">operation</span><span class="o">=</span><span class="s2">"merge"</span><span class="p">,</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a> <span class="n">index_names</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"batch_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">)],</span>
+<a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a> <span class="n">merge_name</span><span class="o">=</span><span class="s2">"final_index"</span>
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="p">)</span>
 </code></pre></div>
 <hr/>
@@ -2842,7 +2842,7 @@
 <li><strong>Advanced Guide</strong>: See <code>docs/RAG_ADVANCED.md</code> for multi-index, provenance, and advanced caching</li>
 <li><strong>Custom Agents</strong>: Learn about <code>@rag-index-manager</code> and <code>@semantic-search</code> agents</li>
 <li><strong>Monitoring</strong>: Set up Prometheus and Grafana dashboards</li>
-<li>🧪 <strong>Examples</strong>: Check <code>examples/rag_workflow.py</code> for complete workflows</li>
+<li><strong>Examples</strong>: Check <code>examples/rag_workflow.py</code> for complete workflows</li>
 </ul>
 <hr/>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">¶</a></h2>
@@ -2869,11 +2869,11 @@
 <h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">¶</a></h2>
 <ul>
 <li>Documentation: <code>docs/</code></li>
-<li>🐛 Issues: GitHub Issues</li>
-<li>💬 Discussions: GitHub Discussions</li>
-<li>📧 Email: rag-team@example.com</li>
+<li>Issues: GitHub Issues</li>
+<li>Discussions: GitHub Discussions</li>
+<li>Email: rag-team@example.com</li>
 </ul>
-<p>Happy searching! </p>
+<p>Happy searching!</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -2903,6 +2903,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

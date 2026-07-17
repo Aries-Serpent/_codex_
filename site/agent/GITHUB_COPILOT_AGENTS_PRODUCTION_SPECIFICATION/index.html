@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>GitHub Copilot Agents - Production Specification - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2728,68 +2728,89 @@
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">¶</a></h2>
 <h3 id="system-design">System Design<a class="headerlink" href="#system-design" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Pull Request, Issue'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "GitHub Events"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        PR[Pull Request]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        Issue[Issue]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        Push[Push Event]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        Schedule[Scheduled Event]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    end
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    subgraph "Agent Orchestrator"
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        Dispatcher[Event Dispatcher]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        Queue[Task Queue]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        Priority[Priority Manager]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    end
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    subgraph "Tier 1 Agents - GitHub Team"
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        Auth[Auth Manager]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        Security[Security Enforcer]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        Workflow[Workflow Optimizer]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        Test[Test Orchestrator]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        Deploy[Deployment Gatekeeper]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    end
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    subgraph "Tier 2 Agents - Copilot Pro+"
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        CodeReview[Code Reviewer]
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>        Architect[Architecture Analyzer]
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>        Perf[Performance Optimizer]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        Predict[Predictive Maintenance]
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>    end
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    subgraph "Data Layer"
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>        Metrics[Metrics Store]
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>        Logs[Audit Logs]
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        State[Agent State]
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    end
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    PR --&gt; Dispatcher
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    Issue --&gt; Dispatcher
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    Push --&gt; Dispatcher
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    Schedule --&gt; Dispatcher
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph "GitHub Events"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> PR[Pull Request]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> Issue[Issue]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Push[Push Event]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> Schedule[Scheduled Event]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> end
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> subgraph "Agent Orchestrator"
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> Dispatcher[Event Dispatcher]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Queue[Task Queue]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> Priority[Priority Manager]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> end
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> subgraph "Tier 1 Agents - GitHub Team"
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> Auth[Auth Manager]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> Security[Security Enforcer]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> Workflow[Workflow Optimizer]
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> Test[Test Orchestrator]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> Deploy[Deployment Gatekeeper]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> end
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> subgraph "Tier 2 Agents - Copilot Pro+"
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> CodeReview[Code Reviewer]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> Architect[Architecture Analyzer]
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> Perf[Performance Optimizer]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> Predict[Predictive Maintenance]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> end
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> subgraph "Data Layer"
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> Metrics[Metrics Store]
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> Logs[Audit Logs]
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> State[Agent State]
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> end
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> PR --&gt; Dispatcher
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> Issue --&gt; Dispatcher
 <a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    Dispatcher --&gt; Queue
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    Queue --&gt; Priority
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    Priority --&gt; Auth
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    Priority --&gt; Security
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    Priority --&gt; Workflow
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    Priority --&gt; Test
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    Priority --&gt; Deploy
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    Priority --&gt; CodeReview
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    Priority --&gt; Architect
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    Priority --&gt; Perf
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    Priority --&gt; Predict
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    Auth --&gt; Metrics
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    Security --&gt; Logs
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    Workflow --&gt; State
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>    Test --&gt; Metrics
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    Deploy --&gt; Logs
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    CodeReview --&gt; Metrics
-<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    Architect --&gt; State
-<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    Perf --&gt; Metrics
-<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    Predict --&gt; Logs
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a> Push --&gt; Dispatcher
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a> Schedule --&gt; Dispatcher
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a> Dispatcher --&gt; Queue
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a> Queue --&gt; Priority
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a> Priority --&gt; Auth
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a> Priority --&gt; Security
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a> Priority --&gt; Workflow
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a> Priority --&gt; Test
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> Priority --&gt; Deploy
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a> Priority --&gt; CodeReview
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a> Priority --&gt; Architect
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a> Priority --&gt; Perf
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a> Priority --&gt; Predict
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a> Auth --&gt; Metrics
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a> Security --&gt; Logs
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a> Workflow --&gt; State
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a> Test --&gt; Metrics
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a> Deploy --&gt; Logs
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a>
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a> CodeReview --&gt; Metrics
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a>
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a> Architect --&gt; State
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a>
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a> Perf --&gt; Metrics
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a>
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a> Predict --&gt; Logs
 </code></pre></div>
 <h3 id="design-principles">Design Principles<a class="headerlink" href="#design-principles" title="Permanent link">¶</a></h3>
 <ol>
@@ -2845,17 +2866,28 @@
 - Compliance report generation</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Cron: Monthly, Auth Manager'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>graph LR
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    Schedule[Cron: Monthly] --&gt; Agent[Auth Manager]
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    Manual[Manual Trigger] --&gt; Agent
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    Agent --&gt; CheckMFA[Check MFA Status]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    Agent --&gt; RotateTokens[Rotate JWT Secrets]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    Agent --&gt; SyncSecrets[Sync GitHub Secrets]
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    CheckMFA --&gt; Report[Generate Report]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    RotateTokens --&gt; Report
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    SyncSecrets --&gt; Report
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    Report --&gt; Issue[Create GitHub Issue]
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    Report --&gt; Metrics[Update Metrics]
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>graph LR
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> Schedule[Cron: Monthly] --&gt; Agent[Auth Manager]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a> Manual[Manual Trigger] --&gt; Agent
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> Agent --&gt; CheckMFA[Check MFA Status]
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> Agent --&gt; RotateTokens[Rotate JWT Secrets]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a> Agent --&gt; SyncSecrets[Sync GitHub Secrets]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> CheckMFA --&gt; Report[Generate Report]
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> RotateTokens --&gt; Report
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> SyncSecrets --&gt; Report
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> Report --&gt; Issue[Create GitHub Issue]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> Report --&gt; Metrics[Update Metrics]
 </code></pre></div>
 <p><strong>Configuration</strong> (<code>config.yaml</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github-auth-manager</span>
@@ -2863,35 +2895,35 @@
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">monthly</span>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_dispatch</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_dispatch</span>
 <a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CODEX_MASTER_KEY</span>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TOKEN_SECRET_KEY</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">  </span><span class="nt">optional</span><span class="p">:</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COMPLIANCE_REPORT_KEY</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CODEX_MASTER_KEY</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TOKEN_SECRET_KEY</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nt">optional</span><span class="p">:</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COMPLIANCE_REPORT_KEY</span>
 <a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="nt">actions</span><span class="p">:</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check_mfa</span>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check MFA enrollment status</span>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">    </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/mfa_enrollment_automation.py</span>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rotate_tokens</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rotate JWT signing keys</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">    </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/rotate_jwt_secret.py</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sync_secrets</span>
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sync secrets across repositories</span>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">    </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/github_secrets_sync.py</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check_mfa</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check MFA enrollment status</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/mfa_enrollment_automation.py</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rotate_tokens</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rotate JWT signing keys</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/rotate_jwt_secret.py</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sync_secrets</span>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="w"> </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Sync secrets across repositories</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w"> </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/github_secrets_sync.py</span>
 <a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Auth</span><span class="nv"> </span><span class="s">Compliance</span><span class="nv"> </span><span class="s">Report</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"compliance"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"security"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
-<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w">    </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/auth_compliance.json</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Auth</span><span class="nv"> </span><span class="s">Compliance</span><span class="nv"> </span><span class="s">Report</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"compliance"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"security"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/auth_compliance.json</span>
 </code></pre></div></p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Manual execution</span>
@@ -2915,22 +2947,38 @@
 - Security metric dashboards</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing PR/Push Event, Security Enforcer'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>graph TD
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    Trigger[PR/Push Event] --&gt; Agent[Security Enforcer]
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    Schedule[Daily Scan] --&gt; Agent
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    Agent --&gt; ScanRepo[Scan Repository]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    ScanRepo --&gt; CheckMFA[Verify MFA]
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    ScanRepo --&gt; CheckBranch[Check Branch Protection]
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    ScanRepo --&gt; CheckSecrets[Scan for Secrets]
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    CheckMFA --&gt; Remediate{Auto-Remediate?}
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    CheckBranch --&gt; Remediate
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    CheckSecrets --&gt; Remediate
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    Remediate --&gt;|Yes| Fix[Apply Fix]
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    Remediate --&gt;|No| Alert[Create Alert]
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    Fix --&gt; Report[Generate Report]
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    Alert --&gt; Report
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    Report --&gt; Issue[GitHub Issue]
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    Report --&gt; Status[Security Badge]
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>graph TD
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a> Trigger[PR/Push Event] --&gt; Agent[Security Enforcer]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a> Schedule[Daily Scan] --&gt; Agent
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> Agent --&gt; ScanRepo[Scan Repository]
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> ScanRepo --&gt; CheckMFA[Verify MFA]
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a> ScanRepo --&gt; CheckBranch[Check Branch Protection]
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> ScanRepo --&gt; CheckSecrets[Scan for Secrets]
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> CheckMFA --&gt; Remediate{Auto-Remediate?}
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> CheckBranch --&gt; Remediate
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> CheckSecrets --&gt; Remediate
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a> Remediate --&gt;|Yes| Fix[Apply Fix]
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> Remediate --&gt;|No| Alert[Create Alert]
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a> Fix --&gt; Report[Generate Report]
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a> Alert --&gt; Report
+<a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a> Report --&gt; Issue[GitHub Issue]
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a> Report --&gt; Status[Security Badge]
 </code></pre></div>
 <p><strong>Configuration</strong> (<code>config.yaml</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github-security-enforcer</span>
@@ -2938,41 +2986,41 @@
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">daily</span>
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">  </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">  </span><span class="nt">security_events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="nt">security_events</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SECURITY_POLICY_LEVEL</span><span class="w">  </span><span class="c1"># strict, moderate, permissive</span>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">  </span><span class="nt">optional</span><span class="p">:</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AUTO_REMEDIATE</span><span class="w">  </span><span class="c1"># true/false</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SECURITY_POLICY_LEVEL</span><span class="w"> </span><span class="c1"># strict, moderate, permissive</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w"> </span><span class="nt">optional</span><span class="p">:</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AUTO_REMEDIATE</span><span class="w"> </span><span class="c1"># true/false</span>
 <a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="nt">policies</span><span class="p">:</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w">  </span><span class="nt">mfa_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">  </span><span class="nt">branch_protection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">  </span><span class="nt">secret_scanning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">  </span><span class="nt">dependency_review</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w">  </span><span class="nt">code_scanning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w"> </span><span class="nt">mfa_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w"> </span><span class="nt">branch_protection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w"> </span><span class="nt">secret_scanning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w"> </span><span class="nt">dependency_review</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w"> </span><span class="nt">code_scanning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="nt">auto_remediation</span><span class="p">:</span>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w">  </span><span class="nt">actions</span><span class="p">:</span>
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fix_branch_protection</span>
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enable_secret_scanning</span>
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_security_policy</span>
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a><span class="w">  </span><span class="nt">approval_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># Set to true for production</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w"> </span><span class="nt">actions</span><span class="p">:</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fix_branch_protection</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enable_secret_scanning</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">update_security_policy</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a><span class="w"> </span><span class="nt">approval_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># Set to true for production</span>
 <a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Security</span><span class="nv"> </span><span class="s">Scan</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{repo}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"security"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">badge</span>
-<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.github/badges/security-score.svg</span>
-<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
-<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="w">    </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/security_metrics.json</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Security</span><span class="nv"> </span><span class="s">Scan</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{repo}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"security"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">badge</span>
+<a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.github/badges/security-score.svg</span>
+<a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
+<a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/security_metrics.json</span>
 </code></pre></div></p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Manual security scan</span>
@@ -2996,22 +3044,38 @@
 - Cost optimization</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Completion, Workflow Optimizer'}}%%
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>graph TD
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    Trigger[Workflow Completion] --&gt; Agent[Workflow Optimizer]
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    Schedule[Weekly Analysis] --&gt; Agent
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    Agent --&gt; Analyze[Analyze Performance]
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>    Analyze --&gt; CacheOpt[Cache Optimization]
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    Analyze --&gt; SecretOpt[Secret Management]
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    Analyze --&gt; RateLimit[Rate Limit Check]
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    CacheOpt --&gt; Recommend[Generate Recommendations]
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>    SecretOpt --&gt; Recommend
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>    RateLimit --&gt; Recommend
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>    Recommend --&gt; AutoApply{Auto-Apply?}
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>    AutoApply --&gt;|Yes| Implement[Apply Changes]
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>    AutoApply --&gt;|No| Report[Create Report]
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    Implement --&gt; Report
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>    Report --&gt; PR[Create PR]
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>    Report --&gt; Metrics[Update Metrics]
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>graph TD
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> Trigger[Workflow Completion] --&gt; Agent[Workflow Optimizer]
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> Schedule[Weekly Analysis] --&gt; Agent
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> Agent --&gt; Analyze[Analyze Performance]
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a> Analyze --&gt; CacheOpt[Cache Optimization]
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> Analyze --&gt; SecretOpt[Secret Management]
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> Analyze --&gt; RateLimit[Rate Limit Check]
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a> CacheOpt --&gt; Recommend[Generate Recommendations]
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> SecretOpt --&gt; Recommend
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a> RateLimit --&gt; Recommend
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a> Recommend --&gt; AutoApply{Auto-Apply?}
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> AutoApply --&gt;|Yes| Implement[Apply Changes]
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a> AutoApply --&gt;|No| Report[Create Report]
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a> Implement --&gt; Report
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a> Report --&gt; PR[Create PR]
+<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>
+<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a> Report --&gt; Metrics[Update Metrics]
 </code></pre></div>
 <p><strong>Configuration</strong> (<code>config.yaml</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github-workflow-optimizer</span>
@@ -3019,29 +3083,29 @@
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weekly</span>
 <a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_run</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_run</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schedule</span>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w">  </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w">  </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a><span class="w"> </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="w"> </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="w">  </span><span class="nt">optional</span><span class="p">:</span>
-<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OPTIMIZATION_LEVEL</span><span class="w">  </span><span class="c1"># aggressive, balanced, conservative</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="w"> </span><span class="nt">optional</span><span class="p">:</span>
+<a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OPTIMIZATION_LEVEL</span><span class="w"> </span><span class="c1"># aggressive, balanced, conservative</span>
 <a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a><span class="nt">optimization_targets</span><span class="p">:</span>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cache_hit_rate</span><span class="p">:</span><span class="w"> </span><span class="s">"&gt;80%"</span>
-<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">workflow_duration</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;10m"</span>
-<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secret_rotation</span><span class="p">:</span><span class="w"> </span><span class="s">"monthly"</span><span class="w"> </span><span class="c1"># pragma: allowlist secret</span>
-<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">api_rate_limit_usage</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;70%"</span>
-<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="nt">auto_apply</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">  </span><span class="c1"># Requires PR review</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cache_hit_rate</span><span class="p">:</span><span class="w"> </span><span class="s">"&gt;80%"</span>
+<a href="#__codelineno-8-19" id="__codelineno-8-19" name="__codelineno-8-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">workflow_duration</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;10m"</span>
+<a href="#__codelineno-8-20" id="__codelineno-8-20" name="__codelineno-8-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secret_rotation</span><span class="p">:</span><span class="w"> </span><span class="s">"monthly"</span><span class="w"> </span><span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-8-21" id="__codelineno-8-21" name="__codelineno-8-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">api_rate_limit_usage</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;70%"</span>
+<a href="#__codelineno-8-22" id="__codelineno-8-22" name="__codelineno-8-22"></a><span class="nt">auto_apply</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># Requires PR review</span>
 <a href="#__codelineno-8-23" id="__codelineno-8-23" name="__codelineno-8-23"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
-<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Workflow</span><span class="nv"> </span><span class="s">Optimization</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
-<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"optimization"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
-<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w">    </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/workflow_performance.json</span>
+<a href="#__codelineno-8-24" id="__codelineno-8-24" name="__codelineno-8-24"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
+<a href="#__codelineno-8-25" id="__codelineno-8-25" name="__codelineno-8-25"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Workflow</span><span class="nv"> </span><span class="s">Optimization</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
+<a href="#__codelineno-8-26" id="__codelineno-8-26" name="__codelineno-8-26"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"optimization"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-8-27" id="__codelineno-8-27" name="__codelineno-8-27"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metrics</span>
+<a href="#__codelineno-8-28" id="__codelineno-8-28" name="__codelineno-8-28"></a><span class="w"> </span><span class="nt">destination</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.codex/metrics/workflow_performance.json</span>
 </code></pre></div></p>
 <p><strong>Usage</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Analyze workflows</span>
@@ -3066,19 +3130,32 @@
 - Test coverage analysis</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Pull Request, Code Reviewer'}}%%
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>graph TD
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    PR[Pull Request] --&gt; Agent[Code Reviewer]
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    Agent --&gt; Parse[Parse Code Changes]
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    Parse --&gt; Copilot[Copilot API]
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    Copilot --&gt; Security[Security Check]
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    Copilot --&gt; Style[Style Check]
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    Copilot --&gt; Performance[Performance Check]
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    Security --&gt; Suggest[Generate Suggestions]
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    Style --&gt; Suggest
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    Performance --&gt; Suggest
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    Suggest --&gt; Review[Post Review]
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    Review --&gt; Comment[PR Comments]
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    Review --&gt; Status[Status Check]
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>graph TD
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> PR[Pull Request] --&gt; Agent[Code Reviewer]
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a> Agent --&gt; Parse[Parse Code Changes]
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> Parse --&gt; Copilot[Copilot API]
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> Copilot --&gt; Security[Security Check]
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> Copilot --&gt; Style[Style Check]
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> Copilot --&gt; Performance[Performance Check]
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> Security --&gt; Suggest[Generate Suggestions]
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> Style --&gt; Suggest
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> Performance --&gt; Suggest
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a> Suggest --&gt; Review[Post Review]
+<a href="#__codelineno-10-24" id="__codelineno-10-24" name="__codelineno-10-24"></a>
+<a href="#__codelineno-10-25" id="__codelineno-10-25" name="__codelineno-10-25"></a> Review --&gt; Comment[PR Comments]
+<a href="#__codelineno-10-26" id="__codelineno-10-26" name="__codelineno-10-26"></a>
+<a href="#__codelineno-10-27" id="__codelineno-10-27" name="__codelineno-10-27"></a> Review --&gt; Status[Status Check]
 </code></pre></div>
 <p><strong>Requirements</strong>:
 - GitHub Copilot Pro+ subscription
@@ -3090,34 +3167,34 @@
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nt">required_license</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">copilot-pro-plus</span>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_opened</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_synchronize</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_opened</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_synchronize</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w">  </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w">  </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="w"> </span><span class="nt">pull_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="w"> </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COPILOT_API_TOKEN</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w">  </span><span class="nt">optional</span><span class="p">:</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REVIEW_STRICTNESS</span><span class="w">  </span><span class="c1"># strict, moderate, lenient</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COPILOT_API_TOKEN</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="w"> </span><span class="nt">optional</span><span class="p">:</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">REVIEW_STRICTNESS</span><span class="w"> </span><span class="c1"># strict, moderate, lenient</span>
 <a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="nt">analysis</span><span class="p">:</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="w">  </span><span class="nt">security</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w">  </span><span class="nt">style</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w">  </span><span class="nt">performance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="w">  </span><span class="nt">best_practices</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="w">  </span><span class="nt">test_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="w"> </span><span class="nt">security</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="w"> </span><span class="nt">style</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="w"> </span><span class="nt">performance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="w"> </span><span class="nt">best_practices</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-11-23" id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="w"> </span><span class="nt">test_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-11-24" id="__codelineno-11-24" name="__codelineno-11-24"></a><span class="nt">thresholds</span><span class="p">:</span>
-<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="w">  </span><span class="nt">max_issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="w">  </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
-<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="w">  </span><span class="nt">max_complexity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<a href="#__codelineno-11-25" id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="w"> </span><span class="nt">max_issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-11-26" id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="w"> </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a href="#__codelineno-11-27" id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="w"> </span><span class="nt">max_complexity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
 <a href="#__codelineno-11-28" id="__codelineno-11-28" name="__codelineno-11-28"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">review</span>
-<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_review</span>
-<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check</span>
-<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"AI</span><span class="nv"> </span><span class="s">Code</span><span class="nv"> </span><span class="s">Review"</span>
-<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="w">    </span><span class="nt">conclusion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success|failure</span>
+<a href="#__codelineno-11-29" id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">review</span>
+<a href="#__codelineno-11-30" id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request_review</span>
+<a href="#__codelineno-11-31" id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check</span>
+<a href="#__codelineno-11-32" id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"AI</span><span class="nv"> </span><span class="s">Code</span><span class="nv"> </span><span class="s">Review"</span>
+<a href="#__codelineno-11-33" id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="w"> </span><span class="nt">conclusion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success|failure</span>
 </code></pre></div></p>
 <p><strong>Implementation Status</strong>: Proposed for Phase 12</p>
 <hr/>
@@ -3131,68 +3208,85 @@
 - Test result aggregation</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Push/PR Event, Test Orchestrator'}}%%
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>graph TD
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>    Push[Push/PR Event] --&gt; Agent[Test Orchestrator]
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>    Agent --&gt; Detect[Detect Changes]
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>    Detect --&gt; Select[Select Tests]
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>    Select --&gt; Parallel[Parallel Execution]
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>    Parallel --&gt; Unit[Unit Tests]
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>    Parallel --&gt; Integration[Integration Tests]
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>    Parallel --&gt; E2E[E2E Tests]
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>    Unit --&gt; Aggregate[Aggregate Results]
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    Integration --&gt; Aggregate
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    E2E --&gt; Aggregate
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    Aggregate --&gt; Flaky[Detect Flaky Tests]
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>    Aggregate --&gt; Coverage[Coverage Analysis]
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>    Flaky --&gt; Report[Generate Report]
-<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>    Coverage --&gt; Report
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>    Report --&gt; Status[Status Check]
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>    Report --&gt; Issue[Create Issue]
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>graph TD
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> Push[Push/PR Event] --&gt; Agent[Test Orchestrator]
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> Agent --&gt; Detect[Detect Changes]
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> Detect --&gt; Select[Select Tests]
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> Select --&gt; Parallel[Parallel Execution]
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> Parallel --&gt; Unit[Unit Tests]
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> Parallel --&gt; Integration[Integration Tests]
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> Parallel --&gt; E2E[E2E Tests]
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> Unit --&gt; Aggregate[Aggregate Results]
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> Integration --&gt; Aggregate
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> E2E --&gt; Aggregate
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>
+<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a> Aggregate --&gt; Flaky[Detect Flaky Tests]
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a> Aggregate --&gt; Coverage[Coverage Analysis]
+<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a>
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a> Flaky --&gt; Report[Generate Report]
+<a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a>
+<a href="#__codelineno-12-31" id="__codelineno-12-31" name="__codelineno-12-31"></a> Coverage --&gt; Report
+<a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a>
+<a href="#__codelineno-12-33" id="__codelineno-12-33" name="__codelineno-12-33"></a> Report --&gt; Status[Status Check]
+<a href="#__codelineno-12-34" id="__codelineno-12-34" name="__codelineno-12-34"></a>
+<a href="#__codelineno-12-35" id="__codelineno-12-35" name="__codelineno-12-35"></a> Report --&gt; Issue[Create Issue]
 </code></pre></div>
 <p><strong>Configuration</strong> (<code>config.yaml</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github-test-orchestrator</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w">  </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="w"> </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="w"> </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="w">  </span><span class="nt">optional</span><span class="p">:</span>
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TEST_PARALLELISM</span><span class="w">  </span><span class="c1"># Number of parallel jobs</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="w"> </span><span class="nt">optional</span><span class="p">:</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TEST_PARALLELISM</span><span class="w"> </span><span class="c1"># Number of parallel jobs</span>
 <a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="nt">test_suites</span><span class="p">:</span>
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="w">  </span><span class="nt">unit</span><span class="p">:</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/unit"</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="w">  </span><span class="nt">integration</span><span class="p">:</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/integration"</span>
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15m</span>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a><span class="w">  </span><span class="nt">e2e</span><span class="p">:</span>
-<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/e2e"</span>
-<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30m</span>
-<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="w"> </span><span class="nt">unit</span><span class="p">:</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/unit"</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5m</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="w"> </span><span class="nt">integration</span><span class="p">:</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/integration"</span>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15m</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a><span class="w"> </span><span class="nt">e2e</span><span class="p">:</span>
+<a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">"pytest</span><span class="nv"> </span><span class="s">tests/e2e"</span>
+<a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a><span class="w"> </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30m</span>
+<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a><span class="nt">flaky_detection</span><span class="p">:</span>
-<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a><span class="w">  </span><span class="nt">retry_count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a><span class="w">  </span><span class="nt">failure_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w">  </span><span class="c1"># 20% failure rate</span>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a><span class="w"> </span><span class="nt">retry_count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a><span class="w"> </span><span class="nt">failure_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w"> </span><span class="c1"># 20% failure rate</span>
 <a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a><span class="nt">coverage</span><span class="p">:</span>
-<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a><span class="w">  </span><span class="nt">minimum</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
-<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a><span class="w">  </span><span class="nt">report_format</span><span class="p">:</span><span class="w"> </span><span class="s">"html,json"</span>
+<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a><span class="w"> </span><span class="nt">minimum</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a><span class="w"> </span><span class="nt">report_format</span><span class="p">:</span><span class="w"> </span><span class="s">"html,json"</span>
 <a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check</span>
-<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Test</span><span class="nv"> </span><span class="s">Execution"</span>
-<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
-<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Flaky</span><span class="nv"> </span><span class="s">Tests</span><span class="nv"> </span><span class="s">Detected</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
-<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"testing"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"flaky"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
-<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage_report</span>
-<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage/index.html</span>
+<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check</span>
+<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Test</span><span class="nv"> </span><span class="s">Execution"</span>
+<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
+<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Flaky</span><span class="nv"> </span><span class="s">Tests</span><span class="nv"> </span><span class="s">Detected</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
+<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"testing"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"flaky"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage_report</span>
+<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage/index.html</span>
 </code></pre></div></p>
 <p><strong>Implementation Status</strong>: Proposed for Phase 12</p>
 <hr/>
@@ -3206,75 +3300,92 @@
 - Deployment tracking</p>
 <p><strong>Architecture</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Deployment Request, Deployment Gatekeeper'}}%%
-<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>graph TD
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    Deploy[Deployment Request] --&gt; Agent[Deployment Gatekeeper]
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    Agent --&gt; Security[Security Gate]
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    Agent --&gt; Quality[Quality Gate]
-<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>    Agent --&gt; Performance[Performance Gate]
-<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a>    Security --&gt; Check{All Gates Pass?}
-<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>    Quality --&gt; Check
-<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a>    Performance --&gt; Check
-<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>    Check --&gt;|Yes| Approve[Approve Deployment]
-<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a>    Check --&gt;|No| Reject[Reject Deployment]
-<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>    Approve --&gt; Monitor[Monitor Deployment]
-<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a>    Reject --&gt; Notify[Notify Team]
-<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>    Monitor --&gt; Health{Health Check}
-<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a>    Health --&gt;|Fail| Rollback[Auto Rollback]
-<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>    Health --&gt;|Pass| Success[Mark Success]
-<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a>    Rollback --&gt; Notify
-<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>    Success --&gt; Metrics[Update Metrics]
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>graph TD
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> Deploy[Deployment Request] --&gt; Agent[Deployment Gatekeeper]
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a> Agent --&gt; Security[Security Gate]
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a> Agent --&gt; Quality[Quality Gate]
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a> Agent --&gt; Performance[Performance Gate]
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a>
+<a href="#__codelineno-14-13" id="__codelineno-14-13" name="__codelineno-14-13"></a> Security --&gt; Check{All Gates Pass?}
+<a href="#__codelineno-14-14" id="__codelineno-14-14" name="__codelineno-14-14"></a>
+<a href="#__codelineno-14-15" id="__codelineno-14-15" name="__codelineno-14-15"></a> Quality --&gt; Check
+<a href="#__codelineno-14-16" id="__codelineno-14-16" name="__codelineno-14-16"></a>
+<a href="#__codelineno-14-17" id="__codelineno-14-17" name="__codelineno-14-17"></a> Performance --&gt; Check
+<a href="#__codelineno-14-18" id="__codelineno-14-18" name="__codelineno-14-18"></a>
+<a href="#__codelineno-14-19" id="__codelineno-14-19" name="__codelineno-14-19"></a> Check --&gt;|Yes| Approve[Approve Deployment]
+<a href="#__codelineno-14-20" id="__codelineno-14-20" name="__codelineno-14-20"></a>
+<a href="#__codelineno-14-21" id="__codelineno-14-21" name="__codelineno-14-21"></a> Check --&gt;|No| Reject[Reject Deployment]
+<a href="#__codelineno-14-22" id="__codelineno-14-22" name="__codelineno-14-22"></a>
+<a href="#__codelineno-14-23" id="__codelineno-14-23" name="__codelineno-14-23"></a> Approve --&gt; Monitor[Monitor Deployment]
+<a href="#__codelineno-14-24" id="__codelineno-14-24" name="__codelineno-14-24"></a>
+<a href="#__codelineno-14-25" id="__codelineno-14-25" name="__codelineno-14-25"></a> Reject --&gt; Notify[Notify Team]
+<a href="#__codelineno-14-26" id="__codelineno-14-26" name="__codelineno-14-26"></a>
+<a href="#__codelineno-14-27" id="__codelineno-14-27" name="__codelineno-14-27"></a> Monitor --&gt; Health{Health Check}
+<a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a>
+<a href="#__codelineno-14-29" id="__codelineno-14-29" name="__codelineno-14-29"></a> Health --&gt;|Fail| Rollback[Auto Rollback]
+<a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a>
+<a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a> Health --&gt;|Pass| Success[Mark Success]
+<a href="#__codelineno-14-32" id="__codelineno-14-32" name="__codelineno-14-32"></a>
+<a href="#__codelineno-14-33" id="__codelineno-14-33" name="__codelineno-14-33"></a> Rollback --&gt; Notify
+<a href="#__codelineno-14-34" id="__codelineno-14-34" name="__codelineno-14-34"></a>
+<a href="#__codelineno-14-35" id="__codelineno-14-35" name="__codelineno-14-35"></a> Success --&gt; Metrics[Update Metrics]
 </code></pre></div>
 <p><strong>Configuration</strong> (<code>config.yaml</code>):
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github-deployment-gatekeeper</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
 <a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="nt">tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="nt">triggers</span><span class="p">:</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployment</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_dispatch</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployment</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflow_dispatch</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">  </span><span class="nt">deployments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">  </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w"> </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w"> </span><span class="nt">deployments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w"> </span><span class="nt">checks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 <a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="nt">environment_variables</span><span class="p">:</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="nt">required</span><span class="p">:</span>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
-<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEPLOYMENT_ENV</span><span class="w">  </span><span class="c1"># production, staging, dev</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="nt">required</span><span class="p">:</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GITHUB_TOKEN</span>
+<a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEPLOYMENT_ENV</span><span class="w"> </span><span class="c1"># production, staging, dev</span>
 <a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="nt">gates</span><span class="p">:</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">  </span><span class="nt">security</span><span class="p">:</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w">    </span><span class="nt">max_alerts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w">    </span><span class="nt">required_checks</span><span class="p">:</span>
-<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codeql</span>
-<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dependency_review</span>
-<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a><span class="w">  </span><span class="nt">quality</span><span class="p">:</span>
-<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w">    </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
-<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w">    </span><span class="nt">max_complexity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
-<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="w">    </span><span class="nt">required_checks</span><span class="p">:</span>
-<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tests</span>
-<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linting</span>
-<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w">  </span><span class="nt">performance</span><span class="p">:</span>
-<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w">    </span><span class="nt">max_response_time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span><span class="w">  </span><span class="c1"># ms</span>
-<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="w">    </span><span class="nt">min_throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># req/s</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w"> </span><span class="nt">security</span><span class="p">:</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w"> </span><span class="nt">max_alerts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w"> </span><span class="nt">required_checks</span><span class="p">:</span>
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codeql</span>
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dependency_review</span>
+<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a><span class="w"> </span><span class="nt">quality</span><span class="p">:</span>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w"> </span><span class="nt">min_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w"> </span><span class="nt">max_complexity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a><span class="w"> </span><span class="nt">required_checks</span><span class="p">:</span>
+<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tests</span>
+<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linting</span>
+<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w"> </span><span class="nt">performance</span><span class="p">:</span>
+<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w"> </span><span class="nt">max_response_time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span><span class="w"> </span><span class="c1"># ms</span>
+<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="w"> </span><span class="nt">min_throughput</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w"> </span><span class="c1"># req/s</span>
 <a href="#__codelineno-15-33" id="__codelineno-15-33" name="__codelineno-15-33"></a><span class="nt">rollback</span><span class="p">:</span>
-<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-15-35" id="__codelineno-15-35" name="__codelineno-15-35"></a><span class="w">  </span><span class="nt">auto_rollback</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-15-36" id="__codelineno-15-36" name="__codelineno-15-36"></a><span class="w">  </span><span class="nt">health_check_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w">  </span><span class="c1"># seconds</span>
-<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a><span class="w">  </span><span class="nt">failure_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-15-35" id="__codelineno-15-35" name="__codelineno-15-35"></a><span class="w"> </span><span class="nt">auto_rollback</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-15-36" id="__codelineno-15-36" name="__codelineno-15-36"></a><span class="w"> </span><span class="nt">health_check_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># seconds</span>
+<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a><span class="w"> </span><span class="nt">failure_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
 <a href="#__codelineno-15-38" id="__codelineno-15-38" name="__codelineno-15-38"></a><span class="nt">monitoring</span><span class="p">:</span>
-<a href="#__codelineno-15-39" id="__codelineno-15-39" name="__codelineno-15-39"></a><span class="w">  </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w">  </span><span class="c1"># 5 minutes</span>
-<a href="#__codelineno-15-40" id="__codelineno-15-40" name="__codelineno-15-40"></a><span class="w">  </span><span class="nt">metrics</span><span class="p">:</span>
-<a href="#__codelineno-15-41" id="__codelineno-15-41" name="__codelineno-15-41"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error_rate</span>
-<a href="#__codelineno-15-42" id="__codelineno-15-42" name="__codelineno-15-42"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">response_time</span>
-<a href="#__codelineno-15-43" id="__codelineno-15-43" name="__codelineno-15-43"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu_usage</span>
-<a href="#__codelineno-15-44" id="__codelineno-15-44" name="__codelineno-15-44"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">memory_usage</span>
+<a href="#__codelineno-15-39" id="__codelineno-15-39" name="__codelineno-15-39"></a><span class="w"> </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span><span class="w"> </span><span class="c1"># 5 minutes</span>
+<a href="#__codelineno-15-40" id="__codelineno-15-40" name="__codelineno-15-40"></a><span class="w"> </span><span class="nt">metrics</span><span class="p">:</span>
+<a href="#__codelineno-15-41" id="__codelineno-15-41" name="__codelineno-15-41"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error_rate</span>
+<a href="#__codelineno-15-42" id="__codelineno-15-42" name="__codelineno-15-42"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">response_time</span>
+<a href="#__codelineno-15-43" id="__codelineno-15-43" name="__codelineno-15-43"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu_usage</span>
+<a href="#__codelineno-15-44" id="__codelineno-15-44" name="__codelineno-15-44"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">memory_usage</span>
 <a href="#__codelineno-15-45" id="__codelineno-15-45" name="__codelineno-15-45"></a><span class="nt">outputs</span><span class="p">:</span>
-<a href="#__codelineno-15-46" id="__codelineno-15-46" name="__codelineno-15-46"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployment_status</span>
-<a href="#__codelineno-15-47" id="__codelineno-15-47" name="__codelineno-15-47"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success|failure</span>
-<a href="#__codelineno-15-48" id="__codelineno-15-48" name="__codelineno-15-48"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
-<a href="#__codelineno-15-49" id="__codelineno-15-49" name="__codelineno-15-49"></a><span class="w">    </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Deployment</span><span class="nv"> </span><span class="s">{env}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{status}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
-<a href="#__codelineno-15-50" id="__codelineno-15-50" name="__codelineno-15-50"></a><span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"deployment"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-15-46" id="__codelineno-15-46" name="__codelineno-15-46"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deployment_status</span>
+<a href="#__codelineno-15-47" id="__codelineno-15-47" name="__codelineno-15-47"></a><span class="w"> </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">success|failure</span>
+<a href="#__codelineno-15-48" id="__codelineno-15-48" name="__codelineno-15-48"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issue</span>
+<a href="#__codelineno-15-49" id="__codelineno-15-49" name="__codelineno-15-49"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">"Deployment</span><span class="nv"> </span><span class="s">{env}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{status}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{date}"</span>
+<a href="#__codelineno-15-50" id="__codelineno-15-50" name="__codelineno-15-50"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"deployment"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"automated"</span><span class="p p-Indicator">]</span>
 </code></pre></div></p>
 <p><strong>Implementation Status</strong>: Proposed for Phase 12</p>
 <hr/>
@@ -3293,7 +3404,7 @@
 <ol>
 <li>
 <p><strong>Configure Secrets</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Navigate to repository Settings → Secrets and variables → Actions</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Navigate to repository Settings Secrets and variables Actions</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="c1"># Add required secrets:</span>
 <a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>GITHUB_TOKEN<span class="w"> </span>--body<span class="w"> </span><span class="s2">"</span><span class="nv">$YOUR_TOKEN</span><span class="s2">"</span>
 <a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>gh<span class="w"> </span>secret<span class="w"> </span><span class="nb">set</span><span class="w"> </span>CODEX_MASTER_KEY<span class="w"> </span>--body<span class="w"> </span><span class="s2">"</span><span class="nv">$YOUR_KEY</span><span class="s2">"</span>
@@ -3302,7 +3413,7 @@
 </li>
 <li>
 <p><strong>Deploy Agent Code</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># All agents are in .github/agents/</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># All agents are in .github/agents/</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="c1"># Ensure agent files are committed:</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a>git<span class="w"> </span>add<span class="w"> </span>.github/agents/
 <a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Deploy GitHub Copilot agents"</span>
@@ -3311,14 +3422,14 @@
 </li>
 <li>
 <p><strong>Enable Workflows</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Workflows in .github/workflows/ are auto-enabled</span>
-<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="c1"># Verify in repository Settings → Actions</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Workflows in .github/workflows/ are auto-enabled</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="c1"># Verify in repository Settings Actions</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Test Agent</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Manual trigger via GitHub UI:</span>
-<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="c1"># Actions → Select workflow → Run workflow</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Manual trigger via GitHub UI:</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="c1"># Actions Select workflow Run workflow</span>
 <a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
 <a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Or via CLI:</span>
 <a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>auth-token-rotation.yml
@@ -3326,7 +3437,7 @@
 </li>
 <li>
 <p><strong>Monitor Execution</strong>:
-   <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># View recent workflow runs:</span>
+ <div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># View recent workflow runs:</span>
 <a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>gh<span class="w"> </span>run<span class="w"> </span>list<span class="w"> </span>--workflow<span class="w"> </span>auth-token-rotation.yml
 <a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
 <a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># View logs:</span>
@@ -3342,15 +3453,15 @@
 <a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="kn">from</span> <span class="nn">github_auth_manager.agent</span> <span class="kn">import</span> <span class="n">AuthManager</span>
 <a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a>
 <a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="k">def</span> <span class="nf">test_check_mfa</span><span class="p">():</span>
-<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a>    <span class="n">manager</span> <span class="o">=</span> <span class="n">AuthManager</span><span class="p">()</span>
-<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">check_mfa</span><span class="p">(</span><span class="s2">"test-user"</span><span class="p">)</span>
-<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a>    <span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">"mfa_enabled"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a> <span class="n">manager</span> <span class="o">=</span> <span class="n">AuthManager</span><span class="p">()</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">check_mfa</span><span class="p">(</span><span class="s2">"test-user"</span><span class="p">)</span>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a> <span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">"mfa_enabled"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
 <a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>
 <a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="k">def</span> <span class="nf">test_rotate_tokens</span><span class="p">():</span>
-<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a>    <span class="n">manager</span> <span class="o">=</span> <span class="n">AuthManager</span><span class="p">()</span>
-<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">rotate_tokens</span><span class="p">()</span>
-<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a>    <span class="k">assert</span> <span class="s2">"new_key"</span> <span class="ow">in</span> <span class="n">result</span>
-<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a>    <span class="k">assert</span> <span class="s2">"backup_key"</span> <span class="ow">in</span> <span class="n">result</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a> <span class="n">manager</span> <span class="o">=</span> <span class="n">AuthManager</span><span class="p">()</span>
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">rotate_tokens</span><span class="p">()</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a> <span class="k">assert</span> <span class="s2">"new_key"</span> <span class="ow">in</span> <span class="n">result</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a> <span class="k">assert</span> <span class="s2">"backup_key"</span> <span class="ow">in</span> <span class="n">result</span>
 </code></pre></div>
 <h2 id="integration-testing">Integration Testing<a class="headerlink" href="#integration-testing" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># tests/agents/test_integration.py</span>
@@ -3358,20 +3469,20 @@
 <a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="kn">from</span> <span class="nn">github</span> <span class="kn">import</span> <span class="n">Github</span>
 <a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>
 <a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="k">def</span> <span class="nf">test_agent_end_to_end</span><span class="p">():</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>    <span class="c1"># Test full agent workflow</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>    <span class="n">github</span> <span class="o">=</span> <span class="n">Github</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"GITHUB_TOKEN"</span><span class="p">))</span>
-<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>    <span class="n">repo</span> <span class="o">=</span> <span class="n">github</span><span class="o">.</span><span class="n">get_repo</span><span class="p">(</span><span class="s2">"org/repo"</span><span class="p">)</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a> <span class="c1"># Test full agent workflow</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a> <span class="n">github</span> <span class="o">=</span> <span class="n">Github</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"GITHUB_TOKEN"</span><span class="p">))</span>
+<a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a> <span class="n">repo</span> <span class="o">=</span> <span class="n">github</span><span class="o">.</span><span class="n">get_repo</span><span class="p">(</span><span class="s2">"org/repo"</span><span class="p">)</span>
 <a href="#__codelineno-22-9" id="__codelineno-22-9" name="__codelineno-22-9"></a>
-<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a>    <span class="c1"># Trigger agent</span>
-<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a>    <span class="n">workflow</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_workflow</span><span class="p">(</span><span class="s2">"auth-token-rotation.yml"</span><span class="p">)</span>
-<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a>    <span class="n">workflow</span><span class="o">.</span><span class="n">create_dispatch</span><span class="p">(</span><span class="s2">"main"</span><span class="p">)</span>
+<a href="#__codelineno-22-10" id="__codelineno-22-10" name="__codelineno-22-10"></a> <span class="c1"># Trigger agent</span>
+<a href="#__codelineno-22-11" id="__codelineno-22-11" name="__codelineno-22-11"></a> <span class="n">workflow</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_workflow</span><span class="p">(</span><span class="s2">"auth-token-rotation.yml"</span><span class="p">)</span>
+<a href="#__codelineno-22-12" id="__codelineno-22-12" name="__codelineno-22-12"></a> <span class="n">workflow</span><span class="o">.</span><span class="n">create_dispatch</span><span class="p">(</span><span class="s2">"main"</span><span class="p">)</span>
 <a href="#__codelineno-22-13" id="__codelineno-22-13" name="__codelineno-22-13"></a>
-<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a>    <span class="c1"># Wait for completion</span>
-<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+<a href="#__codelineno-22-14" id="__codelineno-22-14" name="__codelineno-22-14"></a> <span class="c1"># Wait for completion</span>
+<a href="#__codelineno-22-15" id="__codelineno-22-15" name="__codelineno-22-15"></a> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
 <a href="#__codelineno-22-16" id="__codelineno-22-16" name="__codelineno-22-16"></a>
-<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a>    <span class="c1"># Verify results</span>
-<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a>    <span class="n">issues</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_issues</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"compliance"</span><span class="p">])</span>
-<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a>    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a href="#__codelineno-22-17" id="__codelineno-22-17" name="__codelineno-22-17"></a> <span class="c1"># Verify results</span>
+<a href="#__codelineno-22-18" id="__codelineno-22-18" name="__codelineno-22-18"></a> <span class="n">issues</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_issues</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"compliance"</span><span class="p">])</span>
+<a href="#__codelineno-22-19" id="__codelineno-22-19" name="__codelineno-22-19"></a> <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </code></pre></div>
 <h2 id="smoke-testing">Smoke Testing<a class="headerlink" href="#smoke-testing" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c1"># scripts/test_agents.sh</span>
@@ -3429,8 +3540,8 @@
 <h2 id="production-environment">Production Environment<a class="headerlink" href="#production-environment" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="c1"># 1. Create production PR</span>
 <a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--base<span class="w"> </span>main<span class="w"> </span>--head<span class="w"> </span>staging<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"Deploy agents to production"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w">  </span>--body<span class="w"> </span><span class="s2">"Agent deployment checklist: ..."</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="w"> </span>--title<span class="w"> </span><span class="s2">"Deploy agents to production"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="w"> </span>--body<span class="w"> </span><span class="s2">"Agent deployment checklist: ..."</span>
 <a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a>
 <a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a><span class="c1"># 2. Review and merge PR</span>
 <a href="#__codelineno-26-7" id="__codelineno-26-7" name="__codelineno-26-7"></a>gh<span class="w"> </span>pr<span class="w"> </span>merge<span class="w"> </span>--auto<span class="w"> </span>--squash
@@ -3459,31 +3570,31 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a><span class="c1"># .github/workflows/agent-monitoring.yml</span>
 <a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Agent Monitoring</span>
 <a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="nt">on</span><span class="p">:</span>
-<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
-<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*'</span><span class="w">  </span><span class="c1"># Hourly</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="w"> </span><span class="nt">schedule</span><span class="p">:</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">'0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*'</span><span class="w"> </span><span class="c1"># Hourly</span>
 <a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a>
 <a href="#__codelineno-27-7" id="__codelineno-27-7" name="__codelineno-27-7"></a><span class="nt">jobs</span><span class="p">:</span>
-<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="w">  </span><span class="nt">monitor</span><span class="p">:</span>
-<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-27-8" id="__codelineno-27-8" name="__codelineno-27-8"></a><span class="w"> </span><span class="nt">monitor</span><span class="p">:</span>
+<a href="#__codelineno-27-9" id="__codelineno-27-9" name="__codelineno-27-9"></a><span class="w"> </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-27-10" id="__codelineno-27-10" name="__codelineno-27-10"></a><span class="w"> </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-27-11" id="__codelineno-27-11" name="__codelineno-27-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
 <a href="#__codelineno-27-12" id="__codelineno-27-12" name="__codelineno-27-12"></a>
-<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check agent health</span>
-<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a><span class="w">          </span><span class="no">python scripts/monitor_agents.py</span>
+<a href="#__codelineno-27-13" id="__codelineno-27-13" name="__codelineno-27-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check agent health</span>
+<a href="#__codelineno-27-14" id="__codelineno-27-14" name="__codelineno-27-14"></a><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-27-15" id="__codelineno-27-15" name="__codelineno-27-15"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/monitor_agents.py</span>
 <a href="#__codelineno-27-16" id="__codelineno-27-16" name="__codelineno-27-16"></a>
-<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alert on failures</span>
-<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
-<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v7</span>
-<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a href="#__codelineno-27-21" id="__codelineno-27-21" name="__codelineno-27-21"></a><span class="w">          </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-27-22" id="__codelineno-27-22" name="__codelineno-27-22"></a><span class="w">            </span><span class="no">github.rest.issues.create({</span>
-<a href="#__codelineno-27-23" id="__codelineno-27-23" name="__codelineno-27-23"></a><span class="w">              </span><span class="no">owner: context.repo.owner,</span>
-<a href="#__codelineno-27-24" id="__codelineno-27-24" name="__codelineno-27-24"></a><span class="w">              </span><span class="no">repo: context.repo.repo,</span>
-<a href="#__codelineno-27-25" id="__codelineno-27-25" name="__codelineno-27-25"></a><span class="w">              </span><span class="no">title: '️ Agent Health Check Failed',</span>
-<a href="#__codelineno-27-26" id="__codelineno-27-26" name="__codelineno-27-26"></a><span class="w">              </span><span class="no">body: 'One or more agents are unhealthy. See logs for details.',</span>
-<a href="#__codelineno-27-27" id="__codelineno-27-27" name="__codelineno-27-27"></a><span class="w">              </span><span class="no">labels: ['alert', 'agents', 'monitoring']</span>
-<a href="#__codelineno-27-28" id="__codelineno-27-28" name="__codelineno-27-28"></a><span class="w">            </span><span class="no">});</span>
+<a href="#__codelineno-27-17" id="__codelineno-27-17" name="__codelineno-27-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alert on failures</span>
+<a href="#__codelineno-27-18" id="__codelineno-27-18" name="__codelineno-27-18"></a><span class="w"> </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
+<a href="#__codelineno-27-19" id="__codelineno-27-19" name="__codelineno-27-19"></a><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v7</span>
+<a href="#__codelineno-27-20" id="__codelineno-27-20" name="__codelineno-27-20"></a><span class="w"> </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-27-21" id="__codelineno-27-21" name="__codelineno-27-21"></a><span class="w"> </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-27-22" id="__codelineno-27-22" name="__codelineno-27-22"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.rest.issues.create({</span>
+<a href="#__codelineno-27-23" id="__codelineno-27-23" name="__codelineno-27-23"></a><span class="w"> </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">context.repo.owner,</span>
+<a href="#__codelineno-27-24" id="__codelineno-27-24" name="__codelineno-27-24"></a><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">context.repo.repo,</span>
+<a href="#__codelineno-27-25" id="__codelineno-27-25" name="__codelineno-27-25"></a><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">Agent</span><span class="nv"> </span><span class="s">Health</span><span class="nv"> </span><span class="s">Check</span><span class="nv"> </span><span class="s">Failed'</span><span class="err">,</span>
+<a href="#__codelineno-27-26" id="__codelineno-27-26" name="__codelineno-27-26"></a><span class="w"> </span><span class="nt">body</span><span class="p">:</span><span class="w"> </span><span class="s">'One</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">more</span><span class="nv"> </span><span class="s">agents</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">unhealthy.</span><span class="nv"> </span><span class="s">See</span><span class="nv"> </span><span class="s">logs</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">details.'</span><span class="err">,</span>
+<a href="#__codelineno-27-27" id="__codelineno-27-27" name="__codelineno-27-27"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'alert'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'agents'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'monitoring'</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-27-28" id="__codelineno-27-28" name="__codelineno-27-28"></a><span class="w"> </span><span class="err">}</span><span class="l l-Scalar l-Scalar-Plain">);</span>
 </code></pre></div>
 <h2 id="maintenance-schedule">Maintenance Schedule<a class="headerlink" href="#maintenance-schedule" title="Permanent link">¶</a></h2>
 <p><strong>Daily</strong>:
@@ -3532,14 +3643,14 @@
 <p><strong>RBAC</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="c1"># .github/agents/permissions.yaml</span>
 <a href="#__codelineno-28-2" id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="nt">roles</span><span class="p">:</span>
-<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w">  </span><span class="nt">agent_admin</span><span class="p">:</span>
-<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secrets:write</span>
-<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflows:write</span>
-<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a><span class="w">  </span><span class="nt">agent_user</span><span class="p">:</span>
-<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a><span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
-<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflows:run</span>
-<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issues:read</span>
+<a href="#__codelineno-28-3" id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="w"> </span><span class="nt">agent_admin</span><span class="p">:</span>
+<a href="#__codelineno-28-4" id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="w"> </span><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-28-5" id="__codelineno-28-5" name="__codelineno-28-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secrets:write</span>
+<a href="#__codelineno-28-6" id="__codelineno-28-6" name="__codelineno-28-6"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflows:write</span>
+<a href="#__codelineno-28-7" id="__codelineno-28-7" name="__codelineno-28-7"></a><span class="w"> </span><span class="nt">agent_user</span><span class="p">:</span>
+<a href="#__codelineno-28-8" id="__codelineno-28-8" name="__codelineno-28-8"></a><span class="w"> </span><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-28-9" id="__codelineno-28-9" name="__codelineno-28-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workflows:run</span>
+<a href="#__codelineno-28-10" id="__codelineno-28-10" name="__codelineno-28-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">issues:read</span>
 </code></pre></div></p>
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
@@ -3549,7 +3660,7 @@
 <a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>gh<span class="w"> </span>workflow<span class="w"> </span>view<span class="w"> </span>auth-token-rotation.yml
 <a href="#__codelineno-29-3" id="__codelineno-29-3" name="__codelineno-29-3"></a>
 <a href="#__codelineno-29-4" id="__codelineno-29-4" name="__codelineno-29-4"></a><span class="c1"># Check for disabled workflows</span>
-<a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="c1"># Settings → Actions → Check if workflows are enabled</span>
+<a href="#__codelineno-29-5" id="__codelineno-29-5" name="__codelineno-29-5"></a><span class="c1"># Settings Actions Check if workflows are enabled</span>
 </code></pre></div></p>
 <p><strong>Secret Not Found</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="c1"># Verify secret exists</span>
@@ -3560,7 +3671,7 @@
 </code></pre></div></p>
 <p><strong>Permission Denied</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="c1"># Check workflow permissions</span>
-<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a><span class="c1"># .github/workflows/workflow.yml → permissions section</span>
+<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a><span class="c1"># .github/workflows/workflow.yml permissions section</span>
 <a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a>
 <a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a><span class="c1"># Verify token has required scopes</span>
 <a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a>gh<span class="w"> </span>auth<span class="w"> </span>status
@@ -3655,7 +3766,7 @@
 <hr/>
 <p><strong>Document Owner</strong>: Codex Team
 <strong>Last Updated</strong>: 2024-01-16
-<strong>Status</strong>:  Production Ready
+<strong>Status</strong>: Production Ready
 <strong>Next Review</strong>: 2024-02-16</p>
 </article>
 </div>
@@ -3686,6 +3797,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

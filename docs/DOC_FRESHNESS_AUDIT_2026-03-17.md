@@ -1,6 +1,6 @@
 # Documentation Freshness Audit & Remediation Plan
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Audit Date:2026-07-16
 > **Auditor:** Copilot Agent S142

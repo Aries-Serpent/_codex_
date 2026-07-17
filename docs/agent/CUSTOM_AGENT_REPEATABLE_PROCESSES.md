@@ -1,6 +1,6 @@
 # Custom Agent Repeatable Processes
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Document:** Repeatable Processes for Full Agentic Autonomy
 > **Version:** 1.0.0

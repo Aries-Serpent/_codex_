@@ -1,6 +1,6 @@
 # Schema Enhancements v1.2 — Context-Aware Updates for `_codex_`
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
  Roles: [Primary: Schema Architect], [Secondary: Repository Analyst] Energy: 5

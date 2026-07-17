@@ -1,6 +1,6 @@
 # ADR-20260305: Fourth D_CAPABLE Agent Evaluation — `workflow-health-monitor` Designated
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Generated: 2026-06-22T01:30:00Z | Updated: 2026-06-22
 > Status: Accepted — fourth candidate designated; promotion PENDING C4 observation only (C8 gap resolved )
@@ -59,7 +59,7 @@ is used as primary agent in chain validation tests (lines 80, 88, 91–93, 100, 
 120, 132). The agent is directly tested as the entry point for multi-agent orchestration
 sequences.
 
-**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v0.2.1,
+**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v0.2.0,
 2026-02-05, "Production Ready" status annotation).
 
 **Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved (see §5); promotion PENDING C4 only.**
@@ -75,7 +75,7 @@ sequences.
 | C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` | AGENT_REGISTRY.yaml | |
 | C4 violations_30d | 0 (set) | **NOT SET** | — | |
 | C5 has_tests | true | **true** | `tests/integration/test_cicd_workflow_e2e.py:21` (dedicated test); `tests/agents/test_custom_agent_functional.py:75` | |
-| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v0.2.1-cognitive) | |
+| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v0.2.0-cognitive) | |
 | C7 maturity | production | **production** | AGENT_REGISTRY.yaml | |
 | C8 rank | ≤ 20 | **NOT SET** | — | |
 

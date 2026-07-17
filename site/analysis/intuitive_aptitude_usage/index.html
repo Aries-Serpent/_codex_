@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/analysis/intuitive_aptitude_usage/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Intuitive Aptitude Code Analysis - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2538,9 +2538,9 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Module</strong>: <code>analysis/intuitive_aptitude.py</code><br/>
-<strong>Status</strong>:  Production Ready<br/>
-<strong>Tests</strong>: 76 tests, all passing<br/>
+<p><strong>Module</strong>: <code>analysis/intuitive_aptitude.py</code>
+<strong>Status</strong>: Production Ready
+<strong>Tests</strong>: 76 tests, all passing
 <strong>Type Safety</strong>: mypy compliant</p>
 </blockquote>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
@@ -2599,59 +2599,59 @@
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1"># Analyze Python code</span>
 <a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">code</span> <span class="o">=</span> <span class="s2">"""</span>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="s2">def calculate_sum(numbers):</span>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="s2">    '''Calculate sum of numbers.</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="s2"> '''Calculate sum of numbers.</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="s2">    Args:</span>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="s2">        numbers: List of numbers</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="s2"> Args:</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="s2"> numbers: List of numbers</span>
 <a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="s2">    Returns:</span>
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="s2">        int: Sum of all numbers</span>
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="s2">    '''</span>
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="s2">    total = 0</span>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="s2">    for num in numbers:</span>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="s2">        total += num</span>
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="s2">    return total</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="s2"> Returns:</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="s2"> int: Sum of all numbers</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="s2"> '''</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="s2"> total = 0</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="s2"> for num in numbers:</span>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="s2"> total += num</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="s2"> return total</span>
 <a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="s2">"""</span>
 <a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
 <a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="c1"># Ingest and analyze</span>
 <a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="k">if</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    <span class="c1"># Get high-level summary</span>
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    <span class="n">summary</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_summary</span><span class="p">()</span>
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Functions: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'functions_count'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Complexity: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'complexity'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> <span class="c1"># Get high-level summary</span>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> <span class="n">summary</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_summary</span><span class="p">()</span>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Functions: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'functions_count'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Complexity: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'complexity'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    <span class="c1"># Get detailed structure</span>
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="n">structure</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_detailed_structure</span><span class="p">()</span>
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Function args: </span><span class="si">{</span><span class="n">structure</span><span class="p">[</span><span class="s1">'functions'</span><span class="p">][</span><span class="s1">'calculate_sum'</span><span class="p">][</span><span class="s1">'args'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> <span class="c1"># Get detailed structure</span>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> <span class="n">structure</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_detailed_structure</span><span class="p">()</span>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Function args: </span><span class="si">{</span><span class="n">structure</span><span class="p">[</span><span class="s1">'functions'</span><span class="p">][</span><span class="s1">'calculate_sum'</span><span class="p">][</span><span class="s1">'args'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="c1"># Extract patterns</span>
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="n">patterns</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">extract_patterns</span><span class="p">()</span>
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Iterations found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">'iteration'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> <span class="c1"># Extract patterns</span>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a> <span class="n">patterns</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">extract_patterns</span><span class="p">()</span>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Iterations found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">'iteration'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="c1"># Analyze code style</span>
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="n">style</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analyze_code_style</span><span class="p">()</span>
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Naming: </span><span class="si">{</span><span class="n">style</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> <span class="c1"># Analyze code style</span>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> <span class="n">style</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analyze_code_style</span><span class="p">()</span>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Naming: </span><span class="si">{</span><span class="n">style</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="using-analyze_and_suggest-helper">Using analyze_and_suggest Helper<a class="headerlink" href="#using-analyze_and_suggest-helper" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">analysis.intuitive_aptitude</span> <span class="kn">import</span> <span class="n">analyze_and_suggest</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">code</span> <span class="o">=</span> <span class="s2">"""</span>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="s2">def PoorlyFormattedFunction(x,y):</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="s2">    if x&gt;0:</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="s2">        if y&gt;0:</span>
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="s2">            return x+y</span>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="s2">    return 0</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="s2"> if x&gt;0:</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="s2"> if y&gt;0:</span>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="s2"> return x+y</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="s2"> return 0</span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="s2">"""</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="n">result</span> <span class="o">=</span> <span class="n">analyze_and_suggest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'success'</span><span class="p">]:</span>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Metrics:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'summary'</span><span class="p">][</span><span class="s1">'metrics'</span><span class="p">])</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Patterns:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'patterns'</span><span class="p">])</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Style:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'style'</span><span class="p">])</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Suggestions:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">])</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Metrics:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'summary'</span><span class="p">][</span><span class="s1">'metrics'</span><span class="p">])</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Patterns:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'patterns'</span><span class="p">])</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Style:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'style'</span><span class="p">])</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Suggestions:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">])</span>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Error:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'error'</span><span class="p">])</span>
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Error:"</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">'error'</span><span class="p">])</span>
 </code></pre></div>
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">¶</a></h2>
 <h3 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">¶</a></h3>
@@ -2709,13 +2709,13 @@
 <p>High-level helper that analyzes code and provides suggestions.</p>
 <p><strong>Returns:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="s1">'success'</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="s1">'error'</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="s1">'summary'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="s1">'patterns'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="s1">'style'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="s1">'structure'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="s1">'suggestions'</span><span class="p">:</span> <span class="n">Dict</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a> <span class="s1">'success'</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a> <span class="s1">'error'</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a> <span class="s1">'summary'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> <span class="s1">'patterns'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a> <span class="s1">'style'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a> <span class="s1">'structure'</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a> <span class="s1">'suggestions'</span><span class="p">:</span> <span class="n">Dict</span>
 <a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="p">}</span>
 </code></pre></div></p>
 <h2 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">¶</a></h2>
@@ -2726,26 +2726,26 @@
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># Get error handling patterns</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="n">error_patterns</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">patterns</span><span class="p">[</span><span class="s1">'error_handling'</span><span class="p">]</span>
 <a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">error_patterns</span><span class="p">:</span>
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Line </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'lineno'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'handlers'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Has finally: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'has_finally'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Line </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'lineno'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'handlers'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Has finally: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'has_finally'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="c1"># Get iteration patterns</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">patterns</span><span class="p">[</span><span class="s1">'iteration'</span><span class="p">]:</span>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loop at line </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'lineno'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'kind'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loop at line </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'lineno'</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">'kind'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="code-clone-with-renaming">Code Clone with Renaming<a class="headerlink" href="#code-clone-with-renaming" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">code</span> <span class="o">=</span> <span class="s2">"""</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="s2">def old_function(old_arg):</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="s2">    return old_arg * 2</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="s2"> return old_arg * 2</span>
 <a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="s2">"""</span>
 <a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
 <a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 <a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
 <a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1"># Clone with new names</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="n">new_code</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">clone_structure</span><span class="p">({</span>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="s1">'old_function'</span><span class="p">:</span> <span class="s1">'new_function'</span><span class="p">,</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="s1">'old_arg'</span><span class="p">:</span> <span class="s1">'new_arg'</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="s1">'old_function'</span><span class="p">:</span> <span class="s1">'new_function'</span><span class="p">,</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="s1">'old_arg'</span><span class="p">:</span> <span class="s1">'new_arg'</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="p">})</span>
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">new_code</span><span class="p">)</span>
@@ -2757,9 +2757,9 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">complex_code</span><span class="p">)</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="k">if</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High complexity: </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Calls: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func_info</span><span class="o">.</span><span class="n">calls</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a> <span class="k">if</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High complexity: </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" Calls: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func_info</span><span class="o">.</span><span class="n">calls</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="style-analysis">Style Analysis<a class="headerlink" href="#style-analysis" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
@@ -2770,7 +2770,7 @@
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="c1"># Check naming conventions</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="n">naming</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">]</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="k">if</span> <span class="n">naming</span><span class="p">[</span><span class="s1">'snake_case'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">naming</span><span class="p">[</span><span class="s1">'camelCase'</span><span class="p">]:</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Predominantly snake_case style"</span><span class="p">)</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Predominantly snake_case style"</span><span class="p">)</span>
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="c1"># Check docstring style</span>
 <a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="n">docstrings</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">'docstrings'</span><span class="p">]</span>
@@ -2780,102 +2780,102 @@
 <a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="c1"># Check paradigm</span>
 <a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="n">paradigm</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">'paradigm'</span><span class="p">]</span>
 <a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="k">if</span> <span class="n">paradigm</span><span class="p">[</span><span class="s1">'functional_signals'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">paradigm</span><span class="p">[</span><span class="s1">'oop_signals'</span><span class="p">]:</span>
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Functional programming style detected"</span><span class="p">)</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">"Functional programming style detected"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">¶</a></h2>
 <h3 id="1-code-quality-analysis">1. Code Quality Analysis<a class="headerlink" href="#1-code-quality-analysis" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">def</span> <span class="nf">analyze_quality</span><span class="p">(</span><span class="n">source_file</span><span class="p">):</span>
-<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>        <span class="n">code</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">code</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">analyze_and_suggest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">analyze_and_suggest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'success'</span><span class="p">]:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>        <span class="c1"># Check complexity</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'summary'</span><span class="p">][</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'complexity'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">"️ High complexity detected"</span><span class="p">)</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a> <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'success'</span><span class="p">]:</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a> <span class="c1"># Check complexity</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a> <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'summary'</span><span class="p">][</span><span class="s1">'metrics'</span><span class="p">][</span><span class="s1">'complexity'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">" High complexity detected"</span><span class="p">)</span>
 <a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>        <span class="c1"># Check for suggestions</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">]:</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">" Suggestions:"</span><span class="p">)</span>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a> <span class="c1"># Check for suggestions</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a> <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">]:</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">" Suggestions:"</span><span class="p">)</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">'suggestions'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" - </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>
-<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>        <span class="c1"># Check patterns</span>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>        <span class="n">error_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">'patterns'</span><span class="p">][</span><span class="s1">'error_handling'</span><span class="p">])</span>
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">error_count</span><span class="si">}</span><span class="s2"> error handling patterns found"</span><span class="p">)</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a> <span class="c1"># Check patterns</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a> <span class="n">error_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">'patterns'</span><span class="p">][</span><span class="s1">'error_handling'</span><span class="p">])</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">error_count</span><span class="si">}</span><span class="s2"> error handling patterns found"</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="2-code-template-generation">2. Code Template Generation<a class="headerlink" href="#2-code-template-generation" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span> <span class="nf">generate_test_skeleton</span><span class="p">(</span><span class="n">source_code</span><span class="p">):</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">source_code</span><span class="p">)</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a> <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">source_code</span><span class="p">)</span>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">test_code</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>        <span class="n">test_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"test_</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>        <span class="n">args</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func_info</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> <span class="n">test_code</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="n">test_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"test_</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="n">args</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func_info</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
 <a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>        <span class="n">test_code</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="n">test_code</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""</span>
 <a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="s2">def </span><span class="si">{</span><span class="n">test_name</span><span class="si">}</span><span class="s2">():</span>
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="s2">    '''Test </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> function.'''</span>
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="s2">    # TODO: Add test implementation</span>
-<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="s2">    result = </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">)</span>
-<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="s2">    assert result is not None</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a><span class="s2"> '''Test </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> function.'''</span>
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a><span class="s2"> # TODO: Add test implementation</span>
+<a href="#__codelineno-8-14" id="__codelineno-8-14" name="__codelineno-8-14"></a><span class="s2"> result = </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">)</span>
+<a href="#__codelineno-8-15" id="__codelineno-8-15" name="__codelineno-8-15"></a><span class="s2"> assert result is not None</span>
 <a href="#__codelineno-8-16" id="__codelineno-8-16" name="__codelineno-8-16"></a><span class="s2">"""</span><span class="p">)</span>
 <a href="#__codelineno-8-17" id="__codelineno-8-17" name="__codelineno-8-17"></a>
-<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a>    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_code</span><span class="p">)</span>
+<a href="#__codelineno-8-18" id="__codelineno-8-18" name="__codelineno-8-18"></a> <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_code</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="3-refactoring-assistant">3. Refactoring Assistant<a class="headerlink" href="#3-refactoring-assistant" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">def</span> <span class="nf">suggest_refactoring</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a> <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>    <span class="n">suggestions</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a> <span class="n">suggestions</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>    <span class="c1"># Find complex functions</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>        <span class="k">if</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>                <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'complexity'</span><span class="p">,</span>
-<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a>                <span class="s1">'function'</span><span class="p">:</span> <span class="n">func_name</span><span class="p">,</span>
-<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a>                <span class="s1">'complexity'</span><span class="p">:</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span><span class="p">,</span>
-<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a>                <span class="s1">'suggestion'</span><span class="p">:</span> <span class="s1">'Consider splitting into smaller functions'</span>
-<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a>            <span class="p">})</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a> <span class="c1"># Find complex functions</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="k">if</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a> <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'complexity'</span><span class="p">,</span>
+<a href="#__codelineno-9-12" id="__codelineno-9-12" name="__codelineno-9-12"></a> <span class="s1">'function'</span><span class="p">:</span> <span class="n">func_name</span><span class="p">,</span>
+<a href="#__codelineno-9-13" id="__codelineno-9-13" name="__codelineno-9-13"></a> <span class="s1">'complexity'</span><span class="p">:</span> <span class="n">func_info</span><span class="o">.</span><span class="n">complexity</span><span class="p">,</span>
+<a href="#__codelineno-9-14" id="__codelineno-9-14" name="__codelineno-9-14"></a> <span class="s1">'suggestion'</span><span class="p">:</span> <span class="s1">'Consider splitting into smaller functions'</span>
+<a href="#__codelineno-9-15" id="__codelineno-9-15" name="__codelineno-9-15"></a> <span class="p">})</span>
 <a href="#__codelineno-9-16" id="__codelineno-9-16" name="__codelineno-9-16"></a>
-<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a>    <span class="c1"># Find missing docstrings</span>
-<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a>    <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">func_info</span><span class="o">.</span><span class="n">docstring</span><span class="p">:</span>
-<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a>            <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a>                <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'documentation'</span><span class="p">,</span>
-<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a>                <span class="s1">'function'</span><span class="p">:</span> <span class="n">func_name</span><span class="p">,</span>
-<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a>                <span class="s1">'suggestion'</span><span class="p">:</span> <span class="s1">'Add docstring'</span>
-<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a>            <span class="p">})</span>
+<a href="#__codelineno-9-17" id="__codelineno-9-17" name="__codelineno-9-17"></a> <span class="c1"># Find missing docstrings</span>
+<a href="#__codelineno-9-18" id="__codelineno-9-18" name="__codelineno-9-18"></a> <span class="k">for</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">func_info</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a href="#__codelineno-9-19" id="__codelineno-9-19" name="__codelineno-9-19"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">func_info</span><span class="o">.</span><span class="n">docstring</span><span class="p">:</span>
+<a href="#__codelineno-9-20" id="__codelineno-9-20" name="__codelineno-9-20"></a> <span class="n">suggestions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+<a href="#__codelineno-9-21" id="__codelineno-9-21" name="__codelineno-9-21"></a> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'documentation'</span><span class="p">,</span>
+<a href="#__codelineno-9-22" id="__codelineno-9-22" name="__codelineno-9-22"></a> <span class="s1">'function'</span><span class="p">:</span> <span class="n">func_name</span><span class="p">,</span>
+<a href="#__codelineno-9-23" id="__codelineno-9-23" name="__codelineno-9-23"></a> <span class="s1">'suggestion'</span><span class="p">:</span> <span class="s1">'Add docstring'</span>
+<a href="#__codelineno-9-24" id="__codelineno-9-24" name="__codelineno-9-24"></a> <span class="p">})</span>
 <a href="#__codelineno-9-25" id="__codelineno-9-25" name="__codelineno-9-25"></a>
-<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a>    <span class="k">return</span> <span class="n">suggestions</span>
+<a href="#__codelineno-9-26" id="__codelineno-9-26" name="__codelineno-9-26"></a> <span class="k">return</span> <span class="n">suggestions</span>
 </code></pre></div>
 <h3 id="4-style-consistency-checker">4. Style Consistency Checker<a class="headerlink" href="#4-style-consistency-checker" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">def</span> <span class="nf">check_style_consistency</span><span class="p">(</span><span class="n">project_files</span><span class="p">):</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>    <span class="n">styles</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> <span class="n">styles</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">project_files</span><span class="p">:</span>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>            <span class="n">code</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">project_files</span><span class="p">:</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a> <span class="n">code</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>        <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>        <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>        <span class="n">style</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analyze_code_style</span><span class="p">()</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>        <span class="n">styles</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">file</span><span class="p">,</span> <span class="n">style</span><span class="p">))</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="n">analyzer</span> <span class="o">=</span> <span class="n">intuitive_aptitude</span><span class="p">()</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="n">analyzer</span><span class="o">.</span><span class="n">ingest</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a> <span class="n">style</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analyze_code_style</span><span class="p">()</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="n">styles</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">file</span><span class="p">,</span> <span class="n">style</span><span class="p">))</span>
 <a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    <span class="c1"># Aggregate naming conventions</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    <span class="n">snake_total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">][</span><span class="s1">'snake_case'</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">)</span>
-<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>    <span class="n">camel_total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">][</span><span class="s1">'camelCase'</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">)</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="c1"># Aggregate naming conventions</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> <span class="n">snake_total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">][</span><span class="s1">'snake_case'</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">)</span>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a> <span class="n">camel_total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'naming'</span><span class="p">][</span><span class="s1">'camelCase'</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">)</span>
 <a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
-<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>    <span class="k">if</span> <span class="n">snake_total</span> <span class="o">&gt;</span> <span class="n">camel_total</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
-<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">" Project follows snake_case convention"</span><span class="p">)</span>
-<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>    <span class="k">elif</span> <span class="n">camel_total</span> <span class="o">&gt;</span> <span class="n">snake_total</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
-<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">" Project follows camelCase convention"</span><span class="p">)</span>
-<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>    <span class="k">else</span><span class="p">:</span>
-<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"️ Mixed naming conventions detected"</span><span class="p">)</span>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a> <span class="k">if</span> <span class="n">snake_total</span> <span class="o">&gt;</span> <span class="n">camel_total</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">" Project follows snake_case convention"</span><span class="p">)</span>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a> <span class="k">elif</span> <span class="n">camel_total</span> <span class="o">&gt;</span> <span class="n">snake_total</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">" Project follows camelCase convention"</span><span class="p">)</span>
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a> <span class="k">else</span><span class="p">:</span>
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a> <span class="nb">print</span><span class="p">(</span><span class="s2">" Mixed naming conventions detected"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">¶</a></h2>
 <p>The module has comprehensive test coverage with 76 tests:</p>
@@ -2948,6 +2948,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

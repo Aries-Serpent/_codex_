@@ -1,6 +1,6 @@
 # Validation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/validation/`
@@ -31,7 +31,7 @@
 - [Hydra_Config_Validation](Hydra_Config_Validation.md)
 - [INDEX](INDEX.md)
 - [Metrics_Validation](Metrics_Validation.md)
-- [Next_Iteration_Prompt_v0.2.1](Next_Iteration_Prompt_v0.2.1.md)
+- [Next_Iteration_Prompt_v0.2.0](Next_Iteration_Prompt_v0.2.0.md)
 - [Offline_Audit_Validation](Offline_Audit_Validation.md)
 - [OptionalDeps_SoftFail_Validation](OptionalDeps_SoftFail_Validation.md)
 - [Owner_Approval_Validation](Owner_Approval_Validation.md)
@@ -68,11 +68,11 @@
 - [make_docs_build](make_docs_build.md)
 - [status_update_exhaustiveness](status_update_exhaustiveness.md)
 - [tokenization_Validation](../guides/tokenization.md)
-- [v0.2.1_Status_Report](v0.2.1_Status_Report.md)
-- [v0.2.1_Refactor_Report](v0.2.1_Refactor_Report.md)
-- [v0.2.1_Strict_Validation_Report](v0.2.1_Strict_Validation_Report.md)
-- [v0.2.1_Validation_Log](v0.2.1_Validation_Log.md)
-- [v0.2.1_Consolidation_Report](v0.2.1_Consolidation_Report.md)
+- [v0.2.0_Status_Report](v0.2.0_Status_Report.md)
+- [v0.2.0_Refactor_Report](v0.2.0_Refactor_Report.md)
+- [v0.2.0_Strict_Validation_Report](v0.2.0_Strict_Validation_Report.md)
+- [v0.2.0_Validation_Log](v0.2.0_Validation_Log.md)
+- [v0.2.0_Consolidation_Report](v0.2.0_Consolidation_Report.md)
 - [zendesk_ai_builder_readiness_validation](zendesk_ai_builder_readiness_validation.md)
 
 ---

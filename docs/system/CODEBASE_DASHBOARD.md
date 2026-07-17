@@ -1,6 +1,6 @@
 # Codebase Dashboard
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 
@@ -184,7 +184,7 @@
 
 **Deliverables**:
 - `docs/MASTER_INDEX.md` - Complete documentation index (10.4 KB)
-- `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md` - Enhanced protocol v0.2.1 (8.5 KB)
+- `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md` - Enhanced protocol v0.2.0 (8.5 KB)
 - `scripts/maintenance/check_doc_links.py` - Automated link checker (8.5 KB)
 - `docs/maintenance/LINK_VALIDATION_REPORT.md` - 321 broken links analyzed
 - `agents/NORMALIZATION_CHECKLIST.md` - Compliance audit (6.4 KB)
@@ -263,7 +263,7 @@
 **Deliverables**:
 - `.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md` - Comprehensive phase 1-5 update (13.9KB)
 - `.codex/AGENT_DESIGNS.md` - Production-ready architecture for 30+ agents (20.8KB)
-- `.github/agents/AGENT_REGISTRY.md` - Complete agent catalog (11.2KB, v0.2.1)
+- `.github/agents/AGENT_REGISTRY.md` - Complete agent catalog (11.2KB, v0.2.0)
 - `.github/agents/test-assertion-updater/` - Fully standardized agent (100% test coverage, full documentation)
 - `.codex/PR2820_PRODUCTION_DEPLOYMENT_CHECKLIST.md` - Production deployment guide (7.6KB)
 - `.codex/PR2820_FINAL_COMPLETION_SUMMARY.md` - Comprehensive completion summary (11.7KB)
@@ -510,14 +510,14 @@ None active. All blockers resolved or have mitigation plans.
 
 ### Documentation
 - [Cognitive Map](./CODEBASE_COGNITIVE_MAP.md) - Architecture overview
-- [Roadmap](../ROADMAP.md) - Feature roadmap (coming soon)
+- [Roadmap](../ROADMAP.md) - Feature roadmap
 - [Contributing](../CONTRIBUTING.md) - Contribution guide
 - [Architecture](../architecture/INDEX.md) - Detailed architecture
 - [MCP Quick Start](../mcp/QUICK_START.md) - ChatGPT packaging
 
 ### Key Components
-- [Codex Pipeline](../src/codex/README.md) - Code ingestion (coming soon)
-- [Agent System](../../agents/README.md) - Autonomous agents (coming soon)
+- [Codex Pipeline](../src/codex/README.md) - Code ingestion
+- [Agent System](../../agents/README.md) - Autonomous agents
 - [MCP System](../scripts/mcp/README.md) - ChatGPT packaging
 - [Test Suite](../tests/README.md) - Testing infrastructure
 

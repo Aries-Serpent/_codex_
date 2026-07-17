@@ -1,6 +1,6 @@
 # Issue Reporting & Feature Request Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-07-08
 **Version**: 1.0.0

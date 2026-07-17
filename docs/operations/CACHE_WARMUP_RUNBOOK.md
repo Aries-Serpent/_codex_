@@ -1,6 +1,6 @@
 # Cache Warm-up Runbook
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Purpose:** Operational guide for cache warm-up procedures
 **Audience:** DevOps engineers, CI/CD operators

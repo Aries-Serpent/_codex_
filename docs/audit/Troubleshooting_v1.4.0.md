@@ -1,6 +1,6 @@
-# Troubleshooting Guide v0.2.1
+# Troubleshooting Guide v0.2.0
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Version**: 1.4.0  
 **Last Updated**: 2026-06-22
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This guide addresses common issues when using audit pipeline v0.2.1, with a focus on new features:
+This guide addresses common issues when using audit pipeline v0.2.0, with a focus on new features:
 - Coverage augmentation
 - Token-similarity detection
 
@@ -207,7 +207,7 @@ time python scripts/space_traversal/audit_runner.py stage S4
 
 ---
 
-## Issue: Scores Decreased Significantly After v0.2.1
+## Issue: Scores Decreased Significantly After v0.2.0
 
 **Symptoms**:
 - Overall scores lower than v1.3.x
@@ -343,7 +343,7 @@ ls -lh scripts/space_traversal/dup_similarity.py
 
 **Solutions**:
 
-**Already fixed in v0.2.1** - Files have proper type ignores
+**Already fixed in v0.2.0** - Files have proper type ignores
 
 If you modified files:
 ```python
@@ -503,7 +503,7 @@ If problems persist:
 
 ## See Also
 
-- [Configuration Guide](./Configuration_v0.2.1.md) - Configuration options
+- [Configuration Guide](./Configuration_v0.2.0.md) - Configuration options
 - [Migration Guide](./Migration_v1.3_to_v1.4.md) - Upgrading from v1.3.x
-- [API Reference](./API_Reference_v0.2.1.md) - Module documentation
+- [API Reference](./API_Reference_v0.2.0.md) - Module documentation
 - [Performance Tuning](./Performance_Tuning.md) - Optimization strategies

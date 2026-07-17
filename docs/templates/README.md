@@ -1,6 +1,6 @@
 # Operational Templates Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -60,6 +60,6 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 
 ## Maintenance Notes
 
-- Keep version numbers in sync across all templates (`v0.2.1` for initial release).
+- Keep version numbers in sync across all templates (`v0.2.0` for initial release).
 - Retain the role workflow messaging so contributors understand who drafts versus who executes.
 - Add new templates to this index to maintain discoverability and update the cross-reference table accordingly.

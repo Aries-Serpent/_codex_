@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/PHASE_6_CONSISTENCY_CHECKS_REPORT/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 6: CI/CD Consistency Checks Implementation Report - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2732,8 +2732,8 @@
 <h1 id="phase-6-cicd-consistency-checks-implementation-report">Phase 6: CI/CD Consistency Checks Implementation Report<a class="headerlink" href="#phase-6-cicd-consistency-checks-implementation-report" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Date:</strong> 2026-06-22<br/>
-<strong>Status:</strong>  COMPLETE<br/>
+<p><strong>Date:</strong> 2026-06-22
+<strong>Status:</strong> COMPLETE
 <strong>Phase:</strong> 6 - Consistency &amp; Accessibility Improvement</p>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Successfully implemented comprehensive CI/CD consistency checks for the Aries-Serpent/<em>codex</em> repository, including:</p>
@@ -2753,10 +2753,10 @@
 - Added link and anchor validation rules
 - Mermaid diagram support for <em>codex</em> special patterns
 - Terminology standardization rules for:
-  - agent/Agent consistency
-  - workflow/Workflow consistency
-  - PR vs pull-request usage
-  - component, repository, task lowercasing</p>
+ - agent/Agent consistency
+ - workflow/Workflow consistency
+ - PR vs pull-request usage
+ - component, repository, task lowercasing</p>
 <p><strong>Key rules enforced:</strong>
 | Rule | Purpose |
 |------|---------|
@@ -2832,7 +2832,7 @@
 - Auto-detection of changed file types</p>
 <p><strong>Example output:</strong>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a> Running Pre-Commit Consistency Checks
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>════════════════════════════════════════════════════════════════════
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>[1/5] Scanning for secrets...
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> No secrets detected
@@ -2850,7 +2850,7 @@
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>[5/5] Validating YAML files...
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> YAML validation OK (3 files)
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>════════════════════════════════════════════════════════════════════
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
 <a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> All pre-commit checks passed!
 </code></pre></div></p>
 <h3 id="4-github-actions-workflow-githubworkflowsconsistency-checksyml">4. GitHub Actions Workflow (<code>.github/workflows/consistency-checks.yml</code>)<a class="headerlink" href="#4-github-actions-workflow-githubworkflowsconsistency-checksyml" title="Permanent link">¶</a></h3>
@@ -2911,39 +2911,39 @@
 <h2 id="configuration-details">Configuration Details<a class="headerlink" href="#configuration-details" title="Permanent link">¶</a></h2>
 <h3 id="markdownlint-rules-enforced">Markdownlint Rules Enforced<a class="headerlink" href="#markdownlint-rules-enforced" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="p">{</span>
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="nt">"heading-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"atx"</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">"heading-increment"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="nt">"first-heading-h1"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="nt">"first-line-heading"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">"line-length"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"line_length"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w">  </span><span class="nt">"no-hard-tabs"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="nt">"no-trailing-spaces"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">  </span><span class="nt">"no-multiple-blanks"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">  </span><span class="nt">"blanks-around-headings"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">  </span><span class="nt">"blanks-around-lists"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">  </span><span class="nt">"list-marker-space"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">  </span><span class="nt">"code-block-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fenced"</span><span class="w"> </span><span class="p">},</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">  </span><span class="nt">"emphasis-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"asterisk"</span><span class="w"> </span><span class="p">}</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w"> </span><span class="nt">"heading-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"atx"</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">"heading-increment"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w"> </span><span class="nt">"first-heading-h1"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="nt">"first-line-heading"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">"line-length"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"line_length"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="w"> </span><span class="nt">"no-hard-tabs"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="nt">"no-trailing-spaces"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">"no-multiple-blanks"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="nt">"blanks-around-headings"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="nt">"blanks-around-lists"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="nt">"list-marker-space"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="nt">"code-block-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fenced"</span><span class="w"> </span><span class="p">},</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="nt">"emphasis-style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="s2">"asterisk"</span><span class="w"> </span><span class="p">}</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="cross-reference-validation-examples">Cross-Reference Validation Examples<a class="headerlink" href="#cross-reference-validation-examples" title="Permanent link">¶</a></h3>
 <p>Valid links:
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>[<span class="nt">docs</span>](<span class="na">docs/file.md</span>)           # Relative
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>[<span class="nt">docs</span>](<span class="na">/docs/file.md</span>)          # Absolute
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>[<span class="nt">section</span>](<span class="na">#anchor</span>)              # Anchor
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>[<span class="nt">external</span>](<span class="na">https://github.com</span>)  # External
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>[<span class="nt">docs</span>](<span class="na">./file.md</span>) # Relative
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>[<span class="nt">docs</span>](<span class="na">./file.md</span>) # Absolute
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>[<span class="nt">section</span>](<span class="na">#anchor</span>) # Anchor
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>[<span class="nt">external</span>](<span class="na">https://github.com</span>) # External
 </code></pre></div></p>
 <p>Invalid links (detected):
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>[<span class="nt">missing</span>](<span class="na">docs/nonexistent.md</span>)  # File not found
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>[<span class="nt">bad-anchor</span>](<span class="na">file.md#missing</span>)   # Anchor missing
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>[<span class="nt">missing</span>](<span class="na">./nonexistent.md</span>) # File not found
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>[<span class="nt">bad-anchor</span>](<span class="na">file.md#missing</span>) # Anchor missing
 </code></pre></div></p>
 <h2 id="test-results">Test Results<a class="headerlink" href="#test-results" title="Permanent link">¶</a></h2>
 <h3 id="cross-reference-validation-results">Cross-Reference Validation Results<a class="headerlink" href="#cross-reference-validation-results" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Files checked:       6,012
-<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Links validated:     8,657
-<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Errors found:        929 (broken links requiring fixes)
-<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Warnings:            2,525 (external URLs, informational)
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>Status:               NEEDS FIXING
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>Files checked: 6,012
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>Links validated: 8,657
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>Errors found: 929 (broken links requiring fixes)
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>Warnings: 2,525 (external URLs, informational)
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>Status: NEEDS FIXING
 </code></pre></div>
 <p><strong>Major issues found:</strong>
 - 929 broken internal links
@@ -2952,18 +2952,18 @@
 - Broken cross-references between documentation</p>
 <h3 id="heading-hierarchy-validation">Heading Hierarchy Validation<a class="headerlink" href="#heading-hierarchy-validation" title="Permanent link">¶</a></h3>
 <p>Configuration verified:
--  First heading enforcement
--  Hierarchy jump detection
--  Duplicate heading prevention (MD024)
--  Single H1 requirement (MD025)</p>
+- First heading enforcement
+- Hierarchy jump detection
+- Duplicate heading prevention (MD024)
+- Single H1 requirement (MD025)</p>
 <h3 id="pre-commit-hook-validation">Pre-Commit Hook Validation<a class="headerlink" href="#pre-commit-hook-validation" title="Permanent link">¶</a></h3>
 <p>Tested scenarios:
--  Markdown files detected and linted
--  Python files auto-formatted
--  YAML files validated
--  Cross-references checked
--  Exit codes properly set
--  Bypass works with <code>--no-verify</code></p>
+- Markdown files detected and linted
+- Python files auto-formatted
+- YAML files validated
+- Cross-references checked
+- Exit codes properly set
+- Bypass works with <code>--no-verify</code></p>
 <h2 id="installation-instructions">Installation Instructions<a class="headerlink" href="#installation-instructions" title="Permanent link">¶</a></h2>
 <h2 id="quick-start-recommended">Quick Start (Recommended)<a class="headerlink" href="#quick-start-recommended" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># From repository root</span>
@@ -2972,7 +2972,7 @@
 <h2 id="manual-installation">Manual Installation<a class="headerlink" href="#manual-installation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># 1. Install tools</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>markdownlint-cli
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>brew<span class="w"> </span>install<span class="w"> </span>yamllint<span class="w">  </span><span class="c1"># or apt-get install yamllint</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>brew<span class="w"> </span>install<span class="w"> </span>yamllint<span class="w"> </span><span class="c1"># or apt-get install yamllint</span>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="c1"># 2. Install hook</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>cp<span class="w"> </span>.github/scripts/pre-commit-hook.sh<span class="w"> </span>.git/hooks/pre-commit
@@ -3205,9 +3205,9 @@
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>bash<span class="w"> </span>.github/scripts/install-consistency-hooks.sh
 </code></pre></div></p>
 <hr/>
-<p><strong>Report Generated:</strong> 2026-06-22 17:33:35 UTC<br/>
-<strong>Implementation Status:</strong>  Complete<br/>
-<strong>Phase 6 Task Status:</strong>  DELIVERED</p>
+<p><strong>Report Generated:</strong> 2026-06-22 17:33:35 UTC
+<strong>Implementation Status:</strong> Complete
+<strong>Phase 6 Task Status:</strong> DELIVERED</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
@@ -3237,6 +3237,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

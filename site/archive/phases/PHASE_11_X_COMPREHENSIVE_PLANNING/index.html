@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_11_X_COMPREHENSIVE_PLANNING/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 11.x - Advanced Features &amp; Integrations - Comprehensive Planning - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2714,10 +2714,10 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Status</strong>: Planning Phase<br/>
-<strong>Target Duration</strong>: 56-71 hours total<br/>
-<strong>Priority</strong>: High (4 initiatives) + Medium (3 initiatives)<br/>
-<strong>Prerequisites</strong>: Phase 10.2 complete <br/>
+<p><strong>Status</strong>: Planning Phase
+<strong>Target Duration</strong>: 56-71 hours total
+<strong>Priority</strong>: High (4 initiatives) + Medium (3 initiatives)
+<strong>Prerequisites</strong>: Phase 10.2 complete
 <strong>Start Date</strong>: TBD (Post Phase 10.2 merge)</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
@@ -2735,65 +2735,77 @@
 <hr/>
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Advanced Authentication, Workflow Automation'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Phase 11.x Architecture"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        Auth[Advanced Authentication]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        Workflow[Workflow Automation]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        Testing[Testing Framework]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        Integration[Enterprise Integrations]
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        Security[Security Layer]
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        Agents[Custom Agents]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        Deploy[Deployment Pipeline]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        Auth --&gt; Security
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        Workflow --&gt; Integration
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        Testing --&gt; Deploy
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        Agents --&gt; Integration
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        Security --&gt; Deploy
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>    end
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    subgraph "Phase 11.x Architecture"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        Auth[Advanced Authentication]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        Workflow[Workflow Automation]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        Testing[Testing Framework]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>        Integration[Enterprise Integrations]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        Security[Security Layer]
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        Agents[Custom Agents]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        Deploy[Deployment Pipeline]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        Auth --&gt; Security
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        Workflow --&gt; Integration
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        Testing --&gt; Deploy
 <a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    subgraph "Authentication Layer"
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        OAuth[OAuth2 Provider]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        MFA[MFA Service]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        HSM[HSM Integration]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        TokenMgr[Token Manager]
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        OAuth --&gt; TokenMgr
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>        MFA --&gt; TokenMgr
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>        HSM --&gt; TokenMgr
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    end
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        Agents --&gt; Integration
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        Security --&gt; Deploy
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>    end
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    subgraph "Authentication Layer"
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        OAuth[OAuth2 Provider]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>        MFA[MFA Service]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>        HSM[HSM Integration]
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        TokenMgr[Token Manager]
 <a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    subgraph "Workflow Layer"
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        GDrive[Google Drive API]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>        NotebookLM[NotebookLM Sync]
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>        Scheduler[Workflow Scheduler]
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        Webhooks[Webhook Handler]
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>        GDrive --&gt; Scheduler
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>        NotebookLM --&gt; Scheduler
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>        Webhooks --&gt; Scheduler
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    end
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    subgraph "Testing Layer"
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>        E2E[E2E Tests]
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>        Perf[Performance Tests]
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>        Chaos[Chaos Engineering]
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>        Load[Load Testing]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        OAuth --&gt; TokenMgr
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>        MFA --&gt; TokenMgr
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        HSM --&gt; TokenMgr
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    end
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    subgraph "Workflow Layer"
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>        GDrive[Google Drive API]
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>        NotebookLM[NotebookLM Sync]
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>        Scheduler[Workflow Scheduler]
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>        Webhooks[Webhook Handler]
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>        GDrive --&gt; Scheduler
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>        NotebookLM --&gt; Scheduler
 <a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>        E2E --&gt; Load
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>        Perf --&gt; Load
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>        Chaos --&gt; Perf
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    end
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    subgraph "Integration Layer"
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>        MLflow[MLflow Tracking]
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>        Slack[Slack Notifications]
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>        PagerDuty[PagerDuty Alerts]
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>        Datadog[Datadog Metrics]
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>        Webhooks --&gt; Scheduler
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    end
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    subgraph "Testing Layer"
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>        E2E[E2E Tests]
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>        Perf[Performance Tests]
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>        Chaos[Chaos Engineering]
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>        Load[Load Testing]
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>        E2E --&gt; Load
 <a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>        MLflow --&gt; Datadog
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>        Slack --&gt; PagerDuty
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    end
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>        Perf --&gt; Load
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>        Chaos --&gt; Perf
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    end
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    subgraph "Integration Layer"
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>        MLflow[MLflow Tracking]
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>        Slack[Slack Notifications]
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>        PagerDuty[PagerDuty Alerts]
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>        Datadog[Datadog Metrics]
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>        MLflow --&gt; Datadog
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>        Slack --&gt; PagerDuty
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>    end
 </code></pre></div>
 <hr/>
 <h2 id="priority-1-advanced-authentication-8-10-hours">Priority 1: Advanced Authentication (8-10 hours)<a class="headerlink" href="#priority-1-advanced-authentication-8-10-hours" title="Permanent link">¶</a></h2>
@@ -2801,30 +2813,31 @@
 <p>Implement Production authentication with OAuth2, MFA, and HSM support for production security.</p>
 <h3 id="system-design">System Design<a class="headerlink" href="#system-design" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>sequenceDiagram
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    participant User
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    participant App
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    participant OAuth
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    participant MFA
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    participant HSM
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    participant TokenStore
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    User-&gt;&gt;App: Login Request
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    App-&gt;&gt;OAuth: Initiate OAuth Flow
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    OAuth-&gt;&gt;User: Redirect to Provider
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    User-&gt;&gt;OAuth: Authenticate
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    OAuth-&gt;&gt;App: Authorization Code
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    App-&gt;&gt;OAuth: Exchange for Token
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    OAuth-&gt;&gt;App: Access Token
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    App-&gt;&gt;MFA: Request MFA Challenge
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    MFA-&gt;&gt;User: Send OTP/Challenge
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    User-&gt;&gt;MFA: Provide Response
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    MFA-&gt;&gt;App: MFA Verified
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    App-&gt;&gt;HSM: Sign Token
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    HSM-&gt;&gt;App: Signed Token
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    App-&gt;&gt;TokenStore: Store Token
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    TokenStore-&gt;&gt;App: Token ID
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    App-&gt;&gt;User: Login Success
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>sequenceDiagram
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    participant User
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    participant App
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    participant OAuth
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    participant MFA
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    participant HSM
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    participant TokenStore
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    User-&gt;&gt;App: Login Request
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    App-&gt;&gt;OAuth: Initiate OAuth Flow
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    OAuth-&gt;&gt;User: Redirect to Provider
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    User-&gt;&gt;OAuth: Authenticate
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    OAuth-&gt;&gt;App: Authorization Code
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    App-&gt;&gt;OAuth: Exchange for Token
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    OAuth-&gt;&gt;App: Access Token
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    App-&gt;&gt;MFA: Request MFA Challenge
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    MFA-&gt;&gt;User: Send OTP/Challenge
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    User-&gt;&gt;MFA: Provide Response
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    MFA-&gt;&gt;App: MFA Verified
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    App-&gt;&gt;HSM: Sign Token
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    HSM-&gt;&gt;App: Signed Token
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    App-&gt;&gt;TokenStore: Store Token
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    TokenStore-&gt;&gt;App: Token ID
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    App-&gt;&gt;User: Login Success
 </code></pre></div>
 <h3 id="implementation-plan">Implementation Plan<a class="headerlink" href="#implementation-plan" title="Permanent link">¶</a></h3>
 <h4 id="files-to-create">Files to Create<a class="headerlink" href="#files-to-create" title="Permanent link">¶</a></h4>
@@ -2901,33 +2914,48 @@
 <p>Automate repository flattening, Google Drive uploads, and NotebookLM synchronization for seamless knowledge management.</p>
 <h3 id="system-design_1">System Design<a class="headerlink" href="#system-design_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Trigger, Cron Schedule'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>flowchart TD
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    Start[Workflow Trigger] --&gt; Check{Trigger Type?}
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    Check --&gt;|Schedule| Schedule[Cron Schedule]
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    Check --&gt;|Webhook| Webhook[GitHub Webhook]
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    Check --&gt;|Manual| Manual[Manual Trigger]
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    Schedule --&gt; Flatten[Flatten Repository]
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    Webhook --&gt; Flatten
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    Manual --&gt; Flatten
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    Flatten --&gt; Validate{Valid Output?}
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    Validate --&gt;|No| Error[Log Error &amp; Alert]
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>    Validate --&gt;|Yes| Upload[Upload to Google Drive]
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>    Upload --&gt; DriveCheck{Upload Success?}
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    DriveCheck --&gt;|No| Retry[Retry Upload]
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    DriveCheck --&gt;|Yes| Sync[Sync to NotebookLM]
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    Retry --&gt; DriveCheck
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>    Sync --&gt; NotebookCheck{Sync Success?}
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>    NotebookCheck --&gt;|No| Alert[Send Alert]
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>    NotebookCheck --&gt;|Yes| Notify[Send Notifications]
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    Error --&gt; Alert
-<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    Alert --&gt; End[End Workflow]
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>    Notify --&gt; End
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>flowchart TD
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    Start[Workflow Trigger] --&gt; Check{Trigger Type?}
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    Check --&gt;|Schedule| Schedule[Cron Schedule]
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    Check --&gt;|Webhook| Webhook[GitHub Webhook]
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    Check --&gt;|Manual| Manual[Manual Trigger]
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    Schedule --&gt; Flatten[Flatten Repository]
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    Webhook --&gt; Flatten
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    Manual --&gt; Flatten
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    Flatten --&gt; Validate{Valid Output?}
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    Validate --&gt;|No| Error[Log Error &amp; Alert]
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>    Validate --&gt;|Yes| Upload[Upload to Google Drive]
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    Upload --&gt; DriveCheck{Upload Success?}
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>    DriveCheck --&gt;|No| Retry[Retry Upload]
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>    DriveCheck --&gt;|Yes| Sync[Sync to NotebookLM]
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>    Retry --&gt; DriveCheck
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>    Sync --&gt; NotebookCheck{Sync Success?}
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>    NotebookCheck --&gt;|No| Alert[Send Alert]
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>    NotebookCheck --&gt;|Yes| Notify[Send Notifications]
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a>
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>    Error --&gt; Alert
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a>    Alert --&gt; End[End Workflow]
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a>
+<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a>    Notify --&gt; End
 </code></pre></div>
 <h3 id="implementation-plan_1">Implementation Plan<a class="headerlink" href="#implementation-plan_1" title="Permanent link">¶</a></h3>
 <h4 id="files-to-create_1">Files to Create<a class="headerlink" href="#files-to-create_1" title="Permanent link">¶</a></h4>
@@ -3004,32 +3032,39 @@
 <p>Comprehensive testing framework with E2E, performance, load, and chaos engineering tests.</p>
 <h3 id="system-design_2">System Design<a class="headerlink" href="#system-design_2" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Unit Tests&lt;br/&gt;Fast, Isolated, Integration Tests&lt;br/&gt;Component Interaction'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>graph LR
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    subgraph "Testing Pyramid"
-<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>        Unit[Unit Tests&lt;br/&gt;Fast, Isolated]
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>        Integration[Integration Tests&lt;br/&gt;Component Interaction]
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>        E2E[E2E Tests&lt;br/&gt;Full User Flows]
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>        Performance[Performance Tests&lt;br/&gt;Throughput &amp; Latency]
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        Load[Load Tests&lt;br/&gt;Stress &amp; Scalability]
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        Chaos[Chaos Tests&lt;br/&gt;Resilience]
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    end
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    Unit --&gt; Integration
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    Integration --&gt; E2E
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    E2E --&gt; Performance
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    Performance --&gt; Load
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    Load --&gt; Chaos
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    subgraph "Test Infrastructure"
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>        TestEnv[Test Environment]
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>        Fixtures[Test Fixtures]
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>        Mocks[Mock Services]
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>        Metrics[Metrics Collection]
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    end
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>    E2E --&gt; TestEnv
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    Performance --&gt; Metrics
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>    Chaos --&gt; Mocks
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>graph LR
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>    subgraph "Testing Pyramid"
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>        Unit[Unit Tests&lt;br/&gt;Fast, Isolated]
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>        Integration[Integration Tests&lt;br/&gt;Component Interaction]
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>        E2E[E2E Tests&lt;br/&gt;Full User Flows]
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>        Performance[Performance Tests&lt;br/&gt;Throughput &amp; Latency]
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>        Load[Load Tests&lt;br/&gt;Stress &amp; Scalability]
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>        Chaos[Chaos Tests&lt;br/&gt;Resilience]
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    end
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    Unit --&gt; Integration
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    Integration --&gt; E2E
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    E2E --&gt; Performance
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    Performance --&gt; Load
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    Load --&gt; Chaos
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    subgraph "Test Infrastructure"
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>        TestEnv[Test Environment]
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>        Fixtures[Test Fixtures]
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>        Mocks[Mock Services]
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>        Metrics[Metrics Collection]
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    end
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    E2E --&gt; TestEnv
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>    Performance --&gt; Metrics
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>    Chaos --&gt; Mocks
 </code></pre></div>
 <h3 id="implementation-plan_2">Implementation Plan<a class="headerlink" href="#implementation-plan_2" title="Permanent link">¶</a></h3>
 <h4 id="files-to-create_2">Files to Create<a class="headerlink" href="#files-to-create_2" title="Permanent link">¶</a></h4>
@@ -3107,43 +3142,52 @@
 <p>Enterprise integrations for observability, alerting, and experiment tracking.</p>
 <h3 id="system-design_3">System Design<a class="headerlink" href="#system-design_3" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Codex Application, Event Bus'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>graph TB
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    subgraph "Application Layer"
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>        App[Codex Application]
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        Events[Event Bus]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    end
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    subgraph "Observability"
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        MLflow[MLflow Tracking]
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        Datadog[Datadog APM]
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        Logs[Centralized Logging]
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    end
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    subgraph "Alerting"
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        Slack[Slack Notifications]
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        PagerDuty[PagerDuty Incidents]
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>        Email[Email Alerts]
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    end
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    subgraph "Metrics"
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>        AppMetrics[Application Metrics]
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>        InfraMetrics[Infrastructure Metrics]
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>        BusinessMetrics[Business Metrics]
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    end
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    App --&gt; Events
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    Events --&gt; MLflow
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>    Events --&gt; Slack
-<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>    Events --&gt; Datadog
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>graph TB
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    subgraph "Application Layer"
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        App[Codex Application]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        Events[Event Bus]
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    end
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    subgraph "Observability"
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        MLflow[MLflow Tracking]
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        Datadog[Datadog APM]
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>        Logs[Centralized Logging]
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    end
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    subgraph "Alerting"
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        Slack[Slack Notifications]
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>        PagerDuty[PagerDuty Incidents]
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>        Email[Email Alerts]
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    end
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    subgraph "Metrics"
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>        AppMetrics[Application Metrics]
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>        InfraMetrics[Infrastructure Metrics]
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>        BusinessMetrics[Business Metrics]
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    end
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    App --&gt; Events
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>    Events --&gt; MLflow
 <a href="#__codelineno-4-30" id="__codelineno-4-30" name="__codelineno-4-30"></a>
-<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>    MLflow --&gt; AppMetrics
-<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>    Datadog --&gt; InfraMetrics
-<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>    Slack --&gt; Email
-<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>    PagerDuty --&gt; Slack
-<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>
-<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>    AppMetrics --&gt; Logs
-<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>    InfraMetrics --&gt; Logs
-<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>    BusinessMetrics --&gt; Logs
+<a href="#__codelineno-4-31" id="__codelineno-4-31" name="__codelineno-4-31"></a>    Events --&gt; Slack
+<a href="#__codelineno-4-32" id="__codelineno-4-32" name="__codelineno-4-32"></a>
+<a href="#__codelineno-4-33" id="__codelineno-4-33" name="__codelineno-4-33"></a>    Events --&gt; Datadog
+<a href="#__codelineno-4-34" id="__codelineno-4-34" name="__codelineno-4-34"></a>
+<a href="#__codelineno-4-35" id="__codelineno-4-35" name="__codelineno-4-35"></a>    MLflow --&gt; AppMetrics
+<a href="#__codelineno-4-36" id="__codelineno-4-36" name="__codelineno-4-36"></a>
+<a href="#__codelineno-4-37" id="__codelineno-4-37" name="__codelineno-4-37"></a>    Datadog --&gt; InfraMetrics
+<a href="#__codelineno-4-38" id="__codelineno-4-38" name="__codelineno-4-38"></a>
+<a href="#__codelineno-4-39" id="__codelineno-4-39" name="__codelineno-4-39"></a>    Slack --&gt; Email
+<a href="#__codelineno-4-40" id="__codelineno-4-40" name="__codelineno-4-40"></a>
+<a href="#__codelineno-4-41" id="__codelineno-4-41" name="__codelineno-4-41"></a>    PagerDuty --&gt; Slack
+<a href="#__codelineno-4-42" id="__codelineno-4-42" name="__codelineno-4-42"></a>
+<a href="#__codelineno-4-43" id="__codelineno-4-43" name="__codelineno-4-43"></a>    AppMetrics --&gt; Logs
+<a href="#__codelineno-4-44" id="__codelineno-4-44" name="__codelineno-4-44"></a>
+<a href="#__codelineno-4-45" id="__codelineno-4-45" name="__codelineno-4-45"></a>    InfraMetrics --&gt; Logs
+<a href="#__codelineno-4-46" id="__codelineno-4-46" name="__codelineno-4-46"></a>
+<a href="#__codelineno-4-47" id="__codelineno-4-47" name="__codelineno-4-47"></a>    BusinessMetrics --&gt; Logs
 </code></pre></div>
 <h3 id="implementation-plan_3">Implementation Plan<a class="headerlink" href="#implementation-plan_3" title="Permanent link">¶</a></h3>
 <h4 id="files-to-create_3">Files to Create<a class="headerlink" href="#files-to-create_3" title="Permanent link">¶</a></h4>
@@ -3264,7 +3308,7 @@
 <h3 id="agents-to-create">Agents to Create<a class="headerlink" href="#agents-to-create" title="Permanent link">¶</a></h3>
 <h4 id="1-code-migration-agent">1. Code Migration Agent<a class="headerlink" href="#1-code-migration-agent" title="Permanent link">¶</a></h4>
 <ul>
-<li><strong>Purpose</strong>: Automate codebase migrations (Python 2→3, framework upgrades)</li>
+<li><strong>Purpose</strong>: Automate codebase migrations (Python 23, framework upgrades)</li>
 <li><strong>File</strong>: <code>.github/agents/code-migration-agent.agent.yml</code></li>
 <li><strong>Lines</strong>: ~2000 lines (including scripts)</li>
 </ul>
@@ -3372,10 +3416,10 @@
 </ul>
 <h3 id="internal-dependencies">Internal Dependencies<a class="headerlink" href="#internal-dependencies" title="Permanent link">¶</a></h3>
 <ul>
-<li>Phase 10.2 merged </li>
-<li>Security utilities operational </li>
-<li>CI/CD pipeline stable </li>
-<li>Test infrastructure ready </li>
+<li>Phase 10.2 merged</li>
+<li>Security utilities operational</li>
+<li>CI/CD pipeline stable</li>
+<li>Test infrastructure ready</li>
 </ul>
 <hr/>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
@@ -3387,9 +3431,9 @@
 <li><strong>Kickoff Meeting</strong>: Align on goals and timeline</li>
 </ol>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-01-15<br/>
-<strong>Author</strong>: GitHub Copilot<br/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-01-15
+<strong>Author</strong>: GitHub Copilot
 <strong>Status</strong>: Ready for Execution</p>
 </article>
 </div>
@@ -3420,6 +3464,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Phase 4-5: Release Automation Execution Summary — v0.2.1
+# Phase 4-5: Release Automation Execution Summary — v0.2.0
 
 **Date:** 2026-07-11  
 **Time Window:** 11:02:44 → 11:07:06 UTC  
@@ -9,14 +9,14 @@
 
 ## Executive Summary
 
-Automated release workflow for v0.2.1 executed successfully across all 5 phases:
+Automated release workflow for v0.2.0 executed successfully across all 5 phases:
 - ✅ Phase 1: Git tag creation and push
 - ✅ Phase 2: Workflow trigger (release-to-pypi.yml)
 - ✅ Phase 3: Pre-release validation
 - ✅ Phase 4: Build distribution and PyPI publication
 - ✅ Phase 5: GitHub release creation and post-release monitoring
 
-**Result:** v0.2.1 is now live on PyPI and GitHub Releases.
+**Result:** v0.2.0 is now live on PyPI and GitHub Releases.
 
 ---
 
@@ -28,7 +28,7 @@ Automated release workflow for v0.2.1 executed successfully across all 5 phases:
 | **Workflow File** | `.github/workflows/release-to-pypi.yml` |
 | **Run Number** | 332 |
 | **Run ID** | 29150323759 |
-| **Trigger Event** | Git tag push (v0.2.1) |
+| **Trigger Event** | Git tag push (v0.2.0) |
 | **Status** | COMPLETED |
 | **Conclusion** | SUCCESS |
 | **Total Duration** | 4 minutes |
@@ -39,7 +39,7 @@ Automated release workflow for v0.2.1 executed successfully across all 5 phases:
 | **Version** | 0.2.1 |
 | **Version Source** | pyproject.toml (line 60: `version = "0.2.1"`) |
 | **Commit SHA** | 2c4e0abb5a496e92144449b1ba4fa5a3fb872695 |
-| **Git Tag** | v0.2.1 (created via GitHub API) |
+| **Git Tag** | v0.2.0 (created via GitHub API) |
 | **Package Name** | codex-ml |
 | **Python Version Requirement** | >=3.12 |
 | **Author** | Aries Serpent |
@@ -54,8 +54,8 @@ Automated release workflow for v0.2.1 executed successfully across all 5 phases:
 **Duration:** ~1 minute
 
 **Validations Performed:**
-- ✅ Version extraction from tag (v0.2.1)
-- ✅ pyproject.toml version consistency check (0.2.1 = v0.2.1)
+- ✅ Version extraction from tag (v0.2.0)
+- ✅ pyproject.toml version consistency check (0.2.1 = v0.2.0)
 - ✅ CHANGELOG.md freshness verification
 - ✅ Compliance gate validation (P0/P1)
 - ✅ Git ref validation
@@ -125,7 +125,7 @@ Automated release workflow for v0.2.1 executed successfully across all 5 phases:
 **Status:** SUCCESS
 
 **Release Details:**
-- ✅ GitHub Release created for v0.2.1
+- ✅ GitHub Release created for v0.2.0
 - ✅ Release notes generated from workflow
 - ✅ Distribution artifacts attached
 - ✅ SBOM attached to release
@@ -173,7 +173,7 @@ Automated release workflow for v0.2.1 executed successfully across all 5 phases:
 
 ## Command Reference
 
-### To Install v0.2.1:
+### To Install v0.2.0:
 ```bash
 pip install codex-ml==0.2.1
 ```
@@ -187,7 +187,7 @@ python -c "import codex; print(codex.__version__)"
 https://pypi.org/project/codex-ml/0.2.1/
 
 ### To View GitHub Release:
-https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1
+https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.0
 
 ---
 
@@ -229,10 +229,10 @@ https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1
 ## Artifacts & Documents
 
 **Stored in .codex/:**
-- This file: `PHASE_4_5_RELEASE_EXECUTION_SUMMARY_v0.2.1.md`
+- This file: `PHASE_4_5_RELEASE_EXECUTION_SUMMARY_v0.2.0.md`
 - Session logs: `.codex/sessions/`
 - Accountability: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
-- Changelog: `CHANGELOG.md` (v0.2.1 entry)
+- Changelog: `CHANGELOG.md` (v0.2.0 entry)
 
 ---
 
@@ -269,7 +269,7 @@ https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1
 
 ## Conclusion
 
-**v0.2.1 Release: COMPLETE & SUCCESSFUL** ✅
+**v0.2.0 Release: COMPLETE & SUCCESSFUL** ✅
 
 All phases (1-5) executed successfully with:
 - ✅ Zero failures
@@ -285,5 +285,5 @@ Ready for production use.
 ---
 
 **Report Generated:** 2026-07-11T11:13:16Z  
-**Session:** Autonomous Release Automation v0.2.1  
+**Session:** Autonomous Release Automation v0.2.0  
 **Next Phase:** Phase 5 Health Monitoring (ongoing)

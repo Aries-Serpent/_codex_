@@ -44,7 +44,7 @@ Based on typical v0.2.0 pre-production patterns, the 1-2 point gap usually comes
 
 ### Medium-Priority Gaps (Possible)
 4. **Content Version Alignment** (Lane 6 - running)
-   - v0.2.1 references (should be v0.2.0 only)
+   - v0.2.0 references (should be v0.2.0 only)
    - Stale preview/beta content markers
    - CHANGELOG completeness verification
    - **Impact**: ~0.5-1 point

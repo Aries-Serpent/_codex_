@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Group 04
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Group:** 4 of 32  
 **Sessions:** S315_PR4048_MERGE_READY_100 to S323  

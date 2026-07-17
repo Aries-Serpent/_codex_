@@ -189,7 +189,7 @@ TOTAL: 20 LANES | 721+ TESTS | 0.952 CONFIDENCE ✅
 ### Phase 20.4 Options (per Phase 20.3 Final Report)
 
 **Option A: Phase 20.4 Production Deployment**
-- **Objective**: Release v0.2.1 with Phase 20 enhancements to production
+- **Objective**: Release v0.2.0 with Phase 20 enhancements to production
 - **Scope**: Deployment validation, smoke testing, production health checks
 - **Duration**: 30-45 minutes (2-3 lane model)
 - **Authority**: @mbaetiong (D-tier autonomous)
@@ -214,14 +214,14 @@ TOTAL: 20 LANES | 721+ TESTS | 0.952 CONFIDENCE ✅
 **GO CONTINUE** with **Phase 20.4 Production Deployment**:
 1. ✅ Phase 20 campaign is 100% complete and certified
 2. ✅ All production readiness gates have passed
-3. ✅ v0.2.1 release artifacts are prepared
+3. ✅ v0.2.0 release artifacts are prepared
 4. ✅ Deployment automation is staged and ready
 5. ✅ @mbaetiong D-tier autonomous approval is active
 6. ✅ Zero identified blockers or regressions
 
 **Timeline**:
 - Immediate: Dispatch Phase 20.4 briefing to production deployment lanes
-- T+45 min: Phase 20.4 complete, v0.2.1 deployed to production
+- T+45 min: Phase 20.4 complete, v0.2.0 deployed to production
 - T+90 min: Phase 20.5 monitoring validation complete
 - T+120 min: Phase 21 planning phase begins
 

@@ -1,6 +1,6 @@
 # Infrastructure Operations Manual - Codex ML
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Document Version:** 1.0.0
 **Last Updated: 2026-07-08
@@ -231,7 +231,7 @@ redis-cli --cluster rebalance 192.168.1.1:6379
 ```bash
 # 1. Update image
 kubectl set image deployment/api-server \
- api-server=codex/api-server:v0.2.1 \
+ api-server=codex/api-server:v0.2.0 \
  -n codex
 
 # 2. Monitor rollout

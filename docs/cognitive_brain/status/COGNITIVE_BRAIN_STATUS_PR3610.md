@@ -1,6 +1,6 @@
 # Cognitive Brain Status — PR #3610 (S140)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated**: 2026-06-22T00:00:00Z
 **Session**: S140

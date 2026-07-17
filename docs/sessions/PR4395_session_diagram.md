@@ -1,6 +1,6 @@
 # PR #4395 — Session Diagram (archived — PR merged 2026-05-11T17:57Z)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Status: MERGED** by @mbaetiong · Continuation work on `copilot/sync-docs-and-confirm-latest-state` (PR #4416)
 

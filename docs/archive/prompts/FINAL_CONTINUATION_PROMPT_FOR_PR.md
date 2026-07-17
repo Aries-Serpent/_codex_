@@ -1,6 +1,6 @@
 # @copilot Continue Phase 10 + CLI Implementation + Custom Agent Deployment
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Context
 PR #2836 is complete with all review comments addressed, CI hardened, Phase 10 foundations established, Admin Automation Agent implemented, GitHub Secrets CLI built, and custom testing/security agents designed.

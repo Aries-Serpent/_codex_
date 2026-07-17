@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/ci/CONCURRENT_MONITOR_CHERRY_PICK_REPRO/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Concurrent Workflow Monitoring &amp; Cherry-Pick Process — Reproducibility Reference - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2474,97 +2474,127 @@
 </blockquote>
 <hr/>
 <h2 id="architecture-diagram">Architecture Diagram<a class="headerlink" href="#architecture-diagram" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing "🔔 Trigger Event", "@copilot continue\ncomment posted"'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>flowchart TD
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph TRIGGER["🔔 Trigger Event"]
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        T1["@copilot continue\ncomment posted"] --&gt; T2[agent-auth-delegation.yml\nfires run]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        T2 --&gt; T3[D-00: session_bootstrap.py\n--offline --skip-triage]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        T3 --&gt; T4[New SWE agent run\ncreated — in_progress]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    end
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    subgraph DAEMON[" Concurrent Monitor Daemon  (non-blocking)"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        T4 --&gt; D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        D1 --&gt; D2[launch_daemon\nfork + start_new_session]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>        D2 --&gt; D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>        D2 --&gt; D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        D2 --&gt; D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        D2 --&gt; D6[" Returns PID\nimmediately"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    end
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>    subgraph PARALLEL["🛠️  Parallel Agent Work  (Loop B — unblocked)"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        D6 --&gt; P1[Edit files\nwrite tests\nupdate docs]
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        P1 --&gt; P2["python monitor_run.py\n--status RUN_ID\n(non-blocking check)"]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>        P2 --&gt;|"exit 0\nin_progress"| P1
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        P2 --&gt;|"exit 5\nsuccess"| INT
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        P2 --&gt;|"exit 1\nfailure"| FIX
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>    end
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    subgraph POLL[" Background Poll Loop  (Loop A — daemon)"]
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>        D4 --&gt; PL1[_poll_loop\nevery 300s]
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        PL1 --&gt;|in_progress| PL1
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        PL1 --&gt;|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        PL2 --&gt; PL3[run_triage\nci_triage_repro.sh --json]
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        PL3 --&gt; PL4[Write final state.json\nremove daemon.pid]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    end
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing " Trigger Event", "@copilot continue\ncomment posted"'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>flowchart TD
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph TRIGGER[" Trigger Event"]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> T1["@copilot continue\ncomment posted"] --&gt; T2[agent-auth-delegation.yml\nfires run]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> T2 --&gt; T3[D-00: session_bootstrap.py\n--offline --skip-triage]
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> T3 --&gt; T4[New SWE agent run\ncreated — in_progress]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> end
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> subgraph DAEMON[" Concurrent Monitor Daemon (non-blocking)"]
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> T4 --&gt; D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> D1 --&gt; D2[launch_daemon\nfork + start_new_session]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> D2 --&gt; D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a> D2 --&gt; D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> D2 --&gt; D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> D2 --&gt; D6[" Returns PID\nimmediately"]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> end
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a> subgraph PARALLEL[" Parallel Agent Work (Loop B — unblocked)"]
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> D6 --&gt; P1[Edit files\nwrite tests\nupdate docs]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> P1 --&gt; P2["python monitor_run.py\n--status RUN_ID\n(non-blocking check)"]
 <a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>    subgraph INT[" Integration  (Loop C)"]
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>        PL4 --&gt; I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>        I1 --&gt; I2[git diff --stat HEAD\norigin/BRANCH]
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>        I2 --&gt;|"no delta"| I4
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>        I2 --&gt;|"delta"| I3[git checkout\norigin/BRANCH -- FILE]
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>        I3 --&gt; I4[bash ci_triage_repro.sh\n7 checks]
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>        I4 --&gt; I5[pre-commit run\n--files CHANGED]
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>        I5 --&gt; I6[report_progress\ncommit + push]
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    end
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    subgraph FIX[" Failure Handling"]
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>        F1[get failed job logs\ngh api .../jobs] --&gt; F2[diagnose root cause]
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>        F2 --&gt; F3[apply fix locally]
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>        F3 --&gt; I4
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    end
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> P2 --&gt;|"exit 0\nin_progress"| P1
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> P2 --&gt;|"exit 5\nsuccess"| INT
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a> P2 --&gt;|"exit 1\nfailure"| FIX
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> end
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> subgraph POLL[" Background Poll Loop (Loop A — daemon)"]
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> D4 --&gt; PL1[_poll_loop\nevery 300s]
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> PL1 --&gt;|in_progress| PL1
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> PL1 --&gt;|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> PL2 --&gt; PL3[run_triage\nci_triage_repro.sh --json]
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> PL3 --&gt; PL4[Write final state.json\nremove daemon.pid]
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a> end
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a> subgraph INT[" Integration (Loop C)"]
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a> PL4 --&gt; I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a> I1 --&gt; I2[git diff --stat HEAD\norigin/BRANCH]
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a> I2 --&gt;|"no delta"| I4
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a> I2 --&gt;|"delta"| I3[git checkout\norigin/BRANCH -- FILE]
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a> I3 --&gt; I4[bash ci_triage_repro.sh\n7 checks]
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a> I4 --&gt; I5[pre-commit run\n--files CHANGED]
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a> I5 --&gt; I6[report_progress\ncommit + push]
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a> end
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a> subgraph FIX[" Failure Handling"]
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a> F1[get failed job logs\ngh api .../jobs] --&gt; F2[diagnose root cause]
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a> F2 --&gt; F3[apply fix locally]
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a> F3 --&gt; I4
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a> end
 </code></pre></div>
 <hr/>
 <h2 id="cli-quick-reference">CLI Quick-Reference<a class="headerlink" href="#cli-quick-reference" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># ── Start daemon (non-blocking) ──────────────────────────────────────────</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Start daemon (non-blocking) </span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--run-id<span class="w"> </span><span class="m">23220880384</span><span class="w"> </span>--daemon<span class="w"> </span>--cherry-pick<span class="w"> </span>--triage
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># ── Check status while working on other tasks ────────────────────────────</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Check status while working on other tasks </span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--status<span class="w"> </span><span class="m">23220880384</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1"># exit 0=in_progress  5=success  1=failure  2=timeout  3=api_error  4=triage_fail</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="c1"># exit 0=in_progress 5=success 1=failure 2=timeout 3=api_error 4=triage_fail</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1"># ── Re-attach to tail log ────────────────────────────────────────────────</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1"># Re-attach to tail log </span>
 <a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--wait<span class="w"> </span><span class="m">23220880384</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="c1"># ── Stop daemon ──────────────────────────────────────────────────────────</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="c1"># Stop daemon </span>
 <a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--stop<span class="w"> </span><span class="m">23220880384</span>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="c1"># ── List all monitors ────────────────────────────────────────────────────</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="c1"># List all monitors </span>
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--list
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="c1"># ── Resolve via check-run ID or commit SHA ───────────────────────────────</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="c1"># Resolve via check-run ID or commit SHA </span>
 <a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--check-id<span class="w"> </span><span class="m">67492995091</span><span class="w"> </span>--daemon
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--commit<span class="w">  </span>abc1234ef<span class="w">    </span>--daemon
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--commit<span class="w"> </span>abc1234ef<span class="w"> </span>--daemon
 <a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="c1"># ── One-shot snapshot (no polling) ───────────────────────────────────────</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="c1"># One-shot snapshot (no polling) </span>
 <a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>python<span class="w"> </span>scripts/ci/monitor_run.py<span class="w"> </span>--run-id<span class="w"> </span><span class="m">23220880384</span><span class="w"> </span>--check-only
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="c1"># ── Python API: non-blocking thread ──────────────────────────────────────</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="c1"># Python API: non-blocking thread </span>
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>from<span class="w"> </span>scripts.ci.monitor_run<span class="w"> </span>import<span class="w"> </span>start_background_monitor,<span class="w"> </span>poll_status
 <a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="nv">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>start_background_monitor<span class="o">(</span><span class="nv">run_id</span><span class="o">=</span><span class="m">23220880384</span>,<span class="w"> </span><span class="nv">cherry_pick</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">triage</span><span class="o">=</span>True<span class="o">)</span>
 <a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="c1"># ... do other work ...</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="nv">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>poll_status<span class="o">(</span><span class="m">23220880384</span><span class="o">)</span><span class="w">   </span><span class="c1"># reads state.json — no network call</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="nv">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>poll_status<span class="o">(</span><span class="m">23220880384</span><span class="o">)</span><span class="w"> </span><span class="c1"># reads state.json — no network call</span>
 </code></pre></div>
 <hr/>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document is the standardised reference for the <strong>Concurrent Monitor + Cherry-Pick
 pattern</strong> used whenever a Copilot SWE agent run is <code>in_progress</code> on the same branch.</p>
 <p>The pattern has three interlocking loops managed by <code>monitor_run.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Loop A — Monitor (daemon)     Loop B — Parallel work         Loop C — Integration
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>──────────────────────────    ──────────────────────         ────────────────────
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>poll GitHub API every 5m      edit files, run tests          git diff vs remote
-<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>write state.json each poll    check --status non-blocking    cherry_pick_delta
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>                                                             ci_triage_repro.sh
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>Detect completion ─────────────────────────────────────────► report_progress
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Loop A — Monitor (daemon) Loop B — Parallel work Loop C — Integration
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>poll GitHub API every 5m edit files, run tests git diff vs remote
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>write state.json each poll check --status non-blocking cherry_pick_delta
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a> ci_triage_repro.sh
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>Detect completion report_progress
 </code></pre></div>
 <p>Each step below has:</p>
 <ul>
@@ -2594,11 +2624,11 @@ immediately from the workflow list.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Repro: list the most recent in_progress run on the active branch</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="nv">BRANCH</span><span class="o">=</span><span class="s2">"copilot/sub-pr-3606-again"</span>
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>gh<span class="w"> </span>api<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs?branch=</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">&amp;status=in_progress&amp;per_page=5"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.workflow_runs[] | [.id, .name, .status, .run_started_at] | @tsv'</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs?branch=</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">&amp;status=in_progress&amp;per_page=5"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.workflow_runs[] | [.id, .name, .status, .run_started_at] | @tsv'</span>
 </code></pre></div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>23220880384    Addressing comment on PR #3615    in_progress    2026-03-17T23:15:03Z
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>23220880384 Addressing comment on PR #3615 in_progress 2026-03-17T23:15:03Z
 </code></pre></div>
 <p><strong>Decision:</strong> Save <code>RUN_ID=23220880384</code>. Proceed to Step 1.</p>
 <hr/>
@@ -2622,7 +2652,7 @@ work from the agent run that must be cherry-picked.</p>
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="c1"># Repro: single-poll via GitHub CLI</span>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion, .updated_at] | @tsv'</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion, .updated_at] | @tsv'</span>
 </code></pre></div>
 <p><strong>Possible outputs:</strong></p>
 <table>
@@ -2635,36 +2665,36 @@ work from the agent run that must be cherry-picked.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>in_progress    null    &lt;timestamp&gt;</code></td>
+<td><code>in_progress null &lt;timestamp&gt;</code></td>
 <td>Still running</td>
 <td>Wait 5 min, re-poll</td>
 </tr>
 <tr>
-<td><code>completed    success    &lt;timestamp&gt;</code></td>
+<td><code>completed success &lt;timestamp&gt;</code></td>
 <td>Run succeeded — may have pushed commits</td>
-<td>→ Step 4</td>
+<td>Step 4</td>
 </tr>
 <tr>
-<td><code>completed    failure    &lt;timestamp&gt;</code></td>
+<td><code>completed failure &lt;timestamp&gt;</code></td>
 <td>Run failed</td>
-<td>→ Step 3</td>
+<td>Step 3</td>
 </tr>
 <tr>
-<td><code>completed    skipped    &lt;timestamp&gt;</code></td>
+<td><code>completed skipped &lt;timestamp&gt;</code></td>
 <td>Run skipped (no matching trigger)</td>
-<td>→ Step 4 (no new commits expected)</td>
+<td>Step 4 (no new commits expected)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="poll-loop-bash">Poll loop (bash)<a class="headerlink" href="#poll-loop-bash" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nv">RUN_ID</span><span class="o">=</span><span class="m">23220880384</span>
 <a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span><span class="nv">RESULT</span><span class="o">=</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">    </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion // "none"] | @tsv'</span><span class="k">)</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+%H:%M:%SZ<span class="k">)</span><span class="s2">] </span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">  </span><span class="nv">STATUS</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f1<span class="k">)</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w">  </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">STATUS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"in_progress"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">300</span><span class="w">   </span><span class="c1"># 5-minute interval</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span><span class="nv">RESULT</span><span class="o">=</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion // "none"] | @tsv'</span><span class="k">)</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"[</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+%H:%M:%SZ<span class="k">)</span><span class="s2">] </span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w"> </span><span class="nv">STATUS</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f1<span class="k">)</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">STATUS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"in_progress"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a><span class="w"> </span>sleep<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="c1"># 5-minute interval</span>
 <a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a><span class="k">done</span>
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Run </span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2"> finished: </span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span>
 </code></pre></div>
@@ -2673,7 +2703,7 @@ work from the agent run that must be cherry-picked.</p>
 <p>If the run concludes with <code>failure</code>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Repro: get failed job logs</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/Aries-Serpent/_codex_/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">/jobs"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.jobs[] | select(.conclusion=="failure") | [.id, .name] | @tsv'</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.jobs[] | select(.conclusion=="failure") | [.id, .name] | @tsv'</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="c1"># Then fetch log for each failed job</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="nv">JOB_ID</span><span class="o">=</span>&lt;failed_job_id&gt;
@@ -2706,34 +2736,34 @@ work from the agent run that must be cherry-picked.</p>
 <tr>
 <td><em>(empty)</em></td>
 <td>Run pushed no substantive commits (or only <code>[skip ci]</code>)</td>
-<td>→ Step 5 (validate existing state)</td>
+<td>Step 5 (validate existing state)</td>
 </tr>
 <tr>
 <td><code>abc1234 fix: some change</code></td>
 <td>New substantive commits</td>
-<td>→ Step 4a (cherry-pick)</td>
+<td>Step 4a (cherry-pick)</td>
 </tr>
 <tr>
 <td><code>abc1234 chore(auth): write provenance session token [skip ci]</code></td>
 <td>Auth-only commit</td>
-<td>→ Inspect then skip or apply</td>
+<td>Inspect then skip or apply</td>
 </tr>
 </tbody>
 </table>
 <h2 id="step-4a-cherry-pick-new-substantive-commits">Step 4a — Cherry-pick new substantive commits<a class="headerlink" href="#step-4a-cherry-pick-new-substantive-commits" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Repro: list files changed in new commits</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>git<span class="w"> </span>diff<span class="w"> </span>--stat<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w">  </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w"> </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span>
 </code></pre></div>
 <p>If there are meaningful diffs, take the final state of those files:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># Repro: checkout changed files from remote final state</span>
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="k">for</span><span class="w"> </span>FILE<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w">  </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="s2">"origin/</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">FILE</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Applied: </span><span class="si">${</span><span class="nv">FILE</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="s2">"origin/</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">FILE</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Applied: </span><span class="si">${</span><span class="nv">FILE</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="k">done</span>
 </code></pre></div>
 <p><strong>Verify no unintended changes:</strong></p>
@@ -2746,14 +2776,14 @@ work from the agent run that must be cherry-picked.</p>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh
 </code></pre></div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a>━━━ Summary ━━━
-<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>   1_actionlint: 0 errors
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a>   2_ruff_i001: 0 issues
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>   3_mypy_baseline: 282 &lt;= 282
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>   4_autofix: exit 0 (0 informational)
-<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>   5_telemetry: all 3 fields correct
-<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>   6_threshold: both=99.7
-<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a>   7_changelog: consistent
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a> Summary 
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a> 1_actionlint: 0 errors
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a> 2_ruff_i001: 0 issues
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a> 3_mypy_baseline: 282 &lt;= 282
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a> 4_autofix: exit 0 (0 informational)
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a> 5_telemetry: all 3 fields correct
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a> 6_threshold: both=99.7
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a> 7_changelog: consistent
 <a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>
 <a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>All checks passed 
 </code></pre></div>
@@ -2764,9 +2794,9 @@ See <code>docs/ci/CI_TRIAGE_REPRO_S145.md</code> for per-check root-cause + fix 
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># Repro: collect changed files and run pre-commit</span>
 <a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="nv">CHANGED</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="k">)</span>
 <a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CHANGED</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"No changes — skipping pre-commit"</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"No changes — skipping pre-commit"</span>
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="k">else</span>
-<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w">  </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--files<span class="w"> </span><span class="si">${</span><span class="nv">CHANGED</span><span class="si">}</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--files<span class="w"> </span><span class="si">${</span><span class="nv">CHANGED</span><span class="si">}</span>
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="k">fi</span>
 </code></pre></div>
 <p><strong>Expected output:</strong> <code>All checks passed.</code></p>
@@ -2801,16 +2831,16 @@ Use the <code>report_progress</code> tool which stages, commits, and pushes atom
 <a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="nv">SOURCE</span><span class="o">=</span><span class="s2">"copilot/sub-pr-3606"</span>
 <a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a>git<span class="w"> </span>fetch<span class="w"> </span>origin<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>git<span class="w"> </span>diff<span class="w"> </span>--stat<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w">  </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a><span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w"> </span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span>origin/<span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="k">)</span>
 <a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a><span class="c1"># Expected: 0 substantive differences</span>
 </code></pre></div>
 <hr/>
 <h2 id="full-repro-one-liner-chain">Full Repro — One-liner chain<a class="headerlink" href="#full-repro-one-liner-chain" title="Permanent link">¶</a></h2>
 <p>Run the entire monitoring + integration sequence in one shell session:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="ch">#!/usr/bin/env bash</span>
-<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="c1"># CONCURRENT MONITOR + CHERRY-PICK REPRO  (S146 pattern)</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="c1"># CONCURRENT MONITOR + CHERRY-PICK REPRO (S146 pattern)</span>
 <a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
 <a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>
 <a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="nv">BRANCH</span><span class="o">=</span><span class="s2">"copilot/sub-pr-3606-again"</span>
@@ -2818,43 +2848,43 @@ Use the <code>report_progress</code> tool which stages, commits, and pushes atom
 <a href="#__codelineno-23-7" id="__codelineno-23-7" name="__codelineno-23-7"></a><span class="nv">RUN_ID</span><span class="o">=</span><span class="s2">"23220880384"</span>
 <a href="#__codelineno-23-8" id="__codelineno-23-8" name="__codelineno-23-8"></a><span class="nv">REPO</span><span class="o">=</span><span class="s2">"Aries-Serpent/_codex_"</span>
 <a href="#__codelineno-23-9" id="__codelineno-23-9" name="__codelineno-23-9"></a>
-<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 0: Record baseline"</span>
+<a href="#__codelineno-23-10" id="__codelineno-23-10" name="__codelineno-23-10"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 0: Record baseline"</span>
 <a href="#__codelineno-23-11" id="__codelineno-23-11" name="__codelineno-23-11"></a><span class="nv">BASELINE_SHA</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>rev-parse<span class="w"> </span>HEAD<span class="k">)</span>
-<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"  Baseline: </span><span class="si">${</span><span class="nv">BASELINE_SHA</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-23-12" id="__codelineno-23-12" name="__codelineno-23-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Baseline: </span><span class="si">${</span><span class="nv">BASELINE_SHA</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-23-13" id="__codelineno-23-13" name="__codelineno-23-13"></a>
-<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 1: Poll until run completes"</span>
+<a href="#__codelineno-23-14" id="__codelineno-23-14" name="__codelineno-23-14"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 1: Poll until run completes"</span>
 <a href="#__codelineno-23-15" id="__codelineno-23-15" name="__codelineno-23-15"></a><span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a><span class="w">  </span><span class="nv">RESULT</span><span class="o">=</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/</span><span class="si">${</span><span class="nv">REPO</span><span class="si">}</span><span class="s2">/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a><span class="w">    </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion // "none"] | @tsv'</span><span class="k">)</span>
-<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  [</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+%H:%M:%SZ<span class="k">)</span><span class="s2">] </span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a><span class="w">  </span><span class="nv">STATUS</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f1<span class="k">)</span>
-<a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a><span class="w">  </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">STATUS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"in_progress"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
-<a href="#__codelineno-23-21" id="__codelineno-23-21" name="__codelineno-23-21"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">300</span>
+<a href="#__codelineno-23-16" id="__codelineno-23-16" name="__codelineno-23-16"></a><span class="w"> </span><span class="nv">RESULT</span><span class="o">=</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span><span class="s2">"repos/</span><span class="si">${</span><span class="nv">REPO</span><span class="si">}</span><span class="s2">/actions/runs/</span><span class="si">${</span><span class="nv">RUN_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-23-17" id="__codelineno-23-17" name="__codelineno-23-17"></a><span class="w"> </span>--jq<span class="w"> </span><span class="s1">'[.status, .conclusion // "none"] | @tsv'</span><span class="k">)</span>
+<a href="#__codelineno-23-18" id="__codelineno-23-18" name="__codelineno-23-18"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" [</span><span class="k">$(</span>date<span class="w"> </span>-u<span class="w"> </span>+%H:%M:%SZ<span class="k">)</span><span class="s2">] </span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-23-19" id="__codelineno-23-19" name="__codelineno-23-19"></a><span class="w"> </span><span class="nv">STATUS</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RESULT</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f1<span class="k">)</span>
+<a href="#__codelineno-23-20" id="__codelineno-23-20" name="__codelineno-23-20"></a><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">STATUS</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"in_progress"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+<a href="#__codelineno-23-21" id="__codelineno-23-21" name="__codelineno-23-21"></a><span class="w"> </span>sleep<span class="w"> </span><span class="m">300</span>
 <a href="#__codelineno-23-22" id="__codelineno-23-22" name="__codelineno-23-22"></a><span class="k">done</span>
 <a href="#__codelineno-23-23" id="__codelineno-23-23" name="__codelineno-23-23"></a>
-<a href="#__codelineno-23-24" id="__codelineno-23-24" name="__codelineno-23-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 2: Fetch remote"</span>
+<a href="#__codelineno-23-24" id="__codelineno-23-24" name="__codelineno-23-24"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 2: Fetch remote"</span>
 <a href="#__codelineno-23-25" id="__codelineno-23-25" name="__codelineno-23-25"></a>git<span class="w"> </span>fetch<span class="w"> </span>origin<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-23-26" id="__codelineno-23-26" name="__codelineno-23-26"></a>
-<a href="#__codelineno-23-27" id="__codelineno-23-27" name="__codelineno-23-27"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 3: Detect new commits"</span>
+<a href="#__codelineno-23-27" id="__codelineno-23-27" name="__codelineno-23-27"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 3: Detect new commits"</span>
 <a href="#__codelineno-23-28" id="__codelineno-23-28" name="__codelineno-23-28"></a><span class="nv">NEW_COMMITS</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BASELINE_SHA</span><span class="si">}</span><span class="s2">..origin/</span><span class="si">${</span><span class="nv">BRANCH</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-23-29" id="__codelineno-23-29" name="__codelineno-23-29"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"\[skip ci\]"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span>
-<a href="#__codelineno-23-30" id="__codelineno-23-30" name="__codelineno-23-30"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"  New substantive commits: </span><span class="si">${</span><span class="nv">NEW_COMMITS</span><span class="k">:-</span><span class="nv">none</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-23-29" id="__codelineno-23-29" name="__codelineno-23-29"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"\[skip ci\]"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span>
+<a href="#__codelineno-23-30" id="__codelineno-23-30" name="__codelineno-23-30"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" New substantive commits: </span><span class="si">${</span><span class="nv">NEW_COMMITS</span><span class="k">:-</span><span class="nv">none</span><span class="si">}</span><span class="s2">"</span>
 <a href="#__codelineno-23-31" id="__codelineno-23-31" name="__codelineno-23-31"></a>
-<a href="#__codelineno-23-32" id="__codelineno-23-32" name="__codelineno-23-32"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 4: Apply parity from source branch"</span>
+<a href="#__codelineno-23-32" id="__codelineno-23-32" name="__codelineno-23-32"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 4: Apply parity from source branch"</span>
 <a href="#__codelineno-23-33" id="__codelineno-23-33" name="__codelineno-23-33"></a><span class="nv">DIFF_FILES</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span>HEAD<span class="w"> </span><span class="s2">"origin/</span><span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-23-34" id="__codelineno-23-34" name="__codelineno-23-34"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span>
+<a href="#__codelineno-23-34" id="__codelineno-23-34" name="__codelineno-23-34"></a><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^\.codex/agent_auth"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s2">"^CODEX_MANIFEST"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span>
 <a href="#__codelineno-23-35" id="__codelineno-23-35" name="__codelineno-23-35"></a><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">DIFF_FILES</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<a href="#__codelineno-23-36" id="__codelineno-23-36" name="__codelineno-23-36"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>F<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">DIFF_FILES</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a href="#__codelineno-23-37" id="__codelineno-23-37" name="__codelineno-23-37"></a><span class="w">    </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="s2">"origin/</span><span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">F</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  Applied: </span><span class="si">${</span><span class="nv">F</span><span class="si">}</span><span class="s2">"</span>
-<a href="#__codelineno-23-38" id="__codelineno-23-38" name="__codelineno-23-38"></a><span class="w">  </span><span class="k">done</span>
+<a href="#__codelineno-23-36" id="__codelineno-23-36" name="__codelineno-23-36"></a><span class="w"> </span><span class="k">for</span><span class="w"> </span>F<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">DIFF_FILES</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a href="#__codelineno-23-37" id="__codelineno-23-37" name="__codelineno-23-37"></a><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span><span class="s2">"origin/</span><span class="si">${</span><span class="nv">SOURCE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">F</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" Applied: </span><span class="si">${</span><span class="nv">F</span><span class="si">}</span><span class="s2">"</span>
+<a href="#__codelineno-23-38" id="__codelineno-23-38" name="__codelineno-23-38"></a><span class="w"> </span><span class="k">done</span>
 <a href="#__codelineno-23-39" id="__codelineno-23-39" name="__codelineno-23-39"></a><span class="k">else</span>
-<a href="#__codelineno-23-40" id="__codelineno-23-40" name="__codelineno-23-40"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  Source branch fully absorbed — no delta"</span>
+<a href="#__codelineno-23-40" id="__codelineno-23-40" name="__codelineno-23-40"></a><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">" Source branch fully absorbed — no delta"</span>
 <a href="#__codelineno-23-41" id="__codelineno-23-41" name="__codelineno-23-41"></a><span class="k">fi</span>
 <a href="#__codelineno-23-42" id="__codelineno-23-42" name="__codelineno-23-42"></a>
-<a href="#__codelineno-23-43" id="__codelineno-23-43" name="__codelineno-23-43"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 5: Run triage checks"</span>
+<a href="#__codelineno-23-43" id="__codelineno-23-43" name="__codelineno-23-43"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 5: Run triage checks"</span>
 <a href="#__codelineno-23-44" id="__codelineno-23-44" name="__codelineno-23-44"></a>bash<span class="w"> </span>scripts/ci/ci_triage_repro.sh
 <a href="#__codelineno-23-45" id="__codelineno-23-45" name="__codelineno-23-45"></a>
-<a href="#__codelineno-23-46" id="__codelineno-23-46" name="__codelineno-23-46"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"▶ Step 6: Run tests"</span>
+<a href="#__codelineno-23-46" id="__codelineno-23-46" name="__codelineno-23-46"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Step 6: Run tests"</span>
 <a href="#__codelineno-23-47" id="__codelineno-23-47" name="__codelineno-23-47"></a>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/ci/<span class="w"> </span>-q<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-5
 <a href="#__codelineno-23-48" id="__codelineno-23-48" name="__codelineno-23-48"></a>
 <a href="#__codelineno-23-49" id="__codelineno-23-49" name="__codelineno-23-49"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">" Ready to commit via report_progress"</span>
@@ -2862,30 +2892,30 @@ Use the <code>report_progress</code> tool which stages, commits, and pushes atom
 <hr/>
 <h2 id="decision-tree">Decision Tree<a class="headerlink" href="#decision-tree" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>@copilot continue comment posted
-<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>         │
-<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>         ▼
-<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a>  Detect new run ID
-<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a>  (list_workflow_runs API)
-<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>         │
-<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a>         ├── No new run? ──► Work proceeds without blocking; skip to Step 5
-<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>         │
-<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>         ▼
-<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a>  Poll run status (Step 2)
-<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>         │
-<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a>         ├── in_progress ──► Do parallel work (Loop B); re-poll in 5 min
-<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>         │
-<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a>         ├── failure ──────► Diagnose (Step 3) → fix → re-run triage
-<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a>         │
-<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a>         └── success ──────► Fetch delta (Step 4)
-<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a>                                    │
-<a href="#__codelineno-24-18" id="__codelineno-24-18" name="__codelineno-24-18"></a>                                    ├── No delta ──► Step 5 (triage)
-<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a>                                    │
-<a href="#__codelineno-24-20" id="__codelineno-24-20" name="__codelineno-24-20"></a>                                    └── Delta ─────► Checkout files (Step 4a)
-<a href="#__codelineno-24-21" id="__codelineno-24-21" name="__codelineno-24-21"></a>                                                     → Step 5 (triage)
-<a href="#__codelineno-24-22" id="__codelineno-24-22" name="__codelineno-24-22"></a>                                                     → Step 6 (pre-commit)
-<a href="#__codelineno-24-23" id="__codelineno-24-23" name="__codelineno-24-23"></a>                                                     → Step 7 (tests)
-<a href="#__codelineno-24-24" id="__codelineno-24-24" name="__codelineno-24-24"></a>                                                     → Step 8 (commit)
-<a href="#__codelineno-24-25" id="__codelineno-24-25" name="__codelineno-24-25"></a>                                                     → Step 9 (verify)
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a>
+<a href="#__codelineno-24-3" id="__codelineno-24-3" name="__codelineno-24-3"></a>
+<a href="#__codelineno-24-4" id="__codelineno-24-4" name="__codelineno-24-4"></a> Detect new run ID
+<a href="#__codelineno-24-5" id="__codelineno-24-5" name="__codelineno-24-5"></a> (list_workflow_runs API)
+<a href="#__codelineno-24-6" id="__codelineno-24-6" name="__codelineno-24-6"></a>
+<a href="#__codelineno-24-7" id="__codelineno-24-7" name="__codelineno-24-7"></a> No new run? Work proceeds without blocking; skip to Step 5
+<a href="#__codelineno-24-8" id="__codelineno-24-8" name="__codelineno-24-8"></a>
+<a href="#__codelineno-24-9" id="__codelineno-24-9" name="__codelineno-24-9"></a>
+<a href="#__codelineno-24-10" id="__codelineno-24-10" name="__codelineno-24-10"></a> Poll run status (Step 2)
+<a href="#__codelineno-24-11" id="__codelineno-24-11" name="__codelineno-24-11"></a>
+<a href="#__codelineno-24-12" id="__codelineno-24-12" name="__codelineno-24-12"></a> in_progress Do parallel work (Loop B); re-poll in 5 min
+<a href="#__codelineno-24-13" id="__codelineno-24-13" name="__codelineno-24-13"></a>
+<a href="#__codelineno-24-14" id="__codelineno-24-14" name="__codelineno-24-14"></a> failure Diagnose (Step 3) fix re-run triage
+<a href="#__codelineno-24-15" id="__codelineno-24-15" name="__codelineno-24-15"></a>
+<a href="#__codelineno-24-16" id="__codelineno-24-16" name="__codelineno-24-16"></a> success Fetch delta (Step 4)
+<a href="#__codelineno-24-17" id="__codelineno-24-17" name="__codelineno-24-17"></a>
+<a href="#__codelineno-24-18" id="__codelineno-24-18" name="__codelineno-24-18"></a> No delta Step 5 (triage)
+<a href="#__codelineno-24-19" id="__codelineno-24-19" name="__codelineno-24-19"></a>
+<a href="#__codelineno-24-20" id="__codelineno-24-20" name="__codelineno-24-20"></a> Delta Checkout files (Step 4a)
+<a href="#__codelineno-24-21" id="__codelineno-24-21" name="__codelineno-24-21"></a> Step 5 (triage)
+<a href="#__codelineno-24-22" id="__codelineno-24-22" name="__codelineno-24-22"></a> Step 6 (pre-commit)
+<a href="#__codelineno-24-23" id="__codelineno-24-23" name="__codelineno-24-23"></a> Step 7 (tests)
+<a href="#__codelineno-24-24" id="__codelineno-24-24" name="__codelineno-24-24"></a> Step 8 (commit)
+<a href="#__codelineno-24-25" id="__codelineno-24-25" name="__codelineno-24-25"></a> Step 9 (verify)
 </code></pre></div>
 <hr/>
 <h2 id="parallel-work-loop-b-what-to-do-while-waiting">Parallel Work (Loop B) — What to do while waiting<a class="headerlink" href="#parallel-work-loop-b-what-to-do-while-waiting" title="Permanent link">¶</a></h2>
@@ -2922,12 +2952,12 @@ parallel because they do not conflict with the agent run's expected output:</p>
 </tr>
 <tr>
 <td>Modify files the agent run is likely editing</td>
-<td>️</td>
+<td></td>
 <td>Risk of conflict on integration</td>
 </tr>
 <tr>
 <td>Modify <code>.mypy_baseline</code></td>
-<td>️</td>
+<td></td>
 <td>Agent may also modify; check diff carefully</td>
 </tr>
 <tr>
@@ -3025,6 +3055,6 @@ For code files, prefer the state that passes all 7 triage checks.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

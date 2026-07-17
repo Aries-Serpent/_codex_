@@ -1,6 +1,6 @@
 # Sample — Intent Validation & Plan of Action (for _codex_)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > This is a worked example showing the gate format filled for a typical “local gates” change.
 

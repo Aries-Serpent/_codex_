@@ -1,6 +1,6 @@
 # Codex ML - Complete Implementation Summary
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -347,7 +347,7 @@ emitter = TrainingEventEmitter()
 emitter.emit_training_started("my-model", {"lr": 0.001})
 emitter.emit_training_completed("my-model", {"loss": 0.23, "accuracy": 0.95})
 emitter.emit_drift_detected("feature_drift", score=0.85, threshold=0.7)
-emitter.emit_model_deployed("my-model", version="v0.2.1", environment="production")
+emitter.emit_model_deployed("my-model", version="v0.2.0", environment="production")
 ```
 
 ## 4. Feature Freshness Monitoring

@@ -1,6 +1,6 @@
 # _codex_ Documentation Master Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Purpose**: Central index for all documentation in the `_codex_` repository. Use this to discover, navigate, and understand the documentation structure.
 

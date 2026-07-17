@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/status_update_prompt/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Codex Status Update Prompt &amp; Templates - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2287,7 +2287,7 @@
 <h1 id="codex-status-update-prompt-templates">Codex Status Update Prompt &amp; Templates<a class="headerlink" href="#codex-status-update-prompt-templates" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p>**Last Updated: 2026-06-22</p>
+<p>**Last Updated: 2026-07-16</p>
 <h2 id="prompt">Prompt<a class="headerlink" href="#prompt" title="Permanent link">¶</a></h2>
 <p>Use the following prompt when generating a status update 2026-07-13</p>
 <p>```text
@@ -2305,7 +2305,7 @@ Check for most recent active branch:
 <hr/>
 <p>Analyze the entire repository and produce a thorough implementation-status audit covering the following system areas. <strong>Note that the only prohibited action is enabling or producing any <code>yaml</code> files that will initiate a Cost Incurring GitHub Action. ALL pre-commit checks must run solely within Codex environment only— (no GitHub Actions, no GitHub Workflow Runs, etc.).</strong> Traverse all code, scripts, configs, tests, docs, and notebooks. Use the following structure:</p>
 <p>Audit Scope</p>
-<h1 id="codex-status-update-yyyy-mm-dd">📍<em>codex</em>: Status Update (YYYY-MM-DD)<a class="headerlink" href="#codex-status-update-yyyy-mm-dd" title="Permanent link">¶</a></h1>
+<h1 id="codex-status-update-yyyy-mm-dd"><em>codex</em>: Status Update (YYYY-MM-DD)<a class="headerlink" href="#codex-status-update-yyyy-mm-dd" title="Permanent link">¶</a></h1>
 <ol>
 <li><strong>Repo Map</strong></li>
 <li>List top-level directories and key files.</li>
@@ -2326,20 +2326,20 @@ Check for most recent active branch:
 <li><strong>Rollback Plan</strong>: how to revert safely if needed</li>
 </ul>
 <p><strong>Capabilities list:</strong>
-   - Tokenization (fast tokenizer, vocab, encode/decode, padding/truncation)
-   - ChatGPT Codex Modeling (model init, dtype, device placement, LoRA/PEFT hooks)
-   - Training Engine (HF Trainer or custom loop, precision, gradient accumulation)
-   - Configuration Management (Hydra/YAML structure, overrides, sweeps)
-   - Evaluation &amp; Metrics (validation loops, metrics API, NDJSON/CSV logging)
-   - Logging &amp; Monitoring (TensorBoard / W&amp;B / MLflow, system metrics via <code>psutil</code>/NVML)
-   - Checkpointing &amp; Resume (weights, optimizer state, scheduler, RNG, best-k retention)
-   - Data Handling (dataset splits, deterministic shuffling, caching)
-   - Security &amp; Safety (dependency locking, secrets scanning, prompt safety)
-   - Internal CI/Test (pytest targets, tox/nox local gates, coverage enforcement)
-   - Deployment (packaging, CLI entry points, Docker infra)
-   - Documentation &amp; Examples (README, quickstarts, diagrams, notebooks)
-   - Experiment Tracking (MLflow local tracking, W&amp;B offline mode)
-   - Extensibility (pluggable components, registry patterns)</p>
+ - Tokenization (fast tokenizer, vocab, encode/decode, padding/truncation)
+ - ChatGPT Codex Modeling (model init, dtype, device placement, LoRA/PEFT hooks)
+ - Training Engine (HF Trainer or custom loop, precision, gradient accumulation)
+ - Configuration Management (Hydra/YAML structure, overrides, sweeps)
+ - Evaluation &amp; Metrics (validation loops, metrics API, NDJSON/CSV logging)
+ - Logging &amp; Monitoring (TensorBoard / W&amp;B / MLflow, system metrics via <code>psutil</code>/NVML)
+ - Checkpointing &amp; Resume (weights, optimizer state, scheduler, RNG, best-k retention)
+ - Data Handling (dataset splits, deterministic shuffling, caching)
+ - Security &amp; Safety (dependency locking, secrets scanning, prompt safety)
+ - Internal CI/Test (pytest targets, tox/nox local gates, coverage enforcement)
+ - Deployment (packaging, CLI entry points, Docker infra)
+ - Documentation &amp; Examples (README, quickstarts, diagrams, notebooks)
+ - Experiment Tracking (MLflow local tracking, W&amp;B offline mode)
+ - Extensibility (pluggable components, registry patterns)</p>
 <ol>
 <li><strong>High-Signal Findings</strong></li>
 <li>
@@ -2348,14 +2348,12 @@ Check for most recent active branch:
 <li>
 <p><strong>Atomic Diffs</strong></p>
 </li>
-<li>
-<p>Provide 3–10 example unified diffs implementing key fixes: minimal, high-impact scaffolds (e.g. guarded MLflow init, Hydra defaults, LoRA wiring). Each diff must include:</p>
-<ul>
+<li>Provide 3–10 example unified diffs implementing key fixes: minimal, high-impact scaffolds (e.g. guarded MLflow init, Hydra defaults, LoRA wiring). Each diff must include:</li>
 <li><em>Why</em>: rationale</li>
 <li><em>Risk</em>: what could break</li>
 <li><em>Rollback</em>: revert instructions</li>
-<li><em>Tests/docs</em>: what must also be added</li>
-</ul>
+<li>
+<p><em>Tests/docs</em>: what must also be added</p>
 </li>
 <li>
 <p><strong>Local Tests &amp; Gates</strong></p>
@@ -2394,12 +2392,12 @@ What are the possible causes, and how can this be resolved while preserving inte
 <h2 id="codex-ready-task-sequence">Codex-ready Task Sequence<a class="headerlink" href="#codex-ready-task-sequence" title="Permanent link">¶</a></h2>
 <p><code>text
 Codex-ready Task Sequence:
-  1. Preparation: ...
-  2. Search &amp; Mapping: ...
-  3. Best-Effort Construction: ...
-  4. Controlled Pruning: ...
-  5. Error Capture: ...
-  6. Finalization: ...</code>text
+ 1. Preparation: ...
+ 2. Search &amp; Mapping: ...
+ 3. Best-Effort Construction: ...
+ 4. Controlled Pruning: ...
+ 5. Error Capture: ...
+ 6. Finalization: ...</code>text
 Populate the numbered phases with the concrete remediation work derived from the audit. Each sub-step should reference the modules, scripts, or tooling to explore, and the Error Capture phase must reuse the question block shown above.</p>
 <h3 id="additional-deliverable-executable-script">Additional Deliverable — Executable Script<a class="headerlink" href="#additional-deliverable-executable-script" title="Permanent link">¶</a></h3>
 <p>After the sequential plan, include a runnable script (Python preferred, shell acceptable) that automates the workflow end-to-end:</p>
@@ -2428,7 +2426,7 @@ Check for must recent active branch:
 </blockquote>
 <hr/>
 <p>Audit Scope</p>
-<h1 id="codex-status-update-date">📍<em>codex</em>: Status Update ({{date}})<a class="headerlink" href="#codex-status-update-date" title="Permanent link">¶</a></h1>
+<h1 id="codex-status-update-date"><em>codex</em>: Status Update ({{date}})<a class="headerlink" href="#codex-status-update-date" title="Permanent link">¶</a></h1>
 <ol>
 <li><strong>Repo Map</strong></li>
 <li><strong>Top-level directories.</strong> {{directories}}</li>
@@ -2528,8 +2526,8 @@ Check for must recent active branch:
 - Deterministic split helper lives in <code>src/codex_ml/data/splits.py</code> (hash-based <code>stable_fold</code>).
 - Metrics sinks are configurable with <code>--metrics-sink/--metrics-path</code> (see <code>src/codex_ml/metrics/sinks.py</code>).
 - PEFT hooks stay disabled unless <code>codex train --enable-peft</code>/<code>CODEX_ENABLE_PEFT=1</code> activates <code>src/codex_ml/interfaces/peft_hooks.py</code>.
-- Reproduce env snapshots via <code>python tools/env/export_env_json.py</code> → <code>artifacts/env_snapshot.json</code>.
-- Refresh capability questions with <code>python tools/docs/gen_open_questions.py</code> → <code>docs/reference/open_questions_by_capability.md</code>.
+- Reproduce env snapshots via <code>python tools/env/export_env_json.py</code> <code>artifacts/env_snapshot.json</code>.
+- Refresh capability questions with <code>python tools/docs/gen_open_questions.py</code> <code>docs/reference/open_questions_by_capability.md</code>.
 - Local-only <code>Dockerfile.local</code> keeps base images digest pinned but remains out of CI.
 - Asset provenance tracked in <code>assets/manifest.json</code>; verify with <code>python tools/assets/verify_manifest.py</code>.
 - Deterministic guard rails consolidate in <code>src/codex_ml/utils/determinism.py</code> (also surfaced through <code>codex_ml.utils.seeding</code>).</p>
@@ -2585,6 +2583,6 @@ Check for must recent active branch:
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 ```bash
 # 1) Install GitHub CLI (Ubuntu 24 has "gh" in the archive)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 sudo apt update && sudo apt install -y gh # or see cli.github.com for alternatives
 

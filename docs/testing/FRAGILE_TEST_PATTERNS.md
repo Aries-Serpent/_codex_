@@ -1,10 +1,10 @@
 # Fragile Test Patterns and Stabilization Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Document Status**: STABLE
 **Last Updated**: 2026-06-27
-**Agent**: autonomous-test-healer-agent v0.2.1-s228
+**Agent**: autonomous-test-healer-agent v0.2.0-s228
 **Scope**: Phase 4, Lane 1 — Test Foundation Hardening
 
 ---

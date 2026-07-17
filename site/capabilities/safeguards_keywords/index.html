@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/capabilities/safeguards_keywords/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Safeguards Keywords Detection - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2593,28 +2593,26 @@
 - <strong>Security Scoring</strong>: Rate code security posture</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <h3 id="detection-layers">Detection Layers<a class="headerlink" href="#detection-layers" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│   Source Code                       │
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>│   (Python, YAML, Markdown files)    │
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>              │
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>              ▼
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   Keyword Scanner                   │
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   (Regex patterns, AST analysis)    │
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>              │
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>              ▼
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   Context Analyzer                  │
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   (Filter false positives)          │
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─────────────┬───────────────────────┘
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>              │
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>              ▼
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>┌─────────────────────────────────────┐
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>│   Metrics Calculator                │
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>│   (Density, coverage, scoring)      │
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>└─────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a> Source Code 
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a> (Python, YAML, Markdown files) 
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> Keyword Scanner 
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> (Regex patterns, AST analysis) 
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> Context Analyzer 
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> (Filter false positives) 
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> Metrics Calculator 
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> (Density, coverage, scoring) 
 </code></pre></div>
 <h2 id="keyword-categories">Keyword Categories<a class="headerlink" href="#keyword-categories" title="Permanent link">¶</a></h2>
 <h3 id="core-safeguard-keywords">Core Safeguard Keywords<a class="headerlink" href="#core-safeguard-keywords" title="Permanent link">¶</a></h3>
@@ -2666,89 +2664,89 @@
 </table>
 <h3 id="extended-keywords">Extended Keywords<a class="headerlink" href="#extended-keywords" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">SAFEGUARD_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span>
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="c1"># Validation keywords</span>
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="s2">"validation"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        <span class="s2">"validate"</span><span class="p">,</span> <span class="s2">"verify"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"assert"</span><span class="p">,</span> <span class="s2">"ensure"</span><span class="p">,</span>
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        <span class="s2">"is_valid"</span><span class="p">,</span> <span class="s2">"validate_input"</span><span class="p">,</span> <span class="s2">"validate_output"</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> <span class="c1"># Validation keywords</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> <span class="s2">"validation"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a> <span class="s2">"validate"</span><span class="p">,</span> <span class="s2">"verify"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"assert"</span><span class="p">,</span> <span class="s2">"ensure"</span><span class="p">,</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a> <span class="s2">"is_valid"</span><span class="p">,</span> <span class="s2">"validate_input"</span><span class="p">,</span> <span class="s2">"validate_output"</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="p">],</span>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="c1"># Sanitization keywords</span>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="s2">"sanitization"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>        <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"escape"</span><span class="p">,</span> <span class="s2">"clean"</span><span class="p">,</span> <span class="s2">"filter"</span><span class="p">,</span> <span class="s2">"normalize"</span><span class="p">,</span>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>        <span class="s2">"html_escape"</span><span class="p">,</span> <span class="s2">"sql_escape"</span><span class="p">,</span> <span class="s2">"strip"</span><span class="p">,</span> <span class="s2">"purify"</span>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a> <span class="c1"># Sanitization keywords</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a> <span class="s2">"sanitization"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a> <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"escape"</span><span class="p">,</span> <span class="s2">"clean"</span><span class="p">,</span> <span class="s2">"filter"</span><span class="p">,</span> <span class="s2">"normalize"</span><span class="p">,</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a> <span class="s2">"html_escape"</span><span class="p">,</span> <span class="s2">"sql_escape"</span><span class="p">,</span> <span class="s2">"strip"</span><span class="p">,</span> <span class="s2">"purify"</span>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a> <span class="p">],</span>
 <a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="c1"># Bounds checking</span>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    <span class="s2">"bounds"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"limit"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">,</span> <span class="s2">"threshold"</span><span class="p">,</span> <span class="s2">"range"</span><span class="p">,</span>
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="s2">"clamp"</span><span class="p">,</span> <span class="s2">"constrain"</span><span class="p">,</span> <span class="s2">"bounded"</span><span class="p">,</span> <span class="s2">"overflow"</span>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a> <span class="c1"># Bounds checking</span>
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a> <span class="s2">"bounds"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a> <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"limit"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">,</span> <span class="s2">"threshold"</span><span class="p">,</span> <span class="s2">"range"</span><span class="p">,</span>
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> <span class="s2">"clamp"</span><span class="p">,</span> <span class="s2">"constrain"</span><span class="p">,</span> <span class="s2">"bounded"</span><span class="p">,</span> <span class="s2">"overflow"</span>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> <span class="p">],</span>
 <a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    <span class="c1"># Error handling</span>
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    <span class="s2">"error_handling"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>        <span class="s2">"try"</span><span class="p">,</span> <span class="s2">"except"</span><span class="p">,</span> <span class="s2">"catch"</span><span class="p">,</span> <span class="s2">"handle"</span><span class="p">,</span> <span class="s2">"recover"</span><span class="p">,</span>
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>        <span class="s2">"fallback"</span><span class="p">,</span> <span class="s2">"retry"</span><span class="p">,</span> <span class="s2">"graceful"</span><span class="p">,</span> <span class="s2">"safe_"</span>
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> <span class="c1"># Error handling</span>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> <span class="s2">"error_handling"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a> <span class="s2">"try"</span><span class="p">,</span> <span class="s2">"except"</span><span class="p">,</span> <span class="s2">"catch"</span><span class="p">,</span> <span class="s2">"handle"</span><span class="p">,</span> <span class="s2">"recover"</span><span class="p">,</span>
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a> <span class="s2">"fallback"</span><span class="p">,</span> <span class="s2">"retry"</span><span class="p">,</span> <span class="s2">"graceful"</span><span class="p">,</span> <span class="s2">"safe_"</span>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a> <span class="p">],</span>
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    <span class="c1"># Security</span>
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    <span class="s2">"security"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>        <span class="s2">"secure"</span><span class="p">,</span> <span class="s2">"protect"</span><span class="p">,</span> <span class="s2">"guard"</span><span class="p">,</span> <span class="s2">"defense"</span><span class="p">,</span> <span class="s2">"safe"</span><span class="p">,</span>
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>        <span class="s2">"auth"</span><span class="p">,</span> <span class="s2">"encrypt"</span><span class="p">,</span> <span class="s2">"hash"</span><span class="p">,</span> <span class="s2">"token"</span>
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a> <span class="c1"># Security</span>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a> <span class="s2">"security"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a> <span class="s2">"secure"</span><span class="p">,</span> <span class="s2">"protect"</span><span class="p">,</span> <span class="s2">"guard"</span><span class="p">,</span> <span class="s2">"defense"</span><span class="p">,</span> <span class="s2">"safe"</span><span class="p">,</span>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a> <span class="s2">"auth"</span><span class="p">,</span> <span class="s2">"encrypt"</span><span class="p">,</span> <span class="s2">"hash"</span><span class="p">,</span> <span class="s2">"token"</span>
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a> <span class="p">],</span>
 <a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>    <span class="c1"># Rate limiting</span>
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    <span class="s2">"rate_limiting"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>        <span class="s2">"rate"</span><span class="p">,</span> <span class="s2">"limit"</span><span class="p">,</span> <span class="s2">"throttle"</span><span class="p">,</span> <span class="s2">"quota"</span><span class="p">,</span> <span class="s2">"backoff"</span><span class="p">,</span>
-<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>        <span class="s2">"rate_limit"</span><span class="p">,</span> <span class="s2">"request_limit"</span><span class="p">,</span> <span class="s2">"cooldown"</span>
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a> <span class="c1"># Rate limiting</span>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a> <span class="s2">"rate_limiting"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a> <span class="s2">"rate"</span><span class="p">,</span> <span class="s2">"limit"</span><span class="p">,</span> <span class="s2">"throttle"</span><span class="p">,</span> <span class="s2">"quota"</span><span class="p">,</span> <span class="s2">"backoff"</span><span class="p">,</span>
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a> <span class="s2">"rate_limit"</span><span class="p">,</span> <span class="s2">"request_limit"</span><span class="p">,</span> <span class="s2">"cooldown"</span>
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a> <span class="p">],</span>
 <a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>    <span class="c1"># Timeouts</span>
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>    <span class="s2">"timeout"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>        <span class="s2">"timeout"</span><span class="p">,</span> <span class="s2">"deadline"</span><span class="p">,</span> <span class="s2">"expire"</span><span class="p">,</span> <span class="s2">"ttl"</span><span class="p">,</span> <span class="s2">"max_time"</span><span class="p">,</span>
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>        <span class="s2">"time_limit"</span><span class="p">,</span> <span class="s2">"duration"</span><span class="p">,</span> <span class="s2">"wait"</span>
-<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>    <span class="p">],</span>
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a> <span class="c1"># Timeouts</span>
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a> <span class="s2">"timeout"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a> <span class="s2">"timeout"</span><span class="p">,</span> <span class="s2">"deadline"</span><span class="p">,</span> <span class="s2">"expire"</span><span class="p">,</span> <span class="s2">"ttl"</span><span class="p">,</span> <span class="s2">"max_time"</span><span class="p">,</span>
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a> <span class="s2">"time_limit"</span><span class="p">,</span> <span class="s2">"duration"</span><span class="p">,</span> <span class="s2">"wait"</span>
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a> <span class="p">],</span>
 <a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>    <span class="c1"># Defensive patterns</span>
-<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a>    <span class="s2">"defensive"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>        <span class="s2">"defensive"</span><span class="p">,</span> <span class="s2">"robust"</span><span class="p">,</span> <span class="s2">"resilient"</span><span class="p">,</span> <span class="s2">"fault_tolerant"</span><span class="p">,</span>
-<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>        <span class="s2">"fail_safe"</span><span class="p">,</span> <span class="s2">"circuit_breaker"</span><span class="p">,</span> <span class="s2">"bulkhead"</span>
-<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>    <span class="p">]</span>
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a> <span class="c1"># Defensive patterns</span>
+<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a> <span class="s2">"defensive"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a> <span class="s2">"defensive"</span><span class="p">,</span> <span class="s2">"robust"</span><span class="p">,</span> <span class="s2">"resilient"</span><span class="p">,</span> <span class="s2">"fault_tolerant"</span><span class="p">,</span>
+<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a> <span class="s2">"fail_safe"</span><span class="p">,</span> <span class="s2">"circuit_breaker"</span><span class="p">,</span> <span class="s2">"bulkhead"</span>
+<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a> <span class="p">]</span>
 <a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <h3 id="detector-configuration">Detector Configuration<a class="headerlink" href="#detector-configuration" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># safeguards_config.yaml</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="nt">safeguards</span><span class="p">:</span>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="c1"># Minimum keyword count for passing</span>
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="nt">min_keywords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w"> </span><span class="c1"># Minimum keyword count for passing</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w"> </span><span class="nt">min_keywords</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
 <a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w">  </span><span class="c1"># Keyword categories to check</span>
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w">  </span><span class="nt">categories</span><span class="p">:</span>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validation</span>
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sanitization</span>
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bounds</span>
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error_handling</span>
-<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="w"> </span><span class="c1"># Keyword categories to check</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="w"> </span><span class="nt">categories</span><span class="p">:</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validation</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sanitization</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bounds</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">error_handling</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">  </span><span class="c1"># Files to include</span>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w">  </span><span class="nt">include_patterns</span><span class="p">:</span>
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.py"</span>
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.yaml"</span>
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.yml"</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w"> </span><span class="c1"># Files to include</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="w"> </span><span class="nt">include_patterns</span><span class="p">:</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.py"</span>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.yaml"</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*.yml"</span>
 <a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w">  </span><span class="c1"># Files to exclude</span>
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w">  </span><span class="nt">exclude_patterns</span><span class="p">:</span>
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"test_*.py"</span>
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*_test.py"</span>
-<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"conftest.py"</span>
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="w"> </span><span class="c1"># Files to exclude</span>
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="w"> </span><span class="nt">exclude_patterns</span><span class="p">:</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"test_*.py"</span>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*_test.py"</span>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"conftest.py"</span>
 <a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>
-<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w">  </span><span class="c1"># Context filtering</span>
-<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w">  </span><span class="nt">context</span><span class="p">:</span>
-<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w">    </span><span class="nt">require_comment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w">    </span><span class="nt">require_function</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w">    </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w">  </span><span class="c1"># lines from code</span>
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a><span class="w"> </span><span class="c1"># Context filtering</span>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a><span class="w"> </span><span class="nt">context</span><span class="p">:</span>
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a><span class="w"> </span><span class="nt">require_comment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a><span class="w"> </span><span class="nt">require_function</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="w"> </span><span class="nt">max_distance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"> </span><span class="c1"># lines from code</span>
 </code></pre></div>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h2>
 <h3 id="example-1-basic-safeguard-detection">Example 1: Basic Safeguard Detection<a class="headerlink" href="#example-1-basic-safeguard-detection" title="Permanent link">¶</a></h3>
@@ -2764,70 +2762,70 @@
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="n">SAFEGUARD_PATTERNS</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="sa">r</span><span class="s1">'\bvalidate\b'</span><span class="p">,</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="sa">r</span><span class="s1">'\bsanitize\b'</span><span class="p">,</span>
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="sa">r</span><span class="s1">'\bbounds\b'</span><span class="p">,</span>
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    <span class="sa">r</span><span class="s1">'\btimeout\b'</span><span class="p">,</span>
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="sa">r</span><span class="s1">'\brate.?limit\b'</span><span class="p">,</span>
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="sa">r</span><span class="s1">'\bsafeguard\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a> <span class="sa">r</span><span class="s1">'\bvalidate\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a> <span class="sa">r</span><span class="s1">'\bsanitize\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a> <span class="sa">r</span><span class="s1">'\bbounds\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> <span class="sa">r</span><span class="s1">'\btimeout\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> <span class="sa">r</span><span class="s1">'\brate.?limit\b'</span><span class="p">,</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> <span class="sa">r</span><span class="s1">'\bsafeguard\b'</span><span class="p">,</span>
 <a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="p">]</span>
 <a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="k">def</span> <span class="nf">detect_safeguards</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="sd">    Detect safeguard keywords in a file.</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a><span class="sd"> Detect safeguard keywords in a file.</span>
 <a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="sd">    Safeguard: Bounded read to prevent memory issues.</span>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="sd">    Validation: Checks file exists before reading.</span>
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="sd">    """</span>
-<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>        <span class="k">return</span> <span class="p">[]</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="sd"> Safeguard: Bounded read to prevent memory issues.</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a><span class="sd"> Validation: Checks file exists before reading.</span>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a><span class="sd"> """</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a> <span class="k">return</span> <span class="p">[]</span>
 <a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>
-<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>        <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="n">max_bytes</span><span class="p">]</span>
-<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
-<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>        <span class="k">return</span> <span class="p">[]</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a> <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="n">max_bytes</span><span class="p">]</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a> <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a> <span class="k">return</span> <span class="p">[]</span>
 <a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>
-<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>    <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>    <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">SAFEGUARD_PATTERNS</span><span class="p">:</span>
-<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>        <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>        <span class="n">found</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a> <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">SAFEGUARD_PATTERNS</span><span class="p">:</span>
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a> <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a> <span class="n">found</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
 <a href="#__codelineno-3-40" id="__codelineno-3-40" name="__codelineno-3-40"></a>
-<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a>    <span class="k">return</span> <span class="n">found</span>
+<a href="#__codelineno-3-41" id="__codelineno-3-41" name="__codelineno-3-41"></a> <span class="k">return</span> <span class="n">found</span>
 <a href="#__codelineno-3-42" id="__codelineno-3-42" name="__codelineno-3-42"></a>
 <a href="#__codelineno-3-43" id="__codelineno-3-43" name="__codelineno-3-43"></a><span class="c1"># Example usage</span>
 <a href="#__codelineno-3-44" id="__codelineno-3-44" name="__codelineno-3-44"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a>    <span class="n">src_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"src"</span><span class="p">)</span>
-<a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a>    <span class="k">for</span> <span class="n">py_file</span> <span class="ow">in</span> <span class="n">src_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*.py"</span><span class="p">):</span>
-<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a>        <span class="n">safeguards</span> <span class="o">=</span> <span class="n">detect_safeguards</span><span class="p">(</span><span class="n">py_file</span><span class="p">)</span>
-<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a>        <span class="k">if</span> <span class="n">safeguards</span><span class="p">:</span>
-<a href="#__codelineno-3-49" id="__codelineno-3-49" name="__codelineno-3-49"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">py_file</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">safeguards</span><span class="p">)</span><span class="si">}</span><span class="s2"> safeguards found"</span><span class="p">)</span>
+<a href="#__codelineno-3-45" id="__codelineno-3-45" name="__codelineno-3-45"></a> <span class="n">src_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"src"</span><span class="p">)</span>
+<a href="#__codelineno-3-46" id="__codelineno-3-46" name="__codelineno-3-46"></a> <span class="k">for</span> <span class="n">py_file</span> <span class="ow">in</span> <span class="n">src_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*.py"</span><span class="p">):</span>
+<a href="#__codelineno-3-47" id="__codelineno-3-47" name="__codelineno-3-47"></a> <span class="n">safeguards</span> <span class="o">=</span> <span class="n">detect_safeguards</span><span class="p">(</span><span class="n">py_file</span><span class="p">)</span>
+<a href="#__codelineno-3-48" id="__codelineno-3-48" name="__codelineno-3-48"></a> <span class="k">if</span> <span class="n">safeguards</span><span class="p">:</span>
+<a href="#__codelineno-3-49" id="__codelineno-3-49" name="__codelineno-3-49"></a> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">py_file</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">safeguards</span><span class="p">)</span><span class="si">}</span><span class="s2"> safeguards found"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="example-2-safeguard-density-calculation">Example 2: Safeguard Density Calculation<a class="headerlink" href="#example-2-safeguard-density-calculation" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">def</span> <span class="nf">calculate_safeguard_density</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="sd">    Calculate safeguard density (keywords per 100 lines).</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="sd"> Calculate safeguard density (keywords per 100 lines).</span>
 <a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="sd">    Safeguard: Validates input path.</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="sd">    Bounds: Returns 0.0 for empty files.</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="sd">    """</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        <span class="k">return</span> <span class="mf">0.0</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="sd"> Safeguard: Validates input path.</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="sd"> Bounds: Returns 0.0 for empty files.</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="sd"> """</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a> <span class="k">return</span> <span class="mf">0.0</span>
 <a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">lines</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a> <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a> <span class="n">lines</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        <span class="k">return</span> <span class="mf">0.0</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a> <span class="k">return</span> <span class="mf">0.0</span>
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    <span class="n">safeguards</span> <span class="o">=</span> <span class="n">detect_safeguards</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="n">density</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">safeguards</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> <span class="n">safeguards</span> <span class="o">=</span> <span class="n">detect_safeguards</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> <span class="n">density</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">safeguards</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
 <a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a><span class="c1"># Example: Calculate density for all Python files</span>
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a><span class="n">densities</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a><span class="k">for</span> <span class="n">py_file</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"src"</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*.py"</span><span class="p">):</span>
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    <span class="n">densities</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">py_file</span><span class="p">)]</span> <span class="o">=</span> <span class="n">calculate_safeguard_density</span><span class="p">(</span><span class="n">py_file</span><span class="p">)</span>
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a> <span class="n">densities</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">py_file</span><span class="p">)]</span> <span class="o">=</span> <span class="n">calculate_safeguard_density</span><span class="p">(</span><span class="n">py_file</span><span class="p">)</span>
 <a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>
 <a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a><span class="c1"># Files with low density need improvement</span>
 <a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a><span class="n">low_density</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">densities</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -2838,29 +2836,29 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="k">def</span> <span class="nf">detect_safeguards_with_context</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="sd">    Detect safeguards with their context (function name, line number).</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="sd"> Detect safeguards with their context (function name, line number).</span>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="sd">    Safeguard: Uses AST for accurate parsing.</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="sd">    Validation: Handles syntax errors gracefully.</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="sd">    """</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>        <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="mi">100000</span><span class="p">]</span>  <span class="c1"># Bounded</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>        <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    <span class="k">except</span> <span class="p">(</span><span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">):</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>        <span class="k">return</span> <span class="p">[]</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="sd"> Safeguard: Uses AST for accurate parsing.</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="sd"> Validation: Handles syntax errors gracefully.</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="sd"> """</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a> <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="mi">100000</span><span class="p">]</span> <span class="c1"># Bounded</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a> <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a> <span class="k">except</span> <span class="p">(</span><span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">):</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a> <span class="k">return</span> <span class="p">[]</span>
 <a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 <a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">):</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>            <span class="c1"># Check docstring for safeguard keywords</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>            <span class="n">docstring</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">get_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>            <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">SAFEGUARD_KEYWORDS</span><span class="p">[</span><span class="s2">"validation"</span><span class="p">]:</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>                <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">docstring</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">keyword</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">))</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">):</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> <span class="c1"># Check docstring for safeguard keywords</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a> <span class="n">docstring</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">get_docstring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">SAFEGUARD_KEYWORDS</span><span class="p">[</span><span class="s2">"validation"</span><span class="p">]:</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a> <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">docstring</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a> <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">keyword</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">))</span>
 <a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>    <span class="k">return</span> <span class="n">results</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a> <span class="k">return</span> <span class="n">results</span>
 </code></pre></div>
 <h3 id="example-4-integration-with-audit-system">Example 4: Integration with Audit System<a class="headerlink" href="#example-4-integration-with-audit-system" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># scripts/space_traversal/detectors/detector_safeguards.py</span>
@@ -2871,142 +2869,142 @@
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="sd">"""</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="n">file_index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="sd">    Detect safeguard keywords across the codebase.</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="sd"> Detect safeguard keywords across the codebase.</span>
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="sd">    Safeguard: Bounded reads on all files.</span>
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="sd">    Validation: Input validation on file_index.</span>
-<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="sd">    """</span>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    <span class="n">files</span> <span class="o">=</span> <span class="n">file_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"files"</span><span class="p">,</span> <span class="p">[])</span>
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>    <span class="n">evidence</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>    <span class="n">found_keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>    <span class="n">keyword_counts</span> <span class="o">=</span> <span class="p">{}</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="sd"> Safeguard: Bounded reads on all files.</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="sd"> Validation: Input validation on file_index.</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="sd"> """</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a> <span class="n">files</span> <span class="o">=</span> <span class="n">file_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"files"</span><span class="p">,</span> <span class="p">[])</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> <span class="n">evidence</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> <span class="n">found_keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a> <span class="n">keyword_counts</span> <span class="o">=</span> <span class="p">{}</span>
 <a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    <span class="n">required_keywords</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>        <span class="s2">"validate"</span><span class="p">,</span> <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"timeout"</span><span class="p">,</span>
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>        <span class="s2">"safeguard"</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"limit"</span>
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>    <span class="p">]</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> <span class="n">required_keywords</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> <span class="s2">"validate"</span><span class="p">,</span> <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"timeout"</span><span class="p">,</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a> <span class="s2">"safeguard"</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">,</span> <span class="s2">"check"</span><span class="p">,</span> <span class="s2">"limit"</span>
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a> <span class="p">]</span>
 <a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>    <span class="k">for</span> <span class="n">meta</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".py"</span><span class="p">):</span>
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>            <span class="k">continue</span>
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a> <span class="k">for</span> <span class="n">meta</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a> <span class="n">path</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".py"</span><span class="p">):</span>
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a> <span class="k">continue</span>
 <a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>        <span class="c1"># Read with bounds</span>
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>        <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>            <span class="n">content</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="mi">100000</span><span class="p">]</span>
-<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">):</span>
-<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a>            <span class="k">continue</span>
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a> <span class="c1"># Read with bounds</span>
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a> <span class="n">content</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="mi">100000</span><span class="p">]</span>
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a> <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">):</span>
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a> <span class="k">continue</span>
 <a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a>
-<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a>        <span class="c1"># Scan for keywords</span>
-<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a>        <span class="n">file_keywords</span> <span class="o">=</span> <span class="p">[]</span>
-<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a>        <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">required_keywords</span><span class="p">:</span>
-<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a>            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a>                <span class="n">file_keywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
-<a href="#__codelineno-6-41" id="__codelineno-6-41" name="__codelineno-6-41"></a>                <span class="n">found_keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a> <span class="c1"># Scan for keywords</span>
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a> <span class="n">file_keywords</span> <span class="o">=</span> <span class="p">[]</span>
+<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">required_keywords</span><span class="p">:</span>
+<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a> <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a> <span class="n">file_keywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+<a href="#__codelineno-6-41" id="__codelineno-6-41" name="__codelineno-6-41"></a> <span class="n">found_keywords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
 <a href="#__codelineno-6-42" id="__codelineno-6-42" name="__codelineno-6-42"></a>
-<a href="#__codelineno-6-43" id="__codelineno-6-43" name="__codelineno-6-43"></a>        <span class="k">if</span> <span class="n">file_keywords</span><span class="p">:</span>
-<a href="#__codelineno-6-44" id="__codelineno-6-44" name="__codelineno-6-44"></a>            <span class="n">evidence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<a href="#__codelineno-6-45" id="__codelineno-6-45" name="__codelineno-6-45"></a>            <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">file_keywords</span><span class="p">:</span>
-<a href="#__codelineno-6-46" id="__codelineno-6-46" name="__codelineno-6-46"></a>                <span class="n">keyword_counts</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyword_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<a href="#__codelineno-6-43" id="__codelineno-6-43" name="__codelineno-6-43"></a> <span class="k">if</span> <span class="n">file_keywords</span><span class="p">:</span>
+<a href="#__codelineno-6-44" id="__codelineno-6-44" name="__codelineno-6-44"></a> <span class="n">evidence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<a href="#__codelineno-6-45" id="__codelineno-6-45" name="__codelineno-6-45"></a> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">file_keywords</span><span class="p">:</span>
+<a href="#__codelineno-6-46" id="__codelineno-6-46" name="__codelineno-6-46"></a> <span class="n">keyword_counts</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyword_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 <a href="#__codelineno-6-47" id="__codelineno-6-47" name="__codelineno-6-47"></a>
-<a href="#__codelineno-6-48" id="__codelineno-6-48" name="__codelineno-6-48"></a>    <span class="k">return</span> <span class="p">{</span>
-<a href="#__codelineno-6-49" id="__codelineno-6-49" name="__codelineno-6-49"></a>        <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"safeguards-keywords"</span><span class="p">,</span>
-<a href="#__codelineno-6-50" id="__codelineno-6-50" name="__codelineno-6-50"></a>        <span class="s2">"evidence_files"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">evidence</span><span class="p">),</span>
-<a href="#__codelineno-6-51" id="__codelineno-6-51" name="__codelineno-6-51"></a>        <span class="s2">"found_patterns"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">found_keywords</span><span class="p">),</span>
-<a href="#__codelineno-6-52" id="__codelineno-6-52" name="__codelineno-6-52"></a>        <span class="s2">"required_patterns"</span><span class="p">:</span> <span class="n">required_keywords</span><span class="p">,</span>
-<a href="#__codelineno-6-53" id="__codelineno-6-53" name="__codelineno-6-53"></a>        <span class="s2">"keyword_counts"</span><span class="p">:</span> <span class="n">keyword_counts</span><span class="p">,</span>
-<a href="#__codelineno-6-54" id="__codelineno-6-54" name="__codelineno-6-54"></a>        <span class="s2">"docs_keywords"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-6-55" id="__codelineno-6-55" name="__codelineno-6-55"></a>            <span class="s2">"safeguard"</span><span class="p">,</span> <span class="s2">"validation"</span><span class="p">,</span> <span class="s2">"security"</span><span class="p">,</span> <span class="s2">"defensive"</span><span class="p">,</span>
-<a href="#__codelineno-6-56" id="__codelineno-6-56" name="__codelineno-6-56"></a>            <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"timeout"</span><span class="p">,</span> <span class="s2">"error-handling"</span>
-<a href="#__codelineno-6-57" id="__codelineno-6-57" name="__codelineno-6-57"></a>        <span class="p">],</span>
-<a href="#__codelineno-6-58" id="__codelineno-6-58" name="__codelineno-6-58"></a>        <span class="s2">"meta"</span><span class="p">:</span> <span class="p">{</span>
-<a href="#__codelineno-6-59" id="__codelineno-6-59" name="__codelineno-6-59"></a>            <span class="s2">"category"</span><span class="p">:</span> <span class="s2">"security"</span><span class="p">,</span>
-<a href="#__codelineno-6-60" id="__codelineno-6-60" name="__codelineno-6-60"></a>            <span class="s2">"safeguards"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"bounded"</span><span class="p">,</span> <span class="s2">"validation"</span><span class="p">,</span> <span class="s2">"offline"</span><span class="p">],</span>
-<a href="#__codelineno-6-61" id="__codelineno-6-61" name="__codelineno-6-61"></a>            <span class="s2">"detector_version"</span><span class="p">:</span> <span class="s2">"2.0"</span>
-<a href="#__codelineno-6-62" id="__codelineno-6-62" name="__codelineno-6-62"></a>        <span class="p">}</span>
-<a href="#__codelineno-6-63" id="__codelineno-6-63" name="__codelineno-6-63"></a>    <span class="p">}</span>
+<a href="#__codelineno-6-48" id="__codelineno-6-48" name="__codelineno-6-48"></a> <span class="k">return</span> <span class="p">{</span>
+<a href="#__codelineno-6-49" id="__codelineno-6-49" name="__codelineno-6-49"></a> <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"safeguards-keywords"</span><span class="p">,</span>
+<a href="#__codelineno-6-50" id="__codelineno-6-50" name="__codelineno-6-50"></a> <span class="s2">"evidence_files"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">evidence</span><span class="p">),</span>
+<a href="#__codelineno-6-51" id="__codelineno-6-51" name="__codelineno-6-51"></a> <span class="s2">"found_patterns"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">found_keywords</span><span class="p">),</span>
+<a href="#__codelineno-6-52" id="__codelineno-6-52" name="__codelineno-6-52"></a> <span class="s2">"required_patterns"</span><span class="p">:</span> <span class="n">required_keywords</span><span class="p">,</span>
+<a href="#__codelineno-6-53" id="__codelineno-6-53" name="__codelineno-6-53"></a> <span class="s2">"keyword_counts"</span><span class="p">:</span> <span class="n">keyword_counts</span><span class="p">,</span>
+<a href="#__codelineno-6-54" id="__codelineno-6-54" name="__codelineno-6-54"></a> <span class="s2">"docs_keywords"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-6-55" id="__codelineno-6-55" name="__codelineno-6-55"></a> <span class="s2">"safeguard"</span><span class="p">,</span> <span class="s2">"validation"</span><span class="p">,</span> <span class="s2">"security"</span><span class="p">,</span> <span class="s2">"defensive"</span><span class="p">,</span>
+<a href="#__codelineno-6-56" id="__codelineno-6-56" name="__codelineno-6-56"></a> <span class="s2">"sanitize"</span><span class="p">,</span> <span class="s2">"bounds"</span><span class="p">,</span> <span class="s2">"timeout"</span><span class="p">,</span> <span class="s2">"error-handling"</span>
+<a href="#__codelineno-6-57" id="__codelineno-6-57" name="__codelineno-6-57"></a> <span class="p">],</span>
+<a href="#__codelineno-6-58" id="__codelineno-6-58" name="__codelineno-6-58"></a> <span class="s2">"meta"</span><span class="p">:</span> <span class="p">{</span>
+<a href="#__codelineno-6-59" id="__codelineno-6-59" name="__codelineno-6-59"></a> <span class="s2">"category"</span><span class="p">:</span> <span class="s2">"security"</span><span class="p">,</span>
+<a href="#__codelineno-6-60" id="__codelineno-6-60" name="__codelineno-6-60"></a> <span class="s2">"safeguards"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"bounded"</span><span class="p">,</span> <span class="s2">"validation"</span><span class="p">,</span> <span class="s2">"offline"</span><span class="p">],</span>
+<a href="#__codelineno-6-61" id="__codelineno-6-61" name="__codelineno-6-61"></a> <span class="s2">"detector_version"</span><span class="p">:</span> <span class="s2">"2.0"</span>
+<a href="#__codelineno-6-62" id="__codelineno-6-62" name="__codelineno-6-62"></a> <span class="p">}</span>
+<a href="#__codelineno-6-63" id="__codelineno-6-63" name="__codelineno-6-63"></a> <span class="p">}</span>
 </code></pre></div>
 <h2 id="example-5-adding-safeguards-to-code">Example 5: Adding Safeguards to Code<a class="headerlink" href="#example-5-adding-safeguards-to-code" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Before: No safeguards</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">2</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>    <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">2</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a> <span class="k">return</span> <span class="n">result</span>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># After: With safeguards</span>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="sd">    Process data with safety bounds.</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="sd"> Process data with safety bounds.</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="sd">    Safeguard: Validates input range.</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="sd">    Bounds: Limits output to max_value.</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="sd">    Timeout: Uses default timeout for long operations.</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="sd"> Safeguard: Validates input range.</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="sd"> Bounds: Limits output to max_value.</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="sd"> Timeout: Uses default timeout for long operations.</span>
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="sd">    Args:</span>
-<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="sd">        data: Input value to process.</span>
-<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="sd">        max_value: Maximum allowed output value.</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a><span class="sd"> Args:</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="sd"> data: Input value to process.</span>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="sd"> max_value: Maximum allowed output value.</span>
 <a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
-<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="sd">    Returns:</span>
-<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="sd">        Processed value, clamped to max_value.</span>
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a><span class="sd"> Returns:</span>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="sd"> Processed value, clamped to max_value.</span>
 <a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>
-<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="sd">    Raises:</span>
-<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="sd">        ValueError: If data is not a number.</span>
-<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a><span class="sd">    """</span>
-<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>    <span class="c1"># Validation safeguard</span>
-<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected number, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a><span class="sd"> Raises:</span>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="sd"> ValueError: If data is not a number.</span>
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a><span class="sd"> """</span>
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a> <span class="c1"># Validation safeguard</span>
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected number, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>
-<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a>    <span class="c1"># Bounds check safeguard</span>
-<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>    <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>        <span class="n">data</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Clamp to minimum</span>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a> <span class="c1"># Bounds check safeguard</span>
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a> <span class="k">if</span> <span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a> <span class="n">data</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Clamp to minimum</span>
 <a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a>
-<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">2</span>
+<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">2</span>
 <a href="#__codelineno-7-34" id="__codelineno-7-34" name="__codelineno-7-34"></a>
-<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a>    <span class="c1"># Upper bounds safeguard</span>
-<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a>    <span class="k">if</span> <span class="n">result</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
-<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">max_value</span>
+<a href="#__codelineno-7-35" id="__codelineno-7-35" name="__codelineno-7-35"></a> <span class="c1"># Upper bounds safeguard</span>
+<a href="#__codelineno-7-36" id="__codelineno-7-36" name="__codelineno-7-36"></a> <span class="k">if</span> <span class="n">result</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
+<a href="#__codelineno-7-37" id="__codelineno-7-37" name="__codelineno-7-37"></a> <span class="n">result</span> <span class="o">=</span> <span class="n">max_value</span>
 <a href="#__codelineno-7-38" id="__codelineno-7-38" name="__codelineno-7-38"></a>
-<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a>    <span class="k">return</span> <span class="n">result</span>
+<a href="#__codelineno-7-39" id="__codelineno-7-39" name="__codelineno-7-39"></a> <span class="k">return</span> <span class="n">result</span>
 </code></pre></div>
 <h2 id="safeguard-patterns-reference">Safeguard Patterns Reference<a class="headerlink" href="#safeguard-patterns-reference" title="Permanent link">¶</a></h2>
 <h3 id="validation-pattern">Validation Pattern<a class="headerlink" href="#validation-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span> <span class="nf">validate_input</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="sd">    Validate input against pattern.</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="sd"> Validate input against pattern.</span>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="sd">    Safeguard: Prevents invalid data from processing.</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="sd">    """</span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>    <span class="kn">import</span> <span class="nn">re</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Value must be string"</span><span class="p">)</span>
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="sd"> Safeguard: Prevents invalid data from processing.</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="sd"> """</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a> <span class="kn">import</span> <span class="nn">re</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Value must be string"</span><span class="p">)</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 </code></pre></div>
 <h3 id="sanitization-pattern">Sanitization Pattern<a class="headerlink" href="#sanitization-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">def</span> <span class="nf">sanitize_html</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="sd">    Sanitize HTML to prevent XSS.</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="sd"> Sanitize HTML to prevent XSS.</span>
 <a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="sd">    Safeguard: Escapes dangerous characters.</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="sd">    Security: Prevents cross-site scripting.</span>
-<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="sd">    """</span>
-<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>    <span class="kn">import</span> <span class="nn">html</span>
-<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="sd"> Safeguard: Escapes dangerous characters.</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="sd"> Security: Prevents cross-site scripting.</span>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="sd"> """</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a> <span class="kn">import</span> <span class="nn">html</span>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a> <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="bounds-check-pattern">Bounds Check Pattern<a class="headerlink" href="#bounds-check-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">def</span> <span class="nf">bounded_read</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">max_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="sd">    Read file with size limit.</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="sd"> Read file with size limit.</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="sd">    Safeguard: Prevents memory exhaustion.</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="sd">    Bounds: Limits read to max_bytes.</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="sd">    """</span>
-<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>        <span class="k">return</span> <span class="s2">""</span>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="sd"> Safeguard: Prevents memory exhaustion.</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="sd"> Bounds: Limits read to max_bytes.</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="sd"> """</span>
+<a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a> <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a> <span class="k">return</span> <span class="s2">""</span>
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    <span class="n">size</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_bytes</span><span class="p">:</span>
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>        <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="n">max_bytes</span><span class="p">]</span>
-<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a> <span class="n">size</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a> <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_bytes</span><span class="p">:</span>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a> <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()[:</span><span class="n">max_bytes</span><span class="p">]</span>
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a> <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="timeout-pattern">Timeout Pattern<a class="headerlink" href="#timeout-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">signal</span>
@@ -3014,53 +3012,53 @@
 <a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>
 <a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nd">@contextmanager</span>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="sd">    Context manager for operation timeout.</span>
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="sd"> Context manager for operation timeout.</span>
 <a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="sd">    Safeguard: Prevents hanging operations.</span>
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="sd">    Timeout: Raises after seconds.</span>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="sd">    """</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>    <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>        <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation timed out after </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="sd"> Safeguard: Prevents hanging operations.</span>
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="sd"> Timeout: Raises after seconds.</span>
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="sd"> """</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a> <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a> <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation timed out after </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
-<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>    <span class="k">try</span><span class="p">:</span>
-<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>        <span class="k">yield</span>
-<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>    <span class="k">finally</span><span class="p">:</span>
-<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>        <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a> <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a> <span class="k">try</span><span class="p">:</span>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a> <span class="k">yield</span>
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a> <span class="k">finally</span><span class="p">:</span>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a> <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="rate-limiting-pattern">Rate Limiting Pattern<a class="headerlink" href="#rate-limiting-pattern" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
 <a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="k">class</span> <span class="nc">RateLimiter</span><span class="p">:</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w">    </span><span class="sd">"""</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="sd">    Rate limiter for API endpoints.</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="w"> </span><span class="sd">"""</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="sd"> Rate limiter for API endpoints.</span>
 <a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="sd">    Safeguard: Prevents abuse.</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="sd">    Rate-limit: Enforces request limits.</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="sd">    """</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="sd"> Safeguard: Prevents abuse.</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="sd"> Rate-limit: Enforces request limits.</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="sd"> """</span>
 <a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_requests</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">window_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_requests</span> <span class="o">=</span> <span class="n">max_requests</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window_seconds</span>
-<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">requests</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_requests</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">window_seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="bp">self</span><span class="o">.</span><span class="n">max_requests</span> <span class="o">=</span> <span class="n">max_requests</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a> <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window_seconds</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 <a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>
-<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a>    <span class="k">def</span> <span class="nf">is_allowed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="w">        </span><span class="sd">"""Check if request is allowed."""</span>
-<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a>        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a>        <span class="c1"># Clean old requests</span>
-<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>            <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span>
-<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>            <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span>
-<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>        <span class="p">]</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a> <span class="k">def</span> <span class="nf">is_allowed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a><span class="w"> </span><span class="sd">"""Check if request is allowed."""</span>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a> <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a> <span class="c1"># Clean old requests</span>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a> <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span>
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a> <span class="p">]</span>
 <a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a>
-<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_requests</span><span class="p">:</span>
-<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a>            <span class="k">return</span> <span class="kc">False</span>
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_requests</span><span class="p">:</span>
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a> <span class="k">return</span> <span class="kc">False</span>
 <a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a>
-<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
-<a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a>        <span class="k">return</span> <span class="kc">True</span>
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a> <span class="bp">self</span><span class="o">.</span><span class="n">requests</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+<a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a> <span class="k">return</span> <span class="kc">True</span>
 </code></pre></div>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
 <ol>
@@ -3079,37 +3077,37 @@
 <a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="s2">from pathlib import Path</span>
 <a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="s2">for f in Path('src').glob('**/*.py'):</span>
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="s2">    content = f.read_text()</span>
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="s2">    if 'safeguard' not in content.lower() and 'validate' not in content.lower():</span>
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="s2">        print(f'Missing safeguards: {f}')</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="s2"> content = f.read_text()</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="s2"> if 'safeguard' not in content.lower() and 'validate' not in content.lower():</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="s2"> print(f'Missing safeguards: {f}')</span>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="s2">"</span>
 </code></pre></div>
 <h2 id="false-positives">False Positives<a class="headerlink" href="#false-positives" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c1"># Filter out test files and comments</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">EXCLUDE_PATTERNS</span> <span class="o">=</span> <span class="p">[</span>
-<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>    <span class="sa">r</span><span class="s1">'test_\w+\.py'</span><span class="p">,</span>
-<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>    <span class="sa">r</span><span class="s1">'\w+_test\.py'</span><span class="p">,</span>
-<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a>    <span class="sa">r</span><span class="s1">'conftest\.py'</span><span class="p">,</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a> <span class="sa">r</span><span class="s1">'test_\w+\.py'</span><span class="p">,</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a> <span class="sa">r</span><span class="s1">'\w+_test\.py'</span><span class="p">,</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a> <span class="sa">r</span><span class="s1">'conftest\.py'</span><span class="p">,</span>
 <a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="p">]</span>
 </code></pre></div>
 <h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permanent link">¶</a></h2>
 <h3 id="pre-commit-hook">Pre-commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># .pre-commit-config.yaml</span>
 <a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="nt">repos</span><span class="p">:</span>
-<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
-<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-safeguards</span>
-<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Safeguards</span>
-<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w">        </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/check_safeguards.py</span>
-<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w">        </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">        </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">python</span><span class="p p-Indicator">]</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w"> </span><span class="nt">hooks</span><span class="p">:</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">check-safeguards</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Safeguards</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="w"> </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/check_safeguards.py</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="w"> </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w"> </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">python</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <h2 id="ci-integration">CI Integration<a class="headerlink" href="#ci-integration" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># .github/workflows/safeguards.yml</span>
 <a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Safeguard Coverage</span>
-<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">    </span><span class="no">python scripts/space_traversal/audit_runner.py run</span>
-<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">    </span><span class="no">python scripts/check_safeguard_score.py --min-score 0.85</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w w-Error"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/space_traversal/audit_runner.py run</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/check_safeguard_score.py --min-score 0.85</span>
 </code></pre></div>
 <h2 id="related-capabilities">Related Capabilities<a class="headerlink" href="#related-capabilities" title="Permanent link">¶</a></h2>
 <ul>
@@ -3151,6 +3149,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

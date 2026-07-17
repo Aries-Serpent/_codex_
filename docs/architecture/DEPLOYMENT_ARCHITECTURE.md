@@ -1,9 +1,9 @@
 # Deployment Architecture
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-01-20
-**Version**: v0.2.1
+**Version**: v0.2.0
 **Supported Platforms**: Local, Docker, Kubernetes, Cloud
 
 ---
@@ -162,7 +162,7 @@ CMD ["codex", "serve"]
 
 **Registry**:
 - GitHub Container Registry (ghcr.io)
-- Version tags: `v0.2.1`, `latest`, `main`
+- Version tags: `v0.2.0`, `latest`, `main`
 - Signature validation: Cosign
 
 **Commands**:
@@ -196,7 +196,7 @@ spec:
  spec:
  containers:
  - name: codex
- image: ghcr.io/aries-serpent/codex:v0.2.1
+ image: ghcr.io/aries-serpent/codex:v0.2.0
  ports:
  - containerPort: 8000
  env:
@@ -335,7 +335,7 @@ cache:
 storage:
  type: s3
  bucket: codex-models
- prefix: v0.2.1/
+ prefix: v0.2.0/
 ```
 
 ### Cloud
@@ -352,7 +352,7 @@ cache:
 storage:
  type: s3
  bucket: prod-models
- prefix: v0.2.1/
+ prefix: v0.2.0/
  encryption: AES256
 ```
 
@@ -370,7 +370,7 @@ storage:
  Push image
  
 3. Create release
- Version tag (v0.2.1)
+ Version tag (v0.2.0)
  Release notes
  GitHub release
  

@@ -1,6 +1,6 @@
 # AI-Assisted Test Generation Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Overview
 
@@ -673,7 +673,7 @@ For issues or questions:
 
 ## Version History
 
-- **v0.2.1** (2025-12-16): Initial release
+- **v0.2.0** (2025-12-16): Initial release
   - Basic test generation
   - CLI tool
   - 4 pre-defined flow specifications

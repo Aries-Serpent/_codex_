@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/COMMUNITY_GUIDELINES/" rel="canonical"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Community Guidelines &amp; Getting Help - Codex Docs v0.2.1</title>
-<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../architecture.md">
+<a class="md-tabs__link" href="../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../architecture.md">
+<a class="md-nav__link" href="../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2665,7 +2665,7 @@
 <h1 id="community-guidelines-getting-help">Community Guidelines &amp; Getting Help<a class="headerlink" href="#community-guidelines-getting-help" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-07-08<br/>
+<p><strong>Last Updated</strong>: 2026-07-08
 <strong>Version</strong>: 1.0.0</p>
 <p>Welcome to the Codex ML community! This guide outlines how to participate constructively, get help when you need it, and build relationships with fellow contributors.</p>
 <h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
@@ -2759,7 +2759,7 @@
 - Share minimal reproducible example</p>
 <h3 id="support-channels">Support Channels<a class="headerlink" href="#support-channels" title="Permanent link">¶</a></h3>
 <h4 id="github-discussions">GitHub Discussions<a class="headerlink" href="#github-discussions" title="Permanent link">¶</a></h4>
-<p><strong>Best for</strong>: Questions, ideas, general chat<br/>
+<p><strong>Best for</strong>: Questions, ideas, general chat
 <strong>How to use</strong>:
 1. Click "Discussions" tab on the repo
 2. Search existing discussions
@@ -2767,7 +2767,7 @@
 4. Choose a category (Q&amp;A, Ideas, etc.)
 5. Write your question with details</p>
 <h4 id="github-issues">GitHub Issues<a class="headerlink" href="#github-issues" title="Permanent link">¶</a></h4>
-<p><strong>Best for</strong>: Bugs, feature requests, confirmed problems<br/>
+<p><strong>Best for</strong>: Bugs, feature requests, confirmed problems
 <strong>Use these labels</strong>:
 - <code>bug</code> - Something doesn't work
 - <code>feature-request</code> - New capability wanted
@@ -2775,7 +2775,7 @@
 - <code>help-wanted</code> - Needs community input
 - <code>question</code> - Request for information</p>
 <h4 id="pull-request-comments">Pull Request Comments<a class="headerlink" href="#pull-request-comments" title="Permanent link">¶</a></h4>
-<p><strong>Best for</strong>: Questions about specific code changes<br/>
+<p><strong>Best for</strong>: Questions about specific code changes
 <strong>How it works</strong>:
 1. Comment on the PR
 2. Mention relevant people: <code>@username</code>
@@ -2820,8 +2820,8 @@
 <h2 id="error-message">Error Message<a class="headerlink" href="#error-message" title="Permanent link">¶</a></h2>
 <!-- Full error output here -->
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Traceback (most recent call last):
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>  File "test.py", line 1, in &lt;module&gt;
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    model = load_model('path/to/config.yaml')
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a> File "test.py", line 1, in &lt;module&gt;
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a> model = load_model('path/to/config.yaml')
 <a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>ValueError: Config file not found: path/to/config.yaml
 </code></pre></div>
 <h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">¶</a></h2>
@@ -2893,12 +2893,12 @@
 <a href="#__codelineno-2-57" id="__codelineno-2-57" name="__codelineno-2-57"></a>## Error Message
 </code></pre></div>
 Traceback (most recent call last):
-  File "test.py", line 2, in <module>
-    model = load_model('/tmp/my config/model.yaml')
-  File "src/codex_ml/loader.py", line 45, in load_model
-    validate_path(path)
-  File "src/codex_ml/loader.py", line 78, in validate_path
-    raise ValueError(f"Invalid path: {path}")
+ File "test.py", line 2, in <module>
+ model = load_model('/tmp/my config/model.yaml')
+ File "src/codex_ml/loader.py", line 45, in load_model
+ validate_path(path)
+ File "src/codex_ml/loader.py", line 78, in validate_path
+ raise ValueError(f"Invalid path: {path}")
 ValueError: Invalid path: /tmp/my config/model.yaml
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>
 </code></pre></div></module></p>
@@ -2942,20 +2942,20 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>### Healthy Discussions
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>**Do**:
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>-  Ask clarifying questions
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>-  Share relevant experience
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>-  Provide concrete examples
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>-  Acknowledge good points
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>-  Link to relevant resources
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>-  Stay on topic
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>- Ask clarifying questions
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>- Share relevant experience
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>- Provide concrete examples
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>- Acknowledge good points
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>- Link to relevant resources
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>- Stay on topic
 <a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
 <a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>**Don't**:
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>-  Go off-topic
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>-  Post the same question multiple times
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>-  Ignore answers and repeat questions
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>-  Use discussions for bugs/issues (use Issues instead)
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>-  Cross-post to many places (spam)
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>-  Post promotional/advertising content
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>- Go off-topic
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>- Post the same question multiple times
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>- Ignore answers and repeat questions
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>- Use discussions for bugs/issues (use Issues instead)
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>- Cross-post to many places (spam)
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>- Post promotional/advertising content
 <a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
 <a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>### Following Conversations
 <a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>
@@ -2969,7 +2969,7 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a>### Resolving Discussions
 <a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a>
 <a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a>If your question is answered:
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>1. Mark the answer: Click  button (if discussion template allows)
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a>1. Mark the answer: Click button (if discussion template allows)
 <a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a>2. Thank the responder
 <a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a>3. If still unclear, follow up with specific remaining questions
 <a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a>4. Close discussion when fully resolved
@@ -3124,22 +3124,22 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">¶</a></h2>
 <h3 id="common-scenarios">Common Scenarios<a class="headerlink" href="#common-scenarios" title="Permanent link">¶</a></h3>
 <p><strong>"I found a bug!"</strong>
-→ Open an issue with the bug template</p>
+ Open an issue with the bug template</p>
 <p><strong>"I want to suggest a feature"</strong>
-→ Start a discussion or open a feature-request issue</p>
+ Start a discussion or open a feature-request issue</p>
 <p><strong>"I'm interested in contributing"</strong>
-→ Read CONTRIBUTING.md, check good-first-issue labels</p>
+ Read CONTRIBUTING.md, check good-first-issue labels</p>
 <p><strong>"I disagree with a decision"</strong>
-→ Ask about the reasoning in discussions, respectfully</p>
+ Ask about the reasoning in discussions, respectfully</p>
 <p><strong>"Someone was rude to me"</strong>
-→ Report to conduct@aries-serpent.dev, or reach out privately</p>
+ Report to conduct@aries-serpent.dev, or reach out privately</p>
 <p><strong>"My PR is stuck"</strong>
-→ Ask for feedback in a comment, don't bump repeatedly</p>
+ Ask for feedback in a comment, don't bump repeatedly</p>
 <p><strong>"I want to know more about the roadmap"</strong>
-→ Check ROADMAP.md or ask in discussions</p>
+ Check ROADMAP.md or ask in discussions</p>
 <hr/>
 <h2 id="thank-you">Thank You!<a class="headerlink" href="#thank-you" title="Permanent link">¶</a></h2>
-<p>We appreciate every contribution, question, and piece of feedback. The community makes this project better! 🎉</p>
+<p>We appreciate every contribution, question, and piece of feedback. The community makes this project better!</p>
 <p><strong>Questions about this guide?</strong> Open a discussion or reach out to maintainers.</p>
 <hr/>
 <p><strong>Related Documents</strong>:
@@ -3175,6 +3175,6 @@ ValueError: Invalid path: /tmp/my config/model.yaml
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # cURL Examples - Complete API Integration Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide provides ready-to-use cURL commands for all Codex API endpoints.
 

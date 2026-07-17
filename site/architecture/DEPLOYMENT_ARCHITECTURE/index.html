@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/DEPLOYMENT_ARCHITECTURE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Deployment Architecture - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2403,97 +2403,108 @@
 <h1 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Last Updated</strong>: 2026-01-20<br/>
-<strong>Version</strong>: v0.2.1<br/>
+<p><strong>Last Updated</strong>: 2026-01-20
+<strong>Version</strong>: v0.2.1
 <strong>Supported Platforms</strong>: Local, Docker, Kubernetes, Cloud</p>
 <hr/>
 <h2 id="deployment-architecture-overview">Deployment Architecture Overview<a class="headerlink" href="#deployment-architecture-overview" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Deployment Architecture&lt;br/&gt;Local Docker Kubernetes Cloud'}, 'theme': 'base'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Local Development"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        LocalDev["💻 Developer Laptop&lt;br/&gt;• Python venv&lt;br/&gt;• Local SQLite DB&lt;br/&gt;• Local Redis cache"]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        LocalTools[" Local Tools&lt;br/&gt;• pip/conda&lt;br/&gt;• pytest&lt;br/&gt;• tensorboard"]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    end
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    subgraph "Docker Containerized"
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>        BuildStage["🔨 Build Stage&lt;br/&gt;• Dockerfile multi-stage&lt;br/&gt;• Install dependencies&lt;br/&gt;• Compile wheels"]
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        RuntimeStage[" Runtime Stage&lt;br/&gt;• Minimal base image&lt;br/&gt;• Python slim&lt;br/&gt;• Security scanning"]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        Registry["📦 Container Registry&lt;br/&gt;• GitHub Container Reg&lt;br/&gt;• Version tags&lt;br/&gt;• Signature validation"]
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    end
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    subgraph "Kubernetes Orchestration"
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        K8sCluster["🐳 K8s Cluster&lt;br/&gt;• Pod scheduling&lt;br/&gt;• Resource management&lt;br/&gt;• Auto-scaling"]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>        K8sServices["📡 K8s Services&lt;br/&gt;• ClusterIP services&lt;br/&gt;• LoadBalancer&lt;br/&gt;• Ingress controller"]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        K8sStorage["💾 K8s Storage&lt;br/&gt;• PersistentVolumes&lt;br/&gt;• StatefulSets&lt;br/&gt;• Database pods"]
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        K8sNet[" K8s Network&lt;br/&gt;• NetworkPolicies&lt;br/&gt;• Pod-to-Pod&lt;br/&gt;• Egress rules"]
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>    end
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>    subgraph "Cloud Deployment"
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        CloudCompute["☁️ Cloud Compute&lt;br/&gt;• AWS EC2/Lambda&lt;br/&gt;• GCP Compute Engine&lt;br/&gt;• Azure Container Inst."]
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        CloudStorage["💾 Cloud Storage&lt;br/&gt;• S3/GCS/Azure Blob&lt;br/&gt;• Model versioning&lt;br/&gt;• Data persistence"]
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        CloudDB["🗄️ Managed Database&lt;br/&gt;• AWS RDS&lt;br/&gt;• GCP Cloud SQL&lt;br/&gt;• Azure Database"]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        CloudMonitor[" Cloud Monitoring&lt;br/&gt;• CloudWatch/Stackdriver&lt;br/&gt;• Log aggregation&lt;br/&gt;• Metrics/Traces"]
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    end
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    subgraph "CI/CD Pipeline"
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        Git["🐙 Git Repository&lt;br/&gt;• Source code&lt;br/&gt;• Commit triggers&lt;br/&gt;• Branch protection"]
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        GHActions[" GitHub Actions&lt;br/&gt;• Build jobs&lt;br/&gt;• Test jobs&lt;br/&gt;• Deploy jobs"]
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>        Tests[" Automated Tests&lt;br/&gt;• Unit tests&lt;br/&gt;• Integration tests&lt;br/&gt;• E2E tests"]
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>        Publish["📤 Publish&lt;br/&gt;• Push to registry&lt;br/&gt;• Create release&lt;br/&gt;• Tag version"]
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    end
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>    %% Deployment flow
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    LocalDev --&gt; LocalTools
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    LocalTools --&gt;|"git push"| Git
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> subgraph "Local Development"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> LocalDev[" Developer Laptop&lt;br/&gt;• Python venv&lt;br/&gt;• Local SQLite DB&lt;br/&gt;• Local Redis cache"]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a> LocalTools[" Local Tools&lt;br/&gt;• pip/conda&lt;br/&gt;• pytest&lt;br/&gt;• tensorboard"]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> end
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> subgraph "Docker Containerized"
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> BuildStage[" Build Stage&lt;br/&gt;• Dockerfile multi-stage&lt;br/&gt;• Install dependencies&lt;br/&gt;• Compile wheels"]
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a> RuntimeStage[" Runtime Stage&lt;br/&gt;• Minimal base image&lt;br/&gt;• Python slim&lt;br/&gt;• Security scanning"]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> Registry[" Container Registry&lt;br/&gt;• GitHub Container Reg&lt;br/&gt;• Version tags&lt;br/&gt;• Signature validation"]
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> end
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> subgraph "Kubernetes Orchestration"
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a> K8sCluster[" K8s Cluster&lt;br/&gt;• Pod scheduling&lt;br/&gt;• Resource management&lt;br/&gt;• Auto-scaling"]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> K8sServices[" K8s Services&lt;br/&gt;• ClusterIP services&lt;br/&gt;• LoadBalancer&lt;br/&gt;• Ingress controller"]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a> K8sStorage[" K8s Storage&lt;br/&gt;• PersistentVolumes&lt;br/&gt;• StatefulSets&lt;br/&gt;• Database pods"]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a> K8sNet[" K8s Network&lt;br/&gt;• NetworkPolicies&lt;br/&gt;• Pod-to-Pod&lt;br/&gt;• Egress rules"]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a> end
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a> subgraph "Cloud Deployment"
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a> CloudCompute[" Cloud Compute&lt;br/&gt;• AWS EC2/Lambda&lt;br/&gt;• GCP Compute Engine&lt;br/&gt;• Azure Container Inst."]
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a> CloudStorage[" Cloud Storage&lt;br/&gt;• S3/GCS/Azure Blob&lt;br/&gt;• Model versioning&lt;br/&gt;• Data persistence"]
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a> CloudDB[" Managed Database&lt;br/&gt;• AWS RDS&lt;br/&gt;• GCP Cloud SQL&lt;br/&gt;• Azure Database"]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a> CloudMonitor[" Cloud Monitoring&lt;br/&gt;• CloudWatch/Stackdriver&lt;br/&gt;• Log aggregation&lt;br/&gt;• Metrics/Traces"]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a> end
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a> subgraph "CI/CD Pipeline"
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a> Git[" Git Repository&lt;br/&gt;• Source code&lt;br/&gt;• Commit triggers&lt;br/&gt;• Branch protection"]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a> GHActions[" GitHub Actions&lt;br/&gt;• Build jobs&lt;br/&gt;• Test jobs&lt;br/&gt;• Deploy jobs"]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a> Tests[" Automated Tests&lt;br/&gt;• Unit tests&lt;br/&gt;• Integration tests&lt;br/&gt;• E2E tests"]
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a> Publish[" Publish&lt;br/&gt;• Push to registry&lt;br/&gt;• Create release&lt;br/&gt;• Tag version"]
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a> end
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a> %% Deployment flow
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a> LocalDev --&gt; LocalTools
 <a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    Git --&gt; GHActions
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    GHActions --&gt;|"Run tests"| Tests
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    Tests --&gt;|"Build image"| BuildStage
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    BuildStage --&gt; RuntimeStage
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    RuntimeStage --&gt;|"Push image"| Registry
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a> LocalTools --&gt;|"git push"| Git
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a> Git --&gt; GHActions
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a> GHActions --&gt;|"Run tests"| Tests
 <a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    Registry --&gt;|"Pull image"| K8sCluster
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    Registry --&gt;|"Pull image"| CloudCompute
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    K8sCluster --&gt; K8sServices
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    K8sCluster --&gt; K8sStorage
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    K8sCluster --&gt; K8sNet
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>
-<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>    K8sStorage -.connects.-&gt; CloudDB
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    K8sServices -.mounts.-&gt; CloudStorage
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a> Tests --&gt;|"Build image"| BuildStage
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a> BuildStage --&gt; RuntimeStage
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a> RuntimeStage --&gt;|"Push image"| Registry
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a> Registry --&gt;|"Pull image"| K8sCluster
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a> Registry --&gt;|"Pull image"| CloudCompute
 <a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    CloudCompute --&gt; CloudStorage
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    CloudCompute --&gt; CloudDB
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    CloudCompute --&gt; CloudMonitor
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a> K8sCluster --&gt; K8sServices
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a> K8sCluster --&gt; K8sStorage
 <a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    Publish --&gt;|"Release tag"| Registry
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a> K8sCluster --&gt; K8sNet
 <a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>
-<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    %% Monitoring
-<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>    K8sCluster -.metrics.-&gt; CloudMonitor
-<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    LocalDev -.logs.-&gt; CloudMonitor
-<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>
-<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>    %% Styling
-<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>    style LocalDev fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>    style LocalTools fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>
-<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>    style BuildStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
-<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>    style RuntimeStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
-<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>    style Registry fill:#fef3c7,stroke:#d97706,stroke-width:2px
-<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>
-<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>    style K8sCluster fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>    style K8sServices fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>    style K8sStorage fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>    style K8sNet fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a>
-<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a>    style CloudCompute fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a>    style CloudStorage fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a>    style CloudDB fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a>    style CloudMonitor fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a>
-<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a>    style Git fill:#fce7f3,stroke:#db2777,stroke-width:2px
-<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a>    style GHActions fill:#fce7f3,stroke:#db2777,stroke-width:2px
-<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a>    style Tests fill:#fce7f3,stroke:#db2777,stroke-width:2px
-<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a>    style Publish fill:#fce7f3,stroke:#db2777,stroke-width:2px
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a> K8sStorage -.connects.-&gt; CloudDB
+<a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a> K8sServices -.mounts.-&gt; CloudStorage
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a> CloudCompute --&gt; CloudStorage
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a> CloudCompute --&gt; CloudDB
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a> CloudCompute --&gt; CloudMonitor
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a> Publish --&gt;|"Release tag"| Registry
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a> %% Monitoring
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a> K8sCluster -.metrics.-&gt; CloudMonitor
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a> LocalDev -.logs.-&gt; CloudMonitor
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a> %% Styling
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a> style LocalDev fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+<a href="#__codelineno-0-78" id="__codelineno-0-78" name="__codelineno-0-78"></a> style LocalTools fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+<a href="#__codelineno-0-79" id="__codelineno-0-79" name="__codelineno-0-79"></a>
+<a href="#__codelineno-0-80" id="__codelineno-0-80" name="__codelineno-0-80"></a> style BuildStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
+<a href="#__codelineno-0-81" id="__codelineno-0-81" name="__codelineno-0-81"></a> style RuntimeStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
+<a href="#__codelineno-0-82" id="__codelineno-0-82" name="__codelineno-0-82"></a> style Registry fill:#fef3c7,stroke:#d97706,stroke-width:2px
+<a href="#__codelineno-0-83" id="__codelineno-0-83" name="__codelineno-0-83"></a>
+<a href="#__codelineno-0-84" id="__codelineno-0-84" name="__codelineno-0-84"></a> style K8sCluster fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+<a href="#__codelineno-0-85" id="__codelineno-0-85" name="__codelineno-0-85"></a> style K8sServices fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+<a href="#__codelineno-0-86" id="__codelineno-0-86" name="__codelineno-0-86"></a> style K8sStorage fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+<a href="#__codelineno-0-87" id="__codelineno-0-87" name="__codelineno-0-87"></a> style K8sNet fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+<a href="#__codelineno-0-88" id="__codelineno-0-88" name="__codelineno-0-88"></a>
+<a href="#__codelineno-0-89" id="__codelineno-0-89" name="__codelineno-0-89"></a> style CloudCompute fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-90" id="__codelineno-0-90" name="__codelineno-0-90"></a> style CloudStorage fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-91" id="__codelineno-0-91" name="__codelineno-0-91"></a> style CloudDB fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-92" id="__codelineno-0-92" name="__codelineno-0-92"></a> style CloudMonitor fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+<a href="#__codelineno-0-93" id="__codelineno-0-93" name="__codelineno-0-93"></a>
+<a href="#__codelineno-0-94" id="__codelineno-0-94" name="__codelineno-0-94"></a> style Git fill:#fce7f3,stroke:#db2777,stroke-width:2px
+<a href="#__codelineno-0-95" id="__codelineno-0-95" name="__codelineno-0-95"></a> style GHActions fill:#fce7f3,stroke:#db2777,stroke-width:2px
+<a href="#__codelineno-0-96" id="__codelineno-0-96" name="__codelineno-0-96"></a> style Tests fill:#fce7f3,stroke:#db2777,stroke-width:2px
+<a href="#__codelineno-0-97" id="__codelineno-0-97" name="__codelineno-0-97"></a> style Publish fill:#fce7f3,stroke:#db2777,stroke-width:2px
 </code></pre></div>
 <hr/>
 <h2 id="deployment-targets">Deployment Targets<a class="headerlink" href="#deployment-targets" title="Permanent link">¶</a></h2>
@@ -2550,71 +2561,71 @@
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="nt">metadata</span><span class="p">:</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="nt">spec</span><span class="p">:</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
-<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w">  </span><span class="nt">template</span><span class="p">:</span>
-<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span>
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex</span>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/aries-serpent/codex:v0.2.1</span>
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w">        </span><span class="nt">ports</span><span class="p">:</span>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIG_FILE</span>
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w">          </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/config/config.yaml</span>
-<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w">          </span><span class="nt">requests</span><span class="p">:</span>
-<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8Gi</span>
-<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w">          </span><span class="nt">limits</span><span class="p">:</span>
-<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16Gi</span>
-<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w">        </span><span class="nt">livenessProbe</span><span class="p">:</span>
-<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a><span class="w">          </span><span class="nt">httpGet</span><span class="p">:</span>
-<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w">            </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/health</span>
-<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
-<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w">          </span><span class="nt">initialDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
-<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w">          </span><span class="nt">periodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="w"> </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="w"> </span><span class="nt">selector</span><span class="p">:</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w"> </span><span class="nt">matchLabels</span><span class="p">:</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="w"> </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="w"> </span><span class="nt">template</span><span class="p">:</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="w"> </span><span class="nt">metadata</span><span class="p">:</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="w"> </span><span class="nt">labels</span><span class="p">:</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="w"> </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="w"> </span><span class="nt">spec</span><span class="p">:</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="w"> </span><span class="nt">containers</span><span class="p">:</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a><span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/aries-serpent/codex:v0.2.1</span>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="w"> </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="w"> </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONFIG_FILE</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a><span class="w"> </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/config/config.yaml</span>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="w"> </span><span class="nt">resources</span><span class="p">:</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="w"> </span><span class="nt">requests</span><span class="p">:</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a><span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8Gi</span>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="w"> </span><span class="nt">limits</span><span class="p">:</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16Gi</span>
+<a href="#__codelineno-5-31" id="__codelineno-5-31" name="__codelineno-5-31"></a><span class="w"> </span><span class="nt">livenessProbe</span><span class="p">:</span>
+<a href="#__codelineno-5-32" id="__codelineno-5-32" name="__codelineno-5-32"></a><span class="w"> </span><span class="nt">httpGet</span><span class="p">:</span>
+<a href="#__codelineno-5-33" id="__codelineno-5-33" name="__codelineno-5-33"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/health</span>
+<a href="#__codelineno-5-34" id="__codelineno-5-34" name="__codelineno-5-34"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<a href="#__codelineno-5-35" id="__codelineno-5-35" name="__codelineno-5-35"></a><span class="w"> </span><span class="nt">initialDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<a href="#__codelineno-5-36" id="__codelineno-5-36" name="__codelineno-5-36"></a><span class="w"> </span><span class="nt">periodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <a href="#__codelineno-5-37" id="__codelineno-5-37" name="__codelineno-5-37"></a><span class="nn">---</span>
 <a href="#__codelineno-5-38" id="__codelineno-5-38" name="__codelineno-5-38"></a><span class="c1"># service.yaml</span>
 <a href="#__codelineno-5-39" id="__codelineno-5-39" name="__codelineno-5-39"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <a href="#__codelineno-5-40" id="__codelineno-5-40" name="__codelineno-5-40"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
 <a href="#__codelineno-5-41" id="__codelineno-5-41" name="__codelineno-5-41"></a><span class="nt">metadata</span><span class="p">:</span>
-<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-42" id="__codelineno-5-42" name="__codelineno-5-42"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
 <a href="#__codelineno-5-43" id="__codelineno-5-43" name="__codelineno-5-43"></a><span class="nt">spec</span><span class="p">:</span>
-<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoadBalancer</span>
-<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a><span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
-<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
-<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a><span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
-<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
-<a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
-<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<a href="#__codelineno-5-44" id="__codelineno-5-44" name="__codelineno-5-44"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoadBalancer</span>
+<a href="#__codelineno-5-45" id="__codelineno-5-45" name="__codelineno-5-45"></a><span class="w"> </span><span class="nt">selector</span><span class="p">:</span>
+<a href="#__codelineno-5-46" id="__codelineno-5-46" name="__codelineno-5-46"></a><span class="w"> </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-47" id="__codelineno-5-47" name="__codelineno-5-47"></a><span class="w"> </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-5-48" id="__codelineno-5-48" name="__codelineno-5-48"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TCP</span>
+<a href="#__codelineno-5-49" id="__codelineno-5-49" name="__codelineno-5-49"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a href="#__codelineno-5-50" id="__codelineno-5-50" name="__codelineno-5-50"></a><span class="w"> </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
 <a href="#__codelineno-5-51" id="__codelineno-5-51" name="__codelineno-5-51"></a><span class="nn">---</span>
 <a href="#__codelineno-5-52" id="__codelineno-5-52" name="__codelineno-5-52"></a><span class="c1"># ingress.yaml</span>
 <a href="#__codelineno-5-53" id="__codelineno-5-53" name="__codelineno-5-53"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
 <a href="#__codelineno-5-54" id="__codelineno-5-54" name="__codelineno-5-54"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span>
 <a href="#__codelineno-5-55" id="__codelineno-5-55" name="__codelineno-5-55"></a><span class="nt">metadata</span><span class="p">:</span>
-<a href="#__codelineno-5-56" id="__codelineno-5-56" name="__codelineno-5-56"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-ingress</span>
+<a href="#__codelineno-5-56" id="__codelineno-5-56" name="__codelineno-5-56"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-ingress</span>
 <a href="#__codelineno-5-57" id="__codelineno-5-57" name="__codelineno-5-57"></a><span class="nt">spec</span><span class="p">:</span>
-<a href="#__codelineno-5-58" id="__codelineno-5-58" name="__codelineno-5-58"></a><span class="w">  </span><span class="nt">ingressClassName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
-<a href="#__codelineno-5-59" id="__codelineno-5-59" name="__codelineno-5-59"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
-<a href="#__codelineno-5-60" id="__codelineno-5-60" name="__codelineno-5-60"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api.codex.example.com</span>
-<a href="#__codelineno-5-61" id="__codelineno-5-61" name="__codelineno-5-61"></a><span class="w">    </span><span class="nt">http</span><span class="p">:</span>
-<a href="#__codelineno-5-62" id="__codelineno-5-62" name="__codelineno-5-62"></a><span class="w">      </span><span class="nt">paths</span><span class="p">:</span>
-<a href="#__codelineno-5-63" id="__codelineno-5-63" name="__codelineno-5-63"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
-<a href="#__codelineno-5-64" id="__codelineno-5-64" name="__codelineno-5-64"></a><span class="w">        </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prefix</span>
-<a href="#__codelineno-5-65" id="__codelineno-5-65" name="__codelineno-5-65"></a><span class="w">        </span><span class="nt">backend</span><span class="p">:</span>
-<a href="#__codelineno-5-66" id="__codelineno-5-66" name="__codelineno-5-66"></a><span class="w">          </span><span class="nt">service</span><span class="p">:</span>
-<a href="#__codelineno-5-67" id="__codelineno-5-67" name="__codelineno-5-67"></a><span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
-<a href="#__codelineno-5-68" id="__codelineno-5-68" name="__codelineno-5-68"></a><span class="w">            </span><span class="nt">port</span><span class="p">:</span>
-<a href="#__codelineno-5-69" id="__codelineno-5-69" name="__codelineno-5-69"></a><span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a href="#__codelineno-5-58" id="__codelineno-5-58" name="__codelineno-5-58"></a><span class="w"> </span><span class="nt">ingressClassName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<a href="#__codelineno-5-59" id="__codelineno-5-59" name="__codelineno-5-59"></a><span class="w"> </span><span class="nt">rules</span><span class="p">:</span>
+<a href="#__codelineno-5-60" id="__codelineno-5-60" name="__codelineno-5-60"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api.codex.example.com</span>
+<a href="#__codelineno-5-61" id="__codelineno-5-61" name="__codelineno-5-61"></a><span class="w"> </span><span class="nt">http</span><span class="p">:</span>
+<a href="#__codelineno-5-62" id="__codelineno-5-62" name="__codelineno-5-62"></a><span class="w"> </span><span class="nt">paths</span><span class="p">:</span>
+<a href="#__codelineno-5-63" id="__codelineno-5-63" name="__codelineno-5-63"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
+<a href="#__codelineno-5-64" id="__codelineno-5-64" name="__codelineno-5-64"></a><span class="w"> </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prefix</span>
+<a href="#__codelineno-5-65" id="__codelineno-5-65" name="__codelineno-5-65"></a><span class="w"> </span><span class="nt">backend</span><span class="p">:</span>
+<a href="#__codelineno-5-66" id="__codelineno-5-66" name="__codelineno-5-66"></a><span class="w"> </span><span class="nt">service</span><span class="p">:</span>
+<a href="#__codelineno-5-67" id="__codelineno-5-67" name="__codelineno-5-67"></a><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-api</span>
+<a href="#__codelineno-5-68" id="__codelineno-5-68" name="__codelineno-5-68"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span>
+<a href="#__codelineno-5-69" id="__codelineno-5-69" name="__codelineno-5-69"></a><span class="w"> </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 </code></pre></div></p>
 <p><strong>Operations</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>k8s/
@@ -2628,107 +2639,107 @@
 <p><strong>AWS Deployment</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># ECS on Fargate</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>aws<span class="w"> </span>ecs<span class="w"> </span>create-service<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span>--cluster<span class="w"> </span>production<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span>--service-name<span class="w"> </span>codex<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w">  </span>--task-definition<span class="w"> </span>codex:1<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w">  </span>--desired-count<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w">  </span>--launch-type<span class="w"> </span>FARGATE
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w"> </span>--cluster<span class="w"> </span>production<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w"> </span>--service-name<span class="w"> </span>codex<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="w"> </span>--task-definition<span class="w"> </span>codex:1<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="w"> </span>--desired-count<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="w"> </span>--launch-type<span class="w"> </span>FARGATE
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>
 <a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="c1"># Or Lambda for serverless</span>
 <a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>aws<span class="w"> </span>lambda<span class="w"> </span>create-function<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w">  </span>--function-name<span class="w"> </span>codex-predict<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w">  </span>--runtime<span class="w"> </span>python3.11<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w">  </span>--handler<span class="w"> </span>app.handler<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w">  </span>--code<span class="w"> </span><span class="nv">S3Bucket</span><span class="o">=</span>codex-builds,S3Key<span class="o">=</span>lambda.zip
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="w"> </span>--function-name<span class="w"> </span>codex-predict<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="w"> </span>--runtime<span class="w"> </span>python3.11<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="w"> </span>--handler<span class="w"> </span>app.handler<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="w"> </span>--code<span class="w"> </span><span class="nv">S3Bucket</span><span class="o">=</span>codex-builds,S3Key<span class="o">=</span>lambda.zip
 </code></pre></div></p>
 <p><strong>GCP Deployment</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>gcloud<span class="w"> </span>run<span class="w"> </span>deploy<span class="w"> </span>codex<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span>--image<span class="w"> </span>gcr.io/project/codex:latest<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">  </span>--platform<span class="w"> </span>managed<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">  </span>--region<span class="w"> </span>us-central1<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span>--memory<span class="w"> </span>8Gi<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">  </span>--cpu<span class="w"> </span><span class="m">4</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w"> </span>--image<span class="w"> </span>gcr.io/project/codex:latest<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w"> </span>--platform<span class="w"> </span>managed<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w"> </span>--region<span class="w"> </span>us-central1<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w"> </span>--memory<span class="w"> </span>8Gi<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w"> </span>--cpu<span class="w"> </span><span class="m">4</span>
 </code></pre></div></p>
 <p><strong>Azure Deployment</strong>:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>az<span class="w"> </span>containerapp<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span>--resource-group<span class="w"> </span>rg-codex<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">  </span>--name<span class="w"> </span>codex<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">  </span>--image<span class="w"> </span>mcr.microsoft.com/codex:latest<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span>--cpu<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">  </span>--memory<span class="w"> </span>8Gi
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w"> </span>--resource-group<span class="w"> </span>rg-codex<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w"> </span>--name<span class="w"> </span>codex<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w"> </span>--image<span class="w"> </span>mcr.microsoft.com/codex:latest<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w"> </span>--cpu<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w"> </span>--memory<span class="w"> </span>8Gi
 </code></pre></div></p>
 <hr/>
 <h2 id="storage-configuration">Storage Configuration<a class="headerlink" href="#storage-configuration" title="Permanent link">¶</a></h2>
 <h3 id="local-development_1">Local Development<a class="headerlink" href="#local-development_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nt">database</span><span class="p">:</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data/codex.db</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data/codex.db</span>
 <a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="nt">cache</span><span class="p">:</span>
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./cache/</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./cache/</span>
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a><span class="nt">storage</span><span class="p">:</span>
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./models/</span>
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./models/</span>
 </code></pre></div>
 <h3 id="dockerk8s">Docker/K8s<a class="headerlink" href="#dockerk8s" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nt">database</span><span class="p">:</span>
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres-service</span>
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres-service</span>
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
 <a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>
 <a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="nt">cache</span><span class="p">:</span>
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis-service</span>
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6379</span>
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis-service</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6379</span>
 <a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
 <a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="nt">storage</span><span class="p">:</span>
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3</span>
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w">  </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-models</span>
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w">  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1/</span>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3</span>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="w"> </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex-models</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="w"> </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1/</span>
 </code></pre></div>
 <h3 id="cloud">Cloud<a class="headerlink" href="#cloud" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nt">database</span><span class="p">:</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudsql-instance</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w">  </span><span class="nt">ssl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudsql-instance</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="w"> </span><span class="nt">ssl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>
 <a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="nt">cache</span><span class="p">:</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w">  </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticache.amazonaws.com</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="w"> </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">elasticache.amazonaws.com</span>
 <a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>
 <a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="nt">storage</span><span class="p">:</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w">  </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-models</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="w">  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1/</span>
-<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="w">  </span><span class="nt">encryption</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AES256</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">s3</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a><span class="w"> </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prod-models</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a><span class="w"> </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v0.2.1/</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="w"> </span><span class="nt">encryption</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AES256</span>
 </code></pre></div>
 <hr/>
 <h2 id="cicd-deployment-pipeline">CI/CD Deployment Pipeline<a class="headerlink" href="#cicd-deployment-pipeline" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a>1. Commit to git
-<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>   ↓
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>2. GitHub Actions trigger
-<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>   ├─ Build (docker build)
-<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>   ├─ Test (pytest)
-<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>   ├─ Scan (security checks)
-<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>   └─ Push image
-<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>   ↓
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a> Build (docker build)
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a> Test (pytest)
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a> Scan (security checks)
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a> Push image
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>3. Create release
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a>   ├─ Version tag (v0.2.1)
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>   ├─ Release notes
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a>   └─ GitHub release
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>   ↓
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a> Version tag (v0.2.1)
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a> Release notes
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a> GitHub release
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>4. Deploy to environments
-<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a>   ├─ Dev cluster (auto)
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>   ├─ Staging cluster (auto)
-<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>   └─ Production cluster (manual approval)
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>   ↓
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a> Dev cluster (auto)
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a> Staging cluster (auto)
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a> Production cluster (manual approval)
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a>
 <a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a>5. Post-deployment
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a>   ├─ Health checks
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>   ├─ Smoke tests
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a>   ├─ Metrics validation
-<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>   └─ Alert team if issues
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a> Health checks
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a> Smoke tests
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a> Metrics validation
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a> Alert team if issues
 </code></pre></div>
 <hr/>
 <h2 id="environment-comparison">Environment Comparison<a class="headerlink" href="#environment-comparison" title="Permanent link">¶</a></h2>
@@ -2832,6 +2843,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

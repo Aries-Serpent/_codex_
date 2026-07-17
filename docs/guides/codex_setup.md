@@ -1,6 +1,6 @@
 # Status: Codex Setup Integration
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 The `cli/setup.py` module (`codex-setup` console script) has multi-phase repository augmentation: inventory generation, scaffolding (ingestion module, tests, docs), CI unification, security tooling (Bandit + detect-secrets), CLI refactor scaffold, SQLite handling hardening, and documentation updates.
 

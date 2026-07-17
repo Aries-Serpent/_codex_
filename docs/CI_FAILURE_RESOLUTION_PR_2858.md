@@ -1,6 +1,6 @@
 # CI Failure Resolution Report - PR #2858
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -81,7 +81,7 @@ pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
 - Prevents libpython linking
 - Makes module compatible with manylinux/musllinux standards
 
-**Documentation**: [PyO3 Extension Module Feature](https://pyo3.rs/v0.2.1/building-and-distribution.html#the-extension-module-feature)
+**Documentation**: [PyO3 Extension Module Feature](https://pyo3.rs/v0.2.0/building-and-distribution.html#the-extension-module-feature)
 
 **Commit**: a3fc3df
 
@@ -340,7 +340,7 @@ black --check scripts/
 2. `docs/CI_FAILURE_RESOLUTION_PR_2858.md` - This document
 
 ### External References
-- [PyO3 Building and Distribution](https://pyo3.rs/v0.2.1/building-and-distribution.html)
+- [PyO3 Building and Distribution](https://pyo3.rs/v0.2.0/building-and-distribution.html)
 - [GitHub Actions Permissions](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)
 - [Bash Here Documents](https://tldp.org/LDP/abs/html/here-docs.html)
 - [Cargo.toml Features](https://doc.rust-lang.org/cargo/reference/features.html)

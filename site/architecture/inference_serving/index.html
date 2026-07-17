@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/architecture/inference_serving/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Inference Serving Architecture - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2555,7 +2555,7 @@
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
 <blockquote>
-<p><strong>Version</strong>: 2.0.0<br/>
+<p><strong>Version</strong>: 2.0.0
 <strong>Last Updated</strong>: 2026-06-22</p>
 </blockquote>
 <hr/>
@@ -2564,218 +2564,256 @@
 <hr/>
 <h2 id="system-architecture">System Architecture<a class="headerlink" href="#system-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Web Client, API Client'}}%%
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph TB
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    subgraph "Client Layer"
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>        C1[Web Client]
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        C2[API Client]
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        C3[Mobile App]
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    end
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    subgraph "Load Balancer"
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>        LB[Nginx / ALB]
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    end
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    subgraph "Inference Cluster"
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>        subgraph "Blue Deployment"
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>            B1[Inference Server v1.0]
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>            B2[Inference Server v1.0]
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>        end
-<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
-<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>        subgraph "Green Deployment"
-<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>            G1[Inference Server v1.1]
-<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>            G2[Inference Server v1.1]
-<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>        end
-<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
-<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>        TS[Traffic Splitter]
-<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>    end
-<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>    subgraph "Model Storage"
-<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>        MS[(Model Registry)]
-<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        MC[Model Cache]
-<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>    end
-<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>
-<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>    subgraph "Monitoring"
-<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>        PM[Prometheus]
-<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        GF[Grafana]
-<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>        AL[Alertmanager]
-<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>    end
-<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>
-<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>    C1 --&gt; LB
-<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    C2 --&gt; LB
-<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>    C3 --&gt; LB
-<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>
-<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>    LB --&gt; TS
-<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    TS -.80%.-&gt; B1
-<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>    TS -.80%.-&gt; B2
-<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    TS -.20%.-&gt; G1
-<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    TS -.20%.-&gt; G2
-<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    B1 --&gt; MS
-<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    B2 --&gt; MS
-<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>    G1 --&gt; MS
-<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    G2 --&gt; MS
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>graph TB
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    subgraph "Client Layer"
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>        C1[Web Client]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>        C2[API Client]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>        C3[Mobile App]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    end
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    subgraph "Load Balancer"
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>        LB[Nginx / ALB]
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>    end
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    subgraph "Inference Cluster"
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>        subgraph "Blue Deployment"
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>            B1[Inference Server v1.0]
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>            B2[Inference Server v1.0]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>        end
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>        subgraph "Green Deployment"
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>            G1[Inference Server v1.1]
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>            G2[Inference Server v1.1]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>        end
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>        TS[Traffic Splitter]
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>    end
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>    subgraph "Model Storage"
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>        MS[(Model Registry)]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a>        MC[Model Cache]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>    end
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>    subgraph "Monitoring"
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>        PM[Prometheus]
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a>        GF[Grafana]
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a>        AL[Alertmanager]
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a>    end
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a>    C1 --&gt; LB
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a>    C2 --&gt; LB
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a>
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>    C3 --&gt; LB
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a>    LB --&gt; TS
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a>    TS -.80%.-&gt; B1
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a>    TS -.80%.-&gt; B2
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a>    TS -.20%.-&gt; G1
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>    TS -.20%.-&gt; G2
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>    B1 --&gt; MS
 <a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
-<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    B1 --&gt; MC
-<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>    B2 --&gt; MC
-<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    G1 --&gt; MC
-<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>    G2 --&gt; MC
-<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>
-<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>    B1 --&gt; PM
-<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    B2 --&gt; PM
-<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>    G1 --&gt; PM
-<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    G2 --&gt; PM
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>    B2 --&gt; MS
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>    G1 --&gt; MS
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>    G2 --&gt; MS
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>
+<a href="#__codelineno-0-59" id="__codelineno-0-59" name="__codelineno-0-59"></a>    B1 --&gt; MC
+<a href="#__codelineno-0-60" id="__codelineno-0-60" name="__codelineno-0-60"></a>
+<a href="#__codelineno-0-61" id="__codelineno-0-61" name="__codelineno-0-61"></a>    B2 --&gt; MC
 <a href="#__codelineno-0-62" id="__codelineno-0-62" name="__codelineno-0-62"></a>
-<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    PM --&gt; GF
-<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>    PM --&gt; AL
+<a href="#__codelineno-0-63" id="__codelineno-0-63" name="__codelineno-0-63"></a>    G1 --&gt; MC
+<a href="#__codelineno-0-64" id="__codelineno-0-64" name="__codelineno-0-64"></a>
+<a href="#__codelineno-0-65" id="__codelineno-0-65" name="__codelineno-0-65"></a>    G2 --&gt; MC
+<a href="#__codelineno-0-66" id="__codelineno-0-66" name="__codelineno-0-66"></a>
+<a href="#__codelineno-0-67" id="__codelineno-0-67" name="__codelineno-0-67"></a>    B1 --&gt; PM
+<a href="#__codelineno-0-68" id="__codelineno-0-68" name="__codelineno-0-68"></a>
+<a href="#__codelineno-0-69" id="__codelineno-0-69" name="__codelineno-0-69"></a>    B2 --&gt; PM
+<a href="#__codelineno-0-70" id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a href="#__codelineno-0-71" id="__codelineno-0-71" name="__codelineno-0-71"></a>    G1 --&gt; PM
+<a href="#__codelineno-0-72" id="__codelineno-0-72" name="__codelineno-0-72"></a>
+<a href="#__codelineno-0-73" id="__codelineno-0-73" name="__codelineno-0-73"></a>    G2 --&gt; PM
+<a href="#__codelineno-0-74" id="__codelineno-0-74" name="__codelineno-0-74"></a>
+<a href="#__codelineno-0-75" id="__codelineno-0-75" name="__codelineno-0-75"></a>    PM --&gt; GF
+<a href="#__codelineno-0-76" id="__codelineno-0-76" name="__codelineno-0-76"></a>
+<a href="#__codelineno-0-77" id="__codelineno-0-77" name="__codelineno-0-77"></a>    PM --&gt; AL
 </code></pre></div>
 <hr/>
 <h2 id="request-flow">Request Flow<a class="headerlink" href="#request-flow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: &gt;&gt;Client: 401 Unauthorized
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>   '}}%%
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>sequenceDiagram
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    participant Client
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    participant Auth
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    participant RateLimit
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    participant CircuitBreaker
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    participant ModelLoader
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    participant Model
-<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    participant Metrics
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>    Client-&gt;&gt;Auth: POST /infer + API Key
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    Auth-&gt;&gt;Auth: Validate API Key
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>    alt Invalid API Key
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>        Auth--&gt;&gt;Client: 401 Unauthorized
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>    end
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    Auth-&gt;&gt;RateLimit: Check Rate Limit
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    RateLimit-&gt;&gt;RateLimit: Sliding Window Check
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    alt Rate Limit Exceeded
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>        RateLimit--&gt;&gt;Client: 429 Too Many Requests
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    end
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>   '}}%%
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>sequenceDiagram
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>    participant Client
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    participant Auth
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>    participant RateLimit
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>    participant CircuitBreaker
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    participant ModelLoader
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>    participant Model
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    participant Metrics
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>    Client-&gt;&gt;Auth: POST /infer + API Key
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    Auth-&gt;&gt;Auth: Validate API Key
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    alt Invalid API Key
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>        Auth--&gt;&gt;Client: 401 Unauthorized
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>    end
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    Auth-&gt;&gt;RateLimit: Check Rate Limit
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    RateLimit-&gt;&gt;RateLimit: Sliding Window Check
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    alt Rate Limit Exceeded
 <a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    RateLimit-&gt;&gt;CircuitBreaker: Check Circuit State
-<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>
-<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>    alt Circuit Open
-<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>        CircuitBreaker--&gt;&gt;Client: 503 Service Unavailable
-<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>    end
-<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>
-<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>    alt Circuit Half-Open
-<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>        CircuitBreaker-&gt;&gt;CircuitBreaker: Health Probe
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>        RateLimit--&gt;&gt;Client: 429 Too Many Requests
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    end
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>    RateLimit-&gt;&gt;CircuitBreaker: Check Circuit State
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>    alt Circuit Open
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>        CircuitBreaker--&gt;&gt;Client: 503 Service Unavailable
 <a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>    end
 <a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>
-<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    CircuitBreaker-&gt;&gt;ModelLoader: Load Model
-<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>
-<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>    alt Model Not in Cache
-<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>        ModelLoader-&gt;&gt;ModelLoader: Load from Registry
-<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>        ModelLoader-&gt;&gt;ModelLoader: Add to LRU Cache
-<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>    end
-<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>
-<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>    ModelLoader-&gt;&gt;Model: predict(input)
-<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>    Model--&gt;&gt;ModelLoader: prediction
-<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a>
-<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>    alt Prediction Success
-<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>        ModelLoader-&gt;&gt;CircuitBreaker: Record Success
-<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>        ModelLoader-&gt;&gt;Metrics: Update Metrics
-<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a>        ModelLoader--&gt;&gt;Client: 200 OK + prediction
-<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a>    end
-<a href="#__codelineno-1-51" id="__codelineno-1-51" name="__codelineno-1-51"></a>
-<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a>    alt Prediction Failure
-<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a>        ModelLoader-&gt;&gt;CircuitBreaker: Record Failure
-<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a>        ModelLoader-&gt;&gt;Metrics: Update Error Metrics
-<a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a>        ModelLoader--&gt;&gt;Client: 500 Internal Error
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>    alt Circuit Half-Open
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>        CircuitBreaker-&gt;&gt;CircuitBreaker: Health Probe
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>    end
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>    CircuitBreaker-&gt;&gt;ModelLoader: Load Model
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>
+<a href="#__codelineno-1-42" id="__codelineno-1-42" name="__codelineno-1-42"></a>    alt Model Not in Cache
+<a href="#__codelineno-1-43" id="__codelineno-1-43" name="__codelineno-1-43"></a>        ModelLoader-&gt;&gt;ModelLoader: Load from Registry
+<a href="#__codelineno-1-44" id="__codelineno-1-44" name="__codelineno-1-44"></a>        ModelLoader-&gt;&gt;ModelLoader: Add to LRU Cache
+<a href="#__codelineno-1-45" id="__codelineno-1-45" name="__codelineno-1-45"></a>    end
+<a href="#__codelineno-1-46" id="__codelineno-1-46" name="__codelineno-1-46"></a>
+<a href="#__codelineno-1-47" id="__codelineno-1-47" name="__codelineno-1-47"></a>    ModelLoader-&gt;&gt;Model: predict(input)
+<a href="#__codelineno-1-48" id="__codelineno-1-48" name="__codelineno-1-48"></a>
+<a href="#__codelineno-1-49" id="__codelineno-1-49" name="__codelineno-1-49"></a>    Model--&gt;&gt;ModelLoader: prediction
+<a href="#__codelineno-1-50" id="__codelineno-1-50" name="__codelineno-1-50"></a>
+<a href="#__codelineno-1-51" id="__codelineno-1-51" name="__codelineno-1-51"></a>    alt Prediction Success
+<a href="#__codelineno-1-52" id="__codelineno-1-52" name="__codelineno-1-52"></a>        ModelLoader-&gt;&gt;CircuitBreaker: Record Success
+<a href="#__codelineno-1-53" id="__codelineno-1-53" name="__codelineno-1-53"></a>        ModelLoader-&gt;&gt;Metrics: Update Metrics
+<a href="#__codelineno-1-54" id="__codelineno-1-54" name="__codelineno-1-54"></a>
+<a href="#__codelineno-1-55" id="__codelineno-1-55" name="__codelineno-1-55"></a>        ModelLoader--&gt;&gt;Client: 200 OK + prediction
 <a href="#__codelineno-1-56" id="__codelineno-1-56" name="__codelineno-1-56"></a>    end
+<a href="#__codelineno-1-57" id="__codelineno-1-57" name="__codelineno-1-57"></a>
+<a href="#__codelineno-1-58" id="__codelineno-1-58" name="__codelineno-1-58"></a>    alt Prediction Failure
+<a href="#__codelineno-1-59" id="__codelineno-1-59" name="__codelineno-1-59"></a>        ModelLoader-&gt;&gt;CircuitBreaker: Record Failure
+<a href="#__codelineno-1-60" id="__codelineno-1-60" name="__codelineno-1-60"></a>        ModelLoader-&gt;&gt;Metrics: Update Error Metrics
+<a href="#__codelineno-1-61" id="__codelineno-1-61" name="__codelineno-1-61"></a>
+<a href="#__codelineno-1-62" id="__codelineno-1-62" name="__codelineno-1-62"></a>        ModelLoader--&gt;&gt;Client: 500 Internal Error
+<a href="#__codelineno-1-63" id="__codelineno-1-63" name="__codelineno-1-63"></a>    end
 </code></pre></div>
 <hr/>
 <h2 id="circuit-breaker-state-machine">Circuit Breaker State Machine<a class="headerlink" href="#circuit-breaker-state-machine" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>%%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
-<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>stateDiagram-v2
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    [*] --&gt; Closed
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>stateDiagram-v2
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
-<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    Closed --&gt; Open: failures &gt;= threshold
-<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    Open --&gt; HalfOpen: after backoff delay
-<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    HalfOpen --&gt; Closed: health probe success
-<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    HalfOpen --&gt; Open: health probe failure
-<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
-<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>    note right of Closed
-<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>        Normal operation
-<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>        All requests pass through
-<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    end note
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    [*] --&gt; Closed
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>    Closed --&gt; Open: failures &gt;= threshold
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    Open --&gt; HalfOpen: after backoff delay
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    HalfOpen --&gt; Closed: health probe success
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>    HalfOpen --&gt; Open: health probe failure
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
-<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    note right of Open
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>        Failing fast
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>        No requests to backend
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>        Exponential backoff: 1s, 2s, 4s, ...
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    end note
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>    note right of HalfOpen
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>        Testing recovery
-<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>        Limited requests
-<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>        Health probe validates
-<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>    end note
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>    note right of Closed
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>        Normal operation
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>        All requests pass through
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>    end note
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    note right of Open
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>        Failing fast
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>        No requests to backend
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>        Exponential backoff: 1s, 2s, 4s, ...
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>    end note
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>    note right of HalfOpen
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a>        Testing recovery
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>        Limited requests
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>        Health probe validates
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>    end note
 </code></pre></div>
 <hr/>
 <h2 id="model-loading-flow">Model Loading Flow<a class="headerlink" href="#model-loading-flow" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Request arrives, Cache Hit'}}%%
-<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>flowchart TD
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>    Start([Request arrives]) --&gt; CheckCache{Model in cache?}
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>flowchart TD
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
-<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    CheckCache --&gt;|Yes| CacheHit[Cache Hit]
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    CheckCache --&gt;|No| CacheMiss[Cache Miss]
-<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
-<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    CacheHit --&gt; Return[Return cached model]
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    CacheMiss --&gt; CheckRegistry{Model in registry?}
-<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    CheckRegistry --&gt;|Yes| Download[Download model]
-<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    CheckRegistry --&gt;|No| Error[Return 404]
-<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    Download --&gt; Validate[Validate checksum]
-<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    Validate --&gt; Load[Load into memory]
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    Load --&gt; Warmup[Run warmup predictions]
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    Warmup --&gt; AddCache[Add to LRU cache]
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>    Start([Request arrives]) --&gt; CheckCache{Model in cache?}
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>    CheckCache --&gt;|Yes| CacheHit[Cache Hit]
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    CheckCache --&gt;|No| CacheMiss[Cache Miss]
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>    CacheHit --&gt; Return[Return cached model]
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    CacheMiss --&gt; CheckRegistry{Model in registry?}
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>    CheckRegistry --&gt;|Yes| Download[Download model]
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    CheckRegistry --&gt;|No| Error[Return 404]
 <a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    AddCache --&gt; CheckSize{Cache full?}
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>    CheckSize --&gt;|Yes| Evict[Evict LRU model]
-<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    CheckSize --&gt;|No| Store[Store in cache]
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    Download --&gt; Validate[Validate checksum]
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>    Validate --&gt; Load[Load into memory]
 <a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>
-<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    Evict --&gt; Store
-<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    Store --&gt; Return
-<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>
-<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>    Return --&gt; End([Model ready])
-<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>    Error --&gt; End
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    Load --&gt; Warmup[Run warmup predictions]
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>    Warmup --&gt; AddCache[Add to LRU cache]
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>    AddCache --&gt; CheckSize{Cache full?}
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>    CheckSize --&gt;|Yes| Evict[Evict LRU model]
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    CheckSize --&gt;|No| Store[Store in cache]
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    Evict --&gt; Store
+<a href="#__codelineno-3-34" id="__codelineno-3-34" name="__codelineno-3-34"></a>
+<a href="#__codelineno-3-35" id="__codelineno-3-35" name="__codelineno-3-35"></a>    Store --&gt; Return
+<a href="#__codelineno-3-36" id="__codelineno-3-36" name="__codelineno-3-36"></a>
+<a href="#__codelineno-3-37" id="__codelineno-3-37" name="__codelineno-3-37"></a>    Return --&gt; End([Model ready])
+<a href="#__codelineno-3-38" id="__codelineno-3-38" name="__codelineno-3-38"></a>
+<a href="#__codelineno-3-39" id="__codelineno-3-39" name="__codelineno-3-39"></a>    Error --&gt; End
 </code></pre></div>
 <hr/>
 <h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">¶</a></h2>
 <h3 id="blue-green-deployment">Blue-Green Deployment<a class="headerlink" href="#blue-green-deployment" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Blue v1.0'}}%%
-<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>graph LR
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    subgraph "Initial State (All traffic to Blue)"
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>        LB1[Load Balancer] -.100%.-&gt; Blue1[Blue v1.0]
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        LB1 -.0%.-&gt; Green1[Green v1.1]
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>    end
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    subgraph "Gradual Rollout (20% to Green)"
-<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>        LB2[Load Balancer] -.80%.-&gt; Blue2[Blue v1.0]
-<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        LB2 -.20%.-&gt; Green2[Green v1.1]
-<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    end
-<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
-<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    subgraph "Full Rollout (100% to Green)"
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>        LB3[Load Balancer] -.0%.-&gt; Blue3[Blue v1.0]
-<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        LB3 -.100%.-&gt; Green3[Green v1.1]
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    end
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    subgraph "Promotion (Green becomes Blue)"
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>        LB4[Load Balancer] -.100%.-&gt; Blue4[Blue v1.1]
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    end
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>
-<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    style Blue1 fill:#4A90E2
-<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>    style Blue2 fill:#4A90E2
-<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    style Blue3 fill:#4A90E2
-<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    style Blue4 fill:#4A90E2
-<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    style Green1 fill:#7ED321
-<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    style Green2 fill:#7ED321
-<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>    style Green3 fill:#7ED321
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>graph LR
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    subgraph "Initial State (All traffic to Blue)"
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        LB1[Load Balancer] -.100%.-&gt; Blue1[Blue v1.0]
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        LB1 -.0%.-&gt; Green1[Green v1.1]
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    end
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    subgraph "Gradual Rollout (20% to Green)"
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        LB2[Load Balancer] -.80%.-&gt; Blue2[Blue v1.0]
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        LB2 -.20%.-&gt; Green2[Green v1.1]
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>    end
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    subgraph "Full Rollout (100% to Green)"
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>        LB3[Load Balancer] -.0%.-&gt; Blue3[Blue v1.0]
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        LB3 -.100%.-&gt; Green3[Green v1.1]
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    end
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>    subgraph "Promotion (Green becomes Blue)"
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>        LB4[Load Balancer] -.100%.-&gt; Blue4[Blue v1.1]
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    end
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
+<a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>    style Blue1 fill:#4A90E2
+<a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>    style Blue2 fill:#4A90E2
+<a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>    style Blue3 fill:#4A90E2
+<a href="#__codelineno-4-26" id="__codelineno-4-26" name="__codelineno-4-26"></a>    style Blue4 fill:#4A90E2
+<a href="#__codelineno-4-27" id="__codelineno-4-27" name="__codelineno-4-27"></a>    style Green1 fill:#7ED321
+<a href="#__codelineno-4-28" id="__codelineno-4-28" name="__codelineno-4-28"></a>    style Green2 fill:#7ED321
+<a href="#__codelineno-4-29" id="__codelineno-4-29" name="__codelineno-4-29"></a>    style Green3 fill:#7ED321
 </code></pre></div>
 <h3 id="rollback-scenario">Rollback Scenario<a class="headerlink" href="#rollback-scenario" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>%%{init: {'accessibility': {'title': 'Sequence Diagram: &gt;&gt;Monitor: Error Rate: 8%
@@ -2790,48 +2828,64 @@
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    Note over Splitter: Rollout in progress (60% Green)
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
 <a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    Monitor-&gt;&gt;Green: Health Check
-<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>    Green--&gt;&gt;Monitor: Error Rate: 8%
-<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>
-<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>    Monitor-&gt;&gt;Monitor: Error rate &gt; 5% threshold
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    Monitor-&gt;&gt;Splitter: Trigger Rollback
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>    Splitter-&gt;&gt;Splitter: Set weights: Blue=100%, Green=0%
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>    Note over Splitter: All traffic to Blue
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>
-<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>    Splitter-&gt;&gt;Blue: Route all requests
-<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>    Blue--&gt;&gt;Splitter: Healthy responses
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>    Green--&gt;&gt;Monitor: Error Rate: 8%
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>    Monitor-&gt;&gt;Monitor: Error rate &gt; 5% threshold
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>    Monitor-&gt;&gt;Splitter: Trigger Rollback
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>    Splitter-&gt;&gt;Splitter: Set weights: Blue=100%, Green=0%
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>    Note over Splitter: All traffic to Blue
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>    Splitter-&gt;&gt;Blue: Route all requests
 <a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>
-<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>    Note over Green: Green deployment retired
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a>    Blue--&gt;&gt;Splitter: Healthy responses
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>    Note over Green: Green deployment retired
 </code></pre></div>
 <hr/>
 <h2 id="monitoring-architecture">Monitoring Architecture<a class="headerlink" href="#monitoring-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing Server 1, Prometheus'}}%%
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>graph TB
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    subgraph "Inference Servers"
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>        IS1[Server 1] --&gt;|/metrics| PM[Prometheus]
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>        IS2[Server 2] --&gt;|/metrics| PM
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        IS3[Server 3] --&gt;|/metrics| PM
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    end
-<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
-<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    subgraph "Monitoring Stack"
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>        PM --&gt;|scrape| PM
-<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>        PM --&gt;|query| GF[Grafana]
-<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>        PM --&gt;|alert| AL[Alertmanager]
-<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    end
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>graph TB
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    subgraph "Inference Servers"
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        IS1[Server 1] --&gt;|/metrics| PM[Prometheus]
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>        IS2[Server 2] --&gt;|/metrics| PM
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>        IS3[Server 3] --&gt;|/metrics| PM
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>    end
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>    subgraph "Monitoring Stack"
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>
-<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>    subgraph "Alerting"
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>        AL --&gt;|email| EM[Email]
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>        AL --&gt;|slack| SL[Slack]
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>        AL --&gt;|pagerduty| PD[PagerDuty]
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>    end
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>    subgraph "Visualization"
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>        GF --&gt;|dashboard| DB1[Request Dashboard]
-<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>        GF --&gt;|dashboard| DB2[Error Dashboard]
-<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>        GF --&gt;|dashboard| DB3[Latency Dashboard]
-<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>        GF --&gt;|dashboard| DB4[Resource Dashboard]
-<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>    end
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>        PM --&gt;|scrape| PM
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>        PM --&gt;|query| GF[Grafana]
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>        PM --&gt;|alert| AL[Alertmanager]
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>    end
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>    subgraph "Alerting"
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>        AL --&gt;|email| EM[Email]
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>        AL --&gt;|slack| SL[Slack]
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>        AL --&gt;|pagerduty| PD[PagerDuty]
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>    end
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>    subgraph "Visualization"
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>        GF --&gt;|dashboard| DB1[Request Dashboard]
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a>
+<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a>        GF --&gt;|dashboard| DB2[Error Dashboard]
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a>
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a>        GF --&gt;|dashboard| DB3[Latency Dashboard]
+<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a>
+<a href="#__codelineno-6-39" id="__codelineno-6-39" name="__codelineno-6-39"></a>        GF --&gt;|dashboard| DB4[Resource Dashboard]
+<a href="#__codelineno-6-40" id="__codelineno-6-40" name="__codelineno-6-40"></a>    end
 </code></pre></div>
 <hr/>
 <h2 id="component-details">Component Details<a class="headerlink" href="#component-details" title="Permanent link">¶</a></h2>
@@ -2930,7 +2984,7 @@
 <li><strong>Deployment manager</strong> initiates blue-green rollout</li>
 <li><strong>Green deployment</strong> loads new model</li>
 <li><strong>Health checks</strong> validate green</li>
-<li><strong>Traffic</strong> gradually shifts to green (0% → 100%)</li>
+<li><strong>Traffic</strong> gradually shifts to green (0% 100%)</li>
 <li><strong>Monitoring</strong> tracks error rates</li>
 <li><strong>Rollback</strong> if error rate exceeds threshold</li>
 <li><strong>Promotion</strong> if rollout successful</li>
@@ -2939,18 +2993,28 @@
 <h2 id="scaling-strategy">Scaling Strategy<a class="headerlink" href="#scaling-strategy" title="Permanent link">¶</a></h2>
 <h3 id="horizontal-scaling">Horizontal Scaling<a class="headerlink" href="#horizontal-scaling" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Load Balancer, Server 1'}}%%
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>graph LR
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    LB[Load Balancer] --&gt; S1[Server 1]
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    LB --&gt; S2[Server 2]
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    LB --&gt; S3[Server 3]
-<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>    LB --&gt; S4[Server 4]
-<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    LB --&gt; Sn[Server N]
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>graph LR
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>    LB[Load Balancer] --&gt; S1[Server 1]
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>    LB --&gt; S2[Server 2]
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
-<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    S1 --&gt; MR[(Model Registry)]
-<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>    S2 --&gt; MR
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    S3 --&gt; MR
-<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    S4 --&gt; MR
-<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    Sn --&gt; MR
+<a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    LB --&gt; S3[Server 3]
+<a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>    LB --&gt; S4[Server 4]
+<a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>
+<a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>    LB --&gt; Sn[Server N]
+<a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>
+<a href="#__codelineno-10-15" id="__codelineno-10-15" name="__codelineno-10-15"></a>    S1 --&gt; MR[(Model Registry)]
+<a href="#__codelineno-10-16" id="__codelineno-10-16" name="__codelineno-10-16"></a>
+<a href="#__codelineno-10-17" id="__codelineno-10-17" name="__codelineno-10-17"></a>    S2 --&gt; MR
+<a href="#__codelineno-10-18" id="__codelineno-10-18" name="__codelineno-10-18"></a>
+<a href="#__codelineno-10-19" id="__codelineno-10-19" name="__codelineno-10-19"></a>    S3 --&gt; MR
+<a href="#__codelineno-10-20" id="__codelineno-10-20" name="__codelineno-10-20"></a>
+<a href="#__codelineno-10-21" id="__codelineno-10-21" name="__codelineno-10-21"></a>    S4 --&gt; MR
+<a href="#__codelineno-10-22" id="__codelineno-10-22" name="__codelineno-10-22"></a>
+<a href="#__codelineno-10-23" id="__codelineno-10-23" name="__codelineno-10-23"></a>    Sn --&gt; MR
 </code></pre></div>
 <p><strong>Scaling Rules:</strong>
 - Add replica when CPU &gt; 70%
@@ -2969,21 +3033,27 @@
 <hr/>
 <h2 id="security-architecture">Security Architecture<a class="headerlink" href="#security-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>%%{init: {'accessibility': {'title': 'Diagram showing TLS Termination, Authentication'}}%%
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>graph TB
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>    subgraph "Security Layers"
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>        TLS[TLS Termination]
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        Auth[Authentication]
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        RateLimit[Rate Limiting]
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        Validation[Input Validation]
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        Isolation[Process Isolation]
-<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>    end
-<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>
-<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>    Client --&gt; TLS
-<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>    TLS --&gt; Auth
-<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>    Auth --&gt; RateLimit
-<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    RateLimit --&gt; Validation
-<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>    Validation --&gt; Isolation
-<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    Isolation --&gt; Model[Model Execution]
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>graph TB
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>    subgraph "Security Layers"
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>        TLS[TLS Termination]
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>        Auth[Authentication]
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>        RateLimit[Rate Limiting]
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>        Validation[Input Validation]
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>        Isolation[Process Isolation]
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>    end
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>    Client --&gt; TLS
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>    TLS --&gt; Auth
+<a href="#__codelineno-11-15" id="__codelineno-11-15" name="__codelineno-11-15"></a>
+<a href="#__codelineno-11-16" id="__codelineno-11-16" name="__codelineno-11-16"></a>    Auth --&gt; RateLimit
+<a href="#__codelineno-11-17" id="__codelineno-11-17" name="__codelineno-11-17"></a>
+<a href="#__codelineno-11-18" id="__codelineno-11-18" name="__codelineno-11-18"></a>    RateLimit --&gt; Validation
+<a href="#__codelineno-11-19" id="__codelineno-11-19" name="__codelineno-11-19"></a>
+<a href="#__codelineno-11-20" id="__codelineno-11-20" name="__codelineno-11-20"></a>    Validation --&gt; Isolation
+<a href="#__codelineno-11-21" id="__codelineno-11-21" name="__codelineno-11-21"></a>
+<a href="#__codelineno-11-22" id="__codelineno-11-22" name="__codelineno-11-22"></a>    Isolation --&gt; Model[Model Execution]
 </code></pre></div>
 <p><strong>Security Controls:</strong>
 1. <strong>TLS</strong>: All traffic encrypted
@@ -3153,6 +3223,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Variable Visibility Audit (Pass 2) + Secrets Groundwork (Pass 3)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Repository:** `Aries-Serpent/_codex_`  
 **Date:2026-07-13

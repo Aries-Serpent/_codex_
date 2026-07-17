@@ -1,6 +1,6 @@
 # Production Readiness Checklist — _codex_ Repository
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-06-22 (PR #2390)
 **Status**: IN PROGRESS (40% Complete)
@@ -77,7 +77,7 @@
 - [ ] Rollback procedures (tested)
 
 ### Status Reports
-- [x] v0.2.1 Status Report
+- [x] v0.2.0 Status Report
 - [x] Wave summaries (partial)
 - [ ] **Final production readiness report**
 - [ ] Metrics dashboard or visualization
@@ -152,7 +152,7 @@
 
 ## Remaining Work (Priority Order)
 
-### Phase 1: Immediate (v0.2.1)
+### Phase 1: Immediate (v0.2.0)
 1. **Targeted Import Refactoring** (~10-15 files)
  - scripts/train.py
  - cli/task_sequence.py
@@ -170,13 +170,13 @@
  - SHA comparison
  - Evidence attachment
 
-### Phase 2: Documentation (v0.2.1)
+### Phase 2: Documentation (v0.2.0)
 1. Update Convergence_Runbook.md with reviewer checklist
 2. Finalize Usage_Guide.md with all workflows
 3. Create production deployment guide
 4. Document monitoring and alerts
 
-### Phase 3: Polish (v0.2.1)
+### Phase 3: Polish (v0.2.0)
 1. Trend visualization script
 2. Automated reporting
 3. Dashboard (optional)
@@ -229,10 +229,10 @@
 **In Progress**: Import refactoring, validation execution
 **Pending**: Final polish, monitoring activation
 
-**Target Completion**: v0.2.1 (estimated 3-5 iterations)
+**Target Completion**: v0.2.0 (estimated 3-5 iterations)
 
 ---
 
 **Last Validated**: 2025-12-05 (commit e902006)
-**Next Review**: After v0.2.1 completion
+**Next Review**: After v0.2.0 completion
 **Reviewer**: @mbaetiong

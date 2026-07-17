@@ -1,6 +1,6 @@
 # Workflow Race Condition & False-Positive Audit Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** S227 · 2026-03-29
 > **Scope:** 8 high-risk workflows identified from [Issue #3779](https://github.com/Aries-Serpent/_codex_/issues/3779)

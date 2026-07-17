@@ -1,6 +1,6 @@
 # Phase 12 WS4 - Documentation Freshness Audit Report
 
-**Version**: v0.2.1
+**Version**: v0.2.0
 
 **Campaign:** Phase 12 WS3 Documentation (D-tier autonomous)
 **Agent:** doc-freshness-checker

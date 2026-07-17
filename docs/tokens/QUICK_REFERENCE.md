@@ -1,6 +1,6 @@
 # Quick Reference: Token Configuration Status
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **SUPERSEDED** — This document is preserved for historical reference only.
 > **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**

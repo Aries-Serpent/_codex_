@@ -1,6 +1,6 @@
 # Repository Architecture Diagrams - Updated 2026-07-13
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated**: 2026-07-13
 **Context**: Phase 20 Complete + Phase 21 Planning

@@ -1,5 +1,5 @@
 # HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Repository**: Aries-Serpent/_codex_
 **PR**: #2639 / #2660

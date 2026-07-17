@@ -1,6 +1,6 @@
 # Phase 4: Faiss Embeddings Integration Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Date:** 2026-06-23T03:08:34.829399
 **Status:** COMPLETE - Ready for Production

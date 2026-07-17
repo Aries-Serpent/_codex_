@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/agent/COPILOT_TOKEN_GUIDE/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Copilot Coding Agent — Token &amp; Authentication Guide - Codex Docs v0.2.1</title>
-<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../architecture.md">
+<a class="md-tabs__link" href="../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../architecture.md">
+<a class="md-nav__link" href="../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2459,7 +2459,7 @@
 <strong>Version:</strong> v0.2.1</p>
 <p>**Last Updated: 2026-06-22</p>
 <blockquote>
-<p><strong>Status:</strong>  CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
+<p><strong>Status:</strong> CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
 <strong>Audience:</strong> Copilot Coding Agent sessions, CI/CD pipeline authors
 <strong>Related:</strong> <code>docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md</code>, <code>scripts/tools/variable_manager.py</code></p>
 </blockquote>
@@ -2484,14 +2484,14 @@ how it reaches your session, how to use it, and what it can and cannot do.</p>
 <tr>
 <td><strong>1</strong></td>
 <td><code>CODEX_MASTER_KEY</code></td>
-<td>Job <code>env:</code> → <code>secrets.CODEX_MASTER_KEY</code></td>
-<td>"🔑 Export Auth Tokens" step</td>
+<td>Job <code>env:</code> <code>secrets.CODEX_MASTER_KEY</code></td>
+<td>" Export Auth Tokens" step</td>
 <td>Full PAT (classic) — <code>repo</code> scope. Can read/write <strong>all</strong> GitHub API resources including <strong>variables</strong>, secrets, and settings. <strong>Required for variables API.</strong></td>
 </tr>
 <tr>
 <td><strong>2</strong></td>
 <td><code>CODEX_BACKUP_KEY</code></td>
-<td>Job <code>env:</code> → <code>secrets.CODEX_BACKUP_KEY</code></td>
+<td>Job <code>env:</code> <code>secrets.CODEX_BACKUP_KEY</code></td>
 <td>same step</td>
 <td>Fallback PAT — same capability as above, used when master key is absent.</td>
 </tr>
@@ -2514,33 +2514,33 @@ how it reaches your session, how to use it, and what it can and cannot do.</p>
 <blockquote>
 <p><strong>Webhook operations also accept <code>CODEX_ADMIN_KEY</code></strong> (a fine-grained PAT with Webhooks:write)
 as the highest-priority auth source. <code>webhook_configurator.py</code> resolves tokens in the order:
-<code>CODEX_ADMIN_KEY</code> → <code>CODEX_MASTER_KEY</code>. <code>GITHUB_TOKEN</code> <strong>cannot</strong> manage webhooks.</p>
+<code>CODEX_ADMIN_KEY</code> <code>CODEX_MASTER_KEY</code>. <code>GITHUB_TOKEN</code> <strong>cannot</strong> manage webhooks.</p>
 </blockquote>
 <p>All four tokens are resolved automatically by <code>BrainClient._auth_header()</code> and
 <code>VariableManager._resolve_token()</code> — <strong>no manual header construction needed</strong>.</p>
 <hr/>
 <h2 id="how-tokens-reach-the-agent-session">How Tokens Reach the Agent Session<a class="headerlink" href="#how-tokens-reach-the-agent-session" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>copilot-setup-steps.yml
-<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>│
-<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>├── job env: block
-<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>│   ├── CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}   ← job-level only
-<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>│   └── CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}   ← job-level only
-<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>│
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>├── "🔑 Export Auth Tokens to Agent Environment" step
-<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>│   ├── echo "CODEX_MASTER_KEY=..."   &gt;&gt; $GITHUB_ENV   ← persists to agent
-<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>│   ├── echo "CODEX_BACKUP_KEY=..."   &gt;&gt; $GITHUB_ENV   ← persists to agent
-<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>│   └── echo "AGENT_GITHUB_TOKEN=..."  &gt;&gt; $GITHUB_ENV  ← persists to agent
-<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>│
-<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>├── "💻 Start CLI API Server" step
-<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>│   ├── export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"   ← forwarded to uvicorn
-<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>│   ├── export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
-<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>│   └── export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
-<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>│
-<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a>└── Copilot Agent process inherits GITHUB_ENV → all four tokens available
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a> job env: block
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a> CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }} job-level only
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a> CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }} job-level only
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a> " Export Auth Tokens to Agent Environment" step
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a> echo "CODEX_MASTER_KEY=..." &gt;&gt; $GITHUB_ENV persists to agent
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a> echo "CODEX_BACKUP_KEY=..." &gt;&gt; $GITHUB_ENV persists to agent
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a> echo "AGENT_GITHUB_TOKEN=..." &gt;&gt; $GITHUB_ENV persists to agent
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a> " Start CLI API Server" step
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a> export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}" forwarded to uvicorn
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a> export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a> export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a> Copilot Agent process inherits GITHUB_ENV all four tokens available
 </code></pre></div>
 <blockquote>
 <p><strong>Why two steps?</strong> Job-level <code>env:</code> values are available to setup steps but
-are <strong>not automatically added to <code>GITHUB_ENV</code></strong>. The "🔑 Export Auth Tokens"
+are <strong>not automatically added to <code>GITHUB_ENV</code></strong>. The " Export Auth Tokens"
 step bridges this gap by explicitly writing the values to the GITHUB_ENV file
 that the agent process reads.</p>
 </blockquote>
@@ -2663,14 +2663,14 @@ as a repo variable (not a secret) to override the placeholder URL without editin
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">codex.agents.brain_client</span> <span class="kn">import</span> <span class="n">BrainClient</span>
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="n">brain</span> <span class="o">=</span> <span class="n">BrainClient</span><span class="p">()</span>
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Auth is auto-injected from CODEX_MASTER_KEY → GITHUB_TOKEN priority chain</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Auth is auto-injected from CODEX_MASTER_KEY GITHUB_TOKEN priority chain</span>
 <a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="n">resp</span> <span class="o">=</span> <span class="n">brain</span><span class="o">.</span><span class="n">proxy_request</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span>
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">)</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a> <span class="s2">"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="2-variablemanager-repo-env-org-variables">2 — VariableManager (repo / env / org variables)<a class="headerlink" href="#2-variablemanager-repo-env-org-variables" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">scripts.tools.variable_manager</span> <span class="kn">import</span> <span class="n">VariableManager</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>
-<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">vm</span> <span class="o">=</span> <span class="n">VariableManager</span><span class="p">()</span>   <span class="c1"># auto-resolves best available token</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="n">vm</span> <span class="o">=</span> <span class="n">VariableManager</span><span class="p">()</span> <span class="c1"># auto-resolves best available token</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
 <a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Repo variables</span>
 <a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="n">vm</span><span class="o">.</span><span class="n">create_repo_var</span><span class="p">(</span><span class="s2">"Aries-Serpent"</span><span class="p">,</span> <span class="s2">"_codex_"</span><span class="p">,</span> <span class="s2">"COPILOT_TEST_VAR"</span><span class="p">,</span> <span class="s2">"hello_agent"</span><span class="p">)</span>
@@ -2684,7 +2684,7 @@ as a repo variable (not a secret) to override the placeholder URL without editin
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1"># Org variables</span>
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="n">vm</span><span class="o">.</span><span class="n">create_org_var</span><span class="p">(</span><span class="s2">"Aries-Serpent"</span><span class="p">,</span> <span class="s2">"COPILOT_ORG_VAR"</span><span class="p">,</span> <span class="s2">"val"</span><span class="p">,</span> <span class="n">visibility</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
 <a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="c1"># Live test (create → verify → update → verify → delete)</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a><span class="c1"># Live test (create verify update verify delete)</span>
 <a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a><span class="n">vm</span><span class="o">.</span><span class="n">run_live_test</span><span class="p">(</span><span class="s2">"Aries-Serpent"</span><span class="p">,</span> <span class="s2">"_codex_"</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="3-cli-bash-tool-shell-scripts">3 — CLI (bash tool / shell scripts)<a class="headerlink" href="#3-cli-bash-tool-shell-scripts" title="Permanent link">¶</a></h2>
@@ -2693,15 +2693,15 @@ as a repo variable (not a secret) to override the placeholder URL without editin
 <a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># Create a test variable</span>
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>python<span class="w"> </span>scripts/tools/variable_manager.py<span class="w"> </span>create<span class="w"> </span>repo<span class="w"> </span>Aries-Serpent<span class="w"> </span>_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">  </span>COPILOT_TEST_VAR<span class="w"> </span><span class="s2">"hello_from_agent"</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w"> </span>COPILOT_TEST_VAR<span class="w"> </span><span class="s2">"hello_from_agent"</span>
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="c1"># Update it</span>
 <a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>python<span class="w"> </span>scripts/tools/variable_manager.py<span class="w"> </span>update<span class="w"> </span>repo<span class="w"> </span>Aries-Serpent<span class="w"> </span>_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">  </span>COPILOT_TEST_VAR<span class="w"> </span><span class="s2">"updated_value"</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w"> </span>COPILOT_TEST_VAR<span class="w"> </span><span class="s2">"updated_value"</span>
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="c1"># Delete it</span>
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>python<span class="w"> </span>scripts/tools/variable_manager.py<span class="w"> </span>delete<span class="w"> </span>repo<span class="w"> </span>Aries-Serpent<span class="w"> </span>_codex_<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">  </span>COPILOT_TEST_VAR
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w"> </span>COPILOT_TEST_VAR
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="c1"># Full live test</span>
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>python<span class="w"> </span>scripts/tools/variable_manager.py<span class="w"> </span><span class="nb">test</span>
@@ -2715,24 +2715,24 @@ as a repo variable (not a secret) to override the placeholder URL without editin
 <h2 id="4-direct-curl-via-cli-api-server">4 — Direct curl via CLI API Server<a class="headerlink" href="#4-direct-curl-via-cli-api-server" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Auto-injects CODEX_MASTER_KEY (or GITHUB_TOKEN fallback) from server env</span>
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8765/api/request<span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
-<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
-<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="s1">    "method": "POST",</span>
-<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="s1">    "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",</span>
-<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="s1">    "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}</span>
-<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="s1">  }'</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="s1"> "method": "POST",</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="s1"> "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="s1"> "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="s1"> }'</span>
 </code></pre></div>
 <h2 id="5-check-which-token-is-active">5 — Check which token is active<a class="headerlink" href="#5-check-which-token-is-active" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
 <a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="s2">import os</span>
 <a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="s2">priority = ['CODEX_MASTER_KEY','CODEX_BACKUP_KEY','AGENT_GITHUB_TOKEN','GITHUB_TOKEN']</span>
 <a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="s2">for k in priority:</span>
-<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="s2">    v = os.environ.get(k, '')</span>
-<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="s2">    if v:</span>
-<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="s2">        print(f'Active token: {k} ({len(v)} chars)')</span>
-<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="s2">        break</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="s2"> v = os.environ.get(k, '')</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="s2"> if v:</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="s2"> print(f'Active token: {k} ({len(v)} chars)')</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="s2"> break</span>
 <a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="s2">else:</span>
-<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="s2">    print('️  No auth token found in environment')</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="s2"> print(' No auth token found in environment')</span>
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="s2">"</span>
 </code></pre></div>
 <hr/>
@@ -2745,12 +2745,12 @@ and the owner approves the workflow run, the delegation workflow:</p>
 <li>Updates <code>COGNITIVE_BRAIN_ALLOWED_ACTORS</code> with the delegated actors list</li>
 </ol>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">{</span>
-<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T04:44:23Z"</span><span class="p">,</span>
-<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1772700263</span><span class="p">,</span>
-<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">"issued_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"agent-auth-delegation"</span><span class="p">,</span>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nt">"run_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"22702507580"</span><span class="p">,</span>
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">  </span><span class="nt">"pr_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3497"</span><span class="p">,</span>
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="nt">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL."</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w"> </span><span class="nt">"issued_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-05T04:44:23Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1772700263</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w"> </span><span class="nt">"issued_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"agent-auth-delegation"</span><span class="p">,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w"> </span><span class="nt">"run_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"22702507580"</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w"> </span><span class="nt">"pr_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3497"</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w"> </span><span class="nt">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL."</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="p">}</span>
 </code></pre></div>
 <p>The delegation <strong>does not change which auth tokens are available</strong> — it changes
@@ -2766,40 +2766,40 @@ what the agent is <strong>authorised to do</strong> with those tokens (bypasses 
 <hr/>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="403-resource-not-accessible-by-integration"><code>403 Resource not accessible by integration</code><a class="headerlink" href="#403-resource-not-accessible-by-integration" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Token source    → GITHUB_TOKEN (no repo scope)
-<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Affected APIs   → secrets, org variables, some advanced settings
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Fix             → Use CODEX_MASTER_KEY (must be set as org secret)
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>Token source GITHUB_TOKEN (no repo scope)
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>Affected APIs secrets, org variables, some advanced settings
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>Fix Use CODEX_MASTER_KEY (must be set as org secret)
 </code></pre></div>
 <h3 id="401-bad-credentials"><code>401 Bad credentials</code><a class="headerlink" href="#401-bad-credentials" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Token source    → Token is expired or invalid
-<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Fix             → Re-trigger agent-auth-delegation workflow to refresh session
-<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>                  Or: rotate CODEX_MASTER_KEY org secret
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>Token source Token is expired or invalid
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>Fix Re-trigger agent-auth-delegation workflow to refresh session
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a> Or: rotate CODEX_MASTER_KEY org secret
 </code></pre></div>
 <h3 id="codex_master_key-not-in-agent-process-env"><code>CODEX_MASTER_KEY</code> not in agent process env<a class="headerlink" href="#codex_master_key-not-in-agent-process-env" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Symptom         → python3 -c "import os; print(os.environ.get('CODEX_MASTER_KEY','MISSING'))"
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>                  → MISSING
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>Cause           → "🔑 Export Auth Tokens" step was not executed or secret is empty
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Fix             → Verify secrets.CODEX_MASTER_KEY is set in org/repo secrets
-<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a>                  Check copilot-setup-steps.yml step "🔑 Export Auth Tokens to Agent Environment"
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>Symptom python3 -c "import os; print(os.environ.get('CODEX_MASTER_KEY','MISSING'))"
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> MISSING
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>Cause " Export Auth Tokens" step was not executed or secret is empty
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>Fix Verify secrets.CODEX_MASTER_KEY is set in org/repo secrets
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a> Check copilot-setup-steps.yml step " Export Auth Tokens to Agent Environment"
 </code></pre></div>
 <h3 id="cli-api-server-returns-401-for-github-api-calls">CLI API Server returns <code>401</code> for GitHub API calls<a class="headerlink" href="#cli-api-server-returns-401-for-github-api-calls" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Symptom         → POST /api/request → {"status_code": 401, ...}
-<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>Cause           → Server process doesn't have CODEX_MASTER_KEY in its env
-<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>                  (setup steps forwarded it to GITHUB_ENV but server started before that step)
-<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Fix             → Verify step order: "🔑 Export Auth Tokens" MUST run BEFORE
-<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>                  "💻 Start CLI API Server".
-<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>                  The server startup step also runs:
-<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>                    export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
-<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a>                  to explicitly forward the key to the uvicorn process.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>Symptom POST /api/request {"status_code": 401, ...}
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>Cause Server process doesn't have CODEX_MASTER_KEY in its env
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a> (setup steps forwarded it to GITHUB_ENV but server started before that step)
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a>Fix Verify step order: " Export Auth Tokens" MUST run BEFORE
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a> " Start CLI API Server".
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a> The server startup step also runs:
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a> export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a> to explicitly forward the key to the uvicorn process.
 </code></pre></div>
 <h3 id="x-oauth-scopes-empty-scopes-on-github_token"><code>X-OAuth-Scopes:</code> (empty scopes on GITHUB_TOKEN)<a class="headerlink" href="#x-oauth-scopes-empty-scopes-on-github_token" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Symptom         → curl -sI -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/ |
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>                  grep X-OAuth-Scopes
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>                  → X-OAuth-Scopes:
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Explanation     → GITHUB_TOKEN is a GitHub Apps installation token, NOT a classic OAuth token.
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>                  It has no "scopes" — its permissions come from the workflow permissions: block.
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>                  This is NORMAL. The token is valid; empty scopes ≠ no permissions.
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>Fix             → Ensure workflow has `actions: write` in permissions: block.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a>Symptom curl -sI -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/ |
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> grep X-OAuth-Scopes
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> X-OAuth-Scopes:
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>Explanation GITHUB_TOKEN is a GitHub Apps installation token, NOT a classic OAuth token.
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> It has no "scopes" — its permissions come from the workflow permissions: block.
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> This is NORMAL. The token is valid; empty scopes ≠ no permissions.
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>Fix Ensure workflow has `actions: write` in permissions: block.
 </code></pre></div>
 <hr/>
 <h2 id="quick-verification-script">Quick Verification Script<a class="headerlink" href="#quick-verification-script" title="Permanent link">¶</a></h2>
@@ -2814,59 +2814,59 @@ are functioning:</p>
 <a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>
 <a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="s"># 1. Token inventory</span>
 <a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="s">priority = [</span>
-<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="s">    ("CODEX_MASTER_KEY",   "Full PAT (repo scope)"),</span>
-<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="s">    ("CODEX_BACKUP_KEY",   "Fallback PAT"),</span>
-<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="s">    ("AGENT_GITHUB_TOKEN", "GITHUB_TOKEN alias"),</span>
-<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="s">    ("GITHUB_TOKEN",       "Actions installation token"),</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="s"> ("CODEX_MASTER_KEY", "Full PAT (repo scope)"),</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="s"> ("CODEX_BACKUP_KEY", "Fallback PAT"),</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="s"> ("AGENT_GITHUB_TOKEN", "GITHUB_TOKEN alias"),</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="s"> ("GITHUB_TOKEN", "Actions installation token"),</span>
 <a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="s">]</span>
 <a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="s">active_token = ""</span>
-<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="s">active_name  = ""</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="s">active_name = ""</span>
 <a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="s">for name, desc in priority:</span>
-<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="s">    val = os.environ.get(name, "")</span>
-<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="s">    status = f" {len(val)} chars" if val else " NOT SET"</span>
-<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="s">    print(f"  {name:&lt;25} {status:&gt;15}  ({desc})")</span>
-<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="s">    if val and not active_token:</span>
-<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="s">        active_token, active_name = val, name</span>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="s"> val = os.environ.get(name, "")</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="s"> status = f" {len(val)} chars" if val else " NOT SET"</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="s"> print(f" {name:&lt;25} {status:&gt;15} ({desc})")</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="s"> if val and not active_token:</span>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="s"> active_token, active_name = val, name</span>
 <a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a>
-<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="s">print(f"\n  Active token: {active_name or 'NONE'}")</span>
+<a href="#__codelineno-13-24" id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="s">print(f"\n Active token: {active_name or 'NONE'}")</span>
 <a href="#__codelineno-13-25" id="__codelineno-13-25" name="__codelineno-13-25"></a>
 <a href="#__codelineno-13-26" id="__codelineno-13-26" name="__codelineno-13-26"></a><span class="s"># 2. GitHub API test</span>
 <a href="#__codelineno-13-27" id="__codelineno-13-27" name="__codelineno-13-27"></a><span class="s">if active_token:</span>
-<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a><span class="s">    req = urllib.request.Request(</span>
-<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a><span class="s">        "https://api.github.com/repos/Aries-Serpent/_codex_",</span>
-<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a><span class="s">        headers={</span>
-<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a><span class="s">            "Authorization": f"Bearer {active_token}",</span>
-<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a><span class="s">            "Accept": "application/vnd.github+json",</span>
-<a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a><span class="s">            "X-GitHub-Api-Version": "2022-11-28",</span>
-<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a><span class="s">        }</span>
-<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a><span class="s">    )</span>
-<a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a><span class="s">    try:</span>
-<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a><span class="s">        with urllib.request.urlopen(req, timeout=10) as resp:  # nosec</span>
-<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a><span class="s">            d = json.loads(resp.read())</span>
-<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a><span class="s">            print(f"  GitHub API (repo info):      {d['full_name']}")</span>
-<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="s">    except urllib.error.HTTPError as e:</span>
-<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a><span class="s">        print(f"  GitHub API (repo info):      HTTP {e.code}")</span>
-<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a><span class="s">    except Exception as e:</span>
-<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a><span class="s">        print(f"  GitHub API (repo info):      {e}")</span>
+<a href="#__codelineno-13-28" id="__codelineno-13-28" name="__codelineno-13-28"></a><span class="s"> req = urllib.request.Request(</span>
+<a href="#__codelineno-13-29" id="__codelineno-13-29" name="__codelineno-13-29"></a><span class="s"> "https://api.github.com/repos/Aries-Serpent/_codex_",</span>
+<a href="#__codelineno-13-30" id="__codelineno-13-30" name="__codelineno-13-30"></a><span class="s"> headers={</span>
+<a href="#__codelineno-13-31" id="__codelineno-13-31" name="__codelineno-13-31"></a><span class="s"> "Authorization": f"Bearer {active_token}",</span>
+<a href="#__codelineno-13-32" id="__codelineno-13-32" name="__codelineno-13-32"></a><span class="s"> "Accept": "application/vnd.github+json",</span>
+<a href="#__codelineno-13-33" id="__codelineno-13-33" name="__codelineno-13-33"></a><span class="s"> "X-GitHub-Api-Version": "2022-11-28",</span>
+<a href="#__codelineno-13-34" id="__codelineno-13-34" name="__codelineno-13-34"></a><span class="s"> }</span>
+<a href="#__codelineno-13-35" id="__codelineno-13-35" name="__codelineno-13-35"></a><span class="s"> )</span>
+<a href="#__codelineno-13-36" id="__codelineno-13-36" name="__codelineno-13-36"></a><span class="s"> try:</span>
+<a href="#__codelineno-13-37" id="__codelineno-13-37" name="__codelineno-13-37"></a><span class="s"> with urllib.request.urlopen(req, timeout=10) as resp: # nosec</span>
+<a href="#__codelineno-13-38" id="__codelineno-13-38" name="__codelineno-13-38"></a><span class="s"> d = json.loads(resp.read())</span>
+<a href="#__codelineno-13-39" id="__codelineno-13-39" name="__codelineno-13-39"></a><span class="s"> print(f" GitHub API (repo info): {d['full_name']}")</span>
+<a href="#__codelineno-13-40" id="__codelineno-13-40" name="__codelineno-13-40"></a><span class="s"> except urllib.error.HTTPError as e:</span>
+<a href="#__codelineno-13-41" id="__codelineno-13-41" name="__codelineno-13-41"></a><span class="s"> print(f" GitHub API (repo info): HTTP {e.code}")</span>
+<a href="#__codelineno-13-42" id="__codelineno-13-42" name="__codelineno-13-42"></a><span class="s"> except Exception as e:</span>
+<a href="#__codelineno-13-43" id="__codelineno-13-43" name="__codelineno-13-43"></a><span class="s"> print(f" GitHub API (repo info): {e}")</span>
 <a href="#__codelineno-13-44" id="__codelineno-13-44" name="__codelineno-13-44"></a>
 <a href="#__codelineno-13-45" id="__codelineno-13-45" name="__codelineno-13-45"></a><span class="s"># 3. CLI API server</span>
 <a href="#__codelineno-13-46" id="__codelineno-13-46" name="__codelineno-13-46"></a><span class="s">try:</span>
-<a href="#__codelineno-13-47" id="__codelineno-13-47" name="__codelineno-13-47"></a><span class="s">    req = urllib.request.Request("http://localhost:8765/api/health")</span>
-<a href="#__codelineno-13-48" id="__codelineno-13-48" name="__codelineno-13-48"></a><span class="s">    with urllib.request.urlopen(req, timeout=3) as resp:  # nosec</span>
-<a href="#__codelineno-13-49" id="__codelineno-13-49" name="__codelineno-13-49"></a><span class="s">        h = json.loads(resp.read())</span>
-<a href="#__codelineno-13-50" id="__codelineno-13-50" name="__codelineno-13-50"></a><span class="s">        print(f"  CLI API server (:8765):      status={h.get('status')}")</span>
+<a href="#__codelineno-13-47" id="__codelineno-13-47" name="__codelineno-13-47"></a><span class="s"> req = urllib.request.Request("http://localhost:8765/api/health")</span>
+<a href="#__codelineno-13-48" id="__codelineno-13-48" name="__codelineno-13-48"></a><span class="s"> with urllib.request.urlopen(req, timeout=3) as resp: # nosec</span>
+<a href="#__codelineno-13-49" id="__codelineno-13-49" name="__codelineno-13-49"></a><span class="s"> h = json.loads(resp.read())</span>
+<a href="#__codelineno-13-50" id="__codelineno-13-50" name="__codelineno-13-50"></a><span class="s"> print(f" CLI API server (:8765): status={h.get('status')}")</span>
 <a href="#__codelineno-13-51" id="__codelineno-13-51" name="__codelineno-13-51"></a><span class="s">except Exception as e:</span>
-<a href="#__codelineno-13-52" id="__codelineno-13-52" name="__codelineno-13-52"></a><span class="s">    print(f"  CLI API server (:8765):      {e}")</span>
+<a href="#__codelineno-13-52" id="__codelineno-13-52" name="__codelineno-13-52"></a><span class="s"> print(f" CLI API server (:8765): {e}")</span>
 <a href="#__codelineno-13-53" id="__codelineno-13-53" name="__codelineno-13-53"></a>
 <a href="#__codelineno-13-54" id="__codelineno-13-54" name="__codelineno-13-54"></a><span class="s"># 4. Delegation status</span>
 <a href="#__codelineno-13-55" id="__codelineno-13-55" name="__codelineno-13-55"></a><span class="s">try:</span>
-<a href="#__codelineno-13-56" id="__codelineno-13-56" name="__codelineno-13-56"></a><span class="s">    sess = json.load(open(".codex/agent_auth_session.json"))</span>
-<a href="#__codelineno-13-57" id="__codelineno-13-57" name="__codelineno-13-57"></a><span class="s">    import time</span>
-<a href="#__codelineno-13-58" id="__codelineno-13-58" name="__codelineno-13-58"></a><span class="s">    expired = int(time.time()) &gt; sess.get("expires_at", 0)</span>
-<a href="#__codelineno-13-59" id="__codelineno-13-59" name="__codelineno-13-59"></a><span class="s">    flag = " EXPIRED" if expired else " ACTIVE"</span>
-<a href="#__codelineno-13-60" id="__codelineno-13-60" name="__codelineno-13-60"></a><span class="s">    print(f"  Agent token delegation:     {flag} (issued {sess.get('issued_at','')})")</span>
+<a href="#__codelineno-13-56" id="__codelineno-13-56" name="__codelineno-13-56"></a><span class="s"> sess = json.load(open(".codex/agent_auth_session.json"))</span>
+<a href="#__codelineno-13-57" id="__codelineno-13-57" name="__codelineno-13-57"></a><span class="s"> import time</span>
+<a href="#__codelineno-13-58" id="__codelineno-13-58" name="__codelineno-13-58"></a><span class="s"> expired = int(time.time()) &gt; sess.get("expires_at", 0)</span>
+<a href="#__codelineno-13-59" id="__codelineno-13-59" name="__codelineno-13-59"></a><span class="s"> flag = " EXPIRED" if expired else " ACTIVE"</span>
+<a href="#__codelineno-13-60" id="__codelineno-13-60" name="__codelineno-13-60"></a><span class="s"> print(f" Agent token delegation: {flag} (issued {sess.get('issued_at','')})")</span>
 <a href="#__codelineno-13-61" id="__codelineno-13-61" name="__codelineno-13-61"></a><span class="s">except Exception:</span>
-<a href="#__codelineno-13-62" id="__codelineno-13-62" name="__codelineno-13-62"></a><span class="s">    print("  Agent token delegation:     ️  session file not found")</span>
+<a href="#__codelineno-13-62" id="__codelineno-13-62" name="__codelineno-13-62"></a><span class="s"> print(" Agent token delegation: session file not found")</span>
 <a href="#__codelineno-13-63" id="__codelineno-13-63" name="__codelineno-13-63"></a>
 <a href="#__codelineno-13-64" id="__codelineno-13-64" name="__codelineno-13-64"></a><span class="s">print("=" * 55)</span>
 <a href="#__codelineno-13-65" id="__codelineno-13-65" name="__codelineno-13-65"></a><span class="s">EOF</span>
@@ -2940,6 +2940,6 @@ are functioning:</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

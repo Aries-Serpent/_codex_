@@ -1,6 +1,6 @@
 # Custom Agent Documentation Suite — Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Generated:** 2026-06-26
 > **Purpose:** Central hub for custom agent methodology, patterns, and best practices
@@ -180,7 +180,7 @@ State transitions:
 
 Key gates:
  VALIDATING: Prerequisite check (if fails ESCALATING)
- EXECUTING: Work in progress (if blocker ESCALATING)
+ EXECUTING: If blocker detected, escalate
  VERIFYING: Self-check results (if invalid retry EXECUTING)
 ```
 

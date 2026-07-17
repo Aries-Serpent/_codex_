@@ -1,6 +1,6 @@
 # Date Sanitization Policy
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Module:** `scripts/security/date_sanitizer.py`
 **Purpose:** Smart date pattern detection and replacement for documentation
@@ -27,7 +27,7 @@ Dates are **preserved** when they appear in these contexts:
 
 1. **Version Information**
  - `Version: 1.2.3 Released: 2026-01-05`
- - `v0.2.1 (2026-01-03)`
+ - `v0.2.0 (2026-01-03)`
  - `aiohttp 3.13.3 (released 2026-01-03)`
 
 2. **Session Metadata**
@@ -213,7 +213,7 @@ Completed migration tasks.
 **Last Updated: 2026-07-11
 
 ## Version History
-- v0.2.1 released 2026-01-03
+- v0.2.0 released 2026-01-03
 
 ## Roadmap
 - Phase 1: Q1 2026
@@ -227,7 +227,7 @@ Completed migration tasks.
 **Last Updated: 2026-07-11
 
 ## Version History
-- v0.2.1 released 2026-01-03
+- v0.2.0 released 2026-01-03
 
 ## Roadmap
 - Phase 1: Current Cycle Q[n]

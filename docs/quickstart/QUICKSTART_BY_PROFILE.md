@@ -1,6 +1,6 @@
 # Codex ML Quick Start by Profile
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 This guide shows how to get started with each of Codex ML's three installation profiles.
 

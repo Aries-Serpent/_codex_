@@ -1,6 +1,6 @@
 # Agentic Repository System Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > **Canonical Operating Reference** | Aries-Serpent/_codex_
 >
@@ -84,7 +84,7 @@ workflow.
 **Version**: 1.9.0
 **Total agents**: 152
 
-### Schema Fields (v0.2.1+)
+### Schema Fields (v0.2.0+)
 
 | Field | Type | Required | Description |
 |-------|------|:--------:|-------------|
@@ -139,7 +139,7 @@ SOFT Advisory: recommendation only, no CI annotation
 ARCHIVED Deprecated agent, skip all enforcement
 ```
 
-### Current Distribution (v0.2.1)
+### Current Distribution (v0.2.0)
 
 | Tier | Count | % |
 |------|------:|--:|
@@ -328,14 +328,14 @@ python scripts/ci/auto_append_accountability.py --dry-run --session-id <uuid>
 | Phase | Status | Key Artifacts |
 |-------|:------:|---------------|
 | Phase 0 — Baseline Audit | Complete | `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` |
-| Phase 1 — Registry Migration | Complete | `AGENT_REGISTRY.yaml` v0.2.1, `CODEX_MANIFEST.json` |
+| Phase 1 — Registry Migration | Complete | `AGENT_REGISTRY.yaml` v0.2.0, `CODEX_MANIFEST.json` |
 | Phase 2 — Handoff Gate | Complete (Tier-1) | `agent-handoff-gate.yml`, `agent-registry-validation.yml` |
 | Phase 3 — Memory Corpus | Complete | `build_embeddings.py`, `query_corpus.py`, `embedding-index-rebuild.yml` |
 | Phase 4 — ED Gate | Complete (Tier-1, 5/5) | `e-to-d-transition-gate.yml`, `orchestrator-agent.md` |
 | Phase 5 — Self-Healing CI | Complete | `auto_promote_tier.py`, `enforcement_kpi_dashboard.py`, chatops |
 | Phase 6 — Governance | Complete | `actionlint-audit.yml`, semgrep rules, CODEOWNERS, this guide |
 
-**Current KPIs** (v0.2.1):
+**Current KPIs** (v0.2.0):
 - **152 agents** — GROUNDED: 8 | PARTIAL: 142 | SOFT: 2
 - **5 Tier-1 gates** — `agent-registry-validation`, `agent-handoff-gate`, `actionlint-audit`, `e-to-d-transition-gate`, `embedding-index-rebuild`
 - **ED score**: 5/5 — all conditions satisfied; human activation required for D promotion

@@ -1,6 +1,6 @@
 # ED Transition Architecture Map
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Phase 0 (WU-0.3) | Generated: 2026-06-22 | **Updated: 2026-06-22
 > Source: `docs/plans/Agentic_AI_System/soft_to_GROUNDED.md` Domain 5

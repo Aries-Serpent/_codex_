@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_V14_COMPLETE/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Cognitive Brain Status - Phase 14 COMPLETE - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2461,9 +2461,9 @@
 <h1 id="cognitive-brain-status-phase-14-complete">Cognitive Brain Status - Phase 14 COMPLETE<a class="headerlink" href="#cognitive-brain-status-phase-14-complete" title="Permanent link">¶</a></h1>
 <p><strong>Last Updated:</strong> 2026-07-11
 <strong>Version:</strong> v0.2.1</p>
-<p><strong>Version:</strong> V14.4.0<br/>
+<p><strong>Version:</strong> V14.4.0
 <strong>Updated: 2026-07-11
-</strong>Status:**  PHASE 14 COMPLETE |  PHASE 15 READY</p>
+</strong>Status:** PHASE 14 COMPLETE | PHASE 15 READY</p>
 <hr/>
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
 <p>Phase 14 (Test Coverage Improvement) has been completed successfully with <strong>545+ tests</strong> created across all sub-phases. The coverage threshold has been raised from 0% to 85%.</p>
@@ -2643,18 +2643,18 @@
 - Gap: Missing branch coverage tests, exception handlers, doc examples
 - Deliverables: 180+ tests, threshold update</p>
 <p><strong>DO:</strong>
--  Created branch coverage tests (150+ tests across CLI, Data, Training)
--  Created exception handler tests (50+ tests)
--  Created documentation example tests (30+ tests)
--  Updated coverage threshold to 85%
--  Created Phase 15 planset</p>
+- Created branch coverage tests (150+ tests across CLI, Data, Training)
+- Created exception handler tests (50+ tests)
+- Created documentation example tests (30+ tests)
+- Updated coverage threshold to 85%
+- Created Phase 15 planset</p>
 <p><strong>ASSESS:</strong>
-- Tests passing:  Verified locally
-- Coverage improved: 27.5% → ~85%
-- Quality verified:  Self-review complete</p>
+- Tests passing: Verified locally
+- Coverage improved: 27.5% ~85%
+- Quality verified: Self-review complete</p>
 <p><strong>AfterMath:</strong>
-- Patterns documented:  Branch coverage patterns
-- Phase 15 ready:  Planset created
+- Patterns documented: Branch coverage patterns
+- Phase 15 ready: Planset created
 - Lessons learned: Comprehensive branch testing reveals edge cases</p>
 <hr/>
 <h2 id="phase-15-readiness">Phase 15 Readiness<a class="headerlink" href="#phase-15-readiness" title="Permanent link">¶</a></h2>
@@ -2709,31 +2709,40 @@
 <hr/>
 <h2 id="agent-architecture">Agent Architecture<a class="headerlink" href="#agent-architecture" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Orchestrator, Test Coverage Agent'}}%%
-<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>graph TD
-<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    subgraph "Cognitive Brain V14.4 - COMPLETE"
-<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        CB[Orchestrator]
-<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        CB --&gt; TCA[Test Coverage Agent]
-<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>        CB --&gt; SAA[Security Audit Agent]
-<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>        CB --&gt; PMA[Performance Monitor Agent]
-<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>        CB --&gt; CTA[CI Testing Agent]
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>    end
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>graph TD
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>    subgraph "Cognitive Brain V14.4 - COMPLETE"
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>        CB[Orchestrator]
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>        CB --&gt; TCA[Test Coverage Agent]
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>        CB --&gt; SAA[Security Audit Agent]
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>
-<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>    subgraph "Phase 14 Complete"
-<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>        P14_0[14.0 Foundation] --&gt; P14_1[14.1 Core]
-<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>        P14_1 --&gt; P14_2[14.2 Security]
-<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>        P14_2 --&gt; P14_3[14.3 Integration]
-<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>        P14_3 --&gt; P14_4[14.4 Final]
-<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    end
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>        CB --&gt; PMA[Performance Monitor Agent]
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>        CB --&gt; CTA[CI Testing Agent]
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>    end
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>    subgraph "Phase 14 Complete"
 <a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>    subgraph "Phase 15 Ready"
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>        P15_0[15.0 Performance]
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>        P15_1[15.1 Property]
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>        P15_2[15.2 Mutation]
-<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>        P15_3[15.3 Quality]
-<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>        P15_4[15.4 Production]
-<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    end
-<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>
-<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    P14_4 --&gt; P15_0
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>        P14_0[14.0 Foundation] --&gt; P14_1[14.1 Core]
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>        P14_1 --&gt; P14_2[14.2 Security]
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>        P14_2 --&gt; P14_3[14.3 Integration]
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>        P14_3 --&gt; P14_4[14.4 Final]
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    end
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>    subgraph "Phase 15 Ready"
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>        P15_0[15.0 Performance]
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>        P15_1[15.1 Property]
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>        P15_2[15.2 Mutation]
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>        P15_3[15.3 Quality]
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>        P15_4[15.4 Production]
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>    end
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>    P14_4 --&gt; P15_0
 </code></pre></div>
 <hr/>
 <h2 id="metrics-summary">Metrics Summary<a class="headerlink" href="#metrics-summary" title="Permanent link">¶</a></h2>
@@ -2775,7 +2784,7 @@
 </table>
 <hr/>
 <p><strong>Last Updated: 2026-07-11
-</strong>Cognitive Brain Version:<strong> V14.4.0 (Phase 14 Complete)<br/>
+</strong>Cognitive Brain Version:<strong> V14.4.0 (Phase 14 Complete)
 </strong>Next Phase:** 15.0 (Performance Testing)</p>
 </article>
 </div>
@@ -2806,6 +2815,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

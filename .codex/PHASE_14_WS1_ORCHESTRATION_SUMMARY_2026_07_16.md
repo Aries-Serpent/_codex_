@@ -10,7 +10,7 @@
 
 ## 📋 MISSION STATEMENT
 
-**Execute v0.2.1 continuous feature delivery rollout with A/B testing framework validation, establishing production-grade continuous deployment procedures for future releases.**
+**Execute v0.2.0 continuous feature delivery rollout with A/B testing framework validation, establishing production-grade continuous deployment procedures for future releases.**
 
 **Duration:** 6 weeks (2026-07-24 → 2026-08-25)  
 **Production SLA:** 99.9%+ uptime maintained throughout  
@@ -71,7 +71,7 @@
 | **CP2** | 2026-08-07 | Canary Deployment Report (1-week observation) | ⏳ PENDING |
 | **CP3** | 2026-08-14 | A/B Testing Statistical Analysis (p<0.05 achieved) | ⏳ PENDING |
 | **CP4** | 2026-08-21 | Feature Flag Rollout Status (100% complete) | ⏳ PENDING |
-| **CP5** | 2026-08-25 | v0.2.1 GA Completion + CD Pipeline Ready | ⏳ PENDING |
+| **CP5** | 2026-08-25 | v0.2.0 GA Completion + CD Pipeline Ready | ⏳ PENDING |
 
 ---
 
@@ -94,7 +94,7 @@ All outputs stored in `.codex/` with `PHASE_14_WS1_` prefix:
 ├── PHASE_14_WS1_FEATURE_FLAG_ROLLOUT_STATUS_WK4.md (WS1D)
 │   └── Gradual rollout (10% → 25% → 50% → 100%), 0 flag incidents
 ├── PHASE_14_WS1_RELEASE_CALENDAR_ROADMAP_2026_08_25.md (WS1E)
-│   └── 6-month roadmap (v0.2.1 → v0.2.5), 2-week cycles, release gates
+│   └── 6-month roadmap (v0.2.0 → v0.2.5), 2-week cycles, release gates
 ├── PHASE_14_WS1_CONTINUOUS_DEPLOYMENT_PIPELINE_WK6.md (WS1F)
 │   └── Automated CD pipeline, A/B testing integration, team training, v0.2.2 dry-run
 └── PHASE_14_WS1_COMPLETION_REPORT_2026_08_25.md
@@ -106,7 +106,7 @@ All outputs stored in `.codex/` with `PHASE_14_WS1_` prefix:
 ## 🎯 SUCCESS CRITERIA (ALL REQUIRED FOR PHASE 14 WS1 COMPLETION)
 
 **Feature Deployment:**
-- ✅ v0.2.1 deployed to 100% production users (gradual rollout complete)
+- ✅ v0.2.0 deployed to 100% production users (gradual rollout complete)
 - ✅ Zero critical feature bugs introduced in production
 - ✅ Feature flags operational (enable/disable within <5 minutes, no redeployment)
 
@@ -128,7 +128,7 @@ All outputs stored in `.codex/` with `PHASE_14_WS1_` prefix:
 
 **Documentation & Governance:**
 - ✅ All 6 deliverables stored in `.codex/PHASE_14_WS1_*` files
-- ✅ Release calendar & roadmap published (v0.2.1 → v0.2.5, 2-week cycles)
+- ✅ Release calendar & roadmap published (v0.2.0 → v0.2.5, 2-week cycles)
 - ✅ Release runbooks documented and validated
 
 ---

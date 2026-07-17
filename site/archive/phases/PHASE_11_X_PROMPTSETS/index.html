@@ -8,9 +8,9 @@
 <meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
 <link href="https://aries-serpent.github.io/_codex_/archive/phases/PHASE_11_X_PROMPTSETS/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>Phase 11.x Promptsets - Execution Templates - Codex Docs v0.2.1</title>
-<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -210,7 +210,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../architecture.md">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
@@ -894,7 +894,7 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../architecture.md">
+<a class="md-nav__link" href="../../../architecture/">
 <span class="md-ellipsis">
     
   
@@ -1426,7 +1426,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT/">
 <span class="md-ellipsis">
     
   
@@ -2381,8 +2381,8 @@
 <p><strong>Version</strong>: v0.2.1
 <strong>Last Updated:</strong> 2026-07-11</p>
 <p>**Last Updated: 2026-06-22</p>
-<p><strong>Purpose</strong>: Ready-to-use prompts for AI agents to execute Phase 11.x features<br/>
-<strong>Target</strong>: GitHub Copilot, custom agents, and automation systems<br/>
+<p><strong>Purpose</strong>: Ready-to-use prompts for AI agents to execute Phase 11.x features
+<strong>Target</strong>: GitHub Copilot, custom agents, and automation systems
 <strong>Status</strong>: Production-ready templates</p>
 <hr/>
 <h2 id="master-execution-prompt">Master Execution Prompt<a class="headerlink" href="#master-execution-prompt" title="Permanent link">¶</a></h2>
@@ -2430,11 +2430,11 @@
 <a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>- File: src/codex/auth/oauth_manager.py (~300 lines)
 <a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>- Class: OAuthManager
 <a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>- Methods:
-<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>  - initiate_flow(provider: str) -&gt; str (returns auth URL)
-<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>  - exchange_code(code: str, state: str) -&gt; OAuthToken
-<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>  - refresh_token(refresh_token: str) -&gt; OAuthToken
-<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>  - revoke_token(token: str) -&gt; bool
-<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>  - validate_state(state: str) -&gt; bool
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a> - initiate_flow(provider: str) -&gt; str (returns auth URL)
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a> - exchange_code(code: str, state: str) -&gt; OAuthToken
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a> - refresh_token(refresh_token: str) -&gt; OAuthToken
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a> - revoke_token(token: str) -&gt; bool
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a> - validate_state(state: str) -&gt; bool
 <a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>
 <a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>SECURITY:
 <a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>- Use secrets.token_urlsafe(32) for state
@@ -2466,13 +2466,13 @@
 <a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>- File: src/codex/auth/mfa_provider.py (~200 lines)
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>- Class: MFAProvider
 <a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>- Methods:
-<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>  - generate_totp_secret() -&gt; str
-<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>  - generate_qr_code(secret: str, user: str) -&gt; bytes
-<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>  - verify_totp(secret: str, code: str) -&gt; bool
-<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>  - send_otp(user: str, method: str) -&gt; str
-<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>  - verify_otp(session_id: str, code: str) -&gt; bool
-<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>  - generate_backup_codes(count: int = 10) -&gt; List[str]
-<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a>  - verify_backup_code(user: str, code: str) -&gt; bool
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a> - generate_totp_secret() -&gt; str
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a> - generate_qr_code(secret: str, user: str) -&gt; bytes
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a> - verify_totp(secret: str, code: str) -&gt; bool
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a> - send_otp(user: str, method: str) -&gt; str
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a> - verify_otp(session_id: str, code: str) -&gt; bool
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a> - generate_backup_codes(count: int = 10) -&gt; List[str]
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a> - verify_backup_code(user: str, code: str) -&gt; bool
 <a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a>
 <a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>DEPENDENCIES:
 <a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a>- pyotp for TOTP
@@ -2508,11 +2508,11 @@
 <a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>- File: src/codex/auth/hsm_integration.py (~150 lines)
 <a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>- Class: HSMIntegration
 <a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>- Methods:
-<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>  - connect(config: Dict) -&gt; bool
-<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>  - sign_token(data: bytes) -&gt; bytes
-<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>  - verify_signature(data: bytes, signature: bytes) -&gt; bool
-<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>  - rotate_key() -&gt; str (returns new key ID)
-<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>  - get_public_key() -&gt; bytes
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a> - connect(config: Dict) -&gt; bool
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a> - sign_token(data: bytes) -&gt; bytes
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a> - verify_signature(data: bytes, signature: bytes) -&gt; bool
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a> - rotate_key() -&gt; str (returns new key ID)
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a> - get_public_key() -&gt; bytes
 <a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a>
 <a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a>CONFIGURATION:
 <a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>- Environment-based provider selection
@@ -2549,12 +2549,12 @@
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>- File: scripts/phase11/auto_upload_gdrive.py (~400 lines)
 <a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>- Class: GoogleDriveUploader
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>- Methods:
-<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>  - authenticate() -&gt; Credentials
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>  - create_folder_structure(repo: str) -&gt; str (folder ID)
-<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>  - upload_file(path: str, folder_id: str) -&gt; str (file ID)
-<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>  - list_versions(folder_id: str) -&gt; List[FileInfo]
-<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>  - cleanup_old_versions(folder_id: str, keep: int = 10)
-<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>  - generate_share_link(file_id: str) -&gt; str
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a> - authenticate() -&gt; Credentials
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a> - create_folder_structure(repo: str) -&gt; str (folder ID)
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a> - upload_file(path: str, folder_id: str) -&gt; str (file ID)
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a> - list_versions(folder_id: str) -&gt; List[FileInfo]
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a> - cleanup_old_versions(folder_id: str, keep: int = 10)
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a> - generate_share_link(file_id: str) -&gt; str
 <a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>
 <a href="#__codelineno-4-23" id="__codelineno-4-23" name="__codelineno-4-23"></a>API:
 <a href="#__codelineno-4-24" id="__codelineno-4-24" name="__codelineno-4-24"></a>- Google Drive API v3
@@ -2589,12 +2589,12 @@
 <a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>- File: scripts/phase11/notebooklm_sync.py (~350 lines)
 <a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>- Class: NotebookLMSync
 <a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>- Methods:
-<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>  - connect(api_key: str) -&gt; bool
-<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>  - upload_document(content: str, metadata: Dict) -&gt; str
-<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>  - update_document(doc_id: str, content: str) -&gt; bool
-<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>  - delete_document(doc_id: str) -&gt; bool
-<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a>  - get_index() -&gt; List[DocumentInfo]
-<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a>  - sync_incremental(changes: List[Change])
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a> - connect(api_key: str) -&gt; bool
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a> - upload_document(content: str, metadata: Dict) -&gt; str
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a> - update_document(doc_id: str, content: str) -&gt; bool
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a> - delete_document(doc_id: str) -&gt; bool
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a> - get_index() -&gt; List[DocumentInfo]
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a> - sync_incremental(changes: List[Change])
 <a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a>
 <a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>SYNC STRATEGY:
 <a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a>- Full sync: per-phase
@@ -2632,29 +2632,29 @@
 <a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>- File: tests/e2e/test_secrets_workflow.py (~500 lines)
 <a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>- Framework: Playwright + pytest
 <a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>- Test Scenarios:
-<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>  1. User creates secret
-<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>  2. User retrieves secret
-<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>  3. User updates secret
-<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>  4. User rotates secret
-<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>  5. User deletes secret
-<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>  6. User handles rotation failure
-<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>  7. Multiple users access same secret
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a> 1. User creates secret
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a> 2. User retrieves secret
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a> 3. User updates secret
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a> 4. User rotates secret
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a> 5. User deletes secret
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a> 6. User handles rotation failure
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a> 7. Multiple users access same secret
 <a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>
 <a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>TEST STRUCTURE:
 <a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>```text
 <a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>@pytest.mark.e2e
 <a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>class TestSecretsWorkflow:
-<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>    def test_create_secret_flow(self, authenticated_user):
-<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>        # Create secret through UI
-<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>        # Verify API response
-<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>        # Verify database state
-<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>        # Verify audit log
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a> def test_create_secret_flow(self, authenticated_user):
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a> # Create secret through UI
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a> # Verify API response
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a> # Verify database state
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a> # Verify audit log
 <a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>
-<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a>    def test_rotation_flow(self, authenticated_user, existing_secret):
-<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a>        # Initiate rotation
-<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a>        # Verify zero-downtime
-<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a>        # Verify old secret invalidated
-<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a>        # Verify new secret active
+<a href="#__codelineno-6-34" id="__codelineno-6-34" name="__codelineno-6-34"></a> def test_rotation_flow(self, authenticated_user, existing_secret):
+<a href="#__codelineno-6-35" id="__codelineno-6-35" name="__codelineno-6-35"></a> # Initiate rotation
+<a href="#__codelineno-6-36" id="__codelineno-6-36" name="__codelineno-6-36"></a> # Verify zero-downtime
+<a href="#__codelineno-6-37" id="__codelineno-6-37" name="__codelineno-6-37"></a> # Verify old secret invalidated
+<a href="#__codelineno-6-38" id="__codelineno-6-38" name="__codelineno-6-38"></a> # Verify new secret active
 </code></pre></div>
 <p>FIXTURES:
 - authenticated_user: User with valid session
@@ -2680,31 +2680,31 @@
 - File: tests/performance/benchmark_suite.py (~600 lines)
 - Framework: Locust + pytest-benchmark
 - Metrics:
-  - Throughput: &gt;100 req/s per core
-  - Latency p95: &lt;200ms
-  - Latency p99: &lt;500ms
-  - Memory: &lt;1GB per process
-  - CPU: &lt;80% sustained</p>
+ - Throughput: &gt;100 req/s per core
+ - Latency p95: &lt;200ms
+ - Latency p99: &lt;500ms
+ - Memory: &lt;1GB per process
+ - CPU: &lt;80% sustained</p>
 <p>TEST SCENARIOS:
 1. Secret creation (1000 operations)
 2. Secret retrieval (10000 operations)
 3. Secret rotation (100 operations)
 4. Concurrent users (100 simultaneous)
-5. Spike load (0→1000 users in 10s)</p>
+5. Spike load (01000 users in 10s)</p>
 <p>IMPLEMENTATION:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>@pytest.mark.performance
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>class TestPerformance:
-<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>    @pytest.mark.benchmark(group="create")
-<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>    def test_secret_creation_throughput(self, benchmark):
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>        result = benchmark(create_secret, {"name": "test", "value": "secret"})
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>        assert result.stats.mean &lt; 0.1  # 100ms average
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a> @pytest.mark.benchmark(group="create")
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a> def test_secret_creation_throughput(self, benchmark):
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a> result = benchmark(create_secret, {"name": "test", "value": "secret"})
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a> assert result.stats.mean &lt; 0.1 # 100ms average
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>    @pytest.mark.load
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>    def test_concurrent_access(self, locust_env):
-<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>        # Simulate 100 users
-<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>        # Measure response times
-<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>        # Check for errors
-<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a>        # Verify throughput
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a> @pytest.mark.load
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a> def test_concurrent_access(self, locust_env):
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a> # Simulate 100 users
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a> # Measure response times
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a> # Check for errors
+<a href="#__codelineno-8-13" id="__codelineno-8-13" name="__codelineno-8-13"></a> # Verify throughput
 </code></pre></div></p>
 <p>REPORTING:
 - HTML report with graphs
@@ -2729,13 +2729,13 @@
 - File: src/codex/integrations/mlflow_tracker.py (~400 lines)
 - Class: MLflowTracker
 - Methods:
-  - create_experiment(name: str) -&gt; str
-  - start_run(experiment_id: str) -&gt; RunContext
-  - log_param(key: str, value: Any)
-  - log_metric(key: str, value: float, step: int)
-  - log_artifact(path: str)
-  - register_model(name: str, run_id: str) -&gt; ModelVersion
-  - end_run()</p>
+ - create_experiment(name: str) -&gt; str
+ - start_run(experiment_id: str) -&gt; RunContext
+ - log_param(key: str, value: Any)
+ - log_metric(key: str, value: float, step: int)
+ - log_artifact(path: str)
+ - register_model(name: str, run_id: str) -&gt; ModelVersion
+ - end_run()</p>
 <p>INTEGRATION:
 - Automatic experiment creation per project
 - Tag runs with Git SHA and branch
@@ -2748,9 +2748,9 @@
 - Data quality metrics</p>
 <p>USAGE EXAMPLE:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">with</span> <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">experiment_id</span><span class="o">=</span><span class="s2">"codex-training"</span><span class="p">):</span>
-<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>    <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">"learning_rate"</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
-<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">"accuracy"</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>    <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="s2">"model.pkl"</span><span class="p">)</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a> <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">"learning_rate"</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a> <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">"accuracy"</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a> <span class="n">mlflow_tracker</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="s2">"model.pkl"</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>### Prompt 4.2 - Slack Integration
 </code></pre></div>
@@ -2766,11 +2766,11 @@
 - File: src/codex/integrations/slack_notifier.py (~300 lines)
 - Class: SlackNotifier
 - Methods:
-  - send_message(channel: str, text: str, blocks: List) -&gt; str
-  - send_thread_reply(parent_ts: str, text: str)
-  - send_alert(severity: str, message: str)
-  - send_deployment_notification(deploy_info: Dict)
-  - send_error_report(error: Exception, context: Dict)</p>
+ - send_message(channel: str, text: str, blocks: List) -&gt; str
+ - send_thread_reply(parent_ts: str, text: str)
+ - send_alert(severity: str, message: str)
+ - send_deployment_notification(deploy_info: Dict)
+ - send_error_report(error: Exception, context: Dict)</p>
 <p>MESSAGE TYPES:
 1. Deployment notifications
 2. Error alerts
@@ -2779,18 +2779,18 @@
 5. per-iteration summaries</p>
 <p>FORMATTING:
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="p">{</span>
-<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a>    <span class="s2">"blocks"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">" High Severity Alert"</span><span class="p">}},</span>
-<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Error*: Database connection failed"</span><span class="p">}},</span>
-<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span> <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a>            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Environment:*</span><span class="se">\n</span><span class="s2">Production"</span><span class="p">},</span>
-<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a>            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Time:*</span><span class="se">\n</span><span class="s2">2026-01-15 10:30 UTC"</span><span class="p">}</span>
-<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>        <span class="p">]},</span>
-<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a>        <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"actions"</span><span class="p">,</span> <span class="s2">"elements"</span><span class="p">:</span> <span class="p">[</span>
-<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a>            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"View Logs"</span><span class="p">},</span> <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">},</span>
-<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>            <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Acknowledge"</span><span class="p">}}</span>
-<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>        <span class="p">]}</span>
-<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="p">]</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a> <span class="s2">"blocks"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">" High Severity Alert"</span><span class="p">}},</span>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Error*: Database connection failed"</span><span class="p">}},</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"section"</span><span class="p">,</span> <span class="s2">"fields"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Environment:*</span><span class="se">\n</span><span class="s2">Production"</span><span class="p">},</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"mrkdwn"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"*Time:*</span><span class="se">\n</span><span class="s2">2026-01-15 10:30 UTC"</span><span class="p">}</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a> <span class="p">]},</span>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"actions"</span><span class="p">,</span> <span class="s2">"elements"</span><span class="p">:</span> <span class="p">[</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"View Logs"</span><span class="p">},</span> <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">},</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Acknowledge"</span><span class="p">}}</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a> <span class="p">]}</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a> <span class="p">]</span>
 <a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a><span class="p">}</span>
 </code></pre></div></p>
 <p>RATE LIMITING:
@@ -2815,11 +2815,11 @@
 - File: src/codex/security/secret_rotation.py (~350 lines)
 - Class: SecretRotation
 - Methods:
-  - schedule_rotation(secret_id: str, frequency: str)
-  - rotate_secret(secret_id: str) -&gt; RotationResult
-  - rollback_rotation(secret_id: str, version: int)
-  - get_rotation_history(secret_id: str) -&gt; List[RotationEvent]
-  - validate_rotation(secret_id: str) -&gt; bool</p>
+ - schedule_rotation(secret_id: str, frequency: str)
+ - rotate_secret(secret_id: str) -&gt; RotationResult
+ - rollback_rotation(secret_id: str, version: int)
+ - get_rotation_history(secret_id: str) -&gt; List[RotationEvent]
+ - validate_rotation(secret_id: str) -&gt; bool</p>
 <p>ROTATION PROCESS:
 1. Generate new secret value
 2. Store new version (inactive)
@@ -2830,7 +2830,7 @@
 7. Update all references</p>
 <p>ZERO-DOWNTIME STRATEGY:
 - Dual-secret period (both old and new valid)
-- Gradual rollout (canary → 50% → 100%)
+- Gradual rollout (canary 50% 100%)
 - Automatic validation before activation
 - Instant rollback on errors</p>
 <p>ERROR HANDLING:
@@ -2854,7 +2854,7 @@
 <p>AGENT CAPABILITIES:
 1. Python 2 to Python 3 migration
 2. Framework upgrades (Django, Flask, FastAPI)
-3. Library migrations (requests → httpx)
+3. Library migrations (requests httpx)
 4. Syntax modernization
 5. Breaking change detection</p>
 <p>AGENT DEFINITION:
@@ -2866,44 +2866,44 @@
 <a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="nt">max_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4000</span>
 <a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>
 <a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="nt">capabilities</span><span class="p">:</span>
-<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-analysis</span>
-<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-transformation</span>
-<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dependency-management</span>
-<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test-generation</span>
-<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">documentation-update</span>
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-analysis</span>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-transformation</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dependency-management</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test-generation</span>
+<a href="#__codelineno-15-13" id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">documentation-update</span>
 <a href="#__codelineno-15-14" id="__codelineno-15-14" name="__codelineno-15-14"></a>
 <a href="#__codelineno-15-15" id="__codelineno-15-15" name="__codelineno-15-15"></a><span class="nt">tools</span><span class="p">:</span>
-<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ast-parser</span>
-<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2to3</span>
-<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyupgrade</span>
-<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modernize</span>
-<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git</span>
+<a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ast-parser</span>
+<a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2to3</span>
+<a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyupgrade</span>
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modernize</span>
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git</span>
 <a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>
 <a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a><span class="nt">prompts</span><span class="p">:</span>
-<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w">  </span><span class="nt">main</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w">    </span><span class="no">You are a code migration expert. Analyze the codebase and perform safe,</span>
-<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w">    </span><span class="no">incremental migrations following best practices.</span>
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a><span class="w"> </span><span class="nt">main</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You are a code migration expert. Analyze the codebase and perform safe,</span>
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">incremental migrations following best practices.</span>
 <a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a>
-<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w">    </span><span class="no">Steps:</span>
-<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w">    </span><span class="no">1. Analyze codebase structure</span>
-<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w">    </span><span class="no">2. Identify migration targets</span>
-<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w">    </span><span class="no">3. Plan migration strategy</span>
-<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w">    </span><span class="no">4. Execute transformations</span>
-<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="w">    </span><span class="no">5. Update tests</span>
-<a href="#__codelineno-15-33" id="__codelineno-15-33" name="__codelineno-15-33"></a><span class="w">    </span><span class="no">6. Validate changes</span>
-<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a><span class="w">    </span><span class="no">7. Generate migration report</span>
+<a href="#__codelineno-15-27" id="__codelineno-15-27" name="__codelineno-15-27"></a><span class="w"> </span><span class="nt">Steps</span><span class="p">:</span>
+<a href="#__codelineno-15-28" id="__codelineno-15-28" name="__codelineno-15-28"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1. Analyze codebase structure</span>
+<a href="#__codelineno-15-29" id="__codelineno-15-29" name="__codelineno-15-29"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2. Identify migration targets</span>
+<a href="#__codelineno-15-30" id="__codelineno-15-30" name="__codelineno-15-30"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3. Plan migration strategy</span>
+<a href="#__codelineno-15-31" id="__codelineno-15-31" name="__codelineno-15-31"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4. Execute transformations</span>
+<a href="#__codelineno-15-32" id="__codelineno-15-32" name="__codelineno-15-32"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5. Update tests</span>
+<a href="#__codelineno-15-33" id="__codelineno-15-33" name="__codelineno-15-33"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6. Validate changes</span>
+<a href="#__codelineno-15-34" id="__codelineno-15-34" name="__codelineno-15-34"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7. Generate migration report</span>
 <a href="#__codelineno-15-35" id="__codelineno-15-35" name="__codelineno-15-35"></a>
 <a href="#__codelineno-15-36" id="__codelineno-15-36" name="__codelineno-15-36"></a><span class="nt">examples</span><span class="p">:</span>
-<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">"Migrate</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">Python</span><span class="nv"> </span><span class="s">2.7</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">Python</span><span class="nv"> </span><span class="s">3.10"</span>
-<a href="#__codelineno-15-38" id="__codelineno-15-38" name="__codelineno-15-38"></a><span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-15-39" id="__codelineno-15-39" name="__codelineno-15-39"></a><span class="w">      </span><span class="no">Migration Plan:</span>
-<a href="#__codelineno-15-40" id="__codelineno-15-40" name="__codelineno-15-40"></a><span class="w">      </span><span class="no">1. Run 2to3 for automatic conversions</span>
-<a href="#__codelineno-15-41" id="__codelineno-15-41" name="__codelineno-15-41"></a><span class="w">      </span><span class="no">2. Update print statements</span>
-<a href="#__codelineno-15-42" id="__codelineno-15-42" name="__codelineno-15-42"></a><span class="w">      </span><span class="no">3. Fix integer division</span>
-<a href="#__codelineno-15-43" id="__codelineno-15-43" name="__codelineno-15-43"></a><span class="w">      </span><span class="no">4. Update exception syntax</span>
-<a href="#__codelineno-15-44" id="__codelineno-15-44" name="__codelineno-15-44"></a><span class="w">      </span><span class="no">5. Modernize string formatting</span>
-<a href="#__codelineno-15-45" id="__codelineno-15-45" name="__codelineno-15-45"></a><span class="w">      </span><span class="no">6. Update imports</span>
-<a href="#__codelineno-15-46" id="__codelineno-15-46" name="__codelineno-15-46"></a><span class="w">      </span><span class="no">7. Run tests and fix issues</span>
+<a href="#__codelineno-15-37" id="__codelineno-15-37" name="__codelineno-15-37"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">"Migrate</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">Python</span><span class="nv"> </span><span class="s">2.7</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">Python</span><span class="nv"> </span><span class="s">3.10"</span>
+<a href="#__codelineno-15-38" id="__codelineno-15-38" name="__codelineno-15-38"></a><span class="w"> </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-15-39" id="__codelineno-15-39" name="__codelineno-15-39"></a><span class="w"> </span><span class="nt">Migration Plan</span><span class="p">:</span>
+<a href="#__codelineno-15-40" id="__codelineno-15-40" name="__codelineno-15-40"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1. Run 2to3 for automatic conversions</span>
+<a href="#__codelineno-15-41" id="__codelineno-15-41" name="__codelineno-15-41"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2. Update print statements</span>
+<a href="#__codelineno-15-42" id="__codelineno-15-42" name="__codelineno-15-42"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3. Fix integer division</span>
+<a href="#__codelineno-15-43" id="__codelineno-15-43" name="__codelineno-15-43"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4. Update exception syntax</span>
+<a href="#__codelineno-15-44" id="__codelineno-15-44" name="__codelineno-15-44"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5. Modernize string formatting</span>
+<a href="#__codelineno-15-45" id="__codelineno-15-45" name="__codelineno-15-45"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6. Update imports</span>
+<a href="#__codelineno-15-46" id="__codelineno-15-46" name="__codelineno-15-46"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7. Run tests and fix issues</span>
 </code></pre></div></p>
 <p>IMPLEMENTATION FILES:
 - .github/agents/code-migration-agent/prompts/main.md
@@ -2928,37 +2928,37 @@
 <a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span>
 <a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a>
 <a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="nt">capabilities</span><span class="p">:</span>
-<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-analysis</span>
-<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docstring-parsing</span>
-<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diagram-generation</span>
-<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown-formatting</span>
-<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api-documentation</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code-analysis</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docstring-parsing</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diagram-generation</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">markdown-formatting</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">api-documentation</span>
 <a href="#__codelineno-17-13" id="__codelineno-17-13" name="__codelineno-17-13"></a>
 <a href="#__codelineno-17-14" id="__codelineno-17-14" name="__codelineno-17-14"></a><span class="nt">tools</span><span class="p">:</span>
-<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ast-parser</span>
-<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx</span>
-<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdocs</span>
-<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mermaid</span>
-<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git-log</span>
+<a href="#__codelineno-17-15" id="__codelineno-17-15" name="__codelineno-17-15"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ast-parser</span>
+<a href="#__codelineno-17-16" id="__codelineno-17-16" name="__codelineno-17-16"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx</span>
+<a href="#__codelineno-17-17" id="__codelineno-17-17" name="__codelineno-17-17"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdocs</span>
+<a href="#__codelineno-17-18" id="__codelineno-17-18" name="__codelineno-17-18"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mermaid</span>
+<a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git-log</span>
 <a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>
 <a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a><span class="nt">prompts</span><span class="p">:</span>
-<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a><span class="w">  </span><span class="nt">main</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a><span class="w">    </span><span class="no">You are a technical writer specializing in developer documentation.</span>
-<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a><span class="w">    </span><span class="no">Generate clear, comprehensive, and maintainable documentation.</span>
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a><span class="w"> </span><span class="nt">main</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You are a technical writer specializing in developer documentation.</span>
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate clear, comprehensive, and maintainable documentation.</span>
 <a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a>
-<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a><span class="w">    </span><span class="no">Documentation types:</span>
-<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a><span class="w">    </span><span class="no">1. API Reference (from docstrings)</span>
-<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a><span class="w">    </span><span class="no">2. User Guides (step-by-step tutorials)</span>
-<a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a><span class="w">    </span><span class="no">3. Architecture Docs (system design)</span>
-<a href="#__codelineno-17-30" id="__codelineno-17-30" name="__codelineno-17-30"></a><span class="w">    </span><span class="no">4. Changelogs (from git history)</span>
-<a href="#__codelineno-17-31" id="__codelineno-17-31" name="__codelineno-17-31"></a><span class="w">    </span><span class="no">5. Contributing Guidelines</span>
+<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a><span class="w"> </span><span class="nt">Documentation types</span><span class="p">:</span>
+<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1. API Reference (from docstrings)</span>
+<a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2. User Guides (step-by-step tutorials)</span>
+<a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3. Architecture Docs (system design)</span>
+<a href="#__codelineno-17-30" id="__codelineno-17-30" name="__codelineno-17-30"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4. Changelogs (from git history)</span>
+<a href="#__codelineno-17-31" id="__codelineno-17-31" name="__codelineno-17-31"></a><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5. Contributing Guidelines</span>
 <a href="#__codelineno-17-32" id="__codelineno-17-32" name="__codelineno-17-32"></a>
-<a href="#__codelineno-17-33" id="__codelineno-17-33" name="__codelineno-17-33"></a><span class="w">    </span><span class="no">Quality criteria:</span>
-<a href="#__codelineno-17-34" id="__codelineno-17-34" name="__codelineno-17-34"></a><span class="w">    </span><span class="no">- Clear and concise</span>
-<a href="#__codelineno-17-35" id="__codelineno-17-35" name="__codelineno-17-35"></a><span class="w">    </span><span class="no">- Code examples for all APIs</span>
-<a href="#__codelineno-17-36" id="__codelineno-17-36" name="__codelineno-17-36"></a><span class="w">    </span><span class="no">- Visual diagrams where helpful</span>
-<a href="#__codelineno-17-37" id="__codelineno-17-37" name="__codelineno-17-37"></a><span class="w">    </span><span class="no">- Up-to-date with latest code</span>
-<a href="#__codelineno-17-38" id="__codelineno-17-38" name="__codelineno-17-38"></a><span class="w">    </span><span class="no">- Properly structured and indexed</span>
+<a href="#__codelineno-17-33" id="__codelineno-17-33" name="__codelineno-17-33"></a><span class="w"> </span><span class="nt">Quality criteria</span><span class="p">:</span>
+<a href="#__codelineno-17-34" id="__codelineno-17-34" name="__codelineno-17-34"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Clear and concise</span>
+<a href="#__codelineno-17-35" id="__codelineno-17-35" name="__codelineno-17-35"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code examples for all APIs</span>
+<a href="#__codelineno-17-36" id="__codelineno-17-36" name="__codelineno-17-36"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Visual diagrams where helpful</span>
+<a href="#__codelineno-17-37" id="__codelineno-17-37" name="__codelineno-17-37"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Up-to-date with latest code</span>
+<a href="#__codelineno-17-38" id="__codelineno-17-38" name="__codelineno-17-38"></a><span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Properly structured and indexed</span>
 </code></pre></div></p>
 <p>OUTPUTS:
 - API documentation in Sphinx format
@@ -3041,9 +3041,9 @@
 <p>Generate comprehensive validation report with pass/fail for each item.
 ```</p>
 <hr/>
-<p><strong>Document Version</strong>: 1.0<br/>
-<strong>Last Updated</strong>: 2026-01-15<br/>
-<strong>Author</strong>: GitHub Copilot<br/>
+<p><strong>Document Version</strong>: 1.0
+<strong>Last Updated</strong>: 2026-01-15
+<strong>Author</strong>: GitHub Copilot
 <strong>Status</strong>: Production-Ready Templates</p>
 </article>
 </div>
@@ -3074,6 +3074,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>

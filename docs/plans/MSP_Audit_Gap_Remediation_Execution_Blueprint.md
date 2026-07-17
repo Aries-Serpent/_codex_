@@ -1,6 +1,6 @@
-# MSP Audit Gap Remediation Execution Blueprint (v0.2.1)
+# MSP Audit Gap Remediation Execution Blueprint (v0.2.0)
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -8,9 +8,9 @@
 This blueprint documents the implementation of gap surfacing, policy gates, enhanced reporting, and remediation guidance for the Copilot Space Capability Audit workflow.
 
 ## Version History
-- v0.2.1 (2025-11-01): Gap remediation implementation with missing patterns, component gaps, policy gates
-- v0.2.1: Component caps and duplication heuristic options
-- v0.2.1: Initial capability audit framework
+- v0.2.0 (2025-11-01): Gap remediation implementation with missing patterns, component gaps, policy gates
+- v0.2.0: Component caps and duplication heuristic options
+- v0.2.0: Initial capability audit framework
 
 ## Scope of Change
 

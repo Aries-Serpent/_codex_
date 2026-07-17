@@ -1,6 +1,6 @@
 # Phase 15-16 Documentation Index
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Complete index of all Phase 15-16 documentation, architecture, API, and pattern library resources.
 

@@ -1,6 +1,6 @@
 # Final Session Summary: PR #2836 + Phase 10 Complete Automation
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 ## Table of Contents
 

@@ -1,6 +1,6 @@
 # Archival & Bundling Capability Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -58,7 +58,7 @@ The **archival-bundling** capability provides comprehensive functionality for pa
 ### Bundle Structure
 
 ```
-experiment_bundle_v0.2.1.tar.gz
+experiment_bundle_v0.2.0.tar.gz
  manifest.json # Bundle metadata
  models/
  model.pkl
@@ -104,7 +104,7 @@ bundle = bundle_experiment(
 )
 
 # Returns: BundleMetadata
-# bundle.path: "/artifacts/bundles/exp_2025_01_15_v0.2.1.tar.gz"
+# bundle.path: "/artifacts/bundles/exp_2025_01_15_v0.2.0.tar.gz"
 # bundle.size: 1024567890 # bytes
 # bundle.checksum: "sha256:abc123..."
 ```
@@ -139,7 +139,7 @@ from codex.archival import extract_bundle
 
 # Extract bundle
 artifacts = extract_bundle(
- bundle_path="exp_2025_01_15_v0.2.1.tar.gz",
+ bundle_path="exp_2025_01_15_v0.2.0.tar.gz",
  output_dir="/restored/exp_2025_01_15",
  verify_checksums=True
 )
@@ -294,14 +294,14 @@ print(f"Metric improvement: {diff.metric_delta}")
 from codex.archival import extract_bundle, validate_bundle
 
 # Validate bundle integrity
-validation = validate_bundle("exp_2025_01_15_v0.2.1.tar.gz")
+validation = validate_bundle("exp_2025_01_15_v0.2.0.tar.gz")
 if not validation.valid:
  print(f"Bundle corrupted: {validation.errors}")
  exit(1)
 
 # Extract bundle
 artifacts = extract_bundle(
- bundle_path="exp_2025_01_15_v0.2.1.tar.gz",
+ bundle_path="exp_2025_01_15_v0.2.0.tar.gz",
  output_dir="/tmp/restored",
  verify_checksums=True,
  restore_environment=True # Recreate conda env
@@ -392,9 +392,9 @@ cleanup_old_bundles()
 1. **Semantic Versioning**
  ```
  v<major>.<minor>.<patch>
- v0.2.1 - Initial model
- v0.2.1 - Added feature
- v0.2.1 - Architecture change
+ v0.2.0 - Initial model
+ v0.2.0 - Added feature
+ v0.2.0 - Architecture change
  ```
 
 2. **Tagging Bundles**

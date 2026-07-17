@@ -1,6 +1,6 @@
 # GitHub Actions Workflow Audit Report
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Generated**: Comprehensive audit of all 207 GitHub Actions workflows
 **Objective**: Identify root-level file references and assess cleanup impact

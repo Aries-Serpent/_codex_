@@ -1,6 +1,6 @@
 # Performance Debugging Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 > Complete guide to profiling, benchmarking, and optimizing Python applications
 > **Level**: Intermediate to Advanced | **Prerequisites**: Python profiling knowledge

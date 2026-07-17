@@ -1,6 +1,6 @@
 # Zendesk Support Administrator Newcomer Guide
 **Last Updated:** 2026-07-11
-**Version:** v0.2.1
+**Version:** v0.2.0
 
 **Last Updated: 2026-06-22
 
@@ -753,7 +753,7 @@ git add configs/desired/zendesk/
 git commit -m "Add high-priority auto-assignment trigger"
 
 # Tag releases
-git tag -a zendesk-release-v0.2.1 -m "Add new support workflows"
+git tag -a zendesk-release-v0.2.0 -m "Add new support workflows"
 ```text
 
 ## 3. Code Review
