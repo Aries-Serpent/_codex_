@@ -56,27 +56,27 @@ Phase 4 successfully integrates Faiss embeddings for semantic session search acr
 
 ```
 Session Metadata
-├─ session_id: "S001"
-├─ summary: "Cache management optimization"
-├─ agent_name: "cache-management-agent"
-└─ created_at: "2026-06-23T02:51:09Z"
-        ↓
+ session_id: "S001"
+ summary: "Cache management optimization"
+ agent_name: "cache-management-agent"
+ created_at: "2026-06-23T02:51:09Z"
+ 
 Text Combination
-├─ Combined: "Cache management optimization cache-management-agent"
-├─ Normalized: lowercase, whitespace trimmed
-└─ Validated: non-empty
-        ↓
+ Combined: "Cache management optimization cache-management-agent"
+ Normalized: lowercase, whitespace trimmed
+ Validated: non-empty
+ 
 Embedding Generation
-├─ Model: sentence-transformers/all-MiniLM-L6-v2
-├─ Input: combined text
-├─ Output: 384-dim float32 vector
-└─ Storage: Faiss IVFFlat + JSON metadata
-        ↓
+ Model: sentence-transformers/all-MiniLM-L6-v2
+ Input: combined text
+ Output: 384-dim float32 vector
+ Storage: Faiss IVFFlat + JSON metadata
+ 
 Search & Retrieval
-├─ Query text → embedding
-├─ Find top-k similar sessions (L2 distance)
-├─ Return (session_id, similarity_score) tuples
-└─ Similarity: normalized to [0, 1]
+ Query text embedding
+ Find top-k similar sessions (L2 distance)
+ Return (session_id, similarity_score) tuples
+ Similarity: normalized to [0, 1]
 ```
 
 ### 4. Session Coverage
@@ -117,10 +117,10 @@ embeddings = SessionEmbeddings()
 
 # Add session
 embeddings.add_session(
-    session_id="S293",
-    summary="Query filtering optimization",
-    patterns=["P-001"],
-    tags=["database"]
+ session_id="S293",
+ summary="Query filtering optimization",
+ patterns=["P-001"],
+ tags=["database"]
 )
 
 # Search by session
@@ -149,13 +149,13 @@ embeddings.save_index()
 ```python
 stats = embeddings.get_stats()
 # {
-#     'total_sessions': 10,
-#     'dimension': 384,
-#     'model': 'sentence-transformers/all-MiniLM-L6-v2',
-#     'has_faiss': True,
-#     'has_model': True,
-#     'embeddings_path': '.codex/session_embeddings.faiss',
-#     'metadata_path': '.codex/session_embeddings_metadata.json'
+# 'total_sessions': 10,
+# 'dimension': 384,
+# 'model': 'sentence-transformers/all-MiniLM-L6-v2',
+# 'has_faiss': True,
+# 'has_model': True,
+# 'embeddings_path': '.codex/session_embeddings.faiss',
+# 'metadata_path': '.codex/session_embeddings_metadata.json'
 # }
 ```
 

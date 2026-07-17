@@ -26,57 +26,57 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ```
 1. Load Cognitive Brain
-   → Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
-   → Read docs/system/CODEBASE_DASHBOARD.md (current status)
-   → Read docs/ROADMAP.md (planned work)
+ Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
+ Read docs/system/CODEBASE_DASHBOARD.md (current status)
+ Read docs/ROADMAP.md (planned work)
 
 2. Identify Current Phase
-   → Check Dashboard for "Active Initiatives"
-   → Note completion percentages
-   → Identify blocking issues
+ Check Dashboard for "Active Initiatives"
+ Note completion percentages
+ Identify blocking issues
 
 3. Assess Session Capacity
-   → Estimate token budget (typical: 64K-128K)
-   → Calculate work capacity (tokens / complexity)
-   → Determine if quick wins or deep work
+ Estimate token budget (typical: 64K-128K)
+ Calculate work capacity (tokens / complexity)
+ Determine if quick wins or deep work
 ```
 
 ### Phase 2: Work Execution (Main session)
 
 ```
 4. Execute Highest Priority Work
-   → Follow roadmap priorities
-   → Complete atomic units of work
-   → Commit frequently with clear messages
+ Follow roadmap priorities
+ Complete atomic units of work
+ Commit frequently with clear messages
 
 5. Update Cognitive Brain
-   → Mark completed tasks in Dashboard
-   → Update completion percentages
-   → Document decisions and blockers
+ Mark completed tasks in Dashboard
+ Update completion percentages
+ Document decisions and blockers
 
 6. Validate Changes
-   → Run linters, tests, syntax checks
-   → Verify no regressions
-   → Check CI/CD status
+ Run linters, tests, syntax checks
+ Verify no regressions
+ Check CI/CD status
 ```
 
 ### Phase 3: Session Closure (Last 5K tokens)
 
 ```
 7. Self-Review Protocol
-   → Perform 5-pass review (see below)
-   → Address all concerns
-   → Iterate until 0 issues
+ Perform 5-pass review (see below)
+ Address all concerns
+ Iterate until 0 issues
 
 8. Prepare Continuation
-   → If work remains: Generate continuation prompt
-   → Update Dashboard with next steps
-   → Post continuation comment to PR
+ If work remains: Generate continuation prompt
+ Update Dashboard with next steps
+ Post continuation comment to PR
 
 9. Document Session
-   → Update Dashboard with session summary
-   → Commit final changes
-   → Mark phase complete if done
+ Update Dashboard with session summary
+ Commit final changes
+ Mark phase complete if done
 ```
 
 ---
@@ -165,7 +165,7 @@ When posting continuation prompts to PR comments:
 ```markdown
 @copilot Continue Phase [N]: [Phase Name]
 
-##  Session Summary
+## Session Summary
 
 **Completed Work**:
 - [x] task 1 (commit abc123)
@@ -177,7 +177,7 @@ When posting continuation prompts to PR comments:
 
 **Commits**: abc123, def456, ghi789
 
-##  Next Steps
+## Next Steps
 
 **Priority Tasks**:
 1. [ ] task A - [Brief description]
@@ -190,7 +190,7 @@ When posting continuation prompts to PR comments:
 
 **Duration Estimate**: [X] sessions (~[Y]K tokens)
 
-##  Context References
+## Context References
 
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
 - [Dashboard](../system/CODEBASE_DASHBOARD.md)
@@ -233,7 +233,7 @@ When posting continuation prompts to PR comments:
 ```markdown
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
-| [Name] |  Active | 75% | Session [date] progress |
+| [Name] | Active | 75% | Session [date] progress |
 ```
 
 ---

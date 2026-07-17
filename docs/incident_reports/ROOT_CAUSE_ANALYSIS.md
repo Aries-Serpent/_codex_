@@ -43,16 +43,16 @@ This analysis identifies root causes, contributing factors, and corrective measu
 
 ```bash
 # Before claiming file created:
-ls -la <file_path>  # Must show file exists
+ls -la <file_path> # Must show file exists
 
 # Before claiming tests added:
-pytest <test_file> -v  # Must show tests pass
+pytest <test_file> -v # Must show tests pass
 
 # Before referencing commit:
-git show <commit> --name-only  # Verify content
+git show <commit> --name-only # Verify content
 
 # Before claiming coverage:
-pytest --cov=src --cov-report=term  # Show actual %
+pytest --cov=src --cov-report=term # Show actual %
 ```
 
 ## Required Evidence Format:
@@ -61,9 +61,9 @@ pytest --cov=src --cov-report=term  # Show actual %
 **Claim**: Added test_api.py with 50 tests
 
 **Evidence**:
-- File exists: `ls -la tests/api/test_api.py` → 2,450 bytes
-- Tests pass: `pytest tests/api/test_api.py -v` → 50/50 PASSED
-- In commit: `git show abc1234 --name-only` → tests/api/test_api.py
+- File exists: `ls -la tests/api/test_api.py` 2,450 bytes
+- Tests pass: `pytest tests/api/test_api.py -v` 50/50 PASSED
+- In commit: `git show abc1234 --name-only` tests/api/test_api.py
 ```
 
 ---

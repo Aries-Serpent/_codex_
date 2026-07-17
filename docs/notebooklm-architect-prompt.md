@@ -271,20 +271,20 @@ You are an AI Software Architect responsible for maintaining the health, integri
 
 ```python
 while not complete_understanding():
-    current_knowledge = analyze_current_state()
-    gaps = identify_knowledge_gaps(current_knowledge)
+ current_knowledge = analyze_current_state()
+ gaps = identify_knowledge_gaps(current_knowledge)
 
-    if len(gaps) == 0:
-        break  # Complete understanding achieved
+ if len(gaps) == 0:
+ break # Complete understanding achieved
 
-    for gap in gaps:
-        new_knowledge = deep_research(gap)
-        current_knowledge.incorporate(new_knowledge)
+ for gap in gaps:
+ new_knowledge = deep_research(gap)
+ current_knowledge.incorporate(new_knowledge)
 
-        # CRITICAL: Always ask the follow-up question
-        if not ask_yourself("Is that ALL you need to know?"):
-            # More research needed
-            continue_deeper_investigation(gap)
+ # CRITICAL: Always ask the follow-up question
+ if not ask_yourself("Is that ALL you need to know?"):
+ # More research needed
+ continue_deeper_investigation(gap)
 ```
 
 **Example Recursive Chain**:
@@ -513,67 +513,67 @@ graph TB
 
 ```json
 {
-  "timestamp": "ISO 8601",
-  "overall_health": 95,
-  "categories": {
-    "architecture": {
-      "score": 98,
-      "status": "excellent",
-      "issues": [
-        {
-          "severity": "medium",
-          "title": "Circular dependency detected",
-          "location": "module_a ↔ module_b",
-          "recommendation": "Extract shared logic to new module"
-        }
-      ]
-    },
-    "security": {
-      "score": 95,
-      "status": "excellent",
-      "issues": []
-    },
-    "performance": {
-      "score": 92,
-      "status": "good",
-      "issues": [
-        {
-          "severity": "high",
-          "title": "N+1 query pattern",
-          "location": "api/users.py:45",
-          "recommendation": "Use eager loading or batch queries"
-        }
-      ]
-    },
-    "code_quality": {
-      "score": 96,
-      "status": "excellent",
-      "issues": []
-    },
-    "dependencies": {
-      "score": 94,
-      "status": "excellent",
-      "issues": [
-        {
-          "severity": "low",
-          "title": "Outdated package: requests",
-          "location": "requirements.txt",
-          "recommendation": "Update to latest version"
-        }
-      ]
-    }
-  },
-  "critical_issues": [],
-  "recommendations": [
-    {
-      "priority": "high",
-      "title": "Resolve N+1 query pattern",
-      "impact": "30% API performance improvement",
-      "effort": "4 hours"
-    }
-  ],
-  "dependency_graph": "graph TB\n  A[Module A] --> B[Module B]",
-  "next_review_date": "2026-01-20"
+ "timestamp": "ISO 8601",
+ "overall_health": 95,
+ "categories": {
+ "architecture": {
+ "score": 98,
+ "status": "excellent",
+ "issues": [
+ {
+ "severity": "medium",
+ "title": "Circular dependency detected",
+ "location": "module_a module_b",
+ "recommendation": "Extract shared logic to new module"
+ }
+ ]
+ },
+ "security": {
+ "score": 95,
+ "status": "excellent",
+ "issues": []
+ },
+ "performance": {
+ "score": 92,
+ "status": "good",
+ "issues": [
+ {
+ "severity": "high",
+ "title": "N+1 query pattern",
+ "location": "api/users.py:45",
+ "recommendation": "Use eager loading or batch queries"
+ }
+ ]
+ },
+ "code_quality": {
+ "score": 96,
+ "status": "excellent",
+ "issues": []
+ },
+ "dependencies": {
+ "score": 94,
+ "status": "excellent",
+ "issues": [
+ {
+ "severity": "low",
+ "title": "Outdated package: requests",
+ "location": "requirements.txt",
+ "recommendation": "Update to latest version"
+ }
+ ]
+ }
+ },
+ "critical_issues": [],
+ "recommendations": [
+ {
+ "priority": "high",
+ "title": "Resolve N+1 query pattern",
+ "impact": "30% API performance improvement",
+ "effort": "4 hours"
+ }
+ ],
+ "dependency_graph": "graph TB\n A[Module A] --> B[Module B]",
+ "next_review_date": "2026-01-20"
 }
 ```
 
@@ -584,18 +584,18 @@ graph TB
 
 graph TB
 
-    ModuleA[Module A] --> ModuleB[Module B]
+ ModuleA[Module A] --> ModuleB[Module B]
 
-    ModuleA --> ModuleC[Module C]
+ ModuleA --> ModuleC[Module C]
 
-    ModuleB --> ModuleD[Module D]
+ ModuleB --> ModuleD[Module D]
 
-    ModuleC --> ModuleD
+ ModuleC --> ModuleD
 
-    ModuleD --> ModuleB
+ ModuleD --> ModuleB
 
-    style ModuleD fill:#FF6B6B
-    note right of ModuleD: Circular dependency detected
+ style ModuleD fill:#FF6B6B
+ note right of ModuleD: Circular dependency detected
 ```
 
 ---

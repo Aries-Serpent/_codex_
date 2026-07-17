@@ -295,22 +295,22 @@ All documents are properly cross-referenced:
 
 ```
 GITHUB_MCP_INTEGRATION_GUIDE.md
-├── References: GITHUB_ENVIRONMENT_SETUP.md
-├── References: MCP_DEVELOPER_GUIDE.md
-├── References: ADMIN_TOKEN_SETUP.md
-└── References: COPILOT_TOKEN_USAGE.md
+ References: GITHUB_ENVIRONMENT_SETUP.md
+ References: MCP_DEVELOPER_GUIDE.md
+ References: ADMIN_TOKEN_SETUP.md
+ References: COPILOT_TOKEN_USAGE.md
 
 GITHUB_ENVIRONMENT_SETUP.md
-├── References: GITHUB_MCP_INTEGRATION_GUIDE.md
-├── References: ADMIN_TOKEN_SETUP.md
-├── References: COPILOT_TOKEN_USAGE.md
-└── Includes: Python helper script (inline)
+ References: GITHUB_MCP_INTEGRATION_GUIDE.md
+ References: ADMIN_TOKEN_SETUP.md
+ References: COPILOT_TOKEN_USAGE.md
+ Includes: Python helper script (inline)
 
 examples/README.md
-├── References: GITHUB_MCP_INTEGRATION_GUIDE.md
-├── References: GITHUB_ENVIRONMENT_SETUP.md
-├── References: MCP_DEVELOPER_GUIDE.md
-└── References: ADMIN_TOKEN_SETUP.md
+ References: GITHUB_MCP_INTEGRATION_GUIDE.md
+ References: GITHUB_ENVIRONMENT_SETUP.md
+ References: MCP_DEVELOPER_GUIDE.md
+ References: ADMIN_TOKEN_SETUP.md
 ```
 
 ---
@@ -581,20 +581,20 @@ For questions or issues:
  - Performance degradation Cache configuration rollback
 
 4. **Recovery Procedure**:
-   ```bash
-   # Disable workflows
-   gh workflow disable notebooklm-sync.yml --repo Aries-Serpent/_codex_
+ ```bash
+ # Disable workflows
+ gh workflow disable notebooklm-sync.yml --repo Aries-Serpent/_codex_
 
-   # Revert to baseline (if needed)
-   git revert edbd92d5 47db5019
+ # Revert to baseline (if needed)
+ git revert edbd92d5 47db5019
 
-   # Or selective removal
-   rm -f .github/workflows/mcp-*.yml
-   rm -f docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md
+ # Or selective removal
+ rm -f .github/workflows/mcp-*.yml
+ rm -f docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md
 
-   # Verify clean state
-   git status
-   git diff HEAD~3
+ # Verify clean state
+ git status
+ git diff HEAD~3
  ```
 
 5. **Validation Points**:

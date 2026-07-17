@@ -50,15 +50,15 @@ The Phase 15-16 Pattern Library contains **40+ curated patterns** discovered thr
 
 ```
 .codex/
-├── patterns/
-│   ├── ci_failure_patterns.yaml              # CI failure patterns
-│   ├── test_flakiness_patterns.yaml          # Test reliability patterns
-│   ├── performance_patterns.yaml             # Performance patterns
-│   ├── security_patterns.yaml                # Security patterns
-│   ├── documentation_patterns.yaml           # Documentation patterns
-│   ├── deployment_patterns.yaml              # Deployment patterns
-│   └── observability_patterns.yaml           # Monitoring patterns
-└── pattern_library_metadata.json             # Index and metadata
+ patterns/
+ ci_failure_patterns.yaml # CI failure patterns
+ test_flakiness_patterns.yaml # Test reliability patterns
+ performance_patterns.yaml # Performance patterns
+ security_patterns.yaml # Security patterns
+ documentation_patterns.yaml # Documentation patterns
+ deployment_patterns.yaml # Deployment patterns
+ observability_patterns.yaml # Monitoring patterns
+ pattern_library_metadata.json # Index and metadata
 ```
 
 ---
@@ -102,13 +102,13 @@ pattern_id: flaky_test_concurrent
 name: "Race Condition in Concurrent Test"
 confidence: 0.88
 root_causes:
-  - "Missing mutex or lock primitive"
-  - "Unordered list assertions"
-  - "Timing-dependent sleeps"
+ - "Missing mutex or lock primitive"
+ - "Unordered list assertions"
+ - "Timing-dependent sleeps"
 fixes:
-  - "Use thread-safe data structures"
-  - "Add explicit synchronization"
-  - "Use deterministic test conditions"
+ - "Use thread-safe data structures"
+ - "Add explicit synchronization"
+ - "Use deterministic test conditions"
 ```
 
 ### 3. Performance Optimization Patterns (6 patterns)
@@ -131,9 +131,9 @@ baseline_duration_minutes: 25
 optimized_duration_minutes: 8
 improvement_percent: 68
 implementation:
-  - "Identify independent job dependencies"
-  - "Use GitHub Actions matrices"
-  - "Add proper cache strategy"
+ - "Identify independent job dependencies"
+ - "Use GitHub Actions matrices"
+ - "Add proper cache strategy"
 ```
 
 ### 4. Security Patterns (6 patterns)
@@ -153,12 +153,12 @@ name: "SQL Injection Vulnerability"
 severity: CRITICAL
 confidence: 0.93
 indicators:
-  - "String concatenation in SQL queries"
-  - "Unvalidated user input in WHERE clause"
+ - "String concatenation in SQL queries"
+ - "Unvalidated user input in WHERE clause"
 fixes:
-  - "Use parameterized queries"
-  - "Use ORM with prepared statements"
-  - "Validate/sanitize all inputs"
+ - "Use parameterized queries"
+ - "Use ORM with prepared statements"
+ - "Validate/sanitize all inputs"
 ```
 
 ### 5. Documentation Patterns (5 patterns)
@@ -203,26 +203,26 @@ fixes:
 ```bash
 # Get all security patterns
 curl "http://localhost:8000/api/memory/retrieve?lane_name=security" \
-  -H "Authorization: ******"
+ -H "Authorization: ******"
 
 # Response
 {
-  "data": {
-    "patterns": [
-      {
-        "id": "mem_sec_001",
-        "pattern_type": "sql_injection",
-        "confidence": 0.93,
-        "usage_count": 23
-      },
-      {
-        "id": "mem_sec_002",
-        "pattern_type": "auth_bypass",
-        "confidence": 0.89,
-        "usage_count": 18
-      }
-    ]
-  }
+ "data": {
+ "patterns": [
+ {
+ "id": "mem_sec_001",
+ "pattern_type": "sql_injection",
+ "confidence": 0.93,
+ "usage_count": 23
+ },
+ {
+ "id": "mem_sec_002",
+ "pattern_type": "auth_bypass",
+ "confidence": 0.89,
+ "usage_count": 18
+ }
+ ]
+ }
 }
 ```
 
@@ -231,7 +231,7 @@ curl "http://localhost:8000/api/memory/retrieve?lane_name=security" \
 ```bash
 # Get all flaky test patterns
 curl "http://localhost:8000/api/memory/retrieve?pattern_type=flaky_test&limit=10" \
-  -H "Authorization: ******"
+ -H "Authorization: ******"
 ```
 
 #### Search by Tags
@@ -239,7 +239,7 @@ curl "http://localhost:8000/api/memory/retrieve?pattern_type=flaky_test&limit=10
 ```bash
 # Get patterns related to concurrency
 curl "http://localhost:8000/api/memory/retrieve?tag=concurrency&limit=5" \
-  -H "Authorization: ******"
+ -H "Authorization: ******"
 ```
 
 #### Advanced Search with Confidence Filtering
@@ -247,7 +247,7 @@ curl "http://localhost:8000/api/memory/retrieve?tag=concurrency&limit=5" \
 ```bash
 # Get high-confidence patterns
 curl "http://localhost:8000/api/memory/retrieve?lane_name=ci&min_confidence=0.85&limit=10" \
-  -H "Authorization: ******"
+ -H "Authorization: ******"
 ```
 
 ### 2. Python SDK Search
@@ -259,15 +259,15 @@ lib = PatternLibrary(base_url="http://localhost:8000")
 
 # Find patterns for your problem
 patterns = lib.search(
-    lane_name="ci",
-    pattern_type="timeout",
-    min_confidence=0.80
+ lane_name="ci",
+ pattern_type="timeout",
+ min_confidence=0.80
 )
 
 for pattern in patterns:
-    print(f"Pattern: {pattern.name}")
-    print(f"Confidence: {pattern.confidence:.0%}")
-    print(f"Fix: {pattern.recommended_fix}")
+ print(f"Pattern: {pattern.name}")
+ print(f"Confidence: {pattern.confidence:.0%}")
+ print(f"Fix: {pattern.recommended_fix}")
 ```
 
 ### 3. YAML Pattern Index
@@ -303,7 +303,7 @@ Use `docs/PATTERN_LIBRARY_INDEX.md` for searchable index:
 ```bash
 # Search for import error patterns
 curl "http://localhost:8000/api/memory/retrieve?pattern_type=import_error" \
-  -H "Authorization: ******"
+ -H "Authorization: ******"
 ```
 
 **Step 2**: Review the pattern
@@ -311,16 +311,16 @@ curl "http://localhost:8000/api/memory/retrieve?pattern_type=import_error" \
 name: "Python Import Error - Module Not Found"
 confidence: 0.92
 root_causes:
-  - Missing dependency in requirements.txt
-  - Wrong Python path
-  - Missing __init__.py files
-  - Dependency not installed in CI environment
+ - Missing dependency in requirements.txt
+ - Wrong Python path
+ - Missing __init__.py files
+ - Dependency not installed in CI environment
 
 fixes:
-  - Add to requirements.txt
-  - Ensure pip install runs
-  - Check Python sys.path
-  - Verify package structure
+ - Add to requirements.txt
+ - Ensure pip install runs
+ - Check Python sys.path
+ - Verify package structure
 ```
 
 **Step 3**: Apply the fix
@@ -330,7 +330,7 @@ echo "codex-ml>=0.1.0" >> requirements.txt
 
 # Option 2: Ensure install in CI
 - name: Install dependencies
-  run: pip install -r requirements.txt
+ run: pip install -r requirements.txt
 
 # Option 3: Fix sys.path
 import sys
@@ -344,8 +344,8 @@ sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
 **Step 1**: Identify the pattern
 ```python
 patterns = lib.search(
-    lane_name="security",
-    pattern_type="sql_injection"
+ lane_name="security",
+ pattern_type="sql_injection"
 )
 ```
 
@@ -360,11 +360,11 @@ print(pattern.indicators)
 
 **Step 3**: Apply fix
 ```python
-#  VULNERABLE
+# VULNERABLE
 query = f"SELECT * FROM users WHERE id = {user_id}"
 result = db.execute(query)
 
-#  SECURE - Use parameterized queries
+# SECURE - Use parameterized queries
 query = "SELECT * FROM users WHERE id = ?"
 result = db.execute(query, (user_id,))
 ```
@@ -381,27 +381,27 @@ target: 12 minutes
 improvement: 52%
 
 steps:
-  1. Analyze job dependencies
-  2. Identify independent jobs
-  3. Convert to matrix strategy
-  4. Configure artifact caching
-  5. Optimize layer caching
+ 1. Analyze job dependencies
+ 2. Identify independent jobs
+ 3. Convert to matrix strategy
+ 4. Configure artifact caching
+ 5. Optimize layer caching
 ```
 
 **Implementation**:
 ```yaml
 # .github/workflows/code-quality.yml
 jobs:
-  quality-analysis:
-    strategy:
-      matrix:
-        analysis-type: [lint, type-check, complexity, security]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: python scripts/ci/run_analysis.py ${{ matrix.analysis-type }}
+ quality-analysis:
+ strategy:
+ matrix:
+ analysis-type: [lint, type-check, complexity, security]
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - run: python scripts/ci/run_analysis.py ${{ matrix.analysis-type }}
 
-  # Reduced from 25 min sequential to ~8 min parallel
+ # Reduced from 25 min sequential to ~8 min parallel
 ```
 
 ---
@@ -425,18 +425,18 @@ lib = PatternLibrary()
 
 # Create combination
 combo = PatternCombo(
-    name="Stabilize CI Pipeline",
-    patterns=[
-        "flaky_test_race_condition",
-        "ci_timeout_handling",
-        "perf_parallel_jobs"
-    ]
+ name="Stabilize CI Pipeline",
+ patterns=[
+ "flaky_test_race_condition",
+ "ci_timeout_handling",
+ "perf_parallel_jobs"
+ ]
 )
 
 # Apply patterns in sequence
 results = combo.apply(
-    workflow_path=".github/workflows/ci.yml",
-    auto_commit=True
+ workflow_path=".github/workflows/ci.yml",
+ auto_commit=True
 )
 ```
 
@@ -469,33 +469,33 @@ results = combo.apply(
 name: Automatic Pattern Application
 
 on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+ pull_request:
+ branches: [main]
+ workflow_dispatch:
 
 jobs:
-  apply-patterns:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install SDK
-        run: pip install codex-sdk
-      
-      - name: Detect failures
-        run: python scripts/ci/detect_patterns.py
-      
-      - name: Apply patterns
-        run: python scripts/ci/apply_patterns.py
-      
-      - name: Create fix PR
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: "Fix: Apply patterns from library"
-          branch: pattern-fix-${{ github.run_id }}
+ apply-patterns:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - uses: actions/setup-python@v4
+ with:
+ python-version: '3.10'
+ 
+ - name: Install SDK
+ run: pip install codex-sdk
+ 
+ - name: Detect failures
+ run: python scripts/ci/detect_patterns.py
+ 
+ - name: Apply patterns
+ run: python scripts/ci/apply_patterns.py
+ 
+ - name: Create fix PR
+ uses: peter-evans/create-pull-request@v5
+ with:
+ commit-message: "Fix: Apply patterns from library"
+ branch: pattern-fix-${{ github.run_id }}
 ```
 
 ### 2. Pattern-Based Test Selection
@@ -508,15 +508,15 @@ lib = PatternLibrary()
 
 # Get flaky test patterns
 flaky_patterns = lib.search(
-    pattern_type="flaky_test",
-    min_confidence=0.80
+ pattern_type="flaky_test",
+ min_confidence=0.80
 )
 
 # Extract affected test files
 test_files = set()
 for pattern in flaky_patterns:
-    for file in pattern.affected_files:
-        test_files.add(file)
+ for file in pattern.affected_files:
+ test_files.add(file)
 
 # Run only affected tests
 print("::set-output name=tests::" + " ".join(test_files))
@@ -527,22 +527,22 @@ print("::set-output name=tests::" + " ".join(test_files))
 ```yaml
 # .github/workflows/smart-gates.yml
 jobs:
-  determine-gates:
-    runs-on: ubuntu-latest
-    outputs:
-      gates: ${{ steps.select.outputs.gates }}
-    steps:
-      - name: Select gates from patterns
-        id: select
-        run: |
-          python scripts/ci/determine_gates.py
-          echo "gates=$(cat gates.json)" >> $GITHUB_OUTPUT
+ determine-gates:
+ runs-on: ubuntu-latest
+ outputs:
+ gates: ${{ steps.select.outputs.gates }}
+ steps:
+ - name: Select gates from patterns
+ id: select
+ run: |
+ python scripts/ci/determine_gates.py
+ echo "gates=$(cat gates.json)" >> $GITHUB_OUTPUT
 
-  run-gates:
-    needs: determine-gates
-    runs-on: ubuntu-latest
-    steps:
-      - run: python scripts/ci/run_gates.py '${{ needs.determine-gates.outputs.gates }}'
+ run-gates:
+ needs: determine-gates
+ runs-on: ubuntu-latest
+ steps:
+ - run: python scripts/ci/run_gates.py '${{ needs.determine-gates.outputs.gates }}'
 ```
 
 ---
@@ -599,49 +599,49 @@ jobs:
 
 ```python
 class Pattern(BaseModel):
-    id: str                          # Unique identifier
-    name: str                        # Human-readable name
-    pattern_type: str               # Category (ci_failure, security, etc.)
-    lane_name: str                  # Source lane
-    
-    # Quality metrics
-    confidence: float               # 0.0-1.0 confidence score
-    success_rate: float            # Historical success rate
-    usage_count: int               # Times applied
-    
-    # Description
-    description: str               # What this pattern solves
-    root_causes: List[str]         # Underlying issues
-    indicators: List[str]          # How to detect
-    
-    # Implementation
-    fixes: List[str]               # Recommended fixes
-    implementation_steps: List[str] # How-to steps
-    code_example: str              # Code snippet
-    
-    # Metadata
-    tags: List[str]                # Searchable tags
-    affected_files: List[str]      # Files/patterns affected
-    performance_impact: str        # "high", "medium", "low"
-    severity: str                  # "critical", "high", "medium", "low"
-    
-    # Tracking
-    created_at: datetime
-    last_used: datetime
-    usage_history: List[dict]      # Audit trail
-    
-    # Relations
-    related_patterns: List[str]    # IDs of related patterns
-    conflicting_patterns: List[str] # Patterns to avoid combining
+ id: str # Unique identifier
+ name: str # Human-readable name
+ pattern_type: str # Category (ci_failure, security, etc.)
+ lane_name: str # Source lane
+ 
+ # Quality metrics
+ confidence: float # 0.0-1.0 confidence score
+ success_rate: float # Historical success rate
+ usage_count: int # Times applied
+ 
+ # Description
+ description: str # What this pattern solves
+ root_causes: List[str] # Underlying issues
+ indicators: List[str] # How to detect
+ 
+ # Implementation
+ fixes: List[str] # Recommended fixes
+ implementation_steps: List[str] # How-to steps
+ code_example: str # Code snippet
+ 
+ # Metadata
+ tags: List[str] # Searchable tags
+ affected_files: List[str] # Files/patterns affected
+ performance_impact: str # "high", "medium", "low"
+ severity: str # "critical", "high", "medium", "low"
+ 
+ # Tracking
+ created_at: datetime
+ last_used: datetime
+ usage_history: List[dict] # Audit trail
+ 
+ # Relations
+ related_patterns: List[str] # IDs of related patterns
+ conflicting_patterns: List[str] # Patterns to avoid combining
 ```
 
 ### REST Endpoints
 
 ```
-GET /api/memory/retrieve              # Search patterns
-POST /api/memory/store               # Add new pattern
-GET /api/memory/stats               # Pattern statistics
-POST /api/memory/stm-push           # Cache pattern access
+GET /api/memory/retrieve # Search patterns
+POST /api/memory/store # Add new pattern
+GET /api/memory/stats # Pattern statistics
+POST /api/memory/stm-push # Cache pattern access
 ```
 
 ### Search Query Examples

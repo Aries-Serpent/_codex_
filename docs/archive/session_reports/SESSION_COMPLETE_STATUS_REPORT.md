@@ -246,13 +246,13 @@ python scripts/space_traversal/audit_runner.py run
 python -c "
 import json
 with open('audit_artifacts/capabilities_scored.json') as f:
-    data = json.load(f)
+ data = json.load(f)
 targets = ['deployment-infrastructure', 'functional_training', 'safeguards_keywords',
-           'structural-integrity', 'documentation-system']
+ 'structural-integrity', 'documentation-system']
 for t in targets:
-    for c in data['capabilities']:
-        if c['id'] == t:
-            print(f'{t}: {c[\"score\"]:.4f}')
+ for c in data['capabilities']:
+ if c['id'] == t:
+ print(f'{t}: {c[\"score\"]:.4f}')
 "
 
 # Target: All ≥ 0.70
@@ -264,8 +264,8 @@ for t in targets:
 ```bash
 # Activate sequentially
 for batch in 14 15 16 17; do
-    pytest tests/agents/test_phase2_deep_coverage_batch${batch}*.py -v
-    # Fix, verify, measure coverage
+ pytest tests/agents/test_phase2_deep_coverage_batch${batch}*.py -v
+ # Fix, verify, measure coverage
 done
 
 # Final coverage target: 67-87%
@@ -273,7 +273,7 @@ done
 
 **Step 9: Push Medium Capabilities**
 ```bash
-# Target 26 capabilities from 0.70-0.85 → ≥0.85
+# Target 26 capabilities from 0.70-0.85 ≥0.85
 # Apply same pattern: tests + docs + detection
 ```
 

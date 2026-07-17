@@ -270,7 +270,7 @@ P0 — Execute first (blocking):
 - [ ] P0-3: Archive pr3178-pytest-execution.yml
 
 P1 — Execute next (significant savings):
-- [ ] P1-1: Consolidate 6 doc health workflows → docs-unified-health.yml
+- [ ] P1-1: Consolidate 6 doc health workflows docs-unified-health.yml
 - [ ] P1-2: Audit security-scanning-suite.yml, archive redundant security workflows
 - [ ] P1-3: Consolidate PR check workflows into consolidated-pr-status.yml
 - [ ] P1-4: Audit Copilot session workflows, deprecate copilot-agent-vars-bootstrap + evolution-suite

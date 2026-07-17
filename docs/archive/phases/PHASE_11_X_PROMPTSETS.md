@@ -63,11 +63,11 @@ SPECIFICATIONS:
 - File: src/codex/auth/oauth_manager.py (~300 lines)
 - Class: OAuthManager
 - Methods:
-  - initiate_flow(provider: str) -> str (returns auth URL)
-  - exchange_code(code: str, state: str) -> OAuthToken
-  - refresh_token(refresh_token: str) -> OAuthToken
-  - revoke_token(token: str) -> bool
-  - validate_state(state: str) -> bool
+ - initiate_flow(provider: str) -> str (returns auth URL)
+ - exchange_code(code: str, state: str) -> OAuthToken
+ - refresh_token(refresh_token: str) -> OAuthToken
+ - revoke_token(token: str) -> bool
+ - validate_state(state: str) -> bool
 
 SECURITY:
 - Use secrets.token_urlsafe(32) for state
@@ -102,13 +102,13 @@ SPECIFICATIONS:
 - File: src/codex/auth/mfa_provider.py (~200 lines)
 - Class: MFAProvider
 - Methods:
-  - generate_totp_secret() -> str
-  - generate_qr_code(secret: str, user: str) -> bytes
-  - verify_totp(secret: str, code: str) -> bool
-  - send_otp(user: str, method: str) -> str
-  - verify_otp(session_id: str, code: str) -> bool
-  - generate_backup_codes(count: int = 10) -> List[str]
-  - verify_backup_code(user: str, code: str) -> bool
+ - generate_totp_secret() -> str
+ - generate_qr_code(secret: str, user: str) -> bytes
+ - verify_totp(secret: str, code: str) -> bool
+ - send_otp(user: str, method: str) -> str
+ - verify_otp(session_id: str, code: str) -> bool
+ - generate_backup_codes(count: int = 10) -> List[str]
+ - verify_backup_code(user: str, code: str) -> bool
 
 DEPENDENCIES:
 - pyotp for TOTP
@@ -147,11 +147,11 @@ SPECIFICATIONS:
 - File: src/codex/auth/hsm_integration.py (~150 lines)
 - Class: HSMIntegration
 - Methods:
-  - connect(config: Dict) -> bool
-  - sign_token(data: bytes) -> bytes
-  - verify_signature(data: bytes, signature: bytes) -> bool
-  - rotate_key() -> str (returns new key ID)
-  - get_public_key() -> bytes
+ - connect(config: Dict) -> bool
+ - sign_token(data: bytes) -> bytes
+ - verify_signature(data: bytes, signature: bytes) -> bool
+ - rotate_key() -> str (returns new key ID)
+ - get_public_key() -> bytes
 
 CONFIGURATION:
 - Environment-based provider selection
@@ -193,12 +193,12 @@ SPECIFICATIONS:
 - File: scripts/phase11/auto_upload_gdrive.py (~400 lines)
 - Class: GoogleDriveUploader
 - Methods:
-  - authenticate() -> Credentials
-  - create_folder_structure(repo: str) -> str (folder ID)
-  - upload_file(path: str, folder_id: str) -> str (file ID)
-  - list_versions(folder_id: str) -> List[FileInfo]
-  - cleanup_old_versions(folder_id: str, keep: int = 10)
-  - generate_share_link(file_id: str) -> str
+ - authenticate() -> Credentials
+ - create_folder_structure(repo: str) -> str (folder ID)
+ - upload_file(path: str, folder_id: str) -> str (file ID)
+ - list_versions(folder_id: str) -> List[FileInfo]
+ - cleanup_old_versions(folder_id: str, keep: int = 10)
+ - generate_share_link(file_id: str) -> str
 
 API:
 - Google Drive API v3
@@ -236,12 +236,12 @@ SPECIFICATIONS:
 - File: scripts/phase11/notebooklm_sync.py (~350 lines)
 - Class: NotebookLMSync
 - Methods:
-  - connect(api_key: str) -> bool
-  - upload_document(content: str, metadata: Dict) -> str
-  - update_document(doc_id: str, content: str) -> bool
-  - delete_document(doc_id: str) -> bool
-  - get_index() -> List[DocumentInfo]
-  - sync_incremental(changes: List[Change])
+ - connect(api_key: str) -> bool
+ - upload_document(content: str, metadata: Dict) -> str
+ - update_document(doc_id: str, content: str) -> bool
+ - delete_document(doc_id: str) -> bool
+ - get_index() -> List[DocumentInfo]
+ - sync_incremental(changes: List[Change])
 
 SYNC STRATEGY:
 - Full sync: per-phase
@@ -284,13 +284,13 @@ SPECIFICATIONS:
 - File: tests/e2e/test_secrets_workflow.py (~500 lines)
 - Framework: Playwright + pytest
 - Test Scenarios:
-  1. User creates secret
-  2. User retrieves secret
-  3. User updates secret
-  4. User rotates secret
-  5. User deletes secret
-  6. User handles rotation failure
-  7. Multiple users access same secret
+ 1. User creates secret
+ 2. User retrieves secret
+ 3. User updates secret
+ 4. User rotates secret
+ 5. User deletes secret
+ 6. User handles rotation failure
+ 7. Multiple users access same secret
 
 TEST STRUCTURE:
 ```text
@@ -340,18 +340,18 @@ SPECIFICATIONS:
 - File: tests/performance/benchmark_suite.py (~600 lines)
 - Framework: Locust + pytest-benchmark
 - Metrics:
-  - Throughput: >100 req/s per core
-  - Latency p95: <200ms
-  - Latency p99: <500ms
-  - Memory: <1GB per process
-  - CPU: <80% sustained
+ - Throughput: >100 req/s per core
+ - Latency p95: <200ms
+ - Latency p99: <500ms
+ - Memory: <1GB per process
+ - CPU: <80% sustained
 
 TEST SCENARIOS:
 1. Secret creation (1000 operations)
 2. Secret retrieval (10000 operations)
 3. Secret rotation (100 operations)
 4. Concurrent users (100 simultaneous)
-5. Spike load (0→1000 users in 10s)
+5. Spike load (01000 users in 10s)
 
 IMPLEMENTATION:
 ```text
@@ -399,13 +399,13 @@ SPECIFICATIONS:
 - File: src/codex/integrations/mlflow_tracker.py (~400 lines)
 - Class: MLflowTracker
 - Methods:
-  - create_experiment(name: str) -> str
-  - start_run(experiment_id: str) -> RunContext
-  - log_param(key: str, value: Any)
-  - log_metric(key: str, value: float, step: int)
-  - log_artifact(path: str)
-  - register_model(name: str, run_id: str) -> ModelVersion
-  - end_run()
+ - create_experiment(name: str) -> str
+ - start_run(experiment_id: str) -> RunContext
+ - log_param(key: str, value: Any)
+ - log_metric(key: str, value: float, step: int)
+ - log_artifact(path: str)
+ - register_model(name: str, run_id: str) -> ModelVersion
+ - end_run()
 
 INTEGRATION:
 - Automatic experiment creation per project
@@ -446,11 +446,11 @@ SPECIFICATIONS:
 - File: src/codex/integrations/slack_notifier.py (~300 lines)
 - Class: SlackNotifier
 - Methods:
-  - send_message(channel: str, text: str, blocks: List) -> str
-  - send_thread_reply(parent_ts: str, text: str)
-  - send_alert(severity: str, message: str)
-  - send_deployment_notification(deploy_info: Dict)
-  - send_error_report(error: Exception, context: Dict)
+ - send_message(channel: str, text: str, blocks: List) -> str
+ - send_thread_reply(parent_ts: str, text: str)
+ - send_alert(severity: str, message: str)
+ - send_deployment_notification(deploy_info: Dict)
+ - send_error_report(error: Exception, context: Dict)
 
 MESSAGE TYPES:
 1. Deployment notifications
@@ -505,11 +505,11 @@ SPECIFICATIONS:
 - File: src/codex/security/secret_rotation.py (~350 lines)
 - Class: SecretRotation
 - Methods:
-  - schedule_rotation(secret_id: str, frequency: str)
-  - rotate_secret(secret_id: str) -> RotationResult
-  - rollback_rotation(secret_id: str, version: int)
-  - get_rotation_history(secret_id: str) -> List[RotationEvent]
-  - validate_rotation(secret_id: str) -> bool
+ - schedule_rotation(secret_id: str, frequency: str)
+ - rotate_secret(secret_id: str) -> RotationResult
+ - rollback_rotation(secret_id: str, version: int)
+ - get_rotation_history(secret_id: str) -> List[RotationEvent]
+ - validate_rotation(secret_id: str) -> bool
 
 ROTATION PROCESS:
 1. Generate new secret value
@@ -522,7 +522,7 @@ ROTATION PROCESS:
 
 ZERO-DOWNTIME STRATEGY:
 - Dual-secret period (both old and new valid)
-- Gradual rollout (canary → 50% → 100%)
+- Gradual rollout (canary 50% 100%)
 - Automatic validation before activation
 - Instant rollback on errors
 
@@ -553,7 +553,7 @@ TASK: Create .github/agents/code-migration-agent.agent.yml
 AGENT CAPABILITIES:
 1. Python 2 to Python 3 migration
 2. Framework upgrades (Django, Flask, FastAPI)
-3. Library migrations (requests → httpx)
+3. Library migrations (requests httpx)
 4. Syntax modernization
 5. Breaking change detection
 
@@ -690,52 +690,52 @@ OUTPUTS:
 VALIDATION CHECKLIST:
 
 1. FUNCTIONALITY
-   - [ ] All OAuth flows working
-   - [ ] MFA challenges successful
-   - [ ] HSM integration operational
-   - [ ] Google Drive uploads working
-   - [ ] NotebookLM sync functional
-   - [ ] E2E tests passing
-   - [ ] Performance benchmarks met
-   - [ ] All integrations active
-   - [ ] Secret rotation automated
-   - [ ] 4 custom agents functional
+ - [ ] All OAuth flows working
+ - [ ] MFA challenges successful
+ - [ ] HSM integration operational
+ - [ ] Google Drive uploads working
+ - [ ] NotebookLM sync functional
+ - [ ] E2E tests passing
+ - [ ] Performance benchmarks met
+ - [ ] All integrations active
+ - [ ] Secret rotation automated
+ - [ ] 4 custom agents functional
 
 2. SECURITY
-   - [ ] No new CodeQL alerts
-   - [ ] Secrets encrypted at rest
-   - [ ] Audit logging comprehensive
-   - [ ] Rate limiting enforced
-   - [ ] CSRF protection active
-   - [ ] Input validation complete
+ - [ ] No new CodeQL alerts
+ - [ ] Secrets encrypted at rest
+ - [ ] Audit logging comprehensive
+ - [ ] Rate limiting enforced
+ - [ ] CSRF protection active
+ - [ ] Input validation complete
 
 3. PERFORMANCE
-   - [ ] Latency p95 <200ms
-   - [ ] Throughput >100 req/s
-   - [ ] Memory usage <1GB
-   - [ ] Zero-downtime deployments
-   - [ ] Graceful degradation
+ - [ ] Latency p95 <200ms
+ - [ ] Throughput >100 req/s
+ - [ ] Memory usage <1GB
+ - [ ] Zero-downtime deployments
+ - [ ] Graceful degradation
 
 4. TESTING
-   - [ ] Unit test coverage >90%
-   - [ ] Integration tests passing
-   - [ ] E2E tests passing
-   - [ ] Performance tests passing
-   - [ ] Chaos tests passing
+ - [ ] Unit test coverage >90%
+ - [ ] Integration tests passing
+ - [ ] E2E tests passing
+ - [ ] Performance tests passing
+ - [ ] Chaos tests passing
 
 5. DOCUMENTATION
-   - [ ] API docs complete
-   - [ ] User guides written
-   - [ ] Architecture diagrams created
-   - [ ] Changelog updated
-   - [ ] Migration guides available
+ - [ ] API docs complete
+ - [ ] User guides written
+ - [ ] Architecture diagrams created
+ - [ ] Changelog updated
+ - [ ] Migration guides available
 
 6. MONITORING
-   - [ ] Datadog metrics flowing
-   - [ ] Slack alerts configured
-   - [ ] PagerDuty integrated
-   - [ ] MLflow tracking active
-   - [ ] Health checks passing
+ - [ ] Datadog metrics flowing
+ - [ ] Slack alerts configured
+ - [ ] PagerDuty integrated
+ - [ ] MLflow tracking active
+ - [ ] Health checks passing
 
 Generate comprehensive validation report with pass/fail for each item.
 ```

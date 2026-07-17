@@ -61,9 +61,9 @@ decoder.finish().unwrap()
 **After**:
 ```rust
 encoder.write_all(data)
-    .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression write failed: {}", e)))?;
+ .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression write failed: {}", e)))?;
 encoder.finish()
-    .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression finish failed: {}", e)))
+ .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Compression finish failed: {}", e)))
 ```
 
 **Validation**:
@@ -89,11 +89,11 @@ from codex_swarm import SwarmEngine, TaskManager, Compression
 **After**:
 ```python
 try:
-    from codex_swarm import SwarmEngine, TaskManager, Compression
-    MODULE_AVAILABLE = True
+ from codex_swarm import SwarmEngine, TaskManager, Compression
+ MODULE_AVAILABLE = True
 except ImportError:
-    MODULE_AVAILABLE = False
-    # ... error message and instructions ...
+ MODULE_AVAILABLE = False
+ # ... error message and instructions ...
 ```
 
 **Validation**:
@@ -105,11 +105,11 @@ except ImportError:
 
 **Test Output**:
 ```
-️  codex_swarm module not found!
+ codex_swarm module not found!
 
 To build and install the module, run:
-  pip install maturin
-  maturin develop --release
+ pip install maturin
+ maturin develop --release
 
 This example will show the code structure without executing it.
 ============================================================
@@ -127,13 +127,13 @@ This example will show the code structure without executing it.
 ```javascript
 let safeCut = results.lastIndexOf('\n', MAX_PREVIEW_LENGTH);
 if (safeCut === -1) {
-  safeCut = MAX_PREVIEW_LENGTH;
+ safeCut = MAX_PREVIEW_LENGTH;
 }
 if (safeCut > 0) {
-  const codeUnit = results.charCodeAt(safeCut - 1);
-  if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
-    safeCut -= 1;
-  }
+ const codeUnit = results.charCodeAt(safeCut - 1);
+ if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
+ safeCut -= 1;
+ }
 }
 preview = results.slice(0, safeCut) + '\n... (truncated) ...';
 ```
@@ -247,12 +247,12 @@ All changes are well-implemented and improve code quality:
 ## Files Changed
 
 ```
- .github/RUST_SWARM_PATH_TO_100_COVERAGE.md            |  2 +-
- .github/agents/test-assertion-updater/prompts/main.md |  5 ++++
- .github/workflows/semgrep_sarif.yml                   | 17 ++++++++++++-
- examples/basic_usage.py                               | 77 +++++++++++++++++-
- rust_swarm/compression.rs                             | 50 ++++++-------
- rust_swarm/telemetry.rs                               |  2 +-
+ .github/RUST_SWARM_PATH_TO_100_COVERAGE.md | 2 +-
+ .github/agents/test-assertion-updater/prompts/main.md | 5 ++++
+ .github/workflows/semgrep_sarif.yml | 17 ++++++++++++-
+ examples/basic_usage.py | 77 +++++++++++++++++-
+ rust_swarm/compression.rs | 50 ++++++-------
+ rust_swarm/telemetry.rs | 2 +-
 
  6 files changed, 115 insertions(+), 38 deletions(-)
 ```

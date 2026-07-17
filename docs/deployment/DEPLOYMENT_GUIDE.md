@@ -74,23 +74,23 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 ### Release Preparation
 
 - [ ] **Version bumped** in `pyproject.toml`
-  ```toml
-  [project]
-  version = "0.1.0"  # Bump from previous
+ ```toml
+ [project]
+ version = "0.1.0" # Bump from previous
  ```
 
 - [ ] **CHANGELOG.md updated** with release notes
-  ```markdown
-  ## [0.1.0] - 2026-07-07
-  
-  ### Added
-  - Initial release of Cognitive Brain ecosystem
-  - Three-profile packaging (core/runtime/full)
-  - OODA loop framework
-  
-  ### Security
-  - Fixed CVE-XXXX: [description]
-  - Added network policy enforcement
+ ```markdown
+ ## [0.1.0] - 2026-07-07
+ 
+ ### Added
+ - Initial release of Cognitive Brain ecosystem
+ - Three-profile packaging (core/runtime/full)
+ - OODA loop framework
+ 
+ ### Security
+ - Fixed CVE-XXXX: [description]
+ - Added network policy enforcement
  ```
 
 - [ ] **Release notes prepared** (for GitHub release)
@@ -98,10 +98,10 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
  - Include: Features, security fixes, installation instructions, known issues
 
 - [ ] **git tag prepared** (not yet pushed)
-  ```bash
-  # Draft the tag locally (don't push yet)
-  git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain"
-  # Don't push yet - pre-release validation will trigger this
+ ```bash
+ # Draft the tag locally (don't push yet)
+ git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain"
+ # Don't push yet - pre-release validation will trigger this
  ```
 
 ### Infrastructure Ready
@@ -111,17 +111,17 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
  - Test: `twine check` on a test build
 
 - [ ] **Build environment validated**
-  ```bash
-  python -m pip install build
-  python -m build --wheel
-  # Should produce 3 wheels (core, runtime, full compatible)
+ ```bash
+ python -m pip install build
+ python -m build --wheel
+ # Should produce 3 wheels (core, runtime, full compatible)
  ```
 
 - [ ] **Offline install tested** (on all three profiles)
-  ```bash
-  # Simulate offline environment
-  scripts/prepare_offline_env.sh core
-  scripts/deploy/bootstrap_offline.py wheelhouse_core/
+ ```bash
+ # Simulate offline environment
+ scripts/prepare_offline_env.sh core
+ scripts/deploy/bootstrap_offline.py wheelhouse_core/
  ```
 
 ### Documentation Ready
@@ -143,18 +143,18 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 1. Create branch: `release/v0.2.1-prepare`
 2. Commit changes:
-   ```bash
-   git checkout -b release/v0.2.1-prepare
-   
-   # Bump version
-   sed -i 's/version = "[^"]*"/version = "0.1.0"/' pyproject.toml
-   
-   # Update changelog (already done, but verify)
-   # Edit CHANGELOG.md
-   
-   git add pyproject.toml CHANGELOG.md
-   git commit -m "chore: Prepare v0.2.1 release"
-   git push origin release/v0.2.1-prepare
+ ```bash
+ git checkout -b release/v0.2.1-prepare
+ 
+ # Bump version
+ sed -i 's/version = "[^"]*"/version = "0.1.0"/' pyproject.toml
+ 
+ # Update changelog (already done, but verify)
+ # Edit CHANGELOG.md
+ 
+ git add pyproject.toml CHANGELOG.md
+ git commit -m "chore: Prepare v0.2.1 release"
+ git push origin release/v0.2.1-prepare
  ```
 
 3. Open PR: `release/v0.2.1-prepare` `main`
@@ -291,12 +291,12 @@ All 12 test combinations should pass:
  - Monitor daily downloads over next 7 days
 
 2. **Setup alerts**:
-   ```bash
-   # Log to monitoring dashboard
-   scripts/deploy/log_release_metrics.py \
-     --version 0.1.0 \
-     --deployment-time 15m \
-     --smoke-test-status all-passed
+ ```bash
+ # Log to monitoring dashboard
+ scripts/deploy/log_release_metrics.py \
+ --version 0.1.0 \
+ --deployment-time 15m \
+ --smoke-test-status all-passed
  ```
 
 3. **Create monitoring dashboard**:
@@ -449,19 +449,19 @@ from codex_plans import list_plan_documents
 
 plans = list_plan_documents()
 for plan in plans:
-    print(f"  📄 {plan.name} ({plan.stat().st_size} bytes)")
+ print(f" {plan.name} ({plan.stat().st_size} bytes)")
 ```
 
 Expected output:
 ```
-📄 Tasks_PR_2459.md (99647 bytes)
-📄 track_A.md (1587 bytes)
-📄 track_B.md (1462 bytes)
-📄 track_C.md (1979 bytes)
-📄 track_D.md (1695 bytes)
-📄 track_E.md (2494 bytes)
-📄 track_F.md (2902 bytes)
-📄 track_G.md (3673 bytes)
+ Tasks_PR_2459.md (99647 bytes)
+ track_A.md (1587 bytes)
+ track_B.md (1462 bytes)
+ track_C.md (1979 bytes)
+ track_D.md (1695 bytes)
+ track_E.md (2494 bytes)
+ track_F.md (2902 bytes)
+ track_G.md (3673 bytes)
 ```
 
 ### Reading a Phase Plan
@@ -472,10 +472,10 @@ from codex_plans import list_plan_documents
 
 plans = list_plan_documents()
 with open(plans[0]) as f:
-    content = f.read()
-    print(f"Plan: {plans[0].name}")
-    print(f"Lines: {len(content.splitlines())}")
-    print("\n" + content[:500] + "...")
+ content = f.read()
+ print(f"Plan: {plans[0].name}")
+ print(f"Lines: {len(content.splitlines())}")
+ print("\n" + content[:500] + "...")
 ```
 
 ### Use Cases
@@ -505,28 +505,28 @@ After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.2.1
 
 ```json
 {
-  "version": "0.1.0",
-  "released_at": "2026-07-07T15:30:00Z",
-  "metrics": {
-    "build_duration_seconds": 420,
-    "wheel_sizes": {
-      "core": 8500000,
-      "runtime": 25000000,
-      "full": 105000000
-    },
-    "smoke_tests": {
-      "total": 12,
-      "passed": 12,
-      "failed": 0,
-      "duration_seconds": 180
-    },
-    "pypi_upload_duration": 45
-  },
-  "artifacts": {
-    "wheels": 9,
-    "manifest": 1,
-    "sbom": 3
-  }
+ "version": "0.1.0",
+ "released_at": "2026-07-07T15:30:00Z",
+ "metrics": {
+ "build_duration_seconds": 420,
+ "wheel_sizes": {
+ "core": 8500000,
+ "runtime": 25000000,
+ "full": 105000000
+ },
+ "smoke_tests": {
+ "total": 12,
+ "passed": 12,
+ "failed": 0,
+ "duration_seconds": 180
+ },
+ "pypi_upload_duration": 45
+ },
+ "artifacts": {
+ "wheels": 9,
+ "manifest": 1,
+ "sbom": 3
+ }
 }
 ```
 
@@ -581,9 +581,9 @@ If critical issues found in first 2 hours:
 ```bash
 # Quick rollback script
 python scripts/deploy/rollback_release.py \
-  --version v0.2.1 \
-  --reason "Critical bug in runtime profile" \
-  --restore-version v0.2.1
+ --version v0.2.1 \
+ --reason "Critical bug in runtime profile" \
+ --restore-version v0.2.1
 
 # This:
 # 1. Marks v0.2.1 as yanked on PyPI
@@ -697,9 +697,9 @@ pip install codex-ml[core]==0.2.1
 ```bash
 # Use the provided offline bootstrap script
 scripts/deploy/bootstrap_offline.py \
-  --wheelhouse wheelhouse_core/ \
-  --profile core \
-  --python-version 3.12
+ --wheelhouse wheelhouse_core/ \
+ --profile core \
+ --python-version 3.12
 ```
 
 ### Issue: Network calls detected in core profile
@@ -760,7 +760,7 @@ This section covers deployment of the documentation site to local development en
 ```bash
 # Step 1: Install MkDocs and plugins
 pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin \
-            mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
+ mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
 
 # Step 2: Start local server
 cd /home/runner/work/_codex_/_codex_
@@ -835,9 +835,9 @@ mkdocs serve
 **Build Time Benchmarks**:
 
 ```
-Initial build:        15-30 seconds (full)
-Subsequent builds:      2-5 seconds (incremental)
-Single file change:    < 1 second (hot-reload)
+Initial build: 15-30 seconds (full)
+Subsequent builds: 2-5 seconds (incremental)
+Single file change: < 1 second (hot-reload)
 ```
 
 ### Troubleshooting Local Deployment
@@ -871,7 +871,7 @@ pip install mkdocs-material mkdocs-mermaid2-plugin
 # Check Mermaid plugin is enabled in mkdocs.yml
 # Verify fence is correct:
 # Correct: ```mermaid
-#  Wrong:   ```diagram
+# Wrong: ```diagram
 
 # Check markdown file has correct syntax:
 mkdocs build --verbose
@@ -916,11 +916,11 @@ git commit -m "docs: update documentation"
 git push origin main
 
 # 3. GitHub Actions automatically:
-#    - Builds the site
-#    - Validates links
-#    - Deploys to GitHub Pages
-#    - Runs health checks
-#    - Reports status
+# - Builds the site
+# - Validates links
+# - Deploys to GitHub Pages
+# - Runs health checks
+# - Reports status
 
 # 4. Verify deployment succeeded
 # Check Actions tab on GitHub for workflow status
@@ -974,15 +974,15 @@ mkdocs build
 
 ```
 127.0.0.1:8000/
-├─ /                      # Home page
-├─ /evolution/           # Evolution Center
-├─ /tokens/              # Token Management
-├─ /architecture/        # Architecture docs
-├─ /deployment/          # Deployment guides
-├─ /guides/              # How-to guides
-├─ /search/              # Full-text search
-├─ /assets/              # CSS, JS, images
-└─ /health               # Health check endpoint
+ / # Home page
+ /evolution/ # Evolution Center
+ /tokens/ # Token Management
+ /architecture/ # Architecture docs
+ /deployment/ # Deployment guides
+ /guides/ # How-to guides
+ /search/ # Full-text search
+ /assets/ # CSS, JS, images
+ /health # Health check endpoint
 
 All pages accessible via sidebar navigation
 Search available in top navigation bar

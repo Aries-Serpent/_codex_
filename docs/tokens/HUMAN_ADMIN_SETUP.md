@@ -105,13 +105,13 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 # Click "New organization secret"
 # Name: ORG_MASTER_KEY
 # Value: [paste token]
-# Repository access: Selected repositories → Choose Aries-Serpent/_codex_
+# Repository access: Selected repositories Choose Aries-Serpent/_codex_
 # Click "Add secret"
 
 # Via GitHub CLI
 echo "your-org-master-token" | gh secret set ORG_MASTER_KEY \
-  --org Aries-Serpent \
-  --repos Aries-Serpent/_codex_
+ --org Aries-Serpent \
+ --repos Aries-Serpent/_codex_
 ```
 
 **For Repository Secret (Alternative):**
@@ -131,7 +131,7 @@ echo "your-org-master-token" | gh secret set ORG_MASTER_KEY --repo Aries-Serpent
 # For organization secret
 gh api /orgs/Aries-Serpent/actions/secrets | jq '.secrets[] | select(.name=="ORG_MASTER_KEY")'
 
-# For repository secret  
+# For repository secret 
 gh secret list --repo Aries-Serpent/_codex_ | grep ORG_MASTER_KEY
 ```
 
@@ -158,11 +158,11 @@ The "by design" limitation means token values cannot be READ in interactive chat
 **Example Usage:**
 ```yaml
 - name: Use GITHUB_TOKEN
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run: |
-    gh api /user
-    # Full API access available in workflow execution
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ run: |
+ gh api /user
+ # Full API access available in workflow execution
 ```
 
 ---
@@ -325,8 +325,8 @@ gh secret list --repo Aries-Serpent/_codex_
 ```bash
 # Update secret visibility
 gh api \
-  -X PUT \
-  /orgs/Aries-Serpent/actions/secrets/ORG_MASTER_KEY/repositories/1040037790
+ -X PUT \
+ /orgs/Aries-Serpent/actions/secrets/ORG_MASTER_KEY/repositories/1040037790
 ```
 
 ---
@@ -358,10 +358,10 @@ gh workflow run verify-token-configuration.yml
 gh run view --log
 
 # Expected output:
-#  CODEX_MASTER_KEY: accessible
-#  ORG_MASTER_KEY: accessible  
-#  Permissions: verified
-#  Configuration: complete
+# CODEX_MASTER_KEY: accessible
+# ORG_MASTER_KEY: accessible 
+# Permissions: verified
+# Configuration: complete
 ```
 
 **After successful verification, notify AI Agent to continue with:**

@@ -32,7 +32,7 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 **Target**: `if: true` (enables workflow execution)
 
 ```yaml
-# Change: if: false → if: true
+# Change: if: false if: true
 ```
 
 **Rollback**: Set `if: false` to immediately disable.
@@ -44,7 +44,7 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 
 ```python
 # scripts/autonomous_agent.py
-# Change: SAFE_MODE = True → SAFE_MODE = False
+# Change: SAFE_MODE = True SAFE_MODE = False
 ```
 
 **Rollback**: Set `SAFE_MODE = True` to immediately revert.
@@ -56,7 +56,7 @@ Genesis Phase 10.1 removes the three-layer safety guards that restrict autonomou
 
 ```yaml
 # .codex/guardrails.md
-# Change: autonomous_actions_enabled: false → autonomous_actions_enabled: true
+# Change: autonomous_actions_enabled: false autonomous_actions_enabled: true
 ```
 
 **Rollback**: Set `autonomous_actions_enabled: false` to immediately revert.

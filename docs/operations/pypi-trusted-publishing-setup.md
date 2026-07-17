@@ -48,26 +48,26 @@ Non-user identities cannot create new projects.
 **Actions:**
 
 1. **Navigate to your repository root:**
-   ```bash
-   cd /path/to/Aries-Serpent/_codex_
+ ```bash
+ cd /path/to/Aries-Serpent/_codex_
  ```
 
 2. **Install build tools:**
-   ```bash
-   pip install --upgrade build twine
+ ```bash
+ pip install --upgrade build twine
  ```
 
 3. **Build the package:**
-   ```bash
-   python -m build
+ ```bash
+ python -m build
  ```
 
 4. **Verify distribution files created:**
-   ```bash
-   ls -lh dist/
-   # Expected output:
-   # codex_ml-0.0.0-py3-none-any.whl
-   # codex_ml-0.0.0.tar.gz
+ ```bash
+ ls -lh dist/
+ # Expected output:
+ # codex_ml-0.0.0-py3-none-any.whl
+ # codex_ml-0.0.0.tar.gz
  ```
 
 **Validation:**
@@ -90,8 +90,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Open browser and navigate to:**
-   ```
-   https://pypi.org/
+ ```
+ https://pypi.org/
  ```
 
 2. **Click "Log in"** (top right corner)
@@ -129,20 +129,20 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
  - Format: `pypi-AgEIcH...` (starts with `pypi-`)
 
 2. **Upload package using twine:**
-   ```bash
-   twine upload dist/* -u __token__ -p pypi-AgEIcH...
+ ```bash
+ twine upload dist/* -u __token__ -p pypi-AgEIcH...
  ```
 
  Replace `pypi-AgEIcH...` with your actual token.
 
 3. **Confirm upload:**
-   ```
-   Uploading distributions to https://upload.pypi.org/legacy/
-   Uploading codex_ml-0.0.0-py3-none-any.whl
-   100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ```
+ Uploading distributions to https://upload.pypi.org/legacy/
+ Uploading codex_ml-0.0.0-py3-none-any.whl
+ 100% 
 
-   View at:
-   https://pypi.org/project/codex-ml/0.0.0/
+ View at:
+ https://pypi.org/project/codex-ml/0.0.0/
  ```
 
 #### Option B: Upload via Web Interface
@@ -150,8 +150,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Navigate to upload page:**
-   ```
-   https://pypi.org/manage/projects/
+ ```
+ https://pypi.org/manage/projects/
  ```
 
 2. **Click:** **"Your projects"** **"Publishing"** **"Upload"**
@@ -182,8 +182,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Navigate to project management:**
-   ```
-   https://pypi.org/manage/project/codex-ml/settings/publishing/
+ ```
+ https://pypi.org/manage/project/codex-ml/settings/publishing/
  ```
 
 2. **Scroll to "Trusted Publishers" section**
@@ -204,13 +204,13 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
  **Critical:** Field values are **case-sensitive** and must match exactly.
 
 6. **Verify your entries:**
-   ```yaml
-   # These values must match your workflow configuration:
-   # File: .github/workflows/pypi-publish.yml
-   # Lines 80-82
-   environment:
-     name: pypi  # ← Must match "Environment" field
-     url: https://pypi.org/p/codex-ml
+ ```yaml
+ # These values must match your workflow configuration:
+ # File: .github/workflows/pypi-publish.yml
+ # Lines 80-82
+ environment:
+ name: pypi # Must match "Environment" field
+ url: https://pypi.org/p/codex-ml
  ```
 
 7. **Click:** **"Add publisher"**
@@ -236,23 +236,23 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Open workflow file:**
-   ```bash
-   cat .github/workflows/pypi-publish.yml
+ ```bash
+ cat .github/workflows/pypi-publish.yml
  ```
 
 2. **Verify permissions block exists (lines 17-19):**
-   ```yaml
-   permissions:
-     contents: read
-     id-token: write  # Required for OIDC trusted publishing
+ ```yaml
+ permissions:
+ contents: read
+ id-token: write # Required for OIDC trusted publishing
  ```
 
 3. **Verify publish job uses correct action (lines 91-94):**
-   ```yaml
-   - name: Publish to PyPI
-     uses: pypa/gh-action-pypi-publish@release/v1
-     with:
-       skip-existing: false
+ ```yaml
+ - name: Publish to PyPI
+ uses: pypa/gh-action-pypi-publish@release/v1
+ with:
+ skip-existing: false
  ```
 
  **Critical:** Do NOT include `password` or `repository-url` parameters when using OIDC.
@@ -273,8 +273,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Actions:**
 
 1. **Navigate to GitHub Actions:**
-   ```
-   https://github.com/Aries-Serpent/_codex_/actions/workflows/pypi-publish.yml
+ ```
+ https://github.com/Aries-Serpent/_codex_/actions/workflows/pypi-publish.yml
  ```
 
 2. **Click:** **"Run workflow"** (top right)
@@ -298,8 +298,8 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
  Check distribution
 
  Publish to PyPI
-Requesting OIDC token from GitHub  # pragma: allowlist secret
- Token received  # pragma: allowlist secret
+Requesting OIDC token from GitHub # pragma: allowlist secret
+ Token received # pragma: allowlist secret
 Uploading distributions to https://upload.pypi.org/legacy/
 Uploading codex_ml-0.0.0-py3-none-any.whl
  Successfully uploaded codex_ml-0.0.0-py3-none-any.whl
@@ -321,30 +321,30 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 **Actions:**
 
 1. **Create clean test environment:**
-   ```bash
-   python -m venv /tmp/test-codex-ml
-   source /tmp/test-codex-ml/bin/activate  # On Windows: test-codex-ml\Scripts\activate
+ ```bash
+ python -m venv /tmp/test-codex-ml
+ source /tmp/test-codex-ml/bin/activate # On Windows: test-codex-ml\Scripts\activate
  ```
 
 2. **Install from PyPI:**
-   ```bash
-   pip install codex-ml
+ ```bash
+ pip install codex-ml
  ```
 
 3. **Test import:**
-   ```bash
-   python -c "import codex_ml; print(f'Version: {codex_ml.__version__}')"
+ ```bash
+ python -c "import codex_ml; print(f'Version: {codex_ml.__version__}')"
  ```
 
 4. **Expected output:**
-   ```
-   version: 0.1.0
+ ```
+ version: 0.1.0
  ```
 
 5. **Clean up:**
-   ```bash
-   deactivate
-   rm -rf /tmp/test-codex-ml
+ ```bash
+ deactivate
+ rm -rf /tmp/test-codex-ml
  ```
 
 **Validation:**
@@ -363,8 +363,8 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 **Actions:**
 
 1. **Navigate to token management:**
-   ```
-   https://pypi.org/manage/account/token/  # pragma: allowlist secret
+ ```
+ https://pypi.org/manage/account/token/ # pragma: allowlist secret
  ```
 
 2. **Find token:** "Initial codex-ml upload"
@@ -455,7 +455,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 **Error:**
 ```
-Trusted publishing exchange failure: Token request failed  # pragma: allowlist secret
+Trusted publishing exchange failure: Token request failed # pragma: allowlist secret
 ```
 
 **Diagnosis:**
@@ -465,8 +465,8 @@ Trusted publishing exchange failure: Token request failed  # pragma: allowlist s
 **Solution:**
 
 1. **Check workflow environment:**
-   ```bash
-   grep -A2 "environment:" .github/workflows/pypi-publish.yml
+ ```bash
+ grep -A2 "environment:" .github/workflows/pypi-publish.yml
  ```
 
 2. **Compare with PyPI settings:**
@@ -493,9 +493,9 @@ ERROR: You do not have permission to upload to codex-ml
 **Solution:**
 
 1. **Verify PyPI login:**
-   ```bash
-   # Check who published last version
-   curl -s https://pypi.org/pypi/codex-ml/json | jq '.urls[0].upload_time'
+ ```bash
+ # Check who published last version
+ curl -s https://pypi.org/pypi/codex-ml/json | jq '.urls[0].upload_time'
  ```
 
 2. **Re-add trusted publisher:**
@@ -518,8 +518,8 @@ Trusted publishing exchange failure: workflow not found
 **Solution:**
 
 1. **Check workflow filename:**
-   ```bash
-   ls -la .github/workflows/
+ ```bash
+ ls -la .github/workflows/
  ```
 
 2. **Update PyPI trusted publisher:**

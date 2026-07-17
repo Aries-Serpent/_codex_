@@ -11,7 +11,7 @@ This document describes the comprehensive validation infrastructure for root fol
 ### Five-Phase Validation Strategy
 
 ```
-Phase 1: Configuration Loading  →  Phase 2: Tool Integration  →  Phase 3: Import Paths  →  Phase 4: Workflow  →  Phase 5: Artifacts
+Phase 1: Configuration Loading Phase 2: Tool Integration Phase 3: Import Paths Phase 4: Workflow Phase 5: Artifacts
 ```
 
 ## Phase 1: Configuration Loading Tests
@@ -34,34 +34,34 @@ Phase 1: Configuration Loading  →  Phase 2: Tool Integration  →  Phase 3: Im
 
 ```python
 def test_pytest_ini_loads():
-    pass
+ pass
 
 def test_pytest_ini_pythonpath_configured():
-    pass
+ pass
 
 def test_pytest_markers_configured():
-    pass
+ pass
 
 def test_mypy_ini_loads():
-    pass
+ pass
 
 def test_mypy_ini_python_version():
-    pass
+ pass
 
 def test_pyproject_toml_loads():
-    pass
+ pass
 
 def test_pyproject_toml_build_system():
-    pass
+ pass
 
 def test_all_requirements_files_exist():
-    pass
+ pass
 
 def test_requirements_files_parseable():
-    pass
+ pass
 
 def test_coverage_config_exists():
-    pass
+ pass
 ```
 
 ### Running Phase 1 Tests
@@ -89,25 +89,25 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestConfig
 
 ```python
 def test_pytest_collection_works():
-    pass
+ pass
 
 def test_pytest_basic_test_runs():
-    pass
+ pass
 
 def test_mypy_can_check_code():
-    pass
+ pass
 
 def test_pre_commit_config_exists():
-    pass
+ pass
 
 def test_ruff_config_exists():
-    pass
+ pass
 
 def test_editorconfig_exists():
-    pass
+ pass
 
 def test_black_can_format_sample_code():
-    pass
+ pass
 ```
 
 ### Running Phase 2 Tests
@@ -123,27 +123,27 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestToolIn
 ### Critical Import Paths
 
 ```python
-import codex                      # Main package
-from codex.rag import *           # RAG module
-from codex.utils import *         # Utilities
-from codex.agent import *         # Agent system
-from codex.integrations import *  # Integrations
+import codex # Main package
+from codex.rag import * # RAG module
+from codex.utils import * # Utilities
+from codex.agent import * # Agent system
+from codex.integrations import * # Integrations
 ```
 
 ### Test Class: `TestImportPaths`
 
 ```python
 def test_src_imports_work():
-    pass
+ pass
 
 def test_critical_public_apis_importable():
-    pass
+ pass
 
 def test_no_broken_relative_imports():
-    pass
+ pass
 
 def test_conftest_loads():
-    pass
+ pass
 ```
 
 ### Running Phase 3 Tests
@@ -168,16 +168,16 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestImport
 
 ```python
 def test_pytest_collect_discovers_tests():
-    pass
+ pass
 
 def test_import_smoke_test():
-    pass
+ pass
 
 def test_pytest_basic_test_discovery():
-    pass
+ pass
 
 def test_config_files_in_place():
-    pass
+ pass
 ```
 
 ### Running Phase 4 Tests
@@ -203,13 +203,13 @@ python -m pytest tests/cleanup_validation/test_cleanup_validation.py::TestWorkfl
 
 ```python
 def test_pytest_can_generate_report():
-    pass
+ pass
 
 def test_mypy_generates_output():
-    pass
+ pass
 
 def test_coverage_can_be_configured():
-    pass
+ pass
 ```
 
 ### Running Phase 5 Tests
@@ -226,13 +226,13 @@ Comprehensive integration tests:
 
 ```python
 def test_no_circular_imports_in_src():
-    pass  # No circular dependencies
+ pass # No circular dependencies
 
 def test_git_status_clean_after_tests():
-    pass  # Tests don't modify files
+ pass # Tests don't modify files
 
 def test_all_test_markers_defined():
-    pass  # All pytest markers exist
+ pass # All pytest markers exist
 ```
 
 ## Validation Scripts
@@ -506,9 +506,9 @@ Add to `.github/workflows/validation.yml`:
 
 ```yaml
 - name: Run cleanup validation
-  run: |
-    bash scripts/validate_cleanup.sh
-    python -m pytest tests/cleanup_validation/ -v --tb=short
+ run: |
+ bash scripts/validate_cleanup.sh
+ python -m pytest tests/cleanup_validation/ -v --tb=short
 ```
 
 ### Pre-commit Hook Integration
@@ -517,12 +517,12 @@ Add to `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: local
-  hooks:
-    - id: cleanup-validation
-      name: Cleanup Validation
-      entry: bash scripts/validate_cleanup.sh
-      language: script
-      stages: [commit]
+ hooks:
+ - id: cleanup-validation
+ name: Cleanup Validation
+ entry: bash scripts/validate_cleanup.sh
+ language: script
+ stages: [commit]
 ```
 
 ## Performance Characteristics

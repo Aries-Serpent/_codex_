@@ -39,7 +39,7 @@ sudo apt-get autoremove -y
 pip cache purge
 docker system prune -af --volumes
 rm -rf ~/.cache/pip /tmp/* /var/tmp/*
-df -h  # Verify >10GB available
+df -h # Verify >10GB available
 ```
 
 ## Step 2: Create Monitoring Tests
@@ -52,121 +52,121 @@ import pytest
 from src.codex.rag.monitoring import RAGMetrics, MetricsConfig, MetricDataPoint
 
 class TestMetricsConfig:
-    """Test MetricsConfig validation."""
+ """Test MetricsConfig validation."""
 
-    def test_valid_config(self):
-        """Test valid configuration."""
-        config = MetricsConfig(
-            query_latency_window=100,
-            embedding_throughput_window=200,
-            index_build_time_window=50
-        )
-        assert config.query_latency_window == 100
+ def test_valid_config(self):
+ """Test valid configuration."""
+ config = MetricsConfig(
+ query_latency_window=100,
+ embedding_throughput_window=200,
+ index_build_time_window=50
+ )
+ assert config.query_latency_window == 100
 
-    def test_window_size_validation(self):
-        """Test minimum window size validation."""
-        with pytest.raises(ValueError, match="statistically meaningful"):
-            MetricsConfig(query_latency_window=5)
+ def test_window_size_validation(self):
+ """Test minimum window size validation."""
+ with pytest.raises(ValueError, match="statistically meaningful"):
+ MetricsConfig(query_latency_window=5)
 
-        with pytest.raises(ValueError, match="statistically meaningful"):
-            MetricsConfig(embedding_throughput_window=8)
+ with pytest.raises(ValueError, match="statistically meaningful"):
+ MetricsConfig(embedding_throughput_window=8)
 
-        with pytest.raises(ValueError, match="statistically meaningful"):
-            MetricsConfig(index_build_time_window=9)
+ with pytest.raises(ValueError, match="statistically meaningful"):
+ MetricsConfig(index_build_time_window=9)
 
 class TestRAGMetrics:
-    """Test RAGMetrics tracking."""
+ """Test RAGMetrics tracking."""
 
-    def test_track_query_latency(self):
-        """Test query latency tracking."""
-        metrics = RAGMetrics()
+ def test_track_query_latency(self):
+ """Test query latency tracking."""
+ metrics = RAGMetrics()
 
-        # Track 100 queries
-        for i in range(100):
-            metrics.track_query_latency(float(i), "tenant1", "index1")
+ # Track 100 queries
+ for i in range(100):
+ metrics.track_query_latency(float(i), "tenant1", "index1")
 
-        stats = metrics.get_query_stats("tenant1", "index1")
-        assert stats['count'] == 100
-        assert stats['p50'] > 0
-        assert stats['p95'] > stats['p50']
-        assert stats['p99'] > stats['p95']
+ stats = metrics.get_query_stats("tenant1", "index1")
+ assert stats['count'] == 100
+ assert stats['p50'] > 0
+ assert stats['p95'] > stats['p50']
+ assert stats['p99'] > stats['p95']
 
-    def test_track_embedding_throughput(self):
-        """Test embedding throughput tracking."""
-        metrics = RAGMetrics()
+ def test_track_embedding_throughput(self):
+ """Test embedding throughput tracking."""
+ metrics = RAGMetrics()
 
-        metrics.track_embedding_throughput(100, "tenant1")
-        metrics.track_embedding_throughput(200, "tenant1")
+ metrics.track_embedding_throughput(100, "tenant1")
+ metrics.track_embedding_throughput(200, "tenant1")
 
-        stats = metrics.get_embedding_stats("tenant1")
-        assert stats['total_embeddings'] == 300
-        assert stats['avg_throughput'] > 0
+ stats = metrics.get_embedding_stats("tenant1")
+ assert stats['total_embeddings'] == 300
+ assert stats['avg_throughput'] > 0
 
-    def test_track_index_build_time(self):
-        """Test index build time tracking."""
-        metrics = RAGMetrics()
+ def test_track_index_build_time(self):
+ """Test index build time tracking."""
+ metrics = RAGMetrics()
 
-        metrics.track_index_build_time(10.5, "tenant1", "index1")
-        metrics.track_index_build_time(12.3, "tenant1", "index1")
+ metrics.track_index_build_time(10.5, "tenant1", "index1")
+ metrics.track_index_build_time(12.3, "tenant1", "index1")
 
-        stats = metrics.get_index_build_stats("tenant1", "index1")
-        assert stats['count'] == 2
-        assert stats['avg_time'] > 10
+ stats = metrics.get_index_build_stats("tenant1", "index1")
+ assert stats['count'] == 2
+ assert stats['avg_time'] > 10
 
-    def test_cache_stats(self):
-        """Test cache statistics tracking."""
-        metrics = RAGMetrics()
+ def test_cache_stats(self):
+ """Test cache statistics tracking."""
+ metrics = RAGMetrics()
 
-        metrics.record_cache_hit("tenant1")
-        metrics.record_cache_hit("tenant1")
-        metrics.record_cache_miss("tenant1")
+ metrics.record_cache_hit("tenant1")
+ metrics.record_cache_hit("tenant1")
+ metrics.record_cache_miss("tenant1")
 
-        stats = metrics.get_cache_stats("tenant1")
-        assert stats['hits'] == 2
-        assert stats['misses'] == 1
-        assert stats['hit_rate'] == pytest.approx(0.666, rel=0.01)
+ stats = metrics.get_cache_stats("tenant1")
+ assert stats['hits'] == 2
+ assert stats['misses'] == 1
+ assert stats['hit_rate'] == pytest.approx(0.666, rel=0.01)
 
-    def test_percentile_calculation(self):
-        """Test percentile calculation accuracy."""
-        metrics = RAGMetrics()
+ def test_percentile_calculation(self):
+ """Test percentile calculation accuracy."""
+ metrics = RAGMetrics()
 
-        # Track known distribution
-        for val in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
-            metrics.track_query_latency(float(val), "tenant1", "index1")
+ # Track known distribution
+ for val in [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]:
+ metrics.track_query_latency(float(val), "tenant1", "index1")
 
-        stats = metrics.get_query_stats("tenant1", "index1")
-        assert stats['p50'] == pytest.approx(50, abs=5)
-        assert stats['p95'] == pytest.approx(95, abs=5)
+ stats = metrics.get_query_stats("tenant1", "index1")
+ assert stats['p50'] == pytest.approx(50, abs=5)
+ assert stats['p95'] == pytest.approx(95, abs=5)
 
-    def test_window_trimming(self):
-        """Test metrics window trimming for memory efficiency."""
-        config = MetricsConfig(query_latency_window=50)
-        metrics = RAGMetrics(config)
+ def test_window_trimming(self):
+ """Test metrics window trimming for memory efficiency."""
+ config = MetricsConfig(query_latency_window=50)
+ metrics = RAGMetrics(config)
 
-        # Track more than window size
-        for i in range(100):
-            metrics.track_query_latency(float(i), "tenant1", "index1")
+ # Track more than window size
+ for i in range(100):
+ metrics.track_query_latency(float(i), "tenant1", "index1")
 
-        # Window should be trimmed to 50 most recent
-        assert len(metrics._get_latency_window("tenant1", "index1")) <= 50
+ # Window should be trimmed to 50 most recent
+ assert len(metrics._get_latency_window("tenant1", "index1")) <= 50
 
-    def test_concurrent_access(self):
-        """Test thread-safe concurrent access."""
-        import threading
-        metrics = RAGMetrics()
+ def test_concurrent_access(self):
+ """Test thread-safe concurrent access."""
+ import threading
+ metrics = RAGMetrics()
 
-        def track_metrics():
-            for i in range(100):
-                metrics.track_query_latency(float(i), "tenant1", "index1")
+ def track_metrics():
+ for i in range(100):
+ metrics.track_query_latency(float(i), "tenant1", "index1")
 
-        threads = [threading.Thread(target=track_metrics) for _ in range(5)]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
+ threads = [threading.Thread(target=track_metrics) for _ in range(5)]
+ for t in threads:
+ t.start()
+ for t in threads:
+ t.join()
 
-        stats = metrics.get_query_stats("tenant1", "index1")
-        assert stats['count'] == 500
+ stats = metrics.get_query_stats("tenant1", "index1")
+ assert stats['count'] == 500
 
 # Add 15+ more tests covering:
 # - Multi-tenant metrics isolation
@@ -184,119 +184,119 @@ class TestRAGMetrics:
 """Additional tests for advanced indexer features."""
 
 def test_incremental_index_update(tmp_path):
-    """Test adding documents to existing index."""
-    from src.codex.rag.indexer import build_index_from_files, add_to_index, load_index
+ """Test adding documents to existing index."""
+ from src.codex.rag.indexer import build_index_from_files, add_to_index, load_index
 
-    # Create test files
-    file1 = tmp_path / "doc1.txt"
-    file1.write_text("Initial document content")
+ # Create test files
+ file1 = tmp_path / "doc1.txt"
+ file1.write_text("Initial document content")
 
-    file2 = tmp_path / "doc2.txt"
-    file2.write_text("Additional document content")
+ file2 = tmp_path / "doc2.txt"
+ file2.write_text("Additional document content")
 
-    # Build initial index
-    index_path = build_index_from_files([file1], "test", "tenant1", str(tmp_path))
-    initial_index = load_index(str(tmp_path), "test", "tenant1")
-    initial_count = initial_index.ntotal
+ # Build initial index
+ index_path = build_index_from_files([file1], "test", "tenant1", str(tmp_path))
+ initial_index = load_index(str(tmp_path), "test", "tenant1")
+ initial_count = initial_index.ntotal
 
-    # Add new document
-    add_to_index(index_path, [file2])
-    updated_index = load_index(str(tmp_path), "test", "tenant1")
+ # Add new document
+ add_to_index(index_path, [file2])
+ updated_index = load_index(str(tmp_path), "test", "tenant1")
 
-    assert updated_index.ntotal > initial_count
+ assert updated_index.ntotal > initial_count
 
 def test_index_merging(tmp_path):
-    """Test merging multiple indices."""
-    from src.codex.rag.indexer import build_index_from_files, merge_indices
+ """Test merging multiple indices."""
+ from src.codex.rag.indexer import build_index_from_files, merge_indices
 
-    # Create two indices
-    file1 = tmp_path / "doc1.txt"
-    file1.write_text("Document 1 content")
+ # Create two indices
+ file1 = tmp_path / "doc1.txt"
+ file1.write_text("Document 1 content")
 
-    file2 = tmp_path / "doc2.txt"
-    file2.write_text("Document 2 content")
+ file2 = tmp_path / "doc2.txt"
+ file2.write_text("Document 2 content")
 
-    index1_path = build_index_from_files([file1], "index1", "tenant1", str(tmp_path))
-    index2_path = build_index_from_files([file2], "index2", "tenant1", str(tmp_path))
+ index1_path = build_index_from_files([file1], "index1", "tenant1", str(tmp_path))
+ index2_path = build_index_from_files([file2], "index2", "tenant1", str(tmp_path))
 
-    # Merge them
-    merged_path = merge_indices([index1_path, index2_path], "merged", "tenant1", str(tmp_path))
+ # Merge them
+ merged_path = merge_indices([index1_path, index2_path], "merged", "tenant1", str(tmp_path))
 
-    merged_index = load_index(str(tmp_path), "merged", "tenant1")
-    index1 = load_index(str(tmp_path), "index1", "tenant1")
-    index2 = load_index(str(tmp_path), "index2", "tenant1")
+ merged_index = load_index(str(tmp_path), "merged", "tenant1")
+ index1 = load_index(str(tmp_path), "index1", "tenant1")
+ index2 = load_index(str(tmp_path), "index2", "tenant1")
 
-    assert merged_index.ntotal == index1.ntotal + index2.ntotal
+ assert merged_index.ntotal == index1.ntotal + index2.ntotal
 
 def test_metadata_persistence(tmp_path):
-    """Test metadata is persisted with index."""
-    from src.codex.rag.indexer import build_index_from_files, load_index_metadata
+ """Test metadata is persisted with index."""
+ from src.codex.rag.indexer import build_index_from_files, load_index_metadata
 
-    file1 = tmp_path / "doc1.txt"
-    file1.write_text("Content with metadata")
+ file1 = tmp_path / "doc1.txt"
+ file1.write_text("Content with metadata")
 
-    metadata = {
-        "source": "test_suite",
-        "version": "1.0",
-        "timestamp": "2026-01-08T20:00:00Z"
-    }
+ metadata = {
+ "source": "test_suite",
+ "version": "1.0",
+ "timestamp": "2026-01-08T20:00:00Z"
+ }
 
-    index_path = build_index_from_files(
-        [file1], "test", "tenant1", str(tmp_path), metadata=metadata
-    )
+ index_path = build_index_from_files(
+ [file1], "test", "tenant1", str(tmp_path), metadata=metadata
+ )
 
-    loaded_metadata = load_index_metadata(str(tmp_path), "test", "tenant1")
-    assert loaded_metadata["source"] == "test_suite"
-    assert loaded_metadata["version"] == "1.0"
+ loaded_metadata = load_index_metadata(str(tmp_path), "test", "tenant1")
+ assert loaded_metadata["source"] == "test_suite"
+ assert loaded_metadata["version"] == "1.0"
 
 def test_concurrent_index_writes(tmp_path):
-    """Test concurrent writes to different indices."""
-    import threading
-    from src.codex.rag.indexer import build_index_from_files
+ """Test concurrent writes to different indices."""
+ import threading
+ from src.codex.rag.indexer import build_index_from_files
 
-    def build_index(index_num):
-        file = tmp_path / f"doc{index_num}.txt"
-        file.write_text(f"Content {index_num}")
-        build_index_from_files([file], f"index{index_num}", f"tenant{index_num}", str(tmp_path))
+ def build_index(index_num):
+ file = tmp_path / f"doc{index_num}.txt"
+ file.write_text(f"Content {index_num}")
+ build_index_from_files([file], f"index{index_num}", f"tenant{index_num}", str(tmp_path))
 
-    threads = [threading.Thread(target=build_index, args=(i,)) for i in range(5)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+ threads = [threading.Thread(target=build_index, args=(i,)) for i in range(5)]
+ for t in threads:
+ t.start()
+ for t in threads:
+ t.join()
 
-    # All 5 indices should exist
-    for i in range(5):
-        assert (tmp_path / f"tenant{i}" / f"index{i}" / "index.faiss").exists()
+ # All 5 indices should exist
+ for i in range(5):
+ assert (tmp_path / f"tenant{i}" / f"index{i}" / "index.faiss").exists()
 
 def test_large_file_handling(tmp_path):
-    """Test handling files >10MB."""
-    from src.codex.rag.indexer import build_index_from_files
+ """Test handling files >10MB."""
+ from src.codex.rag.indexer import build_index_from_files
 
-    # Create 15MB file
-    large_file = tmp_path / "large.txt"
-    large_file.write_text("x" * (15 * 1024 * 1024))
+ # Create 15MB file
+ large_file = tmp_path / "large.txt"
+ large_file.write_text("x" * (15 * 1024 * 1024))
 
-    index_path = build_index_from_files([large_file], "large", "tenant1", str(tmp_path))
-    assert (tmp_path / "tenant1" / "large" / "index.faiss").exists()
+ index_path = build_index_from_files([large_file], "large", "tenant1", str(tmp_path))
+ assert (tmp_path / "tenant1" / "large" / "index.faiss").exists()
 
 def test_chunk_boundary_edge_cases(tmp_path):
-    """Test edge cases in chunk boundaries."""
-    from src.codex.rag.indexer import chunk_text
+ """Test edge cases in chunk boundaries."""
+ from src.codex.rag.indexer import chunk_text
 
-    # Text exactly at chunk size
-    text = "a" * 500
-    chunks = chunk_text(text, chunk_size=500, overlap=100)
-    assert len(chunks) == 1
+ # Text exactly at chunk size
+ text = "a" * 500
+ chunks = chunk_text(text, chunk_size=500, overlap=100)
+ assert len(chunks) == 1
 
-    # Text just over chunk size
-    text = "a" * 501
-    chunks = chunk_text(text, chunk_size=500, overlap=100)
-    assert len(chunks) == 2
+ # Text just over chunk size
+ text = "a" * 501
+ chunks = chunk_text(text, chunk_size=500, overlap=100)
+ assert len(chunks) == 2
 
-    # Empty text
-    chunks = chunk_text("", chunk_size=500, overlap=100)
-    assert len(chunks) == 0
+ # Empty text
+ chunks = chunk_text("", chunk_size=500, overlap=100)
+ assert len(chunks) == 0
 
 # Add 10+ more tests for lines 447-738
 ```
@@ -309,12 +309,12 @@ pip install numpy sentence-transformers faiss-cpu openai --no-cache-dir
 
 # Run tests with coverage
 pytest tests/ \
-  --cov=src/codex/rag \
-  --cov-report=term-missing \
-  --cov-report=html \
-  --cov-fail-under=90 \
-  -v \
-  --tb=short
+ --cov=src/codex/rag \
+ --cov-report=term-missing \
+ --cov-report=html \
+ --cov-fail-under=90 \
+ -v \
+ --tb=short
 
 # Generate detailed coverage report
 coverage html -d reports/coverage
@@ -332,7 +332,7 @@ git commit -m "Add comprehensive tests for monitoring and indexer modules
 - Verify metrics tracking, percentile calculations, cache stats
 - Test incremental updates, index merging, metadata persistence
 
-Coverage improvement: 46.02% → 90%+"
+Coverage improvement: 46.02% 90%+"
 
 git push origin copilot/sub-pr-2750-again
 ```

@@ -200,12 +200,12 @@ Based on `.codex/qa_walkthrough/test_priority_matrix.json`:
 ### Coverage Targets by Module Group
 
 ```
-src/codex/logging/ → 80%
-src/codex/cli/ → 70%
-src/codex/utils/ → 70%
-src/codex_ml/config/ → 80%
-src/codex_ml/cli/ → 60%
-src/codex_ml/data/ → 70%
+src/codex/logging/ 80%
+src/codex/cli/ 70%
+src/codex/utils/ 70%
+src/codex_ml/config/ 80%
+src/codex_ml/cli/ 60%
+src/codex_ml/data/ 70%
 ```
 
 ### Exit Criteria
@@ -256,11 +256,11 @@ src/codex_ml/data/ → 70%
 ### Coverage Targets by Module Group
 
 ```
-src/codex_ml/training/ → 80%
-src/codex/rag/ → 90%
-agents/ → 60%
-training/ → 70%
-src/codex_ml/models/ → 80%
+src/codex_ml/training/ 80%
+src/codex/rag/ 90%
+agents/ 60%
+training/ 70%
+src/codex_ml/models/ 80%
 ```
 
 ### Exit Criteria
@@ -300,10 +300,10 @@ src/codex_ml/models/ → 80%
 ### Coverage Targets by Module Group
 
 ```
-src/codex_ml/serving/ → 80%
-src/codex_ml/monitoring/ → 75%
-src/codex/security/ → 90%
-src/codex/quantum_orchestrator/ → 70%
+src/codex_ml/serving/ 80%
+src/codex_ml/monitoring/ 75%
+src/codex/security/ 90%
+src/codex/quantum_orchestrator/ 70%
 ```
 
 ### Exit Criteria
@@ -360,20 +360,20 @@ src/codex/quantum_orchestrator/ → 70%
 
 ```
 tests/
-├── conftest.py # Shared fixtures
-├── conftest_shared.py # Additional fixtures
-├── unit/ # Unit tests
-│ ├── test_codex_ml/ # codex_ml module tests
-│ ├── test_codex/ # codex module tests
-│ └── test_agents/ # agents module tests
-├── integration/ # Integration tests
-│ ├── test_cli_flows.py
-│ ├── test_training_pipeline.py
-│ └── test_rag_pipeline.py
-├── e2e/ # End-to-end tests
-│ ├── test_full_workflow.py
-│ └── test_cli_e2e.py
-└── test_rag_*.py # Existing RAG tests
+ conftest.py # Shared fixtures
+ conftest_shared.py # Additional fixtures
+ unit/ # Unit tests
+ test_codex_ml/ # codex_ml module tests
+ test_codex/ # codex module tests
+ test_agents/ # agents module tests
+ integration/ # Integration tests
+ test_cli_flows.py
+ test_training_pipeline.py
+ test_rag_pipeline.py
+ e2e/ # End-to-end tests
+ test_full_workflow.py
+ test_cli_e2e.py
+ test_rag_*.py # Existing RAG tests
 ```
 
 ### Test Naming Convention

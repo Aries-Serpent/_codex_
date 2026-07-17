@@ -525,7 +525,7 @@ If using GitHub-hosted runners (recommended):
 # On your server:
 mkdir actions-runner && cd actions-runner
 
-# Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)
+# Download runner (get URL from Settings Actions Runners New self-hosted runner)
 curl -o actions-runner-linux-x64-2.311.0.tar.gz -L https://github.com/actions/runner/releases/download/v0.2.1/actions-runner-linux-x64-2.311.0.tar.gz
 
 # Extract

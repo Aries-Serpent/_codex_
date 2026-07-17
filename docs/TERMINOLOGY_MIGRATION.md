@@ -74,7 +74,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 All new plans should use the standard iteration template:
 
 ```markdown
-### **Iteration [N]: [Phase Name]** [Symbol: ️️️]
+### **Iteration [N]: [Phase Name]** [Symbol: ]
 
 #### Pre-commit Checkpoint
 - [ ] [Task 1]
@@ -116,7 +116,7 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 ```markdown
 ## Timeline: Flexible Iterations
 
-### Iteration 1: Foundation ️
+### Iteration 1: Foundation 
 #### Pre-commit Checkpoint
 - [ ] Setup environment
 - [ ] Review configuration

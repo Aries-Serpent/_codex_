@@ -157,20 +157,20 @@ This is a **meta-capability** - it detects safeguards in OTHER code, not impleme
  - Error handling ( done)
 
 3. **Create Documentation** (docs/capabilities/safeguards_detection.md):
-   ```markdown
-   # Safeguard Keyword Detection
+ ```markdown
+ # Safeguard Keyword Detection
 
-   ## Overview
-   System for detecting defensive programming patterns
+ ## Overview
+ System for detecting defensive programming patterns
 
-   ## Keywords Detected
-   - List all 25 keywords with examples
+ ## Keywords Detected
+ - List all 25 keywords with examples
 
-   ## Usage
-   - How to write detectable safeguards
-   - Best practices
+ ## Usage
+ - How to write detectable safeguards
+ - Best practices
 
-   ## Keywords: safeguard, validation, security, defensive, robust
+ ## Keywords: safeguard, validation, security, defensive, robust
  ```
 
 **Expected Outcome**: 0.70+ 0.85+ (with full implementation)
@@ -192,9 +192,9 @@ Once all capabilities ≥ 0.70:
 pytest tests/agents/test_phase2_deep_coverage_batch13_branch_expansion.py -v --tb=short
 
 # Step 2: Categorize failures
-# - Import errors → fix module paths
-# - AttributeErrors → add missing methods
-# - AssertionErrors → correct test expectations
+# - Import errors fix module paths
+# - AttributeErrors add missing methods
+# - AssertionErrors correct test expectations
 
 # Step 3: Fix iteratively (2-3 cycles expected)
 # Fix highest-impact blockers first
@@ -276,19 +276,19 @@ python scripts/space_traversal/audit_runner.py explain [CAPABILITY_ID]
 python -c "
 import json
 with open('audit_artifacts/capabilities_scored.json') as f:
-    data = json.load(f)
+ data = json.load(f)
 for cap in data['capabilities']:
-    if cap['id'] == '[CAPABILITY_ID]':
-        print(f'Score: {cap[\"score\"]:.4f}')
-        for comp, val in cap['components'].items():
-            print(f'  {comp}: {val:.4f}')
+ if cap['id'] == '[CAPABILITY_ID]':
+ print(f'Score: {cap[\"score\"]:.4f}')
+ for comp, val in cap['components'].items():
+ print(f' {comp}: {val:.4f}')
 "
 ```
 
 **Commit Pattern**:
 ```bash
 git add .
-git commit -m "[CAPABILITY_ID]: X.XX → X.XX improvement with [changes]"
+git commit -m "[CAPABILITY_ID]: X.XX X.XX improvement with [changes]"
 # via report_progress tool
 ```
 

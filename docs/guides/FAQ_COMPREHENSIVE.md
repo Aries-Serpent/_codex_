@@ -64,9 +64,9 @@ from codex_ml.data import DataBalancer
 
 balancer = DataBalancer()
 balanced = balancer.balance(
-    dataset,
-    strategy='oversampling',  # or 'undersampling', 'smote'
-    target_ratio=0.5
+ dataset,
+ strategy='oversampling', # or 'undersampling', 'smote'
+ target_ratio=0.5
 )
 ```
 
@@ -75,9 +75,9 @@ balanced = balancer.balance(
 A: Start with `2e-5` for fine-tuning, `5e-4` for training from scratch. Use learning rate warmup:
 ```yaml
 training:
-  learning_rate: 2e-5
-  warmup_steps: 500  # Gradually increase first 500 steps
-  warmup_strategy: linear
+ learning_rate: 2e-5
+ warmup_steps: 500 # Gradually increase first 500 steps
+ warmup_strategy: linear
 ```
 
 **Q: How do I prevent overfitting?**
@@ -95,9 +95,9 @@ A:
 A: Yes! Codex ML automatically uses all GPUs:
 ```python
 engine = TrainingEngine(
-    config='config/training.yaml',
-    num_gpus=4,  # or 'auto' to use all
-    distributed_backend='ddp'  # DistributedDataParallel
+ config='config/training.yaml',
+ num_gpus=4, # or 'auto' to use all
+ distributed_backend='ddp' # DistributedDataParallel
 )
 ```
 
@@ -148,9 +148,9 @@ Example:
 ```python
 # Imbalanced sentiment (mostly positive)
 metrics = evaluator.compute(
-    predictions,
-    labels,
-    metric_type='f1_weighted'  # Better for imbalance
+ predictions,
+ labels,
+ metric_type='f1_weighted' # Better for imbalance
 )
 ```
 
@@ -186,9 +186,9 @@ deployment = RayServeDeployment(num_gpus=2)
 
 # 3. Enable auto-scaling
 deployment.auto_scale(
-    min_replicas=2,
-    max_replicas=20,
-    target_num_ongoing_requests=10
+ min_replicas=2,
+ max_replicas=20,
+ target_num_ongoing_requests=10
 )
 ```
 
@@ -196,19 +196,19 @@ deployment.auto_scale(
 
 A:
 ```python
-# 1. Canary deployment (gradual 5% → 10% → ... → 100%)
+# 1. Canary deployment (gradual 5% 10% ... 100%)
 canary = CanaryDeployment(
-    stable_version='1.0.0',
-    canary_version='1.1.0',
-    initial_traffic_percent=5,
-    increment_percent=10,
-    increment_interval_minutes=10
+ stable_version='1.0.0',
+ canary_version='1.1.0',
+ initial_traffic_percent=5,
+ increment_percent=10,
+ increment_interval_minutes=10
 )
 
 # 2. Blue-green deployment (instant switch, easy rollback)
 bg = BlueGreenDeployment(
-    blue_version='1.0.0',  # Current production
-    green_version='1.1.0'   # New version
+ blue_version='1.0.0', # Current production
+ green_version='1.1.0' # New version
 )
 ```
 
@@ -228,14 +228,14 @@ from codex_ml.monitoring import ModelPerformanceMonitor
 
 monitor = ModelPerformanceMonitor()
 monitor.log_prediction(
-    input=text,
-    predicted=model.predict(text),
-    ground_truth=label  # When available
+ input=text,
+ predicted=model.predict(text),
+ ground_truth=label # When available
 )
 
 # Daily check
 if monitor.check_drift()['detected']:
-    trigger_retrain()
+ trigger_retrain()
 ```
 
 ---
@@ -316,8 +316,8 @@ from codex_ml import CodexML
 from codex_ml.retry import ExponentialBackoff
 
 client = CodexML(
-    api_key='...',
-    retry_strategy=ExponentialBackoff(max_retries=5)
+ api_key='...',
+ retry_strategy=ExponentialBackoff(max_retries=5)
 )
 # Automatically retries with exponential backoff
 ```
@@ -328,7 +328,7 @@ A: Yes!
 ```python
 from codex_ml.caching import RequestCache
 
-cache = RequestCache(ttl_seconds=3600)  # 1 hour TTL
+cache = RequestCache(ttl_seconds=3600) # 1 hour TTL
 client = CodexML(api_key='...', cache=cache)
 
 # First call: API

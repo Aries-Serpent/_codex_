@@ -30,13 +30,13 @@ ERROR tests/training/test_train_loop_coverage.py::TestBasicTrainingIteration::te
 The test files defined mock classes inheriting from `torch.nn.Module` at module level **before** checking if torch was available:
 
 ```python
-#  PROBLEMATIC CODE
+# PROBLEMATIC CODE
 import pytest
-import torch  # May not be available in all environments
+import torch # May not be available in all environments
 
-class MockModel(torch.nn.Module):  # ← Evaluated at import time!
-    def __init__(self):
-        super().__init__()
+class MockModel(torch.nn.Module): # Evaluated at import time!
+ def __init__(self):
+ super().__init__()
 ```
 
 **Why this causes StopIteration:**
@@ -58,19 +58,19 @@ class MockModel(torch.nn.Module):  # ← Evaluated at import time!
 ### Fix 1: Conditional Import with Explicit Fallback
 
 ```python
-#  FIXED CODE
+# FIXED CODE
 import pytest
 from unittest.mock import Mock
 
 try:
-    import torch
-    import numpy as np
-    HAS_DEPS = True
+ import torch
+ import numpy as np
+ HAS_DEPS = True
 except ImportError:
-    HAS_DEPS = False
-    torch = None
-    np = None
-    pytestmark = pytest.mark.skip("Required dependencies (torch, numpy) not available")
+ HAS_DEPS = False
+ torch = None
+ np = None
+ pytestmark = pytest.mark.skip("Required dependencies (torch, numpy) not available")
 ```
 
 **Benefits:**
@@ -81,17 +81,17 @@ except ImportError:
 ## Fix 2: Conditional Class Definitions
 
 ```python
-#  FIXED CODE
+# FIXED CODE
 if HAS_DEPS and torch is not None:
-    class MockTransformerModel(torch.nn.Module):
-        """Real implementation with torch."""
-        def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
-            super().__init__()
-            # ... full implementation
+ class MockTransformerModel(torch.nn.Module):
+ """Real implementation with torch."""
+ def __init__(self, num_layers=2, num_heads=4, seq_len=10, hidden_dim=64):
+ super().__init__()
+ # ... full implementation
 else:
-    # Dummy class when torch is not available
-    class MockTransformerModel:
-        pass
+ # Dummy class when torch is not available
+ class MockTransformerModel:
+ pass
 ```
 
 **Benefits:**
@@ -103,12 +103,12 @@ else:
 ## Fix 3: Safe Iterator Usage (test_train_loop_coverage.py)
 
 ```python
-#  ADDED SAFETY
+# ADDED SAFETY
 dataloader_iter = iter(simple_dataloader)
 try:
-    batch = next(dataloader_iter)
+ batch = next(dataloader_iter)
 except StopIteration:
-    pytest.fail("Dataloader is empty - cannot get batch for test")
+ pytest.fail("Dataloader is empty - cannot get batch for test")
 ```
 
 **Benefits:**

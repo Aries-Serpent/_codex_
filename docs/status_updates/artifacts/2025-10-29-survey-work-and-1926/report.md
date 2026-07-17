@@ -35,26 +35,26 @@
 #!/usr/bin/env bash
 # Branch-aware survey writer for Codex plaintext output.
 # Usage:
-#   scripts/survey.sh --pr 1926 --stdin <<<'plain text'
-#   scripts/survey.sh --pr 1926 --from-file /path/to/codex_plain.txt
+# scripts/survey.sh --pr 1926 --stdin <<<'plain text'
+# scripts/survey.sh --pr 1926 --from-file /path/to/codex_plain.txt
 set -euo pipefail
 
 usage() {
-  cat <<'USAGE' >&2
+ cat <<'USAGE' >&2
 Usage: scripts/survey.sh --pr <PR_NUMBER> [--stdin | --from-file <path>]
-  --pr <PR_NUMBER>     Pull request number the survey targets.
-  --stdin              Read Codex survey plaintext from STDIN.
-  --from-file <path>   Read Codex survey plaintext from the given file.
+ --pr <PR_NUMBER> Pull request number the survey targets.
+ --stdin Read Codex survey plaintext from STDIN.
+ --from-file <path> Read Codex survey plaintext from the given file.
 USAGE
 }
 
 sanitize_slug() {
-  local value="$1"
-  value="${value//\//_}"
-  value="${value// /_}"
-  value="${value//[^A-Za-z0-9._-]/_}"
-  value="$(echo "${value}" | sed -E 's/_+/_/g; s/^_+//; s/_+$//')"
-  printf '%s' "${value:-na}"
+ local value="$1"
+ value="${value//\//_}"
+ value="${value// /_}"
+ value="${value//[^A-Za-z0-9._-]/_}"
+ value="$(echo "${value}" | sed -E 's/_+/_/g; s/^_+//; s/_+$//')"
+ printf '%s' "${value:-na}"
 }
 ```text
 
@@ -104,11 +104,11 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
 ## Quick Flow
 1) **Collect survey plaintext** from Codex (no nested fences; use the template in `templates/SURVEY_TEMPLATE.md`).
 2) **Write the report** with the branch-aware writer:
-   ```bash
-   # from repo root
-   scripts/survey.sh --pr 1926 --stdin <<'EOF'
-   <paste Codex plaintext survey here>
-   EOF
+ ```bash
+ # from repo root
+ scripts/survey.sh --pr 1926 --stdin <<'EOF'
+ <paste Codex plaintext survey here>
+ EOF
  ```
  - Use `--from-file <path>` if the plaintext is saved locally.
 3) **Resulting paths**:
@@ -132,7 +132,7 @@ Let readiness be \( R = \alpha \cdot E + \beta \cdot T + \gamma \cdot D \).
 - T (Trace quality): `0.0`
 - D (Docs parity): `0.9`
 - Weights: α=`0.2`, β=`0.2`, γ=`0.6`
-- **R = 0.54** → **Recommendation:** `Proceed`
+- **R = 0.54** **Recommendation:** `Proceed`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md`

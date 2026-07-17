@@ -41,21 +41,21 @@ import secrets
 
 # For API keys/tokens (not passwords): SHA-256 is acceptable
 def hash_api_key(api_key: str) -> str:
-    """Hash API key for storage comparison. NOT for passwords."""
-    return hashlib.sha256(api_key.encode('utf-8')).hexdigest()
+ """Hash API key for storage comparison. NOT for passwords."""
+ return hashlib.sha256(api_key.encode('utf-8')).hexdigest()
 
 # For passwords: Use bcrypt or argon2 (recommended)
 # pip install bcrypt
 import bcrypt
 
 def hash_password(password: str) -> bytes:
-    """Securely hash a password using bcrypt."""
-    salt = bcrypt.gensalt(rounds=12)
-    return bcrypt.hashpw(password.encode('utf-8'), salt)
+ """Securely hash a password using bcrypt."""
+ salt = bcrypt.gensalt(rounds=12)
+ return bcrypt.hashpw(password.encode('utf-8'), salt)
 
 def verify_password(password: str, hashed: bytes) -> bool:
-    """Verify a password against its hash."""
-    return bcrypt.checkpw(password.encode('utf-8'), hashed)
+ """Verify a password against its hash."""
+ return bcrypt.checkpw(password.encode('utf-8'), hashed)
 
 # Authenticator usage
 authenticator = MCPAuthenticator()
@@ -78,24 +78,24 @@ principal = authenticator.authenticate(api_key)
 from mcp.auth import MCPAuthorizer, Principal
 
 authorizer = MCPAuthorizer(permissions={
-    "admin": ["tool1", "tool2", "sensitive_tool"],
-    "user": ["tool1", "tool2"],
-    "guest": ["tool1"]
+ "admin": ["tool1", "tool2", "sensitive_tool"],
+ "user": ["tool1", "tool2"],
+ "guest": ["tool1"]
 })
 
 # Check authorization
 principal = Principal(principal_id="user123", role="user")
 if authorizer.authorize(principal, "sensitive_tool"):
-    # User is unauthorized - would raise Unauthorized error
-    pass
+ # User is unauthorized - would raise Unauthorized error
+ pass
 ```
 
 **Permission Hash Validation**:
 ```python
 # Compute SHA-256 checksum for permission validation
 permission_hash = authorizer.compute_permission_hash(
-    principal_id="user123",
-    tool_name="sensitive_tool"
+ principal_id="user123",
+ tool_name="sensitive_tool"
 )
 # Verify against stored checksums
 ```
@@ -135,9 +135,9 @@ from mcp.rate_limit import MCPRateLimiter
 
 # 10 requests per second, burst capacity of 50
 limiter = MCPRateLimiter(
-    rate=10.0,      # Requests per second
-    capacity=50,    # Burst capacity
-    seed=42         # RNG seed for testing
+ rate=10.0, # Requests per second
+ capacity=50, # Burst capacity
+ seed=42 # RNG seed for testing
 )
 ```
 
@@ -148,8 +148,8 @@ principal_id = "user123"
 tool_name = "expensive_tool"
 
 if not limiter.allow(principal_id, tool_name):
-    from mcp.errors import RateLimitExceeded
-    raise RateLimitExceeded(f"Rate limit exceeded for {principal_id}")
+ from mcp.errors import RateLimitExceeded
+ raise RateLimitExceeded(f"Rate limit exceeded for {principal_id}")
 
 # Execute tool
 result = execute_tool(tool_name)
@@ -180,18 +180,18 @@ principal_limiter = MCPRateLimiter(rate=10.0, capacity=20)
 tool_limiter = MCPRateLimiter(rate=5.0, capacity=10)
 
 def execute_with_protection(principal_id, tool_name):
-    # Check all layers
-    if not global_limiter.allow("global", "any"):
-        raise RateLimitExceeded("Global rate limit")
+ # Check all layers
+ if not global_limiter.allow("global", "any"):
+ raise RateLimitExceeded("Global rate limit")
 
-    if not principal_limiter.allow(principal_id, "any"):
-        raise RateLimitExceeded("Principal rate limit")
+ if not principal_limiter.allow(principal_id, "any"):
+ raise RateLimitExceeded("Principal rate limit")
 
-    if not tool_limiter.allow(principal_id, tool_name):
-        raise RateLimitExceeded("Tool rate limit")
+ if not tool_limiter.allow(principal_id, tool_name):
+ raise RateLimitExceeded("Tool rate limit")
 
-    # Execute
-    return execute_tool(tool_name)
+ # Execute
+ return execute_tool(tool_name)
 ```
 
 ---
@@ -206,12 +206,12 @@ Structured error handling prevents information leakage and provides consistent r
 
 ```python
 from mcp.errors import (
-    MCPError,              # Base class
-    ToolNotFound,          # -32601, HTTP 404
-    ValidationError,       # -32602, HTTP 400
-    RateLimitExceeded,     # -32002, HTTP 429
-    Unauthorized,          # -32600, HTTP 401
-    ToolExecutionError     # -32603, HTTP 500
+ MCPError, # Base class
+ ToolNotFound, # -32601, HTTP 404
+ ValidationError, # -32602, HTTP 400
+ RateLimitExceeded, # -32002, HTTP 429
+ Unauthorized, # -32600, HTTP 401
+ ToolExecutionError # -32603, HTTP 500
 )
 ```
 
@@ -220,13 +220,13 @@ from mcp.errors import (
 **Sanitize Error Messages**:
 ```python
 try:
-    result = execute_sensitive_operation()
+ result = execute_sensitive_operation()
 except Exception as e:
-    # DON'T expose internal details
-    # raise MCPError(f"Database error: {connection_string}")
+ # DON'T expose internal details
+ # raise MCPError(f"Database error: {connection_string}")
 
-    # DO sanitize for external consumption
-    raise ToolExecutionError("Internal error occurred")
+ # DO sanitize for external consumption
+ raise ToolExecutionError("Internal error occurred")
 ```
 
 **Error Context for Debugging (Internal Only)**:
@@ -236,18 +236,18 @@ import logging
 logger = logging.getLogger('mcp.security')
 
 try:
-    result = execute_tool()
+ result = execute_tool()
 except MCPError as e:
-    # Log full context internally
-    logger.error(f"Tool execution failed", extra={
-        "error_code": e.code,
-        "principal": principal_id,
-        "tool": tool_name,
-        "stack_trace": str(e)
-    })
+ # Log full context internally
+ logger.error(f"Tool execution failed", extra={
+ "error_code": e.code,
+ "principal": principal_id,
+ "tool": tool_name,
+ "stack_trace": str(e)
+ })
 
-    # Return sanitized error externally
-    raise
+ # Return sanitized error externally
+ raise
 ```
 
 ### Security Considerations
@@ -277,22 +277,22 @@ from mcp.auth import Principal
 
 # Always include tenant_id in principal
 tenant_principal = Principal(
-    principal_id="user123",
-    tenant_id="tenant_abc"
+ principal_id="user123",
+ tenant_id="tenant_abc"
 )
 ```
 
 **Enforce Tenant Boundaries**:
 ```python
 def check_tenant_access(principal: Principal, resource):
-    """Prevent cross-tenant access."""
-    if resource.tenant_id != principal.tenant_id:
-        from mcp.errors import Unauthorized
-        raise Unauthorized(
-            f"Cross-tenant access denied: "
-            f"principal tenant={principal.tenant_id}, "
-            f"resource tenant={resource.tenant_id}"
-        )
+ """Prevent cross-tenant access."""
+ if resource.tenant_id != principal.tenant_id:
+ from mcp.errors import Unauthorized
+ raise Unauthorized(
+ f"Cross-tenant access denied: "
+ f"principal tenant={principal.tenant_id}, "
+ f"resource tenant={resource.tenant_id}"
+ )
 ```
 
 ## Tenant-Specific Rate Limits
@@ -300,18 +300,18 @@ def check_tenant_access(principal: Principal, resource):
 ```python
 # Separate rate limiters per tenant
 tenant_limiters = {
-    "tenant_abc": MCPRateLimiter(rate=20.0, capacity=50),
-    "tenant_xyz": MCPRateLimiter(rate=10.0, capacity=20),
+ "tenant_abc": MCPRateLimiter(rate=20.0, capacity=50),
+ "tenant_xyz": MCPRateLimiter(rate=10.0, capacity=20),
 }
 
 def get_tenant_limiter(tenant_id: str) -> MCPRateLimiter:
-    if tenant_id not in tenant_limiters:
-        # Default limits for new tenants
-        tenant_limiters[tenant_id] = MCPRateLimiter(
-            rate=5.0,
-            capacity=10
-        )
-    return tenant_limiters[tenant_id]
+ if tenant_id not in tenant_limiters:
+ # Default limits for new tenants
+ tenant_limiters[tenant_id] = MCPRateLimiter(
+ rate=5.0,
+ capacity=10
+ )
+ return tenant_limiters[tenant_id]
 ```
 
 ## Data Isolation
@@ -320,13 +320,13 @@ def get_tenant_limiter(tenant_id: str) -> MCPRateLimiter:
 ```python
 # ALWAYS filter by tenant_id in database queries
 def get_tools_for_tenant(tenant_id: str):
-    # Good: Tenant-scoped query
-    return db.query(Tool).filter(
-        Tool.tenant_id == tenant_id
-    ).all()
+ # Good: Tenant-scoped query
+ return db.query(Tool).filter(
+ Tool.tenant_id == tenant_id
+ ).all()
 
-    # BAD: No tenant filtering - security vulnerability!
-    # return db.query(Tool).all()
+ # BAD: No tenant filtering - security vulnerability!
+ # return db.query(Tool).all()
 ```
 
 **Security Best Practices**:
@@ -352,30 +352,30 @@ Secure the JSON-RPC protocol surface against attacks.
 **Strict Protocol Compliance**:
 ```python
 def validate_jsonrpc_request(request: dict):
-    # Validate JSON-RPC 2.0 version
-    if request.get("jsonrpc") != "2.0":
-        from mcp.errors import ValidationError
-        raise ValidationError("Invalid JSON-RPC version")
+ # Validate JSON-RPC 2.0 version
+ if request.get("jsonrpc") != "2.0":
+ from mcp.errors import ValidationError
+ raise ValidationError("Invalid JSON-RPC version")
 
-    # Validate required fields
-    if "method" not in request:
-        raise ValidationError("Missing 'method' field")
+ # Validate required fields
+ if "method" not in request:
+ raise ValidationError("Missing 'method' field")
 
-    # Validate method name format
-    method = request["method"]
-    if not isinstance(method, str) or len(method) > 100:
-        raise ValidationError("Invalid method name")
+ # Validate method name format
+ method = request["method"]
+ if not isinstance(method, str) or len(method) > 100:
+ raise ValidationError("Invalid method name")
 ```
 
 ### Request Size Limits
 
 ```python
-MAX_REQUEST_SIZE = 1024 * 1024  # 1 MB
+MAX_REQUEST_SIZE = 1024 * 1024 # 1 MB
 
 def check_request_size(request_body: str):
-    if len(request_body) > MAX_REQUEST_SIZE:
-        from mcp.errors import ValidationError
-        raise ValidationError("Request too large")
+ if len(request_body) > MAX_REQUEST_SIZE:
+ from mcp.errors import ValidationError
+ raise ValidationError("Request too large")
 ```
 
 ### Input Sanitization
@@ -384,12 +384,12 @@ def check_request_size(request_body: str):
 import re
 
 def sanitize_tool_name(name: str) -> str:
-    """Prevent injection attacks in tool names."""
-    # Allow only alphanumeric, dash, underscore
-    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
-        from mcp.errors import ValidationError
-        raise ValidationError("Invalid tool name format")
-    return name
+ """Prevent injection attacks in tool names."""
+ # Allow only alphanumeric, dash, underscore
+ if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+ from mcp.errors import ValidationError
+ raise ValidationError("Invalid tool name format")
+ return name
 ```
 
 ### HTTPS Enforcement
@@ -397,7 +397,7 @@ def sanitize_tool_name(name: str) -> str:
 ```python
 # In production, always use HTTPS
 if not request.is_secure() and not settings.DEBUG:
-    raise ValidationError("HTTPS required")
+ raise ValidationError("HTTPS required")
 ```
 
 ---
@@ -418,22 +418,22 @@ import uuid
 audit_logger = logging.getLogger('mcp.audit')
 
 def log_security_event(event_type: str, principal_id: str,
-                       tool_name: str, result: str, **kwargs):
-    """Log security-relevant events."""
-    request_id = str(uuid.uuid4())
+ tool_name: str, result: str, **kwargs):
+ """Log security-relevant events."""
+ request_id = str(uuid.uuid4())
 
-    audit_logger.info(
-        f"Security event: {event_type}",
-        extra={
-            "request_id": request_id,
-            "event_type": event_type,
-            "principal_id": principal_id,
-            "tool_name": tool_name,
-            "result": result,
-            "timestamp": datetime.utcnow().isoformat(),
-            **kwargs
-        }
-    )
+ audit_logger.info(
+ f"Security event: {event_type}",
+ extra={
+ "request_id": request_id,
+ "event_type": event_type,
+ "principal_id": principal_id,
+ "tool_name": tool_name,
+ "result": result,
+ "timestamp": datetime.utcnow().isoformat(),
+ **kwargs
+ }
+ )
 
 # Log authentication attempts
 log_security_event("authentication", "user123", "N/A", "success")
@@ -450,18 +450,18 @@ log_security_event("rate_limit", "user123", "api_call", "exceeded")
 ```python
 # Track security metrics
 security_metrics = {
-    "auth_failures": 0,
-    "authz_denials": 0,
-    "rate_limit_violations": 0,
-    "invalid_requests": 0,
+ "auth_failures": 0,
+ "authz_denials": 0,
+ "rate_limit_violations": 0,
+ "invalid_requests": 0,
 }
 
 def increment_security_metric(metric_name: str):
-    security_metrics[metric_name] += 1
+ security_metrics[metric_name] += 1
 
-    # Alert on anomalies
-    if security_metrics[metric_name] > ALERT_THRESHOLD:
-        send_security_alert(metric_name, security_metrics[metric_name])
+ # Alert on anomalies
+ if security_metrics[metric_name] > ALERT_THRESHOLD:
+ send_security_alert(metric_name, security_metrics[metric_name])
 ```
 
 ## Request Tracing
@@ -471,15 +471,15 @@ def increment_security_metric(metric_name: str):
 import uuid
 
 def process_request(request):
-    # Generate or extract request ID
-    request_id = request.headers.get('X-Request-Id') or str(uuid.uuid4())
+ # Generate or extract request ID
+ request_id = request.headers.get('X-Request-Id') or str(uuid.uuid4())
 
-    # Include in all logs
-    logger.info(f"Processing request", extra={"request_id": request_id})
+ # Include in all logs
+ logger.info(f"Processing request", extra={"request_id": request_id})
 
-    # Include in response
-    response.headers['X-Request-Id'] = request_id
-    return response
+ # Include in response
+ response.headers['X-Request-Id'] = request_id
+ return response
 ```
 
 ---
@@ -653,7 +653,7 @@ For security issues, please review the audit reports and implement recommended s
 
 ### Path (Security Flow)
 ```
-Authentication → Authorization → Rate limit check → Input validation → Tool execution → Audit logging → Error handling
+Authentication Authorization Rate limit check Input validation Tool execution Audit logging Error handling
 ```
 
 ### Fields (Security Energy)

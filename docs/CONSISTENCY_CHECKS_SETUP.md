@@ -111,7 +111,7 @@ The pre-commit hook runs automatically before each commit and validates:
 
 ```text
  Running Pre-Commit Consistency Checks
-════════════════════════════════════════════════════════════════════
+
 
 [1/5] Scanning for secrets...
  No secrets detected
@@ -129,7 +129,7 @@ The pre-commit hook runs automatically before each commit and validates:
 [5/5] Validating YAML files...
  YAML validation OK (3 files)
 
-════════════════════════════════════════════════════════════════════
+
  All pre-commit checks passed!
 ```
 
@@ -179,13 +179,13 @@ The checker validates these link patterns (shown as code examples):
 
 **Internal file links:**
 ```markdown
-[text](./file.md)
+<!-- TODO: Add real link: text -->
 ```
 Relative path within repository
 
 **Anchor references:**
 ```markdown
-[text](./file.md#anchor)
+<!-- TODO: Add real link: text -->
 ```
 Link to specific section
 

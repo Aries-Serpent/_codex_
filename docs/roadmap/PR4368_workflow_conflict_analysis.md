@@ -21,18 +21,18 @@ admin attention.
 ## Root Cause Chain
 
 ```
-report_progress() ──► git push (new SHA)
-                   │
-                   ├──► pull_request: synchronize ──► pr-followup-generator.yml runs
-                   │                                      │
-                   │                                      └──► git commit "chore: Generate..."
-                   │                                               (NO [skip ci] ← BUG #1)
-                   │                                               │
-                   │                                               └──► pull_request: synchronize
-                   │                                                    ──► 4 gating workflows (set A)
-                   │
-                   └──► PR description update ──► pull_request: edited
-                                                  ──► 4 gating workflows (set B)
+report_progress() git push (new SHA)
+ 
+ pull_request: synchronize pr-followup-generator.yml runs
+ 
+ git commit "chore: Generate..."
+ (NO [skip ci] BUG #1)
+ 
+ pull_request: synchronize
+ 4 gating workflows (set A)
+ 
+ PR description update pull_request: edited
+ 4 gating workflows (set B)
 
 Total = 8 pending (set A + set B)
 ```
@@ -116,8 +116,8 @@ still runs twice per push consuming Actions minutes.
 **Recommended:** Add an additional trigger guard:
 ```yaml
 if: |
-  !contains(github.event.head_commit.message, '[skip ci]') &&
-  github.actor != 'github-actions[bot]'
+ !contains(github.event.head_commit.message, '[skip ci]') &&
+ github.actor != 'github-actions[bot]'
 ```
 
 ### RCP-04 — `agent-auth-delegation.yml` fires on `pull_request: edited`

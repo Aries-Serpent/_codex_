@@ -46,19 +46,19 @@ This session accomplished:
 ### Files Created This Session
 ```
 src/services/github/
-├── __init__.py
-├── client.py
-├── types.py
-└── exceptions.py
+ __init__.py
+ client.py
+ types.py
+ exceptions.py
 
 tests/services/github/
-├── __init__.py
-└── test_client.py
+ __init__.py
+ test_client.py
 
 docs/plans/copilot-workflow-agent/
-├── README.md
-├── 00-PLANSET.md
-└── 01-BATCHSET.md
+ README.md
+ 00-PLANSET.md
+ 01-BATCHSET.md
 ```
 
 ### Test Results

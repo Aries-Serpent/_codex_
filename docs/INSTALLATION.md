@@ -898,7 +898,7 @@ from codex_ml.cognitive import OODAOrchestrator
 # Initialize OODA loop orchestrator
 orchestrator = OODAOrchestrator()
 
-# Observe → Orient → Decide → Act
+# Observe Orient Decide Act
 result = orchestrator.execute(
  observation="Input data",
  context={"mode": "inference"}

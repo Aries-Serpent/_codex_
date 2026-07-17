@@ -147,9 +147,9 @@ Phase 0's `workflow_compliance_scan.py` verified all workflows are compliant.
 ### C-7: Phase Ordering Dependencies (Impact: Medium)
 
 ```
-Phase 0 ──► Phase 1 ──► Phase 2 ──┬──► Phase 4 ──► Phase 6
-                         Phase 3 ──┘        │
-                                    Phase 5 ◄┘
+Phase 0 Phase 1 Phase 2 Phase 4 Phase 6
+ Phase 3 
+ Phase 5 
 ```
 
 Phases 2 and 3 can run in parallel after Phase 1. Phase 4 needs Phase 1 + 2 complete.
@@ -241,7 +241,7 @@ all prerequisites are met and execution can begin immediately.
 ### Readiness Score: **100 / 100**
 
 ```
-██████████████████████████████████████████████████  100%
+██████████████████████████████████████████████████ 100%
 ```
 
 ### Score Interpretation
@@ -278,16 +278,16 @@ Automated demotion annotations are active in the ED transition gate.
 ### Timeline Summary
 
 ```
-Week 1          Week 2          Week 3          Week 4          Week 5          Week 6
-─────────────── ─────────────── ─────────────── ─────────────── ─────────────── ───────────
+Week 1 Week 2 Week 3 Week 4 Week 5 Week 6
+ 
 ▓▓▓▓░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-Phase 0          ▓▓▓▓▓▓▓▓░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-                 Phase 1         ▓▓▓▓▓▓▓▓▓▓░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-                                 Phase 2 ────────►▓▓▓▓░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-                                 Phase 3 ─► ▓▓▓▓▓░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-                                                   Phase 4 ▓▓▓▓▓▓░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
-                                                            Phase 5  ▓▓▓▓▓▓▓▓░░░░░░░ ░░░░░░░░░░
-                                                                                Phase 6 ▓▓▓▓▓▓░░
+Phase 0 ▓▓▓▓▓▓▓▓░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+ Phase 1 ▓▓▓▓▓▓▓▓▓▓░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+ Phase 2 ▓▓▓▓░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+ Phase 3 ▓▓▓▓▓░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+ Phase 4 ▓▓▓▓▓▓░░ ░░░░░░░░░░░░░░░ ░░░░░░░░░░
+ Phase 5 ▓▓▓▓▓▓▓▓░░░░░░░ ░░░░░░░░░░
+ Phase 6 ▓▓▓▓▓▓░░
 ```
 
 **Estimated Total: 5–7 weeks** (including human approval gates between phases)

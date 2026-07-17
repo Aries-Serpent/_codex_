@@ -83,31 +83,31 @@ The cognitive brain can now:
 #### Agent Development Decision Tree
 ```
 Need new capability?
-├─ Check existing agents first
-│ ├─ Found? → Use existing
-│ └─ Not found? → Create new
-│ ├─ Copy .template/
-│ ├─ Customize files
-│ ├─ Implement logic
-│ ├─ Add tests
-│ └─ Update registry
-└─ Done
+ Check existing agents first
+ Found? Use existing
+ Not found? Create new
+ Copy .template/
+ Customize files
+ Implement logic
+ Add tests
+ Update registry
+ Done
 ```
 
 #### CI Failure Response Decision Tree
 ```
 CI Failure Detected
-├─ Analyze logs
-│ ├─ Pattern matched?
-│ │ ├─ Yes → Calculate confidence
-│ │ │ ├─ High (≥90%) → Auto-fix
-│ │ │ ├─ Medium (70-89%) → Auto-fix + notify
-│ │ │ └─ Low (<70%) → Create issue
-│ │ └─ No → Escalate to human
-│ └─ Apply fix via PR
-│ ├─ Tests pass? → Merge
-│ └─ Tests fail? → Learn + adjust
-└─ Update success metrics
+ Analyze logs
+ Pattern matched?
+ Yes Calculate confidence
+ High (≥90%) Auto-fix
+ Medium (70-89%) Auto-fix + notify
+ Low (<70%) Create issue
+ No Escalate to human
+ Apply fix via PR
+ Tests pass? Merge
+ Tests fail? Learn + adjust
+ Update success metrics
 ```
 
 ---

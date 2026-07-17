@@ -22,18 +22,18 @@
 
 ```python
 # BEFORE (VULNERABLE)
-secret_count = len(secrets_result) if secrets_result else 0  # TAINTED
+secret_count = len(secrets_result) if secrets_result else 0 # TAINTED
 self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
 ```
 
 **Data Flow Analysis**:
 ```
 secrets_result (tainted dict with secret names as keys)
-  ↓ len() operation
+ len() operation
 secret_count (tainted integer)
-  ↓ string interpolation
+ string interpolation
 log_task() call
-  ↓ flows to logging statements
+ flows to logging statements
 Lines 128, 131, 134, 137 (ALERTS #3342-3345)
 ```
 
@@ -43,7 +43,7 @@ Lines 128, 131, 134, 137 (ALERTS #3342-3345)
 redacted_result = redact_dict_with_secret_keys(secrets_result) if secrets_result else {}
 task_results.append({"step": "secrets", "result": redacted_result})
 # Break taint flow: calculate count from redacted data, not original tainted data
-secret_count = len(redacted_result)  # CLEAN - from sanitized dict
+secret_count = len(redacted_result) # CLEAN - from sanitized dict
 self.log_task("setup_secrets", "success", f"Secrets configuration complete: {secret_count} items processed")
 ```
 
@@ -131,15 +131,15 @@ CodeQL's taint analysis is **conservative** - any operation on tainted data is c
 
 ```python
 # Step 1: Receive tainted input
-secrets_result = get_secrets()  # TAINTED
+secrets_result = get_secrets() # TAINTED
 
 # Step 2: Apply recognized sanitizer
-redacted = redact_dict_with_secret_keys(secrets_result)  # CLEAN
+redacted = redact_dict_with_secret_keys(secrets_result) # CLEAN
 
 # Step 3: All operations on clean data are clean
-count = len(redacted)  # CLEAN
-items = list(redacted.keys())  # CLEAN
-logged_value = f"Processed {count} items"  # CLEAN
+count = len(redacted) # CLEAN
+items = list(redacted.keys()) # CLEAN
+logged_value = f"Processed {count} items" # CLEAN
 ```
 
 **Key Insight**: The sanitizer must be **recognized** by CodeQL (custom config) or **obvious** from code pattern (replaces sensitive keys with generic ones).
@@ -171,13 +171,13 @@ logged_value = f"Processed {count} items"  # CLEAN
 ### Syntax Validation
 ```bash
 python3 -m py_compile .github/agents/admin-automation-agent/src/agent.py
-#  PASS
+# PASS
 ```
 
 ## Taint Flow Analysis
 ```
-Before: secrets_result → len() → secret_count → log_task() → ALERTS
-After:  secrets_result → redact() → redacted_result → len() → secret_count → log_task() → CLEAN
+Before: secrets_result len() secret_count log_task() ALERTS
+After: secrets_result redact() redacted_result len() secret_count log_task() CLEAN
 ```
 
 ### Functional Testing

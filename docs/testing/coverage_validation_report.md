@@ -103,12 +103,12 @@ The 390 Phase 4 tests validated:
 ### Report Locations
 ```
 /home/runner/work/_codex_/_codex_/
-├── coverage_validation_report.md       ← This report
-├── coverage_phase4.json                ← JSON metrics
-├── coverage_gaps.txt                   ← Gap analysis
-├── pytest_phase4.log                   ← Execution log
-└── htmlcov/phase4_complete/
-    └── index.html                      ← HTML report
+ coverage_validation_report.md This report
+ coverage_phase4.json JSON metrics
+ coverage_gaps.txt Gap analysis
+ pytest_phase4.log Execution log
+ htmlcov/phase4_complete/
+ index.html HTML report
 ```
 
 ---

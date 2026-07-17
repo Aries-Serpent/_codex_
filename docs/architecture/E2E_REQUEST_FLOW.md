@@ -17,144 +17,144 @@ This diagram shows how a request flows through all 5 layers from entry to respon
 
 graph TD
 
-    Start([" Request Entry"]) --> L1["Layer 1: Interface & CLI"]
-    
-    %% Layer 1: Parse & Validate
-    L1 --> CLI{Check Request<br/>Type}
+ Start([" Request Entry"]) --> L1["Layer 1: Interface & CLI"]
+ 
+ %% Layer 1: Parse & Validate
+ L1 --> CLI{Check Request<br/>Type}
 
-    CLI -->|"CLI Command"| CParse["Parse Command Line Args"]
+ CLI -->|"CLI Command"| CParse["Parse Command Line Args"]
 
-    CLI -->|"REST API"| AParse["Parse HTTP Request"]
+ CLI -->|"REST API"| AParse["Parse HTTP Request"]
 
-    CParse --> Hydra[" Load Hydra Config<br/>• Read config files<br/>• Resolve overrides<br/>• Validate schema"]
+ CParse --> Hydra[" Load Hydra Config<br/>• Read config files<br/>• Resolve overrides<br/>• Validate schema"]
 
-    AParse --> Hydra
-    
-    Hydra --> ValidCfg{"Config<br/>Valid?"}
+ AParse --> Hydra
+ 
+ Hydra --> ValidCfg{"Config<br/>Valid?"}
 
-    ValidCfg -->|" Error"| ErrorCfg["Return Error<br/>Invalid Configuration"]
+ ValidCfg -->|" Error"| ErrorCfg["Return Error<br/>Invalid Configuration"]
 
-    ValidCfg -->|" OK"| RouteCmd["Route Command<br/>to Layer 2"]
-    
-    %% Layer 2: ML Operation
-    RouteCmd --> L2["Layer 2: ML Platform"]
+ ValidCfg -->|" OK"| RouteCmd["Route Command<br/>to Layer 2"]
+ 
+ %% Layer 2: ML Operation
+ RouteCmd --> L2["Layer 2: ML Platform"]
 
-    L2 --> SelectOp{Operation<br/>Type?}
-    
-    SelectOp -->|"train"| Train[" Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
+ L2 --> SelectOp{Operation<br/>Type?}
+ 
+ SelectOp -->|"train"| Train[" Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
 
-    SelectOp -->|"eval"| Eval[" Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
+ SelectOp -->|"eval"| Eval[" Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
 
-    SelectOp -->|"predict"| Serve[" Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
-    
-    %% Data dependencies (Layer 3)
-    Train --> L3A["Layer 3: Data Pipeline"]
+ SelectOp -->|"predict"| Serve[" Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
+ 
+ %% Data dependencies (Layer 3)
+ Train --> L3A["Layer 3: Data Pipeline"]
 
-    Eval --> L3A
+ Eval --> L3A
 
-    Serve --> L3A
-    
-    L3A --> DataOp{Data<br/>Operation?}
+ Serve --> L3A
+ 
+ L3A --> DataOp{Data<br/>Operation?}
 
-    DataOp -->|"Need raw code"| Ingest["📥 Code Ingestion<br/>• Parse files<br/>• Generate AST<br/>• Count tokens"]
+ DataOp -->|"Need raw code"| Ingest[" Code Ingestion<br/>• Parse files<br/>• Generate AST<br/>• Count tokens"]
 
-    DataOp -->|"Need context"| RAG[" RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
+ DataOp -->|"Need context"| RAG[" RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
 
-    DataOp -->|"Need transform"| Trans[" Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
-    
-    Ingest --> StoreL4["Persist to Layer 4"]
+ DataOp -->|"Need transform"| Trans[" Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
+ 
+ Ingest --> StoreL4["Persist to Layer 4"]
 
-    RAG --> StoreL4
+ RAG --> StoreL4
 
-    Trans --> StoreL4
-    
-    %% Infrastructure (Layer 4)
-    StoreL4 --> L4["Layer 4: Infrastructure"]
+ Trans --> StoreL4
+ 
+ %% Infrastructure (Layer 4)
+ StoreL4 --> L4["Layer 4: Infrastructure"]
 
-    L4 --> ConfigOp[" Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
+ L4 --> ConfigOp[" Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
 
-    ConfigOp --> StorageOp["💾 Storage<br/>• Load/save model<br/>• Load/save data<br/>• Update cache"]
+ ConfigOp --> StorageOp[" Storage<br/>• Load/save model<br/>• Load/save data<br/>• Update cache"]
 
-    StorageOp --> MetricsOp[" Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
-    
-    %% Operation completion (back to Layer 2)
-    MetricsOp --> L2Complete["Return to Layer 2"]
+ StorageOp --> MetricsOp[" Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
+ 
+ %% Operation completion (back to Layer 2)
+ MetricsOp --> L2Complete["Return to Layer 2"]
 
-    L2Complete --> OpComplete{"Operation<br/>Complete?"}
-    
-    OpComplete -->|" Error"| ErrorOp["Handle Error<br/>Log & retry/fail"]
+ L2Complete --> OpComplete{"Operation<br/>Complete?"}
+ 
+ OpComplete -->|" Error"| ErrorOp["Handle Error<br/>Log & retry/fail"]
 
-    OpComplete -->|" Success"| ExternalCheck{"Notify<br/>External?"}
-    
-    %% Layer 5: Integration
-    ExternalCheck -->|" Internal Only"| Format["Return Result<br/>to User"]
+ OpComplete -->|" Success"| ExternalCheck{"Notify<br/>External?"}
+ 
+ %% Layer 5: Integration
+ ExternalCheck -->|" Internal Only"| Format["Return Result<br/>to User"]
 
-    ExternalCheck -->|" Notify"| L5["Layer 5: Integration"]
-    
-    L5 --> IntOp{Integration<br/>Type?}
+ ExternalCheck -->|" Notify"| L5["Layer 5: Integration"]
+ 
+ L5 --> IntOp{Integration<br/>Type?}
 
-    IntOp -->|"GitHub"| GHSync["🐙 GitHub Integration<br/>• Post PR comment<br/>• Create issue<br/>• Update workflow"]
+ IntOp -->|"GitHub"| GHSync[" GitHub Integration<br/>• Post PR comment<br/>• Create issue<br/>• Update workflow"]
 
-    IntOp -->|"Zendesk"| ZDSync["🎫 Zendesk Integration<br/>• Update ticket<br/>• Create case<br/>• Sync status"]
+ IntOp -->|"Zendesk"| ZDSync[" Zendesk Integration<br/>• Update ticket<br/>• Create case<br/>• Sync status"]
 
-    IntOp -->|"Cloud"| CloudSync["☁️ Cloud Integration<br/>• Upload model<br/>• Save artifacts<br/>• Update metadata"]
+ IntOp -->|"Cloud"| CloudSync[" Cloud Integration<br/>• Upload model<br/>• Save artifacts<br/>• Update metadata"]
 
-    IntOp -->|"HF/MLflow"| ExtSync["🤗 External Services<br/>• Push to Hub<br/>• Log experiment<br/>• Save weights"]
-    
-    GHSync --> ExtComplete["Integration Complete"]
+ IntOp -->|"HF/MLflow"| ExtSync[" External Services<br/>• Push to Hub<br/>• Log experiment<br/>• Save weights"]
+ 
+ GHSync --> ExtComplete["Integration Complete"]
 
-    ZDSync --> ExtComplete
+ ZDSync --> ExtComplete
 
-    CloudSync --> ExtComplete
+ CloudSync --> ExtComplete
 
-    ExtSync --> ExtComplete
-    
-    %% Final response
-    ExtComplete --> Format
+ ExtSync --> ExtComplete
+ 
+ %% Final response
+ ExtComplete --> Format
 
-    ErrorOp --> Format
+ ErrorOp --> Format
 
-    Format --> Response["📤 Return Response<br/>• Status code<br/>• Result data<br/>• Metadata"]
+ Format --> Response[" Return Response<br/>• Status code<br/>• Result data<br/>• Metadata"]
 
-    Response --> End([" Request Complete"])
+ Response --> End([" Request Complete"])
 
-    ErrorCfg --> End
-    
-    %% Styling
-    style Start fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
-    style End fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
-    
-    style L1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-    style L2 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style L3A fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2px
-    style L5 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-    
-    style CParse fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-    style AParse fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-    style Hydra fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-    style RouteCmd fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
-    
-    style Train fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-    style Eval fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-    style Serve fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
-    
-    style Ingest fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-    style RAG fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-    style Trans fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
-    
-    style ConfigOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-    style StorageOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-    style MetricsOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
-    
-    style GHSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style ZDSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style CloudSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-    style ExtSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
-    
-    style ErrorOp fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-    style ErrorCfg fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
-    style Response fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+ ErrorCfg --> End
+ 
+ %% Styling
+ style Start fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+ style End fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+ 
+ style L1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+ style L2 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+ style L3A fill:#fef3c7,stroke:#d97706,stroke-width:2px
+ style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2px
+ style L5 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+ 
+ style CParse fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+ style AParse fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+ style Hydra fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+ style RouteCmd fill:#0284c7,stroke:#075985,stroke-width:2px,color:#fff
+ 
+ style Train fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+ style Eval fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+ style Serve fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff
+ 
+ style Ingest fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+ style RAG fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+ style Trans fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff
+ 
+ style ConfigOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+ style StorageOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+ style MetricsOp fill:#db2777,stroke:#9f1239,stroke-width:2px,color:#fff
+ 
+ style GHSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style ZDSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style CloudSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+ style ExtSync fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff
+ 
+ style ErrorOp fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+ style ErrorCfg fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+ style Response fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
 ```
 
 ---
@@ -165,66 +165,66 @@ graph TD
 
 ```
 User: codex train --config configs/default.yaml
-  ↓
-CLI Parse → Hydra Config Load → Validate → Route to Training Engine
-  ↓
+ 
+CLI Parse Hydra Config Load Validate Route to Training Engine
+ 
 Layer 2: Load model architecture + config
-  ↓
+ 
 Layer 3: Load training data via Code Ingestion + RAG
-  ↓
+ 
 Layer 4: Load from DB, cache configuration, setup monitoring
-  ↓
+ 
 Layer 2: Run training loop, periodic checkpoints
-  ↓
+ 
 Layer 4: Save checkpoint to DB + cloud storage
-  ↓
+ 
 Layer 5: Log to MLflow, upload metrics
-  ↓
-Return:  Training complete, saved to <checkpoint>
+ 
+Return: Training complete, saved to <checkpoint>
 ```
 
 ### Inference/Prediction Request Flow
 
 ```
 User: codex predict --model model.pt --input input.json
-  ↓
-API Parse → Hydra Config Load → Validate → Route to Serving Engine
-  ↓
+ 
+API Parse Hydra Config Load Validate Route to Serving Engine
+ 
 Layer 2: Load model weights
-  ↓
+ 
 Layer 3: Preprocess input via Data Transformation
-  ↓
+ 
 Layer 4: Check cache for similar predictions
-  ↓
+ 
 Layer 2: Run inference
-  ↓
+ 
 Layer 4: Cache result, log metrics
-  ↓
+ 
 Layer 5: (Optional) Upload to prediction service
-  ↓
-Return:  Prediction: [result], inference_time: 0.045s
+ 
+Return: Prediction: [result], inference_time: 0.045s
 ```
 
 ### Evaluation Request Flow
 
 ```
 User: codex evaluate --checkpoint checkpoints/model-epoch-10.pt
-  ↓
-CLI Parse → Hydra Config Load → Validate → Route to Evaluation Engine
-  ↓
+ 
+CLI Parse Hydra Config Load Validate Route to Evaluation Engine
+ 
 Layer 2: Load checkpoint
-  ↓
+ 
 Layer 3: Load eval dataset via RAG
-  ↓
+ 
 Layer 4: Load eval config, setup monitoring
-  ↓
+ 
 Layer 2: Compute metrics (accuracy, F1, etc.)
-  ↓
+ 
 Layer 4: Persist metrics to DB, update dashboards
-  ↓
+ 
 Layer 5: Log to MLflow, push to leaderboard
-  ↓
-Return:  Metrics: {accuracy: 0.92, f1: 0.88, ...}
+ 
+Return: Metrics: {accuracy: 0.92, f1: 0.88, ...}
 ```
 
 ---

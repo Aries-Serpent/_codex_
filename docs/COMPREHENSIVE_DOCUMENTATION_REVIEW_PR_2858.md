@@ -124,36 +124,36 @@ Security: Document implications explicitly
 
 ```
 Repository Documentation Tree (Analyzed: 234 files)
-├── Root Level (15 files)
-│ ├── PHASE_*.md (11 files) - Phase completion summaries
-│ ├── COGNITIVE_BRAIN_STATUS*.md (4 files) - Brain updates
-│ └── Documentation overlap identified
-│
-├── .codex/ (89 files)
-│ ├── plans/ (23 files) - Strategic planning
-│ ├── prompts/ (15 files) - Continuation prompts
-│ ├── cognitive_brain/ (8 files) - Brain state tracking
-│ ├── reports/ (12 files) - Session reports
-│ └── archive/ (31 files) - Historical docs
-│
-├── .github/ (67 files)
-│ ├── agents/ (38 files) - Custom agent specs
-│ ├── copilot-prompts/ (12 files) - Active prompts
-│ ├── plans/ (8 files) - Implementation plans
-│ └── prompts/ (9 files) - Execution prompts
-│
-├── docs/ (48 files)
-│ ├── plans/ (15 files) - Detailed planning
-│ ├── architecture/ (3 files) - System design
-│ ├── cognitive_brain/ (2 files) - Brain integration
-│ ├── **NEW: SECRETS_AND_ENVIRONMENT_VARIABLES.md**  # pragma: allowlist secret
-│ ├── **NEW: CI_FAILURE_RESOLUTION_PR_2858.md**
-│ └── **NEW: COGNITIVE_BRAIN_STATUS_PHASE_11_X_COMPLETE.md**
-│
-└── Other locations/ (15 files)
- ├── workbench/ (6 files) - Work in progress
- ├── cognitive_app/ (3 files) - App planning
- └── reports/ (6 files) - Status reports
+ Root Level (15 files)
+ PHASE_*.md (11 files) - Phase completion summaries
+ COGNITIVE_BRAIN_STATUS*.md (4 files) - Brain updates
+ Documentation overlap identified
+
+ .codex/ (89 files)
+ plans/ (23 files) - Strategic planning
+ prompts/ (15 files) - Continuation prompts
+ cognitive_brain/ (8 files) - Brain state tracking
+ reports/ (12 files) - Session reports
+ archive/ (31 files) - Historical docs
+
+ .github/ (67 files)
+ agents/ (38 files) - Custom agent specs
+ copilot-prompts/ (12 files) - Active prompts
+ plans/ (8 files) - Implementation plans
+ prompts/ (9 files) - Execution prompts
+
+ docs/ (48 files)
+ plans/ (15 files) - Detailed planning
+ architecture/ (3 files) - System design
+ cognitive_brain/ (2 files) - Brain integration
+ **NEW: SECRETS_AND_ENVIRONMENT_VARIABLES.md** # pragma: allowlist secret
+ **NEW: CI_FAILURE_RESOLUTION_PR_2858.md**
+ **NEW: COGNITIVE_BRAIN_STATUS_PHASE_11_X_COMPLETE.md**
+
+ Other locations/ (15 files)
+ workbench/ (6 files) - Work in progress
+ cognitive_app/ (3 files) - App planning
+ reports/ (6 files) - Status reports
 ```
 
 ### Documentation Health Assessment

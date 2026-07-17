@@ -73,30 +73,30 @@
 ### Improvements Needed
 
 1. **Create Script Registry**
-   ```markdown
-   # scripts/README.md
+ ```markdown
+ # scripts/README.md
 
-   | Script | Purpose | Usage |
-   |--------|---------|-------|
-   | validate_docs_links.py | Link validation | `python scripts/validate_docs_links.py --fix` |
-   | fix_markdown_tables.py | Table formatting | `python scripts/fix_markdown_tables.py` |
+ | Script | Purpose | Usage |
+ |--------|---------|-------|
+ | validate_docs_links.py | Link validation | `python scripts/validate_docs_links.py --fix` |
+ | fix_markdown_tables.py | Table formatting | `python scripts/fix_markdown_tables.py` |
  ```
 
 2. **Add Unit Tests**
 ```python
 # tests/scripts/test_validate_docs_links.py
 def test_parse_markdown_links():
-    ...
+ ...
 
 def test_auto_fix_confidence():
-    ...
+ ...
 ```
 
 3. **Add Requirements File**
-   ```
-   # scripts/requirements.txt
-   pyyaml>=6.0
-   mkdocs-material>=9.0
+ ```
+ # scripts/requirements.txt
+ pyyaml>=6.0
+ mkdocs-material>=9.0
  ```
 
 ---
@@ -146,35 +146,35 @@ def test_auto_fix_confidence():
 ### Improvements Needed
 
 1. **Add Pre-Commit Hook**
-   ```yaml
-   # .pre-commit-config.yaml
-   repos:
-     - repo: local
-       hooks:
-         - id: validate-docs-links
-           name: Validate Documentation Links
-           entry: python scripts/validate_docs_links.py
-           language: system
-           files: '^docs/.*\.md$'
+ ```yaml
+ # .pre-commit-config.yaml
+ repos:
+ - repo: local
+ hooks:
+ - id: validate-docs-links
+ name: Validate Documentation Links
+ entry: python scripts/validate_docs_links.py
+ language: system
+ files: '^docs/.*\.md$'
  ```
 
 2. **Add Progress Reporting**
 ```python
 # In validate_docs_links.py
 for i, md_file in enumerate(md_files, 1):
-    print(f"\rValidating {i}/{len(md_files)}...", end='', flush=True)
-    self._validate_markdown_file(md_file)
-print()  # New line after progress
+ print(f"\rValidating {i}/{len(md_files)}...", end='', flush=True)
+ self._validate_markdown_file(md_file)
+print() # New line after progress
 ```
 
 3. **Filter False Positives**
 ```text
 # Skip special link types
 if url.startswith('mailto:'):
-    return  # Skip email links
+ return # Skip email links
 
 if in_code_block(md_file, line_num):
-    return  # Skip links in code examples
+ return # Skip links in code examples
 ```
 
 ---
@@ -224,37 +224,37 @@ if in_code_block(md_file, line_num):
 ### Improvements Needed
 
 1. **Agent Search Tool**
-   ```bash
-   # scripts/find_agent.py
-   python scripts/find_agent.py --capability "link validation"
-   # Output: github-pages-manager, link-validator-agent
+ ```bash
+ # scripts/find_agent.py
+ python scripts/find_agent.py --capability "link validation"
+ # Output: github-pages-manager, link-validator-agent
  ```
 
 2. **Agent Dependency Graph**
-   ```mermaid
+ ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing GitHub Pages Manager, Link Validator'}}%%
 
-   graph TD
+ graph TD
 
-       A[GitHub Pages Manager] --> B[Link Validator]
+ A[GitHub Pages Manager] --> B[Link Validator]
 
-       A --> C[Doc Consolidator]
+ A --> C[Doc Consolidator]
 
-       A --> D[Doc Quality Agent]
+ A --> D[Doc Quality Agent]
  ```
 
 3. **Command Completion**
-   ```bash
-   # .github/copilot-commands.json
-   {
-     "commands": [
-       {
-         "name": "validate-pages",
-         "description": "Run GitHub Pages validation",
-         "agent": "github-pages-manager"
-       }
-     ]
-   }
+ ```bash
+ # .github/copilot-commands.json
+ {
+ "commands": [
+ {
+ "name": "validate-pages",
+ "description": "Run GitHub Pages validation",
+ "agent": "github-pages-manager"
+ }
+ ]
+ }
  ```
 
 ---
@@ -304,31 +304,31 @@ if in_code_block(md_file, line_num):
 ### Improvements Needed
 
 1. **Add Screenshots**
-   ```
-   docs/screenshots/
-   ├── dark-mode-toggle.png
-   ├── table-spacing-before.png
-   ├── table-spacing-after.png
-   └── pr-comment-example.png
+ ```
+ docs/screenshots/
+ dark-mode-toggle.png
+ table-spacing-before.png
+ table-spacing-after.png
+ pr-comment-example.png
  ```
 
 2. **Agent Changelog**
-   ```markdown
-   # .github/agents/CHANGELOG.md
+ ```markdown
+ # .github/agents/CHANGELOG.md
 
-   ## 2026-02-10 - v0.2.1
-   - Added auto-fix functionality
-   - Fixed CSS opacity issues
-   - Enhanced browser compatibility
+ ## 2026-02-10 - v0.2.1
+ - Added auto-fix functionality
+ - Fixed CSS opacity issues
+ - Enhanced browser compatibility
  ```
 
 3. **Quick Reference Cards**
-   ```markdown
-   # docs/quick-reference/github-pages-manager.md
+ ```markdown
+ # docs/quick-reference/github-pages-manager.md
 
-   ## Common Commands
-   - Validate: @copilot Use github-pages-manager to validate
-   - Fix links: @copilot Use github-pages-manager to fix broken links
+ ## Common Commands
+ - Validate: @copilot Use github-pages-manager to validate
+ - Fix links: @copilot Use github-pages-manager to fix broken links
  ```
 
 ---
@@ -384,33 +384,33 @@ if in_code_block(md_file, line_num):
 ### Improvements Needed
 
 1. **Auto-Rebuild on Changes**
-   ```yaml
-   # .github/workflows/auto-rebuild-docs.yml
-   on:
-     push:
-       paths:
-         - 'docs/**'
-   jobs:
-     rebuild:
-       - Detect changed files
-       - Rebuild affected pages
-       - Commit to gh-pages
+ ```yaml
+ # .github/workflows/auto-rebuild-docs.yml
+ on:
+ push:
+ paths:
+ - 'docs/**'
+ jobs:
+ rebuild:
+ - Detect changed files
+ - Rebuild affected pages
+ - Commit to gh-pages
  ```
 
 2. **Stale Content Detection**
 ```text
 # scripts/detect_stale_docs.py
 def find_stale_content(age_threshold=90):
-    # Find files not modified in 90 days
-    # Create issue with list
-    # Suggest review or archive
+ # Find files not modified in 90 days
+ # Create issue with list
+ # Suggest review or archive
 ```
 
 3. **Performance Optimization**
 ```python
 # Parallel validation
 with ThreadPoolExecutor(max_workers=4) as executor:
-    results = executor.map(validate_file, files)
+ results = executor.map(validate_file, files)
 
 # Caching
 cache = {}

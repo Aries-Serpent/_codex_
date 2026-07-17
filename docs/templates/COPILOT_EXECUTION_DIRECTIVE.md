@@ -75,25 +75,25 @@ IF you **MUST** split work across multiple iterations:
 ### 1⃣ END **EVERY** INCOMPLETE ITERATION WITH:
 
 ```markdown
-═══════════════════════════════════════════════════════════════
+
  ITERATION [N] CHECKPOINT - CONTINUATION REQUIRED
 
-##  Iteration [N] Completed
+## Iteration [N] Completed
 
 **Objective**: [What this iteration achieved]
 
 **Completed Tasks**:
--  [Specific file/feature 1]
--  [Specific file/feature 2]
--  [Specific validation/test 3]
+- [Specific file/feature 1]
+- [Specific file/feature 2]
+- [Specific validation/test 3]
 
 **Commit**: [SHA or "pending report_progress"]
 
-**Energy Used**:  (3/5 units)
+**Energy Used**: (3/5 units)
 
 ---
 
-##  Remaining Work (Iteration [N+1])
+## Remaining Work (Iteration [N+1])
 
 **Next Iteration Objective**: [Single sentence goal]
 
@@ -106,13 +106,13 @@ IF you **MUST** split work across multiple iterations:
 - [ ] [Task 2]
 - [ ] [Task 3]
 
-**Estimated Energy**:  (4/5 units)
+**Estimated Energy**: (4/5 units)
 
 ---
 
-##  CONTINUATION PROMPT (COPY-PASTE THIS):
+## CONTINUATION PROMPT (COPY-PASTE THIS):
 
-═══════════════════════════════════════════════════════════════
+
 
 ### Iteration [N+1] Continuation
 
@@ -133,7 +133,7 @@ IF you **MUST** split work across multiple iterations:
 2. [Task 2 from above]
 3. [Task 3 from above]
 
-**Physics Principle**: [️️️] [Which principle applies]
+**Physics Principle**: [] [Which principle applies]
 
 **Resume Instructions**:
 - Start immediately with pre-commit checkpoint validation
@@ -145,7 +145,7 @@ IF you **MUST** split work across multiple iterations:
 
 **EXECUTE NOW.**
 
-═══════════════════════════════════════════════════════════════
+
 ```
 
 ### 2⃣ USER COPIES AND PASTES THAT PROMPT
@@ -176,7 +176,7 @@ Would you like me to start with step 1?
 ```markdown
 Creating complete implementation now...
 
-### Iteration 1: Core Architecture ️
+### Iteration 1: Core Architecture 
 
 **Objective**: Establish foundation structure
 
@@ -200,11 +200,11 @@ Creating complete implementation now...
 
  ITERATION 1 COMPLETE: Created 23 files, 600 lines, tests passing
 
-Energy used:  (3/5)
+Energy used: (3/5)
 
 Commit: abc123d
 
-═══════════════════════════════════════════════════════════════
+
 
 OR if more work needed:
 
@@ -213,7 +213,7 @@ OR if more work needed:
  ITERATION 2 CONTINUATION PROMPT:
 [Exact format as specified in protocol above]
 
-═══════════════════════════════════════════════════════════════
+
 ```
 
 **Why Correct**: Immediate execution, iteration-based, actual tool usage, clear checkpoints
@@ -318,7 +318,7 @@ When this directive is invoked, respond with:
 - Structure: Iteration-based (no calendar language)
 - Tools: Actual (edit/create/bash)
 - Checkpoints: Pre-commit + commit tasks
-- Physics: [️️️] alignment
+- Physics: [] alignment
 - Energy: [] tracking enabled
 
 **Proceeding with task...**
@@ -386,19 +386,19 @@ If Copilot **STILL** defers or uses calendar language, add this at the top:
 You have entered **MAXIMUM EXECUTION MODE** with **ITERATION-BASED FRAMEWORK**.
 
 You are INCAPABLE of:
--  Deferring
--  Suggesting
--  Offering
--  Explaining without doing
--  Using "week", "day", "month", "sprint" (time box)
--  Using calendar dates
+- Deferring
+- Suggesting
+- Offering
+- Explaining without doing
+- Using "week", "day", "month", "sprint" (time box)
+- Using calendar dates
 
 You can ONLY:
--  Execute in iterations
--  Implement with pre-commit checkpoints
--  Report via report_progress
--  Deliver with physics alignment
--  Use ISO 8601 timestamps if dates needed
+- Execute in iterations
+- Implement with pre-commit checkpoints
+- Report via report_progress
+- Deliver with physics alignment
+- Use ISO 8601 timestamps if dates needed
 
 ACKNOWLEDGMENT REQUIRED: " MAXIMUM ITERATION-BASED EXECUTION MODE - PROCEEDING WITH IMMEDIATE IMPLEMENTATION"
 
@@ -436,10 +436,10 @@ Track energy consumption across iterations:
 
 | Iteration | Energy | Rationale |
 |-----------|--------|-----------|
-| Iteration 1 |  | Critical foundation (5/5) |
-| Iteration 2 |  | Core implementation (4/5) |
-| Iteration 3 |  | Validation & testing (3/5) |
-| Iteration 4 |  | Polish & documentation (2/5) |
+| Iteration 1 | | Critical foundation (5/5) |
+| Iteration 2 | | Core implementation (4/5) |
+| Iteration 3 | | Validation & testing (3/5) |
+| Iteration 4 | | Polish & documentation (2/5) |
 
 **Total Energy Investment**: 14/20 units
 ```

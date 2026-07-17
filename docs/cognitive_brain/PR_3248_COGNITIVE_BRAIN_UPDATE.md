@@ -86,22 +86,22 @@
 **Cascade Effects Chain**:
 ```
 Fixture Change
-  ↓
+ 
 Shared Usage Across Tests
-  ↓
+ 
 Multiple Downstream Failures
-  ↓
+ 
 Requires Comprehensive Validation
 ```
 
 **Test Infrastructure Stack**:
 ```
 Session-scoped autouse (top)
-  ↓
+ 
 Module-level pytestmark
-  ↓
+ 
 Function-scoped fixtures
-  ↓
+ 
 Individual test assertions (bottom)
 ```
 

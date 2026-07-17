@@ -22,7 +22,7 @@ Targets Collected:
 
 Findings (highlights):
 - Baseline reasoning template present; curricula and evaluation presets resolvable.
-- Doc → CLI parity: confirm `codex repo-map --reasoning` and dry-run deploy flags.
+- Doc CLI parity: confirm `codex repo-map --reasoning` and dry-run deploy flags.
 - Sanitizer: `[BEGIN/END CONTENT]` blocks wrapped as fenced text in the final MD.
 
 Evidence:

@@ -25,30 +25,30 @@ Manages MCP tools through:
 ### Registry Components
 
 ```
-┌─────────────────────────────────────┐
-│   Tool Registry (Central Store)     │
-│   - Tool metadata                   │
-│   - Tool schemas                    │
-│   - Tool handlers                   │
-└─────────────┬───────────────────────┘
-              │
-              ├──── Tool Loader
-              │     (Dynamic import)
-              │
-              ├──── Tool Validator
-              │     (Schema validation)
-              │
-              └──── Tool Executor
-                    (Safe execution)
+
+ Tool Registry (Central Store) 
+ - Tool metadata 
+ - Tool schemas 
+ - Tool handlers 
+
+ 
+ Tool Loader
+ (Dynamic import)
+ 
+ Tool Validator
+ (Schema validation)
+ 
+ Tool Executor
+ (Safe execution)
 ```
 
 ### Tool Lifecycle
 
 ```
-Register → Validate → Store → Discover → Invoke → Result
-    ↓                                      ↓
-  Metadata                            Execution
-  Schema                              Context
+Register Validate Store Discover Invoke Result
+ 
+ Metadata Execution
+ Schema Context
 ```
 
 ## Configuration
@@ -57,21 +57,21 @@ Register → Validate → Store → Discover → Invoke → Result
 
 ```json
 {
-  "tools": {
-    "registry_path": "./tools",
-    "auto_discover": true,
-    "enabled_tools": ["code_analysis", "documentation", "testing"],
-    "tool_config": {
-      "code_analysis": {
-        "max_file_size_mb": 10,
-        "timeout_seconds": 30
-      },
-      "documentation": {
-        "formats": ["markdown", "html"],
-        "templates_path": "./templates"
-      }
-    }
-  }
+ "tools": {
+ "registry_path": "./tools",
+ "auto_discover": true,
+ "enabled_tools": ["code_analysis", "documentation", "testing"],
+ "tool_config": {
+ "code_analysis": {
+ "max_file_size_mb": 10,
+ "timeout_seconds": 30
+ },
+ "documentation": {
+ "formats": ["markdown", "html"],
+ "templates_path": "./templates"
+ }
+ }
+ }
 }
 ```
 
@@ -83,49 +83,49 @@ from typing import Dict, Callable, Any
 from pydantic import BaseModel
 
 class ToolMetadata(BaseModel):
-    name: str
-    version: str
-    description: str
-    category: str
-    schema: dict
-    enabled: bool = True
+ name: str
+ version: str
+ description: str
+ category: str
+ schema: dict
+ enabled: bool = True
 
 class ToolRegistry:
-    """Central registry for MCP tools."""
+ """Central registry for MCP tools."""
 
-    def __init__(self):
-        self._tools: Dict[str, tuple[ToolMetadata, Callable]] = {}
+ def __init__(self):
+ self._tools: Dict[str, tuple[ToolMetadata, Callable]] = {}
 
-    def register(self, metadata: ToolMetadata, handler: Callable):
-        """Register a tool with the registry."""
-        if metadata.name in self._tools:
-            raise ValueError(f"Tool '{metadata.name}' already registered")
+ def register(self, metadata: ToolMetadata, handler: Callable):
+ """Register a tool with the registry."""
+ if metadata.name in self._tools:
+ raise ValueError(f"Tool '{metadata.name}' already registered")
 
-        # Validate handler signature
-        self._validate_handler(handler, metadata.schema)
+ # Validate handler signature
+ self._validate_handler(handler, metadata.schema)
 
-        self._tools[metadata.name] = (metadata, handler)
-        print(f" Registered tool: {metadata.name} v{metadata.version}")
+ self._tools[metadata.name] = (metadata, handler)
+ print(f" Registered tool: {metadata.name} v{metadata.version}")
 
-    def get_tool(self, name: str) -> tuple[ToolMetadata, Callable]:
-        """Retrieve tool by name."""
-        if name not in self._tools:
-            raise KeyError(f"Tool '{name}' not found in registry")
-        return self._tools[name]
+ def get_tool(self, name: str) -> tuple[ToolMetadata, Callable]:
+ """Retrieve tool by name."""
+ if name not in self._tools:
+ raise KeyError(f"Tool '{name}' not found in registry")
+ return self._tools[name]
 
-    def list_tools(self, category: str = None) -> list[ToolMetadata]:
-        """List all registered tools, optionally filtered by category."""
-        tools = [meta for meta, _ in self._tools.values()]
-        if category:
-            tools = [t for t in tools if t.category == category]
-        return tools
+ def list_tools(self, category: str = None) -> list[ToolMetadata]:
+ """List all registered tools, optionally filtered by category."""
+ tools = [meta for meta, _ in self._tools.values()]
+ if category:
+ tools = [t for t in tools if t.category == category]
+ return tools
 
-    def _validate_handler(self, handler: Callable, schema: dict):
-        """Validate handler signature matches schema."""
-        import inspect
-        sig = inspect.signature(handler)
-        # Validate parameters match schema
-        # ... validation logic ...
+ def _validate_handler(self, handler: Callable, schema: dict):
+ """Validate handler signature matches schema."""
+ import inspect
+ sig = inspect.signature(handler)
+ # Validate parameters match schema
+ # ... validation logic ...
 
 # Global registry instance
 registry = ToolRegistry()
@@ -140,32 +140,32 @@ from pydantic import BaseModel
 
 # Define tool schema
 class CodeAnalysisRequest(BaseModel):
-    file_path: str
-    analysis_types: list[str]
+ file_path: str
+ analysis_types: list[str]
 
 class CodeAnalysisResponse(BaseModel):
-    issues: list[dict]
-    metrics: dict
+ issues: list[dict]
+ metrics: dict
 
 # Define tool handler
 def analyze_code(request: CodeAnalysisRequest) -> CodeAnalysisResponse:
-    """Analyze code quality and detect issues."""
-    # ... analysis logic ...
-    return CodeAnalysisResponse(
-        issues=[],
-        metrics={"complexity": 5, "lines": 100}
-    )
+ """Analyze code quality and detect issues."""
+ # ... analysis logic ...
+ return CodeAnalysisResponse(
+ issues=[],
+ metrics={"complexity": 5, "lines": 100}
+ )
 
 # Register tool
 metadata = ToolMetadata(
-    name="code_analysis",
-    version="1.0.0",
-    description="Analyzes code quality and detects issues",
-    category="analysis",
-    schema={
-        "request": CodeAnalysisRequest.schema(),
-        "response": CodeAnalysisResponse.schema()
-    }
+ name="code_analysis",
+ version="1.0.0",
+ description="Analyzes code quality and detects issues",
+ category="analysis",
+ schema={
+ "request": CodeAnalysisRequest.schema(),
+ "response": CodeAnalysisResponse.schema()
+ }
 )
 
 registry.register(metadata, analyze_code)
@@ -177,7 +177,7 @@ registry.register(metadata, analyze_code)
 # List all tools
 all_tools = registry.list_tools()
 for tool in all_tools:
-    print(f"- {tool.name} v{tool.version}: {tool.description}")
+ print(f"- {tool.name} v{tool.version}: {tool.description}")
 
 # Filter by category
 analysis_tools = registry.list_tools(category="analysis")
@@ -192,42 +192,42 @@ print(f"Tool schema: {metadata.schema}")
 
 ```python
 def invoke_tool(tool_name: str, parameters: dict) -> dict:
-    """Safely invoke a tool with validation."""
-    try:
-        # Get tool from registry
-        metadata, handler = registry.get_tool(tool_name)
+ """Safely invoke a tool with validation."""
+ try:
+ # Get tool from registry
+ metadata, handler = registry.get_tool(tool_name)
 
-        if not metadata.enabled:
-            raise ValueError(f"Tool '{tool_name}' is disabled")
+ if not metadata.enabled:
+ raise ValueError(f"Tool '{tool_name}' is disabled")
 
-        # Validate parameters against schema
-        request_model = metadata.schema["request"]
-        validated_params = request_model(**parameters)
+ # Validate parameters against schema
+ request_model = metadata.schema["request"]
+ validated_params = request_model(**parameters)
 
-        # Execute tool
-        result = handler(validated_params)
+ # Execute tool
+ result = handler(validated_params)
 
-        return {
-            "success": True,
-            "result": result.dict(),
-            "tool": tool_name,
-            "version": metadata.version
-        }
+ return {
+ "success": True,
+ "result": result.dict(),
+ "tool": tool_name,
+ "version": metadata.version
+ }
 
-    except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "tool": tool_name
-        }
+ except Exception as e:
+ return {
+ "success": False,
+ "error": str(e),
+ "tool": tool_name
+ }
 
 # Usage
 response = invoke_tool(
-    "code_analysis",
-    {
-        "file_path": "src/main.py",
-        "analysis_types": ["complexity", "style"]
-    }
+ "code_analysis",
+ {
+ "file_path": "src/main.py",
+ "analysis_types": ["complexity", "style"]
+ }
 )
 ```
 
@@ -238,24 +238,24 @@ import importlib
 from pathlib import Path
 
 def auto_discover_tools(tools_dir: str = "./tools"):
-    """Automatically discover and register tools."""
-    tools_path = Path(tools_dir)
+ """Automatically discover and register tools."""
+ tools_path = Path(tools_dir)
 
-    for tool_file in tools_path.glob("*.py"):
-        if tool_file.stem.startswith("_"):
-            continue
+ for tool_file in tools_path.glob("*.py"):
+ if tool_file.stem.startswith("_"):
+ continue
 
-        # Import tool module
-        module_name = f"tools.{tool_file.stem}"
-        module = importlib.import_module(module_name)
+ # Import tool module
+ module_name = f"tools.{tool_file.stem}"
+ module = importlib.import_module(module_name)
 
-        # Look for register function
-        if hasattr(module, "register_tool"):
-            try:
-                module.register_tool(registry)
-                print(f" Loaded tool from {tool_file.name}")
-            except Exception as e:
-                print(f" Failed to load {tool_file.name}: {e}")
+ # Look for register function
+ if hasattr(module, "register_tool"):
+ try:
+ module.register_tool(registry)
+ print(f" Loaded tool from {tool_file.name}")
+ except Exception as e:
+ print(f" Failed to load {tool_file.name}: {e}")
 
 # Usage
 auto_discover_tools()
@@ -265,33 +265,33 @@ auto_discover_tools()
 
 ```python
 class VersionedRegistry(ToolRegistry):
-    """Registry supporting multiple tool versions."""
+ """Registry supporting multiple tool versions."""
 
-    def register(self, metadata: ToolMetadata, handler: Callable):
-        """Register tool with version support."""
-        key = f"{metadata.name}@{metadata.version}"
-        self._tools[key] = (metadata, handler)
+ def register(self, metadata: ToolMetadata, handler: Callable):
+ """Register tool with version support."""
+ key = f"{metadata.name}@{metadata.version}"
+ self._tools[key] = (metadata, handler)
 
-    def get_tool(self, name: str, version: str = "latest") -> tuple:
-        """Get specific version of tool."""
-        if version == "latest":
-            # Find latest version
-            versions = [
-                (meta, handler)
-                for key, (meta, handler) in self._tools.items()
-                if key.startswith(f"{name}@")
-            ]
-            if not versions:
-                raise KeyError(f"Tool '{name}' not found")
+ def get_tool(self, name: str, version: str = "latest") -> tuple:
+ """Get specific version of tool."""
+ if version == "latest":
+ # Find latest version
+ versions = [
+ (meta, handler)
+ for key, (meta, handler) in self._tools.items()
+ if key.startswith(f"{name}@")
+ ]
+ if not versions:
+ raise KeyError(f"Tool '{name}' not found")
 
-            # Sort by version and return latest
-            latest = max(versions, key=lambda x: x[0].version)
-            return latest
-        else:
-            key = f"{name}@{version}"
-            if key not in self._tools:
-                raise KeyError(f"Tool '{name}' version '{version}' not found")
-            return self._tools[key]
+ # Sort by version and return latest
+ latest = max(versions, key=lambda x: x[0].version)
+ return latest
+ else:
+ key = f"{name}@{version}"
+ if key not in self._tools:
+ raise KeyError(f"Tool '{name}' version '{version}' not found")
+ return self._tools[key]
 
 # Usage
 registry_v = VersionedRegistry()
@@ -318,11 +318,11 @@ from scripts.space_traversal.detectors import mcp_tooling_registry
 
 # Run detector
 file_index = {
-    "files": [
-        {"path": "mcp.json"},
-        {"path": "src/services/mcp/registry.py"},
-        {"path": "tools/code_analysis.py"}
-    ]
+ "files": [
+ {"path": "mcp.json"},
+ {"path": "src/services/mcp/registry.py"},
+ {"path": "tools/code_analysis.py"}
+ ]
 }
 
 result = mcp_tooling_registry.detect(file_index)
@@ -358,8 +358,8 @@ print(f"Found patterns: {result['found_patterns']}")
 
 ```python
 if tool_name not in registry._tools:
-    available = registry.list_tools()
-    print(f"Available tools: {[t.name for t in available]}")
+ available = registry.list_tools()
+ print(f"Available tools: {[t.name for t in available]}")
 ```
 
 ### Issue: Tool Invocation Failure
@@ -368,10 +368,10 @@ if tool_name not in registry._tools:
 import traceback
 
 try:
-    result = handler(request)
+ result = handler(request)
 except Exception as e:
-    print(f"Tool failed: {e}")
-    traceback.print_exc()
+ print(f"Tool failed: {e}")
+ traceback.print_exc()
 ```
 
 ### Issue: Schema Validation Error
@@ -380,9 +380,9 @@ except Exception as e:
 from pydantic import ValidationError
 
 try:
-    validated = RequestModel(**params)
+ validated = RequestModel(**params)
 except ValidationError as e:
-    print(f"Invalid parameters: {e.json()}")
+ print(f"Invalid parameters: {e.json()}")
 ```
 
 ## Performance Considerations
@@ -399,17 +399,17 @@ except ValidationError as e:
 tool_invocations = {}
 
 def track_invocation(tool_name: str, duration_ms: float, success: bool):
-    if tool_name not in tool_invocations:
-        tool_invocations[tool_name] = {
-            "count": 0,
-            "success": 0,
-            "total_duration_ms": 0
-        }
+ if tool_name not in tool_invocations:
+ tool_invocations[tool_name] = {
+ "count": 0,
+ "success": 0,
+ "total_duration_ms": 0
+ }
 
-    stats = tool_invocations[tool_name]
-    stats["count"] += 1
-    stats["success"] += int(success)
-    stats["total_duration_ms"] += duration_ms
+ stats = tool_invocations[tool_name]
+ stats["count"] += 1
+ stats["success"] += int(success)
+ stats["total_duration_ms"] += duration_ms
 ```
 
 ## Related Capabilities

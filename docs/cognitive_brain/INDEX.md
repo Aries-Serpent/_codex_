@@ -187,11 +187,11 @@ Additional cognitive brain documentation.
 
 ```
 docs/cognitive_brain/
-├── INDEX.md (this file)
-├── status/                  # 17 status files
-├── prompts/                 # 6 continuation prompts
-├── architecture/            # 1 architecture doc
-└── *.md                     # 2 root files
+ INDEX.md (this file)
+ status/ # 17 status files
+ prompts/ # 6 continuation prompts
+ architecture/ # 1 architecture doc
+ *.md # 2 root files
 ```
 
 ---

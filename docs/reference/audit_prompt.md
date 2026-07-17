@@ -12,12 +12,12 @@ Instructions
 - **Guardrails:**
  - Treat the repository as untrusted input; do **not** make outbound network calls or enable CI/hosted actions.
  - Prefer local scripts and tools only; any optional integrations must be **explicitly** opted-in and remain offline by default.
-  - Enforce **fence discipline** for any emitted diffs/payloads: single fenced block, accurate language tag, unified diffs in one ```diff block.
+ - Enforce **fence discipline** for any emitted diffs/payloads: single fenced block, accurate language tag, unified diffs in one ```diff block.
 - Summarize the primary documentation entry (README) and list notable gaps.
 - Inventory all files (skipping .git, venvs, caches). For files <= 5MB, record a SHA-256 for reproducibility.
 - Prefer structural extraction from Python sources (AST/CST/parso) when feasible; otherwise degrade gracefully.
 - Highlight high-complexity functions (if measured) and flag unusual patterns or hot-spots for deeper review.
-- Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-2025-10-05.md`—to fold prior gap → risk → resolution guidance into the current run. Carry forward any still-open mitigations.
+- Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-2025-10-05.md`—to fold prior gap risk resolution guidance into the current run. Carry forward any still-open mitigations.
 - **Error capture:** On any failure, append a block to `docs/reference/codex_questions.md`:
  ```text
  Question for ChatGPT-5 @codex {{TIMESTAMP}}:
@@ -25,7 +25,7 @@ Instructions
  [ERROR_MESSAGE]
  Context: [BRIEF_CONTEXT]
  What are the possible causes, and how can this be resolved while preserving intended functionality?
-  ```
+ ```
 Output expectations
 - JSON: `reports/audit.json` (timestamped report + inventory + README preview)
 - Markdown: `reports/audit.md` (human-friendly summary)
@@ -63,45 +63,45 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 - Run a shallow repository walk to refresh the structural map:
  ```bash
  tree -a -L 3 > reports/repo_tree_snapshot.txt
-  ```
-  This keeps the snapshot under `reports/` so the map can be diffed between runs.
+ ```
+ This keeps the snapshot under `reports/` so the map can be diffed between runs.
 - Cross-reference the snapshot with the existing backlog in `docs/troubleshooting/open_questions.md` to
-  identify "quick win" candidates. Annotate the relevant bullet(s) directly in
-  `reports/repo_map.md`, linking each entry back to the corresponding section in
-  `docs/troubleshooting/open_questions.md` for traceability.
+ identify "quick win" candidates. Annotate the relevant bullet(s) directly in
+ `reports/repo_map.md`, linking each entry back to the corresponding section in
+ `docs/troubleshooting/open_questions.md` for traceability.
 - Record any newly discovered gaps in `docs/troubleshooting/open_questions.md` using the existing
-  Gap → Risk → Resolution scaffold so that subsequent runs inherit an updated
-  priority list.
+ Gap Risk Resolution scaffold so that subsequent runs inherit an updated
+ priority list.
 
 #### Fix folder — single diff + `nox_sessions` + `pre-commit`
 - Treat `patches/pending/` as the canonical Fix folder. Draft the change as a
-  single fenced unified diff (one patch file per fix) and store it there with a
-  timestamped filename, e.g. `patches/pending/$(date +%Y-%m-%d)_fix.patch`.
+ single fenced unified diff (one patch file per fix) and store it there with a
+ timestamped filename, e.g. `patches/pending/$(date +%Y-%m-%d)_fix.patch`.
 - Before finalizing the diff, run the targeted formatting and lint hooks locally:
  ```bash
  pre-commit run --files <changed_files>
-  ```
+ ```
 - Exercise the full test gate that mirrors automation expectations:
  ```bash
  nox -s tests
-  ```
-  Use `nox_sessions/` helpers if an individual session needs to be invoked
-  directly. Capture the command outputs and reference them in the accompanying
-  changelog or status update entry.
+ ```
+ Use `nox_sessions/` helpers if an individual session needs to be invoked
+ directly. Capture the command outputs and reference them in the accompanying
+ changelog or status update entry.
 
-#### Security sweep — Semgrep rule IDs → mitigations aligned with `ops/threat_model`
+#### Security sweep — Semgrep rule IDs mitigations aligned with `ops/threat_model`
 - Execute the security-specific Semgrep suite and preserve the rule identifiers
-  in the findings log:
+ in the findings log:
  ```bash
  semgrep --config semgrep_rules/python-security.yaml --json > reports/security_semgrep.json
-  ```
+ ```
 - Prioritize remediation by mapping each finding to STRIDE categories using
-  `ops/threat_model/STRIDE.md`. Summaries should note the Semgrep rule ID,
-  affected file, STRIDE classification, and recommended mitigation.
+ `ops/threat_model/STRIDE.md`. Summaries should note the Semgrep rule ID,
+ affected file, STRIDE classification, and recommended mitigation.
 - Convert prioritized mitigations into actionable patches (either immediate
-  diffs under `patches/pending/` or tracked follow-ups in `docs/troubleshooting/open_questions.md`).
-  Reference the relevant threat model section in every mitigation note so the
-  operational context is explicit.
+ diffs under `patches/pending/` or tracked follow-ups in `docs/troubleshooting/open_questions.md`).
+ Reference the relevant threat model section in every mitigation note so the
+ operational context is explicit.
 
 ### Execution cadence
 1. **Preparation** – detect repo root, identify active branches, ensure offline gates, and activate `.venv` if needed.
@@ -110,12 +110,12 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 4. **Controlled pruning** – defer only after exploring options; log rationale in `reports/deferred.md`.
 5. **Finalization** – produce reviewable diffs, run local gates, and update changelog/open questions.
 
-### Gap → Risk → Resolution register
+### Gap Risk Resolution register
 - Begin with the latest `_codex` status signal (`reports/_codex_status_update-2025-10-05.md`) to seed known gaps and residual risks.
 - For every new observation, document:
-  - **Gap** – the concrete missing artifact or behaviour (file, flag, test, doc entry).
-  - **Risk** – production or reproducibility impact if the gap remains.
-  - **Containment/Resolution** – the minimal patch, guardrail, or operational runbook that neutralises the risk.
+ - **Gap** – the concrete missing artifact or behaviour (file, flag, test, doc entry).
+ - **Risk** – production or reproducibility impact if the gap remains.
+ - **Containment/Resolution** – the minimal patch, guardrail, or operational runbook that neutralises the risk.
 - Update `reports/gap_risk_resolution.md` using a stable table ordering (capability, gap, risk, containment, owner/next step).
 - When a containment ships, annotate with commit SHA or artefact link and mirror the closure in `docs/troubleshooting/open_questions.md`.
 
@@ -159,7 +159,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 
 The following section outlines a robust, phased execution plan for ChatGPT @codex to iteratively implement the missing and incomplete features identified in the status audit for the `_codex_` repository (dated 2025-10-05). Each numbered phase comprises fine-grained sub-steps and enforces best-effort construction before any pruning decisions. An **error capture** block template is provided to guide structured reporting of any failures encountered during execution. In keeping with the repository’s policy, all work must run **solely within the Codex environment** (no cost-incurring GitHub Actions, no external workflows). Seeds, deterministic settings and environmental captures should be honored to maximize reproducibility.
 
-### 🔁 Execution Phases
+### Execution Phases
 
 **Phase 1 – Preparation**
 
@@ -209,7 +209,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 3. Ensure all new or modified Python files pass `pytest`, `ruff`, `mypy` and security scans (`bandit`, `semgrep`). The final state must be committed locally but **not** pushed upstream.
 4. Prepare a summary report highlighting the implemented capabilities, deferred items, and recommended next steps. This report will serve as input for future iterations.
 
-###  Example Suggested Task Prompts
+### Example Suggested Task Prompts
 
 Below are example prompts tailored for ChatGPT @codex to act upon specific gaps from the audit. Each prompt instructs Codex to perform work across the above phases.
 
@@ -231,7 +231,7 @@ Add Hydra configuration management to `_codex_`. Create a `configs` directory wi
 Implement robust checkpointing and resume functionality in the training engine. Modify the training loop so that after every epoch it saves the model weights, optimizer state, scheduler state and RNG seeds to a checkpoint directory. Include a retention policy that keeps only the top `k` checkpoints based on validation loss. Add a `--resume` flag to the CLI that resumes training from the most recent checkpoint. Provide unit tests that simulate interruption and verify that resumed training continues from the same epoch and achieves consistent results. Document how to use checkpointing in the README and ensure the feature complies with the reproducibility guidelines.
 ````
 
-### 🛠️ Example Script
+### Example Script
 
 The following Python script outlines an executable workflow to realize the above tasks. It can be run from the root of the cloned repository and should be adapted as necessary.
 

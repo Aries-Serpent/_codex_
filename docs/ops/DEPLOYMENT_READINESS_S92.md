@@ -147,16 +147,16 @@ These items are NOT blocking for an RC release but MUST be complete for a `v1.0`
 
 ```
 Is B-01 resolved? (RVS quick group 0 failures)
-    └── NO  → Fix with rvs_preflight.py, target S93
-    └── YES →
-        Is B-02 resolved? (timestamp test fixed)
-            └── NO  → Fix test freeze, target S93
-            └── YES →
-                Is B-04 resolved? (version != 0.0.0-template)
-                    └── NO  → Set version, target S95
-                    └── YES →
-                         RC PACKAGE MAY BE CREATED
-                        (B-03, B-05, B-06, B-07 may remain open as known limitations in RC notes)
+ NO Fix with rvs_preflight.py, target S93
+ YES 
+ Is B-02 resolved? (timestamp test fixed)
+ NO Fix test freeze, target S93
+ YES 
+ Is B-04 resolved? (version != 0.0.0-template)
+ NO Set version, target S95
+ YES 
+ RC PACKAGE MAY BE CREATED
+ (B-03, B-05, B-06, B-07 may remain open as known limitations in RC notes)
 ```
 
 ---
@@ -167,20 +167,20 @@ Run these in order to confirm readiness before cutting a release:
 
 ```bash
 # Gate 1: Linting
-python -m ruff check .                              # must: 0 errors
+python -m ruff check . # must: 0 errors
 
 # Gate 2: Security
-python -m bandit -r src/ --configfile .bandit -q   # must: 0 issues
+python -m bandit -r src/ --configfile .bandit -q # must: 0 issues
 
 # Gate 3: Auto-fix patterns
-python scripts/ci/auto_fix_common_issues.py --check-only  # must: P1-P5, P7-P11 = 0
+python scripts/ci/auto_fix_common_issues.py --check-only # must: P1-P5, P7-P11 = 0
 
 # Gate 4: Test suite (parallel batch — 0 failures required)
 python scripts/ci/rvs_preflight.py \
-  --group quick \
-  --workers 6 \
-  --batch-size 30 \
-  --report docs/ops/rvs_release_report.json
+ --group quick \
+ --workers 6 \
+ --batch-size 30 \
+ --report docs/ops/rvs_release_report.json
 
 # Gate 5: Version sanity
 python -c "import tomllib; v=tomllib.load(open('pyproject.toml','rb'))['project']['version']; assert v!='0.0.0-template', f'version not set: {v}'"

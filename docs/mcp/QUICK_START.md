@@ -107,8 +107,8 @@ User: "Explain the MCP package system"
 
 ```bash
 ./scripts/mcp/mcp-package \
-  --custom "agents/workflow_navigator.py,agents/quantum_game_theory.py,tests/agents/test_*.py" \
-  --output capability_workflow.zip
+ --custom "agents/workflow_navigator.py,agents/quantum_game_theory.py,tests/agents/test_*.py" \
+ --output capability_workflow.zip
 ```
 
 **Result**: Only the specified files and matching patterns
@@ -188,32 +188,32 @@ Every package includes:
 
 ```
 package_<topic>.zip
-├── manifest.json           # File metadata and mappings
-├── README_dataset.md       # Dataset overview
-├── index.md               # Quick reference table
-└── <flat_files>           # src__module__file.py format
+ manifest.json # File metadata and mappings
+ README_dataset.md # Dataset overview
+ index.md # Quick reference table
+ <flat_files> # src__module__file.py format
 ```
 
 ### Manifest Fields
 
 ```json
 {
-  "version": "1.0",
-  "generated_at": "2025-12-30T17:00:00Z",
-  "repository": "Aries-Serpent/_codex_",
-  "files": [
-    {
-      "flat_name": "src__agents__workflow.py",
-      "original_path": "src/agents/workflow.py",
-      "sha256": "abc123...",
-      "size_bytes": 12345,
-      "language": "python",
-      "tags": "agents,source",
-      "chunked": false
-    }
-  ],
-  "total_files": 24,
-  "total_size_bytes": 123456
+ "version": "1.0",
+ "generated_at": "2025-12-30T17:00:00Z",
+ "repository": "Aries-Serpent/_codex_",
+ "files": [
+ {
+ "flat_name": "src__agents__workflow.py",
+ "original_path": "src/agents/workflow.py",
+ "sha256": "abc123...",
+ "size_bytes": 12345,
+ "language": "python",
+ "tags": "agents,source",
+ "chunked": false
+ }
+ ],
+ "total_files": 24,
+ "total_size_bytes": 123456
 }
 ```
 
@@ -334,8 +334,8 @@ Always check manifest and file count before uploading to ChatGPT.
 ```bash
 # Package workflow navigation capability
 ./scripts/mcp/mcp-package \
-  --custom "agents/workflow_navigator.py,agents/mental_mapping.py,tests/agents/test_workflow*.py,docs/agents/*workflow*.md" \
-  --output workflow_capability.zip
+ --custom "agents/workflow_navigator.py,agents/mental_mapping.py,tests/agents/test_workflow*.py,docs/agents/*workflow*.md" \
+ --output workflow_capability.zip
 ```
 
 ## Example 3: Documentation Only
@@ -416,7 +416,7 @@ Always check manifest and file count before uploading to ChatGPT.
 
 ### Path (Onboarding Flow)
 ```
-List topics → Preview (dry-run) → Create package → Validate → Upload → Use system prompt
+List topics Preview (dry-run) Create package Validate Upload Use system prompt
 ```
 
 ### Fields (Development Energy)

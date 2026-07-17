@@ -137,22 +137,22 @@ These operations are **NEVER** performed autonomously:
 ### Decision Tree
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    AGENT DECISION TREE                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  START → Identify operation type                                │
-│     │                                                            │
-│     ├─ Maintenance/Testing/Docs? ─────► LOW RISK               │
-│     │                                    └─► Execute            │
-│     │                                                            │
-│     ├─ Optimization/Refactoring? ──────► MEDIUM RISK           │
-│     │                                    └─► Create PR          │
-│     │                                                            │
-│     └─ Security/Config/High-Risk? ─────► HIGH RISK             │
-│                                          └─► Escalate           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+ AGENT DECISION TREE 
+
+ 
+ START Identify operation type 
+ 
+ Maintenance/Testing/Docs? LOW RISK 
+ Execute 
+ 
+ Optimization/Refactoring? MEDIUM RISK 
+ Create PR 
+ 
+ Security/Config/High-Risk? HIGH RISK 
+ Escalate 
+ 
+
 ```
 
 ### Example Scenarios
@@ -279,15 +279,15 @@ All agent operations MUST be logged to appropriate audit trails:
 
 ```json
 {
-  "timestamp": "2026-03-17T00:00:00Z",
-  "agent": "ai_org_repo_admin",
-  "operation": "code_formatting",
-  "risk_level": "low",
-  "authorization": "autonomous",
-  "files_modified": ["src/agents/workflow.py"],
-  "outcome": "success",
-  "human_approval": false,
-  "rationale": "Automated code formatting per style guide"
+ "timestamp": "2026-03-17T00:00:00Z",
+ "agent": "ai_org_repo_admin",
+ "operation": "code_formatting",
+ "risk_level": "low",
+ "authorization": "autonomous",
+ "files_modified": ["src/agents/workflow.py"],
+ "outcome": "success",
+ "human_approval": false,
+ "rationale": "Automated code formatting per style guide"
 }
 ```
 
@@ -380,8 +380,8 @@ codex-skill refresh-docs --paths docs/ --style aais --emit-plan .codex/doc_refre
 
 Run the full skills test suite via nox:
 ```bash
-nox -s skills                     # run all skills tests
-nox -s skills -- -k test_routing  # run only routing tests
+nox -s skills # run all skills tests
+nox -s skills -- -k test_routing # run only routing tests
 ```
 
 ### Programmatic Usage
@@ -393,7 +393,7 @@ from codex.skills import get_registry, ExecutionEnvelope, AAISScorer
 registry = get_registry()
 registry.discover()
 for skill in registry.list():
-    print(f"{skill.skill_id} v{skill.version} — {skill.manifest.description}")
+ print(f"{skill.skill_id} v{skill.version} — {skill.manifest.description}")
 
 # Execute a skill through the envelope (policy gate + timeout)
 env = ExecutionEnvelope(registry)
@@ -552,14 +552,14 @@ When approaching limits:
 ### If agent Misbehaves
 
 1. **Immediate Actions**
-   ```bash
-   # Disable autonomous actions
-   # Edit .codex/autonomous_agent.yaml
-   autonomous_actions_enabled: false
+ ```bash
+ # Disable autonomous actions
+ # Edit .codex/autonomous_agent.yaml
+ autonomous_actions_enabled: false
 
-   # Enable safe mode
-   # Edit scripts/autonomous_agent.py
-   SAFE_MODE = True
+ # Enable safe mode
+ # Edit scripts/autonomous_agent.py
+ SAFE_MODE = True
  ```
 
 2. **Investigate**

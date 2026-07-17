@@ -50,14 +50,14 @@ Successfully generated and validated **181 comprehensive tests** across **7 test
 ### Data Module Tests
 ```
  65 tests PASSED
-⏭️  12 tests SKIPPED (optional dependencies)
+ 12 tests SKIPPED (optional dependencies)
 Total Runtime: < 1 second
 ```
 
 ### CLI Module Tests
 ```
  43 tests PASSED (lightweight mode)
-️  34 tests require typer (skipped in CI)
+ 34 tests require typer (skipped in CI)
 Total Runtime: < 1 second
 ```
 

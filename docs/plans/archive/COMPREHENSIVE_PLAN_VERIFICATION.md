@@ -232,15 +232,15 @@ For ongoing plans, add checkpoint markers:
 
 ### Phase 1: Lift Low Maturity (Pre-commit 1-6)
 
-- [x]  mcp-lifecycle-management (0.22 → 0.56) - COMPLETE
-- [ ]  duplication_ratio (0.39 → target 0.85+) - NEXT
-- [ ]  safeguards_keywords (0.45 → target 0.85+)
-- [ ]  peft_hooks (0.46 → target 0.85+)
-- [ ]  vector-stores (0.50 → target 0.85+)
-- [ ]  [11 more capabilities...]
+- [x] mcp-lifecycle-management (0.22 0.56) - COMPLETE
+- [ ] duplication_ratio (0.39 target 0.85+) - NEXT
+- [ ] safeguards_keywords (0.45 target 0.85+)
+- [ ] peft_hooks (0.46 target 0.85+)
+- [ ] vector-stores (0.50 target 0.85+)
+- [ ] [11 more capabilities...]
 
 **Phase 1 Progress:** 1/16 (6.25%)
-**Overall Progress:** 8/39 → 9/39 capabilities at high maturity (23%)
+**Overall Progress:** 8/39 9/39 capabilities at high maturity (23%)
 ```
 
 ---

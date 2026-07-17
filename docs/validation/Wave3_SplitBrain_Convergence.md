@@ -129,8 +129,8 @@ python scripts/remediation/analyze_legacy_usage.py
 
 # Regression diff
 python scripts/space_traversal/audit_runner.py diff \
-  --old audit_artifacts/baselines/capabilities_scored.json \
-  --new audit_artifacts/capabilities_scored.json || true
+ --old audit_artifacts/baselines/capabilities_scored.json \
+ --new audit_artifacts/capabilities_scored.json || true
 
 # Shim tests
 pytest -q tests/validation/test_import_shims.py tests/validation/
@@ -264,15 +264,15 @@ git checkout <commit-before-shims> -- src/training/ src/tokenization/ tests/vali
 **Before Shims**:
 ```python
 from src.training.engine_hf_trainer import run_hf_trainer
-# → ModuleNotFoundError: No module named 'src.training.engine_hf_trainer'
+# ModuleNotFoundError: No module named 'src.training.engine_hf_trainer'
 ```
 
 **After Shims**:
 ```python
 from src.training.engine_hf_trainer import run_hf_trainer
-# → src/training/engine_hf_trainer.py loads
-# → Shim imports training.engine_hf_trainer
-# → run_hf_trainer is available 
+# src/training/engine_hf_trainer.py loads
+# Shim imports training.engine_hf_trainer
+# run_hf_trainer is available 
 ```
 
 ## Shim Overhead

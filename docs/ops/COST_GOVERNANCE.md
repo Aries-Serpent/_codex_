@@ -47,9 +47,9 @@ This policy installs a lightweight approval gate that:
 ```
 Effective minutes = timeout_minutes × runner_multiplier × matrix_job_count
 
-GREEN  → < 30 effective min, no GHCR push  → Auto-approved
-YELLOW → 30–90 effective min               → Warning posted; auto-proceeds after 60 s
-RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder checkbox ticked
+GREEN < 30 effective min, no GHCR push Auto-approved
+YELLOW 30–90 effective min Warning posted; auto-proceeds after 60 s
+RED > 90 effective min OR GHCR push Blocked until stakeholder checkbox ticked
 ```
 
 ### Budget impact per tier (worst case, per run)
@@ -89,39 +89,39 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR opened / push to branch", " cost-gate job\ncost_estimator.py calculates tier"'}}%%
 
 flowchart TD
-    PR["PR opened / push to branch"]
-    COST[" cost-gate job\ncost_estimator.py calculates tier"]
-    GREEN[" GREEN\nAuto-approved\nJob proceeds immediately"]
-    YELLOW["️ YELLOW\nWarning comment posted\nAuto-proceeds after 60 s"]
-    RED[" RED\nBlocking comment posted\nPolls PR body every 60 s"]
-    CHECKBOX["Stakeholder ticks\n- [x]  Cost Proposal Approved\nin PR description"]
-    DISPATCH["Owner triggers via\nworkflow_dispatch\n(bypass)"]
-    APPROVED[" Gate passed\nExpensive job unblocked"]
-    TIMEOUT[" Gate timed out\n(10 min with no approval)\nJob fails — re-run after ticking"]
+ PR["PR opened / push to branch"]
+ COST[" cost-gate job\ncost_estimator.py calculates tier"]
+ GREEN[" GREEN\nAuto-approved\nJob proceeds immediately"]
+ YELLOW[" YELLOW\nWarning comment posted\nAuto-proceeds after 60 s"]
+ RED[" RED\nBlocking comment posted\nPolls PR body every 60 s"]
+ CHECKBOX["Stakeholder ticks\n- [x] Cost Proposal Approved\nin PR description"]
+ DISPATCH["Owner triggers via\nworkflow_dispatch\n(bypass)"]
+ APPROVED[" Gate passed\nExpensive job unblocked"]
+ TIMEOUT[" Gate timed out\n(10 min with no approval)\nJob fails — re-run after ticking"]
 
-    PR --> COST
+ PR --> COST
 
-    COST --> GREEN --> APPROVED
+ COST --> GREEN --> APPROVED
 
-    COST --> YELLOW --> APPROVED
+ COST --> YELLOW --> APPROVED
 
-    COST --> RED
+ COST --> RED
 
-    RED -->|"checkbox detected"| APPROVED
+ RED -->|"checkbox detected"| APPROVED
 
-    RED -->|"workflow_dispatch"| APPROVED
+ RED -->|"workflow_dispatch"| APPROVED
 
-    DISPATCHER[Owner] --> DISPATCH --> APPROVED
+ DISPATCHER[Owner] --> DISPATCH --> APPROVED
 
-    STAKEHOLDER[Stakeholder] --> CHECKBOX --> APPROVED
+ STAKEHOLDER[Stakeholder] --> CHECKBOX --> APPROVED
 
-    RED -->|"10 min timeout"| TIMEOUT
+ RED -->|"10 min timeout"| TIMEOUT
 
-    style GREEN fill:#98fb98
-    style YELLOW fill:#ffd700
-    style RED fill:#ff6b6b
-    style APPROVED fill:#98fb98
-    style TIMEOUT fill:#ff6b6b
+ style GREEN fill:#98fb98
+ style YELLOW fill:#ffd700
+ style RED fill:#ff6b6b
+ style APPROVED fill:#98fb98
+ style TIMEOUT fill:#ff6b6b
 ```
 
 ---
@@ -133,12 +133,12 @@ When the Cost Gate posts a RED comment on your PR:
 1. **Read the comment** — it shows the estimated effective minutes and cost tier reason
 2. **Decide** — is the spend justified for this PR?
 3. **Approve** — in the PR description, find the Cost Governance section and change:
-   ```
-   - [ ]  Cost Proposal Approved
+ ```
+ - [ ] Cost Proposal Approved
  ```
  to:
-   ```
-   - [x]  Cost Proposal Approved
+ ```
+ - [x] Cost Proposal Approved
  ```
 4. **Wait** — the gate polls every 60 seconds and unblocks within ~60 s of your tick
 5. **Alternative** — trigger the workflow manually via `Actions Run workflow` to bypass the PR gate
@@ -169,22 +169,22 @@ in `jobs:` using the reusable workflow:
 
 ```yaml
 jobs:
-  cost-gate:
-    name: " Cost Gate"
-    uses: ./.github/workflows/cost-gate.yml
-    with:
-      workflow_name:   "My Expensive Workflow"
-      runner:          "ubuntu-latest"    # adjust to actual runner
-      timeout_minutes: 60                 # adjust to job timeout
-      matrix_count:    2                  # set to number of parallel jobs
-      pushes_to_ghcr:  false              # true if job pushes to GHCR
-    permissions:
-      contents:      read
-      pull-requests: write
+ cost-gate:
+ name: " Cost Gate"
+ uses: ./.github/workflows/cost-gate.yml
+ with:
+ workflow_name: "My Expensive Workflow"
+ runner: "ubuntu-latest" # adjust to actual runner
+ timeout_minutes: 60 # adjust to job timeout
+ matrix_count: 2 # set to number of parallel jobs
+ pushes_to_ghcr: false # true if job pushes to GHCR
+ permissions:
+ contents: read
+ pull-requests: write
 
-  my-expensive-job:
-    needs: cost-gate                      # gate must pass first
-    ...
+ my-expensive-job:
+ needs: cost-gate # gate must pass first
+ ...
 ```
 
 ---

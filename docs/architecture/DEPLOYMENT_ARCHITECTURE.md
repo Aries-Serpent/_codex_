@@ -14,100 +14,100 @@
 %%{init: {'accessibility': {'title': 'Deployment Architecture<br/>Local Docker Kubernetes Cloud'}, 'theme': 'base'}}%%
 
 graph TB
-    subgraph "Local Development"
-        LocalDev["💻 Developer Laptop<br/>• Python venv<br/>• Local SQLite DB<br/>• Local Redis cache"]
-        LocalTools[" Local Tools<br/>• pip/conda<br/>• pytest<br/>• tensorboard"]
-    end
+ subgraph "Local Development"
+ LocalDev[" Developer Laptop<br/>• Python venv<br/>• Local SQLite DB<br/>• Local Redis cache"]
+ LocalTools[" Local Tools<br/>• pip/conda<br/>• pytest<br/>• tensorboard"]
+ end
 
-    subgraph "Docker Containerized"
-        BuildStage["🔨 Build Stage<br/>• Dockerfile multi-stage<br/>• Install dependencies<br/>• Compile wheels"]
-        RuntimeStage[" Runtime Stage<br/>• Minimal base image<br/>• Python slim<br/>• Security scanning"]
-        Registry["📦 Container Registry<br/>• GitHub Container Reg<br/>• Version tags<br/>• Signature validation"]
-    end
+ subgraph "Docker Containerized"
+ BuildStage[" Build Stage<br/>• Dockerfile multi-stage<br/>• Install dependencies<br/>• Compile wheels"]
+ RuntimeStage[" Runtime Stage<br/>• Minimal base image<br/>• Python slim<br/>• Security scanning"]
+ Registry[" Container Registry<br/>• GitHub Container Reg<br/>• Version tags<br/>• Signature validation"]
+ end
 
-    subgraph "Kubernetes Orchestration"
-        K8sCluster["🐳 K8s Cluster<br/>• Pod scheduling<br/>• Resource management<br/>• Auto-scaling"]
-        K8sServices["📡 K8s Services<br/>• ClusterIP services<br/>• LoadBalancer<br/>• Ingress controller"]
-        K8sStorage["💾 K8s Storage<br/>• PersistentVolumes<br/>• StatefulSets<br/>• Database pods"]
-        K8sNet[" K8s Network<br/>• NetworkPolicies<br/>• Pod-to-Pod<br/>• Egress rules"]
-    end
+ subgraph "Kubernetes Orchestration"
+ K8sCluster[" K8s Cluster<br/>• Pod scheduling<br/>• Resource management<br/>• Auto-scaling"]
+ K8sServices[" K8s Services<br/>• ClusterIP services<br/>• LoadBalancer<br/>• Ingress controller"]
+ K8sStorage[" K8s Storage<br/>• PersistentVolumes<br/>• StatefulSets<br/>• Database pods"]
+ K8sNet[" K8s Network<br/>• NetworkPolicies<br/>• Pod-to-Pod<br/>• Egress rules"]
+ end
 
-    subgraph "Cloud Deployment"
-        CloudCompute["☁️ Cloud Compute<br/>• AWS EC2/Lambda<br/>• GCP Compute Engine<br/>• Azure Container Inst."]
-        CloudStorage["💾 Cloud Storage<br/>• S3/GCS/Azure Blob<br/>• Model versioning<br/>• Data persistence"]
-        CloudDB["🗄️ Managed Database<br/>• AWS RDS<br/>• GCP Cloud SQL<br/>• Azure Database"]
-        CloudMonitor[" Cloud Monitoring<br/>• CloudWatch/Stackdriver<br/>• Log aggregation<br/>• Metrics/Traces"]
-    end
+ subgraph "Cloud Deployment"
+ CloudCompute[" Cloud Compute<br/>• AWS EC2/Lambda<br/>• GCP Compute Engine<br/>• Azure Container Inst."]
+ CloudStorage[" Cloud Storage<br/>• S3/GCS/Azure Blob<br/>• Model versioning<br/>• Data persistence"]
+ CloudDB[" Managed Database<br/>• AWS RDS<br/>• GCP Cloud SQL<br/>• Azure Database"]
+ CloudMonitor[" Cloud Monitoring<br/>• CloudWatch/Stackdriver<br/>• Log aggregation<br/>• Metrics/Traces"]
+ end
 
-    subgraph "CI/CD Pipeline"
-        Git["🐙 Git Repository<br/>• Source code<br/>• Commit triggers<br/>• Branch protection"]
-        GHActions[" GitHub Actions<br/>• Build jobs<br/>• Test jobs<br/>• Deploy jobs"]
-        Tests[" Automated Tests<br/>• Unit tests<br/>• Integration tests<br/>• E2E tests"]
-        Publish["📤 Publish<br/>• Push to registry<br/>• Create release<br/>• Tag version"]
-    end
+ subgraph "CI/CD Pipeline"
+ Git[" Git Repository<br/>• Source code<br/>• Commit triggers<br/>• Branch protection"]
+ GHActions[" GitHub Actions<br/>• Build jobs<br/>• Test jobs<br/>• Deploy jobs"]
+ Tests[" Automated Tests<br/>• Unit tests<br/>• Integration tests<br/>• E2E tests"]
+ Publish[" Publish<br/>• Push to registry<br/>• Create release<br/>• Tag version"]
+ end
 
-    %% Deployment flow
-    LocalDev --> LocalTools
+ %% Deployment flow
+ LocalDev --> LocalTools
 
-    LocalTools -->|"git push"| Git
-    
-    Git --> GHActions
+ LocalTools -->|"git push"| Git
+ 
+ Git --> GHActions
 
-    GHActions -->|"Run tests"| Tests
+ GHActions -->|"Run tests"| Tests
 
-    Tests -->|"Build image"| BuildStage
+ Tests -->|"Build image"| BuildStage
 
-    BuildStage --> RuntimeStage
+ BuildStage --> RuntimeStage
 
-    RuntimeStage -->|"Push image"| Registry
-    
-    Registry -->|"Pull image"| K8sCluster
+ RuntimeStage -->|"Push image"| Registry
+ 
+ Registry -->|"Pull image"| K8sCluster
 
-    Registry -->|"Pull image"| CloudCompute
-    
-    K8sCluster --> K8sServices
+ Registry -->|"Pull image"| CloudCompute
+ 
+ K8sCluster --> K8sServices
 
-    K8sCluster --> K8sStorage
+ K8sCluster --> K8sStorage
 
-    K8sCluster --> K8sNet
-    
-    K8sStorage -.connects.-> CloudDB
-    K8sServices -.mounts.-> CloudStorage
-    
-    CloudCompute --> CloudStorage
+ K8sCluster --> K8sNet
+ 
+ K8sStorage -.connects.-> CloudDB
+ K8sServices -.mounts.-> CloudStorage
+ 
+ CloudCompute --> CloudStorage
 
-    CloudCompute --> CloudDB
+ CloudCompute --> CloudDB
 
-    CloudCompute --> CloudMonitor
-    
-    Publish -->|"Release tag"| Registry
-    
-    %% Monitoring
-    K8sCluster -.metrics.-> CloudMonitor
-    LocalDev -.logs.-> CloudMonitor
-    
-    %% Styling
-    style LocalDev fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-    style LocalTools fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-    
-    style BuildStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style RuntimeStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style Registry fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    
-    style K8sCluster fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style K8sServices fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style K8sStorage fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style K8sNet fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    
-    style CloudCompute fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-    style CloudStorage fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-    style CloudDB fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-    style CloudMonitor fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
-    
-    style Git fill:#fce7f3,stroke:#db2777,stroke-width:2px
-    style GHActions fill:#fce7f3,stroke:#db2777,stroke-width:2px
-    style Tests fill:#fce7f3,stroke:#db2777,stroke-width:2px
-    style Publish fill:#fce7f3,stroke:#db2777,stroke-width:2px
+ CloudCompute --> CloudMonitor
+ 
+ Publish -->|"Release tag"| Registry
+ 
+ %% Monitoring
+ K8sCluster -.metrics.-> CloudMonitor
+ LocalDev -.logs.-> CloudMonitor
+ 
+ %% Styling
+ style LocalDev fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+ style LocalTools fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+ 
+ style BuildStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
+ style RuntimeStage fill:#fef3c7,stroke:#d97706,stroke-width:2px
+ style Registry fill:#fef3c7,stroke:#d97706,stroke-width:2px
+ 
+ style K8sCluster fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+ style K8sServices fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+ style K8sStorage fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+ style K8sNet fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+ 
+ style CloudCompute fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+ style CloudStorage fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+ style CloudDB fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+ style CloudMonitor fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px
+ 
+ style Git fill:#fce7f3,stroke:#db2777,stroke-width:2px
+ style GHActions fill:#fce7f3,stroke:#db2777,stroke-width:2px
+ style Tests fill:#fce7f3,stroke:#db2777,stroke-width:2px
+ style Publish fill:#fce7f3,stroke:#db2777,stroke-width:2px
 ```
 
 ---
@@ -183,71 +183,71 @@ docker push ghcr.io/aries-serpent/codex:latest
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-api
+ name: codex-api
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: codex-api
-  template:
-    metadata:
-      labels:
-        app: codex-api
-    spec:
-      containers:
-      - name: codex
-        image: ghcr.io/aries-serpent/codex:v0.2.1
-        ports:
-        - containerPort: 8000
-        env:
-        - name: CONFIG_FILE
-          value: /etc/config/config.yaml
-        resources:
-          requests:
-            cpu: 2
-            memory: 8Gi
-          limits:
-            cpu: 4
-            memory: 16Gi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
+ replicas: 3
+ selector:
+ matchLabels:
+ app: codex-api
+ template:
+ metadata:
+ labels:
+ app: codex-api
+ spec:
+ containers:
+ - name: codex
+ image: ghcr.io/aries-serpent/codex:v0.2.1
+ ports:
+ - containerPort: 8000
+ env:
+ - name: CONFIG_FILE
+ value: /etc/config/config.yaml
+ resources:
+ requests:
+ cpu: 2
+ memory: 8Gi
+ limits:
+ cpu: 4
+ memory: 16Gi
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ initialDelaySeconds: 30
+ periodSeconds: 10
 ---
 # service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: codex-api
+ name: codex-api
 spec:
-  type: LoadBalancer
-  selector:
-    app: codex-api
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+ type: LoadBalancer
+ selector:
+ app: codex-api
+ ports:
+ - protocol: TCP
+ port: 80
+ targetPort: 8000
 ---
 # ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: codex-ingress
+ name: codex-ingress
 spec:
-  ingressClassName: nginx
-  rules:
-  - host: api.codex.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: codex-api
-            port:
-              number: 80
+ ingressClassName: nginx
+ rules:
+ - host: api.codex.example.com
+ http:
+ paths:
+ - path: /
+ pathType: Prefix
+ backend:
+ service:
+ name: codex-api
+ port:
+ number: 80
 ```
 
 **Operations**:
@@ -267,38 +267,38 @@ kubectl scale deployment codex-api --replicas=5
 ```bash
 # ECS on Fargate
 aws ecs create-service \
-  --cluster production \
-  --service-name codex \
-  --task-definition codex:1 \
-  --desired-count 3 \
-  --launch-type FARGATE
+ --cluster production \
+ --service-name codex \
+ --task-definition codex:1 \
+ --desired-count 3 \
+ --launch-type FARGATE
 
 # Or Lambda for serverless
 aws lambda create-function \
-  --function-name codex-predict \
-  --runtime python3.11 \
-  --handler app.handler \
-  --code S3Bucket=codex-builds,S3Key=lambda.zip
+ --function-name codex-predict \
+ --runtime python3.11 \
+ --handler app.handler \
+ --code S3Bucket=codex-builds,S3Key=lambda.zip
 ```
 
 **GCP Deployment**:
 ```bash
 gcloud run deploy codex \
-  --image gcr.io/project/codex:latest \
-  --platform managed \
-  --region us-central1 \
-  --memory 8Gi \
-  --cpu 4
+ --image gcr.io/project/codex:latest \
+ --platform managed \
+ --region us-central1 \
+ --memory 8Gi \
+ --cpu 4
 ```
 
 **Azure Deployment**:
 ```bash
 az containerapp create \
-  --resource-group rg-codex \
-  --name codex \
-  --image mcr.microsoft.com/codex:latest \
-  --cpu 4 \
-  --memory 8Gi
+ --resource-group rg-codex \
+ --name codex \
+ --image mcr.microsoft.com/codex:latest \
+ --cpu 4 \
+ --memory 8Gi
 ```
 
 ---
@@ -308,52 +308,52 @@ az containerapp create \
 ### Local Development
 ```yaml
 database:
-  type: sqlite
-  path: ./data/codex.db
-  
+ type: sqlite
+ path: ./data/codex.db
+ 
 cache:
-  type: local
-  path: ./cache/
-  
+ type: local
+ path: ./cache/
+ 
 storage:
-  type: local
-  path: ./models/
+ type: local
+ path: ./models/
 ```
 
 ### Docker/K8s
 ```yaml
 database:
-  type: postgresql
-  host: postgres-service
-  port: 5432
-  
+ type: postgresql
+ host: postgres-service
+ port: 5432
+ 
 cache:
-  type: redis
-  host: redis-service
-  port: 6379
-  
+ type: redis
+ host: redis-service
+ port: 6379
+ 
 storage:
-  type: s3
-  bucket: codex-models
-  prefix: v0.2.1/
+ type: s3
+ bucket: codex-models
+ prefix: v0.2.1/
 ```
 
 ### Cloud
 ```yaml
 database:
-  type: postgresql
-  host: cloudsql-instance
-  ssl: true
-  
+ type: postgresql
+ host: cloudsql-instance
+ ssl: true
+ 
 cache:
-  type: redis
-  endpoint: elasticache.amazonaws.com
-  
+ type: redis
+ endpoint: elasticache.amazonaws.com
+ 
 storage:
-  type: s3
-  bucket: prod-models
-  prefix: v0.2.1/
-  encryption: AES256
+ type: s3
+ bucket: prod-models
+ prefix: v0.2.1/
+ encryption: AES256
 ```
 
 ---
@@ -362,28 +362,28 @@ storage:
 
 ```
 1. Commit to git
-   ↓
+ 
 2. GitHub Actions trigger
-   ├─ Build (docker build)
-   ├─ Test (pytest)
-   ├─ Scan (security checks)
-   └─ Push image
-   ↓
+ Build (docker build)
+ Test (pytest)
+ Scan (security checks)
+ Push image
+ 
 3. Create release
-   ├─ Version tag (v0.2.1)
-   ├─ Release notes
-   └─ GitHub release
-   ↓
+ Version tag (v0.2.1)
+ Release notes
+ GitHub release
+ 
 4. Deploy to environments
-   ├─ Dev cluster (auto)
-   ├─ Staging cluster (auto)
-   └─ Production cluster (manual approval)
-   ↓
+ Dev cluster (auto)
+ Staging cluster (auto)
+ Production cluster (manual approval)
+ 
 5. Post-deployment
-   ├─ Health checks
-   ├─ Smoke tests
-   ├─ Metrics validation
-   └─ Alert team if issues
+ Health checks
+ Smoke tests
+ Metrics validation
+ Alert team if issues
 ```
 
 ---

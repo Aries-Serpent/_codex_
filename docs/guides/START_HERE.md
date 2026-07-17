@@ -137,7 +137,7 @@
 
 ### Beginner (0-3 months with Codex ML)
 ```
-1. Choose your role → Start Here guide
+1. Choose your role Start Here guide
 2. Read Common Workflows (relevant sections)
 3. Follow video tutorials
 4. Try examples in docs/examples/

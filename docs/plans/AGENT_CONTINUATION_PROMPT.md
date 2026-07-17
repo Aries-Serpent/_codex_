@@ -79,17 +79,17 @@ pytest -q tests/integration/test_distributed_init.py
 from typing import Dict
 
 NAME_MAP: Dict[str, str] = {
-    "model:base": "Base model adapters",
-    "model:lora": "LoRA adapters",
-    "data:loader": "Dataset loaders",
-    "logging:mlflow": "MLflow logging",
-    "metrics:core": "Core metric set",
+ "model:base": "Base model adapters",
+ "model:lora": "LoRA adapters",
+ "data:loader": "Dataset loaders",
+ "logging:mlflow": "MLflow logging",
+ "metrics:core": "Core metric set",
 }
 
 ALIASES: Dict[str, str] = {
-    "model_lora": "model:lora",
-    "mlflow": "logging:mlflow",
-    "metrics": "metrics:core",
+ "model_lora": "model:lora",
+ "mlflow": "logging:mlflow",
+ "metrics": "metrics:core",
 }
 ```text
 
@@ -120,34 +120,34 @@ pytest -q tests/test_factory_registry.py
 from typing import Dict
 
 def _import_bleu_rouge():
-    try:
-        from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
-        from rouge_score import rouge_scorer
-        return sentence_bleu, SmoothingFunction, rouge_scorer
-    except Exception:
-        return None, None, None
+ try:
+ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+ from rouge_score import rouge_scorer
+ return sentence_bleu, SmoothingFunction, rouge_scorer
+ except Exception:
+ return None, None, None
 
 def bleu(reference: str, hypothesis: str) -> float:
-    from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
-    chencherry = SmoothingFunction()
-    return float(sentence_bleu(
-        [reference.split()],
-        hypothesis.split(),
-        smoothing_function=chencherry.method1
-    ))
+ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+ chencherry = SmoothingFunction()
+ return float(sentence_bleu(
+ [reference.split()],
+ hypothesis.split(),
+ smoothing_function=chencherry.method1
+ ))
 
 def rouge_l(reference: str, hypothesis: str) -> float:
-    from rouge_score import rouge_scorer
-    scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
-    return float(scorer.score(reference, hypothesis)['rougeL'].fmeasure)
+ from rouge_score import rouge_scorer
+ scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
+ return float(scorer.score(reference, hypothesis)['rougeL'].fmeasure)
 
 def patch_registry(reg: Dict[str, object]) -> Dict[str, object]:
-    sb, sm, rs = _import_bleu_rouge()
-    if not (sb and rs):
-        return reg
-    reg.setdefault("bleu", bleu)
-    reg.setdefault("rouge_l", rouge_l)
-    return reg
+ sb, sm, rs = _import_bleu_rouge()
+ if not (sb and rs):
+ return reg
+ reg.setdefault("bleu", bleu)
+ reg.setdefault("rouge_l", rouge_l)
+ return reg
 ```text
 
 **Acceptance**:
@@ -241,37 +241,37 @@ Complete S-14, S-15, S-02 follow-on modules
 
 ```text
 .
-├── codex_addons/
-│   ├── registry.py               Exists (validate)
-│   ├── registry_names.py         CREATE (S-15)
-│   └── vector_stores/            Complete
-│       ├── __init__.py
-│       ├── pgvector_stub.py
-│       └── weaviate_stub.py
-├── codex_ml/metrics/
-│   └── _optional_bleu_rouge.py   CREATE (S-02)
-├── training/
-│   └── accelerate_init_guard.py  Exists (validate)
-├── models/lora/
-│   └── _test_utils.py            Exists (validate)
-├── tests/
-│   ├── integration/
-│   │   └── test_distributed_init.py     Exists (validate)
-│   ├── metrics/
-│   │   └── test_bleu_rouge.py           CREATE (S-02)
-│   ├── modeling/
-│   │   └── test_lora_minimal.py         Exists (validate)
-│   ├── test_factory_registry.py         Exists (validate)
-│   └── test_vector_store_stub.py        Complete
-├── docs/
-│   ├── training/
-│   │   └── distributed_troubleshooting.md   Exists (validate)
-│   ├── plugins/
-│   │   └── Plugin_API_Broader.md            Exists (validate)
-│   ├── modeling/
-│   │   └── LoRA.md                          Complete
-│   └── metrics.md                           CREATE/UPDATE (S-02)
-└── requirements-optional.txt                Exists (verify nltk, rouge-score)
+ codex_addons/
+ registry.py Exists (validate)
+ registry_names.py CREATE (S-15)
+ vector_stores/ Complete
+ __init__.py
+ pgvector_stub.py
+ weaviate_stub.py
+ codex_ml/metrics/
+ _optional_bleu_rouge.py CREATE (S-02)
+ training/
+ accelerate_init_guard.py Exists (validate)
+ models/lora/
+ _test_utils.py Exists (validate)
+ tests/
+ integration/
+ test_distributed_init.py Exists (validate)
+ metrics/
+ test_bleu_rouge.py CREATE (S-02)
+ modeling/
+ test_lora_minimal.py Exists (validate)
+ test_factory_registry.py Exists (validate)
+ test_vector_store_stub.py Complete
+ docs/
+ training/
+ distributed_troubleshooting.md Exists (validate)
+ plugins/
+ Plugin_API_Broader.md Exists (validate)
+ modeling/
+ LoRA.md Complete
+ metrics.md CREATE/UPDATE (S-02)
+ requirements-optional.txt Exists (verify nltk, rouge-score)
 ```text
 
 ---

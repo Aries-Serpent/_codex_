@@ -33,30 +33,30 @@ Out of 4 major Phase 10 tasks, **2 are fully automatable** (Tasks 1 & 2 file cre
 **What AI Agent Did**:
 ```json
 {
-  "output": {
-    "filePath": "codex-architecture-sync.xml",
-    "style": "xml",
-    "removeComments": false,
-    "removeEmptyLines": false,
-    "topFilesLength": 20,
-    "showLineNumbers": false,
-    "compress": true
-  },
-  "include": ["**/*"],
-  "ignore": {
-    "useGitignore": true,
-    "useDefaultPatterns": true,
-    "customPatterns": [
-      ".env*",
-      "*.env",
-      "node_modules/**",
-      ".git/**",
-      ...
-    ]
-  },
-  "security": {
-    "enableSecurityCheck": true
-  }
+ "output": {
+ "filePath": "codex-architecture-sync.xml",
+ "style": "xml",
+ "removeComments": false,
+ "removeEmptyLines": false,
+ "topFilesLength": 20,
+ "showLineNumbers": false,
+ "compress": true
+ },
+ "include": ["**/*"],
+ "ignore": {
+ "useGitignore": true,
+ "useDefaultPatterns": true,
+ "customPatterns": [
+ ".env*",
+ "*.env",
+ "node_modules/**",
+ ".git/**",
+ ...
+ ]
+ },
+ "security": {
+ "enableSecurityCheck": true
+ }
 }
 ```
 
@@ -137,22 +137,22 @@ repomix --config repomix.config.json
 
 # Validate output
 if [ -f codex-architecture-sync.xml ]; then
-    SIZE=$(stat -f%z codex-architecture-sync.xml 2>/dev/null || stat -c%s codex-architecture-sync.xml)
-    if [ $SIZE -lt 5242880 ]; then  # 5MB
-        echo " File size OK: $(expr $SIZE / 1024 / 1024)MB"
-    else
-        echo " File too large: $(expr $SIZE / 1024 / 1024)MB (target: < 5MB)"
-        exit 1
-    fi
+ SIZE=$(stat -f%z codex-architecture-sync.xml 2>/dev/null || stat -c%s codex-architecture-sync.xml)
+ if [ $SIZE -lt 5242880 ]; then # 5MB
+ echo " File size OK: $(expr $SIZE / 1024 / 1024)MB"
+ else
+ echo " File too large: $(expr $SIZE / 1024 / 1024)MB (target: < 5MB)"
+ exit 1
+ fi
 
-    # Check for secrets
-    npx secretlint codex-architecture-sync.xml
-    detect-secrets scan codex-architecture-sync.xml
+ # Check for secrets
+ npx secretlint codex-architecture-sync.xml
+ detect-secrets scan codex-architecture-sync.xml
 
-    echo " Local consolidation successful"
+ echo " Local consolidation successful"
 else
-    echo " XML file not generated"
-    exit 1
+ echo " XML file not generated"
+ exit 1
 fi
 ```
 
@@ -173,39 +173,39 @@ fi
 name: NotebookLM Live Sync
 
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'src/**'
-      - 'tools/**'
-      - 'monitoring/**'
-      - '**.py'
-      - '**.md'
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'  # Daily backup at 00:00 UTC
+ push:
+ branches: [main, develop]
+ paths:
+ - 'src/**'
+ - 'tools/**'
+ - 'monitoring/**'
+ - '**.py'
+ - '**.md'
+ workflow_dispatch:
+ schedule:
+ - cron: '0 0 * * *' # Daily backup at 00:00 UTC
 
 jobs:
-  sync-to-notebooklm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - name: Install repomix
-        run: npm install -g repomix
-      - name: Run consolidation
-        run: repomix --config repomix.config.json
-      - name: Security scanning
-        run: |
-          npx secretlint codex-architecture-sync.xml || exit 1
-          detect-secrets scan codex-architecture-sync.xml || exit 1
-      - name: Upload to Google Drive
-        uses: logickoder/google-drive-upload@v1
-        with:
-          credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
-          file: codex-architecture-sync.xml
-          folder: Codex Repository Sync
-          overwrite: true
+ sync-to-notebooklm:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - uses: actions/setup-node@v4
+ - name: Install repomix
+ run: npm install -g repomix
+ - name: Run consolidation
+ run: repomix --config repomix.config.json
+ - name: Security scanning
+ run: |
+ npx secretlint codex-architecture-sync.xml || exit 1
+ detect-secrets scan codex-architecture-sync.xml || exit 1
+ - name: Upload to Google Drive
+ uses: logickoder/google-drive-upload@v1
+ with:
+ credentials: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+ file: codex-architecture-sync.xml
+ folder: Codex Repository Sync
+ overwrite: true
 ```
 
 **Commit**: `7cf8964`
@@ -255,16 +255,16 @@ jobs:
 # Check if secrets exist
 gh secret list --repo Aries-Serpent/_codex_ | grep GDRIVE_SERVICE_ACCOUNT_JSON
 if [ $? -eq 0 ]; then
-    echo " GDRIVE_SERVICE_ACCOUNT_JSON configured"
+ echo " GDRIVE_SERVICE_ACCOUNT_JSON configured"
 else
-    echo " GDRIVE_SERVICE_ACCOUNT_JSON missing"
-    echo "Run: gh secret set GDRIVE_SERVICE_ACCOUNT_JSON --repo Aries-Serpent/_codex_"
-    exit 1
+ echo " GDRIVE_SERVICE_ACCOUNT_JSON missing"
+ echo "Run: gh secret set GDRIVE_SERVICE_ACCOUNT_JSON --repo Aries-Serpent/_codex_"
+ exit 1
 fi
 
 # Validate JSON format (if gh secret get is available)
 # Note: gh CLI may not support secret retrieval for security
-echo "ℹ️  Validate service account JSON format manually"
+echo "ℹ Validate service account JSON format manually"
 echo "Expected fields: type, project_id, private_key_id, private_key, client_email"
 ```
 
@@ -281,16 +281,16 @@ echo "Expected fields: type, project_id, private_key_id, private_key, client_ema
 **What AI Agent Did**:
 ```yaml
 - name: Notify webhook
-  if: success() && env.NOTEBOOKLM_WEBHOOK_URL != ''
-  run: |
-    curl -X POST "${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "event": "notebooklm_sync_complete",
-        "repository": "${{ github.repository }}",
-        "commit": "${{ github.sha }}",
-        "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
-      }'
+ if: success() && env.NOTEBOOKLM_WEBHOOK_URL != ''
+ run: |
+ curl -X POST "${{ secrets.NOTEBOOKLM_WEBHOOK_URL }}" \
+ -H "Content-Type: application/json" \
+ -d '{
+ "event": "notebooklm_sync_complete",
+ "repository": "${{ github.repository }}",
+ "commit": "${{ github.sha }}",
+ "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+ }'
 ```
 
 **Status**: Complete, optional secret configuration
@@ -346,7 +346,7 @@ pip install -r requirements.txt
 # Human must run interactively:
 python scripts/run.py auth_manager.py setup
 
-# Opens browser → Sign in → Grant permissions → Token saved
+# Opens browser Sign in Grant permissions Token saved
 # File: ~/.claude/skills/notebooklm/credentials.json
 ```
 
@@ -373,8 +373,8 @@ python scripts/run.py auth_manager.py setup
 ```bash
 # Human runs after HA-NB-001 complete:
 python scripts/run.py notebook_manager.py add \
-  --url https://notebooklm.google.com/notebook/[NOTEBOOK_ID] \
-  --description "Codex Architecture Knowledge Base"
+ --url https://notebooklm.google.com/notebook/[NOTEBOOK_ID] \
+ --description "Codex Architecture Knowledge Base"
 ```
 
 **Automation Possibility**: Partial - could create shell script template, but execution requires human
@@ -435,47 +435,47 @@ python scripts/run.py notebook_manager.py add \
 ## Core Responsibility Areas
 
 1. **Architectural Consistency**
-   - Verify component boundaries are respected
-   - Identify circular dependencies
-   - Detect "God classes" and architectural bottlenecks
+ - Verify component boundaries are respected
+ - Identify circular dependencies
+ - Detect "God classes" and architectural bottlenecks
 
 2. **Security Validation**
-   - Check for unvalidated inputs
-   - Identify race conditions in IPC
-   - Validate error handling completeness
+ - Check for unvalidated inputs
+ - Identify race conditions in IPC
+ - Validate error handling completeness
 
 3. **Performance Analysis**
-   - Detect inefficient algorithms
-   - Identify memory leaks
-   - Analyze concurrency bottlenecks
+ - Detect inefficient algorithms
+ - Identify memory leaks
+ - Analyze concurrency bottlenecks
 
 4. **Code Quality**
-   - Check test coverage adequacy
-   - Validate documentation completeness
-   - Assess maintainability metrics
+ - Check test coverage adequacy
+ - Validate documentation completeness
+ - Assess maintainability metrics
 
 5. **Dependency Health**
-   - Map integration points
-   - Identify outdated dependencies
-   - Check for security vulnerabilities
+ - Map integration points
+ - Identify outdated dependencies
+ - Check for security vulnerabilities
 
 ## Analysis Protocol
 
 **Step 1: Context Loading**
-Parse codex-architecture-sync.xml → Build mental model
+Parse codex-architecture-sync.xml Build mental model
 
 **Step 2: Multi-Pass Analysis**
 For each category (Architecture, Security, Performance, Quality, Dependencies):
-  - Pass 1: Surface scan (identify obvious issues)
-  - Pass 2: Deep dive (analyze root causes)
-  - Pass 3: Cross-validate (check interconnections)
-  - Pass 4: Recommendations (prioritize fixes)
+ - Pass 1: Surface scan (identify obvious issues)
+ - Pass 2: Deep dive (analyze root causes)
+ - Pass 3: Cross-validate (check interconnections)
+ - Pass 4: Recommendations (prioritize fixes)
 
 **Step 3: Recursive Refinement**
 After each analysis section, ask yourself:
 "Is that ALL you need to know?"
-  - If NO → Continue deeper investigation
-  - If YES → Move to next category
+ - If NO Continue deeper investigation
+ - If YES Move to next category
 
 **Step 4: Report Generation**
 Synthesize findings into actionable insights
@@ -529,32 +529,32 @@ Synthesize findings into actionable insights
 name: AI Architect Weekly Health Check
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday 9 AM UTC
-  workflow_dispatch:
+ schedule:
+ - cron: '0 9 * * 1' # Every Monday 9 AM UTC
+ workflow_dispatch:
 
 jobs:
-  health-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Query NotebookLM (future API)
-        run: |
-          # TODO: Replace with actual NotebookLM API when available
-          # curl -X POST "https://notebooklm-api.google.com/v1/notebooks/$NOTEBOOK_ID/query" \
-          #   -H "Authorization: Bearer ${{ secrets.NOTEBOOKLM_API_TOKEN }}" \
-          #   -d '{"query": "@architect health check"}'
+ health-check:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Query NotebookLM (future API)
+ run: |
+ # TODO: Replace with actual NotebookLM API when available
+ # curl -X POST "https://notebooklm-api.google.com/v1/notebooks/$NOTEBOOK_ID/query" \
+ # -H "Authorization: Bearer ${{ secrets.NOTEBOOKLM_API_TOKEN }}" \
+ # -d '{"query": "@architect health check"}'
 
-          echo "️  NotebookLM API not yet available"
-          echo "Manual execution required:"
-          echo "1. Open NotebookLM notebook"
-          echo "2. Type: @architect health check"
-          echo "3. Review response and create GitHub issues for findings"
+ echo " NotebookLM API not yet available"
+ echo "Manual execution required:"
+ echo "1. Open NotebookLM notebook"
+ echo "2. Type: @architect health check"
+ echo "3. Review response and create GitHub issues for findings"
 
-      - name: Parse response (future)
-        run: echo "TODO: Parse JSON response and extract findings"
+ - name: Parse response (future)
+ run: echo "TODO: Parse JSON response and extract findings"
 
-      - name: Create GitHub issues (future)
-        run: echo "TODO: Create issues for high/critical findings"
+ - name: Create GitHub issues (future)
+ run: echo "TODO: Create issues for high/critical findings"
 ```
 
 **Status**: Workflow skeleton created, but not actionable until API exists
@@ -587,9 +587,9 @@ from datetime import datetime
 from pathlib import Path
 
 def generate_report(findings_json: dict) -> str:
-    """Generate markdown report from architect findings"""
+ """Generate markdown report from architect findings"""
 
-    report = f"""# AI Architect Health Check Report
+ report = f"""# AI Architect Health Check Report
 **Generated**: {datetime.utcnow().isoformat()}Z
 **Notebook**: Codex Architecture Knowledge Base
 
@@ -642,20 +642,20 @@ def generate_report(findings_json: dict) -> str:
 *Report generated by AI Architect automated health check system*
 """
 
-    return report
+ return report
 
 def generate_action_items(findings: dict) -> str:
-    """Generate prioritized action items"""
-    # TODO: Implement priority sorting and GitHub issue creation
-    return "Action items generation pending API integration"
+ """Generate prioritized action items"""
+ # TODO: Implement priority sorting and GitHub issue creation
+ return "Action items generation pending API integration"
 
 if __name__ == "__main__":
-    # TODO: Fetch findings from NotebookLM API
-    # For now, requires manual JSON input
-    print("️  Manual execution required:")
-    print("1. Query NotebookLM with: @architect health check")
-    print("2. Copy response to findings.json")
-    print("3. Run: python scripts/generate_architect_report.py findings.json")
+ # TODO: Fetch findings from NotebookLM API
+ # For now, requires manual JSON input
+ print(" Manual execution required:")
+ print("1. Query NotebookLM with: @architect health check")
+ print("2. Copy response to findings.json")
+ print("3. Run: python scripts/generate_architect_report.py findings.json")
 ```
 
 **Status**: Framework ready, requires API or manual data input

@@ -10,10 +10,10 @@ trees live under `configs/` and can be composed per command:
 
 ```text
 configs/
-├── tokenization/base.yaml   # Tokenizer training defaults
-├── training/base.yaml       # Functional trainer defaults
-├── eval/base.yaml           # Evaluation runner defaults
-└── data/base.yaml           # Data preparation defaults
+ tokenization/base.yaml # Tokenizer training defaults
+ training/base.yaml # Functional trainer defaults
+ eval/base.yaml # Evaluation runner defaults
+ data/base.yaml # Data preparation defaults
 ```text
 Each YAML file maps directly onto a dataclass (`TokenizationConfig`,
 `TrainingConfig`, `EvaluationConfig`, and `DataConfig`). When a file omits a
@@ -26,21 +26,21 @@ compose. The tokenization defaults, for example, look like this:
 # Path globs and hyperparameters are intentionally lightweight so the
 # configuration can be overridden per experiment using Hydra dotlists.
 tokenization:
-  corpus_glob: data/tokenizer/*.txt
-  model_type: unigram
-  vocab_size: 32000
-  character_coverage: 0.9995
-  normalization_rule: null
-  seed: 42
-  workers: 4
-  out_dir: artifacts/tokenizers/default
-  name: default
-  streaming: false
-  stream_chunk_size: null  # Optional chunk size when streaming is enabled
-  padding: max_length
-  truncation: true
-  max_length: null
-  dry_run: false
+ corpus_glob: data/tokenizer/*.txt
+ model_type: unigram
+ vocab_size: 32000
+ character_coverage: 0.9995
+ normalization_rule: null
+ seed: 42
+ workers: 4
+ out_dir: artifacts/tokenizers/default
+ name: default
+ streaming: false
+ stream_chunk_size: null # Optional chunk size when streaming is enabled
+ padding: max_length
+ truncation: true
+ max_length: null
+ dry_run: false
 ```text
 Validation happens inside the dataclasses. Invalid inputs (for example,
 negative batch sizes or mismatched split ratios) raise `ConfigError` with a
@@ -56,14 +56,14 @@ resolved OmegaConf object:
 from codex_ml.config import load_app_config
 
 cfg, raw = load_app_config("configs/training/base.yaml")
-print(cfg.training.batch_size)  # 32 (default)
+print(cfg.training.batch_size) # 32 (default)
 ```text
 Hydra-style overrides can be supplied via the `overrides` parameter. Dotlist
 entries take precedence over file values:
 
 ```python
 cfg, _ = load_app_config(
-    "configs/training/base.yaml", overrides=("training.learning_rate=0.0005",)
+ "configs/training/base.yaml", overrides=("training.learning_rate=0.0005",)
 )
 assert cfg.training.learning_rate == 5e-4
 ```text
@@ -79,7 +79,7 @@ supports inline overrides. Examples:
 ```bash
 # Train with a larger batch size and different output directory
 codex train --config configs/training/base.yaml training.batch_size=64 \
-  training.output_dir=runs/large
+ training.output_dir=runs/large
 
 # Run evaluation on a JSONL dataset and restrict to five examples
 codex evaluate --config configs/evaluation/base.yaml evaluation.max_samples=5

@@ -141,26 +141,26 @@ sequenceDiagram
 
 ```
 src/codex/
-├── cognitive_brain/
-│ ├── api.py # Main interface
-│ ├── pattern_recognizer.py # Pattern detection
-│ ├── memory_manager.py # STM/LTM management
-│ └── decision_engine.py # Strategy selection
-├── core/
-│ ├── ooda_loop.py # OODA orchestration
-│ ├── protocol_engine.py # Message routing
-│ └── action_queue.py # Action execution
-├── ml/
-│ ├── training.py # Training pipeline
-│ ├── inference.py # Model inference
-│ └── registry.py # Model management
-├── api/
-│ ├── main.py # FastAPI app
-│ ├── routes.py # API endpoints
-│ └── models.py # Pydantic schemas
-└── config/
- ├── hydra/ # Hydra configurations
- └── defaults.yaml # Default settings
+ cognitive_brain/
+ api.py # Main interface
+ pattern_recognizer.py # Pattern detection
+ memory_manager.py # STM/LTM management
+ decision_engine.py # Strategy selection
+ core/
+ ooda_loop.py # OODA orchestration
+ protocol_engine.py # Message routing
+ action_queue.py # Action execution
+ ml/
+ training.py # Training pipeline
+ inference.py # Model inference
+ registry.py # Model management
+ api/
+ main.py # FastAPI app
+ routes.py # API endpoints
+ models.py # Pydantic schemas
+ config/
+ hydra/ # Hydra configurations
+ defaults.yaml # Default settings
 ```
 
 ## Deployment Architectures
@@ -168,41 +168,41 @@ src/codex/
 ### Single-Node Docker Deployment
 
 ```
-┌─────────────────────────────┐
-│ Docker Container │
-├─────────────────────────────┤
-│ Cognitive Brain (STM/LTM) │
-│ Core (OODA Loop) │
-│ ML Models (Cached) │
-│ API Server (FastAPI) │
-└─────────────────────────────┘
- ↓
- ┌─────────┐
- │ PostgreSQL
- └─────────┘
- ↓
- ┌─────────┐
- │ Redis │
- └─────────┘
+
+ Docker Container 
+
+ Cognitive Brain (STM/LTM) 
+ Core (OODA Loop) 
+ ML Models (Cached) 
+ API Server (FastAPI) 
+
+ 
+ 
+ PostgreSQL
+ 
+ 
+ 
+ Redis 
+ 
 ```
 
 ### Kubernetes Multi-Pod Deployment
 
 ```
-┌──────────────────────────────────────┐
-│ Kubernetes Cluster │
-├──────────────────────┬────────────────┤
-│ API Pod(s) │ ML Pod(s) │
-│ (FastAPI, 3x) │ (Inference) │
-├──────────────────────┼────────────────┤
-│ Cognitive Brain │ Training Pod │
-│ Pod (Shared STM) │ (Batch Jobs) │
-├──────────────────────┴────────────────┤
-│ Stateful Services │
-│ - PostgreSQL StatefulSet │
-│ - Redis Deployment │
-│ - Prometheus/Grafana │
-└──────────────────────────────────────┘
+
+ Kubernetes Cluster 
+
+ API Pod(s) ML Pod(s) 
+ (FastAPI, 3x) (Inference) 
+
+ Cognitive Brain Training Pod 
+ Pod (Shared STM) (Batch Jobs) 
+
+ Stateful Services 
+ - PostgreSQL StatefulSet 
+ - Redis Deployment 
+ - Prometheus/Grafana 
+
 ```
 
 ## Integration Patterns
@@ -230,18 +230,18 @@ class ProtocolClient:
 
 ```
 External System
- ↓
+ 
  POST /webhook/feedback
  {
  "event_id": "evt_123",
  "outcome": "success|failure",
  "metrics": {...}
  }
- ↓
+ 
 Cognitive Brain
- ↓
+ 
 Updates patterns & models
- ↓
+ 
 Improves decision quality
 ```
 

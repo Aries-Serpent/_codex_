@@ -81,9 +81,9 @@ ruff check --fix .codex/agents/security-input-validator/run.py
 **Failure:**
 ```python
 def test_f1_micro_handles_zero_division() -> None:
-    metric = F1Score(num_classes=2, average="micro")
-    metric.update([0, 0], [0, 0])  # All predictions and labels are class 0
-    assert metric.compute()["f1_score"] == 0.0  #  Returns 1.0
+ metric = F1Score(num_classes=2, average="micro")
+ metric.update([0, 0], [0, 0]) # All predictions and labels are class 0
+ assert metric.compute()["f1_score"] == 0.0 # Returns 1.0
 ```
 
 **Root Cause:** When all predictions and labels are the same class, the F1 score returns 1.0 (perfect agreement) instead of handling zero division edge case.
@@ -132,18 +132,18 @@ from prometheus_client import REGISTRY
 
 @pytest.fixture(autouse=True)
 def clear_prometheus_registry():
-    """Clear Prometheus registry before each test."""
-    # Save existing collectors
-    collectors = list(REGISTRY._collector_to_names.keys())
+ """Clear Prometheus registry before each test."""
+ # Save existing collectors
+ collectors = list(REGISTRY._collector_to_names.keys())
 
-    yield
+ yield
 
-    # Clear all collectors added during test
-    for collector in collectors:
-        try:
-            REGISTRY.unregister(collector)
-        except Exception:
-            pass
+ # Clear all collectors added during test
+ for collector in collectors:
+ try:
+ REGISTRY.unregister(collector)
+ except Exception:
+ pass
 ```
 
 **Alternative Fix:** Use isolated registry per test:
@@ -151,9 +151,9 @@ def clear_prometheus_registry():
 from prometheus_client import CollectorRegistry
 
 def test_metrics_collector_initializes():
-    registry = CollectorRegistry()
-    collector = MetricsCollector(registry=registry)
-    assert collector is not None
+ registry = CollectorRegistry()
+ collector = MetricsCollector(registry=registry)
+ assert collector is not None
 ```
 
 ---
@@ -165,13 +165,13 @@ def test_metrics_collector_initializes():
 **Failure:**
 ```python
 audit = AuditResult(
-    repo_name="test/repo",  #  Not in dataclass definition
-    audit_id="audit_001",
-    compliance_score=0.75,  #  Called 'score' in dataclass
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact="moderate"  #  Should be float 0-1, not string
+ repo_name="test/repo", # Not in dataclass definition
+ audit_id="audit_001",
+ compliance_score=0.75, # Called 'score' in dataclass
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact="moderate" # Should be float 0-1, not string
 )
 # TypeError: AuditResult.__init__() got an unexpected keyword argument 'repo_name'
 ```
@@ -180,12 +180,12 @@ audit = AuditResult(
 ```python
 @dataclass
 class AuditResult:
-    audit_id: str
-    score: float  # 0.0 to 1.0 (not compliance_score)
-    risk_level: str
-    remediation_cost: float
-    business_impact: float  # 0-1 float (not string)
-    violations: List[str]
+ audit_id: str
+ score: float # 0.0 to 1.0 (not compliance_score)
+ risk_level: str
+ remediation_cost: float
+ business_impact: float # 0-1 float (not string)
+ violations: List[str]
 ```
 
 **Root Cause:** Test uses outdated API signature or incorrect parameters.
@@ -196,23 +196,23 @@ class AuditResult:
 ```python
 # Change from:
 audit = AuditResult(
-    repo_name="test/repo",  #  Remove
-    audit_id="audit_001",
-    compliance_score=0.75,  #  Rename to 'score'
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact="moderate"  #  Change to float
+ repo_name="test/repo", # Remove
+ audit_id="audit_001",
+ compliance_score=0.75, # Rename to 'score'
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact="moderate" # Change to float
 )
 
 # To:
 audit = AuditResult(
-    audit_id="audit_001",
-    score=0.75,  #  Correct parameter name
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact=0.5  #  Float between 0-1
+ audit_id="audit_001",
+ score=0.75, # Correct parameter name
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact=0.5 # Float between 0-1
 )
 ```
 
@@ -400,14 +400,14 @@ cannot collect test class 'TestExecutionPriority' because it has a __init__ cons
 ruff check --fix .
 
 # 2. Manual linting fixes
-vim .codex/agents/rfc-compliance-checker/run.py  # Line 250, 388
-vim .codex/agents/security-input-validator/run.py  # Line 191
+vim .codex/agents/rfc-compliance-checker/run.py # Line 250, 388
+vim .codex/agents/security-input-validator/run.py # Line 191
 
 # 3. Fix F1 Score test
-vim tests/metrics/test_f1_score.py  # Line 33: 0.0 → 1.0
+vim tests/metrics/test_f1_score.py # Line 33: 0.0 1.0
 
 # 4. Fix AuditResult test
-vim tests/cognitive_brain/test_integration.py  # Lines 197-205
+vim tests/cognitive_brain/test_integration.py # Lines 197-205
 
 # 5. Run tests
 python -m pytest tests/ -x --tb=short

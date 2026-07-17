@@ -112,10 +112,10 @@ kubectl apply -f k8s/green-deployment.yaml
 
 # Switch traffic (via load balancer)
 kubectl patch service codex -p \
-  '{"spec":{"selector":{"app":"codex-green"}}}'
+ '{"spec":{"selector":{"app":"codex-green"}}}'
 
 # Keep Blue for quick rollback
-kubectl delete deployment codex-blue  # Only after 24h validation
+kubectl delete deployment codex-blue # Only after 24h validation
 ```
 
 **Advantages**: Zero downtime, quick rollback, safe testing
@@ -129,10 +129,10 @@ Gradual rollout with monitoring:
 ```bash
 # Deploy 10% of traffic to new version
 kubectl set image deployment/codex \
-  codex=codex:v2.0.0 \
-  --record \
-  --max-surge=1 \
-  --max-unavailable=0
+ codex=codex:v2.0.0 \
+ --record \
+ --max-surge=1 \
+ --max-unavailable=0
 
 # Monitor metrics (error rate, latency, CPU)
 watch kubectl top pod -l app=codex
@@ -156,25 +156,25 @@ Progressive replacement ensuring service availability:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex
+ name: codex
 spec:
-  replicas: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1        # 1 extra pod during update
-      maxUnavailable: 1  # 1 pod can be unavailable
-  selector:
-    matchLabels:
-      app: codex
-  template:
-    metadata:
-      labels:
-        app: codex
-    spec:
-      containers:
-      - name: codex
-        image: codex:v2.0.0
+ replicas: 5
+ strategy:
+ type: RollingUpdate
+ rollingUpdate:
+ maxSurge: 1 # 1 extra pod during update
+ maxUnavailable: 1 # 1 pod can be unavailable
+ selector:
+ matchLabels:
+ app: codex
+ template:
+ metadata:
+ labels:
+ app: codex
+ spec:
+ containers:
+ - name: codex
+ image: codex:v2.0.0
 ```
 
 **Advantages**: Gradual, automatic, built-in
@@ -195,10 +195,10 @@ docker build -f docker/Dockerfile.cpu -t codex-cpu:latest .
 
 # Run smoke test
 docker run --rm \
-  -v "$PWD":/app \
-  -w /app \
-  codex-cpu:latest \
-  pytest -q -k "determinism or ast_cli_schema"
+ -v "$PWD":/app \
+ -w /app \
+ codex-cpu:latest \
+ pytest -q -k "determinism or ast_cli_schema"
 
 # Tag for registry
 docker tag codex-cpu:latest gcr.io/my-project/codex:v2.0.0
@@ -230,30 +230,30 @@ COPY --from=builder /root/.local /home/codex/.local
 ```bash
 # Basic run
 docker run -d \
-  --name codex-prod \
-  -p 8000:8000 \
-  -e ENVIRONMENT=production \
-  -e LOG_LEVEL=INFO \
-  gcr.io/my-project/codex:v2.0.0
+ --name codex-prod \
+ -p 8000:8000 \
+ -e ENVIRONMENT=production \
+ -e LOG_LEVEL=INFO \
+ gcr.io/my-project/codex:v2.0.0
 
 # With resource limits
 docker run -d \
-  --name codex-prod \
-  --memory=4g \
-  --cpus=2 \
-  --log-driver json-file \
-  --log-opt max-size=10m \
-  --log-opt max-file=3 \
-  -e ENVIRONMENT=production \
-  gcr.io/my-project/codex:v2.0.0
+ --name codex-prod \
+ --memory=4g \
+ --cpus=2 \
+ --log-driver json-file \
+ --log-opt max-size=10m \
+ --log-opt max-file=3 \
+ -e ENVIRONMENT=production \
+ gcr.io/my-project/codex:v2.0.0
 
 # Health check
 docker run -d \
-  --health-cmd='curl --fail http://localhost:8000/health || exit 1' \
-  --health-interval=30s \
-  --health-timeout=10s \
-  --health-retries=3 \
-  gcr.io/my-project/codex:v2.0.0
+ --health-cmd='curl --fail http://localhost:8000/health || exit 1' \
+ --health-interval=30s \
+ --health-timeout=10s \
+ --health-retries=3 \
+ gcr.io/my-project/codex:v2.0.0
 ```
 
 ---
@@ -283,10 +283,10 @@ helm repo update
 
 # Install release
 helm install codex codex-charts/codex \
-  --namespace production \
-  --create-namespace \
-  --values values-production.yaml \
-  --version 2.0.0
+ --namespace production \
+ --create-namespace \
+ --values values-production.yaml \
+ --version 2.0.0
 
 # Verify deployment
 kubectl get pods -n production
@@ -297,10 +297,10 @@ helm status codex -n production
 
 # Upgrade to new version
 helm upgrade codex codex-charts/codex \
-  --namespace production \
-  --values values-production.yaml \
-  --version 2.1.0 \
-  --wait
+ --namespace production \
+ --values values-production.yaml \
+ --version 2.1.0 \
+ --wait
 
 # Rollback if needed
 helm rollback codex 1 -n production
@@ -312,96 +312,96 @@ helm rollback codex 1 -n production
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex
-  namespace: production
-  labels:
-    app: codex
-    version: v2.0.0
+ name: codex
+ namespace: production
+ labels:
+ app: codex
+ version: v2.0.0
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: codex
-  template:
-    metadata:
-      labels:
-        app: codex
-        version: v2.0.0
-    spec:
-      containers:
-      - name: codex
-        image: gcr.io/my-project/codex:v2.0.0
-        ports:
-        - containerPort: 8000
-          name: http
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        env:
-        - name: ENVIRONMENT
-          value: "production"
-        - name: LOG_LEVEL
-          value: "INFO"
-        - name: CODEX_SESSION_ID
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+ replicas: 3
+ selector:
+ matchLabels:
+ app: codex
+ template:
+ metadata:
+ labels:
+ app: codex
+ version: v2.0.0
+ spec:
+ containers:
+ - name: codex
+ image: gcr.io/my-project/codex:v2.0.0
+ ports:
+ - containerPort: 8000
+ name: http
+ resources:
+ requests:
+ memory: "2Gi"
+ cpu: "1000m"
+ limits:
+ memory: "4Gi"
+ cpu: "2000m"
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: 8000
+ initialDelaySeconds: 10
+ periodSeconds: 5
+ env:
+ - name: ENVIRONMENT
+ value: "production"
+ - name: LOG_LEVEL
+ value: "INFO"
+ - name: CODEX_SESSION_ID
+ valueFrom:
+ fieldRef:
+ fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: codex
-  namespace: production
+ name: codex
+ namespace: production
 spec:
-  selector:
-    app: codex
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 8000
-    protocol: TCP
+ selector:
+ app: codex
+ type: LoadBalancer
+ ports:
+ - port: 80
+ targetPort: 8000
+ protocol: TCP
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: codex-hpa
-  namespace: production
+ name: codex-hpa
+ namespace: production
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: codex
-  minReplicas: 3
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+ scaleTargetRef:
+ apiVersion: apps/v1
+ kind: Deployment
+ name: codex
+ minReplicas: 3
+ maxReplicas: 10
+ metrics:
+ - type: Resource
+ resource:
+ name: cpu
+ target:
+ type: Utilization
+ averageUtilization: 70
+ - type: Resource
+ resource:
+ name: memory
+ target:
+ type: Utilization
+ averageUtilization: 80
 ```
 
 ---
@@ -484,17 +484,17 @@ If using GitHub App OAuth for authentication:
 
 ```bash
 # Step 1: Obtain from GitHub App Settings
-# Navigate to: GitHub Settings → Developer settings → OAuth Apps → Your App
+# Navigate to: GitHub Settings Developer settings OAuth Apps Your App
 # Copy the "Client Secret" value
 
 export GITHUB_APP_CLIENT_SECRET="<your-github-app-client-secret>"
 
 # Step 2: Verify in deployment (DO NOT log the actual value)
 if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then
-    echo " ERROR: GITHUB_APP_CLIENT_SECRET not set!"
-    exit 1
+ echo " ERROR: GITHUB_APP_CLIENT_SECRET not set!"
+ exit 1
 else
-    echo " GITHUB_APP_CLIENT_SECRET is set (length: ${#GITHUB_APP_CLIENT_SECRET})"
+ echo " GITHUB_APP_CLIENT_SECRET is set (length: ${#GITHUB_APP_CLIENT_SECRET})"
 fi
 
 # Step 3: Configure in deployment environment
@@ -510,30 +510,30 @@ fi
  - Copy the newly generated secret immediately (it only displays once)
 
 2. **Set in Deployment Environment:**
-   ```bash
-   # For Docker containers
-   docker run -e GITHUB_APP_CLIENT_SECRET="<secret>" codex:latest
-   
-   # For Kubernetes with Secrets
-   kubectl create secret generic github-oauth \
-     --from-literal=GITHUB_APP_CLIENT_SECRET="<secret>"
-   kubectl set env deployment/codex \
-     --from=secret/github-oauth
-   
-   # For systemd service
-   # Add to /etc/systemd/system/codex.service:
-   # Environment="GITHUB_APP_CLIENT_SECRET=<secret>"
+ ```bash
+ # For Docker containers
+ docker run -e GITHUB_APP_CLIENT_SECRET="<secret>" codex:latest
+ 
+ # For Kubernetes with Secrets
+ kubectl create secret generic github-oauth \
+ --from-literal=GITHUB_APP_CLIENT_SECRET="<secret>"
+ kubectl set env deployment/codex \
+ --from=secret/github-oauth
+ 
+ # For systemd service
+ # Add to /etc/systemd/system/codex.service:
+ # Environment="GITHUB_APP_CLIENT_SECRET=<secret>"
  ```
 
 3. **Verify Configuration:**
-   ```bash
-   # Test authentication endpoint
-   curl -X POST http://localhost:8000/auth/github/callback \
-     -H "Content-Type: application/json" \
-     -d '{"code": "test", "state": "test"}'
-   
-   # Should return 400 Bad Request (invalid code), NOT 500 Server Error
-   # A 500 error indicates GITHUB_APP_CLIENT_SECRET is not set properly
+ ```bash
+ # Test authentication endpoint
+ curl -X POST http://localhost:8000/auth/github/callback \
+ -H "Content-Type: application/json" \
+ -d '{"code": "test", "state": "test"}'
+ 
+ # Should return 400 Bad Request (invalid code), NOT 500 Server Error
+ # A 500 error indicates GITHUB_APP_CLIENT_SECRET is not set properly
  ```
 
 #### 3. Additional Service Credentials
@@ -578,30 +578,30 @@ AZURE_SUBSCRIPTION_ID=<subscription-id>
 Before deploying to production, verify:
 
 - [ ] **AUTH_SECRET_KEY is set:**
-  ```bash
-  if [ -z "$AUTH_SECRET_KEY" ]; then echo " NOT SET"; else echo " SET"; fi
+ ```bash
+ if [ -z "$AUTH_SECRET_KEY" ]; then echo " NOT SET"; else echo " SET"; fi
  ```
 
 - [ ] **GITHUB_APP_CLIENT_SECRET is set** (if using GitHub OAuth):
-  ```bash
-  if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo " NOT SET"; else echo " SET"; fi
+ ```bash
+ if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo " NOT SET"; else echo " SET"; fi
  ```
 
 - [ ] **All service credentials are set:**
-  ```bash
-  # Check all required environment variables
-  for var in AUTH_SECRET_KEY GITHUB_APP_CLIENT_SECRET SLACK_WEBHOOK_URL; do
-    if [ -z "$(eval echo \$$var)" ]; then
-      echo " $var is NOT SET"
-    else
-      echo " $var is set (length: ${#var})"
-    fi
-  done
+ ```bash
+ # Check all required environment variables
+ for var in AUTH_SECRET_KEY GITHUB_APP_CLIENT_SECRET SLACK_WEBHOOK_URL; do
+ if [ -z "$(eval echo \$$var)" ]; then
+ echo " $var is NOT SET"
+ else
+ echo " $var is set (length: ${#var})"
+ fi
+ done
  ```
 
 - [ ] **Secrets are NOT committed to git:**
-  ```bash
-  git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo " No secrets in git history"
+ ```bash
+ git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo " No secrets in git history"
  ```
 
 - [ ] **Environment variables are isolated per environment:**
@@ -609,9 +609,9 @@ Before deploying to production, verify:
  - Each environment has separate credential sets
 
 - [ ] **Secrets are rotated on deployment:**
-  ```bash
-  # Example: Auto-generate new key on deploy
-  export AUTH_SECRET_KEY=$(openssl rand -hex 32)
+ ```bash
+ # Example: Auto-generate new key on deploy
+ export AUTH_SECRET_KEY=$(openssl rand -hex 32)
  ```
 
 
@@ -622,29 +622,29 @@ Before deploying to production, verify:
 # config/production.yaml
 environment: production
 logging:
-  level: INFO
-  format: json
-  output: file
-  path: /var/log/codex/app.log
+ level: INFO
+ format: json
+ output: file
+ path: /var/log/codex/app.log
 
 database:
-  backend: postgresql
-  host: codex-db.default.svc.cluster.local
-  port: 5432
-  name: codex_prod
-  pool_size: 20
-  max_overflow: 40
+ backend: postgresql
+ host: codex-db.default.svc.cluster.local
+ port: 5432
+ name: codex_prod
+ pool_size: 20
+ max_overflow: 40
 
 cache:
-  backend: redis
-  host: codex-redis.default.svc.cluster.local
-  port: 6379
-  ttl: 3600
+ backend: redis
+ host: codex-redis.default.svc.cluster.local
+ port: 6379
+ ttl: 3600
 
 monitoring:
-  metrics_enabled: true
-  metrics_port: 9090
-  trace_sampling: 0.1
+ metrics_enabled: true
+ metrics_port: 9090
+ trace_sampling: 0.1
 ```
 
 ---
@@ -657,29 +657,29 @@ monitoring:
 # prometheus/codex-rules.yaml
 groups:
 - name: codex
-  interval: 30s
-  rules:
-  - alert: HighErrorRate
-    expr: rate(codex_errors_total[5m]) > 0.05
-    for: 5m
-    annotations:
-      summary: "High error rate detected"
+ interval: 30s
+ rules:
+ - alert: HighErrorRate
+ expr: rate(codex_errors_total[5m]) > 0.05
+ for: 5m
+ annotations:
+ summary: "High error rate detected"
 
-  - alert: HighLatency
-    expr: histogram_quantile(0.95, rate(codex_request_duration_seconds_bucket[5m])) > 1
-    for: 5m
-    annotations:
-      summary: "P95 latency > 1s"
+ - alert: HighLatency
+ expr: histogram_quantile(0.95, rate(codex_request_duration_seconds_bucket[5m])) > 1
+ for: 5m
+ annotations:
+ summary: "P95 latency > 1s"
 ```
 
 ## Health Checks
 
 ```python
 # Application health endpoints
-GET /health           # Liveness probe (is app running?)
-GET /ready            # Readiness probe (can accept traffic?)
-GET /metrics          # Prometheus metrics
-GET /version          # Version information
+GET /health # Liveness probe (is app running?)
+GET /ready # Readiness probe (can accept traffic?)
+GET /metrics # Prometheus metrics
+GET /version # Version information
 ```
 
 ## Observability Best Practices
@@ -713,12 +713,12 @@ Adjust resource requests/limits in deployment manifest:
 
 ```yaml
 resources:
-  requests:
-    memory: "4Gi"
-    cpu: "2000m"
-  limits:
-    memory: "8Gi"
-    cpu: "4000m"
+ requests:
+ memory: "4Gi"
+ cpu: "2000m"
+ limits:
+ memory: "8Gi"
+ cpu: "4000m"
 ```
 
 ### Capacity Planning
@@ -737,7 +737,7 @@ resources:
 ```bash
 # Database backup
 kubectl exec -n production codex-db-0 -- \
-  pg_dump -U codex -W codex_prod > backup-$(date +%Y%m%d).sql
+ pg_dump -U codex -W codex_prod > backup-$(date +%Y%m%d).sql
 
 # Volume backup (Kubernetes persistent volumes)
 kubectl get pvc -n production
@@ -783,7 +783,7 @@ kubectl describe pod codex-xxxx -n production
 
 # Check logs
 kubectl logs codex-xxxx -n production
-kubectl logs codex-xxxx -n production --previous  # Previous crash
+kubectl logs codex-xxxx -n production --previous # Previous crash
 
 # Common causes:
 # - Image not found: Check registry, image tag
@@ -827,7 +827,7 @@ kubectl exec codex-xxxx -n production -- env | grep DATABASE
 
 # Test connectivity
 kubectl exec codex-xxxx -n production -- \
-  psql -h codex-db -U codex -c "SELECT 1"
+ psql -h codex-db -U codex -c "SELECT 1"
 ```
 
 ---

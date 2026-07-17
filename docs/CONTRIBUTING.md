@@ -156,13 +156,13 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 **Example:**
 ```
 [PLACEHOLDER: MIGRATION_INTENT_SUMMARY] 
-→ "Relocate tokenizer helpers to `codex.text`"  # pragma: allowlist secret
+ "Relocate tokenizer helpers to `codex.text`" # pragma: allowlist secret
 
 [PLACEHOLDER: COMMAND_LIST]
-→ "`codex-cli sync`, `codex-cli diff`"
+ "`codex-cli sync`, `codex-cli diff`"
 
 [PLACEHOLDER: APPROVAL_DEADLINE]
-→ "2025-11-07"
+ "2025-11-07"
 ```
 
 ---
@@ -174,9 +174,9 @@ Operational templates in [`docs/templates/`](./templates/README.md) follow a rol
 Reinstall hooks:
 ```bash
 pre-commit install --install-hooks \
-  --hook-type pre-commit \
-  --hook-type pre-push \
-  --hook-type commit-msg
+ --hook-type pre-commit \
+ --hook-type pre-push \
+ --hook-type commit-msg
 ```
 
 ### Hook Configuration

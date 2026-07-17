@@ -18,22 +18,22 @@ The Pre-commit Verification Hook ensures that all files logged in `action_log.nd
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Pre-commit Verification Hook │
-├─────────────────────────────────────────────────────────────┤
-│ │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│ │ Action │ │ Git │ │ Report │ │
-│ │ Log Parser │───▶│ Status │───▶│ Generator │ │
-│ └──────────────┘ └──────────────┘ └──────────────┘ │
-│ │ │ │ │
-│ ▼ ▼ ▼ │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│ │ Expected │ │ Staged │ │ Verification │ │
-│ │ Files │ │ Files │ │ Result │ │
-│ └──────────────┘ └──────────────┘ └──────────────┘ │
-│ │
-└─────────────────────────────────────────────────────────────┘
+
+ Pre-commit Verification Hook 
+
+ 
+ 
+ Action Git Report 
+ Log Parser Status Generator 
+ 
+ 
+ 
+ 
+ Expected Staged Verification 
+ Files Files Result 
+ 
+ 
+
 ```
 
 ---
@@ -126,10 +126,10 @@ Missing from staging: 2
  - tests/hooks/test_pre_commit_verify.py
  - .pre-commit-config.yaml
 
-️ Modified but not staged (need `git add`):
+ Modified but not staged (need `git add`):
  - docs/PRE_COMMIT_VERIFICATION.md
 
-️ Untracked files (need `git add`):
+ Untracked files (need `git add`):
  - .codex/new_file.md
 
 To stage missing files:

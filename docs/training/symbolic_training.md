@@ -18,7 +18,7 @@
 ``` text
 Let M₀ = Base Codex (pretrained)
 Codex:
- M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
+ M₀ — SFT(curated code demos) M₁ — RLHF(reward model, PPO) M₂ (deployed utility)
 ```
 Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
 

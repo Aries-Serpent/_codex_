@@ -49,54 +49,54 @@ Executes the production readiness campaign:
 
 ```
 CampaignDefinition
-├── campaign_id: str
-├── name: str
-├── objectives: List[str]
-├── phases: List[CampaignPhase]
-├── success_criteria: List[str]
-└── escalation_threshold: int (max iterations before human escalation)
+ campaign_id: str
+ name: str
+ objectives: List[str]
+ phases: List[CampaignPhase]
+ success_criteria: List[str]
+ escalation_threshold: int (max iterations before human escalation)
 
 CampaignPhase
-├── phase_id: str
-├── name: str
-├── parallel_agents: List[str]
-├── gate_condition: Callable (verifies phase success)
-├── timeout_seconds: int
-└── artifacts: List[str]
+ phase_id: str
+ name: str
+ parallel_agents: List[str]
+ gate_condition: Callable (verifies phase success)
+ timeout_seconds: int
+ artifacts: List[str]
 
 CampaignExecution (Runtime State)
-├── campaign_id: str
-├── current_phase_index: int
-├── agent_results: Dict[str, Any]
-├── phase_results: List[PhaseExecutionResult]
-├── iterations: int
-├── status: CampaignStatus
-└── artifacts_collected: Dict[str, Path]
+ campaign_id: str
+ current_phase_index: int
+ agent_results: Dict[str, Any]
+ phase_results: List[PhaseExecutionResult]
+ iterations: int
+ status: CampaignStatus
+ artifacts_collected: Dict[str, Path]
 ```
 
 ### Execution State Machine
 
 ```
 IDLE
-  ↓ [activate_campaign()]
+ [activate_campaign()]
 ACTIVATED
-  ↓ [execute_phase(0)]
+ [execute_phase(0)]
 PHASE_RUNNING (agents executing in parallel)
-  ↓ [monitor_agents()]
+ [monitor_agents()]
 GATE_CHECK
-  ├─ [gate passes] → PHASE_1_COMPLETE
-  │  ↓
-  │  [execute_phase(1)]
-  │  ↓ ... (repeat for phases 2-4)
-  │
-  └─ [gate fails, iter < threshold]
-     ↓ [retry_phase()]
-     (go back to PHASE_RUNNING)
+ [gate passes] PHASE_1_COMPLETE
+ 
+ [execute_phase(1)]
+ ... (repeat for phases 2-4)
+ 
+ [gate fails, iter < threshold]
+ [retry_phase()]
+ (go back to PHASE_RUNNING)
 
-  [gate fails, iter >= threshold]
-  ↓ [escalate()]
+ [gate fails, iter >= threshold]
+ [escalate()]
 ESCALATED (human intervention required)
-  ↓
+ 
 COMPLETE or FAILED (depending on escalation outcome)
 ```
 
@@ -108,17 +108,17 @@ Agents within a phase run in parallel. For example, Phase 2 of production-readin
 
 ```yaml
 - id: "2"
-  name: "Coverage Expansion"
-  parallel_agents:
-    - unified-coverage-agent    # Identify gaps
-    - test-enhancement-agent    # Improve existing tests
-  timeout_seconds: 600
+ name: "Coverage Expansion"
+ parallel_agents:
+ - unified-coverage-agent # Identify gaps
+ - test-enhancement-agent # Improve existing tests
+ timeout_seconds: 600
 ```
 
 Execution timeline:
 ```
-Time:   0s          300s          600s
-        |-----------|-----------|
+Time: 0s 300s 600s
+ |-----------|-----------|
 Agent 1 [======unified-coverage======]
 Agent 2 [======test-enhancement====]
 
@@ -131,20 +131,20 @@ Gate check happens at t=600s+ when both finish or timeout
 
 **SEQUENTIAL_CHAIN:** Execute phases one after another (production-readiness-v1)
 ```
-Phase 1 → Gate 1 → Phase 2 → Gate 2 → Phase 3 → ... → Complete
+Phase 1 Gate 1 Phase 2 Gate 2 Phase 3 ... Complete
 ```
 
 **PARALLEL_FAN_OUT:** Execute multiple agents within a phase in parallel
 ```
 Phase X:
-  Agent 1 --|
-  Agent 2 --|-→ Aggregate Results → Gate X
-  Agent 3 --|
+ Agent 1 --|
+ Agent 2 --|- Aggregate Results Gate X
+ Agent 3 --|
 ```
 
 **CONDITIONAL_ROUTING:** Choose agents based on conditions (self-heal-ci)
 ```
-Diagnosis → Pattern Classification → Choose Fix Agent → Verify → Complete
+Diagnosis Pattern Classification Choose Fix Agent Verify Complete
 ```
 
 ## Campaign Registry Format
@@ -155,37 +155,37 @@ Campaigns are defined in `.codex/campaigns/CAMPAIGN_REGISTRY.yaml`:
 version: 2.0.0
 
 campaigns:
-  - id: my-campaign
-    name: "Campaign Name"
-    description: "What this campaign does"
-    category: "deployment|quality|reliability|security"
+ - id: my-campaign
+ name: "Campaign Name"
+ description: "What this campaign does"
+ category: "deployment|quality|reliability|security"
 
-    objectives:
-      - "Objective 1"
-      - "Objective 2"
+ objectives:
+ - "Objective 1"
+ - "Objective 2"
 
-    phases:
-      - id: "1"
-        name: "Phase Name"
-        description: "Phase description"
-        parallel_agents:
-          - agent-id-1
-          - agent-id-2
-        gate_condition: "metric >= 100"  # Custom condition
-        timeout_seconds: 600
-        artifacts:
-          - "expected_file_1.md"
-          - "expected_file_2.json"
-        metrics_expected:
-          - "Metric 1"
-          - "Metric 2"
+ phases:
+ - id: "1"
+ name: "Phase Name"
+ description: "Phase description"
+ parallel_agents:
+ - agent-id-1
+ - agent-id-2
+ gate_condition: "metric >= 100" # Custom condition
+ timeout_seconds: 600
+ artifacts:
+ - "expected_file_1.md"
+ - "expected_file_2.json"
+ metrics_expected:
+ - "Metric 1"
+ - "Metric 2"
 
-    success_criteria:
-      - "Criterion 1"
-      - "Criterion 2"
+ success_criteria:
+ - "Criterion 1"
+ - "Criterion 2"
 
-    escalation_threshold: 3
-    rollback_strategy: "revert_and_alert"  # or "commit_and_alert"
+ escalation_threshold: 3
+ rollback_strategy: "revert_and_alert" # or "commit_and_alert"
 ```
 
 ## Production Readiness Campaign (Phases 1-5)
@@ -209,11 +209,11 @@ campaigns:
 **Artifacts:**
 ```
 .codex/campaign_artifacts/production-readiness-v1/phase_1/
-├── SECURITY_FINDINGS_XXE_CMDINJECTION.md
-├── SECURITY_FINDINGS_LOGGING.md
-├── SECURITY_FINDINGS_HASHING_DESER.md
-├── SECURITY_FINDINGS_URL_VALIDATION.md
-└── SECURITY_PHASE1_COMPLETE.md
+ SECURITY_FINDINGS_XXE_CMDINJECTION.md
+ SECURITY_FINDINGS_LOGGING.md
+ SECURITY_FINDINGS_HASHING_DESER.md
+ SECURITY_FINDINGS_URL_VALIDATION.md
+ SECURITY_PHASE1_COMPLETE.md
 ```
 
 ### Phase 2: Coverage Expansion COMPLETE
@@ -233,11 +233,11 @@ campaigns:
 **Artifacts:**
 ```
 .codex/campaign_artifacts/production-readiness-v1/phase_2/
-├── COVERAGE_GAP_ANALYSIS.md
-├── COVERAGE_PHASE2_TEST_GENERATION_COMPLETE.md
-├── tests/unit/test_checkpoint_core_resume.py
-├── tests/unit/test_training_callbacks.py
-└── ... (6 new test files)
+ COVERAGE_GAP_ANALYSIS.md
+ COVERAGE_PHASE2_TEST_GENERATION_COMPLETE.md
+ tests/unit/test_checkpoint_core_resume.py
+ tests/unit/test_training_callbacks.py
+ ... (6 new test files)
 ```
 
 ### Phase 3: CI Stability COMPLETE
@@ -296,7 +296,7 @@ from pathlib import Path
 
 # Load campaign definition
 registry = CampaignRegistryLoader.load_registry(
-    Path(".codex/campaigns/CAMPAIGN_REGISTRY.yaml")
+ Path(".codex/campaigns/CAMPAIGN_REGISTRY.yaml")
 )
 
 campaign_def = registry["production-readiness-v1"]
@@ -308,24 +308,24 @@ orchestrator = CampaignOrchestrator(campaign_def)
 orchestrator.activate_campaign()
 
 for phase_idx, phase in enumerate(campaign_def.phases):
-    # Dispatch agents
-    agent_ids = orchestrator.execute_phase(phase_idx)
+ # Dispatch agents
+ agent_ids = orchestrator.execute_phase(phase_idx)
 
-    # Monitor execution
-    results = orchestrator.monitor_agents(
-        agent_ids,
-        phase.timeout_seconds
-    )
+ # Monitor execution
+ results = orchestrator.monitor_agents(
+ agent_ids,
+ phase.timeout_seconds
+ )
 
-    # Verify gate
-    gate_pass = orchestrator.verify_gate(phase_idx, results)
+ # Verify gate
+ gate_pass = orchestrator.verify_gate(phase_idx, results)
 
-    if not gate_pass:
-        # Retry or escalate
-        pass
+ if not gate_pass:
+ # Retry or escalate
+ pass
 
-    # Collect artifacts
-    orchestrator.collect_artifacts(phase_idx)
+ # Collect artifacts
+ orchestrator.collect_artifacts(phase_idx)
 
 # Finalize
 orchestrator.finalize(CampaignStatus.COMPLETE)
@@ -337,21 +337,21 @@ orchestrator.finalize(CampaignStatus.COMPLETE)
 
 ```
 .codex/campaign_artifacts/
-├── production-readiness-v1/
-│   ├── phase_1/
-│   │   ├── SECURITY_FINDINGS_XXE_CMDINJECTION.md
-│   │   └── ...
-│   ├── phase_2/
-│   │   ├── COVERAGE_GAP_ANALYSIS.md
-│   │   └── ...
-│   └── phase_5/
-│       ├── PRODUCTION_READINESS_MERGE_CERTIFICATION.md
-│       └── ...
-├── coverage-improvement/
-│   ├── phase_1/
-│   ├── phase_2/
-│   └── phase_3/
-└── campaign_executions.jsonl
+ production-readiness-v1/
+ phase_1/
+ SECURITY_FINDINGS_XXE_CMDINJECTION.md
+ ...
+ phase_2/
+ COVERAGE_GAP_ANALYSIS.md
+ ...
+ phase_5/
+ PRODUCTION_READINESS_MERGE_CERTIFICATION.md
+ ...
+ coverage-improvement/
+ phase_1/
+ phase_2/
+ phase_3/
+ campaign_executions.jsonl
 ```
 
 ### Artifact Retention
@@ -377,10 +377,10 @@ Progress: 360/600 seconds (60%)
 Agents: 1 running, 0 completed, 0 failed
 
 Phase Results:
-  Phase 1:  PASS (358s)
-  Phase 2:  PASS (355s)
-  Phase 3:  PASS (409s)
-  Phase 4:  IN PROGRESS
+ Phase 1: PASS (358s)
+ Phase 2: PASS (355s)
+ Phase 3: PASS (409s)
+ Phase 4: IN PROGRESS
 ```
 
 ### View Execution Log
@@ -392,11 +392,11 @@ tail -f .codex/aftermath/campaign_executions.jsonl
 Output:
 ```json
 {
-  "campaign_id": "production-readiness-v1",
-  "status": "in_progress",
-  "activation_time": "2026-06-13T00:10:00Z",
-  "phases_completed": 3,
-  "iterations": 0
+ "campaign_id": "production-readiness-v1",
+ "status": "in_progress",
+ "activation_time": "2026-06-13T00:10:00Z",
+ "phases_completed": 3,
+ "iterations": 0
 }
 ```
 
@@ -446,31 +446,31 @@ Add entry to `.codex/campaigns/CAMPAIGN_REGISTRY.yaml`:
 
 ```yaml
 - id: my-custom-campaign
-  name: "My Custom Campaign"
-  description: "Does something specific"
-  category: "quality"
-  objectives: [...]
-  phases:
-    - id: "1"
-      name: "Phase 1"
-      parallel_agents: [agent-1, agent-2]
-      gate_condition: "custom_metric >= threshold"
-      timeout_seconds: 600
-      artifacts: [...]
-  success_criteria: [...]
+ name: "My Custom Campaign"
+ description: "Does something specific"
+ category: "quality"
+ objectives: [...]
+ phases:
+ - id: "1"
+ name: "Phase 1"
+ parallel_agents: [agent-1, agent-2]
+ gate_condition: "custom_metric >= threshold"
+ timeout_seconds: 600
+ artifacts: [...]
+ success_criteria: [...]
 ```
 
 ### Step 2: Implement Custom Gate Condition
 
 ```python
 def my_gate_condition(agent_results: Dict[str, Any]) -> bool:
-    """Custom gate: all agents succeeded and metric >= threshold."""
-    for agent_id, result in agent_results.items():
-        if result.get("status") != "completed":
-            return False
-        if result.get("metric", 0) < 100:
-            return False
-    return True
+ """Custom gate: all agents succeeded and metric >= threshold."""
+ for agent_id, result in agent_results.items():
+ if result.get("status") != "completed":
+ return False
+ if result.get("metric", 0) < 100:
+ return False
+ return True
 ```
 
 ### Step 3: Run Campaign
@@ -495,31 +495,31 @@ Configuration in `.github/workflows/campaign-executor.yml` (create this):
 name: Campaign Executor
 
 on:
-  push:
-    branches: [main, 0D_base_]
-  pull_request:
-  schedule:
-    - cron: "0 2 * * 0"  # Weekly
+ push:
+ branches: [main, 0D_base_]
+ pull_request:
+ schedule:
+ - cron: "0 2 * * 0" # Weekly
 
 jobs:
-  run-campaigns:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
+ run-campaigns:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - uses: actions/setup-python@v4
+ with:
+ python-version: "3.12"
 
-      - name: Run Campaign
-        run: |
-          python -m codex campaign run production-readiness-v1
+ - name: Run Campaign
+ run: |
+ python -m codex campaign run production-readiness-v1
 
-      - name: Upload Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: campaign-artifacts
-          path: .codex/campaign_artifacts/
+ - name: Upload Artifacts
+ if: always()
+ uses: actions/upload-artifact@v4
+ with:
+ name: campaign-artifacts
+ path: .codex/campaign_artifacts/
 ```
 
 ## References

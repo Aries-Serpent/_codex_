@@ -392,27 +392,27 @@ If there was a **legitimate technical issue**, GitHub Copilot Agent should have 
 ```python
 # Step 1: Attempt the operation
 try:
-    result = githubwrite(
-        query="Post the following comment on PR #2671 in Aries-Serpent/_codex_ with content: @copilot Continue Phase 9.2: Public API Coverage Enhancement [full prompt content]"
-    )
-    print(f" SUCCESS: Comment posted to PR #2671")
-    print(f"Result: {result}")
+ result = githubwrite(
+ query="Post the following comment on PR #2671 in Aries-Serpent/_codex_ with content: @copilot Continue Phase 9.2: Public API Coverage Enhancement [full prompt content]"
+ )
+ print(f" SUCCESS: Comment posted to PR #2671")
+ print(f"Result: {result}")
 
 except Exception as e:
-    # Step 2: Show actual error with full details
-    print(f" ERROR: Failed to post PR comment")
-    print(f"Error type: {type(e).__name__}")
-    print(f"Error message: {str(e)}")
-    print(f"Error details: {e.__dict__ if hasattr(e, '__dict__') else 'N/A'}")
+ # Step 2: Show actual error with full details
+ print(f" ERROR: Failed to post PR comment")
+ print(f"Error type: {type(e).__name__}")
+ print(f"Error message: {str(e)}")
+ print(f"Error details: {e.__dict__ if hasattr(e, '__dict__') else 'N/A'}")
 
-    # Step 3: Check API response if available
-    if hasattr(e, 'response'):
-        print(f"HTTP Status: {e.response.status_code}")
-        print(f"Response body: {e.response.text}")
-        print(f"Response headers: {e.response.headers}")
+ # Step 3: Check API response if available
+ if hasattr(e, 'response'):
+ print(f"HTTP Status: {e.response.status_code}")
+ print(f"Response body: {e.response.text}")
+ print(f"Response headers: {e.response.headers}")
 
-    # Step 4: Document the actual technical limitation
-    print(f"Technical limitation confirmed with evidence above")
+ # Step 4: Document the actual technical limitation
+ print(f"Technical limitation confirmed with evidence above")
 ```
 
 **What Actually Happened**:
@@ -438,7 +438,7 @@ except Exception as e:
 ```python
 # Simple natural language request
 githubwrite(
-    query="Post the following comment on PR #2671 in repository Aries-Serpent/_codex_: '@copilot Continue Phase 9.2: Public API Coverage Enhancement. See .github/CONTINUATION_PROMPT_PHASE9_2.md for details.'"
+ query="Post the following comment on PR #2671 in repository Aries-Serpent/_codex_: '@copilot Continue Phase 9.2: Public API Coverage Enhancement. See .github/CONTINUATION_PROMPT_PHASE9_2.md for details.'"
 )
 ```
 
@@ -447,10 +447,10 @@ githubwrite(
 ```python
 # If MCP server configured with direct access
 mcp_github.post_pr_comment(
-    owner="Aries-Serpent",
-    repo="_codex_",
-    pr_number=2671,
-    comment_body="@copilot Continue Phase 9.2: Public API Coverage Enhancement\n\nSee .github/CONTINUATION_PROMPT_PHASE9_2.md for complete roadmap."
+ owner="Aries-Serpent",
+ repo="_codex_",
+ pr_number=2671,
+ comment_body="@copilot Continue Phase 9.2: Public API Coverage Enhancement\n\nSee .github/CONTINUATION_PROMPT_PHASE9_2.md for complete roadmap."
 )
 ```
 
@@ -459,10 +459,10 @@ mcp_github.post_pr_comment(
 ```python
 # Direct API call (PRs are issues in GitHub API)
 github_api.issues.create_comment(
-    owner="Aries-Serpent",
-    repo="_codex_",
-    issue_number=2671,  # PRs are treated as issues in API
-    body="@copilot Continue Phase 9.2: Public API Coverage Enhancement\n\nExecute public API test coverage (85% → 92%)"
+ owner="Aries-Serpent",
+ repo="_codex_",
+ issue_number=2671, # PRs are treated as issues in API
+ body="@copilot Continue Phase 9.2: Public API Coverage Enhancement\n\nExecute public API test coverage (85% 92%)"
 )
 ```
 
@@ -471,24 +471,24 @@ github_api.issues.create_comment(
 **Success Response**:
 ```json
 {
-  "id": 3701234567,
-  "url": "https://api.github.com/repos/Aries-Serpent/_codex_/issues/comments/3701234567",
-  "html_url": "https://github.com/Aries-Serpent/_codex_/pull/2671#issuecomment-3701234567",
-  "body": "@copilot Continue Phase 9.2...",
-  "user": {
-    "login": "github-actions[bot]",
-    "type": "Bot"
-  },
-  "created_at": "2025-12-31T02:35:00Z"
+ "id": 3701234567,
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/issues/comments/3701234567",
+ "html_url": "https://github.com/Aries-Serpent/_codex_/pull/2671#issuecomment-3701234567",
+ "body": "@copilot Continue Phase 9.2...",
+ "user": {
+ "login": "github-actions[bot]",
+ "type": "Bot"
+ },
+ "created_at": "2025-12-31T02:35:00Z"
 }
 ```
 
 **Error Response Example**:
 ```json
 {
-  "message": "Requires write access",
-  "documentation_url": "https://docs.github.com/rest/reference/issues#create-an-issue-comment",
-  "status": 403
+ "message": "Requires write access",
+ "documentation_url": "https://docs.github.com/rest/reference/issues#create-an-issue-comment",
+ "status": 403
 }
 ```
 

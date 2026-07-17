@@ -20,12 +20,12 @@
 
 ```
 docs/ops/
-├── README.md                    # This file
-├── [runbooks]                   # Operational procedures
-├── [incident playbooks]         # Incident responses
-├── [monitoring guides]          # Monitoring setup
-├── [maintenance procedures]     # Maintenance tasks
-└── [troubleshooting guides]     # Problem solving
+ README.md # This file
+ [runbooks] # Operational procedures
+ [incident playbooks] # Incident responses
+ [monitoring guides] # Monitoring setup
+ [maintenance procedures] # Maintenance tasks
+ [troubleshooting guides] # Problem solving
 ```
 
 ---

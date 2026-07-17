@@ -22,7 +22,7 @@ from scripts.ci.pr_description_helper import build_pr_description_with_wec
 # (This happens automatically in build_pr_description_with_wec)
 
 # 3. Build your progress checklist
-progress_checklist = """##  Session Progress
+progress_checklist = """## Session Progress
 
 ### Phase 1: PR Body Preparation
 - [x] Created base PR description
@@ -38,17 +38,17 @@ progress_checklist = """##  Session Progress
 
 # 4. Build PR description WITH preserved WEC (CRITICAL!)
 pr_description = build_pr_description_with_wec(
-    checklist_text=progress_checklist,
-    pr_number=4662,  # Your PR number
-    session_id="S_YOUR_SESSION_ID",
-    turn_number=1,
-    merge_readiness_score=68
+ checklist_text=progress_checklist,
+ pr_number=4662, # Your PR number
+ session_id="S_YOUR_SESSION_ID",
+ turn_number=1,
+ merge_readiness_score=68
 )
 
 # 5. Call report_progress with the result
 engine_tools_report_progress(
-    prDescription=pr_description,
-    commitMessage="Progress: Implementing Phase 1 merge readiness prep"
+ prDescription=pr_description,
+ commitMessage="Progress: Implementing Phase 1 merge readiness prep"
 )
 ```
 
@@ -67,13 +67,13 @@ engine_tools_report_progress(
 **What:** Extract maintainer WEC state from live PR body before rebuilding
 
 ```python
-#  CORRECT
+# CORRECT
 pr_description = build_pr_description_with_wec(
-    checklist_text=my_checklist,
-    pr_number=4662  # Read live state from GitHub
+ checklist_text=my_checklist,
+ pr_number=4662 # Read live state from GitHub
 )
 
-#  WRONG — reconstructs WEC from template, loses [x] selections
+# WRONG — reconstructs WEC from template, loses [x] selections
 pr_description = my_checklist + "\n" + hardcoded_wec_template
 ```
 
@@ -83,16 +83,16 @@ pr_description = my_checklist + "\n" + hardcoded_wec_template
 **What:** WEC block MUST be included in `prDescription` — never omit
 
 ```python
-#  CORRECT
+# CORRECT
 report_progress(
-    prDescription=f"{checklist}\n{wec_block}",
-    commitMessage="..."
+ prDescription=f"{checklist}\n{wec_block}",
+ commitMessage="..."
 )
 
-#  WRONG — WEC stripped on push
+# WRONG — WEC stripped on push
 report_progress(
-    prDescription=checklist_only,  # WEC lost!
-    commitMessage="..."
+ prDescription=checklist_only, # WEC lost!
+ commitMessage="..."
 )
 ```
 
@@ -109,14 +109,14 @@ report_progress(
 6. `cost-gate.yml`
 
 ```python
-#  These are auto-forced to [x] by _build_wec_block()
+# These are auto-forced to [x] by _build_wec_block()
 # Even if existing_state has them as False, they'll be True in output
 
-#  Optional items (6–8) can be toggled
+# Optional items (6–8) can be toggled
 existing_state = {
-    "copilot-agent-checkin.yml": False,  # You can uncheck this
-    "copilot-agent-session-done.yml": False,  # You can uncheck this
-    "copilot-iterative-self-healing.yml": False,  # You can uncheck this
+ "copilot-agent-checkin.yml": False, # You can uncheck this
+ "copilot-agent-session-done.yml": False, # You can uncheck this
+ "copilot-iterative-self-healing.yml": False, # You can uncheck this
 }
 ```
 
@@ -126,19 +126,19 @@ existing_state = {
 **What:** Explain in PR body why you're enabling optional workflows
 
 ```markdown
-##  Workflow Execution Checklist
+## Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 
-- [x] pre-merge-validation.yml        ← Always-required
-- [x] comment-review-gate.yml         ← Always-required
-- [x] deferral-language-gate.yml      ← Always-required
-- [x] agent-auth-delegation.yml       ← Always-required
-- [x] workflow-execution-gate.yml     ← Always-required (orchestrator)
-- [x] copilot-agent-checkin.yml       ← Checked: session starting
-- [x] copilot-agent-session-done.yml  ← Checked: expecting finish this session
-- [x] copilot-iterative-self-healing.yml ← Checked: fixing 3 flaky tests
-- [x] cost-gate.yml                   ← Always-required
+- [x] pre-merge-validation.yml Always-required
+- [x] comment-review-gate.yml Always-required
+- [x] deferral-language-gate.yml Always-required
+- [x] agent-auth-delegation.yml Always-required
+- [x] workflow-execution-gate.yml Always-required (orchestrator)
+- [x] copilot-agent-checkin.yml Checked: session starting
+- [x] copilot-agent-session-done.yml Checked: expecting finish this session
+- [x] copilot-iterative-self-healing.yml Checked: fixing 3 flaky tests
+- [x] cost-gate.yml Always-required
 
 **Session Note:** Enabled self-healing for test failures in test_module.py:45-67
 ```
@@ -153,23 +153,23 @@ from scripts.ci.pr_description_helper import calculate_merge_readiness_score
 
 # Calculate score from gate status
 gates_status = {
-    "code_quality": True,      # ruff + mypy pass
-    "test_coverage": True,     # ≥95% coverage
-    "security_secrets": False, # 1 CodeQL alert open  # pragma: allowlist secret
-    "wec_integrity": True,     # WEC complete
-    "deferral_language": True, # No prohibited phrases
-    "comment_review": True,    # All comments resolved
-    "accountability_report": True,  # Updated
-    "action_versions": True,   # All approved
-    "workflow_syntax": True,   # 0 yamllint errors
-    "merge_dependencies": True # Branch clean
+ "code_quality": True, # ruff + mypy pass
+ "test_coverage": True, # ≥95% coverage
+ "security_secrets": False, # 1 CodeQL alert open # pragma: allowlist secret
+ "wec_integrity": True, # WEC complete
+ "deferral_language": True, # No prohibited phrases
+ "comment_review": True, # All comments resolved
+ "accountability_report": True, # Updated
+ "action_versions": True, # All approved
+ "workflow_syntax": True, # 0 yamllint errors
+ "merge_dependencies": True # Branch clean
 }
 
 score = calculate_merge_readiness_score(gates_status)
 # Result: 85/100 (9/10 pass, security gate fails)
 
 # Include in PR description
-checklist = f"""##  Merge Readiness Progress
+checklist = f"""## Merge Readiness Progress
 - Turn 1: 45/100 (Phase 1 setup)
 - Turn 2: 68/100 (Phases 1–2 complete, security pending)
 - Turn 3: 85/100 (9/10 gates pass, 1 CodeQL alert blocking)
@@ -186,22 +186,22 @@ checklist = f"""##  Merge Readiness Progress
 **Agent Responsibility:** On first turn, create PR body using template
 
 ```markdown
-##  Summary
+## Summary
 [Your work summary]
 
-##  Changes
+## Changes
 [Your changes]
 
-##  Testing
+## Testing
 [Your testing]
 
-##  Checklist
+## Checklist
 [Completion status]
 
-##  Baseline Metrics
+## Baseline Metrics
 [Coverage, CodeQL, AAIS score]
 
-##  Workflow Execution Checklist
+## Workflow Execution Checklist
 [Initial WEC — all always-required checked]
 ```
 
@@ -214,27 +214,27 @@ checklist = f"""##  Merge Readiness Progress
 from pr_description_helper import build_pr_description_with_wec
 
 for turn in range(1, num_turns + 1):
-    # Make code changes
-    code_changes()
-    
-    # Calculate progress
-    progress = generate_progress_report(turn)
-    gates_score = calculate_gates()
-    
-    # Build PR description with WEC preservation
-    pr_description = build_pr_description_with_wec(
-        checklist_text=progress,
-        pr_number=PR_NUMBER,
-        session_id=SESSION_ID,
-        turn_number=turn,
-        merge_readiness_score=gates_score
-    )
-    
-    # Push with WEC preserved
-    engine_tools_report_progress(
-        prDescription=pr_description,
-        commitMessage=f"Turn {turn}: {progress_summary}"
-    )
+ # Make code changes
+ code_changes()
+ 
+ # Calculate progress
+ progress = generate_progress_report(turn)
+ gates_score = calculate_gates()
+ 
+ # Build PR description with WEC preservation
+ pr_description = build_pr_description_with_wec(
+ checklist_text=progress,
+ pr_number=PR_NUMBER,
+ session_id=SESSION_ID,
+ turn_number=turn,
+ merge_readiness_score=gates_score
+ )
+ 
+ # Push with WEC preserved
+ engine_tools_report_progress(
+ prDescription=pr_description,
+ commitMessage=f"Turn {turn}: {progress_summary}"
+ )
 ```
 
 ### Integration Point 3: Workflow Dispatch on WEC Change
@@ -272,7 +272,7 @@ The workflow runs all 10 gates. For each failing gate:
 from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 # Build initial checklist
-checklist_turn_1 = """##  Turn 1: Phase 1 Setup
+checklist_turn_1 = """## Turn 1: Phase 1 Setup
 
 - [x] Created PR body structure
 - [x] Recorded baseline metrics (94.8% coverage, 0 CodeQL alerts)
@@ -282,17 +282,17 @@ checklist_turn_1 = """##  Turn 1: Phase 1 Setup
 
 # Generate PR description with WEC
 pr_desc_turn_1 = build_pr_description_with_wec(
-    checklist_text=checklist_turn_1,
-    pr_number=4662,
-    session_id="S_PHASE1",
-    turn_number=1,
-    merge_readiness_score=30
+ checklist_text=checklist_turn_1,
+ pr_number=4662,
+ session_id="S_PHASE1",
+ turn_number=1,
+ merge_readiness_score=30
 )
 
 # Push (WEC preserved)
 engine_tools_report_progress(
-    prDescription=pr_desc_turn_1,
-    commitMessage="Turn 1: Initialize PR merge readiness framework"
+ prDescription=pr_desc_turn_1,
+ commitMessage="Turn 1: Initialize PR merge readiness framework"
 )
 
 # Result: PR body now has:
@@ -318,48 +318,48 @@ run_tests()
 
 # Check gate status
 ruff_pass = subprocess.run(["python", "-m", "ruff", "check", "src/", "tests/"], 
-                          capture_output=True).returncode == 0
+ capture_output=True).returncode == 0
 mypy_pass = subprocess.run(["python", "-m", "mypy", "src/"], 
-                          capture_output=True).returncode == 0
-coverage = get_pytest_coverage()  # Should be ≥95%
+ capture_output=True).returncode == 0
+coverage = get_pytest_coverage() # Should be ≥95%
 
 # Calculate score
 gates = {
-    "code_quality": ruff_pass and mypy_pass,
-    "test_coverage": coverage >= 95,
-    "security_secrets": False,  # Not yet checked  # pragma: allowlist secret
-    "wec_integrity": True,      # Always true
-    "deferral_language": True,  # Always true
-    "comment_review": True,     # No comments yet
-    "accountability_report": True,  # Will auto-fix
-    "action_versions": True,    # Workflows OK
-    "workflow_syntax": True,    # YAML OK
-    "merge_dependencies": True  # Branch clean
+ "code_quality": ruff_pass and mypy_pass,
+ "test_coverage": coverage >= 95,
+ "security_secrets": False, # Not yet checked # pragma: allowlist secret
+ "wec_integrity": True, # Always true
+ "deferral_language": True, # Always true
+ "comment_review": True, # No comments yet
+ "accountability_report": True, # Will auto-fix
+ "action_versions": True, # Workflows OK
+ "workflow_syntax": True, # YAML OK
+ "merge_dependencies": True # Branch clean
 }
-score_turn_2 = calculate_merge_readiness_score(gates)  # ~68/100
+score_turn_2 = calculate_merge_readiness_score(gates) # ~68/100
 
 # Build PR description for turn 2
-checklist_turn_2 = f"""##  Turn 2: Code Quality & Test Coverage
+checklist_turn_2 = f"""## Turn 2: Code Quality & Test Coverage
 
 - [x] Fixed 12 ruff violations
 - [x] Added type hints to 8 functions
-- [x] Coverage increased: 94.8% → 96.2% (+1.4%)
+- [x] Coverage increased: 94.8% 96.2% (+1.4%)
 - [ ] Security gates pending
 - [ ] Accountability records pending
 
 **Merge Readiness:** {score_turn_2}/100"""
 
 pr_desc_turn_2 = build_pr_description_with_wec(
-    checklist_text=checklist_turn_2,
-    pr_number=4662,
-    session_id="S_PHASE1",
-    turn_number=2,
-    merge_readiness_score=score_turn_2
+ checklist_text=checklist_turn_2,
+ pr_number=4662,
+ session_id="S_PHASE1",
+ turn_number=2,
+ merge_readiness_score=score_turn_2
 )
 
 engine_tools_report_progress(
-    prDescription=pr_desc_turn_2,
-    commitMessage="Turn 2: Fix code quality, improve test coverage to 96.2%"
+ prDescription=pr_desc_turn_2,
+ commitMessage="Turn 2: Fix code quality, improve test coverage to 96.2%"
 )
 
 # Result: Merge readiness now 68/100
@@ -377,44 +377,44 @@ engine_tools_report_progress(
 
 ```python
 # Check security gates
-codeql_alerts = []  # Should be 0
+codeql_alerts = [] # Should be 0
 security_checks = {
-    "codeql": len(codeql_alerts) == 0,
-    "secrets": True,  # pragma: allowlist secret
-    "comment_review": True,
-    "accountability_report": True,
+ "codeql": len(codeql_alerts) == 0,
+ "secrets": True, # pragma: allowlist secret
+ "comment_review": True,
+ "accountability_report": True,
 }
 
 # Update gates
 gates_turn_3 = {
-    "security_secrets": security_checks["codeql"] and security_checks["secrets"],  # pragma: allowlist secret
-    "comment_review": security_checks["comment_review"],
-    "accountability_report": security_checks["accountability_report"],
+ "security_secrets": security_checks["codeql"] and security_checks["secrets"], # pragma: allowlist secret
+ "comment_review": security_checks["comment_review"],
+ "accountability_report": security_checks["accountability_report"],
 }
-score_turn_3 = calculate_merge_readiness_score(gates_turn_3)  # 100/100
+score_turn_3 = calculate_merge_readiness_score(gates_turn_3) # 100/100
 
 # Build final PR description
-checklist_turn_3 = f"""##  Turn 3: Security & Final Verification
+checklist_turn_3 = f"""## Turn 3: Security & Final Verification
 
 - [x] CodeQL check: 0 open alerts
-- [x] Secrets baseline: Pass  # pragma: allowlist secret
+- [x] Secrets baseline: Pass # pragma: allowlist secret
 - [x] Comment review: All resolved (0 blocking)
 - [x] Accountability records: Updated
 - [x] All 10 gates passing
 
-**Merge Readiness: {score_turn_3}/100  READY FOR MERGE**"""
+**Merge Readiness: {score_turn_3}/100 READY FOR MERGE**"""
 
 pr_desc_turn_3 = build_pr_description_with_wec(
-    checklist_text=checklist_turn_3,
-    pr_number=4662,
-    session_id="S_PHASE1",
-    turn_number=3,
-    merge_readiness_score=score_turn_3
+ checklist_text=checklist_turn_3,
+ pr_number=4662,
+ session_id="S_PHASE1",
+ turn_number=3,
+ merge_readiness_score=score_turn_3
 )
 
 engine_tools_report_progress(
-    prDescription=pr_desc_turn_3,
-    commitMessage="Turn 3: Security verification complete, merge readiness 100%"
+ prDescription=pr_desc_turn_3,
+ commitMessage="Turn 3: Security verification complete, merge readiness 100%"
 )
 
 # Result: All gates pass, ready for merge
@@ -437,10 +437,10 @@ engine_tools_report_progress(
 
 **Solution:**
 ```python
-#  WRONG
+# WRONG
 report_progress(prDescription=checklist_only, commitMessage="Missing WEC")
 
-#  CORRECT
+# CORRECT
 from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 pr_desc = build_pr_description_with_wec(checklist_text=checklist_only, pr_number=4662)
@@ -453,10 +453,10 @@ report_progress(prDescription=pr_desc, commitMessage="Preserve WEC")
 
 **Solution:**
 ```python
-#  Always pass pr_number to read live state
+# Always pass pr_number to read live state
 pr_desc = build_pr_description_with_wec(
-    checklist_text=my_checklist,
-    pr_number=4662  # ← Enables reading live WEC state
+ checklist_text=my_checklist,
+ pr_number=4662 # Enables reading live WEC state
 )
 ```
 

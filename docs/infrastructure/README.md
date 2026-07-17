@@ -20,12 +20,12 @@
 
 ```
 docs/infrastructure/
-├── README.md                    # This file
-├── [architecture docs]          # Architecture diagrams
-├── [provisioning guides]        # Infrastructure provisioning
-├── [network configs]            # Network configuration
-├── [storage setup]              # Storage configuration
-└── [backup procedures]          # Backup and recovery
+ README.md # This file
+ [architecture docs] # Architecture diagrams
+ [provisioning guides] # Infrastructure provisioning
+ [network configs] # Network configuration
+ [storage setup] # Storage configuration
+ [backup procedures] # Backup and recovery
 ```
 
 ---

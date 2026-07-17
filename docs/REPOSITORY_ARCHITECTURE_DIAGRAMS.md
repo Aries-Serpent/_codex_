@@ -41,7 +41,7 @@ graph TB
 
  subgraph "pytest Configuration (Centralized)"
  PI[pytest.ini<br/>--timeout=300<br/>--timeout-method=thread<br/> Single Source of Truth]
- CONV[TESTING_CONVENTIONS.md<br/> Best practices<br/>️ Common pitfalls<br/> Quick reference]
+ CONV[TESTING_CONVENTIONS.md<br/> Best practices<br/> Common pitfalls<br/> Quick reference]
  end
 
  subgraph "Custom Actions (v0.2.1)"

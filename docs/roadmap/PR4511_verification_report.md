@@ -83,22 +83,22 @@
 
 ### Before (baseline on original `main` file state)
 ```
-tests/services/audio/test_transcription_workflow.py  8 passed
+tests/services/audio/test_transcription_workflow.py 8 passed
 ```
 
 ### After (all changes applied)
 ```
-tests/services/audio/test_transcription_workflow.py   8 passed 
-tests/tools/test_workflow_merge_replacements.py      14 passed 
+tests/services/audio/test_transcription_workflow.py 8 passed 
+tests/tools/test_workflow_merge_replacements.py 14 passed 
 Total: 22 passed, 0 failed
 ```
 
 ### Lint
 ```
 python -m ruff check tests/services/audio/test_transcription_workflow.py
-                      tools/workflow_merge.py
-                      tests/tools/test_workflow_merge_replacements.py
-→ All checks passed 
+ tools/workflow_merge.py
+ tests/tools/test_workflow_merge_replacements.py
+ All checks passed 
 ```
 
 ---

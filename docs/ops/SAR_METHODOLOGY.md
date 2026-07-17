@@ -47,25 +47,25 @@
 %%{init: {'accessibility': {'title': 'Diagram Configuration showing 0.92, 0.95, 0.85, 0.88'}}%%
 %%{init: {"theme": "dark", "quadrantChart": {"chartWidth": 500, "chartHeight": 500}}}%%
 quadrantChart
-    title Level 4 MLOps Alignment — Aries-Serpent/_codex_ (2026-03-06)
+ title Level 4 MLOps Alignment — Aries-Serpent/_codex_ (2026-03-06)
 
-    x-axis Low Maturity --> High Maturity
+ x-axis Low Maturity --> High Maturity
 
-    y-axis Low Automation --> High Automation
-    quadrant-1 Level 4 — Achieved
-    quadrant-2 Automated but Partial
-    quadrant-3 Needs Work
-    quadrant-4 Manual / Missing
-    CI/CD Automation: [0.92, 0.95]
-    Cognitive Memory: [0.85, 0.88]
-    Security & Governance: [0.90, 0.85]
-    Variable Hygiene: [0.9, 0.9]
-    Cache Efficiency: [0.55, 0.60]
-    Model Lifecycle: [0.55, 0.72]
-    Data Drift Detection: [0.40, 0.45]
-    Feature Store: [0.97, 0.92]
-    Explainability: [0.12, 0.18]
-    Distributed Tracing: [1.0, 0.95]
+ y-axis Low Automation --> High Automation
+ quadrant-1 Level 4 — Achieved
+ quadrant-2 Automated but Partial
+ quadrant-3 Needs Work
+ quadrant-4 Manual / Missing
+ CI/CD Automation: [0.92, 0.95]
+ Cognitive Memory: [0.85, 0.88]
+ Security & Governance: [0.90, 0.85]
+ Variable Hygiene: [0.9, 0.9]
+ Cache Efficiency: [0.55, 0.60]
+ Model Lifecycle: [0.55, 0.72]
+ Data Drift Detection: [0.40, 0.45]
+ Feature Store: [0.97, 0.92]
+ Explainability: [0.12, 0.18]
+ Distributed Tracing: [1.0, 0.95]
 ```
 
 ### 1.2 Alignment Score Table
@@ -93,30 +93,30 @@ quadrantChart
 %%{init: {'accessibility': {'title': 'Diagram showing " LAYER 5 — COGNITIVE BRAIN", "SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"'}}%%
 
 block-beta
-  columns 1
-  block:L5[" LAYER 5 — COGNITIVE BRAIN"]
-    CB["SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"]
-  end
-  block:L4[" LAYER 4 — ML MODELS & DATA"]
-    ML["Training Runs\nModel Checkpoints\nFAISS Embeddings\nMLflow Registry"]
-  end
-  block:L3[" LAYER 3 — CONFIGURATION"]
-    CFG["GitHub Vars/Secrets\ndevcontainer.json\nHydra Configs\npyproject.toml"]
-  end
-  block:L2[" LAYER 2 — CI/CD PIPELINE"]
-    CICD["100 Workflows\nComposite Actions\nCache Hierarchy\nTest Gates"]
-  end
-  block:L1["📦 LAYER 1 — SOURCE CODE"]
-    SRC["Python Modules\nTest Suite 39500+\nDocs 3193 files\nSecurity Baseline"]
-  end
+ columns 1
+ block:L5[" LAYER 5 — COGNITIVE BRAIN"]
+ CB["SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"]
+ end
+ block:L4[" LAYER 4 — ML MODELS & DATA"]
+ ML["Training Runs\nModel Checkpoints\nFAISS Embeddings\nMLflow Registry"]
+ end
+ block:L3[" LAYER 3 — CONFIGURATION"]
+ CFG["GitHub Vars/Secrets\ndevcontainer.json\nHydra Configs\npyproject.toml"]
+ end
+ block:L2[" LAYER 2 — CI/CD PIPELINE"]
+ CICD["100 Workflows\nComposite Actions\nCache Hierarchy\nTest Gates"]
+ end
+ block:L1[" LAYER 1 — SOURCE CODE"]
+ SRC["Python Modules\nTest Suite 39500+\nDocs 3193 files\nSecurity Baseline"]
+ end
 
-  L5 --> L4
+ L5 --> L4
 
-  L4 --> L3
+ L4 --> L3
 
-  L3 --> L2
+ L3 --> L2
 
-  L2 --> L1
+ L2 --> L1
 ```
 
 ### Layer SAR Responsibilities
@@ -125,37 +125,37 @@ block-beta
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
 
 mindmap
-  root((SAR Layers))
-    L1 Source Code
-      Dead code detection
-      Import error scanning
-      Coverage gap fill
-      CVE remediation
-      Doc link validation
-    L2 CI/CD Pipeline
-      Workflow failure patterns
-      Cache miss detection
-      Action version drift
-      Test gate failures
-      Runner health
-    L3 Configuration
-      Missing variables
-      Secret rotation due
-      Schema drift
-      Version mismatches
-      Codespace blockers
-    L4 ML Models
-      Model drift detection
-      Checkpoint staleness
-      Embedding index age
-      Dataset integrity
-      Experiment lineage
-    L5 Cognitive Brain
-      LTM capacity monitor
-      Stale pattern prune
-      Knowledge graph drift
-      Session context decay
-      Pattern confidence decay
+ root((SAR Layers))
+ L1 Source Code
+ Dead code detection
+ Import error scanning
+ Coverage gap fill
+ CVE remediation
+ Doc link validation
+ L2 CI/CD Pipeline
+ Workflow failure patterns
+ Cache miss detection
+ Action version drift
+ Test gate failures
+ Runner health
+ L3 Configuration
+ Missing variables
+ Secret rotation due
+ Schema drift
+ Version mismatches
+ Codespace blockers
+ L4 ML Models
+ Model drift detection
+ Checkpoint staleness
+ Embedding index age
+ Dataset integrity
+ Experiment lineage
+ L5 Cognitive Brain
+ LTM capacity monitor
+ Stale pattern prune
+ Knowledge graph drift
+ Session context decay
+ Pattern confidence decay
 ```
 
 ---
@@ -163,79 +163,79 @@ mindmap
 ## 3. End-to-End SAR Lifecycle
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🔔 SAR Trigger\nSchedule / PR / Manual / Alert, "Phase 1 — SEARCH "'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing SAR Trigger\nSchedule / PR / Manual / Alert, "Phase 1 — SEARCH "'}}%%
 
 flowchart TD
 
-    TRIGGER([🔔 SAR Trigger\nSchedule / PR / Manual / Alert]) --> SEARCH
+ TRIGGER([ SAR Trigger\nSchedule / PR / Manual / Alert]) --> SEARCH
 
-    subgraph SEARCH["Phase 1 — SEARCH "]
+ subgraph SEARCH["Phase 1 — SEARCH "]
 
-        S1[Run all layer sensors] --> S2[Collect anomaly signals]
+ S1[Run all layer sensors] --> S2[Collect anomaly signals]
 
-        S2 --> S3[Compare vs Level 4 baseline]
-    end
+ S2 --> S3[Compare vs Level 4 baseline]
+ end
 
-    subgraph TRIAGE["Phase 2 — TRIAGE 🏷️"]
-        T1{Severity?}
+ subgraph TRIAGE["Phase 2 — TRIAGE "]
+ T1{Severity?}
 
-        T1 -->|P0 Critical| T_P0[ Human escalation\n< 1 hour]
+ T1 -->|P0 Critical| T_P0[ Human escalation\n< 1 hour]
 
-        T1 -->|P1 Blocker| T_P1[ Copilot agent\nauto-fix attempt]
+ T1 -->|P1 Blocker| T_P1[ Copilot agent\nauto-fix attempt]
 
-        T1 -->|P2 Degraded| T_P2[⏱️ Scheduled\nremediation]
+ T1 -->|P2 Degraded| T_P2[ Scheduled\nremediation]
 
-        T1 -->|P3 Advisory| T_P3[ Backlog\nnext sprint]
-    end
+ T1 -->|P3 Advisory| T_P3[ Backlog\nnext sprint]
+ end
 
-    subgraph RESCUE["Phase 3 — RESCUE 🛠️"]
-        R1[Execute playbook\nSAR-001 … SAR-006]
+ subgraph RESCUE["Phase 3 — RESCUE "]
+ R1[Execute playbook\nSAR-001 … SAR-006]
 
-        R1 --> R2{Fix applied?}
+ R1 --> R2{Fix applied?}
 
-        R2 -->|Yes| R3[Document change\nUpdate Gap Registry]
+ R2 -->|Yes| R3[Document change\nUpdate Gap Registry]
 
-        R2 -->|No — needs human| R4[Open blocker issue\nTag @mbaetiong]
-    end
+ R2 -->|No — needs human| R4[Open blocker issue\nTag @mbaetiong]
+ end
 
-    subgraph REINTEGRATE["Phase 4 — REINTEGRATE "]
+ subgraph REINTEGRATE["Phase 4 — REINTEGRATE "]
 
-        V1[Run validation gate\n6 checks] --> V2{All gates pass?}
+ V1[Run validation gate\n6 checks] --> V2{All gates pass?}
 
-        V2 -->|Yes| V3[Merge to main\nUpdate LEVEL_4 score]
+ V2 -->|Yes| V3[Merge to main\nUpdate LEVEL_4 score]
 
-        V2 -->|No| V4[Return to RESCUE]
-    end
+ V2 -->|No| V4[Return to RESCUE]
+ end
 
-    subgraph PREVENT["Phase 5 — PREVENT 🛡️"]
-        P1[Enable watchdog workflows]
-        P2[Update CI failure patterns]
-        P3[Increment L4 score]
-    end
+ subgraph PREVENT["Phase 5 — PREVENT "]
+ P1[Enable watchdog workflows]
+ P2[Update CI failure patterns]
+ P3[Increment L4 score]
+ end
 
-    SEARCH --> TRIAGE
+ SEARCH --> TRIAGE
 
-    T_P1 --> RESCUE
+ T_P1 --> RESCUE
 
-    T_P2 --> RESCUE
+ T_P2 --> RESCUE
 
-    T_P3 -->|defer| PREVENT
+ T_P3 -->|defer| PREVENT
 
-    T_P0 -->|after human fix| RESCUE
+ T_P0 -->|after human fix| RESCUE
 
-    RESCUE --> REINTEGRATE
+ RESCUE --> REINTEGRATE
 
-    V3 --> PREVENT
+ V3 --> PREVENT
 
-    V4 --> RESCUE
+ V4 --> RESCUE
 
-    PREVENT -->|next anomaly| TRIGGER
+ PREVENT -->|next anomaly| TRIGGER
 
-    style SEARCH fill:#1a3a5c,stroke:#4a90d9,color:#fff
-    style TRIAGE fill:#3a1a1a,stroke:#d94a4a,color:#fff
-    style RESCUE fill:#1a3a1a,stroke:#4ad94a,color:#fff
-    style REINTEGRATE fill:#3a2a1a,stroke:#d9a44a,color:#fff
-    style PREVENT fill:#2a1a3a,stroke:#9a4ad9,color:#fff
+ style SEARCH fill:#1a3a5c,stroke:#4a90d9,color:#fff
+ style TRIAGE fill:#3a1a1a,stroke:#d94a4a,color:#fff
+ style RESCUE fill:#1a3a1a,stroke:#4ad94a,color:#fff
+ style REINTEGRATE fill:#3a2a1a,stroke:#d9a44a,color:#fff
+ style PREVENT fill:#2a1a3a,stroke:#9a4ad9,color:#fff
 ```
 
 ---
@@ -248,36 +248,36 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title SAR Sensor Schedule — 2026 (Weekly View)
-    dateFormat  HH:mm
-    axisFormat  %H:%M
+ title SAR Sensor Schedule — 2026 (Weekly View)
+ dateFormat HH:mm
+ axisFormat %H:%M
 
-    section L1 Source
-    ruff / black lint        :active, 00:00, 2h
-    detect-secrets scan      :active, 00:00, 1h
-    CodeQL SAST              :crit,   02:00, 3h
-    Coverage gap check       :        05:00, 2h
-    Doc freshness check      :        07:00, 2h
+ section L1 Source
+ ruff / black lint :active, 00:00, 2h
+ detect-secrets scan :active, 00:00, 1h
+ CodeQL SAST :crit, 02:00, 3h
+ Coverage gap check : 05:00, 2h
+ Doc freshness check : 07:00, 2h
 
-    section L2 CI/CD
-    CI health monitor        :active, 00:00, 1h
-    Cache pruning check      :        04:00, 1h
-    Workflow expiry enforce  :        04:30, 1h
-    Cache key diagnostics    :        06:00, 1h
+ section L2 CI/CD
+ CI health monitor :active, 00:00, 1h
+ Cache pruning check : 04:00, 1h
+ Workflow expiry enforce : 04:30, 1h
+ Cache key diagnostics : 06:00, 1h
 
-    section L3 Config
-    Variable audit sync      :crit,   06:00, 30m
-    Secret rotation check    :crit,   06:30, 30m
-    Schema drift scan        :        07:00, 30m
+ section L3 Config
+ Variable audit sync :crit, 06:00, 30m
+ Secret rotation check :crit, 06:30, 30m
+ Schema drift scan : 07:00, 30m
 
-    section L4 ML
-    Embedding index rebuild  :active, 01:00, 2h
-    Dependency CVE scan      :        04:00, 2h
-    Model drift check        :        06:00, 1h
+ section L4 ML
+ Embedding index rebuild :active, 01:00, 2h
+ Dependency CVE scan : 04:00, 2h
+ Model drift check : 06:00, 1h
 
-    section L5 Brain
-    LTM capacity check       :        07:00, 1h
-    Pattern confidence prune :        08:00, 1h
+ section L5 Brain
+ LTM capacity check : 07:00, 1h
+ Pattern confidence prune : 08:00, 1h
 ```
 
 ### 4.2 Sensor Data Flow
@@ -286,81 +286,81 @@ gantt
 %%{init: {'accessibility': {'title': 'Flowchart showing "Layer Sensors", variable_audit_cli.py'}}%%
 
 flowchart LR
-    subgraph SENSORS["Layer Sensors"]
-        VA[variable_audit_cli.py]
-        CI[ci-health-monitor.yml]
-        CQ[codeql-analysis.yml]
-        DS[dependency-scan.yml]
-        EM[embedding-index-rebuild.yml]
-        MX[memory-sync-agent]
-    end
+ subgraph SENSORS["Layer Sensors"]
+ VA[variable_audit_cli.py]
+ CI[ci-health-monitor.yml]
+ CQ[codeql-analysis.yml]
+ DS[dependency-scan.yml]
+ EM[embedding-index-rebuild.yml]
+ MX[memory-sync-agent]
+ end
 
-    subgraph STORES["Signal Stores"]
-        VJ[".codex/variable_audit_latest.json"]
-        CR[CODEX_CI_FAILURE_RATE var]
-        SA[".sarif artifacts"]
-        CV[".codex/sar/dep_audit.json"]
-        IM[".codex/embeddings/codex_index_meta.json"]
-        LM["SQLite LTM DB"]
-    end
+ subgraph STORES["Signal Stores"]
+ VJ[".codex/variable_audit_latest.json"]
+ CR[CODEX_CI_FAILURE_RATE var]
+ SA[".sarif artifacts"]
+ CV[".codex/sar/dep_audit.json"]
+ IM[".codex/embeddings/codex_index_meta.json"]
+ LM["SQLite LTM DB"]
+ end
 
-    subgraph TRIAGE_SVC["Triage Services"]
-        TC[collect_telemetry.py\nPattern Classifier]
-        IS[iterative-self-healing-ci.yml]
-        AI[Copilot Agent\nauto-fix]
-    end
+ subgraph TRIAGE_SVC["Triage Services"]
+ TC[collect_telemetry.py\nPattern Classifier]
+ IS[iterative-self-healing-ci.yml]
+ AI[Copilot Agent\nauto-fix]
+ end
 
-    VA --> VJ
+ VA --> VJ
 
-    CI --> CR
+ CI --> CR
 
-    CQ --> SA
+ CQ --> SA
 
-    DS --> CV
+ DS --> CV
 
-    EM --> IM
+ EM --> IM
 
-    MX --> LM
+ MX --> LM
 
-    VJ --> TC
+ VJ --> TC
 
-    CR --> TC
+ CR --> TC
 
-    SA --> TC
+ SA --> TC
 
-    CV --> TC
+ CV --> TC
 
-    IM --> TC
+ IM --> TC
 
-    LM --> TC
+ LM --> TC
 
-    TC --> IS
+ TC --> IS
 
-    TC --> AI
+ TC --> AI
 ```
 
 ### 4.3 Search Commands
 
 ```bash
-# ── Layer 1: Source Code ──────────────────────────────────────────
-python -m ruff check src/ tests/ --select F401,F811,E741 -q      # dead imports
-python -m pytest --cov=src --cov-fail-under=80 -q                  # coverage gate
-pip-audit --format json --output .codex/sar/dep_audit.json         # CVE scan
+# Layer 1: Source Code 
+python -m ruff check src/ tests/ --select F401,F811,E741 -q # dead imports
+python -m pytest --cov=src --cov-fail-under=80 -q # coverage gate
+pip-audit --format json --output .codex/sar/dep_audit.json # CVE scan
 
-# ── Layer 2: CI/CD Pipeline ───────────────────────────────────────
+# Layer 2: CI/CD Pipeline 
 grep -rL "setup-python-cached\|actions/cache" .github/workflows/*.yml \
-  | xargs grep -l "pip install" 2>/dev/null                         # missing cache
-grep -rn "actions/cache@v4" .github/                               # stale cache@v4
+ | xargs grep -l "pip install" 2>/dev/null # missing cache
+grep -rn "actions/cache@v4" .github/ # stale cache@v4
 
-# ── Layer 3: Configuration ────────────────────────────────────────
-python scripts/tools/variable_audit_cli.py diff                    # missing vars
-python scripts/tools/variable_audit_cli.py rotate-check --days 90  # rotation due
+# Layer 3: Configuration 
+python scripts/tools/variable_audit_cli.py diff # missing vars
+python scripts/tools/variable_audit_cli.py rotate-check --days 90 # rotation due
 
-# ── Layer 4: ML Models ────────────────────────────────────────────
-python scripts/tools/codex_experiment_index.py --check-staleness   # stale index
+# Layer 4: ML Models 
+python scripts/tools/codex_experiment_index.py --check-staleness # stale index
 
-# ── Layer 5: Cognitive Brain ──────────────────────────────────────
-python -m codex.logging.query_logs --stale-ltm --days 90           # stale LTM
+# Layer 5: Cognitive Brain 
+python -m codex.logging.query_logs --stale-ltm --days 90 # stale LTM
 python scripts/cognitive/pattern_health_check.py --min-confidence 0.75
 ```
 
@@ -371,36 +371,36 @@ python scripts/cognitive/pattern_health_check.py --min-confidence 0.75
 ### 5.1 Decision Flowchart
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly detected,  P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly detected, P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour'}}%%
 
 flowchart TD
 
-    A([Anomaly detected]) --> B{Data loss or\nsecurity breach?}
+ A([Anomaly detected]) --> B{Data loss or\nsecurity breach?}
 
-    B -->|Yes| P0[ P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour]
+ B -->|Yes| P0[ P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour]
 
-    B -->|No| C{Blocks PRs\nor deployment?}
+ B -->|No| C{Blocks PRs\nor deployment?}
 
-    C -->|Yes| P1[ P1 — BLOCKER\nCopilot auto-fix + issue\nSLA: < 4 hours]
+ C -->|Yes| P1[ P1 — BLOCKER\nCopilot auto-fix + issue\nSLA: < 4 hours]
 
-    C -->|No| D{Measurably degrades\nperformance/reliability?}
+ C -->|No| D{Measurably degrades\nperformance/reliability?}
 
-    D -->|Yes| P2[ P2 — DEGRADED\nScheduled remediation\nSLA: < 24 hours]
+ D -->|Yes| P2[ P2 — DEGRADED\nScheduled remediation\nSLA: < 24 hours]
 
-    D -->|No| P3[ P3 — ADVISORY\nBacklog — next sprint\nSLA: < 1 week]
+ D -->|No| P3[ P3 — ADVISORY\nBacklog — next sprint\nSLA: < 1 week]
 
-    P0 --> E0[Escalate to @mbaetiong\nCreate P0 incident issue\nHalt all agent autonomous actions]
+ P0 --> E0[Escalate to @mbaetiong\nCreate P0 incident issue\nHalt all agent autonomous actions]
 
-    P1 --> E1[Dispatch Copilot agent\nRun matching playbook\nOpen blocker issue]
+ P1 --> E1[Dispatch Copilot agent\nRun matching playbook\nOpen blocker issue]
 
-    P2 --> E2[Schedule remediation workflow\nUpdate CODEX_CI_FAILURE_RATE\nAdd to SAR backlog]
+ P2 --> E2[Schedule remediation workflow\nUpdate CODEX_CI_FAILURE_RATE\nAdd to SAR backlog]
 
-    P3 --> E3[Add to Gap Registry\nQueue for next SAR sprint]
+ P3 --> E3[Add to Gap Registry\nQueue for next SAR sprint]
 
-    style P0 fill:#8b0000,color:#fff
-    style P1 fill:#8b4500,color:#fff
-    style P2 fill:#7a7a00,color:#fff
-    style P3 fill:#006400,color:#fff
+ style P0 fill:#8b0000,color:#fff
+ style P1 fill:#8b4500,color:#fff
+ style P2 fill:#7a7a00,color:#fff
+ style P3 fill:#006400,color:#fff
 ```
 
 ### 5.2 Severity Matrix
@@ -409,12 +409,12 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'XY Chart showing "Feature Store", "Auto-Retrain", "Data Drift", "Codespace Secrets", "Cache Wiring", "Observability", "Model Rollback", "Explainability", 9, 8, 8, 7, 5, 5, 6, 3'}}%%
 
 xychart-beta
-    title "SAR Gap Severity Distribution — Current Backlog"
-    x-axis ["Feature Store", "Auto-Retrain", "Data Drift", "Codespace Secrets", "Cache Wiring", "Observability", "Model Rollback", "Explainability"]
+ title "SAR Gap Severity Distribution — Current Backlog"
+ x-axis ["Feature Store", "Auto-Retrain", "Data Drift", "Codespace Secrets", "Cache Wiring", "Observability", "Model Rollback", "Explainability"]
 
-    y-axis "Impact Score (1-10)" 0 --> 10
-    bar [9, 8, 8, 7, 5, 5, 6, 3]
-    line [9, 8, 8, 7, 5, 5, 6, 3]
+ y-axis "Impact Score (1-10)" 0 --> 10
+ bar [9, 8, 8, 7, 5, 5, 6, 3]
+ line [9, 8, 8, 7, 5, 5, 6, 3]
 ```
 
 ---
@@ -424,45 +424,45 @@ xychart-beta
 ### 6.1 Playbook Selection Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly Type, 📘 SAR-001\nMissing Variable'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly Type, SAR-001\nMissing Variable'}}%%
 
 flowchart LR
 
-    ANOMALY([Anomaly Type]) --> V{Variable\nmissing?}
+ ANOMALY([Anomaly Type]) --> V{Variable\nmissing?}
 
-    ANOMALY --> C{CI failure\nrate spike?}
+ ANOMALY --> C{CI failure\nrate spike?}
 
-    ANOMALY --> E{Embedding\nindex stale?}
+ ANOMALY --> E{Embedding\nindex stale?}
 
-    ANOMALY --> M{Model\ndrift?}
+ ANOMALY --> M{Model\ndrift?}
 
-    ANOMALY --> B{Brain LTM\n> 80%?}
+ ANOMALY --> B{Brain LTM\n> 80%?}
 
-    ANOMALY --> S{Secret\nrotation due?}
+ ANOMALY --> S{Secret\nrotation due?}
 
-    V -->|Yes| SAR001[📘 SAR-001\nMissing Variable]
+ V -->|Yes| SAR001[ SAR-001\nMissing Variable]
 
-    C -->|Yes| SAR002[📘 SAR-002\nCI Failure Rate]
+ C -->|Yes| SAR002[ SAR-002\nCI Failure Rate]
 
-    E -->|Yes| SAR003[📘 SAR-003\nStale Embedding]
+ E -->|Yes| SAR003[ SAR-003\nStale Embedding]
 
-    M -->|Yes| SAR004[📘 SAR-004\nModel Drift]
+ M -->|Yes| SAR004[ SAR-004\nModel Drift]
 
-    B -->|Yes| SAR005[📘 SAR-005\nBrain LTM Drift]
+ B -->|Yes| SAR005[ SAR-005\nBrain LTM Drift]
 
-    S -->|Yes| SAR006[📘 SAR-006\nSecret Rotation]
+ S -->|Yes| SAR006[ SAR-006\nSecret Rotation]
 
-    SAR001 --> INTENT[variable_intent_writer.py\nqueue mailbox write]
+ SAR001 --> INTENT[variable_intent_writer.py\nqueue mailbox write]
 
-    SAR002 --> AUTOFIX[auto_fix_common_issues.py\n+ self-healing CI]
+ SAR002 --> AUTOFIX[auto_fix_common_issues.py\n+ self-healing CI]
 
-    SAR003 --> REBUILD[gh workflow run\nembedding-index-rebuild.yml]
+ SAR003 --> REBUILD[gh workflow run\nembedding-index-rebuild.yml]
 
-    SAR004 --> RETRAIN[MLflow compare\n+ queue retrain intent]
+ SAR004 --> RETRAIN[MLflow compare\n+ queue retrain intent]
 
-    SAR005 --> PRUNE[codex.logging\n--prune-ltm --days 90]
+ SAR005 --> PRUNE[codex.logging\n--prune-ltm --days 90]
 
-    SAR006 --> ROTATE[docs/ops/secrets_rotation_runbook.md]
+ SAR006 --> ROTATE[docs/ops/secrets_rotation_runbook.md]
 ```
 
 ### 6.2 SAR-001 — Missing Variable (Sequence Diagram)
@@ -471,34 +471,34 @@ flowchart LR
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing VAR_A, VAR_B'}}%%
 
 sequenceDiagram
-    participant Agent as Copilot Agent
-    participant CLI as variable_audit_cli.py
-    participant Writer as variable_intent_writer.py
-    participant Ops as .codex/pending_ops/
-    participant WF as process-variable-intents.yml
-    participant GH as GitHub Variables API
+ participant Agent as Copilot Agent
+ participant CLI as variable_audit_cli.py
+ participant Writer as variable_intent_writer.py
+ participant Ops as .codex/pending_ops/
+ participant WF as process-variable-intents.yml
+ participant GH as GitHub Variables API
 
-    Agent->>CLI: check --fail-on-absent
+ Agent->>CLI: check --fail-on-absent
 
-    CLI-->>Agent: absent: [VAR_A, VAR_B]
+ CLI-->>Agent: absent: [VAR_A, VAR_B]
 
-    Agent->>Writer: set --name VAR_A --value X --scope repo
-    Writer->>Ops: write variable_20260306_VAR_A.json
+ Agent->>Writer: set --name VAR_A --value X --scope repo
+ Writer->>Ops: write variable_20260306_VAR_A.json
 
-    Writer-->>Agent:  intent queued
+ Writer-->>Agent: intent queued
 
-    Agent->>+WF: gh workflow run (on push trigger)
-    WF->>Ops: read variable_*.json
-    WF->>GH: POST /repos/.../actions/variables (CODEX_MASTER_KEY)
+ Agent->>+WF: gh workflow run (on push trigger)
+ WF->>Ops: read variable_*.json
+ WF->>GH: POST /repos/.../actions/variables (CODEX_MASTER_KEY)
 
-    GH-->>WF: 201 Created
-    WF->>Ops: delete processed intent file
+ GH-->>WF: 201 Created
+ WF->>Ops: delete processed intent file
 
-    WF-->>-Agent:  variables created
+ WF-->>-Agent: variables created
 
-    Agent->>CLI: check --fail-on-absent
+ Agent->>CLI: check --fail-on-absent
 
-    CLI-->>Agent:  all required variables present
+ CLI-->>Agent: all required variables present
 ```
 
 ### 6.3 SAR-002 — CI Failure Recovery (State Diagram)
@@ -508,41 +508,41 @@ sequenceDiagram
 
 stateDiagram-v2
 
-    [*] --> Monitoring : CI completes
+ [*] --> Monitoring : CI completes
 
-    Monitoring --> Healthy : failure_rate ≤ 10%
+ Monitoring --> Healthy : failure_rate ≤ 10%
 
-    Monitoring --> Degraded : failure_rate > 10%
+ Monitoring --> Degraded : failure_rate > 10%
 
-    Monitoring --> Critical : failure_rate > 25%
+ Monitoring --> Critical : failure_rate > 25%
 
-    Healthy --> Monitoring : next run
+ Healthy --> Monitoring : next run
 
-    Degraded --> Classifying : iterative-self-healing-ci fires
+ Degraded --> Classifying : iterative-self-healing-ci fires
 
-    Classifying --> AutoFixable : known pattern (ruff/yaml/import)
+ Classifying --> AutoFixable : known pattern (ruff/yaml/import)
 
-    Classifying --> ManualRequired : unknown pattern
+ Classifying --> ManualRequired : unknown pattern
 
-    AutoFixable --> Patching : auto_fix_common_issues.py
+ AutoFixable --> Patching : auto_fix_common_issues.py
 
-    Patching --> Validating : patch applied
+ Patching --> Validating : patch applied
 
-    Validating --> Healthy : all gates pass
+ Validating --> Healthy : all gates pass
 
-    Validating --> ManualRequired : gate fails
+ Validating --> ManualRequired : gate fails
 
-    ManualRequired --> EscalatedIssue : open GitHub issue P1
+ ManualRequired --> EscalatedIssue : open GitHub issue P1
 
-    EscalatedIssue --> Patching : Copilot resolves
+ EscalatedIssue --> Patching : Copilot resolves
 
-    Critical --> PipelineHalt : alert @mbaetiong
+ Critical --> PipelineHalt : alert @mbaetiong
 
-    PipelineHalt --> ManualRequired : after human triage
+ PipelineHalt --> ManualRequired : after human triage
 
-    note right of Healthy : CODEX_CI_FAILURE_RATE updated\nCODEX_CI_LAST_GREEN_SHA updated
-    note right of Degraded : CODEX_CI_FAILURE_RATE = rate:degraded
-    note right of Critical : CODEX_CI_FAILURE_RATE = rate:critical
+ note right of Healthy : CODEX_CI_FAILURE_RATE updated\nCODEX_CI_LAST_GREEN_SHA updated
+ note right of Degraded : CODEX_CI_FAILURE_RATE = rate:degraded
+ note right of Critical : CODEX_CI_FAILURE_RATE = rate:critical
 ```
 
 ### 6.4 Playbook Quick Reference
@@ -551,7 +551,7 @@ stateDiagram-v2
 # SAR-001 — Missing Required Variable
 python scripts/tools/variable_audit_cli.py diff
 python scripts/tools/variable_intent_writer.py set \
-  --name MY_VAR --value "VALUE" --scope repo --owner Aries-Serpent --repo _codex_
+ --name MY_VAR --value "VALUE" --scope repo --owner Aries-Serpent --repo _codex_
 gh workflow run process-variable-intents.yml
 python scripts/tools/variable_audit_cli.py check --fail-on-absent
 
@@ -566,8 +566,8 @@ gh workflow run embedding-index-rebuild.yml
 # SAR-004 — Model Drift
 mlflow runs compare --run-ids "$CURRENT,$BASELINE" --metric accuracy
 python scripts/tools/variable_intent_writer.py set \
-  --name CODEX_RETRAIN_TRIGGER --value "$(date -u +%Y%m%dT%H%M%SZ)" --scope repo \
-  --owner Aries-Serpent --repo _codex_
+ --name CODEX_RETRAIN_TRIGGER --value "$(date -u +%Y%m%dT%H%M%SZ)" --scope repo \
+ --owner Aries-Serpent --repo _codex_
 
 # SAR-005 — Cognitive Brain LTM Drift
 python -m codex.logging.session_logger --prune-ltm --days 90
@@ -585,57 +585,57 @@ python scripts/tools/variable_audit_cli.py rotate-check --days 90
 ### 7.1 Validation Gate Pipeline
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing  Begin Reintegration, ruff / black fix\nreturn to RESCUE'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Begin Reintegration, ruff / black fix\nreturn to RESCUE'}}%%
 
 flowchart TD
 
-    START([ Begin Reintegration]) --> G1
+ START([ Begin Reintegration]) --> G1
 
-    G1{Gate 1\nCode Quality}
+ G1{Gate 1\nCode Quality}
 
-    G1 -->|pass| G2
+ G1 -->|pass| G2
 
-    G1 -->|fail| FAIL1[ruff / black fix\nreturn to RESCUE]
+ G1 -->|fail| FAIL1[ruff / black fix\nreturn to RESCUE]
 
-    G2{Gate 2\nTest Coverage\n≥ 80%}
+ G2{Gate 2\nTest Coverage\n≥ 80%}
 
-    G2 -->|pass| G3
+ G2 -->|pass| G3
 
-    G2 -->|fail| FAIL2[coverage-gapfill-agent\nadd tests]
+ G2 -->|fail| FAIL2[coverage-gapfill-agent\nadd tests]
 
-    G3{Gate 3\nVariable Audit\nno absent required}
+ G3{Gate 3\nVariable Audit\nno absent required}
 
-    G3 -->|pass| G4
+ G3 -->|pass| G4
 
-    G3 -->|fail| FAIL3[Run SAR-001\nqueue missing vars]
+ G3 -->|fail| FAIL3[Run SAR-001\nqueue missing vars]
 
-    G4{Gate 4\nSecrets Baseline\nno new leaks}
+ G4{Gate 4\nSecrets Baseline\nno new leaks}
 
-    G4 -->|pass| G5
+ G4 -->|pass| G5
 
-    G4 -->|fail| FAIL4[Run SAR-006\nrotate leaked secret]
+ G4 -->|fail| FAIL4[Run SAR-006\nrotate leaked secret]
 
-    G5{Gate 5\ndoc / YAML\nschema valid}
+ G5{Gate 5\ndoc / YAML\nschema valid}
 
-    G5 -->|pass| G6
+ G5 -->|pass| G6
 
-    G5 -->|fail| FAIL5[codex_yaml_gap_check\nfix schema]
+ G5 -->|fail| FAIL5[codex_yaml_gap_check\nfix schema]
 
-    G6{Gate 6\nCI failure rate\n≤ 10%}
+ G6{Gate 6\nCI failure rate\n≤ 10%}
 
-    G6 -->|pass| MERGE
+ G6 -->|pass| MERGE
 
-    G6 -->|fail| FAIL6[Run SAR-002\nself-healing CI]
+ G6 -->|fail| FAIL6[Run SAR-002\nself-healing CI]
 
-    MERGE([ Merge to main\nUpdate L4 score])
+ MERGE([ Merge to main\nUpdate L4 score])
 
-    style MERGE fill:#006400,color:#fff
-    style FAIL1 fill:#8b0000,color:#fff
-    style FAIL2 fill:#8b0000,color:#fff
-    style FAIL3 fill:#8b0000,color:#fff
-    style FAIL4 fill:#8b0000,color:#fff
-    style FAIL5 fill:#8b0000,color:#fff
-    style FAIL6 fill:#8b0000,color:#fff
+ style MERGE fill:#006400,color:#fff
+ style FAIL1 fill:#8b0000,color:#fff
+ style FAIL2 fill:#8b0000,color:#fff
+ style FAIL3 fill:#8b0000,color:#fff
+ style FAIL4 fill:#8b0000,color:#fff
+ style FAIL5 fill:#8b0000,color:#fff
+ style FAIL6 fill:#8b0000,color:#fff
 ```
 
 ### 7.2 Gate Commands
@@ -646,7 +646,7 @@ python -m ruff check src/ tests/ && python -m black --check src/ tests/
 
 # Gate 2 — Tests + coverage
 python -m pytest tests/ -q --timeout=120 -x --ignore=tests/ml \
-  --cov=src --cov-fail-under=80
+ --cov=src --cov-fail-under=80
 
 # Gate 3 — Variable audit
 python scripts/tools/variable_audit_cli.py check --fail-on-absent
@@ -659,9 +659,9 @@ python scripts/tools/codex_yaml_gap_check.py
 
 # Gate 6 — CI failure rate
 RATE=$(gh api repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
-  -q '.value' 2>/dev/null | cut -d: -f1)
+ -q '.value' 2>/dev/null | cut -d: -f1)
 python3 -c "import sys; sys.exit(1 if float('${RATE:-0}') > 10.0 else 0)" \
-  && echo " CI rate OK: ${RATE}%" || echo " CI rate too high: ${RATE}%"
+ && echo " CI rate OK: ${RATE}%" || echo " CI rate too high: ${RATE}%"
 ```
 
 ---
@@ -674,23 +674,23 @@ python3 -c "import sys; sys.exit(1 if float('${RATE:-0}') > 10.0 else 0)" \
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
 
 timeline
-    title Watchdog Trigger Schedule (UTC)
-    section Every Commit / PR
-        agent-auth-delegation.yml    : Cognitive Pre-flight gate
-        copilot-setup-steps.yml      : JSON validation step
-        pre-flight-validation.yml    : Pre-flight CI checks
-    section Every Hour
-        ci-health-monitor.yml        : Update CODEX_CI_FAILURE_RATE
-    section Every 6 Hours
-        vars-guide-sync.yml          : Variable audit + guide stamp
-    section Daily 02:00
-        embedding-index-rebuild.yml  : Check / rebuild FAISS index
-        nightly-codeql-alert-triage.yml : Triage new CodeQL alerts
-        dependency-scan.yml          : CVE scan (pip-audit + safety)
-    section Weekly Sunday 04:00
-        cache-pruning.yml            : Prune LRU cache entries > 7 days
-        workflow-expiry-enforcer.yml : Remove stale workflow runs
-        memory-sync-agent            : LTM prune + retagging
+ title Watchdog Trigger Schedule (UTC)
+ section Every Commit / PR
+ agent-auth-delegation.yml : Cognitive Pre-flight gate
+ copilot-setup-steps.yml : JSON validation step
+ pre-flight-validation.yml : Pre-flight CI checks
+ section Every Hour
+ ci-health-monitor.yml : Update CODEX_CI_FAILURE_RATE
+ section Every 6 Hours
+ vars-guide-sync.yml : Variable audit + guide stamp
+ section Daily 02:00
+ embedding-index-rebuild.yml : Check / rebuild FAISS index
+ nightly-codeql-alert-triage.yml : Triage new CodeQL alerts
+ dependency-scan.yml : CVE scan (pip-audit + safety)
+ section Weekly Sunday 04:00
+ cache-pruning.yml : Prune LRU cache entries > 7 days
+ workflow-expiry-enforcer.yml : Remove stale workflow runs
+ memory-sync-agent : LTM prune + retagging
 ```
 
 ---
@@ -698,64 +698,64 @@ timeline
 ## 9. Watchdog Workflow Coverage Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📦 Layer 1 — Source Code", codeql-analysis.yml'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Layer 1 — Source Code", codeql-analysis.yml'}}%%
 
 flowchart TB
-    subgraph L1["📦 Layer 1 — Source Code"]
-        W_CQ[codeql-analysis.yml]
-        W_DS[dependency-scan.yml]
-        W_PF[pre-flight-validation.yml]
-        W_CS[copilot-setup-steps.yml]
-    end
+ subgraph L1[" Layer 1 — Source Code"]
+ W_CQ[codeql-analysis.yml]
+ W_DS[dependency-scan.yml]
+ W_PF[pre-flight-validation.yml]
+ W_CS[copilot-setup-steps.yml]
+ end
 
-    subgraph L2[" Layer 2 — CI/CD Pipeline"]
-        W_CH[ci-health-monitor.yml]
-        W_CP[cache-pruning.yml]
-        W_SH[iterative-self-healing-ci.yml]
-        W_WE[workflow-expiry-enforcer.yml]
-    end
+ subgraph L2[" Layer 2 — CI/CD Pipeline"]
+ W_CH[ci-health-monitor.yml]
+ W_CP[cache-pruning.yml]
+ W_SH[iterative-self-healing-ci.yml]
+ W_WE[workflow-expiry-enforcer.yml]
+ end
 
-    subgraph L3[" Layer 3 — Configuration"]
-        W_VG[vars-guide-sync.yml NEW]
-        W_PI[process-variable-intents.yml]
-        W_AD[agent-auth-delegation.yml]
-    end
+ subgraph L3[" Layer 3 — Configuration"]
+ W_VG[vars-guide-sync.yml NEW]
+ W_PI[process-variable-intents.yml]
+ W_AD[agent-auth-delegation.yml]
+ end
 
-    subgraph L4[" Layer 4 — ML Models"]
-        W_EI[embedding-index-rebuild.yml]
-        W_CB[cognitive_brain_ci_feedback.yml]
-    end
+ subgraph L4[" Layer 4 — ML Models"]
+ W_EI[embedding-index-rebuild.yml]
+ W_CB[cognitive_brain_ci_feedback.yml]
+ end
 
-    subgraph L5[" Layer 5 — Cognitive Brain"]
-        W_MS[memory-sync-agent]
-        W_RI[rag-index-manager]
-    end
+ subgraph L5[" Layer 5 — Cognitive Brain"]
+ W_MS[memory-sync-agent]
+ W_RI[rag-index-manager]
+ end
 
-    subgraph REGISTRY[" Signal Registry"]
-        V_RATE[CODEX_CI_FAILURE_RATE]
-        V_SHA[CODEX_CI_LAST_GREEN_SHA]
-        V_AUDIT[variable_audit_latest.json]
-        V_META[codex_index_meta.json]
-        V_LTM[SQLite LTM]
-    end
+ subgraph REGISTRY[" Signal Registry"]
+ V_RATE[CODEX_CI_FAILURE_RATE]
+ V_SHA[CODEX_CI_LAST_GREEN_SHA]
+ V_AUDIT[variable_audit_latest.json]
+ V_META[codex_index_meta.json]
+ V_LTM[SQLite LTM]
+ end
 
-    W_CH --> V_RATE
+ W_CH --> V_RATE
 
-    W_CH --> V_SHA
+ W_CH --> V_SHA
 
-    W_VG --> V_AUDIT
+ W_VG --> V_AUDIT
 
-    W_EI --> V_META
+ W_EI --> V_META
 
-    W_MS --> V_LTM
+ W_MS --> V_LTM
 
-    V_RATE -->|> threshold| W_SH
+ V_RATE -->|> threshold| W_SH
 
-    V_AUDIT -->|absent required| W_PI
+ V_AUDIT -->|absent required| W_PI
 
-    V_META -->|stale > 7d| W_EI
+ V_META -->|stale > 7d| W_EI
 
-    V_LTM -->|> 80% capacity| W_MS
+ V_LTM -->|> 80% capacity| W_MS
 ```
 
 ---
@@ -783,26 +783,26 @@ flowchart TB
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title SAR Gap Resolution Roadmap — 2026
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %Y
+ title SAR Gap Resolution Roadmap — 2026
+ dateFormat YYYY-MM-DD
+ axisFormat %b %Y
 
-    section P1 — Blocker
-    SAR-G01 Codespace Secrets (human)     :done,         g01, 2026-03-06, 2026-03-07
-    SAR-G02 Feature Store Design          :done,         g02, 2026-03-06, 2026-03-08
-    SAR-G03 Auto-Retrain Pipeline         :crit,         g03, after g02,  21d
+ section P1 — Blocker
+ SAR-G01 Codespace Secrets (human) :done, g01, 2026-03-06, 2026-03-07
+ SAR-G02 Feature Store Design :done, g02, 2026-03-06, 2026-03-08
+ SAR-G03 Auto-Retrain Pipeline :crit, g03, after g02, 21d
 
-    section P2 — Degraded
-    SAR-G04 Cache Wiring (remaining 18)   :active,       g04, 2026-03-07, 3d
-    SAR-G05 Distributed Tracing           :done,         g05, 2026-03-06, 2026-03-08
-    SAR-G06 Model Auto-Rollback           :              g06, after g03,  14d
+ section P2 — Degraded
+ SAR-G04 Cache Wiring (remaining 18) :active, g04, 2026-03-07, 3d
+ SAR-G05 Distributed Tracing :done, g05, 2026-03-06, 2026-03-08
+ SAR-G06 Model Auto-Rollback : g06, after g03, 14d
 
-    section P3 — Advisory
-    SAR-G07 SHAP/LIME Explainability      :              g07, 2026-05-01, 30d
+ section P3 — Advisory
+ SAR-G07 SHAP/LIME Explainability : g07, 2026-05-01, 30d
 
-    section Milestones
-    Level 4.0 P1 Gaps Closed             :milestone, m1, after g01, 0d
-    Level 4.0 Full Certification          :milestone, m2, after g07, 0d
+ section Milestones
+ Level 4.0 P1 Gaps Closed :milestone, m1, after g01, 0d
+ Level 4.0 Full Certification :milestone, m2, after g07, 0d
 ```
 
 ### 10.3 L4 Score Projection
@@ -811,12 +811,12 @@ gantt
 %%{init: {'accessibility': {'title': 'XY Chart showing "W-139\n(3.7)", "W-140\n(3.9)", "W-142\n(3.95)", "After P2\n(3.98)", "Target\n(4.0)", 3.7, 3.9, 3.95, 3.98, 4.0'}}%%
 
 xychart-beta
-    title "Level 4 Score Progress (Achieved vs Projected)"
-    x-axis ["W-139\n(3.7)", "W-140\n(3.9)", "W-142\n(3.95)", "After P2\n(3.98)", "Target\n(4.0)"]
+ title "Level 4 Score Progress (Achieved vs Projected)"
+ x-axis ["W-139\n(3.7)", "W-140\n(3.9)", "W-142\n(3.95)", "After P2\n(3.98)", "Target\n(4.0)"]
 
-    y-axis "MLOps Level Score" 3.4 --> 4.1
-    line [3.7, 3.9, 3.95, 3.98, 4.0]
-    bar  [3.7, 3.9, 3.95, 3.98, 4.0]
+ y-axis "MLOps Level Score" 3.4 --> 4.1
+ line [3.7, 3.9, 3.95, 3.98, 4.0]
+ bar [3.7, 3.9, 3.95, 3.98, 4.0]
 ```
 
 ---
@@ -824,60 +824,60 @@ xychart-beta
 ## 11. Variable Audit Data Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📘 Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"'}}%%
 
 flowchart TD
-    subgraph GUIDE["📘 Source of Truth"]
-        MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"]
-    end
+ subgraph GUIDE[" Source of Truth"]
+ MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"]
+ end
 
-    subgraph REGISTRY_SRC[" Expected Registry\n(embedded in variable_audit_cli.py)"]
-        R_ORG["org-secrets × 13"]
-        R_REPO["repo-secrets × 7"]
-        R_ENV_S["env-secrets × 3"]
-        R_REPO_V["repo-vars × 52"]
-        R_ENV_V["env-vars × 2"]
-        R_CS["codespace × 8"]
-    end
+ subgraph REGISTRY_SRC[" Expected Registry\n(embedded in variable_audit_cli.py)"]
+ R_ORG["org-secrets × 13"]
+ R_REPO["repo-secrets × 7"]
+ R_ENV_S["env-secrets × 3"]
+ R_REPO_V["repo-vars × 52"]
+ R_ENV_V["env-vars × 2"]
+ R_CS["codespace × 8"]
+ end
 
-    subgraph LIVE["🌐 Live GitHub State"]
-        L_ORG["GET /orgs/{org}/actions/secrets"]
-        L_REPO["GET /repos/{owner}/{repo}/actions/secrets"]
-        L_ENV_S["GET /repos/{owner}/{repo}/environments/{env}/secrets"]
-        L_REPO_V["GET /repos/{owner}/{repo}/actions/variables"]
-        L_ENV_V["GET /repos/{owner}/{repo}/environments/{env}/variables"]
-        L_CS["️ Not listable via API\n(Codespace secrets)"]
-    end
+ subgraph LIVE[" Live GitHub State"]
+ L_ORG["GET /orgs/{org}/actions/secrets"]
+ L_REPO["GET /repos/{owner}/{repo}/actions/secrets"]
+ L_ENV_S["GET /repos/{owner}/{repo}/environments/{env}/secrets"]
+ L_REPO_V["GET /repos/{owner}/{repo}/actions/variables"]
+ L_ENV_V["GET /repos/{owner}/{repo}/environments/{env}/variables"]
+ L_CS[" Not listable via API\n(Codespace secrets)"]
+ end
 
-    subgraph AUDIT_ENGINE[" Audit Engine\nvariable_audit_cli.py run_audit()"]
-        COMPARE{Compare\nexpected vs live}
-        PRESENT[" present"]
-        ABSENT[" absent"]
-        UNKNOWN[" unknown\n(no token or\nCodespace)"]
-        EXTRA["➕ extra\n(not in guide)"]
-    end
+ subgraph AUDIT_ENGINE[" Audit Engine\nvariable_audit_cli.py run_audit()"]
+ COMPARE{Compare\nexpected vs live}
+ PRESENT[" present"]
+ ABSENT[" absent"]
+ UNKNOWN[" unknown\n(no token or\nCodespace)"]
+ EXTRA[" extra\n(not in guide)"]
+ end
 
-    subgraph OUTPUTS[" Outputs"]
-        TABLE["Terminal table\n--format table"]
-        JSON["Machine-readable\n--format json\nvariable_audit_latest.json"]
-        MD["Markdown report\nvariable_audit_latest.md"]
-        DIFF["Diff view\nvariable_audit_cli.py diff"]
-    end
+ subgraph OUTPUTS[" Outputs"]
+ TABLE["Terminal table\n--format table"]
+ JSON["Machine-readable\n--format json\nvariable_audit_latest.json"]
+ MD["Markdown report\nvariable_audit_latest.md"]
+ DIFF["Diff view\nvariable_audit_cli.py diff"]
+ end
 
-    MG -.->|informs| REGISTRY_SRC
+ MG -.->|informs| REGISTRY_SRC
 
-    REGISTRY_SRC --> COMPARE
+ REGISTRY_SRC --> COMPARE
 
-    LIVE --> COMPARE
+ LIVE --> COMPARE
 
-    COMPARE --> PRESENT & ABSENT & UNKNOWN & EXTRA
+ COMPARE --> PRESENT & ABSENT & UNKNOWN & EXTRA
 
-    PRESENT & ABSENT & UNKNOWN & EXTRA --> TABLE & JSON & MD & DIFF
+ PRESENT & ABSENT & UNKNOWN & EXTRA --> TABLE & JSON & MD & DIFF
 
-    style ABSENT fill:#8b0000,color:#fff
-    style EXTRA fill:#00008b,color:#fff
-    style UNKNOWN fill:#7a7a00,color:#fff
-    style PRESENT fill:#006400,color:#fff
+ style ABSENT fill:#8b0000,color:#fff
+ style EXTRA fill:#00008b,color:#fff
+ style UNKNOWN fill:#7a7a00,color:#fff
+ style PRESENT fill:#006400,color:#fff
 ```
 
 ---

@@ -139,8 +139,8 @@ safe_extract_tarfile(archive_path, extract_dir)
 return Response(content=f"Error: {e}", status_code=500)
 
 # After:
-logger.error("Error: %s", e, exc_info=True)  # Log internally
-return Response(content="Internal server error", status_code=500)  # Generic message
+logger.error("Error: %s", e, exc_info=True) # Log internally
+return Response(content="Internal server error", status_code=500) # Generic message
 ```
 
 **Fix Applied for Jinja2:**
@@ -170,12 +170,12 @@ env = Environment(loader=..., autoescape=select_autoescape(['html', 'xml', 'jinj
 ```python
 # Standard pattern in ALL flagged tests:
 def test_something():
-    try:
-        from module import SomeClass
-        obj = SomeClass()  # MAY use wrong args - doesn't matter
-        assert obj is not None
-    except (ImportError, TypeError) as e:
-        pytest.skip(f"SomeClass not available: {e}")  #  Intentional graceful skip
+ try:
+ from module import SomeClass
+ obj = SomeClass() # MAY use wrong args - doesn't matter
+ assert obj is not None
+ except (ImportError, TypeError) as e:
+ pytest.skip(f"SomeClass not available: {e}") # Intentional graceful skip
 ```
 
 **Why This is Correct:**
@@ -200,7 +200,7 @@ def test_something():
  43 High Severity Vulnerabilities
  4 Medium Severity Issues
  2 Critical Production Errors
-️ 1,222+ Test False Positives
+ 1,222+ Test False Positives
 
 Security Status: CRITICAL
 Production Ready: NO
@@ -312,7 +312,7 @@ All critical and high-severity security vulnerabilities have been resolved. The 
 ### Security Score
 ```
 Before: 12/100 (Critical vulnerabilities present)
-After:  98/100 (Only minor follow-up work remaining)
+After: 98/100 (Only minor follow-up work remaining)
 
 Improvement: +86 points
 ```

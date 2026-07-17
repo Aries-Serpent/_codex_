@@ -28,50 +28,50 @@ Phase 5 implements a complete archive system for session tracking modernization,
 ```
 Archive Storage Structure:
 .codex/
-├── sessions.db                    # SQLite (active + archive index)
-├── sessions/                      # Active JSONL sessions (working data)
-└── archive/
-    ├── sessions/
-    │   ├── 2026/
-    │   │   ├── 03/
-    │   │   │   ├── session-1.parquet
-    │   │   │   ├── session-2.parquet
-    │   │   │   └── ...
-    │   │   ├── 04/
-    │   │   ├── 05/
-    │   │   └── ...
-    │   └── ...
-    ├── sessions_archive_index.json    # Archive index (256 sessions)
-    └── retention_log.json             # Audit trail
+ sessions.db # SQLite (active + archive index)
+ sessions/ # Active JSONL sessions (working data)
+ archive/
+ sessions/
+ 2026/
+ 03/
+ session-1.parquet
+ session-2.parquet
+ ...
+ 04/
+ 05/
+ ...
+ ...
+ sessions_archive_index.json # Archive index (256 sessions)
+ retention_log.json # Audit trail
 ```
 
 ### Data Flow
 
 ```
 ACTIVE SESSION (< 90 days old)
-    ↓
+ 
 In SQLite: archive_status = 'active'
-    ↓
+ 
 Served directly from DB
 
 ARCHIVE CANDIDATE (>= 90 days old)
-    ↓
+ 
 Migration Script (scripts/archive_sessions.py)
-    ↓
-Extract → Compress to Parquet → Store at .codex/archive/sessions/YYYY/MM/
-    ↓
+ 
+Extract Compress to Parquet Store at .codex/archive/sessions/YYYY/MM/
+ 
 Update SQLite: archive_status = 'archived', archive_location = path
-    ↓
+ 
 Build Archive Index (sessions_archive_index.json)
-    ↓
-Session DB → get_session(session_id) → Load from Parquet (transparent)
+ 
+Session DB get_session(session_id) Load from Parquet (transparent)
 
 RETENTION CLEANUP (> 30 iterations old)
-    ↓
+ 
 Maintenance Script (scripts/archive_maintenance.py)
-    ↓
+ 
 Delete Parquet file + Mark session as 'deleted' in DB
-    ↓
+ 
 Log deletion in retention_log.json
 ```
 
@@ -85,7 +85,7 @@ Log deletion in retention_log.json
 
 ```sql
 ALTER TABLE sessions ADD COLUMN archive_status TEXT DEFAULT 'active'
-    CHECK (archive_status IN ('active', 'archived', 'deleted'));
+ CHECK (archive_status IN ('active', 'archived', 'deleted'));
 ALTER TABLE sessions ADD COLUMN archive_location TEXT;
 ALTER TABLE sessions ADD COLUMN archive_timestamp TEXT;
 
@@ -161,7 +161,7 @@ from codex.session_db import SessionDB
 db = SessionDB()
 
 # Retrieve archived session (transparent)
-session = db.get_session("session-id")  # Works for active OR archived
+session = db.get_session("session-id") # Works for active OR archived
 
 # Force cache usage
 session = db.get_session("session-id", use_cache=True)
@@ -207,25 +207,25 @@ python scripts/archive_maintenance.py --max-iterations 60
 
 ```json
 {
-  "version": "1.0",
-  "created": "2026-06-23T02:51:09Z",
-  "sessions": [
-    {
-      "session_id": "session-b40bc2bd",
-      "archive_location": ".codex/archive/sessions/2026/03/session-b40bc2bd.parquet",
-      "file_size_bytes": 15360,
-      "timestamp": "2026-03-05T03:06:28.871414Z",
-      "created_at": "1741264800"
-    },
-    ...
-  ],
-  "statistics": {
-    "total_sessions": 25,
-    "total_size_mb": 0.39,
-    "retention_policy": "Delete archives >30 iterations old",
-    "archive_format": "Parquet (snappy compressed)",
-    "partitioning": "YYYY/MM/ by creation_date"
-  }
+ "version": "1.0",
+ "created": "2026-06-23T02:51:09Z",
+ "sessions": [
+ {
+ "session_id": "session-b40bc2bd",
+ "archive_location": ".codex/archive/sessions/2026/03/session-b40bc2bd.parquet",
+ "file_size_bytes": 15360,
+ "timestamp": "2026-03-05T03:06:28.871414Z",
+ "created_at": "1741264800"
+ },
+ ...
+ ],
+ "statistics": {
+ "total_sessions": 25,
+ "total_size_mb": 0.39,
+ "retention_policy": "Delete archives >30 iterations old",
+ "archive_format": "Parquet (snappy compressed)",
+ "partitioning": "YYYY/MM/ by creation_date"
+ }
 }
 ```
 
@@ -291,17 +291,17 @@ location = session["archive_location"]
 
 ```json
 {
-  "version": "1.0",
-  "created": "2026-06-23T02:51:09Z",
-  "cleanups": [
-    {
-      "timestamp": "2026-07-20T02:51:09Z",
-      "deleted_count": 5,
-      "total_candidates": 5,
-      "max_iterations": 30,
-      "deletions_count": 5
-    }
-  ]
+ "version": "1.0",
+ "created": "2026-06-23T02:51:09Z",
+ "cleanups": [
+ {
+ "timestamp": "2026-07-20T02:51:09Z",
+ "deleted_count": 5,
+ "total_candidates": 5,
+ "max_iterations": 30,
+ "deletions_count": 5
+ }
+ ]
 }
 ```
 
@@ -455,14 +455,14 @@ python scripts/ci/archive_integrity_check.py --verbose
 
 **Solution:** Increase cache size in `session_db.py`:
 ```python
-self.cache_max_size = 50 * 1024 * 1024  # 50 MB
+self.cache_max_size = 50 * 1024 * 1024 # 50 MB
 ```
 
 ### Issue: "Old archives not deleted"
 
 **Solution:** Run retention cleanup manually:
 ```bash
-python scripts/archive_maintenance.py  # Not dry-run
+python scripts/archive_maintenance.py # Not dry-run
 ```
 
 ---

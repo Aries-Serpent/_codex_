@@ -20,12 +20,12 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 **Architecture**:
 ```
-┌─────────────────────────┐
-│   Single Server Node    │
-├─────────────────────────┤
-│ Application + Database  │
-│ + Cache + Message Queue │
-└─────────────────────────┘
+
+ Single Server Node 
+
+ Application + Database 
+ + Cache + Message Queue 
+
 ```
 
 **Configuration**:
@@ -40,14 +40,14 @@ This document provides detailed architectural guidance for deploying Codex acros
 
 **Architecture**:
 ```
-┌──────────────────────────────────┐
-│         Load Balancer            │
-├──────────────────────────────────┤
-│  App Node 1  │  App Node 2  │ ... │
-├──────────────────────────────────┤
-│  Shared Database Cluster         │
-│  + Cache Cluster + Message Queue │
-└──────────────────────────────────┘
+
+ Load Balancer 
+
+ App Node 1 App Node 2 ... 
+
+ Shared Database Cluster 
+ + Cache Cluster + Message Queue 
+
 ```
 
 **Features**:

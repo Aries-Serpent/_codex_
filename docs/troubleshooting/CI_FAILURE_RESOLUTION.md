@@ -26,8 +26,8 @@ This guide documents common CI/CD pipeline failures and their resolutions, with 
 
 ```
 Traceback (most recent call last):
-  File "scripts/ci/validate_cargo_features.py", line 71, in validate_cargo_features
-    f"{k} = {json.dumps(v)}" if isinstance(v, list) else f"{k} = {v}"
+ File "scripts/ci/validate_cargo_features.py", line 71, in validate_cargo_features
+ f"{k} = {json.dumps(v)}" if isinstance(v, list) else f"{k} = {v}"
 NameError: name 'json' is not defined
 ```
 
@@ -47,7 +47,7 @@ from typing import List, Tuple
 
 **After (Fixed):**
 ```python
-import json  # ← Added this line
+import json # Added this line
 import re
 import sys
 from pathlib import Path
@@ -113,54 +113,54 @@ pytest tests/integration/test_ci_validation_workflow.py -v
 
 ```
 CI Job Fails
-     │
-     ▼
+ 
+ 
 Check Error Type
-     │
-     ├── NameError ──────────────► Missing Import
-     │                                   │
-     │                                   ▼
-     │                            Add import statement
-     │                                   │
-     │                                   ▼
-     │                            Run local validation
-     │                                   │
-     │                                   ▼
-     │                            Execute unit tests
-     │                                   │
-     │                                   ▼
-     │                            Push to feature branch
-     │                                   │
-     │                                   ▼
-     │                            CI Passes? ─── No ──► Review logs, iterate
-     │                                   │
-     │                                  Yes
-     │                                   │
-     │                                   ▼
-     │                              Merge PR
-     │
-     ├── ModuleNotFoundError ────► Missing Dependency
-     │                                   │
-     │                                   ▼
-     │                            Add to requirements.txt
-     │
-     ├── SyntaxError ────────────► Code Syntax Issue
-     │                                   │
-     │                                   ▼
-     │                            Run python -m py_compile
-     │
-     ├── unexpected cfg condition ─► Rust Feature Missing
-     │                                   │
-     │                                   ▼
-     │                            Add feature to Cargo.toml
-     │                                   │
-     │                                   ▼
-     │                            Run validation script
-     │
-     └── Other ──────────────────► Check workflow logs
-                                         │
-                                         ▼
-                                   Analyze error message
+ 
+ NameError Missing Import
+ 
+ 
+ Add import statement
+ 
+ 
+ Run local validation
+ 
+ 
+ Execute unit tests
+ 
+ 
+ Push to feature branch
+ 
+ 
+ CI Passes? No Review logs, iterate
+ 
+ Yes
+ 
+ 
+ Merge PR
+ 
+ ModuleNotFoundError Missing Dependency
+ 
+ 
+ Add to requirements.txt
+ 
+ SyntaxError Code Syntax Issue
+ 
+ 
+ Run python -m py_compile
+ 
+ unexpected cfg condition Rust Feature Missing
+ 
+ 
+ Add feature to Cargo.toml
+ 
+ 
+ Run validation script
+ 
+ Other Check workflow logs
+ 
+ 
+ Analyze error message
 ```
 
 ---
@@ -268,13 +268,13 @@ If you encounter a CI failure not covered in this guide:
 
 ```
 error: unexpected `cfg` condition value: `python`
-  --> src/lib.rs:47:7
-   |
+ --> src/lib.rs:47:7
+ |
 47 | #[cfg(feature = "python")]
-   |       ^^^^^^^^^^^^^^^^^^
-   |
-   = note: expected values for `feature` are: `default`
-   = help: consider adding `python` as a feature in `Cargo.toml`
+ | ^^^^^^^^^^^^^^^^^^
+ |
+ = note: expected values for `feature` are: `default`
+ = help: consider adding `python` as a feature in `Cargo.toml`
 ```
 
 ### Root Cause Analysis
@@ -323,9 +323,9 @@ This incident established a reusable pattern for preventing similar Rust feature
  - Reports any undeclared features as errors
 
 2. **CI Integration** (`.github/workflows/rust_swarm_ci.yml`):
-   ```yaml
-   - name: Validate Cargo.toml features
-     run: python scripts/ci/validate_cargo_features.py
+ ```yaml
+ - name: Validate Cargo.toml features
+ run: python scripts/ci/validate_cargo_features.py
  ```
 
 3. **Key Validations:**

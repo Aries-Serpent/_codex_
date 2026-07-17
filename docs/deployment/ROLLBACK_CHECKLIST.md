@@ -27,26 +27,26 @@
 
 ```
 START
-  │
-  ├─ Is core profile unable to import?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Do smoke tests show > 2 profile failures?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Was a critical CVE discovered?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  ├─ Are PyPI downloads failing for > 50% of users?
-  │  └─ YES → IMMEDIATE ROLLBACK (Step 1)
-  │  └─ NO → Continue
-  │
-  └─ Is performance degraded > 50% vs previous release?
-     └─ YES → DISCUSS WITH TEAM → Decide
-     └─ NO → CONTINUE WITH RELEASE
+ 
+ Is core profile unable to import?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Do smoke tests show > 2 profile failures?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Was a critical CVE discovered?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Are PyPI downloads failing for > 50% of users?
+ YES IMMEDIATE ROLLBACK (Step 1)
+ NO Continue
+ 
+ Is performance degraded > 50% vs previous release?
+ YES DISCUSS WITH TEAM Decide
+ NO CONTINUE WITH RELEASE
 ```
 
 ### Timeline for Rollback Decision
@@ -120,16 +120,16 @@ START
 # This stops the release workflow from triggering on new tags
 
 # If using GitHub Actions:
-# 1. Go to Settings → Environments
+# 1. Go to Settings Environments
 # 2. Disable "pypi" environment
 # 3. Approve PRs will require manual intervention
 
 # Or via CLI:
 gh repo edit \
-  --enable-branch-protection \
-  --require-pr-reviews \
-  --dismiss-stale-reviews \
-  main
+ --enable-branch-protection \
+ --require-pr-reviews \
+ --dismiss-stale-reviews \
+ main
 
 echo " Deployments stopped"
 ```
@@ -139,14 +139,14 @@ echo " Deployments stopped"
 ```bash
 # Check current PyPI status
 curl -s https://pypi.org/pypi/codex-ml/json | \
-  jq '.releases | keys[-1] as $latest | {latest: $latest}'
+ jq '.releases | keys[-1] as $latest | {latest: $latest}'
 
 # Expected output:
 # { "latest": "0.1.0" }
 
 # Check for yanked status (if it exists)
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
-  jq '.urls[0].yanked'
+ jq '.urls[0].yanked'
 
 # Expected output: false (not yet yanked)
 ```
@@ -168,33 +168,33 @@ PYPI_API_TOKEN = os.getenv("PYPI_API_TOKEN")
 # Note: This requires PYPI_API_TOKEN with permission to yank versions
 
 headers = {
-    "Authorization": f"******"
+ "Authorization": f"******"
 }
 
 # Use twine for yanking (more reliable)
 import subprocess
 result = subprocess.run([
-    "python", "-m", "twine",
-    "remove", f"codex-ml=={VERSION}",
-    "--skip-existing",
-    "--verbose"
+ "python", "-m", "twine",
+ "remove", f"codex-ml=={VERSION}",
+ "--skip-existing",
+ "--verbose"
 ], env={
-    **os.environ,
-    "TWINE_USERNAME": "__token__",
-    "TWINE_PASSWORD": PYPI_API_TOKEN
+ **os.environ,
+ "TWINE_USERNAME": "__token__",
+ "TWINE_PASSWORD": PYPI_API_TOKEN
 })
 
 if result.returncode == 0:
-    print(f" Version {VERSION} marked as yanked on PyPI")
+ print(f" Version {VERSION} marked as yanked on PyPI")
 else:
-    print(f"️  Note: Yanking requires PyPI token with proper permissions")
+ print(f" Note: Yanking requires PyPI token with proper permissions")
 
 EOF
 
 # Alternative: Manually yank via PyPI web interface
 # 1. Go to: https://pypi.org/project/codex-ml/
 # 2. Click on version 0.1.0
-# 3. Click "Options" → "Mark as yanked"
+# 3. Click "Options" "Mark as yanked"
 ```
 
 ### Step 4: Delete Release Tag (2 min)
@@ -226,13 +226,13 @@ PREVIOUS_VERSION="v0.2.1"
 
 # If not already tagged and released
 git tag -a ${PREVIOUS_VERSION} \
-  -m "Rollback to previous stable release"
+ -m "Rollback to previous stable release"
 
 # Push previous version tag (if new)
 git push origin ${PREVIOUS_VERSION}
 
 # Verify on PyPI
-sleep 5  # Wait for PyPI to index
+sleep 5 # Wait for PyPI to index
 pip index versions codex-ml | head -3
 
 # Expected output shows v0.2.1 as latest (not yanked)
@@ -247,22 +247,22 @@ echo " Previous version ${PREVIOUS_VERSION} restored as latest"
 ```bash
 # Check PyPI shows correct version as latest
 curl -s https://pypi.org/pypi/codex-ml/json | \
-  jq '{latest: .info.version, yanked: .info.yanked}'
+ jq '{latest: .info.version, yanked: .info.yanked}'
 
 # Expected output:
 # {
-#   "latest": "0.0.9",
-#   "yanked": false
+# "latest": "0.0.9",
+# "yanked": false
 # }
 
 # Verify broken version is marked yanked
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
-  jq '{version: .info.version, yanked: .info.yanked}'
+ jq '{version: .info.version, yanked: .info.yanked}'
 
 # Expected output:
 # {
-#   "version": "0.1.0",
-#   "yanked": true
+# "version": "0.1.0",
+# "yanked": true
 # }
 
 echo " PyPI correctly shows v0.2.1 as latest, v0.2.1 as yanked"
@@ -276,22 +276,22 @@ Create GitHub release documenting the rollback:
 
 ```bash
 gh release create rollback-v0.2.1 \
-  --notes "
-## ️ Release Rollback: v0.2.1
+ --notes "
+## Release Rollback: v0.2.1
 
-**Status**: Yanked from PyPI  
-**Timestamp**: $(date -Iseconds)  
+**Status**: Yanked from PyPI 
+**Timestamp**: $(date -Iseconds) 
 **Reason**: [COPY FROM PRE-ROLLBACK VERIFICATION]
 
 ### Action Required
 - **If you installed v0.2.1**: 
-  \`\`\`bash
-  pip install --upgrade codex-ml
-  # This will downgrade to v0.2.1
-  \`\`\`
+ \`\`\`bash
+ pip install --upgrade codex-ml
+ # This will downgrade to v0.2.1
+ \`\`\`
 
 - **If you haven't installed yet**:
-  Skip v0.2.1 and install latest stable version.
+ Skip v0.2.1 and install latest stable version.
 
 ### Root Cause
 [To be filled after incident investigation]
@@ -311,8 +311,8 @@ For questions or issues:
 - [ ] Email support: support@[domain]
 - [ ] Slack: #incident-response
 " \
-  --target main \
-  --draft
+ --target main \
+ --draft
 ```
 
 ### Step 8: Re-enable Deployments (1 min)
@@ -324,8 +324,8 @@ Once rollback verified:
 ```bash
 # Re-enable deployments
 gh repo edit \
-  --disable-branch-protection \
-  main
+ --disable-branch-protection \
+ main
 
 # Resume normal operations
 echo " Deployment pipeline resumed"
@@ -343,15 +343,15 @@ echo " Deployment pipeline resumed"
 ```bash
 # Test all three profiles from PyPI
 for PROFILE in core runtime full; do
-  python -m venv test-${PROFILE}
-  source test-${PROFILE}/bin/activate
-  pip install codex-ml[${PROFILE}]
-  
-  # Quick import test
-  python -c "from cognitive_brain.ooda import OODALoop; print(' ${PROFILE} works')"
-  
-  deactivate
-  rm -rf test-${PROFILE}
+ python -m venv test-${PROFILE}
+ source test-${PROFILE}/bin/activate
+ pip install codex-ml[${PROFILE}]
+ 
+ # Quick import test
+ python -c "from cognitive_brain.ooda import OODALoop; print(' ${PROFILE} works')"
+ 
+ deactivate
+ rm -rf test-${PROFILE}
 done
 
 echo " All profiles verified"
@@ -402,7 +402,7 @@ curl -s "https://pypistats.org/api/packages/codex-ml/recent?period=day" | jq .da
 ### Template 1: Internal Team Notification
 
 ```
-Subject:  ROLLBACK INITIATED: codex-ml v0.2.1
+Subject: ROLLBACK INITIATED: codex-ml v0.2.1
 
 Team,
 
@@ -432,7 +432,7 @@ A critical issue was discovered in v0.2.1 and a rollback is underway.
 ### Template 2: Public Announcement (GitHub)
 
 ```
-## ️ Immediate Action: Please upgrade to stable version
+## Immediate Action: Please upgrade to stable version
 
 **Status**: v0.2.1 has been recalled from PyPI
 
@@ -533,8 +533,8 @@ Create `.codex/incidents/rollback-v0.2.1-postmortem.md`:
 ```markdown
 # Post-Mortem: v0.2.1 Release Rollback
 
-**Date**: 2026-07-07  
-**Duration**: 15 minutes (detection + rollback)  
+**Date**: 2026-07-07 
+**Duration**: 15 minutes (detection + rollback) 
 **Severity**: P1 Critical
 
 ## Summary
@@ -561,7 +561,7 @@ How was the issue found?
 ## Resolution
 - Rollback time: 5 minutes 
 - User impact: [N users, [TIME] downtime]
-- Data integrity:  No data loss
+- Data integrity: No data loss
 
 ## Contributing Factors
 1. [Factor 1]

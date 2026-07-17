@@ -16,76 +16,76 @@ The Aries-Serpent/_codex_ system operates within a broader ecosystem of users an
 %%{init: {'accessibility': {'title': 'System Context Diagram<br/>Users and External Systems'}, 'theme': 'base'}}%%
 
 graph TB
-    subgraph "External Systems"
-        GH["🐙 GitHub<br/>PR Management<br/>Issue Tracking<br/>Workflows"]
-        ZD["🎫 Zendesk<br/>Support Tickets<br/>Customer Data<br/>CRM Integration"]
-        HF["🤗 Hugging Face<br/>Model Hub<br/>Model Weights<br/>Community Models"]
-        MLFLOW[" MLflow<br/>Experiment Tracking<br/>Model Registry<br/>Artifacts"]
-        S3["☁️ Cloud Storage<br/>S3/GCS/Azure<br/>Model Storage<br/>Data Backup"]
-        BENCH[" Benchmark<br/>Services<br/>Performance Tracking<br/>Leaderboards"]
-    end
+ subgraph "External Systems"
+ GH[" GitHub<br/>PR Management<br/>Issue Tracking<br/>Workflows"]
+ ZD[" Zendesk<br/>Support Tickets<br/>Customer Data<br/>CRM Integration"]
+ HF[" Hugging Face<br/>Model Hub<br/>Model Weights<br/>Community Models"]
+ MLFLOW[" MLflow<br/>Experiment Tracking<br/>Model Registry<br/>Artifacts"]
+ S3[" Cloud Storage<br/>S3/GCS/Azure<br/>Model Storage<br/>Data Backup"]
+ BENCH[" Benchmark<br/>Services<br/>Performance Tracking<br/>Leaderboards"]
+ end
 
-    subgraph "Aries-Serpent/_codex_ System"
-        CORE[" Core Platform<br/>Training<br/>Evaluation<br/>Serving<br/>RAG Pipeline"]
-        AGENTS[" Agent System<br/>161 Autonomous Agents<br/>Task Orchestration<br/>Execution Engine"]
-        BRAIN[" Cognitive Brain<br/>OODA Loops<br/>Quantum Orchestration<br/>Decision Making"]
-        INFRA[" Infrastructure<br/>Config Management<br/>Database<br/>Monitoring<br/>Caching"]
-    end
+ subgraph "Aries-Serpent/_codex_ System"
+ CORE[" Core Platform<br/>Training<br/>Evaluation<br/>Serving<br/>RAG Pipeline"]
+ AGENTS[" Agent System<br/>161 Autonomous Agents<br/>Task Orchestration<br/>Execution Engine"]
+ BRAIN[" Cognitive Brain<br/>OODA Loops<br/>Quantum Orchestration<br/>Decision Making"]
+ INFRA[" Infrastructure<br/>Config Management<br/>Database<br/>Monitoring<br/>Caching"]
+ end
 
-    subgraph "Users"
-        DEV["👨‍💻 ML Engineers<br/>Model Development<br/>Experimentation<br/>Training"]
-        DS[" Data Scientists<br/>Feature Engineering<br/>Data Analysis<br/>EDA"]
-        OPS[" DevOps/SRE<br/>Deployment<br/>Monitoring<br/>Operations"]
-        LEAD["👔 Team Leads<br/>Progress Tracking<br/>Resource Planning<br/>Governance"]
-    end
+ subgraph "Users"
+ DEV[" ML Engineers<br/>Model Development<br/>Experimentation<br/>Training"]
+ DS[" Data Scientists<br/>Feature Engineering<br/>Data Analysis<br/>EDA"]
+ OPS[" DevOps/SRE<br/>Deployment<br/>Monitoring<br/>Operations"]
+ LEAD[" Team Leads<br/>Progress Tracking<br/>Resource Planning<br/>Governance"]
+ end
 
-    %% User interactions with system
-    DEV -->|"CLI Commands<br/>API Calls"| CORE
+ %% User interactions with system
+ DEV -->|"CLI Commands<br/>API Calls"| CORE
 
-    DEV -->|"Configure<br/>Trigger"| AGENTS
+ DEV -->|"Configure<br/>Trigger"| AGENTS
 
-    DS -->|"Query<br/>Analyze"| INFRA
+ DS -->|"Query<br/>Analyze"| INFRA
 
-    OPS -->|"Deploy<br/>Monitor"| INFRA
+ OPS -->|"Deploy<br/>Monitor"| INFRA
 
-    LEAD -->|"Metrics<br/>Reports"| BRAIN
+ LEAD -->|"Metrics<br/>Reports"| BRAIN
 
-    %% System internal flows
-    CORE -->|"Execute<br/>Tasks"| AGENTS
+ %% System internal flows
+ CORE -->|"Execute<br/>Tasks"| AGENTS
 
-    AGENTS -->|"Request<br/>Context"| BRAIN
+ AGENTS -->|"Request<br/>Context"| BRAIN
 
-    BRAIN -->|"Decision<br/>Feedback"| AGENTS
+ BRAIN -->|"Decision<br/>Feedback"| AGENTS
 
-    CORE -->|"Persist<br/>State"| INFRA
+ CORE -->|"Persist<br/>State"| INFRA
 
-    AGENTS -->|"Log<br/>Metrics"| INFRA
+ AGENTS -->|"Log<br/>Metrics"| INFRA
 
-    %% External system integrations
-    CORE -.->|"Push Models<br/>Pull Weights"| HF
-    AGENTS -.->|"PR/Issue<br/>Actions"| GH
-    BRAIN -.->|"Support<br/>Tickets"| ZD
-    CORE -.->|"Track<br/>Experiments"| MLFLOW
-    INFRA -.->|"Store<br/>Retrieve"| S3
-    AGENTS -.->|"Upload<br/>Results"| BENCH
+ %% External system integrations
+ CORE -.->|"Push Models<br/>Pull Weights"| HF
+ AGENTS -.->|"PR/Issue<br/>Actions"| GH
+ BRAIN -.->|"Support<br/>Tickets"| ZD
+ CORE -.->|"Track<br/>Experiments"| MLFLOW
+ INFRA -.->|"Store<br/>Retrieve"| S3
+ AGENTS -.->|"Upload<br/>Results"| BENCH
 
-    %% Styling
-    style DEV fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-    style DS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-    style OPS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
-    style LEAD fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+ %% Styling
+ style DEV fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+ style DS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+ style OPS fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
+ style LEAD fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#000
 
-    style CORE fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-    style AGENTS fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-    style BRAIN fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
-    style INFRA fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+ style CORE fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+ style AGENTS fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+ style BRAIN fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+ style INFRA fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
 
-    style GH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-    style ZD fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-    style HF fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-    style MLFLOW fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-    style S3 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
-    style BENCH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style GH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style ZD fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style HF fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style MLFLOW fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style S3 fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
+ style BENCH fill:#f3e8ff,stroke:#7c3aed,stroke-width:2px,color:#000
 ```
 
 ---
@@ -165,11 +165,11 @@ This C4 Context diagram represents **Level 1** of the C4 model:
 
 ```
 Level 1: System Context (this diagram)
-  ↓
+ 
 Level 2: Containers (see 5-Layer Architecture)
-  ↓
+ 
 Level 3: Components (see individual layer docs)
-  ↓
+ 
 Level 4: Code (see source files)
 ```
 

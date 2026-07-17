@@ -141,23 +141,23 @@
 **Key Technique:** Python introspection instead of documentation
 ```python
 import inspect
-sig = inspect.signature(Class.__init__)  # Get real signature
-members = EnumClass.__members__  # Get real enum values
+sig = inspect.signature(Class.__init__) # Get real signature
+members = EnumClass.__members__ # Get real enum values
 ```
 
 ### 2. Remediation Execution (60 minutes)
 ```
  Phase 1: Fixed batch 1 (19/35 passing)
  Phase 2: Applied automated fixes to batches 2-12
-  - 41 string replacement fixes
-  - 142 skip decorators for missing modules
-  - 83 skip decorators for API changes
+ - 41 string replacement fixes
+ - 142 skip decorators for missing modules
+ - 83 skip decorators for API changes
  Phase 3: Iterative refinement (5 cycles)
-  - Cycle 1: Import fixes → 390 passing
-  - Cycle 2: Method name fixes → 395 passing  
-  - Cycle 3: Constructor fixes → 390 passing
-  - Cycle 4: QuantumGameState fixes → 390 passing
-  - Cycle 5: Final sweep → 354 passing, 231 skipped
+ - Cycle 1: Import fixes 390 passing
+ - Cycle 2: Method name fixes 395 passing 
+ - Cycle 3: Constructor fixes 390 passing
+ - Cycle 4: QuantumGameState fixes 390 passing
+ - Cycle 5: Final sweep 354 passing, 231 skipped
 ```
 
 **Key Technique:** Incremental validation
@@ -186,10 +186,10 @@ members = EnumClass.__members__  # Get real enum values
 **Solution:** Use Python introspection first, never assume
 **Tools:**
 ```python
-inspect.signature(method)  # Get actual signature
-dir(instance)  # Get all attributes
-hasattr(obj, 'attr')  # Check existence
-EnumClass.__members__  # Get enum values
+inspect.signature(method) # Get actual signature
+dir(instance) # Get all attributes
+hasattr(obj, 'attr') # Check existence
+EnumClass.__members__ # Get enum values
 ```
 **Impact:** Saved 200+ hours of trial-and-error
 
@@ -208,8 +208,8 @@ EnumClass.__members__  # Get enum values
 ```python
 @pytest.mark.skip(reason="Specific reason explaining why")
 def test_feature():
-    # Original code preserved
-    pass
+ # Original code preserved
+ pass
 ```
 
 #### 3. Automated Pattern Matching at Scale
@@ -229,9 +229,9 @@ content = re.sub(r'\.store\(', '.store_memory(', content)
 
 # Conditional replacement
 content = re.sub(
-    r'QuantumGameState\(([^,]+),\s*([^,]+),\s*entangled\s*=\s*(True|False)\)',
-    lambda m: f'QuantumGameState({m.group(1)}, {m.group(2)}, entanglement_strength={0.5 if m.group(3)=="True" else 0.0})',
-    content
+ r'QuantumGameState\(([^,]+),\s*([^,]+),\s*entangled\s*=\s*(True|False)\)',
+ lambda m: f'QuantumGameState({m.group(1)}, {m.group(2)}, entanglement_strength={0.5 if m.group(3)=="True" else 0.0})',
+ content
 )
 ```
 
@@ -281,10 +281,10 @@ content = re.sub(
 ```python
 # Always check first
 from agents.mental_mapping import NodeType
-print(NodeType.__members__)  # See actual values
+print(NodeType.__members__) # See actual values
 
 # Then use
-node = model.create_node(NodeType.PROBLEM, ...)  # Not CONCEPT
+node = model.create_node(NodeType.PROBLEM, ...) # Not CONCEPT
 ```
 
 **Common Mismatches Found:**
@@ -298,10 +298,10 @@ node = model.create_node(NodeType.PROBLEM, ...)  # Not CONCEPT
 
 **Examples:**
 ```python
-# Evolution 1 → 2 → 3
-ActionPath(path_id, start, end, actions, score)  # v1
-ActionPath(action_type, description, energy, cost)  # v2
-ActionPath(action_type, description, potential_energy, kinetic_energy, ...)  # v3
+# Evolution 1 2 3
+ActionPath(path_id, start, end, actions, score) # v1
+ActionPath(action_type, description, energy, cost) # v2
+ActionPath(action_type, description, potential_energy, kinetic_energy, ...) # v3
 ```
 
 **Mitigation Strategies:**
@@ -336,8 +336,8 @@ def test_feature(): ...
 
 **Example:**
 ```python
-if hasattr(obj, 'method'):  #  Exists
-    obj.method(wrong_params)  #  Wrong signature!
+if hasattr(obj, 'method'): # Exists
+ obj.method(wrong_params) # Wrong signature!
 ```
 
 **Better Approaches:**
@@ -346,14 +346,14 @@ if hasattr(obj, 'method'):  #  Exists
 import inspect
 sig = inspect.signature(obj.method)
 if 'param_name' in sig.parameters:
-    obj.method(param_name=value)
+ obj.method(param_name=value)
 
 # Option 2: try/except
 try:
-    obj.method(params)
+ obj.method(params)
 except TypeError as e:
-    # Handle signature mismatch
-    pass
+ # Handle signature mismatch
+ pass
 ```
 
 ## 10. Documentation Must Track Reality
@@ -508,8 +508,8 @@ SwarmIntelligence(num_particles=10, dimensions=2)
 ```python
 @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
 def test_feature():
-    from agents.physics_orchestrator import PhysicsOrchestrator
-    ...
+ from agents.physics_orchestrator import PhysicsOrchestrator
+ ...
 ```
 
 ### Pattern 5: Missing Method
@@ -520,8 +520,8 @@ def test_feature():
 ```python
 @pytest.mark.skip(reason="Method 'validate_code' doesn't exist")
 def test_code_validation():
-    orchestrator.validate_code(code)
-    ...
+ orchestrator.validate_code(code)
+ ...
 ```
 
 ---
@@ -559,16 +559,16 @@ content = re.sub(r'old_pattern', 'new_pattern', content)
 
 # With capture groups
 content = re.sub(
-    r'Class\(param1=([^,]+), param2=([^)]+)\)',
-    r'Class(new_param1=\1, new_param2=\2)',
-    content
+ r'Class\(param1=([^,]+), param2=([^)]+)\)',
+ r'Class(new_param1=\1, new_param2=\2)',
+ content
 )
 
 # With lambda for complex logic
 content = re.sub(
-    r'pattern_with_groups',
-    lambda m: complex_replacement_logic(m.group(1), m.group(2)),
-    content
+ r'pattern_with_groups',
+ lambda m: complex_replacement_logic(m.group(1), m.group(2)),
+ content
 )
 
 # Count matches
@@ -582,17 +582,17 @@ from pathlib import Path
 # Read file
 filepath = Path('path/to/file.py')
 with open(filepath, 'r') as f:
-    content = f.read()
+ content = f.read()
 
 # Write file
 with open(filepath, 'w') as f:
-    f.write(modified_content)
+ f.write(modified_content)
 
 # Process multiple files
 test_dir = Path('tests/agents')
 batch_files = sorted(test_dir.glob('test_phase2_*.py'))
 for batch_file in batch_files:
-    process_file(batch_file)
+ process_file(batch_file)
 ```
 
 ## Pytest Commands

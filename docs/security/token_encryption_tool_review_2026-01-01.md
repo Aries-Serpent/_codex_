@@ -108,7 +108,7 @@ auth_data = b"_codex_ghp_token_v1_aries_serpent"
 ```text
 # Lines 313-318: Validates GitHub token format
 if not token.startswith(('ghp_', 'gho_', 'ghs_', 'github_pat_')):
-    # Warn and confirm
+ # Warn and confirm
 ```
  **Correct prefixes** for GitHub personal access tokens
 
@@ -128,10 +128,10 @@ The tool correctly recommends:
 ```python
 # Lines 26-31: Graceful cryptography import
 try:
-    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-    CRYPTO_AVAILABLE = True
+ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+ CRYPTO_AVAILABLE = True
 except ImportError:
-    CRYPTO_AVAILABLE = False
+ CRYPTO_AVAILABLE = False
 ```
  **Handles optional dependency gracefully**
 
@@ -159,29 +159,29 @@ While the tool is fully functional, these enhancements could be considered for f
 ```python
 # Enhancement: Store creation date with encrypted token
 def generate_aes_gcm(self) -> dict:
-    # ... existing code ...
-    metadata = {
-        'created_at': datetime.now().isoformat(),
-        'expires_at': (datetime.now() + timedelta(days=90)).isoformat(),
-        'rotation_recommended': (datetime.now() + timedelta(days=60)).isoformat()
-    }
-    self.results['AES_METADATA'] = base64.b64encode(json.dumps(metadata).encode()).decode()
+ # ... existing code ...
+ metadata = {
+ 'created_at': datetime.now().isoformat(),
+ 'expires_at': (datetime.now() + timedelta(days=90)).isoformat(),
+ 'rotation_recommended': (datetime.now() + timedelta(days=60)).isoformat()
+ }
+ self.results['AES_METADATA'] = base64.b64encode(json.dumps(metadata).encode()).decode()
 ```
 
 ## B. Add Verification Script
 ```bash
 # Generate companion verification script
 def generate_verification_script(self) -> str:
-    """Generate script to verify token decryption works"""
-    return """
+ """Generate script to verify token decryption works"""
+ return """
 #!/bin/bash
 echo "Testing token decryption..."
 python3 scripts/security/copilot_token_decoder.py
 if [ $? -eq 0 ]; then
-    echo " Token decryption successful"
+ echo " Token decryption successful"
 else
-    echo " Token decryption failed"
-    exit 1
+ echo " Token decryption failed"
+ exit 1
 fi
 """
 ```
@@ -189,10 +189,10 @@ fi
 ## C. Add Rotation Reminder
 ```python
 # Enhancement: Add to output
-print("\n⏰ TOKEN ROTATION REMINDER:")
-print("   - Rotate tokens every 90 iterations")
-print("   - Next rotation due: {future_date}")
-print("   - Use: scripts/security/token_rotation.sh")
+print("\n TOKEN ROTATION REMINDER:")
+print(" - Rotate tokens every 90 iterations")
+print(" - Next rotation due: {future_date}")
+print(" - Use: scripts/security/token_rotation.sh")
 ```
 
 **Note**: These are **optional enhancements**, not critical issues.
@@ -209,11 +209,11 @@ usage: token_encryption_tool.py [-h] [--token TOKEN] [--output-script OUTPUT_SCR
 _codex_ GitHub Token Encryption Tool
 
 options:
-  -h, --help            show this help message and exit
-  --token TOKEN         GitHub token to encrypt (or set GITHUB_TOKEN env var)
-  --output-script OUTPUT_SCRIPT
-                        Save setup script to file (default: ~/codex_token_setup.sh)
-  --no-aes              Skip AES encryption (use only Base64/Hex)
+ -h, --help show this help message and exit
+ --token TOKEN GitHub token to encrypt (or set GITHUB_TOKEN env var)
+ --output-script OUTPUT_SCRIPT
+ Save setup script to file (default: ~/codex_token_setup.sh)
+ --no-aes Skip AES encryption (use only Base64/Hex)
 
 Security Level: 5/5 
 ```
@@ -263,25 +263,25 @@ The `token_encryption_tool.py` is **fully compatible** with the current codebase
 ### File Dependencies
 ```
 token_encryption_tool.py
-├── generates → GitHub Secrets (9 variables)
-├── used by → copilot_token_decoder.py (reads secrets)
-├── used by → .github/workflows/copilot-with-mcp.yml
-├── used by → .github/workflows/token-rotation.yml
-└── documented in → .github/agents/SECRETS_CONFIGURATION.md
+ generates GitHub Secrets (9 variables)
+ used by copilot_token_decoder.py (reads secrets)
+ used by .github/workflows/copilot-with-mcp.yml
+ used by .github/workflows/token-rotation.yml
+ documented in .github/agents/SECRETS_CONFIGURATION.md
 ```
 
 ### Variable Flow
 ```
 User Token
-    ↓
+ 
 token_encryption_tool.py (encrypt)
-    ↓
+ 
 GitHub Secrets (CODEX_GHP_TOKEN_*)
-    ↓
+ 
 Workflow (env vars)
-    ↓
+ 
 copilot_token_decoder.py (decrypt)
-    ↓
+ 
 Copilot Agent (use)
 ```
 

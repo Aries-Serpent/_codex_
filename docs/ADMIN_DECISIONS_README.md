@@ -14,11 +14,11 @@ This directory contains comprehensive documentation for repository administrator
 
 ```
 docs/
-├── REPO_ADMIN_IMPLEMENTATION_DECISIONS.md # Full analysis (2,080 lines)
-├── REPO_ADMIN_DECISIONS_SUMMARY.md # Executive summary
-├── ADMIN_DECISIONS_README.md # This file
-├── ADMIN_IMPLEMENTATION_GUIDE.md # Setup guide
-└── ADMIN_FAQ.md # Frequently asked questions
+ REPO_ADMIN_IMPLEMENTATION_DECISIONS.md # Full analysis (2,080 lines)
+ REPO_ADMIN_DECISIONS_SUMMARY.md # Executive summary
+ ADMIN_DECISIONS_README.md # This file
+ ADMIN_IMPLEMENTATION_GUIDE.md # Setup guide
+ ADMIN_FAQ.md # Frequently asked questions
 ```
 
 ---

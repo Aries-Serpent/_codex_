@@ -128,19 +128,19 @@ GitHub Copilot (the product) provides AI-powered code suggestions using:
 
 graph LR
 
-    A[Copilot Agent] -->|Request Context| B[MCP Service]
+ A[Copilot Agent] -->|Request Context| B[MCP Service]
 
-    B -->|Index Dependencies| C[Python/Node Packages]
+ B -->|Index Dependencies| C[Python/Node Packages]
 
-    B -->|Warm Caches| D[PyPI/npm/GHCR]
+ B -->|Warm Caches| D[PyPI/npm/GHCR]
 
-    B -->|Browser Sessions| E[Playwright Pool]
+ B -->|Browser Sessions| E[Playwright Pool]
 
-    B -->|Filtered Manifest| F[Cache Keys + Metadata]
+ B -->|Filtered Manifest| F[Cache Keys + Metadata]
 
-    B -->|Return Compact Context| A
+ B -->|Return Compact Context| A
 
-    A -->|Generate Code| G[_codex_ Repository]
+ A -->|Generate Code| G[_codex_ Repository]
 ```
 
 ---
@@ -151,46 +151,46 @@ graph LR
 
 ```
 _codex_/
-├── .codex/
-│   ├── mcp-config.yml              # MCP service configuration
-│   ├── cache-manifest.yml          # Cache key registry
-│   ├── scripts/
-│   │   ├── mcp-enhancer.py         # Core MCP HTTP service
-│   │   └── cache-warmer.py         # Cache warming automation
-│   └── docker/
-│       └── Dockerfile.playwright   # Pre-warmed browser image
-├── src/
-│   ├── mcp/                        # MCP Python modules
-│   │   ├── __init__.py
-│   │   ├── adapters/               # Backend adapters (Pinecone, etc.)
-│   │   ├── metrics/                # MCP-specific metrics
-│   │   └── server.py               # MCP HTTP server
-│   └── ...
-├── scripts/
-│   ├── space_traversal/detectors/  # MCP capability detectors
-│   │   ├── mcp_tooling_registry.py
-│   │   ├── mcp_protocol_surface.py
-│   │   ├── mcp_configuration.py
-│   │   ├── mcp_security_safeguards.py
-│   │   ├── mcp_authz_authn.py
-│   │   ├── mcp_rate_limiting.py
-│   │   ├── mcp_error_handling.py
-│   │   ├── mcp_observability.py
-│   │   ├── mcp_lifecycle_management.py
-│   │   ├── mcp_versioning_compat.py
-│   │   ├── mcp_schema_validation.py
-│   │   ├── mcp_multi_tenant.py
-│   │   └── mcp_tools_integration.py
-│   ├── security/                   # Token encryption/verification  # pragma: allowlist secret
-│   │   ├── token_encryption_tool.py  # pragma: allowlist secret
-│   │   └── verify_token_scope.py  # pragma: allowlist secret
-│   └── validate_mcp.py
-└── .github/
-    ├── workflows/
-    │   ├── mcp-cache-warm.yml      # Scheduled cache warming
-    │   └── mcp-ci.yml              # MCP-aware CI pipeline
-    └── security-tools/
-        └── bootstrap_extractor.py  # Tool deployment from env vars
+ .codex/
+ mcp-config.yml # MCP service configuration
+ cache-manifest.yml # Cache key registry
+ scripts/
+ mcp-enhancer.py # Core MCP HTTP service
+ cache-warmer.py # Cache warming automation
+ docker/
+ Dockerfile.playwright # Pre-warmed browser image
+ src/
+ mcp/ # MCP Python modules
+ __init__.py
+ adapters/ # Backend adapters (Pinecone, etc.)
+ metrics/ # MCP-specific metrics
+ server.py # MCP HTTP server
+ ...
+ scripts/
+ space_traversal/detectors/ # MCP capability detectors
+ mcp_tooling_registry.py
+ mcp_protocol_surface.py
+ mcp_configuration.py
+ mcp_security_safeguards.py
+ mcp_authz_authn.py
+ mcp_rate_limiting.py
+ mcp_error_handling.py
+ mcp_observability.py
+ mcp_lifecycle_management.py
+ mcp_versioning_compat.py
+ mcp_schema_validation.py
+ mcp_multi_tenant.py
+ mcp_tools_integration.py
+ security/ # Token encryption/verification # pragma: allowlist secret
+ token_encryption_tool.py # pragma: allowlist secret
+ verify_token_scope.py # pragma: allowlist secret
+ validate_mcp.py
+ .github/
+ workflows/
+ mcp-cache-warm.yml # Scheduled cache warming
+ mcp-ci.yml # MCP-aware CI pipeline
+ security-tools/
+ bootstrap_extractor.py # Tool deployment from env vars
 ```
 
 ### MCP Service Components
@@ -212,16 +212,16 @@ _codex_/
 ```python
 # Copilot Agent script example
 import requests
-from scripts.security.token_encryption_tool import copilot_get_github_token_safe  # pragma: allowlist secret
+from scripts.security.token_encryption_tool import copilot_get_github_token_safe # pragma: allowlist secret
 
 # Authenticate with MCP service
-token = copilot_get_github_token_safe()  # pragma: allowlist secret
-headers = {"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+token = copilot_get_github_token_safe() # pragma: allowlist secret
+headers = {"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 
 # Request focused context
 response = requests.get(
-    headers=headers,
-    params={"scope": "python", "depth": 2}
+ headers=headers,
+ params={"scope": "python", "depth": 2}
 )
 
 dependencies = response.json()
@@ -235,27 +235,27 @@ dependencies = response.json()
 name: Copilot Agent Task with MCP
 
 on:
-  workflow_dispatch:
+ workflow_dispatch:
 
 jobs:
-  copilot-with-mcp:
-    runs-on: ubuntu-latest
-    services:
-      mcp:
-        image: ghcr.io/aries-serpent/_codex_/mcp:latest
-        ports:
-          - 8080:8080
-        env:
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+ copilot-with-mcp:
+ runs-on: ubuntu-latest
+ services:
+ mcp:
+ image: ghcr.io/aries-serpent/_codex_/mcp:latest
+ ports:
+ - 8080:8080
+ env:
+ CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Wait for MCP service
-        run: |
+ - name: Wait for MCP service
+ run: |
 
-      - name: Execute Copilot task with MCP context
-        run: |
+ - name: Execute Copilot task with MCP context
+ run: |
 ```
 
 ## Pattern 3: VS Code Extension Integration (Local Development)
@@ -263,15 +263,15 @@ jobs:
 ```json
 // .vscode/settings.json
 {
-  "copilot.advanced": {
-    "contextProviders": [
-      {
-        "type": "http",
-        "authentication": "bearer",
-        "tokenSource": "environment:CODEX_MCP_TOKEN"
-      }
-    ]
-  }
+ "copilot.advanced": {
+ "contextProviders": [
+ {
+ "type": "http",
+ "authentication": "bearer",
+ "tokenSource": "environment:CODEX_MCP_TOKEN"
+ }
+ ]
+ }
 }
 ```
 
@@ -514,16 +514,16 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 import requests
 
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+ headers={"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 ).json()
 
 torch_version = manifest['dependencies']['torch']['version']
 # Returns: ">=2.2.2"
 
 # Generate version-aware code
-import torch  # >= 2.2.2
+import torch # >= 2.2.2
 model = torch.nn.Linear(10, 5, device='cuda')
-model = torch.compile(model)  # New in 2.0+
+model = torch.compile(model) # New in 2.0+
 ```
 
 ## Example 2: Test Generation with Playwright
@@ -531,11 +531,11 @@ model = torch.compile(model)  # New in 2.0+
 ```python
 # Create Playwright session via MCP
 session_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
-    json={
-        "browser": "chromium",
-        "headless": True
-    }
+ headers={"Authorization": f"Bearer {token}"}, # pragma: allowlist secret
+ json={
+ "browser": "chromium",
+ "headless": True
+ }
 ).json()
 
 # Generate test code with session context
@@ -547,19 +547,19 @@ session_response = requests.post(
 ```python
 # Get current cache manifest
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
+ headers={"Authorization": f"Bearer {token}"} # pragma: allowlist secret
 ).json()
 
 # Propose updates
 updates = {
-    "torch": "2.3.0",
-    "transformers": "4.35.0"
+ "torch": "2.3.0",
+ "transformers": "4.35.0"
 }
 
 # Warm cache for new versions
 warm_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
-    json={"targets": ["python"], "packages": updates, "force": True}
+ headers={"Authorization": f"Bearer {token}"}, # pragma: allowlist secret
+ json={"targets": ["python"], "packages": updates, "force": True}
 ).json()
 ```
 
@@ -772,19 +772,19 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
  - Security incident (unauthorized access attempts)
 
 4. **Recovery Procedure**:
-   ```bash
-   # Disable MCP service container in workflow
-   # Edit .github/workflows/copilot-with-mcp.yml
-   # Comment out services: section
+ ```bash
+ # Disable MCP service container in workflow
+ # Edit .github/workflows/copilot-with-mcp.yml
+ # Comment out services: section
 
-   # Or environment variable override
-   echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
+ # Or environment variable override
+ echo "CODEX_MCP_ENABLED=false" >> $GITHUB_ENV
 
-   # Revert to baseline Copilot
-   # Remove MCP endpoint from .vscode/settings.json
+ # Revert to baseline Copilot
+ # Remove MCP endpoint from .vscode/settings.json
 
-   # Verify rollback
-   gh workflow run copilot-baseline-test.yml
+ # Verify rollback
+ gh workflow run copilot-baseline-test.yml
  ```
 
 5. **Validation Points**:

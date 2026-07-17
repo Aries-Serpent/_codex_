@@ -75,21 +75,21 @@ The Codebase QA Walkthrough workflow is timing out after 60 minutes when analyzi
 ```yaml
 # Modified workflow step
 - name: Determine Changed Files
-  id: changed-files
-  run: |
-    if [ "${{ github.event_name }}" = "pull_request" ]; then
-      git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.sha }} > changed_files.txt
-      echo "analysis_scope=incremental" >> $GITHUB_OUTPUT
-    else
-      echo "analysis_scope=full" >> $GITHUB_OUTPUT
-    fi
+ id: changed-files
+ run: |
+ if [ "${{ github.event_name }}" = "pull_request" ]; then
+ git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.sha }} > changed_files.txt
+ echo "analysis_scope=incremental" >> $GITHUB_OUTPUT
+ else
+ echo "analysis_scope=full" >> $GITHUB_OUTPUT
+ fi
 
 - name: Run QA Analysis (Incremental)
-  if: steps.changed-files.outputs.analysis_scope == 'incremental'
-  run: |
-    while IFS= read -r file; do
-      python scripts/analyze_file.py "$file" --tools bandit,pylint,mypy
-    done < changed_files.txt
+ if: steps.changed-files.outputs.analysis_scope == 'incremental'
+ run: |
+ while IFS= read -r file; do
+ python scripts/analyze_file.py "$file" --tools bandit,pylint,mypy
+ done < changed_files.txt
 ```
 
 **Benefits**:
@@ -108,21 +108,21 @@ The Codebase QA Walkthrough workflow is timing out after 60 minutes when analyzi
 ```python
 # Analysis cache structure
 cache = {
-    "file_path": "src/codex/security_utils.py",
-    "file_hash": "sha256:abc123...",
-    "last_analyzed": "2026-01-15T01:00:00Z",
-    "tools": {
-        "bandit": {
-            "issues": [],
-            "score": 10.0,
-            "timestamp": "2026-01-15T01:00:00Z"
-        },
-        "pylint": {
-            "score": 9.5,
-            "issues": [...],
-            "timestamp": "2026-01-15T01:00:00Z"
-        }
-    }
+ "file_path": "src/codex/security_utils.py",
+ "file_hash": "sha256:abc123...",
+ "last_analyzed": "2026-01-15T01:00:00Z",
+ "tools": {
+ "bandit": {
+ "issues": [],
+ "score": 10.0,
+ "timestamp": "2026-01-15T01:00:00Z"
+ },
+ "pylint": {
+ "score": 9.5,
+ "issues": [...],
+ "timestamp": "2026-01-15T01:00:00Z"
+ }
+ }
 }
 ```
 
@@ -146,13 +146,13 @@ cache = {
 
 ```yaml
 strategy:
-  matrix:
-    tool: [bandit, pylint, mypy, ruff]
-  max-parallel: 4
+ matrix:
+ tool: [bandit, pylint, mypy, ruff]
+ max-parallel: 4
 
 steps:
-  - name: Run ${{ matrix.tool }}
-    run: python scripts/run_tool.py --tool ${{ matrix.tool }} --target ${{ inputs.target_files }}
+ - name: Run ${{ matrix.tool }}
+ run: python scripts/run_tool.py --tool ${{ matrix.tool }} --target ${{ inputs.target_files }}
 ```
 
 **Benefits**:
@@ -205,17 +205,17 @@ efficiency = information_gain / analysis_time
 ```python
 # Tool routing table
 tool_routing = {
-    ".py": ["bandit", "pylint", "mypy", "ruff"],
-    ".js": ["eslint", "jshint"],
-    ".yml": ["yamllint"],
-    ".md": ["markdownlint"],
-    ".rs": ["clippy", "cargo-audit"]
+ ".py": ["bandit", "pylint", "mypy", "ruff"],
+ ".js": ["eslint", "jshint"],
+ ".yml": ["yamllint"],
+ ".md": ["markdownlint"],
+ ".rs": ["clippy", "cargo-audit"]
 }
 
 # Skip tools for irrelevant files
 def select_tools(file_path: str) -> List[str]:
-    extension = Path(file_path).suffix
-    return tool_routing.get(extension, [])
+ extension = Path(file_path).suffix
+ return tool_routing.get(extension, [])
 ```
 
 **Benefits**:
@@ -231,19 +231,19 @@ def select_tools(file_path: str) -> List[str]:
 
 ```yaml
 inputs:
-  max_execution_time:
-    description: 'Maximum execution time in minutes'
-    type: number
-    default: 30
+ max_execution_time:
+ description: 'Maximum execution time in minutes'
+ type: number
+ default: 30
 
-  analysis_depth:
-    description: 'Analysis depth'
-    type: choice
-    options:
-      - quick      # Changed files only, fast tools
-      - standard   # Changed files + dependencies, all tools
-      - full       # Full codebase, all tools (nightly only)
-    default: quick
+ analysis_depth:
+ description: 'Analysis depth'
+ type: choice
+ options:
+ - quick # Changed files only, fast tools
+ - standard # Changed files + dependencies, all tools
+ - full # Full codebase, all tools (nightly only)
+ default: quick
 ```
 
 **Usage**:
@@ -260,19 +260,19 @@ inputs:
 ```bash
 # Directory structure
 .codex/analysis/
-├── metadata/
-│   ├── file_hashes.json
-│   ├── tool_versions.json
-│   └── last_full_scan.json
-├── results/
-│   ├── bandit/
-│   │   └── latest.json
-│   ├── pylint/
-│   │   └── latest.json
-│   └── mypy/
-│       └── latest.json
-└── cache/
-    └── analysis_cache.db
+ metadata/
+ file_hashes.json
+ tool_versions.json
+ last_full_scan.json
+ results/
+ bandit/
+ latest.json
+ pylint/
+ latest.json
+ mypy/
+ latest.json
+ cache/
+ analysis_cache.db
 ```
 
 **Benefits**:

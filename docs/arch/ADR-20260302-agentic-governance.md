@@ -59,11 +59,11 @@ Implement a three-pillar governance backbone:
 table from AGENT_REGISTRY.yaml:
 
 ```
-Tier        Count  Percentage
-──────────  ─────  ──────────
-GROUNDED        8       5.3%
-PARTIAL       142      93.4%
-SOFT            2       1.3%
+Tier Count Percentage
+ 
+GROUNDED 8 5.3%
+PARTIAL 142 93.4%
+SOFT 2 1.3%
 ```
 
 Integrated into `ci-health-monitor.yml` as a job summary step.

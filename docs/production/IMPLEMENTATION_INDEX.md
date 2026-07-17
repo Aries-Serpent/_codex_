@@ -144,13 +144,13 @@ OpenTelemetry SDK Prometheus Exporter Prometheus Scraper (15s) TSDB Grafana
 **Escalation Path**:
 ```
 Alert Triggered
-  ↓ (0 min)
+ (0 min)
 Page Primary On-Call Engineer
-  ↓ (5 min if no ack)
+ (5 min if no ack)
 Page Backup On-Call Engineer
-  ↓ (15 min if no ack)
+ (15 min if no ack)
 Notify Engineering Manager
-  ↓ (15 min if no ack)
+ (15 min if no ack)
 Notify Director
 ```
 

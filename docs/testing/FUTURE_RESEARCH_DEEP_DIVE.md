@@ -187,7 +187,7 @@ new_coverage = measure_coverage()
 
 # Iterate if coverage not improved
 if new_coverage <= old_coverage:
-    refine_prompt_with_failure_context()
+ refine_prompt_with_failure_context()
 ```
 
 **Tools**:
@@ -206,42 +206,42 @@ import coverage
 from openai import OpenAI
 
 class AutoTestGenerator:
-    def __init__(self, cov_file=".coverage"):
-        self.cov = coverage.Coverage(data_file=cov_file)
-        self.cov.load()
-        self.client = OpenAI()
+ def __init__(self, cov_file=".coverage"):
+ self.cov = coverage.Coverage(data_file=cov_file)
+ self.cov.load()
+ self.client = OpenAI()
 
-    def find_uncovered_functions(self, module_path):
-        """Find functions with <100% coverage"""
-        analysis = self.cov.analysis2(module_path)
-        source = open(module_path).read()
-        tree = ast.parse(source)
+ def find_uncovered_functions(self, module_path):
+ """Find functions with <100% coverage"""
+ analysis = self.cov.analysis2(module_path)
+ source = open(module_path).read()
+ tree = ast.parse(source)
 
-        uncovered_funcs = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef):
-                func_lines = range(node.lineno, node.end_lineno + 1)
-                uncovered = set(func_lines) & set(analysis.missing)
-                if uncovered:
-                    uncovered_funcs.append({
-                        'name': node.name,
-                        'code': ast.get_source_segment(source, node),
-                        'uncovered_lines': list(uncovered)
-                    })
-        return uncovered_funcs
+ uncovered_funcs = []
+ for node in ast.walk(tree):
+ if isinstance(node, ast.FunctionDef):
+ func_lines = range(node.lineno, node.end_lineno + 1)
+ uncovered = set(func_lines) & set(analysis.missing)
+ if uncovered:
+ uncovered_funcs.append({
+ 'name': node.name,
+ 'code': ast.get_source_segment(source, node),
+ 'uncovered_lines': list(uncovered)
+ })
+ return uncovered_funcs
 
-    def generate_tests(self, func_info):
-        """Generate pytest tests for uncovered function"""
-        prompt = self._build_prompt(func_info)
-        response = self.client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3
-        )
-        return response.choices[0].message.content
+ def generate_tests(self, func_info):
+ """Generate pytest tests for uncovered function"""
+ prompt = self._build_prompt(func_info)
+ response = self.client.chat.completions.create(
+ model="gpt-4",
+ messages=[{"role": "user", "content": prompt}],
+ temperature=0.3
+ )
+ return response.choices[0].message.content
 
-    def _build_prompt(self, func_info):
-        return f"""Generate comprehensive pytest tests for this function.
+ def _build_prompt(self, func_info):
+ return f"""Generate comprehensive pytest tests for this function.
 
 Function:
 {func_info['code']}
@@ -377,18 +377,18 @@ Output only the test code, no explanations."""
 ```python
 # Test 1: Achieves coverage but doesn't validate behavior
 def test_function_runs():
-    result = complex_function(input_data)
-    # Test passes even if function returns wrong result!
+ result = complex_function(input_data)
+ # Test passes even if function returns wrong result!
 
 # Test 2: Too generic assertion
 def test_output_exists():
-    result = process_data(data)
-    assert result is not None  # Passes for any non-None value
+ result = process_data(data)
+ assert result is not None # Passes for any non-None value
 
 # Test 3: Doesn't test edge cases
 def test_happy_path_only():
-    assert add(2, 3) == 5
-    # What about add(-1, 1)? add(0, 0)? add(MAX_INT, 1)?
+ assert add(2, 3) == 5
+ # What about add(-1, 1)? add(0, 0)? add(MAX_INT, 1)?
 ```
 
 **Need**: Metrics to measure test effectiveness beyond coverage.
@@ -425,23 +425,23 @@ def test_happy_path_only():
  - `mutmut` (simple, good for CI)
 
 2. **Configure Mutation Operators**
-   ```text
-   # mutpy configuration
-   operators = [
-       'AOR',  # Arithmetic Operator Replacement (+ → -)
-       'BCR',  # Break Continue Replacement
-       'COI',  # Conditional Operator Insertion (if x → if not x)
-       'COD',  # Conditional Operator Deletion
-       'CRP',  # Constant Replacement (5 → 6)
-       'ROR',  # Relational Operator Replacement (< → <=)
-   ]
+ ```text
+ # mutpy configuration
+ operators = [
+ 'AOR', # Arithmetic Operator Replacement (+ -)
+ 'BCR', # Break Continue Replacement
+ 'COI', # Conditional Operator Insertion (if x if not x)
+ 'COD', # Conditional Operator Deletion
+ 'CRP', # Constant Replacement (5 6)
+ 'ROR', # Relational Operator Replacement (< <=)
+ ]
  ```
 
 3. **Run Mutation Testing**
-   ```bash
-   # Run mutpy on specific module
-   mut.py --target src/module.py --unit-test tests/test_module.py \
-          --report-html mutation_report
+ ```bash
+ # Run mutpy on specific module
+ mut.py --target src/module.py --unit-test tests/test_module.py \
+ --report-html mutation_report
  ```
 
 4. **Analyze Results**
@@ -466,17 +466,17 @@ mutation_score = killed_mutants / (killed_mutants + survived_mutants)
 
 # Example: Original test
 def test_divide():
-    assert divide(10, 2) == 5
+ assert divide(10, 2) == 5
 
 # Mutant: operator / changed to *
 def divide_mutant(a, b):
-    return a * b  # Mutation survives!
+ return a * b # Mutation survives!
 
 # Fixed test (kills mutant):
 def test_divide_fixed():
-    assert divide(10, 2) == 5
-    assert divide(6, 3) == 2   # New assertion
-    assert divide(1, 1) == 1   # Kills * mutation
+ assert divide(10, 2) == 5
+ assert divide(6, 3) == 2 # New assertion
+ assert divide(1, 1) == 1 # Kills * mutation
 ```
 
 **Example Integration**:
@@ -488,45 +488,45 @@ import json
 from pathlib import Path
 
 class MutationTester:
-    def __init__(self, target_dir="src", test_dir="tests"):
-        self.target_dir = Path(target_dir)
-        self.test_dir = Path(test_dir)
+ def __init__(self, target_dir="src", test_dir="tests"):
+ self.target_dir = Path(target_dir)
+ self.test_dir = Path(test_dir)
 
-    def run_mutation_testing(self, module_path, threshold=75.0):
-        """Run mutation testing on a module"""
-        test_path = self.find_test_file(module_path)
+ def run_mutation_testing(self, module_path, threshold=75.0):
+ """Run mutation testing on a module"""
+ test_path = self.find_test_file(module_path)
 
-        # Run mutpy
-        cmd = [
-            "mut.py",
-            "--target", str(module_path),
-            "--unit-test", str(test_path),
-            "--report-json", "mutation_results.json",
-            "--timeout-factor", "2.0"
-        ]
+ # Run mutpy
+ cmd = [
+ "mut.py",
+ "--target", str(module_path),
+ "--unit-test", str(test_path),
+ "--report-json", "mutation_results.json",
+ "--timeout-factor", "2.0"
+ ]
 
-        result = subprocess.run(cmd, capture_output=True)
+ result = subprocess.run(cmd, capture_output=True)
 
-        # Parse results
-        with open("mutation_results.json") as f:
-            results = json.load(f)
+ # Parse results
+ with open("mutation_results.json") as f:
+ results = json.load(f)
 
-        mutation_score = self.calculate_score(results)
+ mutation_score = self.calculate_score(results)
 
-        if mutation_score < threshold:
-            print(f"️  Low mutation score: {mutation_score:.1f}%")
-            print("Survived mutants:")
-            for mutant in results['survived']:
-                print(f"  - Line {mutant['lineno']}: {mutant['operator']}")
-        else:
-            print(f" Good mutation score: {mutation_score:.1f}%")
+ if mutation_score < threshold:
+ print(f" Low mutation score: {mutation_score:.1f}%")
+ print("Survived mutants:")
+ for mutant in results['survived']:
+ print(f" - Line {mutant['lineno']}: {mutant['operator']}")
+ else:
+ print(f" Good mutation score: {mutation_score:.1f}%")
 
-        return mutation_score
+ return mutation_score
 
-    def calculate_score(self, results):
-        killed = results['killed_count']
-        total = results['total_count']
-        return (killed / total * 100) if total > 0 else 0
+ def calculate_score(self, results):
+ killed = results['killed_count']
+ total = results['total_count']
+ return (killed / total * 100) if total > 0 else 0
 ```
 
 **CI Integration**:
@@ -535,37 +535,37 @@ class MutationTester:
 name: Mutation Testing
 
 on:
-  pull_request:
-    paths:
-      - 'src/**/*.py'
-      - 'tests/**/*.py'
+ pull_request:
+ paths:
+ - 'src/**/*.py'
+ - 'tests/**/*.py'
 
 jobs:
-  mutation-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+ mutation-test:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Set up Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          pip install mutpy pytest
-          pip install -e .
+ - name: Install dependencies
+ run: |
+ pip install mutpy pytest
+ pip install -e .
 
-      - name: Run mutation testing
-        run: |
-          python scripts/testing/run_mutation_tests.py \
-            --changed-files-only \
-            --threshold 75
+ - name: Run mutation testing
+ run: |
+ python scripts/testing/run_mutation_tests.py \
+ --changed-files-only \
+ --threshold 75
 
-      - name: Upload mutation report
-        uses: actions/upload-artifact@v4
-        with:
-          name: mutation-report
-          path: mutation_report.html
+ - name: Upload mutation report
+ uses: actions/upload-artifact@v4
+ with:
+ name: mutation-report
+ path: mutation_report.html
 ```
 
 ## Approach 2: Test Quality Dashboard
@@ -585,9 +585,9 @@ jobs:
 
 | Module | Coverage | Mutation Score | Assertions/Test | Status |
 |--------|----------|----------------|-----------------|--------|
-| agents/workflow_navigator.py | 95% | 82% | 3.2 |  Good |
-| src/codex/rag.py | 78% | 65% | 1.8 | ️ Weak Tests |
-| scripts/mcp/select_components.py | 100% | 91% | 4.1 |  Excellent |
+| agents/workflow_navigator.py | 95% | 82% | 3.2 | Good |
+| src/codex/rag.py | 78% | 65% | 1.8 | Weak Tests |
+| scripts/mcp/select_components.py | 100% | 91% | 4.1 | Excellent |
 ```
 
 ### Dependencies
@@ -649,10 +649,10 @@ jobs:
 ```python
 # Example-based: Tests specific inputs
 def test_reverse_string():
-    assert reverse("hello") == "olleh"
-    assert reverse("a") == "a"
-    assert reverse("") == ""
-    # What about unicode? Long strings? Special chars?
+ assert reverse("hello") == "olleh"
+ assert reverse("a") == "a"
+ assert reverse("") == ""
+ # What about unicode? Long strings? Special chars?
 ```
 
 **Property-based testing advantages**:
@@ -660,15 +660,15 @@ def test_reverse_string():
 # Property-based: Tests invariants across many inputs
 @given(st.text())
 def test_reverse_string_properties(s):
-    # Property 1: Reversing twice returns original
-    assert reverse(reverse(s)) == s
+ # Property 1: Reversing twice returns original
+ assert reverse(reverse(s)) == s
 
-    # Property 2: Length is preserved
-    assert len(reverse(s)) == len(s)
+ # Property 2: Length is preserved
+ assert len(reverse(s)) == len(s)
 
-    # Property 3: Reversing empty string returns empty
-    if s == "":
-        assert reverse(s) == ""
+ # Property 3: Reversing empty string returns empty
+ if s == "":
+ assert reverse(s) == ""
 ```
 
 **Benefits**:
@@ -715,60 +715,60 @@ from hypothesis import given, strategies as st
 
 @given(st.text(min_size=1, max_size=1000))
 def test_path_flatten_unflatten_roundtrip(path):
-    """Flattening then unflattening returns original"""
-    flattened = flatten_path(path)
-    unflattened = unflatten_path(flattened)
-    assert unflattened == path
+ """Flattening then unflattening returns original"""
+ flattened = flatten_path(path)
+ unflattened = unflatten_path(flattened)
+ assert unflattened == path
 
 @given(st.dictionaries(st.text(), st.integers()))
 def test_json_roundtrip(data):
-    """JSON serialize/deserialize preserves data"""
-    json_str = json.dumps(data)
-    parsed = json.loads(json_str)
-    assert parsed == data
+ """JSON serialize/deserialize preserves data"""
+ json_str = json.dumps(data)
+ parsed = json.loads(json_str)
+ assert parsed == data
 ```
 
 2. **Data Transformations** (HIGH)
 ```python
 @given(st.lists(st.integers(), min_size=0, max_size=100))
 def test_sort_properties(lst):
-    """Test sorting properties"""
-    sorted_lst = sorted(lst)
+ """Test sorting properties"""
+ sorted_lst = sorted(lst)
 
-    # Property 1: Length preserved
-    assert len(sorted_lst) == len(lst)
+ # Property 1: Length preserved
+ assert len(sorted_lst) == len(lst)
 
-    # Property 2: All elements present
-    assert sorted(sorted_lst) == sorted(lst)
+ # Property 2: All elements present
+ assert sorted(sorted_lst) == sorted(lst)
 
-    # Property 3: Ordered
-    for i in range(len(sorted_lst) - 1):
-        assert sorted_lst[i] <= sorted_lst[i + 1]
+ # Property 3: Ordered
+ for i in range(len(sorted_lst) - 1):
+ assert sorted_lst[i] <= sorted_lst[i + 1]
 ```
 
 3. **Parsers & AST** (MEDIUM)
 ```python
 @given(st.text(alphabet=string.ascii_letters + string.digits + " \n"))
 def test_python_parse_doesnt_crash(code):
-    """Parser should handle any input gracefully"""
-    try:
-        ast.parse(code)
-    except SyntaxError:
-        pass  # Expected for invalid Python
-    except Exception as e:
-        pytest.fail(f"Unexpected exception: {e}")
+ """Parser should handle any input gracefully"""
+ try:
+ ast.parse(code)
+ except SyntaxError:
+ pass # Expected for invalid Python
+ except Exception as e:
+ pytest.fail(f"Unexpected exception: {e}")
 ```
 
 4. **Configuration Handling** (MEDIUM)
 ```python
 @given(st.dictionaries(
-    keys=st.text(min_size=1),
-    values=st.one_of(st.integers(), st.text(), st.booleans())
+ keys=st.text(min_size=1),
+ values=st.one_of(st.integers(), st.text(), st.booleans())
 ))
 def test_config_validation(config):
-    """Config validation shouldn't crash on any dict"""
-    result = validate_config(config)
-    assert result in (True, False)  # Should return bool
+ """Config validation shouldn't crash on any dict"""
+ result = validate_config(config)
+ assert result in (True, False) # Should return bool
 ```
 
 **Implementation Strategy**:
@@ -780,26 +780,26 @@ import string
 
 # Strategy for valid filesystem paths
 path_strategy = st.text(
-    alphabet=string.ascii_letters + string.digits + "/_-.",
-    min_size=1,
-    max_size=255
+ alphabet=string.ascii_letters + string.digits + "/_-.",
+ min_size=1,
+ max_size=255
 ).filter(lambda s: not s.startswith('/'))
 
 @given(path_strategy)
 def test_flatten_path_properties(path):
-    """Property tests for path flattening"""
-    assume('/' in path)  # Only test paths with separators
+ """Property tests for path flattening"""
+ assume('/' in path) # Only test paths with separators
 
-    flattened = flatten_path(path)
+ flattened = flatten_path(path)
 
-    # Property 1: No slashes in flattened path
-    assert '/' not in flattened
+ # Property 1: No slashes in flattened path
+ assert '/' not in flattened
 
-    # Property 2: Flattening is deterministic
-    assert flatten_path(path) == flattened
+ # Property 2: Flattening is deterministic
+ assert flatten_path(path) == flattened
 
-    # Property 3: Length doesn't decrease
-    assert len(flattened) >= len(path.replace('/', ''))
+ # Property 3: Length doesn't decrease
+ assert len(flattened) >= len(path.replace('/', ''))
 ```
 
 ## Approach 2: Stateful Testing for Complex Systems
@@ -810,35 +810,35 @@ def test_flatten_path_properties(path):
 from hypothesis.stateful import RuleBasedStateMachine, rule, precondition
 
 class WorkflowNavigatorStateMachine(RuleBasedStateMachine):
-    """Stateful testing for WorkflowNavigator"""
+ """Stateful testing for WorkflowNavigator"""
 
-    def __init__(self):
-        super().__init__()
-        self.navigator = WorkflowNavigator()
-        self.workflows = {}
+ def __init__(self):
+ super().__init__()
+ self.navigator = WorkflowNavigator()
+ self.workflows = {}
 
-    @rule(workflow_id=st.text(min_size=1), steps=st.lists(st.text()))
-    def create_workflow(self, workflow_id, steps):
-        """Create a new workflow"""
-        assume(workflow_id not in self.workflows)
-        result = self.navigator.create_workflow(workflow_id, steps)
-        self.workflows[workflow_id] = steps
-        assert result == workflow_id
+ @rule(workflow_id=st.text(min_size=1), steps=st.lists(st.text()))
+ def create_workflow(self, workflow_id, steps):
+ """Create a new workflow"""
+ assume(workflow_id not in self.workflows)
+ result = self.navigator.create_workflow(workflow_id, steps)
+ self.workflows[workflow_id] = steps
+ assert result == workflow_id
 
-    @rule(workflow_id=st.sampled_from([]))
-    @precondition(lambda self: len(self.workflows) > 0)
-    def get_workflow(self, workflow_id):
-        """Get an existing workflow"""
-        workflow = self.navigator.get_workflow(workflow_id)
-        assert workflow.steps == self.workflows[workflow_id]
+ @rule(workflow_id=st.sampled_from([]))
+ @precondition(lambda self: len(self.workflows) > 0)
+ def get_workflow(self, workflow_id):
+ """Get an existing workflow"""
+ workflow = self.navigator.get_workflow(workflow_id)
+ assert workflow.steps == self.workflows[workflow_id]
 
-    @rule()
-    def check_invariants(self):
-        """Invariants that should always hold"""
-        # All created workflows should be retrievable
-        for wf_id in self.workflows:
-            workflow = self.navigator.get_workflow(wf_id)
-            assert workflow is not None
+ @rule()
+ def check_invariants(self):
+ """Invariants that should always hold"""
+ # All created workflows should be retrievable
+ for wf_id in self.workflows:
+ workflow = self.navigator.get_workflow(wf_id)
+ assert workflow is not None
 
 TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 ```

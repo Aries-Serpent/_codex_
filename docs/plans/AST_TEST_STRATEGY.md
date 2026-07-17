@@ -87,24 +87,24 @@ Required performance targets:
 
 ```text
 tests/ast/
-├── unit/                    # Unit tests (90%+ coverage target)
-│   ├── core/
-│   ├── parsers/
-│   ├── analysis/
-│   └── graph/
-├── integration/             # Integration tests (80%+ coverage)
-│   ├── test_parse_analyze_flow.py
-│   ├── test_graph_building.py
-│   └── test_metrics_aggregation.py
-├── e2e/                     # End-to-end tests
-│   ├── test_full_codebase_analysis.py
-│   └── test_report_generation.py
-├── benchmarks/              # Performance benchmarks
-│   ├── test_parse_performance.py
-│   └── test_analysis_performance.py
-└── fixtures/                # Test fixtures
-    ├── sample_code.py
-    └── test_files/
+ unit/ # Unit tests (90%+ coverage target)
+ core/
+ parsers/
+ analysis/
+ graph/
+ integration/ # Integration tests (80%+ coverage)
+ test_parse_analyze_flow.py
+ test_graph_building.py
+ test_metrics_aggregation.py
+ e2e/ # End-to-end tests
+ test_full_codebase_analysis.py
+ test_report_generation.py
+ benchmarks/ # Performance benchmarks
+ test_parse_performance.py
+ test_analysis_performance.py
+ fixtures/ # Test fixtures
+ sample_code.py
+ test_files/
 ```text
 
 ---
@@ -125,9 +125,9 @@ Strategy for regression detection:
 
 ```bash
 pytest tests/ast/ \
-  --cov=src/codex_ml/ast \
-  --cov-report=term-missing \
-  --cov-fail-under=80
+ --cov=src/codex_ml/ast \
+ --cov-report=term-missing \
+ --cov-fail-under=80
 ```text
 
 ---

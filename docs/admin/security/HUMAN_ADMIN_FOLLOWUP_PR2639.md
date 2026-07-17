@@ -41,13 +41,13 @@ The secure token encryption system has been **fully implemented** and is ready f
 cd /path/to/_codex_
 
 # Review core tools
-cat scripts/security/token_encryption_tool.py      # 13KB encryption tool
-cat scripts/security/copilot_token_decoder.py      # 11.5KB decoder module
-cat .github/security-tools/bootstrap_extractor.py  # 6.3KB bootstrap system
+cat scripts/security/token_encryption_tool.py # 13KB encryption tool
+cat scripts/security/copilot_token_decoder.py # 11.5KB decoder module
+cat .github/security-tools/bootstrap_extractor.py # 6.3KB bootstrap system
 
 # Review documentation
-cat docs/admin/security/ADMIN_TOKEN_SETUP.md       # 7.5KB admin guide
-cat docs/admin/security/COPILOT_TOKEN_USAGE.md     # 10.2KB copilot guide
+cat docs/admin/security/ADMIN_TOKEN_SETUP.md # 7.5KB admin guide
+cat docs/admin/security/COPILOT_TOKEN_USAGE.md # 10.2KB copilot guide
 
 # Review workflow
 cat .github/workflows/security-tools-bootstrap.yml # 5.7KB workflow
@@ -124,13 +124,13 @@ Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <!-- pragma: allowl
 
  COPY THESE VALUES TO GITHUB SECRETS:
 
-🥇 RECOMMENDED - Base64 Encoding:
-   Secret Name:  CODEX_GHP_TOKEN_BASE64
-   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4
+ RECOMMENDED - Base64 Encoding:
+ Secret Name: CODEX_GHP_TOKEN_BASE64
+ Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4
 
 [... more secret values ...]
 
-💾 Setup script saved to: /home/user/codex_token_setup.sh
+ Setup script saved to: /home/user/codex_token_setup.sh
 ```
 
 ## Task 2.3: Save Secret Values
@@ -163,38 +163,38 @@ bash ~/codex_token_setup.sh
 ```bash
 # Set secrets one by one
 gh secret set CODEX_GHP_TOKEN_BASE64 \
-  --body "YOUR_BASE64_VALUE" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_BASE64_VALUE" \
+ --repo Aries-Serpent/_codex_
 
 gh secret set CODEX_GHP_TOKEN_SHA256 \
-  --body "YOUR_SHA256_HASH" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_SHA256_HASH" \
+ --repo Aries-Serpent/_codex_
 
 # If using AES encryption (most secure):
 gh secret set CODEX_GHP_TOKEN_AES_KEY \
-  --body "YOUR_AES_KEY" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_AES_KEY" \
+ --repo Aries-Serpent/_codex_
 
 gh secret set CODEX_GHP_TOKEN_AES_CIPHERTEXT \
-  --body "YOUR_CIPHERTEXT" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_CIPHERTEXT" \
+ --repo Aries-Serpent/_codex_
 
 gh secret set CODEX_GHP_TOKEN_AES_NONCE \
-  --body "YOUR_NONCE" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_NONCE" \
+ --repo Aries-Serpent/_codex_
 
 gh secret set CODEX_GHP_TOKEN_AES_TAG \
-  --body "YOUR_TAG" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_TAG" \
+ --repo Aries-Serpent/_codex_
 
 gh secret set CODEX_GHP_TOKEN_AES_AUTH_DATA \
-  --body "YOUR_AUTH_DATA" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_AUTH_DATA" \
+ --repo Aries-Serpent/_codex_
 
 # Or use combined config (single secret):
 gh secret set CODEX_GHP_TOKEN_CONFIG \
-  --body "YOUR_COMBINED_CONFIG" \
-  --repo Aries-Serpent/_codex_
+ --body "YOUR_COMBINED_CONFIG" \
+ --repo Aries-Serpent/_codex_
 ```
 
 ## Option C: Manual via Web UI
@@ -225,11 +225,11 @@ export CODEX_GHP_TOKEN_BASE64="[your_base64_value]"
 python3 scripts/security/copilot_token_decoder.py
 
 # Expected output:
-# 🔓 _codex_ Token Decoder Test
+# _codex_ Token Decoder Test
 # ==============================================================
 # Detected encoding type: base64
-#  Token retrieved successfully: ghp_xxxxxx...xxxx
-#  Token format and hash verified
+# Token retrieved successfully: ghp_xxxxxx...xxxx
+# Token format and hash verified
 # ==============================================================
 ```
 
@@ -253,8 +253,8 @@ gh run list --workflow=copilot-automation.yml --limit 1
 gh secret list --repo Aries-Serpent/_codex_
 
 # Expected to see:
-# CODEX_GHP_TOKEN_BASE64       Updated YYYY-MM-DD
-# CODEX_GHP_TOKEN_SHA256       Updated YYYY-MM-DD
+# CODEX_GHP_TOKEN_BASE64 Updated YYYY-MM-DD
+# CODEX_GHP_TOKEN_SHA256 Updated YYYY-MM-DD
 # [... and any AES secrets if configured ...]
 ```
 
@@ -280,7 +280,7 @@ gh secret list --repo Aries-Serpent/_codex_
 rm ~/codex_token_setup.sh
 
 # Clear terminal history if token was visible
-history -c  # Clears history in current session
+history -c # Clears history in current session
 ```
 
 ## Task 5.3: Document Rotation Date

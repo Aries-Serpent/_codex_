@@ -35,8 +35,8 @@ cd _codex_
 
 # Create virtual environment
 python3.11 -m venv venv
-source venv/bin/activate  # Linux/macOS
-# or: venv\Scripts\activate  # Windows
+source venv/bin/activate # Linux/macOS
+# or: venv\Scripts\activate # Windows
 
 # Install in editable mode
 pip install -e ".[dev]"
@@ -85,8 +85,8 @@ sudo apt update && sudo apt upgrade -y
 
 # Install dependencies
 sudo apt install -y python3.11 python3.11-venv python3.11-dev \
-  build-essential git postgresql postgresql-contrib \
-  libpq-dev curl wget
+ build-essential git postgresql postgresql-contrib \
+ libpq-dev curl wget
 
 # Start PostgreSQL
 sudo systemctl start postgresql
@@ -139,11 +139,11 @@ conda create -n codex python=3.11
 conda activate codex
 
 # Activate the environment
-source venv/bin/activate  # Linux/macOS
+source venv/bin/activate # Linux/macOS
 # or
-venv\Scripts\activate  # Windows PowerShell
+venv\Scripts\activate # Windows PowerShell
 # or
-.\venv\Scripts\activate.bat  # Windows CMD
+.\venv\Scripts\activate.bat # Windows CMD
 ```
 
 ## Step 3: Upgrade pip and Build Tools
@@ -167,8 +167,8 @@ python --version
 pip --version
 
 # Check location
-which python  # Linux/macOS
-where python  # Windows
+which python # Linux/macOS
+where python # Windows
 ```
 
 ---
@@ -198,9 +198,9 @@ pip install -r requirements-dev.txt
 pip install -r requirements-test.txt
 
 # ML/Scientific stack
-pip install -r requirements-ml-cpu.txt  # CPU only
+pip install -r requirements-ml-cpu.txt # CPU only
 # or
-pip install -r requirements-ml-lite.txt  # Minimal dependencies
+pip install -r requirements-ml-lite.txt # Minimal dependencies
 ```
 
 ## Verify Installation
@@ -226,7 +226,7 @@ pipdeptree
 
 ```bash
 # Ensure you're in the virtual environment
-which python  # Should show path in venv/
+which python # Should show path in venv/
 
 # Reinstall in editable mode
 pip install -e . --force-reinstall
@@ -410,53 +410,53 @@ curl http://localhost:8000/metrics
 **`.vscode/settings.json`**:
 ```json
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-  "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--line-length", "100"],
-  "editor.formatOnSave": true,
-  "editor.rulers": [100],
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.python",
-    "editor.formatOnSave": true
-  }
+ "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+ "python.linting.enabled": true,
+ "python.linting.pylintEnabled": true,
+ "python.formatting.provider": "black",
+ "python.formatting.blackArgs": ["--line-length", "100"],
+ "editor.formatOnSave": true,
+ "editor.rulers": [100],
+ "[python]": {
+ "editor.defaultFormatter": "ms-python.python",
+ "editor.formatOnSave": true
+ }
 }
 ```
 
 **`.vscode/launch.json`**:
 ```json
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Python: Current File",
-      "type": "python",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "Python: Flask",
-      "type": "python",
-      "request": "launch",
-      "module": "flask",
-      "env": {
-        "FLASK_APP": "src/codex_ml/api/app.py",
-        "FLASK_ENV": "development"
-      },
-      "args": ["run"],
-      "jinja": true
-    },
-    {
-      "name": "Python: Debug Tests",
-      "type": "python",
-      "request": "launch",
-      "module": "pytest",
-      "args": ["tests/", "-v", "-s"],
-      "console": "integratedTerminal"
-    }
-  ]
+ "version": "0.2.0",
+ "configurations": [
+ {
+ "name": "Python: Current File",
+ "type": "python",
+ "request": "launch",
+ "program": "${file}",
+ "console": "integratedTerminal"
+ },
+ {
+ "name": "Python: Flask",
+ "type": "python",
+ "request": "launch",
+ "module": "flask",
+ "env": {
+ "FLASK_APP": "src/codex_ml/api/app.py",
+ "FLASK_ENV": "development"
+ },
+ "args": ["run"],
+ "jinja": true
+ },
+ {
+ "name": "Python: Debug Tests",
+ "type": "python",
+ "request": "launch",
+ "module": "pytest",
+ "args": ["tests/", "-v", "-s"],
+ "console": "integratedTerminal"
+ }
+ ]
 }
 ```
 
@@ -488,8 +488,8 @@ curl http://localhost:8000/metrics
 ```vim
 " Python LSP setup with coc
 call coc#config("python", {
-  \ "lspPath": "~/.local/bin/pylsp",
-  \ "pythonPath": "<path-to-venv>/bin/python"
+ \ "lspPath": "~/.local/bin/pylsp",
+ \ "pythonPath": "<path-to-venv>/bin/python"
 \})
 ```
 
@@ -515,29 +515,29 @@ pre-commit run --all-files
 **`.pre-commit-config.yaml`** (already in repo):
 ```yaml
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-      - id: black
-        language_version: python3.11
+ - repo: https://github.com/psf/black
+ rev: 23.3.0
+ hooks:
+ - id: black
+ language_version: python3.11
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
+ - repo: https://github.com/PyCQA/isort
+ rev: 5.12.0
+ hooks:
+ - id: isort
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
+ - repo: https://github.com/PyCQA/flake8
+ rev: 6.0.0
+ hooks:
+ - id: flake8
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v0.2.1
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: debug-statements
+ - repo: https://github.com/pre-commit/pre-commit-hooks
+ rev: v0.2.1
+ hooks:
+ - id: trailing-whitespace
+ - id: end-of-file-fixer
+ - id: check-yaml
+ - id: debug-statements
 ```
 
 ### Manual Code Quality Checks
@@ -600,7 +600,7 @@ psql -U codex_user -d codex_dev -c "SELECT 1;"
 pg_isready
 
 # View PostgreSQL logs
-tail -f /var/lib/postgresql/data/postgresql.log  # Linux
+tail -f /var/lib/postgresql/data/postgresql.log # Linux
 
 # Reset PostgreSQL password
 psql -U postgres -c "ALTER USER codex_user PASSWORD 'new_password';"
@@ -688,7 +688,7 @@ pytest -n auto
 pytest -v -s
 
 # Watch mode (auto-run on file changes)
-ptw  # requires pytest-watch
+ptw # requires pytest-watch
 ```
 
 ## Debugging
@@ -697,7 +697,7 @@ ptw  # requires pytest-watch
 # Start debugger with breakpoint()
 python -m pdb src/codex_ml/cli.py
 
-# Debug with PyCharm: Run → Debug 'config_name'
+# Debug with PyCharm: Run Debug 'config_name'
 
 # Debug with VS Code: F5
 

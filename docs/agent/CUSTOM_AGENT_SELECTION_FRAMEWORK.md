@@ -175,9 +175,9 @@ This framework enables systematic selection of the most appropriate custom agent
 
 ```
 Input: Task description, problem statement
-↓
+
 Match to: CI/CD, Testing, Docs, Security, Config, RAG, Platform, Session
-↓
+
 Output: Primary domain (may be secondary)
 ```
 
@@ -185,40 +185,40 @@ Output: Primary domain (may be secondary)
 
 ```
 Simple (single module, <100 loc)
-  → Specialist agent preferred
+ Specialist agent preferred
 
 Moderate (multiple modules, <1000 loc)
-  → Specialist + optional helper
+ Specialist + optional helper
 
 Complex (major refactor, >1000 loc)
-  → Unified entry point + specialists
+ Unified entry point + specialists
 
 Multi-phase (staged delivery)
-  → Orchestrator + specialists in sequence/parallel
+ Orchestrator + specialists in sequence/parallel
 ```
 
 ### Step 3: Check Parallelization Viability
 
 ```
 Independent tasks
-  → Delegate to 2-4 agents in parallel
+ Delegate to 2-4 agents in parallel
 
 Sequential dependencies
-  → Chain: Agent A → output → Agent B input
+ Chain: Agent A output Agent B input
 
 Blocking operations
-  → Single agent until unblock
+ Single agent until unblock
 ```
 
 ### Step 4: Verify Capability Alignment
 
 ```
 Does agent's declared capabilities
-  match task requirements?
+ match task requirements?
 
-YES → Select agent
-NO  → Try next candidate
-     or escalate to orchestrator
+YES Select agent
+NO Try next candidate
+ or escalate to orchestrator
 ```
 
 ### Step 5: Apply Preference Ordering
@@ -300,14 +300,14 @@ Result: Direct, authoritative remediation
 
 ```
 WRONG:
-delegate → ci-testing-agent (wait for complete)
-→ fragile-test-guardian (wait)
-→ unified-coverage-agent (wait)
+delegate ci-testing-agent (wait for complete)
+ fragile-test-guardian (wait)
+ unified-coverage-agent (wait)
 Total time: 3x
 
 CORRECT:
-delegate → [ci-testing-agent, fragile-test-guardian,
-            unified-coverage-agent] (parallel)
+delegate [ci-testing-agent, fragile-test-guardian,
+ unified-coverage-agent] (parallel)
 Total time: 1x + coordination overhead
 
 Use case: Multi-aspect testing audit
@@ -328,9 +328,9 @@ Selection: autonomous-test-healer-agent
 CORRECT:
 Task: Fix failing tests
 Precondition check:
-  - Is build succeeding? YES
-  - Is config valid? YES
-  - Environment stable? YES
+ - Is build succeeding? YES
+ - Is config valid? YES
+ - Environment stable? YES
 Selection: autonomous-test-healer-agent
 ```
 
@@ -342,16 +342,16 @@ Selection: autonomous-test-healer-agent
 
 ```
 WRONG:
-"Fix all CI/CD issues" → ci-auto-healer-agent
+"Fix all CI/CD issues" ci-auto-healer-agent
 (tries to handle workflow syntax, test failures,
  config errors, dependency issues in one pass)
 
 CORRECT:
-"Fix all CI/CD issues" → decompose to:
-  - workflow-ci-fixer (syntax)
-  - ci-auto-healer-agent (patterns)
-  - dependency-conflict-agent (versions)
-  - config-validator (config)
+"Fix all CI/CD issues" decompose to:
+ - workflow-ci-fixer (syntax)
+ - ci-auto-healer-agent (patterns)
+ - dependency-conflict-agent (versions)
+ - config-validator (config)
 (delegate in parallel/sequence)
 ```
 
@@ -398,35 +398,35 @@ CORRECT:
 
 ```
 TASK RECEIVED
-    ↓
-[Classify Domain] → CI/CD | Testing | Docs | Security | Config | Other
-    ↓
-[Assess Complexity] → Simple | Moderate | Complex
-    ↓
-[Check Parallelization] → Independent Tasks | Sequential | Blocking
-    ↓
+ 
+[Classify Domain] CI/CD | Testing | Docs | Security | Config | Other
+ 
+[Assess Complexity] Simple | Moderate | Complex
+ 
+[Check Parallelization] Independent Tasks | Sequential | Blocking
+ 
 [Domain-Specific Routing]
-    ├→ CI/CD:     [Syntax?] → workflow-ci-fixer
-    │             [Patterns?] → ci-auto-healer-agent
-    │             [Blocking?] → ci-emergency-response-agent
-    ├→ Testing:   [Coverage?] → unified-coverage-agent
-    │             [Flaky?] → fragile-test-guardian
-    │             [Failing?] → autonomous-test-healer-agent
-    ├→ Docs:      [Structure?] → unified-doc-agent
-    │             [Links?] → link-validator-agent
-    │             [Freshness?] → doc-freshness-checker
-    ├→ Security:  [CodeQL?] → codeql-alert-resolution-agent
-    │             [Secrets?] → secret-detection-agent
-    │             [Audit?] → unified-security-scanner
-    └→ Config:    [Validation?] → config-validator
-                  [Migration?] → config-migration-assistant
-    ↓
-[Select Primary + Helpers] → Agent(s)
-    ↓
-[Delegate] → Execute in [Sequential | Parallel]
-    ↓
-[Collect Results] → Validation
-    ↓
+ CI/CD: [Syntax?] workflow-ci-fixer
+ [Patterns?] ci-auto-healer-agent
+ [Blocking?] ci-emergency-response-agent
+ Testing: [Coverage?] unified-coverage-agent
+ [Flaky?] fragile-test-guardian
+ [Failing?] autonomous-test-healer-agent
+ Docs: [Structure?] unified-doc-agent
+ [Links?] link-validator-agent
+ [Freshness?] doc-freshness-checker
+ Security: [CodeQL?] codeql-alert-resolution-agent
+ [Secrets?] secret-detection-agent
+ [Audit?] unified-security-scanner
+ Config: [Validation?] config-validator
+ [Migration?] config-migration-assistant
+ 
+[Select Primary + Helpers] Agent(s)
+ 
+[Delegate] Execute in [Sequential | Parallel]
+ 
+[Collect Results] Validation
+ 
 TASK COMPLETE
 ```
 

@@ -159,7 +159,7 @@ $ python .github/scripts/validate-links.py
  MARKDOWN LINK VALIDATION REPORT
 ================================================================================
  Files checked: 1425
-️  Warnings: 0
+ Warnings: 0
  Errors: 0
 ================================================================================
 ```

@@ -73,17 +73,17 @@ from mcp.registry import MCPToolRegistry
 registry = MCPToolRegistry()
 
 def greet(name: str) -> str:
-    """Greet a user by name."""
-    return f"Hello, {name}!"
+ """Greet a user by name."""
+ return f"Hello, {name}!"
 
 registry.register_tool(
-    name="greet",
-    handler=greet,
-    metadata={
-        "description": "Greets a user",
-        "version": "1.0.0",
-        "category": "utilities"
-    }
+ name="greet",
+ handler=greet,
+ metadata={
+ "description": "Greets a user",
+ "version": "1.0.0",
+ "category": "utilities"
+ }
 )
 
 print(f" Tool 'greet' registered")
@@ -94,14 +94,14 @@ print(f" Tool 'greet' registered")
 ```python
 tools = registry.list_tools()
 for tool in tools:
-    print(f"- {tool['name']}: {tool['description']}")
+ print(f"- {tool['name']}: {tool['description']}")
 ```
 
 ### 3. Execute a Tool
 
 ```python
 result = registry.execute_tool("greet", {"name": "Alice"})
-print(result)  # Output: "Hello, Alice!"
+print(result) # Output: "Hello, Alice!"
 ```
 
 ---
@@ -116,16 +116,16 @@ from mcp.registry import MCPToolRegistry
 registry = MCPToolRegistry()
 
 def add_numbers(a: int, b: int) -> int:
-    """Add two numbers."""
-    return a + b
+ """Add two numbers."""
+ return a + b
 
 registry.register_tool(
-    name="add",
-    handler=add_numbers,
-    metadata={
-        "description": "Adds two integers",
-        "version": "1.0.0"
-    }
+ name="add",
+ handler=add_numbers,
+ metadata={
+ "description": "Adds two integers",
+ "version": "1.0.0"
+ }
 )
 ```
 
@@ -133,19 +133,19 @@ registry.register_tool(
 
 ```python
 schema = {
-    "type": "object",
-    "properties": {
-        "a": {"type": "integer", "description": "First number"},
-        "b": {"type": "integer", "description": "Second number"}
-    },
-    "required": ["a", "b"]
+ "type": "object",
+ "properties": {
+ "a": {"type": "integer", "description": "First number"},
+ "b": {"type": "integer", "description": "Second number"}
+ },
+ "required": ["a", "b"]
 }
 
 registry.register_tool(
-    name="add_validated",
-    handler=add_numbers,
-    schema=schema,
-    metadata={"description": "Add with validation"}
+ name="add_validated",
+ handler=add_numbers,
+ schema=schema,
+ metadata={"description": "Add with validation"}
 )
 ```
 
@@ -155,15 +155,15 @@ registry.register_tool(
 from mcp.errors import ValidationError
 
 def divide(a: int, b: int) -> float:
-    """Divide two numbers."""
-    if b == 0:
-        raise ValidationError("Cannot divide by zero")
-    return a / b
+ """Divide two numbers."""
+ if b == 0:
+ raise ValidationError("Cannot divide by zero")
+ return a / b
 
 registry.register_tool(
-    name="divide",
-    handler=divide,
-    metadata={"description": "Division with error handling"}
+ name="divide",
+ handler=divide,
+ metadata={"description": "Division with error handling"}
 )
 ```
 
@@ -179,13 +179,13 @@ from mcp.server.server import MCPJSONRPCServer
 server = MCPJSONRPCServer(config, registry=registry)
 
 request = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "callTool",
-    "params": {
-        "name": "add",
-        "arguments": {"a": 5, "b": 3}
-    }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "callTool",
+ "params": {
+ "name": "add",
+ "arguments": {"a": 5, "b": 3}
+ }
 }
 
 response = server.handle_request(request)
@@ -198,7 +198,7 @@ print(response)
 ```python
 # For internal use or testing
 result = registry.execute_tool("add", {"a": 5, "b": 3})
-print(result)  # Output: 8
+print(result) # Output: 8
 ```
 
 ## Async Tool Invocation
@@ -207,14 +207,14 @@ print(result)  # Output: 8
 import asyncio
 
 async def async_tool(data: dict) -> dict:
-    """Async processing."""
-    await asyncio.sleep(1)
-    return {"processed": data}
+ """Async processing."""
+ await asyncio.sleep(1)
+ return {"processed": data}
 
 registry.register_tool(
-    name="async_processor",
-    handler=async_tool,
-    metadata={"async": True}
+ name="async_processor",
+ handler=async_tool,
+ metadata={"async": True}
 )
 
 # Execute (server handles async automatically)
@@ -229,25 +229,25 @@ result = await registry.execute_tool_async("async_processor", {"key": "value"})
 
 ```json
 {
-  "version": "1.0",
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8000,
-    "workers": 4
-  },
-  "security": {
-    "api_keys": ["secure-api-key-1", "secure-api-key-2"],
-    "rate_limit": {
-      "requests_per_minute": 60,
-      "burst_size": 10
-    }
-  },
-  "observability": {
-    "logging": {
-      "level": "INFO",
-      "format": "json"
-    }
-  }
+ "version": "1.0",
+ "server": {
+ "host": "0.0.0.0",
+ "port": 8000,
+ "workers": 4
+ },
+ "security": {
+ "api_keys": ["secure-api-key-1", "secure-api-key-2"],
+ "rate_limit": {
+ "requests_per_minute": 60,
+ "burst_size": 10
+ }
+ },
+ "observability": {
+ "logging": {
+ "level": "INFO",
+ "format": "json"
+ }
+ }
 }
 ```
 
@@ -293,12 +293,12 @@ print(f"Authenticated: {is_valid}")
 import bcrypt
 
 def hash_password(password: str) -> bytes:
-    """Securely hash password with bcrypt."""
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+ """Securely hash password with bcrypt."""
+ return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 def verify_password(password: str, hashed: bytes) -> bool:
-    """Verify password against hash."""
-    return bcrypt.checkpw(password.encode('utf-8'), hashed)
+ """Verify password against hash."""
+ return bcrypt.checkpw(password.encode('utf-8'), hashed)
 
 # Example usage
 hashed = hash_password("mypassword123")
@@ -312,17 +312,17 @@ from mcp.auth import check_permission
 
 # Define permissions
 permissions = {
-    "admin": ["read", "write", "delete", "execute"],
-    "user": ["read", "execute"],
-    "readonly": ["read"]
+ "admin": ["read", "write", "delete", "execute"],
+ "user": ["read", "execute"],
+ "readonly": ["read"]
 }
 
 # Check permission
 def execute_with_auth(user_role: str, action: str):
-    if action in permissions.get(user_role, []):
-        return " Authorized"
-    else:
-        raise Unauthorized(f"Role '{user_role}' cannot perform '{action}'")
+ if action in permissions.get(user_role, []):
+ return " Authorized"
+ else:
+ raise Unauthorized(f"Role '{user_role}' cannot perform '{action}'")
 ```
 
 ---
@@ -369,8 +369,8 @@ print(f"Tenant 2 rate limit: {config_t2.security.rate_limit.requests_per_minute}
 import logging
 
 logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+ level=logging.DEBUG,
+ format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
 # Now all MCP operations are logged
@@ -382,11 +382,11 @@ logging.basicConfig(
 from mcp.observability import log_event
 
 log_event("tool_invoked", {
-    "tool": "add",
-    "principal": "user-123",
-    "params": {"a": 5, "b": 3},
-    "result": 8,
-    "duration_ms": 12.5
+ "tool": "add",
+ "principal": "user-123",
+ "params": {"a": 5, "b": 3},
+ "result": 8,
+ "duration_ms": 12.5
 })
 ```
 
@@ -412,7 +412,7 @@ print(f"Reset at: {stats['reset_at']}")
 ```python
 # 1. Define tool
 def my_tool(param: str) -> dict:
-    return {"result": f"Processed: {param}"}
+ return {"result": f"Processed: {param}"}
 
 # 2. Register
 registry.register_tool("my_tool", my_tool, metadata={"version": "1.0"})
@@ -437,10 +437,10 @@ auth.load_api_keys_from_env()
 
 # 3. Create server with rate limiting
 server = MCPJSONRPCServer(
-    config,
-    registry=registry,
-    authenticator=auth,
-    rate_limiter=RateLimiter(requests_per_minute=100)
+ config,
+ registry=registry,
+ authenticator=auth,
+ rate_limiter=RateLimiter(requests_per_minute=100)
 )
 
 # 4. Start with monitoring
@@ -461,8 +461,8 @@ manager.register_tenant("tenant-002", config_t2)
 
 # 3. Route requests by tenant
 def handle_request(tenant_id: str, request: dict):
-    context = manager.get_context(tenant_id)
-    return context.execute_tool(request["tool"], request["params"])
+ context = manager.get_context(tenant_id)
+ return context.execute_tool(request["tool"], request["params"])
 ```
 
 ---
@@ -495,11 +495,11 @@ config.security.rate_limit.requests_per_minute = 120
 import time
 max_retries = 3
 for i in range(max_retries):
-    try:
-        result = execute_tool(...)
-        break
-    except RateLimitExceeded:
-        time.sleep(2 ** i)  # Exponential backoff
+ try:
+ result = execute_tool(...)
+ break
+ except RateLimitExceeded:
+ time.sleep(2 ** i) # Exponential backoff
 ```
 
 ## Issue: Authentication Failed
@@ -583,7 +583,7 @@ print(f"Supported: {MCP_VERSIONS}")
 
 ### Path (Usage Flow)
 ```
-Learn basics → Register tool → Test locally → Configure security → Deploy production → Monitor operations
+Learn basics Register tool Test locally Configure security Deploy production Monitor operations
 ```
 
 ### Fields (Developer Productivity)

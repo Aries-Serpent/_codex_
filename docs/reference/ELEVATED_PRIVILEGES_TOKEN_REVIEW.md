@@ -234,7 +234,7 @@
 ```yaml
 # ALWAYS use this exact chain — never bare github.token for write operations
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```
 
 **Compliance:** 113/154 workflows use the proper fallback chain. **1 workflow** uses only `github.token` without MASTER_KEY.
@@ -309,14 +309,14 @@ Run this in your terminal (requires `gh` CLI authenticated):
 ```bash
 # Step 1: Check CODEX_MASTER_KEY scopes (replace TOKEN with actual value)
 curl -s -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-     -H "X-GitHub-Api-Version: 2022-11-28" \
-     https://api.github.com/user \
-  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('login','?'))"
+ -H "X-GitHub-Api-Version: 2022-11-28" \
+ https://api.github.com/user \
+ | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('login','?'))"
 
 # Step 2: Check what scopes the token has
 curl -sI -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-     https://api.github.com/user \
-  | grep -i "x-oauth-scopes"
+ https://api.github.com/user \
+ | grep -i "x-oauth-scopes"
 # Expected output: X-OAuth-Scopes: repo, workflow, ...
 ```
 
@@ -327,8 +327,8 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api rate_limit --jq '.resources.core'
 
 # Test variable write (dry-run GET):
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/variables \
-  --jq '.variables | length'
+ /repos/Aries-Serpent/_codex_/actions/variables \
+ --jq '.variables | length'
 ```
 
 ---
@@ -353,9 +353,9 @@ Look for: `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION
 python3 - << 'PYEOF'
 import os, time, json
 try:
-    import jwt
+ import jwt
 except ImportError:
-    print("Install PyJWT: pip install PyJWT cryptography"); exit(1)
+ print("Install PyJWT: pip install PyJWT cryptography"); exit(1)
 
 key = os.environ["_GITHUB_APP_PRIVATE_KEY"]
 app_id = os.environ["_GITHUB_APP_ID"]
@@ -367,16 +367,16 @@ print(f"JWT minted (first 40 chars): {app_jwt[:40]}...")
 
 import urllib.request
 req = urllib.request.Request(
-    f"https://api.github.com/app/installations/{inst_id}/access_tokens",
-    method="POST", data=json.dumps({}).encode(),
-    headers={"Authorization": f"Bearer {app_jwt}", "Accept": "application/vnd.github+json"}
+ f"https://api.github.com/app/installations/{inst_id}/access_tokens",
+ method="POST", data=json.dumps({}).encode(),
+ headers={"Authorization": f"Bearer {app_jwt}", "Accept": "application/vnd.github+json"}
 )
 try:
-    with urllib.request.urlopen(req) as r:
-        tok = json.load(r)
-    print(f" App token minted — expires: {tok.get('expires_at','?')}")
+ with urllib.request.urlopen(req) as r:
+ tok = json.load(r)
+ print(f" App token minted — expires: {tok.get('expires_at','?')}")
 except Exception as e:
-    print(f" App token mint failed: {e}")
+ print(f" App token mint failed: {e}")
 PYEOF
 ```
 
@@ -428,11 +428,11 @@ Current result: `consolidated-pr-status.yml` (reusable workflow — posts PR sta
 ```yaml
 # Before (vulnerable to 403 on write ops):
 env:
-  GH_TOKEN: ${{ github.token }}
+ GH_TOKEN: ${{ github.token }}
 
 # After (correct pattern):
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```
 
 **Step 5:** Validate YAML:
@@ -464,8 +464,8 @@ git push
 **Step 4:** Test CodeQL alert access:
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/code-scanning/alerts \
-  --jq '.[0].rule.id'
+ /repos/Aries-Serpent/_codex_/code-scanning/alerts \
+ --jq '.[0].rule.id'
 # Should return a rule ID, not a 403
 ```
 
@@ -481,37 +481,37 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 
 ```yaml
 name: Token Expiry Monitor
-# aais-cache: none  # Python referenced in monitoring logic only
+# aais-cache: none # Python referenced in monitoring logic only
 
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday at 09:00 UTC
-  workflow_dispatch:
+ schedule:
+ - cron: '0 9 * * 1' # Every Monday at 09:00 UTC
+ workflow_dispatch:
 
 jobs:
-  check-expiry:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check CODEX_MASTER_KEY expiry
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          EXPIRY=$(curl -sI -H "Authorization: Bearer $GH_TOKEN" \
-            https://api.github.com/user | grep -i "github-authentication-token-expiration" || echo "")
-          if [ -z "$EXPIRY" ]; then
-            echo "️ Token has no expiry (classic PAT without expiry set — OK)"
-          else
-            echo "Token expiry header: $EXPIRY"
-          fi
-          # Test actual write access
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables)
-          if [ "$STATUS" != "200" ]; then
-            echo "::error::CODEX_MASTER_KEY returned HTTP $STATUS on variables API — token may be expired or missing scopes"
-            exit 1
-          fi
-          echo " CODEX_MASTER_KEY: variables API returns 200"
+ check-expiry:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Check CODEX_MASTER_KEY expiry
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ run: |
+ EXPIRY=$(curl -sI -H "Authorization: Bearer $GH_TOKEN" \
+ https://api.github.com/user | grep -i "github-authentication-token-expiration" || echo "")
+ if [ -z "$EXPIRY" ]; then
+ echo " Token has no expiry (classic PAT without expiry set — OK)"
+ else
+ echo "Token expiry header: $EXPIRY"
+ fi
+ # Test actual write access
+ STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+ -H "Authorization: Bearer $GH_TOKEN" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables)
+ if [ "$STATUS" != "200" ]; then
+ echo "::error::CODEX_MASTER_KEY returned HTTP $STATUS on variables API — token may be expired or missing scopes"
+ exit 1
+ fi
+ echo " CODEX_MASTER_KEY: variables API returns 200"
 ```
 
 **Step 2:** Push the workflow file:
@@ -544,27 +544,27 @@ git push
 %%{init: {'accessibility': {'title': 'Flowchart showing agent-auth-delegation.yml\nWorkflow approvals + token dispatch, session_wrapup_autofix.py\nPR body edits + variable writes'}}%%
 
 graph TD
-    subgraph "🔑 CODEX_MASTER_KEY — 125 workflows"
-        A[agent-auth-delegation.yml\nWorkflow approvals + token dispatch]
-        B[session_wrapup_autofix.py\nPR body edits + variable writes]
-        C[auto-approve-workflows.yml\nApprove all pending runs]
-        D[copilot-agent-checkin.yml\nPDA loop + healing triggers]
-        E[workflow-execution-gate.yml\nWEC parsing + arm workflows]
-    end
+ subgraph " CODEX_MASTER_KEY — 125 workflows"
+ A[agent-auth-delegation.yml\nWorkflow approvals + token dispatch]
+ B[session_wrapup_autofix.py\nPR body edits + variable writes]
+ C[auto-approve-workflows.yml\nApprove all pending runs]
+ D[copilot-agent-checkin.yml\nPDA loop + healing triggers]
+ E[workflow-execution-gate.yml\nWEC parsing + arm workflows]
+ end
 
-    subgraph "🔑 GitHub App — 8 workflows"
-        F[post-accountability-to-discussion.yml\nDiscussion posts as App identity]
-        G[copilot-pr-session-injector.yml\nPR creation as App]
-    end
+ subgraph " GitHub App — 8 workflows"
+ F[post-accountability-to-discussion.yml\nDiscussion posts as App identity]
+ G[copilot-pr-session-injector.yml\nPR creation as App]
+ end
 
-    subgraph "️ github.token only — 1 write workflow"
-        H[workflow-link-validation.yml\n Needs MASTER_KEY chain]
-    end
+ subgraph " github.token only — 1 write workflow"
+ H[workflow-link-validation.yml\n Needs MASTER_KEY chain]
+ end
 
-    subgraph " github.token read-only — safe"
-        I[pr-checks.yml\nComment posting only]
-        J[documentation-link-checker.yml\nRead-only link validation]
-    end
+ subgraph " github.token read-only — safe"
+ I[pr-checks.yml\nComment posting only]
+ J[documentation-link-checker.yml\nRead-only link validation]
+ end
 ```
 
 ### 4.3 Highest-Risk Workflows
@@ -611,12 +611,12 @@ For long-running jobs (>1 hour), the App token needs refreshing. Implement this 
 
 ```yaml
 - name: Refresh App token (long-running jobs)
-  if: always()  # run on every 50-min check
-  id: refresh-token
-  uses: actions/create-github-app-token@v1
-  with:
-    app-id: ${{ secrets._GITHUB_APP_ID }}
-    private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
+ if: always() # run on every 50-min check
+ id: refresh-token
+ uses: actions/create-github-app-token@v1
+ with:
+ app-id: ${{ secrets._GITHUB_APP_ID }}
+ private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
 ```
 
 ---
@@ -648,16 +648,16 @@ To drive it to 0%:
 ```bash
 # View current value:
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
-  --jq '.value'
+ /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
+ --jq '.value'
 
 # It will decrease naturally as CI stays green.
 # To force a reset (human admin action required):
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  --method PATCH \
-  /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
-  -f name=CODEX_CI_FAILURE_RATE \
-  -f value='0.0:ok'
+ --method PATCH \
+ /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
+ -f name=CODEX_CI_FAILURE_RATE \
+ -f value='0.0:ok'
 ```
 
 > Only reset if CI has been genuinely green for >7 days. Do not falsify metrics.
@@ -670,19 +670,19 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title Elevated Privileges Remediation Roadmap
-    dateFormat  YYYY-MM-DD
-    section P1 — Critical
-    T-01 Fix workflow-link-validation.yml token chain   :done,    t01, 2026-05-08, 1d
-    T-02 Add token-expiry-monitor.yml                   :active,  t02, 2026-05-08, 2d
-    T-10 Drive CI failure rate to 0 (sustained green)   :         t10, 2026-05-09, 14d
-    section P2 — Important
-    T-03 Add security_events scope to MASTER_KEY        :         t03, 2026-05-10, 1d
-    T-04 Auto-verify GitHub App installation            :         t04, 2026-05-10, 2d
-    section P3 — Maintenance
-    T-06 Add security_events to BACKUP_KEY              :         t06, 2026-05-14, 1d
-    T-07 App token refresh pattern for long jobs        :         t07, 2026-05-14, 3d
-    T-08 Key rotation reminder workflow                 :         t08, 2026-05-17, 2d
+ title Elevated Privileges Remediation Roadmap
+ dateFormat YYYY-MM-DD
+ section P1 — Critical
+ T-01 Fix workflow-link-validation.yml token chain :done, t01, 2026-05-08, 1d
+ T-02 Add token-expiry-monitor.yml :active, t02, 2026-05-08, 2d
+ T-10 Drive CI failure rate to 0 (sustained green) : t10, 2026-05-09, 14d
+ section P2 — Important
+ T-03 Add security_events scope to MASTER_KEY : t03, 2026-05-10, 1d
+ T-04 Auto-verify GitHub App installation : t04, 2026-05-10, 2d
+ section P3 — Maintenance
+ T-06 Add security_events to BACKUP_KEY : t06, 2026-05-14, 1d
+ T-07 App token refresh pattern for long jobs : t07, 2026-05-14, 3d
+ T-08 Key rotation reminder workflow : t08, 2026-05-17, 2d
 ```
 
 ### 7.1 Quick Wins (Do Now — Each < 30 min)
@@ -692,11 +692,11 @@ gantt
 
 flowchart LR
 
-    A["T-01\nFix workflow-link-validation.yml\n10 min"] --> B["T-03\nAdd security_events scope\n15 min"]
+ A["T-01\nFix workflow-link-validation.yml\n10 min"] --> B["T-03\nAdd security_events scope\n15 min"]
 
-    B --> C["T-02\nAdd token-expiry-monitor.yml\n30 min"]
+ B --> C["T-02\nAdd token-expiry-monitor.yml\n30 min"]
 
-    C --> D["AAIS Reliability ≥ 99.0\nonce CI failure rate drops"]
+ C --> D["AAIS Reliability ≥ 99.0\nonce CI failure rate drops"]
 ```
 
 **T-01 exact steps:**
@@ -722,62 +722,62 @@ git commit -m "fix(auth): canonical token chain in workflow-link-validation.yml 
 ### 8.1 Token Authority Hierarchy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push", "🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push", " CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"'}}%%
 
 graph TD
-    subgraph "Tier 1 — Full Write Authority"
-        MK["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push"]
-    end
-    subgraph "Tier 2 — Standard Write"
-        BK["🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"]
-    end
-    subgraph "Tier 3 — App Identity"
-        APP[" GitHub App\n_GITHUB_APP_PRIVATE_KEY + _APP_ID\n8 workflows\nDiscussions · Signed commits · PR as App"]
-    end
-    subgraph "Tier 4 — Limited Read/Comment"
-        GT["⚪ github.token\nscopes: contents:read + pr:write (limited)\n87 workflow refs\n 403 on Variables API\n 403 on security_events"]
-    end
+ subgraph "Tier 1 — Full Write Authority"
+ MK[" CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n125 workflows\nVariables CRUD · Workflow approve · Force-push"]
+ end
+ subgraph "Tier 2 — Standard Write"
+ BK[" CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"]
+ end
+ subgraph "Tier 3 — App Identity"
+ APP[" GitHub App\n_GITHUB_APP_PRIVATE_KEY + _APP_ID\n8 workflows\nDiscussions · Signed commits · PR as App"]
+ end
+ subgraph "Tier 4 — Limited Read/Comment"
+ GT[" github.token\nscopes: contents:read + pr:write (limited)\n87 workflow refs\n 403 on Variables API\n 403 on security_events"]
+ end
 
-    MK -->|"|| fallback"| BK
+ MK -->|"|| fallback"| BK
 
-    BK -->|"|| fallback"| GT
-    APP -.->|"separate auth flow"| GT
+ BK -->|"|| fallback"| GT
+ APP -.->|"separate auth flow"| GT
 
-    style MK fill:#2d9c2d,color:#fff
-    style BK fill:#a0c020,color:#fff
-    style APP fill:#1a6aac,color:#fff
-    style GT fill:#888,color:#fff
+ style MK fill:#2d9c2d,color:#fff
+ style BK fill:#a0c020,color:#fff
+ style APP fill:#1a6aac,color:#fff
+ style GT fill:#888,color:#fff
 ```
 
 ### 8.2 What Happens When CODEX_MASTER_KEY Expires
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram showing MASTER_KEY  EXPIRED, MASTER_KEY '}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing MASTER_KEY EXPIRED, MASTER_KEY '}}%%
 
 sequenceDiagram
-    participant Push as git push
-    participant AutoApprove as auto-approve-workflows.yml
-    participant AgentAuth as agent-auth-delegation.yml
-    participant CI as CI Workflows
-    participant Healing as iterative-self-healing-ci.yml
+ participant Push as git push
+ participant AutoApprove as auto-approve-workflows.yml
+ participant AgentAuth as agent-auth-delegation.yml
+ participant CI as CI Workflows
+ participant Healing as iterative-self-healing-ci.yml
 
-    Push->>AutoApprove: trigger (push event)
-    AutoApprove->>GitHub: POST /runs/{id}/approve [MASTER_KEY  EXPIRED]
+ Push->>AutoApprove: trigger (push event)
+ AutoApprove->>GitHub: POST /runs/{id}/approve [MASTER_KEY EXPIRED]
 
-    GitHub-->>AutoApprove: 403 Forbidden
-    Note over AutoApprove: All pending workflows stay in "Waiting" state
-    Push->>AgentAuth: trigger (push event)
-    AgentAuth->>GitHub: dispatch sub-workflows [MASTER_KEY ]
+ GitHub-->>AutoApprove: 403 Forbidden
+ Note over AutoApprove: All pending workflows stay in "Waiting" state
+ Push->>AgentAuth: trigger (push event)
+ AgentAuth->>GitHub: dispatch sub-workflows [MASTER_KEY ]
 
-    GitHub-->>AgentAuth: 403 Forbidden
-    Note over AgentAuth: No autonomous ops fire
+ GitHub-->>AgentAuth: 403 Forbidden
+ Note over AgentAuth: No autonomous ops fire
 
-    CI-->>Healing: workflow_run (completed: failure)
-    Healing->>GitHub: push fix commit [MASTER_KEY ]
+ CI-->>Healing: workflow_run (completed: failure)
+ Healing->>GitHub: push fix commit [MASTER_KEY ]
 
-    GitHub-->>Healing: 403 Forbidden
-    Note over Healing: Self-healing loop broken — failures accumulate
-    Note over CI:  Full CI blockage until MASTER_KEY rotated
+ GitHub-->>Healing: 403 Forbidden
+ Note over Healing: Self-healing loop broken — failures accumulate
+ Note over CI: Full CI blockage until MASTER_KEY rotated
 ```
 
 ### 8.3 Optimal Token Routing (Target State)
@@ -786,34 +786,34 @@ sequenceDiagram
 %%{init: {'accessibility': {'title': 'Flowchart showing /"Operation Type"/, "CODEX_MASTER_KEY\n+ security_events scope"'}}%%
 
 flowchart TD
-    OP[/"Operation Type"/]
+ OP[/"Operation Type"/]
 
-    OP -->|"Variable / Secret CRUD"| TK1["CODEX_MASTER_KEY\n+ security_events scope"]
+ OP -->|"Variable / Secret CRUD"| TK1["CODEX_MASTER_KEY\n+ security_events scope"]
 
-    OP -->|"Workflow approve/dispatch"| TK1
+ OP -->|"Workflow approve/dispatch"| TK1
 
-    OP -->|"Force-push to branch"| TK1
+ OP -->|"Force-push to branch"| TK1
 
-    OP -->|"CodeQL alert read"| TK1
+ OP -->|"CodeQL alert read"| TK1
 
-    OP -->|"PR create/edit as Agent"| TK2["CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY"]
+ OP -->|"PR create/edit as Agent"| TK2["CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY"]
 
-    OP -->|"Discussion post as App identity"| TK3["GitHub App token\n(_GITHUB_APP_PRIVATE_KEY)"]
+ OP -->|"Discussion post as App identity"| TK3["GitHub App token\n(_GITHUB_APP_PRIVATE_KEY)"]
 
-    OP -->|"PR comment (no write)"| TK4["github.token\n(safe for read/comment)"]
+ OP -->|"PR comment (no write)"| TK4["github.token\n(safe for read/comment)"]
 
-    OP -->|"Checkout / file read"| TK4
+ OP -->|"Checkout / file read"| TK4
 
-    TK1 -->|"if expired/missing"| TK2
+ TK1 -->|"if expired/missing"| TK2
 
-    TK2 -->|"if expired/missing"| TK4
+ TK2 -->|"if expired/missing"| TK4
 
-    TK3 -->|"if app not installed"| TK2
+ TK3 -->|"if app not installed"| TK2
 
-    style TK1 fill:#2d9c2d,color:#fff
-    style TK2 fill:#a0c020,color:#fff
-    style TK3 fill:#1a6aac,color:#fff
-    style TK4 fill:#888,color:#fff
+ style TK1 fill:#2d9c2d,color:#fff
+ style TK2 fill:#a0c020,color:#fff
+ style TK3 fill:#1a6aac,color:#fff
+ style TK4 fill:#888,color:#fff
 ```
 
 ### 8.4 AAIS Score Impact of Token Health
@@ -822,11 +822,11 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'XY Chart showing "All tokens healthy (target)", "MASTER_KEY expired", "App not installed", "security_events missing", 99.9, 97.5, 99.7, 99.7'}}%%
 
 xychart-beta
-    title "AAIS Score by Token Health State"
-    x-axis ["All tokens healthy (target)", "MASTER_KEY expired", "App not installed", "security_events missing"]
+ title "AAIS Score by Token Health State"
+ x-axis ["All tokens healthy (target)", "MASTER_KEY expired", "App not installed", "security_events missing"]
 
-    y-axis "AAIS Composite" 97 --> 100
-    bar [99.9, 97.5, 99.7, 99.7]
+ y-axis "AAIS Composite" 97 --> 100
+ bar [99.9, 97.5, 99.7, 99.7]
 ```
 
 ---
@@ -869,29 +869,29 @@ A single PAT value is referenced in up to **five independent systems** simultane
 %%{init: {'accessibility': {'title': 'Flowchart showing "New PAT value\n(e.g. ghp_NEW...)", "① GitHub Actions Secret\n(settings/secrets/actions)"'}}%%
 
 flowchart TD
-    PAT["New PAT value\n(e.g. ghp_NEW...)"]
-    S["① GitHub Actions Secret\n(settings/secrets/actions)"]
-    V["② Repo Variables\n(actions/variables — \nsome workflows read token via var)"]
-    LC["③ Local shell / .env\n(.env, ~/.bash_profile, etc.)"]
-    CI["④ Any other repo\nthat imports this secret\n(org-level secret sharing)"]
-    CB["⑤ Cognitive Brain / MCP\n(if token stored in agent_context.json\nor .codex/agent_auth_session.json)"]
+ PAT["New PAT value\n(e.g. ghp_NEW...)"]
+ S["① GitHub Actions Secret\n(settings/secrets/actions)"]
+ V["② Repo Variables\n(actions/variables — \nsome workflows read token via var)"]
+ LC["③ Local shell / .env\n(.env, ~/.bash_profile, etc.)"]
+ CI["④ Any other repo\nthat imports this secret\n(org-level secret sharing)"]
+ CB["⑤ Cognitive Brain / MCP\n(if token stored in agent_context.json\nor .codex/agent_auth_session.json)"]
 
-    PAT --> S
+ PAT --> S
 
-    PAT --> V
+ PAT --> V
 
-    PAT --> LC
+ PAT --> LC
 
-    PAT --> CI
+ PAT --> CI
 
-    PAT --> CB
+ PAT --> CB
 
-    style PAT fill:#d62,color:#fff
-    style S fill:#2d9,color:#fff
-    style V fill:#29d,color:#fff
-    style LC fill:#999,color:#fff
-    style CI fill:#92d,color:#fff
-    style CB fill:#d92,color:#fff
+ style PAT fill:#d62,color:#fff
+ style S fill:#2d9,color:#fff
+ style V fill:#29d,color:#fff
+ style LC fill:#999,color:#fff
+ style CI fill:#92d,color:#fff
+ style CB fill:#d92,color:#fff
 ```
 
 Missing **any one** of these means some workflows silently get the old (expired) value and return 403.
@@ -949,16 +949,16 @@ token-adjacent values that must be reviewed on every token rotation:
 %%{init: {'accessibility': {'title': 'Flowchart showing "COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation", "COGNITIVE_BRAIN_ALLOWED_ACTORS\nValue: comma-separated logins\nAction: no change needed unless\nthe PAT owner login changes"'}}%%
 
 graph LR
-    subgraph "Repo Variables — review on every token rotation"
-        V1["COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation"]
-        V2["COGNITIVE_BRAIN_ALLOWED_ACTORS\nValue: comma-separated logins\nAction: no change needed unless\nthe PAT owner login changes"]
-        V3["CODEX_CI_FAILURE_RATE\nValue: float string\nAction: no change — CI-computed\nbut verify it updates after\nnew token takes effect"]
-        V4["AGENT_GITHUB_TOKEN\n️ If this variable stores\na token value directly:\nupdate it immediately"]
-        V5["COPILOT_SESSION_TOKEN\n️ If this variable stores\na session token:\nregenerate via session_bootstrap.py"]
-    end
+ subgraph "Repo Variables — review on every token rotation"
+ V1["COPILOT_AGENT_AUTH_ENABLED\nValue: true/false\nAction: confirm still true after rotation"]
+ V2["COGNITIVE_BRAIN_ALLOWED_ACTORS\nValue: comma-separated logins\nAction: no change needed unless\nthe PAT owner login changes"]
+ V3["CODEX_CI_FAILURE_RATE\nValue: float string\nAction: no change — CI-computed\nbut verify it updates after\nnew token takes effect"]
+ V4["AGENT_GITHUB_TOKEN\n If this variable stores\na token value directly:\nupdate it immediately"]
+ V5["COPILOT_SESSION_TOKEN\n If this variable stores\na session token:\nregenerate via session_bootstrap.py"]
+ end
 
-    style V4 fill:#d62,color:#fff
-    style V5 fill:#d62,color:#fff
+ style V4 fill:#d62,color:#fff
+ style V5 fill:#d62,color:#fff
 ```
 
 **How to list all current variables and spot any that contain token-like values:**
@@ -966,9 +966,9 @@ graph LR
 ```bash
 # List all repo variables (names + values)
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/variables \
-  --paginate \
-  --jq '.variables[] | "\(.name) = \(.value[:60])"'
+ /repos/Aries-Serpent/_codex_/actions/variables \
+ --paginate \
+ --jq '.variables[] | "\(.name) = \(.value[:60])"'
 ```
 
 **Look for any variable whose value starts with `ghp_`, `github_pat_`, `ghs_`, or `gho_`.**
@@ -1015,20 +1015,20 @@ This variable tracks when the token was last confirmed healthy. Update it immedi
 ```bash
 # After confirming the new key works (admin_setup_verification.yml passes):
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  --method PATCH \
-  /repos/Aries-Serpent/_codex_/actions/variables/CODEX_MASTER_KEY_LAST_VERIFIED \
-  -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
-  -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
+ --method PATCH \
+ /repos/Aries-Serpent/_codex_/actions/variables/CODEX_MASTER_KEY_LAST_VERIFIED \
+ -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
+ -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
 ```
 
 If the variable doesn't exist yet, create it:
 
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  --method POST \
-  /repos/Aries-Serpent/_codex_/actions/variables \
-  -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
-  -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
+ --method POST \
+ /repos/Aries-Serpent/_codex_/actions/variables \
+ -f name=CODEX_MASTER_KEY_LAST_VERIFIED \
+ -f value="$(date -u +%Y-%m-%dT%H:%M:%SZ):ok"
 ```
 
 ---
@@ -1046,59 +1046,59 @@ echo "=== Post-Rotation Alignment Verification ==="
 echo ""
 
 # 1. Confirm new CODEX_MASTER_KEY works against Variables API
-echo "1. Testing CODEX_MASTER_KEY → Variables API..."
+echo "1. Testing CODEX_MASTER_KEY Variables API..."
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
-[ "$STATUS" = "200" ] && echo "    Variables API: OK" || echo "    Variables API: HTTP $STATUS"
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2022-11-28" \
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
+[ "$STATUS" = "200" ] && echo " Variables API: OK" || echo " Variables API: HTTP $STATUS"
 
 # 2. Confirm workflow approval capability
 echo "2. Testing CODEX_MASTER_KEY scopes..."
 SCOPES=$(curl -sI \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  https://api.github.com/user | grep -i "x-oauth-scopes" | tr -d '\r')
-echo "   Scopes: ${SCOPES:-none detected (may be fine-grained PAT)}"
-echo "$SCOPES" | grep -q "workflow" && echo "    workflow scope: present" || echo "   ️  workflow scope: missing"
-echo "$SCOPES" | grep -q "repo" && echo "    repo scope: present" || echo "    repo scope: MISSING"
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ https://api.github.com/user | grep -i "x-oauth-scopes" | tr -d '\r')
+echo " Scopes: ${SCOPES:-none detected (may be fine-grained PAT)}"
+echo "$SCOPES" | grep -q "workflow" && echo " workflow scope: present" || echo " workflow scope: missing"
+echo "$SCOPES" | grep -q "repo" && echo " repo scope: present" || echo " repo scope: MISSING"
 
 # 3. Check for stale token values in repo variables
 echo "3. Scanning repo variables for embedded token values..."
 VARS=$(GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/variables \
-  --paginate --jq '.variables[] | "\(.name)=\(.value)"' 2>/dev/null)
+ /repos/Aries-Serpent/_codex_/actions/variables \
+ --paginate --jq '.variables[] | "\(.name)=\(.value)"' 2>/dev/null)
 echo "$VARS" | grep -E "=(ghp_|github_pat_|ghs_|gho_)" \
-  && echo "    Found variable(s) with embedded token values — UPDATE IMMEDIATELY" \
-  || echo "    No embedded token values in repo variables" <!-- pragma: allowlist secret -->
+ && echo " Found variable(s) with embedded token values — UPDATE IMMEDIATELY" \
+ || echo " No embedded token values in repo variables" <!-- pragma: allowlist secret -->
 
 # 4. Check agent_context.json for leaked token fields
 echo "4. Checking .codex/agent_context.json for token fields..."
 python3 -c "
 import json, sys
 try:
-    d = json.load(open('.codex/agent_context.json'))
-    tok_keys = [k for k,v in d.items() if isinstance(v,str) and any(v.startswith(p) for p in ['ghp_','github_pat_','ghs_','gho_'])]
-    if tok_keys:
-        print(f'    Token-like values found in keys: {tok_keys}')
-        sys.exit(1)
-    else:
-        print('    No token values in agent_context.json')
+ d = json.load(open('.codex/agent_context.json'))
+ tok_keys = [k for k,v in d.items() if isinstance(v,str) and any(v.startswith(p) for p in ['ghp_','github_pat_','ghs_','gho_'])]
+ if tok_keys:
+ print(f' Token-like values found in keys: {tok_keys}')
+ sys.exit(1)
+ else:
+ print(' No token values in agent_context.json')
 except Exception as e:
-    print(f'   ️  Could not check: {e}')
+ print(f' Could not check: {e}')
 "
 
 # 5. Confirm secrets baseline is clean
 echo "5. Running detect-secrets scan..."
 if command -v detect-secrets &>/dev/null; then
-  detect-secrets scan --baseline .secrets.baseline 2>/dev/null \
-    && echo "    detect-secrets: no new secrets found" \
-    || echo "   ️  detect-secrets found new strings — run: python scripts/ci/sync_tracked_files.py --fix" <!-- pragma: allowlist secret -->
+ detect-secrets scan --baseline .secrets.baseline 2>/dev/null \
+ && echo " detect-secrets: no new secrets found" \
+ || echo " detect-secrets found new strings — run: python scripts/ci/sync_tracked_files.py --fix" <!-- pragma: allowlist secret -->
 else
-  echo "   ️  detect-secrets not installed — run: pip install detect-secrets"
+ echo " detect-secrets not installed — run: pip install detect-secrets"
 fi
 
 echo ""
-echo "=== Verification complete. Fix any  items before proceeding. ==="
+echo "=== Verification complete. Fix any items before proceeding. ==="
 ```
 
 Save as `scripts/ci/post_rotation_verify.sh` and run:
@@ -1116,52 +1116,52 @@ CODEX_MASTER_KEY=<new_token_value> ./scripts/ci/post_rotation_verify.sh
 
 stateDiagram-v2
 
-    [*] --> TokenValid : Initial state
+ [*] --> TokenValid : Initial state
 
-    TokenValid --> RotationTriggered : PAT expires / security event
+ TokenValid --> RotationTriggered : PAT expires / security event
 
-    RotationTriggered --> NewPATCreated : GitHub settings/tokens → Regenerate
+ RotationTriggered --> NewPATCreated : GitHub settings/tokens Regenerate
 
-    NewPATCreated --> SecretUpdated : settings/secrets/actions → Update CODEX_MASTER_KEY
+ NewPATCreated --> SecretUpdated : settings/secrets/actions Update CODEX_MASTER_KEY
 
-    SecretUpdated --> VariablesScanned : gh api /actions/variables → grep ghp_
+ SecretUpdated --> VariablesScanned : gh api /actions/variables grep ghp_
 
-    VariablesScanned --> StaleVarFound : variable contains old token value
+ VariablesScanned --> StaleVarFound : variable contains old token value
 
-    VariablesScanned --> AgentFilesChecked : no stale vars
+ VariablesScanned --> AgentFilesChecked : no stale vars
 
-    StaleVarFound --> StaleVarFixed : PATCH /actions/variables/{name}
+ StaleVarFound --> StaleVarFixed : PATCH /actions/variables/{name}
 
-    StaleVarFixed --> AgentFilesChecked
+ StaleVarFixed --> AgentFilesChecked
 
-    AgentFilesChecked --> AgentContextClean : No token fields in agent_context.json
+ AgentFilesChecked --> AgentContextClean : No token fields in agent_context.json
 
-    AgentFilesChecked --> AgentContextFixed : Token field found → remove / sanitize
+ AgentFilesChecked --> AgentContextFixed : Token field found remove / sanitize
 
-    AgentContextFixed --> AgentContextClean
+ AgentContextFixed --> AgentContextClean
 
-    AgentContextClean --> SecretsBaselineOK : detect-secrets scan clean
+ AgentContextClean --> SecretsBaselineOK : detect-secrets scan clean
 
-    AgentContextClean --> BaselineUpdated : new high-entropy string found
+ AgentContextClean --> BaselineUpdated : new high-entropy string found
 
-    BaselineUpdated --> SecretsBaselineOK : pragma comment + sync_tracked_files --fix
+ BaselineUpdated --> SecretsBaselineOK : pragma comment + sync_tracked_files --fix
 
-    SecretsBaselineOK --> LastVerifiedUpdated : PATCH CODEX_MASTER_KEY_LAST_VERIFIED
+ SecretsBaselineOK --> LastVerifiedUpdated : PATCH CODEX_MASTER_KEY_LAST_VERIFIED
 
-    LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml → 
+ LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml 
 
-    LiveTestPassed --> TokenValid : Rotation complete 
+ LiveTestPassed --> TokenValid : Rotation complete 
 
-    LiveTestPassed --> RotationTriggered :  Test fails → re-rotate
+ LiveTestPassed --> RotationTriggered : Test fails re-rotate
 
-    note right of SecretUpdated
-        Also update CODEX_BACKUP_KEY
-        if rotating both simultaneously
-    end note
+ note right of SecretUpdated
+ Also update CODEX_BACKUP_KEY
+ if rotating both simultaneously
+ end note
 
-    note right of VariablesScanned
-        See §9.3 variable list
-    end note
+ note right of VariablesScanned
+ See §9.3 variable list
+ end note
 ```
 
 ---
@@ -1173,42 +1173,42 @@ When rotating **all tokens at once** (e.g., a security incident requiring full c
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>You: New BACKUP_KEY value
 
-  '}}%%
+ '}}%%
 sequenceDiagram
-    participant You as 🧑 Admin
-    participant GH as GitHub Settings
-    participant Secrets as Repo Secrets
-    participant Vars as Repo Variables
-    participant CI as CI Pipeline
+ participant You as Admin
+ participant GH as GitHub Settings
+ participant Secrets as Repo Secrets
+ participant Vars as Repo Variables
+ participant CI as CI Pipeline
 
-    Note over You,CI: ️ DO NOT disable auto-approve-workflows.yml during rotation<br/>It needs the new MASTER_KEY to approve workflows post-rotation
+ Note over You,CI: DO NOT disable auto-approve-workflows.yml during rotation<br/>It needs the new MASTER_KEY to approve workflows post-rotation
 
-    You->>GH: 1. Regenerate CODEX_BACKUP_KEY (lower risk — not primary)
+ You->>GH: 1. Regenerate CODEX_BACKUP_KEY (lower risk — not primary)
 
-    GH-->>You: New BACKUP_KEY value
-    You->>Secrets: 2. Update CODEX_BACKUP_KEY secret
+ GH-->>You: New BACKUP_KEY value
+ You->>Secrets: 2. Update CODEX_BACKUP_KEY secret
 
-    Secrets-->>CI: Fallback key now fresh
+ Secrets-->>CI: Fallback key now fresh
 
-    You->>GH: 3. Regenerate CODEX_MASTER_KEY
+ You->>GH: 3. Regenerate CODEX_MASTER_KEY
 
-    GH-->>You: New MASTER_KEY value
-    You->>Secrets: 4. Update CODEX_MASTER_KEY secret immediately
+ GH-->>You: New MASTER_KEY value
+ You->>Secrets: 4. Update CODEX_MASTER_KEY secret immediately
 
-    Secrets-->>CI: Primary key now fresh
+ Secrets-->>CI: Primary key now fresh
 
-    You->>GH: 5. Rotate GitHub App private key (if needed)
+ You->>GH: 5. Rotate GitHub App private key (if needed)
 
-    GH-->>You: New .pem file
-    You->>Secrets: 6. Update _GITHUB_APP_PRIVATE_KEY secret
-    You->>GH: 7. Delete old App private key from App settings
+ GH-->>You: New .pem file
+ You->>Secrets: 6. Update _GITHUB_APP_PRIVATE_KEY secret
+ You->>GH: 7. Delete old App private key from App settings
 
-    You->>Vars: 8. Scan variables for embedded token values (§9.3)
-    You->>CI: 9. Trigger admin_setup_verification.yml — verify all green
+ You->>Vars: 8. Scan variables for embedded token values (§9.3)
+ You->>CI: 9. Trigger admin_setup_verification.yml — verify all green
 
-    You->>Vars: 10. Update CODEX_MASTER_KEY_LAST_VERIFIED (§9.5)
+ You->>Vars: 10. Update CODEX_MASTER_KEY_LAST_VERIFIED (§9.5)
 
-    Note over You,CI:  Rotation complete — all systems aligned
+ Note over You,CI: Rotation complete — all systems aligned
 ```
 
 > ** Critical ordering rule:** Always update `CODEX_BACKUP_KEY` **before** `CODEX_MASTER_KEY`.
@@ -1229,34 +1229,34 @@ Use this table when creating or regenerating PATs to ensure you select the right
 | GitHub App | App-level permissions (not scopes) | `pull_requests:write` · `contents:write` · `issues:write` · `discussions:write` | — |
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "☑ repo\n(all sub-checkboxes)", "☑ workflow\n(update Actions workflows)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " repo\n(all sub-checkboxes)", " workflow\n(update Actions workflows)"'}}%%
 
 graph LR
-    subgraph "CODEX_MASTER_KEY — Required Checkbox Map"
-        R1["☑ repo\n(all sub-checkboxes)"]
-        R2["☑ workflow\n(update Actions workflows)"]
-        R3["☑ security_events\n(recommended — CodeQL)"]
-        R1 --- R2 --- R3
-    end
-    subgraph "CODEX_BACKUP_KEY — Required Checkbox Map"
-        B1["☑ repo\n(all sub-checkboxes)"]
-        B2["☑ workflow"]
-        B1 --- B2
-    end
-    subgraph " Never Select"
-        X1["☐ delete_repo"]
-        X2["☐ admin:org"]
-        X3["☐ admin:enterprise"]
-    end
+ subgraph "CODEX_MASTER_KEY — Required Checkbox Map"
+ R1[" repo\n(all sub-checkboxes)"]
+ R2[" workflow\n(update Actions workflows)"]
+ R3[" security_events\n(recommended — CodeQL)"]
+ R1 --- R2 --- R3
+ end
+ subgraph "CODEX_BACKUP_KEY — Required Checkbox Map"
+ B1[" repo\n(all sub-checkboxes)"]
+ B2[" workflow"]
+ B1 --- B2
+ end
+ subgraph " Never Select"
+ X1[" delete_repo"]
+ X2[" admin:org"]
+ X3[" admin:enterprise"]
+ end
 
-    style R1 fill:#2d9c2d,color:#fff
-    style R2 fill:#2d9c2d,color:#fff
-    style R3 fill:#a0c020,color:#fff
-    style B1 fill:#2d9c2d,color:#fff
-    style B2 fill:#2d9c2d,color:#fff
-    style X1 fill:#c0392b,color:#fff
-    style X2 fill:#c0392b,color:#fff
-    style X3 fill:#c0392b,color:#fff
+ style R1 fill:#2d9c2d,color:#fff
+ style R2 fill:#2d9c2d,color:#fff
+ style R3 fill:#a0c020,color:#fff
+ style B1 fill:#2d9c2d,color:#fff
+ style B2 fill:#2d9c2d,color:#fff
+ style X1 fill:#c0392b,color:#fff
+ style X2 fill:#c0392b,color:#fff
+ style X3 fill:#c0392b,color:#fff
 ```
 
 ---
@@ -1307,30 +1307,30 @@ Use it to prioritise which rotation to complete first in an emergency.
 ### 10.1 Variable & Secret Taxonomy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update", " Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update", " Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"'}}%%
 
 graph TD
-    subgraph "Scope Hierarchy (broadest → narrowest)"
-        ORG["🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update"]
-        REPO_S[" Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"]
-        ENV_S["🌍 Environment Secrets\nScoped to a named Environment\nCan add approval gates\nExample: Aries_Serpent_codex_"]
-        REPO_V[" Repository Variables\nNon-secret config values\nVisible in workflow logs\nMaintainer can update"]
-        ENV_V["🌍 Environment Variables\nScoped to named Environment\nMerged with repo variables\nMaintainer can update"]
-    end
+ subgraph "Scope Hierarchy (broadest narrowest)"
+ ORG[" Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update"]
+ REPO_S[" Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"]
+ ENV_S[" Environment Secrets\nScoped to a named Environment\nCan add approval gates\nExample: Aries_Serpent_codex_"]
+ REPO_V[" Repository Variables\nNon-secret config values\nVisible in workflow logs\nMaintainer can update"]
+ ENV_V[" Environment Variables\nScoped to named Environment\nMerged with repo variables\nMaintainer can update"]
+ end
 
-    ORG --> REPO_S
+ ORG --> REPO_S
 
-    REPO_S --> ENV_S
+ REPO_S --> ENV_S
 
-    ORG --> REPO_V
+ ORG --> REPO_V
 
-    REPO_V --> ENV_V
+ REPO_V --> ENV_V
 
-    style ORG fill:#8b1a1a,color:#fff
-    style REPO_S fill:#1a4a8b,color:#fff
-    style ENV_S fill:#1a6b8b,color:#fff
-    style REPO_V fill:#2d6a2d,color:#fff
-    style ENV_V fill:#4a8b4a,color:#fff
+ style ORG fill:#8b1a1a,color:#fff
+ style REPO_S fill:#1a4a8b,color:#fff
+ style ENV_S fill:#1a6b8b,color:#fff
+ style REPO_V fill:#2d6a2d,color:#fff
+ style ENV_V fill:#4a8b4a,color:#fff
 ```
 
 **Rule of thumb for choosing scope:**
@@ -1365,10 +1365,10 @@ These are stored at org level and available to this repo. Only org owners can up
 ```bash
 # Requires org owner permissions
 GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
-  --org Aries-Serpent \
-  --visibility selected \
-  --repos _codex_ \
-  --body "$(cat /path/to/secret/value)"
+ --org Aries-Serpent \
+ --visibility selected \
+ --repos _codex_ \
+ --body "$(cat /path/to/secret/value)"
 ```
 
 ---
@@ -1548,35 +1548,35 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 
 flowchart TD
 
-    A["New value to add"] --> B{"Is it sensitive?\n(token, key, password, credential)"}
+ A["New value to add"] --> B{"Is it sensitive?\n(token, key, password, credential)"}
 
-    B -- No --> C{"Is it needed by\nmultiple repos?"}
+ B -- No --> C{"Is it needed by\nmultiple repos?"}
 
-    B -- Yes --> D{"Is it needed by\nmultiple repos?"}
+ B -- Yes --> D{"Is it needed by\nmultiple repos?"}
 
-    C -- Yes --> OV["Org Variable\ngh variable set NAME VALUE --org Aries-Serpent"]
+ C -- Yes --> OV["Org Variable\ngh variable set NAME VALUE --org Aries-Serpent"]
 
-    C -- No --> E{"Does it change per\ndeployment environment?"}
+ C -- No --> E{"Does it change per\ndeployment environment?"}
 
-    E -- Yes --> EV["Environment Variable\n(Aries_Serpent_codex_ environment)"]
+ E -- Yes --> EV["Environment Variable\n(Aries_Serpent_codex_ environment)"]
 
-    E -- No --> RV["Repo Variable\ngh variable set NAME VALUE --repo Aries-Serpent/_codex_"]
+ E -- No --> RV["Repo Variable\ngh variable set NAME VALUE --repo Aries-Serpent/_codex_"]
 
-    D -- Yes --> OS["Org Secret\ngh secret set NAME --org Aries-Serpent"]
+ D -- Yes --> OS["Org Secret\ngh secret set NAME --org Aries-Serpent"]
 
-    D -- No --> F{"Does it need\nenvironment approval gates?"}
+ D -- No --> F{"Does it need\nenvironment approval gates?"}
 
-    F -- Yes --> ES["Environment Secret\n(Aries_Serpent_codex_ environment)"]
+ F -- Yes --> ES["Environment Secret\n(Aries_Serpent_codex_ environment)"]
 
-    F -- No --> RS["Repo Secret\ngh secret set NAME --repo Aries-Serpent/_codex_"]
+ F -- No --> RS["Repo Secret\ngh secret set NAME --repo Aries-Serpent/_codex_"]
 
-    style A fill:#555,color:#fff
-    style OS fill:#8b1a1a,color:#fff
-    style RS fill:#1a4a8b,color:#fff
-    style ES fill:#1a6b8b,color:#fff
-    style OV fill:#2d6a2d,color:#fff
-    style RV fill:#4a8b4a,color:#fff
-    style EV fill:#5a9b5a,color:#fff
+ style A fill:#555,color:#fff
+ style OS fill:#8b1a1a,color:#fff
+ style RS fill:#1a4a8b,color:#fff
+ style ES fill:#1a6b8b,color:#fff
+ style OV fill:#2d6a2d,color:#fff
+ style RV fill:#4a8b4a,color:#fff
+ style EV fill:#5a9b5a,color:#fff
 ```
 
 #### 10.7.2 Naming Conventions
@@ -1599,13 +1599,13 @@ Follow these patterns when adding new variables or secrets to maintain consisten
 ```bash
 # 1. Add the variable
 GH_TOKEN=$CODEX_MASTER_KEY gh variable set MY_NEW_VARIABLE \
-  --repo Aries-Serpent/_codex_ \
-  --body "my_value"
+ --repo Aries-Serpent/_codex_ \
+ --body "my_value"
 
 # 2. Verify it was created
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/variables/MY_NEW_VARIABLE \
-  --jq '.name + " = " + .value'
+ /repos/Aries-Serpent/_codex_/actions/variables/MY_NEW_VARIABLE \
+ --jq '.name + " = " + .value'
 
 # 3. Reference it in a workflow:
 # jobs:
@@ -1625,13 +1625,13 @@ python scripts/ci/sync_tracked_files.py --fix
 ```bash
 # 1. Add the secret (never echo raw value — use file or stdin)
 GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_NEW_SECRET \
-  --repo Aries-Serpent/_codex_ \
-  < /path/to/secret/file
+ --repo Aries-Serpent/_codex_ \
+ < /path/to/secret/file
 
 # 2. Verify the secret exists (values are never readable back)
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  /repos/Aries-Serpent/_codex_/actions/secrets/MY_NEW_SECRET \
-  --jq '"Secret: " + .name + " (updated: " + .updated_at + ")"'
+ /repos/Aries-Serpent/_codex_/actions/secrets/MY_NEW_SECRET \
+ --jq '"Secret: " + .name + " (updated: " + .updated_at + ")"'
 
 # 3. Reference it in a workflow:
 # jobs:
@@ -1640,7 +1640,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh api \
 # - name: Use secret
 # env:
 # MY_SECRET: ${{ secrets.MY_NEW_SECRET }}
-# run: echo "Secret is set"  # never echo the value
+# run: echo "Secret is set" # never echo the value
 
 # 4. Add to post_rotation_verify.sh scan list if token-like
 # 5. Document in §10.3 above
@@ -1653,15 +1653,15 @@ Org secrets are preferred for values shared across multiple repos. To promote:
 ```bash
 # 1. Add at org level with selected repo visibility
 GH_TOKEN=$CODEX_MASTER_KEY gh secret set MY_ORG_SECRET \
-  --org Aries-Serpent \
-  --visibility selected \
-  --repos _codex_ \
-  < /path/to/secret/file
+ --org Aries-Serpent \
+ --visibility selected \
+ --repos _codex_ \
+ < /path/to/secret/file
 
 # 2. Remove the repo-level duplicate (to avoid shadowing confusion)
 GH_TOKEN=$CODEX_MASTER_KEY gh api \
-  --method DELETE \
-  /repos/Aries-Serpent/_codex_/actions/secrets/MY_ORG_SECRET
+ --method DELETE \
+ /repos/Aries-Serpent/_codex_/actions/secrets/MY_ORG_SECRET
 
 # 3. Verify the org secret is accessible from this repo:
 # The value will appear as ${{ secrets.MY_ORG_SECRET }} in workflows
@@ -1722,29 +1722,29 @@ Based on the current variable inventory, these improvements would increase secur
 %%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)", "Runner tokens stored\nas long-lived secrets"'}}%%
 
 graph LR
-    subgraph "Current State"
-        C1["CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)"]
-        C2["Runner tokens stored\nas long-lived secrets"]
-        C3["No expiry tracking\nfor any PAT"]
-    end
-    subgraph "Recommended State"
-        R1["CODEX_BACKUP_KEY → repo-level\n(least-privilege scope)"]
-        R2["Use actions/create-github-app-token\nfor short-lived tokens"]
-        R3["Add CODEX_MASTER_KEY_EXPIRY_DATE\n+ token-expiry-monitor.yml (T-02)"]
-    end
+ subgraph "Current State"
+ C1["CODEX_BACKUP_KEY stored\nat org level\n(visible to all selected repos)"]
+ C2["Runner tokens stored\nas long-lived secrets"]
+ C3["No expiry tracking\nfor any PAT"]
+ end
+ subgraph "Recommended State"
+ R1["CODEX_BACKUP_KEY repo-level\n(least-privilege scope)"]
+ R2["Use actions/create-github-app-token\nfor short-lived tokens"]
+ R3["Add CODEX_MASTER_KEY_EXPIRY_DATE\n+ token-expiry-monitor.yml (T-02)"]
+ end
 
-    C1 -->|"Move"| R1
+ C1 -->|"Move"| R1
 
-    C2 -->|"Replace"| R2
+ C2 -->|"Replace"| R2
 
-    C3 -->|"Add"| R3
+ C3 -->|"Add"| R3
 
-    style C1 fill:#8b3a3a,color:#fff
-    style C2 fill:#8b3a3a,color:#fff
-    style C3 fill:#8b3a3a,color:#fff
-    style R1 fill:#2d6a2d,color:#fff
-    style R2 fill:#2d6a2d,color:#fff
-    style R3 fill:#2d6a2d,color:#fff
+ style C1 fill:#8b3a3a,color:#fff
+ style C2 fill:#8b3a3a,color:#fff
+ style C3 fill:#8b3a3a,color:#fff
+ style R1 fill:#2d6a2d,color:#fff
+ style R2 fill:#2d6a2d,color:#fff
+ style R3 fill:#2d6a2d,color:#fff
 ```
 
 ---
@@ -1755,50 +1755,50 @@ Reference guide for how to read variables and secrets in GitHub Actions YAML:
 
 ```yaml
 jobs:
-  example:
-    env:
-      # ── Repo Variables (plain text, visible in logs) ─────────────────────
-      PYTHON_VER:      ${{ vars.CODEX_ENV_PYTHON_VERSION }}
-      LLM_MODEL:       ${{ vars.CODEX_LLM_MODEL }}
-      CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
+ example:
+ env:
+ # Repo Variables (plain text, visible in logs) 
+ PYTHON_VER: ${{ vars.CODEX_ENV_PYTHON_VERSION }}
+ LLM_MODEL: ${{ vars.CODEX_LLM_MODEL }}
+ CI_FAILURE_RATE: ${{ vars.CODEX_CI_FAILURE_RATE }}
 
-      # ── Repo/Org Secrets (masked in logs) ────────────────────────────────
-      # ALWAYS use the fallback chain for token operations:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ # Repo/Org Secrets (masked in logs) 
+ # ALWAYS use the fallback chain for token operations:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
-      # For CodeQL / security_events scope:
-      SECURITY_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ # For CodeQL / security_events scope:
+ SECURITY_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
 
-      # For GitHub App short-lived token (preferred for write ops):
-      # Use actions/create-github-app-token@v1 — see §5.3
+ # For GitHub App short-lived token (preferred for write ops):
+ # Use actions/create-github-app-token@v1 — see §5.3
 
-      # ── Environment Variables (set via env: at job/step level) ───────────
-      # Environment variables from the named environment are automatically
-      # injected when the job targets that environment:
-      # environment: Aries_Serpent_codex_
+ # Environment Variables (set via env: at job/step level) 
+ # Environment variables from the named environment are automatically
+ # injected when the job targets that environment:
+ # environment: Aries_Serpent_codex_
 
-    steps:
-      - name: Read a variable in a script
-        run: |
-          echo "Python: $PYTHON_VER"  # from env: block above
-          echo "Model: ${{ vars.CODEX_LLM_MODEL }}"  # inline expression
+ steps:
+ - name: Read a variable in a script
+ run: |
+ echo "Python: $PYTHON_VER" # from env: block above
+ echo "Model: ${{ vars.CODEX_LLM_MODEL }}" # inline expression
 
-      - name: Use a secret (never echo raw value)
-        env:
-          MY_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          #  Pass to tool that reads from env:
-          python my_script.py  # reads MY_KEY from os.environ
-          #  NEVER do: echo $MY_KEY
+ - name: Use a secret (never echo raw value)
+ env:
+ MY_KEY: ${{ secrets.OPENAI_API_KEY }}
+ run: |
+ # Pass to tool that reads from env:
+ python my_script.py # reads MY_KEY from os.environ
+ # NEVER do: echo $MY_KEY
 
-      - name: Update a variable from within a workflow
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-        run: |
-          gh api --method PATCH \
-            /repos/${{ github.repository }}/actions/variables/MY_VAR \
-            -f name=MY_VAR \
-            -f value="new_value"
+ - name: Update a variable from within a workflow
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ run: |
+ gh api --method PATCH \
+ /repos/${{ github.repository }}/actions/variables/MY_VAR \
+ -f name=MY_VAR \
+ -f value="new_value"
 ```
 
 ---
@@ -1839,43 +1839,43 @@ Cross-reference: for each token rotation scenario, which variables and secrets n
 %%{init: {'accessibility': {'title': 'Diagram showing "scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR", "token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"'}}%%
 
 graph TB
-    subgraph " Audit & Scan"
-        W1["scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR"]
-        W2["token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"]
-        W3["admin_setup_verification.yml\nVerifies all admin setup items\n§2 vars · §3 secrets · §6 perms"]
-        W4["test-variables-api.yml\nLive CRUD test for vars API\nCREATE → GET → UPDATE → DELETE"]
-    end
+ subgraph " Audit & Scan"
+ W1["scan-secrets-variables.yml\nDiscovers all variables & secrets\nPosts inventory to PR"]
+ W2["token-probe.yml\nValidates MASTER_KEY + BACKUP_KEY\nPosts pass/fail to PR"]
+ W3["admin_setup_verification.yml\nVerifies all admin setup items\n§2 vars · §3 secrets · §6 perms"]
+ W4["test-variables-api.yml\nLive CRUD test for vars API\nCREATE GET UPDATE DELETE"]
+ end
 
-    subgraph " Sync & Bootstrap"
-        W5["copilot-agent-vars-bootstrap.yml\nReads CODEX_*/COPILOT_* vars\nWrites agent_context.json"]
-        W6["repo-var-sync-schedule.yml\nDaily drift detection\nVars → agent_context.json"]
-        W7["vars-guide-sync.yml\nAuto-syncs variables master guide\nDaily + after intent processing"]
-        W8["sync-env-vars.yml\nSyncs env vars to specific files\nManual + push-triggered"]
-    end
+ subgraph " Sync & Bootstrap"
+ W5["copilot-agent-vars-bootstrap.yml\nReads CODEX_*/COPILOT_* vars\nWrites agent_context.json"]
+ W6["repo-var-sync-schedule.yml\nDaily drift detection\nVars agent_context.json"]
+ W7["vars-guide-sync.yml\nAuto-syncs variables master guide\nDaily + after intent processing"]
+ W8["sync-env-vars.yml\nSyncs env vars to specific files\nManual + push-triggered"]
+ end
 
-    subgraph "✍️ Write & Update"
-        W9["agent-var-writer.yml\nProvenance-chain var writer\nAgent queues → MASTER_KEY applies"]
-        W10["process-variable-intents.yml\nMailbox worker for var write intents\nProcesses .codex/pending_ops/*.json"]
-    end
+ subgraph " Write & Update"
+ W9["agent-var-writer.yml\nProvenance-chain var writer\nAgent queues MASTER_KEY applies"]
+ W10["process-variable-intents.yml\nMailbox worker for var write intents\nProcesses .codex/pending_ops/*.json"]
+ end
 
-    subgraph " Secrets Management"
-        W11["secrets-baseline-enforcer.yml\nKeeps .secrets.baseline in sync\nAuto-adds pragmas, fails on real secrets"]
-        W12["auth-secret-rotation.md\n(workflow stub) Secret rotation\nBackup → rotate → verify"]
-        W13["phase10-automated-secrets-setup.md\n(workflow stub) Secrets injection\nFor Genesis Phase 2"]
-    end
+ subgraph " Secrets Management"
+ W11["secrets-baseline-enforcer.yml\nKeeps .secrets.baseline in sync\nAuto-adds pragmas, fails on real secrets"]
+ W12["auth-secret-rotation.md\n(workflow stub) Secret rotation\nBackup rotate verify"]
+ W13["phase10-automated-secrets-setup.md\n(workflow stub) Secrets injection\nFor Genesis Phase 2"]
+ end
 
-    subgraph "🏥 Health & Validation"
-        W14["pre-merge-validation.yml\nPre-merge sync_tracked_files gate\nBlocks merge on stale tracked files"]
-        W15["validate.yml\ndetect-secrets · ruff\npre-commit · sync-tracked"]
-        W16["codeql-alert-fetcher.yml\nFetches all open CodeQL alerts\nUses MASTER_KEY security_events scope"]
-        W17["security-scanning-suite.yml\nbandit + pip-audit\nFull security audit"]
-    end
+ subgraph " Health & Validation"
+ W14["pre-merge-validation.yml\nPre-merge sync_tracked_files gate\nBlocks merge on stale tracked files"]
+ W15["validate.yml\ndetect-secrets · ruff\npre-commit · sync-tracked"]
+ W16["codeql-alert-fetcher.yml\nFetches all open CodeQL alerts\nUses MASTER_KEY security_events scope"]
+ W17["security-scanning-suite.yml\nbandit + pip-audit\nFull security audit"]
+ end
 
-    style W1 fill:#4a90d9,color:#fff
-    style W2 fill:#4a90d9,color:#fff
-    style W9 fill:#2d6a2d,color:#fff
-    style W10 fill:#2d6a2d,color:#fff
-    style W11 fill:#8b1a1a,color:#fff
+ style W1 fill:#4a90d9,color:#fff
+ style W2 fill:#4a90d9,color:#fff
+ style W9 fill:#2d6a2d,color:#fff
+ style W10 fill:#2d6a2d,color:#fff
+ style W11 fill:#8b1a1a,color:#fff
 ```
 
 ---
@@ -1897,8 +1897,8 @@ graph TB
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field include_env_vars=true
+ --repo Aries-Serpent/_codex_ \
+ --field include_env_vars=true
 ```
 
 ---
@@ -1918,9 +1918,9 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run scan-secrets-variables.yml \
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run token-probe.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field pr_number=4346 \
-  --field require_both_keys=true
+ --repo Aries-Serpent/_codex_ \
+ --field pr_number=4346 \
+ --field require_both_keys=true
 ```
 
 ---
@@ -1940,8 +1940,8 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run token-probe.yml \
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run admin_setup_verification.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field pr_number=4346
+ --repo Aries-Serpent/_codex_ \
+ --field pr_number=4346
 ```
 
 ---
@@ -1961,9 +1961,9 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run admin_setup_verification.yml \
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field run_org_tests=false \
-  --field dry_run=false
+ --repo Aries-Serpent/_codex_ \
+ --field run_org_tests=false \
+ --field dry_run=false
 ```
 
 ---
@@ -1983,7 +1983,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run test-variables-api.yml \
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run copilot-agent-vars-bootstrap.yml \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -2003,7 +2003,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run copilot-agent-vars-bootstrap.yml \
 **How to trigger manually:**
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run repo-var-sync-schedule.yml \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -2024,15 +2024,15 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run repo-var-sync-schedule.yml \
 ```bash
 # Refresh all layers
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field layers=all \
-  --field dry_run=false
+ --repo Aries-Serpent/_codex_ \
+ --field layers=all \
+ --field dry_run=false
 
 # Dry-run preview only
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field layers=all \
-  --field dry_run=true
+ --repo Aries-Serpent/_codex_ \
+ --field layers=all \
+ --field dry_run=true
 ```
 
 ---
@@ -2053,15 +2053,15 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run vars-guide-sync.yml \
 ```bash
 # Sync to production (live)
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field environment=production \
-  --field dry_run=false
+ --repo Aries-Serpent/_codex_ \
+ --field environment=production \
+ --field dry_run=false
 
 # Preview only
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
-  --repo Aries-Serpent/_codex_ \
-  --field environment=production \
-  --field dry_run=true
+ --repo Aries-Serpent/_codex_ \
+ --field environment=production \
+ --field dry_run=true
 ```
 
 ---
@@ -2083,8 +2083,8 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run sync-env-vars.yml \
 # 1. Write intent file
 cat > .codex/pending_var_updates.json << 'EOF'
 [
-  {"name": "CODEX_MASTER_KEY_EXPIRY_DATE", "value": "2026-08-06"},
-  {"name": "CODEX_AAIS_LAST_SCORE", "value": "100.0"}
+ {"name": "CODEX_MASTER_KEY_EXPIRY_DATE", "value": "2026-08-06"},
+ {"name": "CODEX_AAIS_LAST_SCORE", "value": "100.0"}
 ]
 EOF
 
@@ -2113,12 +2113,12 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 **Intent file format (`.codex/pending_ops/variable_set_001.json`):**
 ```json
 {
-  "operation": "set",
-  "name": "CODEX_MASTER_KEY_EXPIRY_DATE",
-  "value": "2026-08-06",
-  "reason": "Track MASTER_KEY expiry for proactive rotation reminders",
-  "requested_by": "copilot-swe-agent[bot]",
-  "session": "S859"
+ "operation": "set",
+ "name": "CODEX_MASTER_KEY_EXPIRY_DATE",
+ "value": "2026-08-06",
+ "reason": "Track MASTER_KEY expiry for proactive rotation reminders",
+ "requested_by": "copilot-swe-agent[bot]",
+ "session": "S859"
 }
 ```
 
@@ -2150,7 +2150,7 @@ git commit -m "chore: queue variable updates for agent-var-writer"
 
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -2181,7 +2181,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh workflow run validate.yml \
 
 ```bash
 GH_TOKEN=$CODEX_MASTER_KEY gh workflow run security-scanning-suite.yml \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -2203,51 +2203,51 @@ These workflow stubs exist as `.md` documentation files but need their `.yml` co
 ### 11.3 Recommended Workflow Execution Order for a Full Refresh
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Admin: MASTER_KEY  BACKUP_K'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Admin: MASTER_KEY BACKUP_K'}}%%
 
 sequenceDiagram
-    participant Admin as 👤 Admin (mbaetiong)
-    participant GH as 🐙 GitHub Actions
-    participant Copilot as  Copilot Agent
+ participant Admin as Admin (mbaetiong)
+ participant GH as GitHub Actions
+ participant Copilot as Copilot Agent
 
-    Note over Admin,Copilot: Phase A — Validate current state
-    Admin->>GH: 1. Run token-probe.yml (pr=4346)
+ Note over Admin,Copilot: Phase A — Validate current state
+ Admin->>GH: 1. Run token-probe.yml (pr=4346)
 
-    GH-->>Admin: MASTER_KEY  BACKUP_KEY 
-    Admin->>GH: 2. Run scan-secrets-variables.yml
+ GH-->>Admin: MASTER_KEY BACKUP_KEY 
+ Admin->>GH: 2. Run scan-secrets-variables.yml
 
-    GH-->>Admin: Full inventory snapshot
-    Admin->>GH: 3. Run test-variables-api.yml (dry_run=false)
+ GH-->>Admin: Full inventory snapshot
+ Admin->>GH: 3. Run test-variables-api.yml (dry_run=false)
 
-    GH-->>Admin: CRUD  — API ready
+ GH-->>Admin: CRUD — API ready
 
-    Note over Admin,Copilot: Phase B — Rotate tokens
-    Admin->>GH: 4. Rotate CODEX_MASTER_KEY (GitHub UI → Settings → Secrets)
-    Admin->>GH: 5. Rotate CODEX_BACKUP_KEY
-    Admin->>GH: 6. Re-run token-probe.yml (verify new tokens work)
+ Note over Admin,Copilot: Phase B — Rotate tokens
+ Admin->>GH: 4. Rotate CODEX_MASTER_KEY (GitHub UI Settings Secrets)
+ Admin->>GH: 5. Rotate CODEX_BACKUP_KEY
+ Admin->>GH: 6. Re-run token-probe.yml (verify new tokens work)
 
-    GH-->>Admin: New tokens 
-    Admin->>GH: 7. Run post_rotation_verify.sh (or scripts/ci/post_rotation_verify.sh)
+ GH-->>Admin: New tokens 
+ Admin->>GH: 7. Run post_rotation_verify.sh (or scripts/ci/post_rotation_verify.sh)
 
-    Note over Admin,Copilot: Phase C — Implement §10.9.1 new variables
-    Admin->>Copilot: 8. @copilot implement variable governance plan
-    Copilot->>GH: 9. Write intent files → process-variable-intents.yml
+ Note over Admin,Copilot: Phase C — Implement §10.9.1 new variables
+ Admin->>Copilot: 8. @copilot implement variable governance plan
+ Copilot->>GH: 9. Write intent files process-variable-intents.yml
 
-    GH-->>Copilot: Variables created 
-    Copilot->>GH: 10. Run vars-guide-sync.yml (layers=all)
+ GH-->>Copilot: Variables created 
+ Copilot->>GH: 10. Run vars-guide-sync.yml (layers=all)
 
-    GH-->>Copilot: Reference doc updated 
+ GH-->>Copilot: Reference doc updated 
 
-    Note over Admin,Copilot: Phase D — Verify final state
-    Admin->>GH: 11. Run admin_setup_verification.yml
+ Note over Admin,Copilot: Phase D — Verify final state
+ Admin->>GH: 11. Run admin_setup_verification.yml
 
-    GH-->>Admin: All §2/§3/§6 checks 
-    Admin->>GH: 12. Run repo-var-sync-schedule.yml
+ GH-->>Admin: All §2/§3/§6 checks 
+ Admin->>GH: 12. Run repo-var-sync-schedule.yml
 
-    GH-->>Admin: agent_context.json synced 
-    Admin->>GH: 13. Run validate.yml
+ GH-->>Admin: agent_context.json synced 
+ Admin->>GH: 13. Run validate.yml
 
-    GH-->>Admin: secrets baseline  ruff  sync_tracked
+ GH-->>Admin: secrets baseline ruff sync_tracked
 ```
 
 ---
@@ -2271,30 +2271,30 @@ sequenceDiagram
 ### 12.1 Token Pools & Limits Reference
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Diagram showing "🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows", "🔑 CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"'}}%%
+%%{init: {'accessibility': {'title': 'Diagram showing " CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows", " CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"'}}%%
 
 graph TB
-    subgraph "Rate Limit Pools — Separate Counters"
-        P1["🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows"]
-        P2["🔑 CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"]
-        P3[" Copilot sandbox token\npool: core REST (shared)\n5,000 req/hr shared\nUsed by: MCP tools"]
-        P4[" GITHUB_TOKEN\npool: core REST\n1,000 req/hr (Actions)\nUsed by: workflow steps"]
-        P5[" code_scanning pool\nSeparate endpoint pool\nUsed by: /code-scanning/alerts\ncodeql-alert-fetcher.yml"]
-        P6[" GraphQL pool\n5,000 pts/hr\nUsed by: github-script steps\ncopilot-agent-session-done.yml"]
-    end
+ subgraph "Rate Limit Pools — Separate Counters"
+ P1[" CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows"]
+ P2[" CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"]
+ P3[" Copilot sandbox token\npool: core REST (shared)\n5,000 req/hr shared\nUsed by: MCP tools"]
+ P4[" GITHUB_TOKEN\npool: core REST\n1,000 req/hr (Actions)\nUsed by: workflow steps"]
+ P5[" code_scanning pool\nSeparate endpoint pool\nUsed by: /code-scanning/alerts\ncodeql-alert-fetcher.yml"]
+ P6[" GraphQL pool\n5,000 pts/hr\nUsed by: github-script steps\ncopilot-agent-session-done.yml"]
+ end
 
-    P1 -->|"exhausted → fallback"| P2
+ P1 -->|"exhausted fallback"| P2
 
-    P2 -->|"exhausted → fallback"| P4
-    P3 -.->|"independent — never fallback"| P3
-    P5 -.->|"independent pool"| P5
+ P2 -->|"exhausted fallback"| P4
+ P3 -.->|"independent — never fallback"| P3
+ P5 -.->|"independent pool"| P5
 
-    style P1 fill:#2d6a2d,color:#fff
-    style P2 fill:#4a8b4a,color:#fff
-    style P3 fill:#8b5a1a,color:#fff
-    style P4 fill:#1a4a8b,color:#fff
-    style P5 fill:#8b1a1a,color:#fff
-    style P6 fill:#4a1a8b,color:#fff
+ style P1 fill:#2d6a2d,color:#fff
+ style P2 fill:#4a8b4a,color:#fff
+ style P3 fill:#8b5a1a,color:#fff
+ style P4 fill:#1a4a8b,color:#fff
+ style P5 fill:#8b1a1a,color:#fff
+ style P6 fill:#4a1a8b,color:#fff
 ```
 
 **Key facts:**
@@ -2376,20 +2376,20 @@ copy-pasted as a workflow step.
 Add before any step that makes ≥ 2 API calls:
 
 ```yaml
-- name: 🔋 Rate-limit pre-check
-  env:
-    CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-    CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-  run: |
-    python scripts/ci/github_api_trickle.py --status || {
-      echo "::warning::All GitHub API tokens exhausted — skipping API steps"
-      echo "RATE_LIMITED=true" >> "$GITHUB_ENV"
-    }
+- name: Rate-limit pre-check
+ env:
+ CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+ CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+ run: |
+ python scripts/ci/github_api_trickle.py --status || {
+ echo "::warning::All GitHub API tokens exhausted — skipping API steps"
+ echo "RATE_LIMITED=true" >> "$GITHUB_ENV"
+ }
 
 # Then on each API step:
 - name: My API step
-  if: env.RATE_LIMITED != 'true'
-  run: gh api ...
+ if: env.RATE_LIMITED != 'true'
+ run: gh api ...
 ```
 
 ## Pattern B — Polite Sleep Between Batched Calls
@@ -2398,31 +2398,31 @@ For workflows making 3+ sequential `gh api` calls in a single `run:` block:
 
 ```yaml
 - name: Batch API operations (rate-limit aware)
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    GH_TRICKLE_POLITE_SLEEP: "0.5"   # seconds between calls
-  run: |
-    # After each gh api call, check remaining quota
-    _rl_check() {
-      local remaining
-      remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
-      if [ "$remaining" -lt 50 ]; then
-        local reset
-        reset=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "0")
-        local now
-        now=$(date +%s)
-        local wait=$(( reset - now + 5 ))
-        if [ "$wait" -gt 0 ] && [ "$wait" -lt 3600 ]; then
-          echo "::warning::Rate limit low ($remaining remaining) — sleeping ${wait}s until reset"
-          sleep "$wait"
-        fi
-      fi
-      sleep "${GH_TRICKLE_POLITE_SLEEP:-0.5}"
-    }
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TRICKLE_POLITE_SLEEP: "0.5" # seconds between calls
+ run: |
+ # After each gh api call, check remaining quota
+ _rl_check() {
+ local remaining
+ remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
+ if [ "$remaining" -lt 50 ]; then
+ local reset
+ reset=$(gh api rate_limit --jq '.resources.core.reset' 2>/dev/null || echo "0")
+ local now
+ now=$(date +%s)
+ local wait=$(( reset - now + 5 ))
+ if [ "$wait" -gt 0 ] && [ "$wait" -lt 3600 ]; then
+ echo "::warning::Rate limit low ($remaining remaining) — sleeping ${wait}s until reset"
+ sleep "$wait"
+ fi
+ fi
+ sleep "${GH_TRICKLE_POLITE_SLEEP:-0.5}"
+ }
 
-    gh api "repos/${REPO}/..." ; _rl_check
-    gh api "repos/${REPO}/..." ; _rl_check
-    gh api "repos/${REPO}/..." ; _rl_check
+ gh api "repos/${REPO}/..." ; _rl_check
+ gh api "repos/${REPO}/..." ; _rl_check
+ gh api "repos/${REPO}/..." ; _rl_check
 ```
 
 ### Pattern C — Retry with Exponential Backoff (for PATCH/POST)
@@ -2431,28 +2431,28 @@ For `gh api --method POST/PATCH` calls where partial failure leaves state incons
 
 ```yaml
 - name: API write with retry
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-  run: |
-    _api_with_retry() {
-      local attempt=0
-      local max_attempts=3
-      while [ $attempt -lt $max_attempts ]; do
-        if "$@"; then
-          return 0
-        fi
-        attempt=$(( attempt + 1 ))
-        local backoff=$(( 2 ** attempt * 5 ))   # 10s, 20s, 40s
-        echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
-        sleep "$backoff"
-      done
-      echo "::error::API call failed after $max_attempts attempts"
-      return 1
-    }
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ run: |
+ _api_with_retry() {
+ local attempt=0
+ local max_attempts=3
+ while [ $attempt -lt $max_attempts ]; do
+ if "$@"; then
+ return 0
+ fi
+ attempt=$(( attempt + 1 ))
+ local backoff=$(( 2 ** attempt * 5 )) # 10s, 20s, 40s
+ echo "::warning::API call failed (attempt $attempt/$max_attempts) — retrying in ${backoff}s"
+ sleep "$backoff"
+ done
+ echo "::error::API call failed after $max_attempts attempts"
+ return 1
+ }
 
-    _api_with_retry gh api --method PATCH \
-      "repos/${REPO}/git/refs/heads/${BRANCH}" \
-      -f sha="${NEW_SHA}"
+ _api_with_retry gh api --method PATCH \
+ "repos/${REPO}/git/refs/heads/${BRANCH}" \
+ -f sha="${NEW_SHA}"
 ```
 
 #### Pattern D — Paginated Fetch with Rate-Limit Guard
@@ -2461,54 +2461,54 @@ For `--paginate` or manual page loops:
 
 ```yaml
 - name: Paginated fetch (rate-limit safe)
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-  run: |
-    page=1
-    all_items="[]"
-    while true; do
-      # Check remaining before each page
-      remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
-      if [ "$remaining" -lt 20 ]; then
-        echo "::warning::Rate limit low ($remaining) — stopping pagination at page $page"
-        break
-      fi
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ run: |
+ page=1
+ all_items="[]"
+ while true; do
+ # Check remaining before each page
+ remaining=$(gh api rate_limit --jq '.resources.core.remaining' 2>/dev/null || echo "999")
+ if [ "$remaining" -lt 20 ]; then
+ echo "::warning::Rate limit low ($remaining) — stopping pagination at page $page"
+ break
+ fi
 
-      batch=$(gh api "repos/${REPO}/pulls?per_page=100&page=${page}" 2>/dev/null || break)
-      count=$(echo "$batch" | jq 'length')
-      [ "$count" -eq 0 ] && break
-      all_items=$(echo "$all_items $batch" | jq -s '.[0] + .[1]')
-      page=$(( page + 1 ))
-      sleep 0.5   # polite sleep between pages
-    done
-    echo "$all_items" | jq '.'
+ batch=$(gh api "repos/${REPO}/pulls?per_page=100&page=${page}" 2>/dev/null || break)
+ count=$(echo "$batch" | jq 'length')
+ [ "$count" -eq 0 ] && break
+ all_items=$(echo "$all_items $batch" | jq -s '.[0] + .[1]')
+ page=$(( page + 1 ))
+ sleep 0.5 # polite sleep between pages
+ done
+ echo "$all_items" | jq '.'
 ```
 
 #### Pattern E — Respect `Retry-After` Header (for 429 responses)
 
 ```yaml
 - name: API call with Retry-After respect
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-  run: |
-    _call_with_retry_after() {
-      local http_code
-      local response
-      response=$(curl -sS -w "\n%{http_code}" \
-        -H "Authorization: Bearer ${GH_TOKEN}" \
-        -H "Accept: application/vnd.github+json" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        "$1")
-      http_code=$(echo "$response" | tail -1)
-      body=$(echo "$response" | sed '$d')
-      if [ "$http_code" = "429" ] || [ "$http_code" = "403" ]; then
-        retry_after=$(echo "$body" | jq -r '.message // empty' | grep -oP '\d+(?= seconds)' || echo "60")
-        echo "::warning::Rate limited (HTTP $http_code) — waiting ${retry_after}s"
-        sleep "$retry_after"
-        return 1
-      fi
-      echo "$body"
-    }
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ run: |
+ _call_with_retry_after() {
+ local http_code
+ local response
+ response=$(curl -sS -w "\n%{http_code}" \
+ -H "Authorization: Bearer ${GH_TOKEN}" \
+ -H "Accept: application/vnd.github+json" \
+ -H "X-GitHub-Api-Version: 2022-11-28" \
+ "$1")
+ http_code=$(echo "$response" | tail -1)
+ body=$(echo "$response" | sed '$d')
+ if [ "$http_code" = "429" ] || [ "$http_code" = "403" ]; then
+ retry_after=$(echo "$body" | jq -r '.message // empty' | grep -oP '\d+(?= seconds)' || echo "60")
+ echo "::warning::Rate limited (HTTP $http_code) — waiting ${retry_after}s"
+ sleep "$retry_after"
+ return 1
+ fi
+ echo "$body"
+ }
 ```
 
 ---
@@ -2530,9 +2530,9 @@ the WEC parser to receive truncated data and skip WEC-checked workflows.
 ```yaml
 # Add to dispatch-checked job, before first API call:
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-  GH_TRICKLE_POLITE_SLEEP: "0.3"
-  GH_TRICKLE_MIN_REMAINING: "50"   # higher threshold — this workflow runs on every push
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TRICKLE_POLITE_SLEEP: "0.3"
+ GH_TRICKLE_MIN_REMAINING: "50" # higher threshold — this workflow runs on every push
 ```
 
 ---
@@ -2553,8 +2553,8 @@ on open PRs (line 186) + 5 API calls per PR × potentially many PRs = burst risk
 ```yaml
 # Add to job-level env:
 env:
-  GH_TRICKLE_POLITE_SLEEP: "1.0"
-  GH_TRICKLE_MIN_REMAINING: "100"   # generous — runs every 5 min
+ GH_TRICKLE_POLITE_SLEEP: "1.0"
+ GH_TRICKLE_MIN_REMAINING: "100" # generous — runs every 5 min
 ```
 
 ---
@@ -2581,10 +2581,10 @@ call #3 leaves refs in a split state (some updated, some not) with no recovery p
 2. For each `github-script` step with pagination: add `await github.rest.rateLimit.get()`
  check before the page loop
 3. Add `octokit` retry plugin (already available via `github-script`):
-   ```javascript
-   // In github-script:
-   const { throttling } = require('@octokit/plugin-throttling');
-   // OR use built-in retry via context.octokit.rest with retry plugin
+ ```javascript
+ // In github-script:
+ const { throttling } = require('@octokit/plugin-throttling');
+ // OR use built-in retry via context.octokit.rest with retry plugin
  ```
 4. Set `GH_TRICKLE_POLITE_SLEEP: "0.5"` between GraphQL calls
 
@@ -2594,13 +2594,13 @@ call #3 leaves refs in a split state (some updated, some not) with no recovery p
 const rateLimit = await github.rest.rateLimit.get();
 const remaining = rateLimit.data.resources.graphql.remaining;
 if (remaining < 100) {
-  const resetAt = new Date(rateLimit.data.resources.graphql.reset * 1000);
-  core.warning(`GraphQL rate limit low: ${remaining} remaining, resets at ${resetAt.toISOString()}`);
-  // Skip pagination if critically low:
-  if (remaining < 20) {
-    core.warning('Skipping pagination — rate limit critically low');
-    break;
-  }
+ const resetAt = new Date(rateLimit.data.resources.graphql.reset * 1000);
+ core.warning(`GraphQL rate limit low: ${remaining} remaining, resets at ${resetAt.toISOString()}`);
+ // Skip pagination if critically low:
+ if (remaining < 20) {
+ core.warning('Skipping pagination — rate limit critically low');
+ break;
+ }
 }
 ```
 
@@ -2614,10 +2614,10 @@ if (remaining < 100) {
 **Required improvements:**
 1. Add **Pattern A** pre-call check at job start
 2. Replace manual `page=1` while loop with `github_api_trickle.py` call:
-   ```bash
-   python scripts/ci/github_api_trickle.py \
-     --rest "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-     > /tmp/comments.json
+ ```bash
+ python scripts/ci/github_api_trickle.py \
+ --rest "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+ > /tmp/comments.json
  ```
 3. Add polite sleep between page iterations
 4. Add circuit breaker: if pre-call check fails, skip the healing loop and post a
@@ -2673,25 +2673,25 @@ Add these variables to complement the §10.9.1 suggestions:
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
 
 gantt
-    title Rate-Limit Awareness Improvements — Recommended Timeline
-    dateFormat YYYY-MM-DD
-    axisFormat %b %d
+ title Rate-Limit Awareness Improvements — Recommended Timeline
+ dateFormat YYYY-MM-DD
+ axisFormat %b %d
 
-    section Priority 1 — High Impact
-    workflow-execution-gate.yml Pattern A + D   :p1a, 2026-05-09, 1d
-    auto-approve-workflows.yml Pattern D + CB   :p1b, 2026-05-09, 1d
-    promote-integration-branch.yml Pattern C    :p1c, 2026-05-10, 1d
-    copilot-agent-session-done.yml GraphQL guard :p1d, 2026-05-10, 2d
+ section Priority 1 — High Impact
+ workflow-execution-gate.yml Pattern A + D :p1a, 2026-05-09, 1d
+ auto-approve-workflows.yml Pattern D + CB :p1b, 2026-05-09, 1d
+ promote-integration-branch.yml Pattern C :p1c, 2026-05-10, 1d
+ copilot-agent-session-done.yml GraphQL guard :p1d, 2026-05-10, 2d
 
-    section Priority 2 — Scheduled Workflows
-    copilot-iterative-self-healing.yml Pattern A :p2a, 2026-05-12, 1d
-    codebase-health-sweep.yml Pattern A          :p2b, 2026-05-12, 1d
-    codeql.yml / codeql-analysis.yml dedup       :p2c, 2026-05-13, 1d
+ section Priority 2 — Scheduled Workflows
+ copilot-iterative-self-healing.yml Pattern A :p2a, 2026-05-12, 1d
+ codebase-health-sweep.yml Pattern A :p2b, 2026-05-12, 1d
+ codeql.yml / codeql-analysis.yml dedup :p2c, 2026-05-13, 1d
 
-    section Priority 3 — Monitoring
-    Add CODEX_RL_* variables                     :p3a, 2026-05-14, 1d
-    ratelimit_history_prune.yml enhancements     :p3b, 2026-05-14, 1d
-    Rate-limit dashboard in artifact-monitoring  :p3c, 2026-05-15, 1d
+ section Priority 3 — Monitoring
+ Add CODEX_RL_* variables :p3a, 2026-05-14, 1d
+ ratelimit_history_prune.yml enhancements :p3b, 2026-05-14, 1d
+ Rate-limit dashboard in artifact-monitoring :p3c, 2026-05-15, 1d
 ```
 
 ---

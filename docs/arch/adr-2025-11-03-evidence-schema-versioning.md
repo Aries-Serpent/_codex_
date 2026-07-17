@@ -43,15 +43,15 @@ Implement **explicit schema versioning** with:
 
 ```json
 {
-  "ts": "ISO8601 timestamp",
-  "action": "ARCHIVE|RESTORE|REFERENCE|PURGE",
-  "actor": "string",
-  "tombstone": "UUID",
-  "sha256": "hex string",
-  "repo": "optional string",
-  "path": "optional string",
-  "size": "optional integer",
-  "commit": "optional string"
+ "ts": "ISO8601 timestamp",
+ "action": "ARCHIVE|RESTORE|REFERENCE|PURGE",
+ "actor": "string",
+ "tombstone": "UUID",
+ "sha256": "hex string",
+ "repo": "optional string",
+ "path": "optional string",
+ "size": "optional integer",
+ "commit": "optional string"
 }
 ```text
 
@@ -59,25 +59,25 @@ Implement **explicit schema versioning** with:
 
 ```json
 {
-  // All v1 fields preserved
-  "ts": "...",
-  "action": "...",
-  "actor": "...",
+ // All v1 fields preserved
+ "ts": "...",
+ "action": "...",
+ "actor": "...",
 
-  // NEW: Schema version field
-  "schemaVersion": "2.0",
+ // NEW: Schema version field
+ "schemaVersion": "2.0",
 
-  // NEW: Standardization metadata
-  "standardizationMetadata": {
-    "schema_version": "2.0",
-    "slsa_level": "L3",
-    "signature": "base64 Sigstore signature",
-    "certificate_chain": ["PEM certificates"],
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "ISO8601 timestamp",
-    "in_toto_attestation_id": "optional UUID",
-    "merkle_proof": "optional object for Phase 3"
-  }
+ // NEW: Standardization metadata
+ "standardizationMetadata": {
+ "schema_version": "2.0",
+ "slsa_level": "L3",
+ "signature": "base64 Sigstore signature",
+ "certificate_chain": ["PEM certificates"],
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "ISO8601 timestamp",
+ "in_toto_attestation_id": "optional UUID",
+ "merkle_proof": "optional object for Phase 3"
+ }
 }
 ```text
 
@@ -85,17 +85,17 @@ Implement **explicit schema versioning** with:
 
 **Unified Evidence Log**:
 ```text
-Line 1: {"ts": "...", "action": "ARCHIVE", ...}                    [v1 record]
-Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"}  [v1]
-Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}}  [v2]
+Line 1: {"ts": "...", "action": "ARCHIVE", ...} [v1 record]
+Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"} [v1]
+Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}} [v2]
 Line N: ...
 ```text
 **Version Detection**:
 ```python
 version = record.get("schemaVersion", auto_detect(record))
 # If no explicit version:
-#   - Has standardizationMetadata? → v2
-#   - Otherwise → v1
+# - Has standardizationMetadata? v2
+# - Otherwise v1
 ```text
 
 ## Consequences
@@ -129,8 +129,8 @@ version = record.get("schemaVersion", auto_detect(record))
 ```python
 record = create_evidence_record(...)
 if standardization_enabled:
-    record = standardization_manager.enhance_evidence_record(record)
-    # Validates against v2 schema
+ record = standardization_manager.enhance_evidence_record(record)
+ # Validates against v2 schema
 _evidence_append(record)
 ```text
 
@@ -138,16 +138,16 @@ _evidence_append(record)
 
 ```python
 for record in read_evidence_log():
-    version = auto_detect_version(record)
-    validator.validate(record, version=version)
-    # Use record...
+ version = auto_detect_version(record)
+ validator.validate(record, version=version)
+ # Use record...
 ```text
 
 ### Migration (Optional)
 
 ```bash
 python -m codex.cli archive migrate-evidence-to-v2
-# Converts all v1 → v2, creates backup
+# Converts all v1 v2, creates backup
 ```text
 
 ## Backward Compatibility Guarantee
@@ -164,9 +164,9 @@ Store schema definitions in `schemas/` directory:
 
 ```text
 schemas/
-├── archive_evidence_schema_v1.json   [v1 definition]
-├── archive_evidence_schema_v2.json   [v2 definition]
-└── archive_evidence_schema_v3.json   [future]
+ archive_evidence_schema_v1.json [v1 definition]
+ archive_evidence_schema_v2.json [v2 definition]
+ archive_evidence_schema_v3.json [future]
 ```text
 Each schema is:
 - JSON Schema (draft-07) compliant

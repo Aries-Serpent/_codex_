@@ -106,9 +106,9 @@ from hydra.something import OldModule
 # config_legacy/something.py
 import warnings
 warnings.warn(
-    "config_legacy.something is deprecated. Use hydra.something from site-packages.",
-    DeprecationWarning,
-    stacklevel=2
+ "config_legacy.something is deprecated. Use hydra.something from site-packages.",
+ DeprecationWarning,
+ stacklevel=2
 )
 from hydra.something import OldModule
 ```
@@ -116,14 +116,14 @@ from hydra.something import OldModule
 3. Update imports gradually:
 ```python
 # After
-from hydra.something import OldModule  # Now imports from site-packages
+from hydra.something import OldModule # Now imports from site-packages
 ```
 
 4. Add test to verify no shadowing:
 ```python
 def test_no_hydra_shadowing():
-    import hydra
-    assert "site-packages" in hydra.__file__
+ import hydra
+ assert "site-packages" in hydra.__file__
 ```
 
 **Acceptance Criteria**:
@@ -152,29 +152,29 @@ def test_no_hydra_shadowing():
 1. Add baseline age check to workflow:
 ```yaml
 - name: Check baseline age
-  id: baseline-age
-  run: |
-    if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
-      # Cross-platform age calculation using Python
-      AGE_DAYS=$(python -c "import os, time; print(int((time.time() - os.path.getmtime('audit_artifacts/baselines/capabilities_scored.json')) / 86400))")
-      echo "age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
-      if [ $AGE_DAYS -gt 30 ]; then
-        echo "️ Baseline is $AGE_DAYS days old - consider refreshing"
-      fi
-    fi
+ id: baseline-age
+ run: |
+ if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+ # Cross-platform age calculation using Python
+ AGE_DAYS=$(python -c "import os, time; print(int((time.time() - os.path.getmtime('audit_artifacts/baselines/capabilities_scored.json')) / 86400))")
+ echo "age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
+ if [ $AGE_DAYS -gt 30 ]; then
+ echo " Baseline is $AGE_DAYS days old - consider refreshing"
+ fi
+ fi
 ```
 
 2. Add conditional baseline refresh on main branch:
 ```yaml
 - name: Refresh baseline if stale
-  if: github.ref == 'refs/heads/main' && steps.baseline-age.outputs.age_days > 30
-  run: |
-    ./scripts/ci/establish_baseline.sh --force
-    git config user.name "github-actions[bot]"
-    git config user.email "github-actions[bot]@users.noreply.github.com"
-    git add audit_artifacts/baselines/capabilities_scored.json
-    git commit -m "chore: Auto-refresh audit baseline [skip ci]"
-    git push
+ if: github.ref == 'refs/heads/main' && steps.baseline-age.outputs.age_days > 30
+ run: |
+ ./scripts/ci/establish_baseline.sh --force
+ git config user.name "github-actions[bot]"
+ git config user.email "github-actions[bot]@users.noreply.github.com"
+ git add audit_artifacts/baselines/capabilities_scored.json
+ git commit -m "chore: Auto-refresh audit baseline [skip ci]"
+ git push
 ```
 
 **Acceptance Criteria**:
@@ -249,8 +249,8 @@ cat audit_run_manifest.json
 ```bash
 # Compare against baseline
 python scripts/space_traversal/audit_runner.py diff \
-  --old audit_artifacts/baselines/capabilities_scored.json \
-  --new audit_artifacts/capabilities_scored.json
+ --old audit_artifacts/baselines/capabilities_scored.json \
+ --new audit_artifacts/capabilities_scored.json
 ```
 
 **Expected**: No unexpected regressions

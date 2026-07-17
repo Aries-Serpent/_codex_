@@ -187,7 +187,7 @@ docker run -p 8000:8000 \
  codex-model:1.0
 
 # Note: 
-# - `-p 8000:8000` means "port 8000 inside container → port 8000 outside"
+# - `-p 8000:8000` means "port 8000 inside container port 8000 outside"
 # - `-v $(pwd)/runs:/app/runs` means "mount local runs/ directory"
 ```
 
@@ -293,13 +293,13 @@ curl http://localhost:80/predict # Load balancer routes to v1 or v2
 ### Architecture
 ```
 Your Computer
- ↓
+ 
  API Request
- ↓
+ 
  AWS API Gateway
- ↓
+ 
  AWS SageMaker Endpoint
- ↓
+ 
  Your Model (Running)
 ```
 

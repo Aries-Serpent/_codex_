@@ -14,37 +14,37 @@ Sprint 8 focuses on comprehensive documentation, final stub cleanup, and product
 
 ```
 docs/
-├── api/
-│   ├── training/
-│   │   ├── continuous_learning.md
-│   │   ├── ab_testing.md
-│   │   ├── early_stopping.md
-│   │   └── rng_checkpoint.md
-│   ├── monitoring/
-│   │   ├── metrics.md
-│   │   ├── drift_detection.md
-│   │   └── health.md
-│   ├── plugins/
-│   │   └── plugin_sandbox.md
-│   ├── safety/
-│   │   └── prompt_sanitizer.md
-│   └── utils/
-│       ├── repro.md
-│       ├── deterministic.md
-│       ├── config_drift.md
-│       └── checkpoint_integrity.md
-├── guides/
-│   ├── getting_started.md
-│   ├── continuous_learning_guide.md
-│   ├── ab_testing_guide.md
-│   ├── plugin_development.md
-│   └── production_deployment.md
-└── architecture/
-    ├── system_overview.md
-    ├── phase_1_foundation.md
-    ├── phase_2_reproducibility.md
-    ├── phase_3_autonomy.md
-    └── phase_4_excellence.md
+ api/
+ training/
+ continuous_learning.md
+ ab_testing.md
+ early_stopping.md
+ rng_checkpoint.md
+ monitoring/
+ metrics.md
+ drift_detection.md
+ health.md
+ plugins/
+ plugin_sandbox.md
+ safety/
+ prompt_sanitizer.md
+ utils/
+ repro.md
+ deterministic.md
+ config_drift.md
+ checkpoint_integrity.md
+ guides/
+ getting_started.md
+ continuous_learning_guide.md
+ ab_testing_guide.md
+ plugin_development.md
+ production_deployment.md
+ architecture/
+ system_overview.md
+ phase_1_foundation.md
+ phase_2_reproducibility.md
+ phase_3_autonomy.md
+ phase_4_excellence.md
 ```
 
 ### Key Documentation Files

@@ -122,16 +122,16 @@ git diff HEAD~1 HEAD -- docs/ | grep "+.*TODO\|+.*FIXME" || echo "None"
 # 2. Sample link check
 echo "Checking sample links..."
 links=(
-  "https://github.com/Aries-Serpent/_codex_"
-  "https://docs.github.com"
-  "https://pypi.org"
+ "https://github.com/Aries-Serpent/_codex_"
+ "https://docs.github.com"
+ "https://pypi.org"
 )
 for link in "${links[@]}"; do
-  if curl -s -o /dev/null -w "%{http_code}" "$link" | grep -q "200\|301\|302"; then
-    echo " $link"
-  else
-    echo " $link - CHECK MANUALLY"
-  fi
+ if curl -s -o /dev/null -w "%{http_code}" "$link" | grep -q "200\|301\|302"; then
+ echo " $link"
+ else
+ echo " $link - CHECK MANUALLY"
+ fi
 done
 
 # 3. Report
@@ -153,48 +153,48 @@ echo "Weekly check complete - $(date)" >> docs/WEEKLY_CHECKS.log
 1. Run freshness audit
  ```bash
  python tools/freshness_audit.py > docs/AUDIT_$(date +%Y-%m).md
-   ```
+ ```
 
 2. Validate code examples
  ```bash
  python tools/validate_code_examples.py --report
-   ```
+ ```
 
 3. Check external links
  ```bash
  python tools/link_validator.py --skip-localhost --report
-   ```
+ ```
 
 ### Phase 2: Manual Review (60 min)
 1. Review audit results
-   - [ ] Identify files > 60 days old
-   - [ ] Check for new stale markers
-   - [ ] Review broken link reports
+ - [ ] Identify files > 60 days old
+ - [ ] Check for new stale markers
+ - [ ] Review broken link reports
 
 2. Update findings
-   - [ ] Update docs/FRESHNESS_AUDIT_MONTHLY.md
-   - [ ] Create issues for stale files (if needed)
-   - [ ] Note patterns for improvement
+ - [ ] Update docs/FRESHNESS_AUDIT_MONTHLY.md
+ - [ ] Create issues for stale files (if needed)
+ - [ ] Note patterns for improvement
 
 3. Quick fixes
-   - [ ] Update timestamps on reviewed files
-   - [ ] Fix any obvious link issues
-   - [ ] Update version references
+ - [ ] Update timestamps on reviewed files
+ - [ ] Fix any obvious link issues
+ - [ ] Update version references
 
 ### Phase 3: Report & Plan (30 min)
 1. Generate monthly report
-   - [ ] Freshness score
-   - [ ] Top issues identified
-   - [ ] Recommended actions
+ - [ ] Freshness score
+ - [ ] Top issues identified
+ - [ ] Recommended actions
 
 2. Post results
-   - [ ] Update docs/FRESHNESS_DASHBOARD.md
-   - [ ] Post metrics to team wiki
-   - [ ] Highlight critical items
+ - [ ] Update docs/FRESHNESS_DASHBOARD.md
+ - [ ] Post metrics to team wiki
+ - [ ] Highlight critical items
 
 3. Schedule work
-   - [ ] Create priority issues for Q3
-   - [ ] Schedule fixes in sprint planning
+ - [ ] Create priority issues for Q3
+ - [ ] Schedule fixes in sprint planning
 ```
 
 ### 2.3 Quarterly Audit Cycle
@@ -236,10 +236,10 @@ python tools/validate_code_examples.py --full-report --test-execution
 #### Audit 3: External Link Health
 ```bash
 python tools/comprehensive_link_validator.py \
-  --skip-localhost \
-  --skip-templates \
-  --timeout 30 \
-  --report quarterly
+ --skip-localhost \
+ --skip-templates \
+ --timeout 30 \
+ --report quarterly
 ```
 
 #### Audit 4: Documentation Structure Review
@@ -309,59 +309,59 @@ python tools/update_version_refs.py --dry-run
 ```yaml
 name: Documentation Freshness Check
 on:
-  pull_request:
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
+ pull_request:
+ paths:
+ - 'docs/**'
+ - 'mkdocs.yml'
 
 jobs:
-  freshness:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history for comparison
+ freshness:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ with:
+ fetch-depth: 0 # Full history for comparison
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+ - name: Setup Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements-dev.txt
-          pip install mkdocs mkdocs-material pymdown-extensions
+ - name: Install dependencies
+ run: |
+ pip install -r requirements-dev.txt
+ pip install mkdocs mkdocs-material pymdown-extensions
 
-      - name: Code Example Validation
-        run: |
-          python tools/validate_code_examples.py \
-            --files ${{ github.event.pull_request.title }} \
-            --strict
-        continue-on-error: true
+ - name: Code Example Validation
+ run: |
+ python tools/validate_code_examples.py \
+ --files ${{ github.event.pull_request.title }} \
+ --strict
+ continue-on-error: true
 
-      - name: Link Validation
-        run: |
-          python tools/link_validator.py \
-            --skip-localhost \
-            --skip-templates
-        continue-on-error: true
+ - name: Link Validation
+ run: |
+ python tools/link_validator.py \
+ --skip-localhost \
+ --skip-templates
+ continue-on-error: true
 
-      - name: MkDocs Build Check
-        run: |
-          mkdocs build --strict
-        continue-on-error: true
+ - name: MkDocs Build Check
+ run: |
+ mkdocs build --strict
+ continue-on-error: true
 
-      - name: Post Results
-        if: failure()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '️ Documentation freshness issues detected. See workflow logs.'
-            })
+ - name: Post Results
+ if: failure()
+ uses: actions/github-script@v6
+ with:
+ script: |
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ body: ' Documentation freshness issues detected. See workflow logs.'
+ })
 ```
 
 **Workflow 2: Weekly Freshness Audit** (Monday 9 AM UTC)
@@ -369,32 +369,32 @@ jobs:
 ```yaml
 name: Weekly Documentation Audit
 on:
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+ schedule:
+ - cron: '0 9 * * 1' # Every Monday at 9 AM UTC
 
 jobs:
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Run Freshness Audit
-        run: python tools/freshness_audit.py > /tmp/audit.md
-      
-      - name: Create Issue if Needed
-        run: |
-          if grep -q "STALE\|BROKEN" /tmp/audit.md; then
-            gh issue create \
-              --title " Weekly Doc Audit: Stale Content Found" \
-              --body "$(cat /tmp/audit.md)" \
-              --label "documentation" \
-              --label "maintenance"
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Update Dashboard
-        run: python tools/update_doc_dashboard.py
+ audit:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ 
+ - name: Run Freshness Audit
+ run: python tools/freshness_audit.py > /tmp/audit.md
+ 
+ - name: Create Issue if Needed
+ run: |
+ if grep -q "STALE\|BROKEN" /tmp/audit.md; then
+ gh issue create \
+ --title " Weekly Doc Audit: Stale Content Found" \
+ --body "$(cat /tmp/audit.md)" \
+ --label "documentation" \
+ --label "maintenance"
+ fi
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+ - name: Update Dashboard
+ run: python tools/update_doc_dashboard.py
 ```
 
 **Workflow 3: Monthly Comprehensive Audit** (1st of month)
@@ -402,40 +402,40 @@ jobs:
 ```yaml
 name: Monthly Comprehensive Documentation Audit
 on:
-  schedule:
-    - cron: '0 10 1 * *'  # 1st of month at 10 AM UTC
+ schedule:
+ - cron: '0 10 1 * *' # 1st of month at 10 AM UTC
 
 jobs:
-  comprehensive_audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Comprehensive Freshness Check
-        run: |
-          python tools/comprehensive_freshness_audit.py \
-            --full-report \
-            --output docs/AUDIT_$(date +%Y-%m-%d).md
-      
-      - name: Code Example Testing
-        run: |
-          python tools/test_code_examples.py --all
-      
-      - name: External Link Validation
-        run: |
-          python tools/validate_external_links.py \
-            --timeout 10 \
-            --report
-      
-      - name: Commit & Push Results
-        run: |
-          git add docs/AUDIT_*.md
-          git commit -m "docs: monthly freshness audit $(date +%Y-%m-%d)"
-          git push
-      
-      - name: Post Summary
-        run: |
-          python tools/post_audit_summary.py
+ comprehensive_audit:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ 
+ - name: Comprehensive Freshness Check
+ run: |
+ python tools/comprehensive_freshness_audit.py \
+ --full-report \
+ --output docs/AUDIT_$(date +%Y-%m-%d).md
+ 
+ - name: Code Example Testing
+ run: |
+ python tools/test_code_examples.py --all
+ 
+ - name: External Link Validation
+ run: |
+ python tools/validate_external_links.py \
+ --timeout 10 \
+ --report
+ 
+ - name: Commit & Push Results
+ run: |
+ git add docs/AUDIT_*.md
+ git commit -m "docs: monthly freshness audit $(date +%Y-%m-%d)"
+ git push
+ 
+ - name: Post Summary
+ run: |
+ python tools/post_audit_summary.py
 ```
 
 ### 3.2 CI/CD Integration Points
@@ -449,9 +449,9 @@ jobs:
 # Check for TODO without context
 echo "Checking for orphaned TODOs..."
 if git diff --cached -- docs/ | grep -E "^\+.*TODO\|^\+.*FIXME" | grep -v "^+.*TODO:.*"; then
-  echo " ERROR: TODO/FIXME without description found"
-  echo "Add context: TODO: <description>"
-  exit 1
+ echo " ERROR: TODO/FIXME without description found"
+ echo "Add context: TODO: <description>"
+ exit 1
 fi
 
 # Validate markdown syntax
@@ -459,8 +459,8 @@ echo "Validating markdown..."
 python tools/validate_markdown.py docs/
 
 if [ $? -ne 0 ]; then
-  echo " Markdown validation failed"
-  exit 1
+ echo " Markdown validation failed"
+ exit 1
 fi
 
 echo " Pre-commit checks passed"
@@ -537,12 +537,12 @@ Before releasing vX.Y.Z:
 ### 4.2 Issue Escalation Matrix
 
 ```
-Severity    Freshness Impact    Response Time    Owner
-─────────────────────────────────────────────────────
-CRITICAL    > 2%               < 4 hours        Team lead
-HIGH        1-2%               < 24 hours       Assigned dev
-MEDIUM      < 1%               < 1 week         Backlog
-LOW         None               Quarterly        Future sprint
+Severity Freshness Impact Response Time Owner
+
+CRITICAL > 2% < 4 hours Team lead
+HIGH 1-2% < 24 hours Assigned dev
+MEDIUM < 1% < 1 week Backlog
+LOW None Quarterly Future sprint
 ```
 
 ### 4.3 Communication Protocol
@@ -589,9 +589,9 @@ LOW         None               Quarterly        Future sprint
 ---
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-version: vX.Y.Z  # Last version this was valid for
+version: vX.Y.Z # Last version this was valid for
 status: active|archived|draft
-review_date: YYYY-MM-DD  # Next scheduled review
+review_date: YYYY-MM-DD # Next scheduled review
 ---
 ```
 
@@ -740,14 +740,14 @@ Measurement: Monthly
 
 | Task | doc-freshness-checker | unified-doc-agent |
 |------|----------------------|--------------------|
-| Content age tracking |  Primary | ℹ️ Input |
-| Code example validation |  Primary | ℹ️ Input |
-| External link checking |  Primary | 🤝 Coordinate |
-| Archive management | ℹ️ Input |  Primary |
-| Duplication detection | ℹ️ Input |  Primary |
-| Cross-references |  Check | 🤝 Update |
-| MkDocs warnings |  Track | 🤝 Resolve |
-| Maintenance automation |  Primary | ℹ️ Input |
+| Content age tracking | Primary | ℹ Input |
+| Code example validation | Primary | ℹ Input |
+| External link checking | Primary | Coordinate |
+| Archive management | ℹ Input | Primary |
+| Duplication detection | ℹ Input | Primary |
+| Cross-references | Check | Update |
+| MkDocs warnings | Track | Resolve |
+| Maintenance automation | Primary | ℹ Input |
 
 ---
 
@@ -779,10 +779,10 @@ Measurement: Monthly
 ## 9. Implementation Timeline
 
 ### Week 1 (This Week - Jul 8-12)
-- [ ] Complete Phase 1 audit  DONE
-- [ ] Generate Phase 2 validation report  DONE
-- [ ] Create Phase 3 improvement plan  DONE
-- [ ] Document Phase 4 procedures  DONE
+- [ ] Complete Phase 1 audit DONE
+- [ ] Generate Phase 2 validation report DONE
+- [ ] Create Phase 3 improvement plan DONE
+- [ ] Document Phase 4 procedures DONE
 - [ ] Update 5 Priority 1 files
 - [ ] Fix 20 GitHub URL links
 
@@ -804,23 +804,23 @@ Measurement: Monthly
 
 **Phase 4 Completion Criteria:**
 
-- [ ]  Freshness audit report completed (98.3% freshness achieved)
-- [ ]  Content accuracy validation performed (4/5 modules verified)
-- [ ]  Maintenance procedures documented
-- [ ]  CI/CD integration in progress
-- [ ]  Automated freshness checks deployed
-- [ ]  Team training completed
-- [ ]  Dashboard operational
+- [ ] Freshness audit report completed (98.3% freshness achieved)
+- [ ] Content accuracy validation performed (4/5 modules verified)
+- [ ] Maintenance procedures documented
+- [ ] CI/CD integration in progress
+- [ ] Automated freshness checks deployed
+- [ ] Team training completed
+- [ ] Dashboard operational
 
 **Sign-Off:**
 - **Doc Freshness Checker Agent:** Ready for Phase 4 finalization
 - **Unified Doc Agent (M-02):** Coordination pending
 - **Link Validator Agent:** Partnership established
-- **Campaign Status:** PHASE 4 IN PROGRESS → COMPLETION TARGET: 2026-07-12
+- **Campaign Status:** PHASE 4 IN PROGRESS COMPLETION TARGET: 2026-07-12
 
 ---
 
-**Report Date:** 2026-07-08  
-**Agent:** doc-freshness-checker  
-**Campaign:** Phase 12 WS3 Documentation  
+**Report Date:** 2026-07-08 
+**Agent:** doc-freshness-checker 
+**Campaign:** Phase 12 WS3 Documentation 
 **Next Review:** 2026-07-15 (Weekly)

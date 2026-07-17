@@ -40,20 +40,20 @@ Track the following metrics to measure onboarding success:
 ### 4. Deployment Environment Distribution
 
 ```
-Development:  CODEX_LOCAL_LOOPBACK=true
-├─ Default (localhost): 70%
-├─ Custom local services: 20%
-└─ Docker Compose: 10%
+Development: CODEX_LOCAL_LOOPBACK=true
+ Default (localhost): 70%
+ Custom local services: 20%
+ Docker Compose: 10%
 
-Staging:      CODEX_LOCAL_LOOPBACK=false
-├─ Kubernetes: 60%
-├─ VM/Cloud: 30%
-└─ Bare metal: 10%
+Staging: CODEX_LOCAL_LOOPBACK=false
+ Kubernetes: 60%
+ VM/Cloud: 30%
+ Bare metal: 10%
 
-Production:   CODEX_LOCAL_LOOPBACK=false
-├─ Kubernetes: 80%
-├─ High availability: 15%
-└─ Single node: 5%
+Production: CODEX_LOCAL_LOOPBACK=false
+ Kubernetes: 80%
+ High availability: 15%
+ Single node: 5%
 ```
 
 ## Metrics Collection

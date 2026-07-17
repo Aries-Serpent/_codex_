@@ -79,22 +79,22 @@ Improvement: Native UI guaranteed
 
 ```
 docs/accountability/
-├── README.md (landing page)
-├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (main index)
-├── AGENT_ACCESS_EXPERIENCE_REPORT.md (unchanged)
-├── INDEX.md (landing reference)
-└── chunks/
- ├── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md
- ├── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md
- ├── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_03.md
- ├── ...
- └── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md
+ README.md (landing page)
+ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (main index)
+ AGENT_ACCESS_EXPERIENCE_REPORT.md (unchanged)
+ INDEX.md (landing reference)
+ chunks/
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_03.md
+ ...
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md
 
 .codex/
-├── archive/
-│ └── OLD_ACCOUNTABILITY_REPORT_66K.md.bak (backup)
-├── AGENT_ACCOUNTABILITY_REPORT_INDEX.md (original index)
-└── accountability_chunks/ (source files)
+ archive/
+ OLD_ACCOUNTABILITY_REPORT_66K.md.bak (backup)
+ AGENT_ACCOUNTABILITY_REPORT_INDEX.md (original index)
+ accountability_chunks/ (source files)
 ```
 
 ---
@@ -153,17 +153,17 @@ docs/accountability/
 
 ```
 1. Open .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (index)
- ↓
+ 
 2. Use Ctrl+F to find "S250"
- ↓
+ 
 3. See "Group 26 (Sessions 251-260)" in results
- ↓
+ 
 4. Click link to Group 26 chunk
- ↓
+ 
 5. Browse table, find session details
- ↓
+ 
 6. Use "Previous"/"Next" to browse adjacent groups
- ↓
+ 
 7. Use "Index" link to return to main index
 ```
 
@@ -235,7 +235,7 @@ Source: AGENT_ACCOUNTABILITY_REPORT_INDEX.md
 Sessions recorded: 316
 Chunks generated: 32
 Sessions per chunk: 10 (avg)
-Total distributed: 32 × 10 = 320, but group 32 = 6 → 310 + 6 = 316 
+Total distributed: 32 × 10 = 320, but group 32 = 6 310 + 6 = 316 
 ```
 
 ---
@@ -255,13 +255,13 @@ Accessible for reference or rollback if needed.
 
 **Old links to monolithic report:**
 ```
-docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → [4.1 MB monolithic]
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md [4.1 MB monolithic]
 ```
 
 **New links to chunked format:**
 ```
-docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → [Index file, 6.8 KB]
-docs/accountability/chunks/SESSION_GROUP_NN.md → [Individual chunks, 8.75 KB avg]
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md [Index file, 6.8 KB]
+docs/accountability/chunks/SESSION_GROUP_NN.md [Individual chunks, 8.75 KB avg]
 ```
 
 ### Redirect Strategy

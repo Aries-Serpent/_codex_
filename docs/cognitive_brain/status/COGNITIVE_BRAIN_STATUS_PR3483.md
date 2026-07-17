@@ -40,29 +40,29 @@
 %%{init: {'accessibility': {'title': 'Diagram showing "PR #3483 Deliverables", " actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"'}}%%
 
 graph TB
-    subgraph PR3483["PR #3483 Deliverables"]
-        FIX1[" actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"]
-        DOCS1[" REPO_VARIABLES_IMPLEMENTATION_GUIDE.md\n5 Mermaid diagrams\nFull wiring reference"]
-        DOCS2[" HUMAN_ADMIN_REPO_VARIABLES_SETUP.md\nCheckboxes + copy-paste CLI\nStep-by-step UI guide"]
-        AUDIT[" Mermaid codebase audit\n9 files fixed (91→96 workflows)\n446 files scanned total"]
-        AGENTS[" 3 agent files updated\nrepo-var-sync v1.1\ncognitive-brain-manager v2.0\nci-health-alert-agent updated"]
-    end
+ subgraph PR3483["PR #3483 Deliverables"]
+ FIX1[" actionlint-audit.yml\nSC2016 + SC2012 fixed\nTier-1 gate now passes"]
+ DOCS1[" REPO_VARIABLES_IMPLEMENTATION_GUIDE.md\n5 Mermaid diagrams\nFull wiring reference"]
+ DOCS2[" HUMAN_ADMIN_REPO_VARIABLES_SETUP.md\nCheckboxes + copy-paste CLI\nStep-by-step UI guide"]
+ AUDIT[" Mermaid codebase audit\n9 files fixed (9196 workflows)\n446 files scanned total"]
+ AGENTS[" 3 agent files updated\nrepo-var-sync v1.1\ncognitive-brain-manager v2.0\nci-health-alert-agent updated"]
+ end
 
-    subgraph VARS["13 New Repo Variables (to create)"]
-        CB_VARS["Cognitive Brain (4)\nMAX_CONTEXT_TOKENS=32000\nLTM_RETENTION_DAYS=90\nPATTERN_MIN_CONFIDENCE=0.75\nMEMORY_TIER=both"]
-        CLI_VARS["Copilot CLI (4)\nCLI_BASE_URL=:8765\nCLI_ENABLED=true\nSESSION_RESTORE_ENABLED=true\nMAX_AUTONOMY_LEVEL=E"]
-        CI_VARS["CI/CD Health (5)\nCI_FAILURE_THRESHOLD=10.0\nCI_LAST_GREEN_SHA=auto\nHANDOFF_TIMEOUT=120\nEMBEDDING_REBUILD=true\nAUTO_PROMOTE=false"]
-    end
+ subgraph VARS["13 New Repo Variables (to create)"]
+ CB_VARS["Cognitive Brain (4)\nMAX_CONTEXT_TOKENS=32000\nLTM_RETENTION_DAYS=90\nPATTERN_MIN_CONFIDENCE=0.75\nMEMORY_TIER=both"]
+ CLI_VARS["Copilot CLI (4)\nCLI_BASE_URL=:8765\nCLI_ENABLED=true\nSESSION_RESTORE_ENABLED=true\nMAX_AUTONOMY_LEVEL=E"]
+ CI_VARS["CI/CD Health (5)\nCI_FAILURE_THRESHOLD=10.0\nCI_LAST_GREEN_SHA=auto\nHANDOFF_TIMEOUT=120\nEMBEDDING_REBUILD=true\nAUTO_PROMOTE=false"]
+ end
 
-    subgraph STATE["Current Repository State"]
-        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
-        GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
-        WF["96 workflows (fixed from stale 91)"]
-    end
+ subgraph STATE["Current Repository State"]
+ REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+ GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
+ WF["96 workflows (fixed from stale 91)"]
+ end
 
-    PR3483 --> VARS
+ PR3483 --> VARS
 
-    PR3483 --> STATE
+ PR3483 --> STATE
 ```
 
 ---
@@ -98,33 +98,33 @@ graph TB
 
 flowchart LR
 
-    NOW["PR #3483\n MERGED"] --> P1
+ NOW["PR #3483\n MERGED"] --> P1
 
-    P1["P1 — Immediate\n(next session)"]
+ P1["P1 — Immediate\n(next session)"]
 
-    P1 --> P1A["Admin: create 13 new\nrepo variables via\nHUMAN_ADMIN_REPO_VARIABLES_SETUP.md"]
+ P1 --> P1A["Admin: create 13 new\nrepo variables via\nHUMAN_ADMIN_REPO_VARIABLES_SETUP.md"]
 
-    P1 --> P1B["Verify actionlint-audit\nCI gate passes green"]
+ P1 --> P1B["Verify actionlint-audit\nCI gate passes green"]
 
-    P1A & P1B --> P2["P2 — Wiring PRs"]
+ P1A & P1B --> P2["P2 — Wiring PRs"]
 
-    P2 --> P2A["generate_manifest.py:\nCONTEXT_WINDOW_BUDGET\n→ COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"]
+ P2 --> P2A["generate_manifest.py:\nCONTEXT_WINDOW_BUDGET\n COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"]
 
-    P2 --> P2B["prune_corpus.py:\nretention_days\n→ COGNITIVE_BRAIN_LTM_RETENTION_DAYS"]
+ P2 --> P2B["prune_corpus.py:\nretention_days\n COGNITIVE_BRAIN_LTM_RETENTION_DAYS"]
 
-    P2 --> P2C["ci-health-monitor.yml:\nhardcoded threshold\n→ CODEX_CI_FAILURE_THRESHOLD"]
+ P2 --> P2C["ci-health-monitor.yml:\nhardcoded threshold\n CODEX_CI_FAILURE_THRESHOLD"]
 
-    P2 --> P2D["agent-handoff-gate.yml:\nhardcoded timeout\n→ AGENT_HANDOFF_TIMEOUT_SECONDS"]
+ P2 --> P2D["agent-handoff-gate.yml:\nhardcoded timeout\n AGENT_HANDOFF_TIMEOUT_SECONDS"]
 
-    P2 --> P2E["chatops_copilot_trigger.yml:\nadd SESSION_NUMBER\nauto-increment step"]
+ P2 --> P2E["chatops_copilot_trigger.yml:\nadd SESSION_NUMBER\nauto-increment step"]
 
-    P2A & P2B & P2C & P2D & P2E --> P3["P3 — Enhancement"]
+ P2A & P2B & P2C & P2D & P2E --> P3["P3 — Enhancement"]
 
-    P3 --> P3A["Add .actionlintrc\nshell-check: enable: true"]
+ P3 --> P3A["Add .actionlintrc\nshell-check: enable: true"]
 
-    P3 --> P3B["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\nE → D when validated"]
+ P3 --> P3B["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\nE D when validated"]
 
-    P3 --> P3C["AUTO_PROMOTE_TIER_ENABLED\nfalse → true when validated"]
+ P3 --> P3C["AUTO_PROMOTE_TIER_ENABLED\nfalse true when validated"]
 ```
 
 ---

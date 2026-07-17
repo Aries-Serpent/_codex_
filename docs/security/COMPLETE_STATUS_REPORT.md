@@ -32,13 +32,13 @@
 **Functions Available**:
 ```python
 from codex.security import (
-    mask_token,          # Mask API keys/tokens
-    mask_email,          # Mask email addresses
-    mask_password,       # Fully mask passwords
-    mask_sensitive,      # Bidirectional masking
-    sanitize_log,        # Prevent log injection
-    sanitize_dict_for_log,  # Sanitize dictionaries
-    hash_secure,         # SHA-256/SHA-512 hashing
+ mask_token, # Mask API keys/tokens
+ mask_email, # Mask email addresses
+ mask_password, # Fully mask passwords
+ mask_sensitive, # Bidirectional masking
+ sanitize_log, # Prevent log injection
+ sanitize_dict_for_log, # Sanitize dictionaries
+ hash_secure, # SHA-256/SHA-512 hashing
 )
 ```
 
@@ -80,7 +80,7 @@ token_hash = hash_secure(token, algorithm='sha256')
 **Usage**:
 ```python
 from codex.security.storage import SecureStorage
-storage = SecureStorage()  # Uses ENCRYPTION_KEY env var
+storage = SecureStorage() # Uses ENCRYPTION_KEY env var
 storage.store_secret("api_key.enc", secret)
 secret = storage.load_secret("api_key.enc")
 ```
@@ -219,7 +219,7 @@ secret = storage.load_secret("api_key.enc")
  mask_token: ****************z789
  sanitize_log: testinjection
  hash_secure: 2bb80d537b1da3e3...
-🎉 All security utilities working!
+ All security utilities working!
 ```
 
 ### Pre-commit Hooks

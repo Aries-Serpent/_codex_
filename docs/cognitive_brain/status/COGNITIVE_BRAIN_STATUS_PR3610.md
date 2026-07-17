@@ -55,54 +55,54 @@
 %%{init: {'accessibility': {'title': 'Flowchart showing "PR Comment Upsert<br/>(paginated, race-safe)", "Consolidator Dedup<br/>(newest-first merge)"'}}%%
 
 graph TD
-    subgraph "CI/CD Robustness Layer (Phase 5)"
-        UPSRT["PR Comment Upsert<br/>(paginated, race-safe)"]
-        DEDUP["Consolidator Dedup<br/>(newest-first merge)"]
-        DEFER["Deferral Gate<br/>(fence-safe scanner)"]
-        CACHE["Pip Cache<br/>(94/98 workflows)"]
-    end
+ subgraph "CI/CD Robustness Layer (Phase 5)"
+ UPSRT["PR Comment Upsert<br/>(paginated, race-safe)"]
+ DEDUP["Consolidator Dedup<br/>(newest-first merge)"]
+ DEFER["Deferral Gate<br/>(fence-safe scanner)"]
+ CACHE["Pip Cache<br/>(94/98 workflows)"]
+ end
 
-    subgraph "Test Infrastructure"
-        EVAL["evaluate_datasets<br/>(module-level)"]
-        POOL["PooledConnectionProxy<br/>backup(_raw_conn)"]
-        SORT["trend_aggregator<br/>sorted(key=str)"]
-        GH["codex.github<br/>(explicit import guard)"]
-    end
+ subgraph "Test Infrastructure"
+ EVAL["evaluate_datasets<br/>(module-level)"]
+ POOL["PooledConnectionProxy<br/>backup(_raw_conn)"]
+ SORT["trend_aggregator<br/>sorted(key=str)"]
+ GH["codex.github<br/>(explicit import guard)"]
+ end
 
-    subgraph "Production Hardening (Phase 4 )"
-        PC["PatternCompressor /health"]
-        BC["BrainClient health"]
-        RD["Redis RAG backend"]
-        CE["CrossEncoderReranker"]
-    end
+ subgraph "Production Hardening (Phase 4 )"
+ PC["PatternCompressor /health"]
+ BC["BrainClient health"]
+ RD["Redis RAG backend"]
+ CE["CrossEncoderReranker"]
+ end
 
-    subgraph "Observability (Phase 6 🔮)"
-        OT["OTEL workflow histogram"]
-        DB["CB Dashboard v2"]
-        TR["Token rotation e2e"]
-    end
+ subgraph "Observability (Phase 6 )"
+ OT["OTEL workflow histogram"]
+ DB["CB Dashboard v2"]
+ TR["Token rotation e2e"]
+ end
 
-    UPSRT --> DEDUP
+ UPSRT --> DEDUP
 
-    DEFER --> CACHE
+ DEFER --> CACHE
 
-    EVAL --> POOL
+ EVAL --> POOL
 
-    SORT --> GH
+ SORT --> GH
 
-    style UPSRT fill:#22c55e,color:#fff
-    style DEDUP fill:#22c55e,color:#fff
-    style EVAL fill:#22c55e,color:#fff
-    style POOL fill:#22c55e,color:#fff
-    style SORT fill:#22c55e,color:#fff
-    style GH fill:#22c55e,color:#fff
-    style PC fill:#8b5cf6,color:#fff
-    style BC fill:#8b5cf6,color:#fff
-    style RD fill:#8b5cf6,color:#fff
-    style CE fill:#8b5cf6,color:#fff
-    style OT fill:#f59e0b,color:#fff
-    style DB fill:#f59e0b,color:#fff
-    style TR fill:#ef4444,color:#fff
+ style UPSRT fill:#22c55e,color:#fff
+ style DEDUP fill:#22c55e,color:#fff
+ style EVAL fill:#22c55e,color:#fff
+ style POOL fill:#22c55e,color:#fff
+ style SORT fill:#22c55e,color:#fff
+ style GH fill:#22c55e,color:#fff
+ style PC fill:#8b5cf6,color:#fff
+ style BC fill:#8b5cf6,color:#fff
+ style RD fill:#8b5cf6,color:#fff
+ style CE fill:#8b5cf6,color:#fff
+ style OT fill:#f59e0b,color:#fff
+ style DB fill:#f59e0b,color:#fff
+ style TR fill:#ef4444,color:#fff
 ```
 
 ---
@@ -113,37 +113,37 @@ graph TD
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title Cognitive Brain Phase Roadmap
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %d
+ title Cognitive Brain Phase Roadmap
+ dateFormat YYYY-MM-DD
+ axisFormat %b %d
 
-    section Phase 4 (Production Hardening)
-    PatternCompressor /health     :done, p4a, 2026-02-20, 2026-02-25
-    BrainClient health            :done, p4b, 2026-02-25, 2026-03-01
-    Redis RAG + Feast             :done, p4c, 2026-02-28, 2026-03-05
-    CrossEncoderReranker          :done, p4d, 2026-03-01, 2026-03-05
-    capability_detectors tests    :done, p4e, 2026-03-05, 2026-03-10
+ section Phase 4 (Production Hardening)
+ PatternCompressor /health :done, p4a, 2026-02-20, 2026-02-25
+ BrainClient health :done, p4b, 2026-02-25, 2026-03-01
+ Redis RAG + Feast :done, p4c, 2026-02-28, 2026-03-05
+ CrossEncoderReranker :done, p4d, 2026-03-01, 2026-03-05
+ capability_detectors tests :done, p4e, 2026-03-05, 2026-03-10
 
-    section Phase 5 (CI Robustness)
-    Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
-    Deferral fence-opener fix      :done, p5b, 2026-03-17, 2026-03-17
-    PRECOMMIT doc_metrics_sync     :done, p5c, 2026-03-17, 2026-03-17
-    Template indent fix            :done, p5d, 2026-03-17, 2026-03-17
-    Upsert pagination (4 wkfl)     :done, p5e, 2026-03-17, 2026-03-17
-    Consolidator newest-first      :done, p5f, 2026-03-17, 2026-03-17
-    CI test fixes (6 failures)     :done, p5g, 2026-03-17, 2026-03-17
-    nvidia/cuda bump + dockerfile  :done, p5h, 2026-03-17, 2026-03-17
-    pip-cache pattern fix (4 wkfl) :done, p5i, 2026-03-17, 2026-03-17
-    actionlint self-ref fix        :done, p5j, 2026-03-17, 2026-03-17
-    CHANGELOG REQ-5 compliance     :done, p5k, 2026-03-17, 2026-03-17
+ section Phase 5 (CI Robustness)
+ Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
+ Deferral fence-opener fix :done, p5b, 2026-03-17, 2026-03-17
+ PRECOMMIT doc_metrics_sync :done, p5c, 2026-03-17, 2026-03-17
+ Template indent fix :done, p5d, 2026-03-17, 2026-03-17
+ Upsert pagination (4 wkfl) :done, p5e, 2026-03-17, 2026-03-17
+ Consolidator newest-first :done, p5f, 2026-03-17, 2026-03-17
+ CI test fixes (6 failures) :done, p5g, 2026-03-17, 2026-03-17
+ nvidia/cuda bump + dockerfile :done, p5h, 2026-03-17, 2026-03-17
+ pip-cache pattern fix (4 wkfl) :done, p5i, 2026-03-17, 2026-03-17
+ actionlint self-ref fix :done, p5j, 2026-03-17, 2026-03-17
+ CHANGELOG REQ-5 compliance :done, p5k, 2026-03-17, 2026-03-17
 
-    section Phase 6 (Observability)
-    OTEL workflow histogram        :done, p6a, 2026-03-17, 2026-03-17
-    slow-test @pytest.mark.slow    :done, p6b, 2026-03-17, 2026-03-17
-    dependabot-auto-absorb wkfl    :done, p6c, 2026-03-17, 2026-03-17
-    CB Dashboard v2 metrics widget :done, p6d, 2026-03-17, 2026-03-17
-    mypy zero-error baseline       :active, p6e, 2026-03-18, 2026-03-22
-    Token rotation e2e (admin)     :crit, p6f, 2026-04-01, 2026-04-07
+ section Phase 6 (Observability)
+ OTEL workflow histogram :done, p6a, 2026-03-17, 2026-03-17
+ slow-test @pytest.mark.slow :done, p6b, 2026-03-17, 2026-03-17
+ dependabot-auto-absorb wkfl :done, p6c, 2026-03-17, 2026-03-17
+ CB Dashboard v2 metrics widget :done, p6d, 2026-03-17, 2026-03-17
+ mypy zero-error baseline :active, p6e, 2026-03-18, 2026-03-22
+ Token rotation e2e (admin) :crit, p6f, 2026-04-01, 2026-04-07
 ```
 
 ---
@@ -154,45 +154,45 @@ gantt
 %%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml<br/>pip cache ", "branch-rebase-gate.yml<br/>pip cache "'}}%%
 
 graph TB
-    subgraph "CI Health — S143 Baseline (2026-03-17)"
-        direction LR
+ subgraph "CI Health — S143 Baseline (2026-03-17)"
+ direction LR
 
-        subgraph "S141 "
-            A1["cost-gate.yml<br/>pip cache "]
-            A2["branch-rebase-gate.yml<br/>pip cache "]
-            A3["deferral-language-gate.yml<br/>pip cache "]
-            A4["root-org-validation.yml<br/>actionlint "]
-            A5["CHANGELOG REQ-5 "]
-        end
+ subgraph "S141 "
+ A1["cost-gate.yml<br/>pip cache "]
+ A2["branch-rebase-gate.yml<br/>pip cache "]
+ A3["deferral-language-gate.yml<br/>pip cache "]
+ A4["root-org-validation.yml<br/>actionlint "]
+ A5["CHANGELOG REQ-5 "]
+ end
 
-        subgraph "S142 "
-            B1["mypy 0 errors "]
-            B2["78 unused-ignores removed "]
-            B3["TOKEN_ROTATION_GUIDE.md "]
-            B4["533 stale docs remediated "]
-            B5["doc-freshness-check.yml "]
-        end
+ subgraph "S142 "
+ B1["mypy 0 errors "]
+ B2["78 unused-ignores removed "]
+ B3["TOKEN_ROTATION_GUIDE.md "]
+ B4["533 stale docs remediated "]
+ B5["doc-freshness-check.yml "]
+ end
 
-        subgraph "S143  (Now)"
-            C1["pyasn1 0.6.3<br/>CVE-2026-30922 "]
-            C2["OTel coherence histogram <br/>workflow.coherence.score"]
-            C3["compute_coherence() <br/>policy-alignment helper"]
-        end
+ subgraph "S143 (Now)"
+ C1["pyasn1 0.6.3<br/>CVE-2026-30922 "]
+ C2["OTel coherence histogram <br/>workflow.coherence.score"]
+ C3["compute_coherence() <br/>policy-alignment helper"]
+ end
 
-        subgraph "Admin-Gated "
-            D1["Token rotation e2e<br/>(real GitHub App)"]
-            D2["CODEX_MASTER_KEY<br/>rotation calendar"]
-        end
-    end
+ subgraph "Admin-Gated "
+ D1["Token rotation e2e<br/>(real GitHub App)"]
+ D2["CODEX_MASTER_KEY<br/>rotation calendar"]
+ end
+ end
 
-    A5 --> B1
+ A5 --> B1
 
-    B1 --> C1
+ B1 --> C1
 
-    C1 --> C2
+ C1 --> C2
 
-    C2 --> C3
-    C3 -.->|requires admin| D1
+ C2 --> C3
+ C3 -.->|requires admin| D1
 ```
 
 ### OTel Coherence Histogram — Architecture
@@ -201,20 +201,20 @@ graph TB
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing 0.0, 1.0'}}%%
 
 sequenceDiagram
-    participant CI as GitHub Actions Job
-    participant OTel as otel_metrics.py
-    participant Reg as _MetricRegistry
-    participant Dash as Dashboard / Health Check
+ participant CI as GitHub Actions Job
+ participant OTel as otel_metrics.py
+ participant Reg as _MetricRegistry
+ participant Dash as Dashboard / Health Check
 
-    CI->>OTel: import workflow_coherence_score, compute_coherence
-    CI->>OTel: compute_coherence(actual_steps, expected_steps)
+ CI->>OTel: import workflow_coherence_score, compute_coherence
+ CI->>OTel: compute_coherence(actual_steps, expected_steps)
 
-    OTel-->>CI: score: float [0.0, 1.0]
-    CI->>OTel: workflow_coherence_score.observe(score)
-    OTel->>Reg: _observations.append(score)
-    Dash->>Reg: metrics.get("workflow.coherence.score")
+ OTel-->>CI: score: float [0.0, 1.0]
+ CI->>OTel: workflow_coherence_score.observe(score)
+ OTel->>Reg: _observations.append(score)
+ Dash->>Reg: metrics.get("workflow.coherence.score")
 
-    Reg-->>Dash: Histogram snapshot {count, sum, avg}
+ Reg-->>Dash: Histogram snapshot {count, sum, avg}
 ```
 
 ### CI Metrics Snapshot (S143 Cumulative)

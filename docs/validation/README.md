@@ -29,11 +29,11 @@ This directory contains documentation for validation, testing, and quality assur
 
 ```
 System Validation
-├── Configuration Validation
-├── Data Validation
-├── Model Validation
-├── Pipeline Validation
-└── Output Validation
+ Configuration Validation
+ Data Validation
+ Model Validation
+ Pipeline Validation
+ Output Validation
 ```
 
 ## Configuration Validation
@@ -45,7 +45,7 @@ from hydra.utils import instantiate
 from omegaconf import OmegaConf
 
 config = OmegaConf.load("config.yaml")
-OmegaConf.to_yaml(config)  # Validate structure
+OmegaConf.to_yaml(config) # Validate structure
 ```
 
 ### Custom Validators
@@ -54,10 +54,10 @@ OmegaConf.to_yaml(config)  # Validate structure
 from codex.validation import BaseValidator
 
 class ConfigValidator(BaseValidator):
-    def validate(self, config):
-        assert "model" in config
-        assert "training" in config
-        return True
+ def validate(self, config):
+ assert "model" in config
+ assert "training" in config
+ return True
 ```
 
 ## Data Validation
@@ -68,8 +68,8 @@ class ConfigValidator(BaseValidator):
 from codex.validation import validate_schema
 
 schema = {
-    "id": {"type": "string", "required": True},
-    "label": {"type": "integer", "required": True}
+ "id": {"type": "string", "required": True},
+ "label": {"type": "integer", "required": True}
 }
 
 data = {"id": "001", "label": 1}

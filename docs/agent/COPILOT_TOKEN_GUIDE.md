@@ -40,22 +40,22 @@ All four tokens are resolved automatically by `BrainClient._auth_header()` and
 
 ```
 copilot-setup-steps.yml
-│
-├── job env: block
-│   ├── CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}   ← job-level only
-│   └── CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}   ← job-level only
-│
-├── "🔑 Export Auth Tokens to Agent Environment" step
-│   ├── echo "CODEX_MASTER_KEY=..."   >> $GITHUB_ENV   ← persists to agent
-│   ├── echo "CODEX_BACKUP_KEY=..."   >> $GITHUB_ENV   ← persists to agent
-│   └── echo "AGENT_GITHUB_TOKEN=..."  >> $GITHUB_ENV  ← persists to agent
-│
-├── "💻 Start CLI API Server" step
-│   ├── export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"   ← forwarded to uvicorn
-│   ├── export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
-│   └── export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
-│
-└── Copilot Agent process inherits GITHUB_ENV → all four tokens available
+
+ job env: block
+ CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }} job-level only
+ CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }} job-level only
+
+ " Export Auth Tokens to Agent Environment" step
+ echo "CODEX_MASTER_KEY=..." >> $GITHUB_ENV persists to agent
+ echo "CODEX_BACKUP_KEY=..." >> $GITHUB_ENV persists to agent
+ echo "AGENT_GITHUB_TOKEN=..." >> $GITHUB_ENV persists to agent
+
+ " Start CLI API Server" step
+ export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}" forwarded to uvicorn
+ export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
+ export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+
+ Copilot Agent process inherits GITHUB_ENV all four tokens available
 ```
 
 > **Why two steps?** Job-level `env:` values are available to setup steps but
@@ -111,9 +111,9 @@ copilot-setup-steps.yml
 from codex.agents.brain_client import BrainClient
 
 brain = BrainClient()
-# Auth is auto-injected from CODEX_MASTER_KEY → GITHUB_TOKEN priority chain
+# Auth is auto-injected from CODEX_MASTER_KEY GITHUB_TOKEN priority chain
 resp = brain.proxy_request("GET",
-    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
 ```
 
 ## 2 — VariableManager (repo / env / org variables)
@@ -121,7 +121,7 @@ resp = brain.proxy_request("GET",
 ```python
 from scripts.tools.variable_manager import VariableManager
 
-vm = VariableManager()   # auto-resolves best available token
+vm = VariableManager() # auto-resolves best available token
 
 # Repo variables
 vm.create_repo_var("Aries-Serpent", "_codex_", "COPILOT_TEST_VAR", "hello_agent")
@@ -135,7 +135,7 @@ vm.create_env_var("Aries-Serpent", "_codex_", "production", "MY_ENV_VAR", "val")
 # Org variables
 vm.create_org_var("Aries-Serpent", "COPILOT_ORG_VAR", "val", visibility="all")
 
-# Live test (create → verify → update → verify → delete)
+# Live test (create verify update verify delete)
 vm.run_live_test("Aries-Serpent", "_codex_")
 ```
 
@@ -147,15 +147,15 @@ python scripts/tools/variable_manager.py list repo Aries-Serpent _codex_
 
 # Create a test variable
 python scripts/tools/variable_manager.py create repo Aries-Serpent _codex_ \
-  COPILOT_TEST_VAR "hello_from_agent"
+ COPILOT_TEST_VAR "hello_from_agent"
 
 # Update it
 python scripts/tools/variable_manager.py update repo Aries-Serpent _codex_ \
-  COPILOT_TEST_VAR "updated_value"
+ COPILOT_TEST_VAR "updated_value"
 
 # Delete it
 python scripts/tools/variable_manager.py delete repo Aries-Serpent _codex_ \
-  COPILOT_TEST_VAR
+ COPILOT_TEST_VAR
 
 # Full live test
 python scripts/tools/variable_manager.py test
@@ -172,12 +172,12 @@ python scripts/tools/variable_manager.py list org Aries-Serpent
 ```bash
 # Auto-injects CODEX_MASTER_KEY (or GITHUB_TOKEN fallback) from server env
 curl -s -X POST http://localhost:8765/api/request \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "POST",
-    "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
-    "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}
-  }'
+ -H "Content-Type: application/json" \
+ -d '{
+ "method": "POST",
+ "url": "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+ "body": {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}
+ }'
 ```
 
 ## 5 — Check which token is active
@@ -187,12 +187,12 @@ python3 -c "
 import os
 priority = ['CODEX_MASTER_KEY','CODEX_BACKUP_KEY','AGENT_GITHUB_TOKEN','GITHUB_TOKEN']
 for k in priority:
-    v = os.environ.get(k, '')
-    if v:
-        print(f'Active token: {k} ({len(v)} chars)')
-        break
+ v = os.environ.get(k, '')
+ if v:
+ print(f'Active token: {k} ({len(v)} chars)')
+ break
 else:
-    print('️  No auth token found in environment')
+ print(' No auth token found in environment')
 "
 ```
 
@@ -209,12 +209,12 @@ and the owner approves the workflow run, the delegation workflow:
 
 ```json
 {
-  "issued_at": "2026-03-05T04:44:23Z",
-  "expires_at": 1772700263,
-  "issued_by": "agent-auth-delegation",
-  "run_id": "22702507580",
-  "pr_number": "3497",
-  "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL."
+ "issued_at": "2026-03-05T04:44:23Z",
+ "expires_at": 1772700263,
+ "issued_by": "agent-auth-delegation",
+ "run_id": "22702507580",
+ "pr_number": "3497",
+ "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL."
 }
 ```
 
@@ -239,52 +239,52 @@ print(f"Issued by: {session['issued_by']} on {session['issued_at']}")
 ### `403 Resource not accessible by integration`
 
 ```
-Token source    → GITHUB_TOKEN (no repo scope)
-Affected APIs   → secrets, org variables, some advanced settings
-Fix             → Use CODEX_MASTER_KEY (must be set as org secret)
+Token source GITHUB_TOKEN (no repo scope)
+Affected APIs secrets, org variables, some advanced settings
+Fix Use CODEX_MASTER_KEY (must be set as org secret)
 ```
 
 ### `401 Bad credentials`
 
 ```
-Token source    → Token is expired or invalid
-Fix             → Re-trigger agent-auth-delegation workflow to refresh session
-                  Or: rotate CODEX_MASTER_KEY org secret
+Token source Token is expired or invalid
+Fix Re-trigger agent-auth-delegation workflow to refresh session
+ Or: rotate CODEX_MASTER_KEY org secret
 ```
 
 ### `CODEX_MASTER_KEY` not in agent process env
 
 ```
-Symptom         → python3 -c "import os; print(os.environ.get('CODEX_MASTER_KEY','MISSING'))"
-                  → MISSING
-Cause           → "🔑 Export Auth Tokens" step was not executed or secret is empty
-Fix             → Verify secrets.CODEX_MASTER_KEY is set in org/repo secrets
-                  Check copilot-setup-steps.yml step "🔑 Export Auth Tokens to Agent Environment"
+Symptom python3 -c "import os; print(os.environ.get('CODEX_MASTER_KEY','MISSING'))"
+ MISSING
+Cause " Export Auth Tokens" step was not executed or secret is empty
+Fix Verify secrets.CODEX_MASTER_KEY is set in org/repo secrets
+ Check copilot-setup-steps.yml step " Export Auth Tokens to Agent Environment"
 ```
 
 ### CLI API Server returns `401` for GitHub API calls
 
 ```
-Symptom         → POST /api/request → {"status_code": 401, ...}
-Cause           → Server process doesn't have CODEX_MASTER_KEY in its env
-                  (setup steps forwarded it to GITHUB_ENV but server started before that step)
-Fix             → Verify step order: "🔑 Export Auth Tokens" MUST run BEFORE
-                  "💻 Start CLI API Server".
-                  The server startup step also runs:
-                    export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
-                  to explicitly forward the key to the uvicorn process.
+Symptom POST /api/request {"status_code": 401, ...}
+Cause Server process doesn't have CODEX_MASTER_KEY in its env
+ (setup steps forwarded it to GITHUB_ENV but server started before that step)
+Fix Verify step order: " Export Auth Tokens" MUST run BEFORE
+ " Start CLI API Server".
+ The server startup step also runs:
+ export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
+ to explicitly forward the key to the uvicorn process.
 ```
 
 ### `X-OAuth-Scopes: ` (empty scopes on GITHUB_TOKEN)
 
 ```
-Symptom         → curl -sI -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/ |
-                  grep X-OAuth-Scopes
-                  → X-OAuth-Scopes:
-Explanation     → GITHUB_TOKEN is a GitHub Apps installation token, NOT a classic OAuth token.
-                  It has no "scopes" — its permissions come from the workflow permissions: block.
-                  This is NORMAL. The token is valid; empty scopes ≠ no permissions.
-Fix             → Ensure workflow has `actions: write` in permissions: block.
+Symptom curl -sI -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/ |
+ grep X-OAuth-Scopes
+ X-OAuth-Scopes:
+Explanation GITHUB_TOKEN is a GitHub Apps installation token, NOT a classic OAuth token.
+ It has no "scopes" — its permissions come from the workflow permissions: block.
+ This is NORMAL. The token is valid; empty scopes ≠ no permissions.
+Fix Ensure workflow has `actions: write` in permissions: block.
 ```
 
 ---
@@ -304,59 +304,59 @@ print("=" * 55)
 
 # 1. Token inventory
 priority = [
-    ("CODEX_MASTER_KEY",   "Full PAT (repo scope)"),
-    ("CODEX_BACKUP_KEY",   "Fallback PAT"),
-    ("AGENT_GITHUB_TOKEN", "GITHUB_TOKEN alias"),
-    ("GITHUB_TOKEN",       "Actions installation token"),
+ ("CODEX_MASTER_KEY", "Full PAT (repo scope)"),
+ ("CODEX_BACKUP_KEY", "Fallback PAT"),
+ ("AGENT_GITHUB_TOKEN", "GITHUB_TOKEN alias"),
+ ("GITHUB_TOKEN", "Actions installation token"),
 ]
 active_token = ""
-active_name  = ""
+active_name = ""
 for name, desc in priority:
-    val = os.environ.get(name, "")
-    status = f" {len(val)} chars" if val else " NOT SET"
-    print(f"  {name:<25} {status:>15}  ({desc})")
-    if val and not active_token:
-        active_token, active_name = val, name
+ val = os.environ.get(name, "")
+ status = f" {len(val)} chars" if val else " NOT SET"
+ print(f" {name:<25} {status:>15} ({desc})")
+ if val and not active_token:
+ active_token, active_name = val, name
 
-print(f"\n  Active token: {active_name or 'NONE'}")
+print(f"\n Active token: {active_name or 'NONE'}")
 
 # 2. GitHub API test
 if active_token:
-    req = urllib.request.Request(
-        "https://api.github.com/repos/Aries-Serpent/_codex_",
-        headers={
-            "Authorization": f"Bearer {active_token}",
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        }
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=10) as resp:  # nosec
-            d = json.loads(resp.read())
-            print(f"  GitHub API (repo info):      {d['full_name']}")
-    except urllib.error.HTTPError as e:
-        print(f"  GitHub API (repo info):      HTTP {e.code}")
-    except Exception as e:
-        print(f"  GitHub API (repo info):      {e}")
+ req = urllib.request.Request(
+ "https://api.github.com/repos/Aries-Serpent/_codex_",
+ headers={
+ "Authorization": f"Bearer {active_token}",
+ "Accept": "application/vnd.github+json",
+ "X-GitHub-Api-Version": "2022-11-28",
+ }
+ )
+ try:
+ with urllib.request.urlopen(req, timeout=10) as resp: # nosec
+ d = json.loads(resp.read())
+ print(f" GitHub API (repo info): {d['full_name']}")
+ except urllib.error.HTTPError as e:
+ print(f" GitHub API (repo info): HTTP {e.code}")
+ except Exception as e:
+ print(f" GitHub API (repo info): {e}")
 
 # 3. CLI API server
 try:
-    req = urllib.request.Request("http://localhost:8765/api/health")
-    with urllib.request.urlopen(req, timeout=3) as resp:  # nosec
-        h = json.loads(resp.read())
-        print(f"  CLI API server (:8765):      status={h.get('status')}")
+ req = urllib.request.Request("http://localhost:8765/api/health")
+ with urllib.request.urlopen(req, timeout=3) as resp: # nosec
+ h = json.loads(resp.read())
+ print(f" CLI API server (:8765): status={h.get('status')}")
 except Exception as e:
-    print(f"  CLI API server (:8765):      {e}")
+ print(f" CLI API server (:8765): {e}")
 
 # 4. Delegation status
 try:
-    sess = json.load(open(".codex/agent_auth_session.json"))
-    import time
-    expired = int(time.time()) > sess.get("expires_at", 0)
-    flag = " EXPIRED" if expired else " ACTIVE"
-    print(f"  Agent token delegation:     {flag} (issued {sess.get('issued_at','')})")
+ sess = json.load(open(".codex/agent_auth_session.json"))
+ import time
+ expired = int(time.time()) > sess.get("expires_at", 0)
+ flag = " EXPIRED" if expired else " ACTIVE"
+ print(f" Agent token delegation: {flag} (issued {sess.get('issued_at','')})")
 except Exception:
-    print("  Agent token delegation:     ️  session file not found")
+ print(" Agent token delegation: session file not found")
 
 print("=" * 55)
 EOF

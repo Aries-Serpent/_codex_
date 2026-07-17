@@ -62,26 +62,26 @@ CMD ["python", "-m", "codex.cli", "serve"]
 # docker-compose.yml
 version: '3.8'
 services:
-  codex:
-    build: .
-    environment:
-      CODEX_REDIS_HOST: redis
-      CODEX_OLLAMA_HOST: http://ollama:11434
-    ports:
-      - "8000:8000"
-    depends_on:
-      - redis
-      - ollama
+ codex:
+ build: .
+ environment:
+ CODEX_REDIS_HOST: redis
+ CODEX_OLLAMA_HOST: http://ollama:11434
+ ports:
+ - "8000:8000"
+ depends_on:
+ - redis
+ - ollama
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+ redis:
+ image: redis:7-alpine
+ ports:
+ - "6379:6379"
 
-  ollama:
-    image: ollama/ollama
-    ports:
-      - "11434:11434"
+ ollama:
+ image: ollama/ollama
+ ports:
+ - "11434:11434"
 ```
 
 **Troubleshooting Docker:**
@@ -99,31 +99,31 @@ services:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex
+ name: codex
 spec:
-  template:
-    spec:
-      containers:
-      - name: codex
-        image: codex:latest
-        env:
-        # Use repository variables (GitHub Settings → Variables)
-        - name: CODEX_REDIS_HOST
-          valueFrom:
-            secretKeyRef:
-              name: codex-config
-              key: redis-host
-        - name: CODEX_OLLAMA_HOST
-          valueFrom:
-            secretKeyRef:
-              name: codex-config
-              key: ollama-host
-        - name: CODEX_INFERENCE_SERVICE_HOST
-          value: "0.0.0.0"  # Bind all interfaces
-        - name: CODEX_LOCAL_LOOPBACK
-          value: "false"    # Production security
-        - name: CODEX_TRUSTED_HOSTS
-          value: "*.codex.svc.cluster.local,codex.prod"
+ template:
+ spec:
+ containers:
+ - name: codex
+ image: codex:latest
+ env:
+ # Use repository variables (GitHub Settings Variables)
+ - name: CODEX_REDIS_HOST
+ valueFrom:
+ secretKeyRef:
+ name: codex-config
+ key: redis-host
+ - name: CODEX_OLLAMA_HOST
+ valueFrom:
+ secretKeyRef:
+ name: codex-config
+ key: ollama-host
+ - name: CODEX_INFERENCE_SERVICE_HOST
+ value: "0.0.0.0" # Bind all interfaces
+ - name: CODEX_LOCAL_LOOPBACK
+ value: "false" # Production security
+ - name: CODEX_TRUSTED_HOSTS
+ value: "*.codex.svc.cluster.local,codex.prod"
 ```
 
 **Setup Instructions:**
@@ -141,23 +141,23 @@ spec:
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-    steps:
-      - uses: actions/checkout@v5
-      
-      # Env vars automatically injected from repository settings
-      - name: Deploy
-        run: |
-          # GitHub Actions injects all CODEX_* variables
-          echo "CODEX_REDIS_HOST: ${{ env.CODEX_REDIS_HOST }}"
-          echo "CODEX_OLLAMA_HOST: ${{ env.CODEX_OLLAMA_HOST }}"
-          python -m codex.cli serve
-        env:
-          # Explicit override if needed
-          CODEX_LOCAL_LOOPBACK: 'false'
+ deploy:
+ runs-on: ubuntu-latest
+ environment:
+ name: production
+ steps:
+ - uses: actions/checkout@v5
+ 
+ # Env vars automatically injected from repository settings
+ - name: Deploy
+ run: |
+ # GitHub Actions injects all CODEX_* variables
+ echo "CODEX_REDIS_HOST: ${{ env.CODEX_REDIS_HOST }}"
+ echo "CODEX_OLLAMA_HOST: ${{ env.CODEX_OLLAMA_HOST }}"
+ python -m codex.cli serve
+ env:
+ # Explicit override if needed
+ CODEX_LOCAL_LOOPBACK: 'false'
 ```
 
 **GitHub Configuration:**
@@ -239,7 +239,7 @@ export CODEX_REDIS_HOST=skip
 
 **Issue:** Docker compose fails with "ollama: not found"
 ```
-ERROR: for ollama  Cannot start service ollama: driver failed...
+ERROR: for ollama Cannot start service ollama: driver failed...
 ```
 **Solution:** Ensure docker-compose.yml has `ollama` service defined and service names match env vars
 

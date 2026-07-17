@@ -69,7 +69,7 @@ Implement the Agent Orchestrator:
 4. Create tests/services/agent/test_orchestrator.py
 
 Requirements:
-- PLAN→ACT→OBSERVE→VERIFY flow
+- PLANACTOBSERVEVERIFY flow
 - Integrate GitHub client, workflow inventory, session state
 - Action queue with priorities
 - Dry-run mode for previews

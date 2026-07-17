@@ -35,16 +35,16 @@ This approach brings Production issue management, SLA tracking, automated routin
 
 **Key Components:**
 ```
-src/codex_crm/zd_admin/          # Zendesk admin utilities
-configs/desired/zendesk/          # Desired state configurations
-  ├── ticket_fields.desired.json  # Custom fields for repo issues
-  ├── ticket_forms.desired.json   # Forms for bug/feature intake
-  ├── triggers.desired.json       # Auto-routing rules
-  ├── views.desired.json          # Developer dashboards
-  ├── macros.desired.json         # Common responses
-  └── routing.desired.json        # Skills-based assignment
-data/zendesk_docs_manifest.json   # API documentation catalog
-docs/zendesk/                     # Complete documentation
+src/codex_crm/zd_admin/ # Zendesk admin utilities
+configs/desired/zendesk/ # Desired state configurations
+ ticket_fields.desired.json # Custom fields for repo issues
+ ticket_forms.desired.json # Forms for bug/feature intake
+ triggers.desired.json # Auto-routing rules
+ views.desired.json # Developer dashboards
+ macros.desired.json # Common responses
+ routing.desired.json # Skills-based assignment
+data/zendesk_docs_manifest.json # API documentation catalog
+docs/zendesk/ # Complete documentation
 ```
 
 ### 2. **Dynamics 365 (D365) Integration** (`src/codex_crm/d365_admin/`)
@@ -58,12 +58,12 @@ docs/zendesk/                     # Complete documentation
 
 **Key Components:**
 ```
-src/codex_crm/d365_admin/                 # D365 admin utilities
-configs/deployment/d365/                  # D365 configurations
-  └── solution_manifest.json              # Solution metadata
-src/codex_crm/cdm/data/mapping/          # Common Data Model mappings
-  └── assignment_d365.csv                 # Assignment mappings
-docs/crm/admin-runbooks/d365.md          # D365 runbook
+src/codex_crm/d365_admin/ # D365 admin utilities
+configs/deployment/d365/ # D365 configurations
+ solution_manifest.json # Solution metadata
+src/codex_crm/cdm/data/mapping/ # Common Data Model mappings
+ assignment_d365.csv # Assignment mappings
+docs/crm/admin-runbooks/d365.md # D365 runbook
 ```
 
 ### 3. **Common Data Model** (`src/codex_crm/cdm/`)
@@ -148,21 +148,21 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 
 graph LR
 
-    A[GitHub Issue Created] --> B[Zendesk Ticket Created]
+ A[GitHub Issue Created] --> B[Zendesk Ticket Created]
 
-    B --> C{Severity?}
+ B --> C{Severity?}
 
-    C -->|Critical| D[Auto-assign to P0 Team]
+ C -->|Critical| D[Auto-assign to P0 Team]
 
-    C -->|High| E[Skills-based Routing]
+ C -->|High| E[Skills-based Routing]
 
-    C -->|Low| F[General Queue]
+ C -->|Low| F[General Queue]
 
-    D --> G[Apply P0 SLA]
+ D --> G[Apply P0 SLA]
 
-    E --> H[Apply Standard SLA]
+ E --> H[Apply Standard SLA]
 
-    F --> I[Monitor in View]
+ F --> I[Monitor in View]
 ```
 
 **Implementation:**
@@ -179,25 +179,25 @@ graph LR
 
 graph TD
 
-    A[CodeQL Scan] --> B[Generate Debt Report]
+ A[CodeQL Scan] --> B[Generate Debt Report]
 
-    B --> C[Create D365 Cases]
+ B --> C[Create D365 Cases]
 
-    C --> D[Prioritize by Risk Score]
+ C --> D[Prioritize by Risk Score]
 
-    D --> E{Risk Level?}
+ D --> E{Risk Level?}
 
-    E -->|High| F[Immediate Sprint]
+ E -->|High| F[Immediate Sprint]
 
-    E -->|Medium| G[Backlog]
+ E -->|Medium| G[Backlog]
 
-    E -->|Low| H[Future Release]
+ E -->|Low| H[Future Release]
 
-    F --> I[Assign to Team]
+ F --> I[Assign to Team]
 
-    G --> J[Track in Roadmap]
+ G --> J[Track in Roadmap]
 
-    H --> K[Documentation]
+ H --> K[Documentation]
 ```
 
 **Implementation:**
@@ -214,15 +214,15 @@ graph TD
 
 graph LR
 
-    A[Zendesk Ticket] -->|High Priority| B[Sync to D365]
+ A[Zendesk Ticket] -->|High Priority| B[Sync to D365]
 
-    B --> C[D365 Case Created]
+ B --> C[D365 Case Created]
 
-    C --> D[Resource Allocation]
+ C --> D[Resource Allocation]
 
-    D --> E[Update Ticket Status]
+ D --> E[Update Ticket Status]
 
-    E --> F[Sync Back to GitHub]
+ E --> F[Sync Back to GitHub]
 ```
 
 **Implementation:**
@@ -252,10 +252,10 @@ from codex_crm.zd_admin import create_ticket_from_issue
 
 # AI agent detects bug pattern
 ticket = create_ticket_from_issue(
-    subject="Memory leak in src/quantum/orchestrator.py",
-    description="Detected unclosed resources...",
-    priority="high",
-    tags=["bug", "memory-leak", "quantum"]
+ subject="Memory leak in src/quantum/orchestrator.py",
+ description="Detected unclosed resources...",
+ priority="high",
+ tags=["bug", "memory-leak", "quantum"]
 )
 ```
 
@@ -265,9 +265,9 @@ from codex_crm.zd_admin import route_ticket
 
 # AI analyzes file paths and routes to expert
 route_ticket(
-    ticket_id=12345,
-    file_paths=["src/rag/pipelines/embedding.py"],
-    routing_strategy="skills-based"
+ ticket_id=12345,
+ file_paths=["src/rag/pipelines/embedding.py"],
+ routing_strategy="skills-based"
 )
 ```
 
@@ -277,9 +277,9 @@ from codex_crm.zd_admin import update_ticket
 
 # AI agent fixes bug, updates ticket
 update_ticket(
-    ticket_id=12345,
-    status="solved",
-    comment="Fixed in commit abc123. Root cause: ..."
+ ticket_id=12345,
+ status="solved",
+ comment="Fixed in commit abc123. Root cause: ..."
 )
 ```
 
@@ -290,17 +290,17 @@ update_ticket(
 ```yaml
 name: autonomous-bug-fixer
 triggers:
-  - zendesk_ticket_created
-  - ticket_tags: [bug, p0]
+ - zendesk_ticket_created
+ - ticket_tags: [bug, p0]
 steps:
-  1. Query Zendesk for new P0 bugs
-  2. Analyze code context (AST, dependencies)
-  3. Propose fix (code changes)
-  4. Create PR with fix
-  5. Update Zendesk ticket with PR link
-  6. Monitor CI/CD status
-  7. Auto-merge if tests pass
-  8. Mark Zendesk ticket as solved
+ 1. Query Zendesk for new P0 bugs
+ 2. Analyze code context (AST, dependencies)
+ 3. Propose fix (code changes)
+ 4. Create PR with fix
+ 5. Update Zendesk ticket with PR link
+ 6. Monitor CI/CD status
+ 7. Auto-merge if tests pass
+ 8. Mark Zendesk ticket as solved
 ```
 
 ---

@@ -79,7 +79,7 @@ Check ALL of the following:
 **Page 2: CI/CD Index**
 ```
 URL: https://aries-serpent.github.io/_codex_/ci/INDEX/
-   OR https://aries-serpent.github.io/_codex_/ci/
+ OR https://aries-serpent.github.io/_codex_/ci/
 ```
 - [ ] "CI Rescue Pipeline" entry appears at the top under " CI Rescue Pipeline (Golden Path)"
 - [ ] Link to `CI_RESCUE_PIPELINE.md` resolves correctly
@@ -97,18 +97,18 @@ URL: https://aries-serpent.github.io/_codex_/
 Fetch the nav sidebar on any page and confirm these entries exist:
 
 ```
-CI Rescue & Health                ← NEW (S244)
-  ├── CI Rescue Pipeline          ← NEW (S244)
-  ├── CI/CD Index
-  ├── Failure Analysis
-  ├── CI Fix Summary
-  └── Root Org Validation
-CI/CD Workflows                   ← EXISTING (should still be present)
-  ├── Workflow Index
-  ├── Consolidation Guide
-  ├── Deprecation Plan
-  ├── Optimization Summary
-  └── Cache Architecture
+CI Rescue & Health NEW (S244)
+ CI Rescue Pipeline NEW (S244)
+ CI/CD Index
+ Failure Analysis
+ CI Fix Summary
+ Root Org Validation
+CI/CD Workflows EXISTING (should still be present)
+ Workflow Index
+ Consolidation Guide
+ Deprecation Plan
+ Optimization Summary
+ Cache Architecture
 ```
 
 ### 1C. Spot-Check Existing Pages for Staleness
@@ -141,12 +141,12 @@ After merge, `0D_base_` references in documentation should be updated to `main` 
 ```bash
 # Find 0D_base_ references in docs (excluding historical/accountability files)
 grep -rn "0D_base_" docs/ \
-  --include="*.md" \
-  --exclude-dir="accountability" \
-  --exclude="*SESSION*" \
-  --exclude="*COGNITIVE_BRAIN_STATUS*" \
-  --exclude="*aftermath*" \
-  | grep -v "^Binary"
+ --include="*.md" \
+ --exclude-dir="accountability" \
+ --exclude="*SESSION*" \
+ --exclude="*COGNITIVE_BRAIN_STATUS*" \
+ --exclude="*aftermath*" \
+ | grep -v "^Binary"
 ```
 
 For each hit, determine: is this a **current instruction** (fix `main`) or **historical record** (preserve)?
@@ -163,25 +163,25 @@ docs_root = pathlib.Path("docs")
 broken = []
 
 def check_nav(node):
-    if isinstance(node, dict):
-        for k, v in node.items():
-            check_nav(v)
-    elif isinstance(node, list):
-        for item in node:
-            check_nav(item)
-    elif isinstance(node, str) and not node.startswith("http"):
-        p = docs_root / node
-        if not p.exists():
-            broken.append(node)
+ if isinstance(node, dict):
+ for k, v in node.items():
+ check_nav(v)
+ elif isinstance(node, list):
+ for item in node:
+ check_nav(item)
+ elif isinstance(node, str) and not node.startswith("http"):
+ p = docs_root / node
+ if not p.exists():
+ broken.append(node)
 
 check_nav(nav_yaml.get("nav", []))
 if broken:
-    print("BROKEN NAV PATHS:")
-    for b in broken:
-        print(f"  {b}")
-    sys.exit(1)
+ print("BROKEN NAV PATHS:")
+ for b in broken:
+ print(f" {b}")
+ sys.exit(1)
 else:
-    print(" All nav paths resolve to real files")
+ print(" All nav paths resolve to real files")
 EOF
 ```
 
@@ -202,14 +202,14 @@ These scripts are referenced in multiple docs. Confirm each actually exists at t
 
 ```bash
 for f in \
-  scripts/ci/generate_coverage_map.py \
-  scripts/ci/ci_rescue.py \
-  scripts/ci/auto_fix_common_issues.py \
-  scripts/ci/sync_tracked_files.py \
-  scripts/ci/check_cross_references.py \
-  scripts/ci/check_pr_comments.py \
-  scripts/ci/session_bootstrap.py; do
-  [ -f "$f" ] && echo " $f" || echo " MISSING: $f"
+ scripts/ci/generate_coverage_map.py \
+ scripts/ci/ci_rescue.py \
+ scripts/ci/auto_fix_common_issues.py \
+ scripts/ci/sync_tracked_files.py \
+ scripts/ci/check_cross_references.py \
+ scripts/ci/check_pr_comments.py \
+ scripts/ci/session_bootstrap.py; do
+ [ -f "$f" ] && echo " $f" || echo " MISSING: $f"
 done
 ```
 
@@ -258,9 +258,9 @@ grep "Done" /tmp/mkdocs_post_align.log
 ```bash
 python3 scripts/ci/sync_tracked_files.py --fix
 git add docs/ mkdocs.yml
-git commit -m "docs: post-merge alignment — PR #3818 → main (S244-doc-align)
+git commit -m "docs: post-merge alignment — PR #3818 main (S244-doc-align)
 
-- Update branch refs 0D_base_ → main in non-historical docs
+- Update branch refs 0D_base_ main in non-historical docs
 - Verify CI Rescue Pipeline Mermaid diagrams render on live site
 - Fix any broken nav entries found
 - MkDocs build: 0 warnings
@@ -273,32 +273,32 @@ Triggered by: docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md"
 Post this summary as a comment on PR #3818 (or as a new issue if the PR is already merged):
 
 ```markdown
-##  Post-Merge Documentation Alignment Complete — S244
+## Post-Merge Documentation Alignment Complete — S244
 
 **Site:** https://aries-serpent.github.io/_codex_/
-**Merged PR:** #3818 (0D_base_ → main, S233–S244)
+**Merged PR:** #3818 (0D_base_ main, S233–S244)
 **Alignment session:** S244-doc-align — {DATE}
 
-###  New Pages Verified on Live Site
+### New Pages Verified on Live Site
 - CI Rescue Pipeline: {STATUS} — {N}/9 Mermaid diagrams rendering
 - CI/CD Index: {STATUS}
 - Homepage quick-link: {STATUS}
 
-###  Drift Fixes Applied
+### Drift Fixes Applied
 | Fix | Files | Details |
 |-----|-------|---------|
-| Branch refs 0D_base_ → main | N | Only in non-historical sections |
+| Branch refs 0D_base_ main | N | Only in non-historical sections |
 | Nav entries | N | All paths verified |
 | Script references | N | All exist at stated paths |
 | Stale session IDs | N | Updated to S244 |
 
-### 🔨 MkDocs Build
+### MkDocs Build
 - Warnings: 0 
 - Errors: 0 
 - Pages built: N
 
-###  Commit
-fix(docs): post-merge alignment — PR #3818 → main · {SHORT_SHA}
+### Commit
+fix(docs): post-merge alignment — PR #3818 main · {SHORT_SHA}
 ```
 
 ---
@@ -317,24 +317,24 @@ If you find issues that cannot be fixed with source edits alone (e.g., the Merma
 
 ```
 Phase 1 — Traverse Live Site
-  [ ] CI Rescue Pipeline page: loads + 9 Mermaid diagrams render
-  [ ] CI/CD Index page: Pipeline entry at top
-  [ ] Homepage: quick-link + nav entry present
-  [ ] Site nav: "CI Rescue & Health" section with 5 entries
+ [ ] CI Rescue Pipeline page: loads + 9 Mermaid diagrams render
+ [ ] CI/CD Index page: Pipeline entry at top
+ [ ] Homepage: quick-link + nav entry present
+ [ ] Site nav: "CI Rescue & Health" section with 5 entries
 
 Phase 2 — Fix Drift
-  [ ] Branch refs audit: 0D_base_ → main (non-historical)
-  [ ] Nav paths: all resolve to real files
-  [ ] Script paths: all 7 CI scripts exist at documented locations
-  [ ] test_generate_coverage_map.py referenced in docs
+ [ ] Branch refs audit: 0D_base_ main (non-historical)
+ [ ] Nav paths: all resolve to real files
+ [ ] Script paths: all 7 CI scripts exist at documented locations
+ [ ] test_generate_coverage_map.py referenced in docs
 
 Phase 3 — Build
-  [ ] mkdocs build --strict: 0 warnings, 0 errors
+ [ ] mkdocs build --strict: 0 warnings, 0 errors
 
 Phase 4 — Commit + Report
-  [ ] sync_tracked_files.py --fix: all 5 checks 
-  [ ] Commit pushed with fix(docs): prefix
-  [ ] Report comment posted on PR #3818
+ [ ] sync_tracked_files.py --fix: all 5 checks 
+ [ ] Commit pushed with fix(docs): prefix
+ [ ] Report comment posted on PR #3818
 ```
 
 ---

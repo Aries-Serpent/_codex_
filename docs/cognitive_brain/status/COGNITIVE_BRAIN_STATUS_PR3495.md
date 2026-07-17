@@ -114,11 +114,11 @@ Demotion candidates: 0
 ## Completed Objective Map
 
 ```
-PR #3494 (Merged) → First + Second D_CAPABLE 
-                  → AUTO_PROMOTE_TIER_ENABLED write path 
-PR #3495 (This PR) → W-107: CLI API capability gap analysis 
-                   → agent_context.json created  (unlocks ALL repo var injection)
-                   → BrainClient Python wrapper 
-                   → copilot-setup-steps.yml CODEX_CLI_API_URL export 
-                   → 0 demotion annotations confirmed 
+PR #3494 (Merged) First + Second D_CAPABLE 
+ AUTO_PROMOTE_TIER_ENABLED write path 
+PR #3495 (This PR) W-107: CLI API capability gap analysis 
+ agent_context.json created (unlocks ALL repo var injection)
+ BrainClient Python wrapper 
+ copilot-setup-steps.yml CODEX_CLI_API_URL export 
+ 0 demotion annotations confirmed 
 ```

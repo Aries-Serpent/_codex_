@@ -28,15 +28,15 @@ docker build -f Dockerfile.optimized -t codex:prod .
 
 # Development with GPU and MLflow
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=dev \
-    --build-arg ENABLE_GPU=1 \
-    --build-arg ENABLE_MLFLOW=1 \
-    -t codex:dev-gpu .
+ --build-arg BUILD_ENV=dev \
+ --build-arg ENABLE_GPU=1 \
+ --build-arg ENABLE_MLFLOW=1 \
+ -t codex:dev-gpu .
 
 # Minimal build (no optional dependencies)
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=minimal \
-    -t codex:minimal .
+ --build-arg BUILD_ENV=minimal \
+ -t codex:minimal .
 ```
 
 ## Dockerfile.gpu
@@ -80,25 +80,25 @@ docker build -f Dockerfile.gpu -t codex:gpu .
 ```bash
 # Standard production build
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=prod \
-    --build-arg VERSION=1.0.0 \
-    --build-arg VCS_REF=$(git rev-parse HEAD) \
-    --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-    -t codex:1.0.0 \
-    -t codex:latest .
+ --build-arg BUILD_ENV=prod \
+ --build-arg VERSION=1.0.0 \
+ --build-arg VCS_REF=$(git rev-parse HEAD) \
+ --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+ -t codex:1.0.0 \
+ -t codex:latest .
 
 # Production with GPU
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=prod \
-    --build-arg ENABLE_GPU=1 \
-    --build-arg ENABLE_MLFLOW=1 \
-    -t codex:1.0.0-gpu .
+ --build-arg BUILD_ENV=prod \
+ --build-arg ENABLE_GPU=1 \
+ --build-arg ENABLE_MLFLOW=1 \
+ -t codex:1.0.0-gpu .
 
 # Production with Ray (distributed training)
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=prod \
-    --build-arg ENABLE_RAY=1 \
-    -t codex:1.0.0-ray .
+ --build-arg BUILD_ENV=prod \
+ --build-arg ENABLE_RAY=1 \
+ -t codex:1.0.0-ray .
 ```
 
 ## Development Builds
@@ -106,16 +106,16 @@ docker build -f Dockerfile.optimized \
 ```bash
 # Development with all features
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=dev \
-    --build-arg ENABLE_GPU=1 \
-    --build-arg ENABLE_MLFLOW=1 \
-    --build-arg ENABLE_RAY=1 \
-    -t codex:dev .
+ --build-arg BUILD_ENV=dev \
+ --build-arg ENABLE_GPU=1 \
+ --build-arg ENABLE_MLFLOW=1 \
+ --build-arg ENABLE_RAY=1 \
+ -t codex:dev .
 
 # Development minimal
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=minimal \
-    -t codex:dev-minimal .
+ --build-arg BUILD_ENV=minimal \
+ -t codex:dev-minimal .
 ```
 
 ## CI/CD Builds
@@ -123,12 +123,12 @@ docker build -f Dockerfile.optimized \
 ```bash
 # CI build with metadata
 docker build -f Dockerfile.optimized \
-    --build-arg BUILD_ENV=prod \
-    --build-arg VERSION=${CI_COMMIT_TAG:-latest} \
-    --build-arg VCS_REF=${CI_COMMIT_SHA} \
-    --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-    --build-arg VCS_URL=${CI_PROJECT_URL} \
-    -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} .
+ --build-arg BUILD_ENV=prod \
+ --build-arg VERSION=${CI_COMMIT_TAG:-latest} \
+ --build-arg VCS_REF=${CI_COMMIT_SHA} \
+ --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+ --build-arg VCS_URL=${CI_PROJECT_URL} \
+ -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} .
 ```
 
 ## Security Features
@@ -140,7 +140,7 @@ All containers run as `appuser` (UID 1000, GID 1000):
 ```dockerfile
 # User is created in build stage
 RUN groupadd --gid 1000 appuser && \
-    useradd --uid 1000 --gid appuser --create-home appuser
+ useradd --uid 1000 --gid appuser --create-home appuser
 
 # Switched at end of Dockerfile
 USER appuser
@@ -201,31 +201,31 @@ docker run -d -p 8000:8000 codex:latest
 
 ```bash
 docker run -d \
-    -p 8000:8000 \
-    -v $(pwd)/data:/app/data:ro \
-    -v $(pwd)/logs:/app/logs \
-    -v $(pwd)/artifacts:/app/artifacts \
-    codex:latest
+ -p 8000:8000 \
+ -v $(pwd)/data:/app/data:ro \
+ -v $(pwd)/logs:/app/logs \
+ -v $(pwd)/artifacts:/app/artifacts \
+ codex:latest
 ```
 
 ### With GPU
 
 ```bash
 docker run -d \
-    --gpus all \
-    -p 8000:8000 \
-    codex:gpu
+ --gpus all \
+ -p 8000:8000 \
+ codex:gpu
 ```
 
 ### With Environment Variables
 
 ```bash
 docker run -d \
-    -p 8000:8000 \
-    -e MLFLOW_TRACKING_URI=http://mlflow:5000 \
-    -e LOG_LEVEL=debug \
-    --env-file .env \
-    codex:latest
+ -p 8000:8000 \
+ -e MLFLOW_TRACKING_URI=http://mlflow:5000 \
+ -e LOG_LEVEL=debug \
+ --env-file .env \
+ codex:latest
 ```
 
 ## Image Size Comparison
@@ -242,36 +242,36 @@ docker run -d \
 ## Multi-Stage Build Structure
 
 ```
-┌─────────────────────────────────────┐
-│ Stage 1: Builder                    │
-│ - Compiles dependencies             │
-│ - Creates wheels                    │
-│ - Build tools installed             │
-│ Size: ~2-3 GB (discarded)          │
-└─────────────────────────────────────┘
-              ↓ Copy wheels only
-┌─────────────────────────────────────┐
-│ Stage 2: Base Runtime (CPU)         │
-│ - python:3.11-slim                  │
-│ - Minimal runtime deps              │
-│ - Non-root user                     │
-└─────────────────────────────────────┘
-              ↓ OR
-┌─────────────────────────────────────┐
-│ Stage 2: GPU Runtime                │
-│ - nvidia/cuda:12.2.2-runtime        │
-│ - Python + CUDA libraries           │
-│ - Non-root user                     │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│ Stage 3: Final Runtime              │
-│ - Install wheels from builder       │
-│ - Copy application code             │
-│ - Configure healthcheck             │
-│ - Switch to non-root user           │
-│ Size: Optimized (~1-5 GB)          │
-└─────────────────────────────────────┘
+
+ Stage 1: Builder 
+ - Compiles dependencies 
+ - Creates wheels 
+ - Build tools installed 
+ Size: ~2-3 GB (discarded) 
+
+ Copy wheels only
+
+ Stage 2: Base Runtime (CPU) 
+ - python:3.11-slim 
+ - Minimal runtime deps 
+ - Non-root user 
+
+ OR
+
+ Stage 2: GPU Runtime 
+ - nvidia/cuda:12.2.2-runtime 
+ - Python + CUDA libraries 
+ - Non-root user 
+
+ 
+
+ Stage 3: Final Runtime 
+ - Install wheels from builder 
+ - Copy application code 
+ - Configure healthcheck 
+ - Switch to non-root user 
+ Size: Optimized (~1-5 GB) 
+
 ```
 
 ## Health Checks
@@ -285,7 +285,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 Check health status:
 
 ```bash
-docker ps  # Shows health status
+docker ps # Shows health status
 docker inspect codex | jq '.[0].State.Health'
 ```
 
@@ -300,12 +300,12 @@ docker inspect codex:latest | jq '.[0].Config.Labels'
 Example labels:
 ```json
 {
-  "org.opencontainers.image.title": "codex",
-  "org.opencontainers.image.version": "1.0.0",
-  "org.opencontainers.image.revision": "abc123",
-  "org.opencontainers.image.created": "2026-07-13T00:00:00Z",
-  "org.label.build_env": "prod",
-  "org.label.gpu_enabled": "0"
+ "org.opencontainers.image.title": "codex",
+ "org.opencontainers.image.version": "1.0.0",
+ "org.opencontainers.image.revision": "abc123",
+ "org.opencontainers.image.created": "2026-07-13T00:00:00Z",
+ "org.label.build_env": "prod",
+ "org.label.gpu_enabled": "0"
 }
 ```
 
@@ -352,10 +352,10 @@ docker run --gpus all codex:gpu nvidia-smi
 ### 1. Use Versioned Tags
 
 ```bash
-#  Don't use latest in production
+# Don't use latest in production
 docker pull codex:latest
 
-#  Use specific versions
+# Use specific versions
 docker pull codex:1.0.0
 ```
 
@@ -367,7 +367,7 @@ docker pull codex:1.0.0
 
 # Check exit code
 if [ $? -eq 0 ]; then
-    docker push codex:1.0.0
+ docker push codex:1.0.0
 fi
 ```
 
@@ -384,12 +384,12 @@ DOCKER_BUILDKIT=1 docker build -t codex:new .
 ## 4. Minimize Layers
 
 ```dockerfile
-#  Multiple RUN commands
+# Multiple RUN commands
 RUN apt-get update
 RUN apt-get install -y curl
 RUN rm -rf /var/lib/apt/lists/*
 
-#  Combined RUN command
+# Combined RUN command
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 ```
 

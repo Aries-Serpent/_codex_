@@ -82,15 +82,15 @@ A comprehensive repository-wide QA walkthrough has been successfully executed, p
 ## Repository Statistics
 
 ```
-Total Python Files:     3,833
-├── Test Files:         1,839 (48%)
-├── Source Files:       1,076 (28%)
-├── Config Files:         294 (8%)
-└── Documentation:      2,315 (60%)
+Total Python Files: 3,833
+ Test Files: 1,839 (48%)
+ Source Files: 1,076 (28%)
+ Config Files: 294 (8%)
+ Documentation: 2,315 (60%)
 
-Security-Critical:        137 files
-Legacy Modules:            17 modules
-Dependencies:              56 runtime + 9 requirement files
+Security-Critical: 137 files
+Legacy Modules: 17 modules
+Dependencies: 56 runtime + 9 requirement files
 ```
 
 ---

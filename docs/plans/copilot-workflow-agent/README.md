@@ -21,17 +21,17 @@ This directory contains the implementation plans for the **GitHub Copilot Workfl
 
 ```
 docs/plans/copilot-workflow-agent/
-├── README.md                    # This file - overview and navigation
-├── 00-PLANSET.md               # Master plan with phases and milestones
-├── 01-BATCHSET.md              # Work batches for iterative implementation
-├── 02-PATCHSET.md              # Detailed patch prompts for each component
-├── 03-ARCHITECTURE.md          # Component architecture and data models
-├── 04-API-docs/api/reference/INTEGRATION.md       # GitHub API integration specifications
-├── 05-SESSION-STATE.md         # Session state management design
-├── 06-SELF-HEALING.md          # Self-healing engine integration
-├── 07-SECURITY-GUARDRAILS.md   # Security and approval policies
-├── 08-CHECKPOINTS.md           # Checkpoint system for session resumption
-└── 09-CONTINUATION-PROMPTS.md  # Graceful follow-up prompts
+ README.md # This file - overview and navigation
+ 00-PLANSET.md # Master plan with phases and milestones
+ 01-BATCHSET.md # Work batches for iterative implementation
+ 02-PATCHSET.md # Detailed patch prompts for each component
+ 03-ARCHITECTURE.md # Component architecture and data models
+ 04-API-docs/api/reference/INTEGRATION.md # GitHub API integration specifications
+ 05-SESSION-STATE.md # Session state management design
+ 06-SELF-HEALING.md # Self-healing engine integration
+ 07-SECURITY-GUARDRAILS.md # Security and approval policies
+ 08-CHECKPOINTS.md # Checkpoint system for session resumption
+ 09-CONTINUATION-PROMPTS.md # Graceful follow-up prompts
 ```
 
 ## Quick Links

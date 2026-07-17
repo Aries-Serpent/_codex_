@@ -12,12 +12,12 @@
 
 ```
 docs/archive/
-├── INDEX.md (this file)
-├── phases/          # 42 phase documentation files (4 added 2026-01-26)
-├── sessions/        # 5 session summary files (1 added 2026-01-26)
-├── validation/      # 4 CI/CD validation reports (new category 2026-01-26)
-├── completion/      # 3 completion reports
-└── prompts/         # 5 continuation prompts
+ INDEX.md (this file)
+ phases/ # 42 phase documentation files (4 added 2026-01-26)
+ sessions/ # 5 session summary files (1 added 2026-01-26)
+ validation/ # 4 CI/CD validation reports (new category 2026-01-26)
+ completion/ # 3 completion reports
+ prompts/ # 5 continuation prompts
 ```
 
 ---

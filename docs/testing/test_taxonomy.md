@@ -12,13 +12,13 @@ Tests are organized by type and purpose, with clear markers for categorization a
 
 ```text
 tests/
-├── config/          # Configuration and schema tests
-├── unit/            # Unit tests (isolated, fast)
-├── integration/     # Integration tests
-├── training/        # Training-related tests
-├── eval/            # Evaluation tests
-├── cli/             # CLI tests
-└── ...
+ config/ # Configuration and schema tests
+ unit/ # Unit tests (isolated, fast)
+ integration/ # Integration tests
+ training/ # Training-related tests
+ eval/ # Evaluation tests
+ cli/ # CLI tests
+ ...
 ```text
 
 ### Test Markers
@@ -92,32 +92,32 @@ pytest -m "smoke and not requires_torch"
 
 ```text
 def test_<feature>_<scenario>_<expected_result>():
-    """Clear docstring explaining what is tested."""
-    pass
+ """Clear docstring explaining what is tested."""
+ pass
 
 # Examples:
 def test_config_loads_valid_yaml():
-    """Test that valid YAML config loads successfully."""
-    pass
+ """Test that valid YAML config loads successfully."""
+ pass
 
 def test_model_raises_error_on_invalid_device():
-    """Test that model initialization fails with invalid device."""
-    pass
+ """Test that model initialization fails with invalid device."""
+ pass
 ```text
 
 ## Test Structure (AAA Pattern)
 
 ```python
 def test_example():
-    """Test description."""
-    # Arrange: Set up test data and conditions
-    config = {"epochs": 5}
+ """Test description."""
+ # Arrange: Set up test data and conditions
+ config = {"epochs": 5}
 
-    # Act: Perform the action being tested
-    result = process_config(config)
+ # Act: Perform the action being tested
+ result = process_config(config)
 
-    # Assert: Verify the expected outcome
-    assert result.epochs == 5
+ # Assert: Verify the expected outcome
+ assert result.epochs == 5
 ```text
 
 ### Best Practices

@@ -74,23 +74,23 @@ Fixed all 7 workflow files blocking GitHub Actions:
 ### Workflow Files Fixed (7)
 ```
 .github/workflows/
-├── auth-token-rotation.yml          (-1 line: removed secrets: write)
-├── auth-secret-rotation.yml         (-1 line: removed secrets: write)
-├── phase10-automated-secrets-setup.yml (-1 line: removed secrets: write)
-├── security-alert-notification.yml  (+1 line: added contents: read)
-├── pages-mkdocs.yml                 (changed: removed --strict flag)
-├── codebase-qa-walkthrough.yml      (-4 lines: fixed heredoc)
-└── rust_swarm_ci.yml                (±0 lines: replaced heredoc)
+ auth-token-rotation.yml (-1 line: removed secrets: write)
+ auth-secret-rotation.yml (-1 line: removed secrets: write)
+ phase10-automated-secrets-setup.yml (-1 line: removed secrets: write)
+ security-alert-notification.yml (+1 line: added contents: read)
+ pages-mkdocs.yml (changed: removed --strict flag)
+ codebase-qa-walkthrough.yml (-4 lines: fixed heredoc)
+ rust_swarm_ci.yml (±0 lines: replaced heredoc)
 ```
 
 ### New Documentation (4 files, ~49 KB)
 ```
 Repository Root/
-├── COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md     (14.7 KB)
-├── COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md            (9.6 KB)
-├── COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md     (11.3 KB)
-├── PR_CONTINUATION_COMMENT.md                          (5.1 KB)
-└── .github/agents/workflow-ci-fixer.agent.md           (8.0 KB)
+ COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md (14.7 KB)
+ COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md (9.6 KB)
+ COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md (11.3 KB)
+ PR_CONTINUATION_COMMENT.md (5.1 KB)
+ .github/agents/workflow-ci-fixer.agent.md (8.0 KB)
 ```
 
 ---
@@ -184,13 +184,13 @@ New integration point created:
 
 ```
 Cognitive Brain Core
-├── Workflow CI Fixer Agent ← NEW!
-│   ├── YAML Validation
-│   ├── Permission Management
-│   └── Heredoc Handling
-├── CI Testing Agent
-├── Security Scan Agent
-└── Documentation Agent
+ Workflow CI Fixer Agent NEW!
+ YAML Validation
+ Permission Management
+ Heredoc Handling
+ CI Testing Agent
+ Security Scan Agent
+ Documentation Agent
 ```
 
 ---

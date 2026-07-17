@@ -23,69 +23,69 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 %%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv0.2.1", "doc.refresh.agent\nv0.2.1"'}}%%
 
 graph LR
-    subgraph "Built-in Skills"
-        S1["doc.retriever.core\nv0.2.1"]
-        S2["doc.refresh.agent\nv0.2.1"]
-        S3["code.search.extract\nv0.2.1"]
-    end
+ subgraph "Built-in Skills"
+ S1["doc.retriever.core\nv0.2.1"]
+ S2["doc.refresh.agent\nv0.2.1"]
+ S3["code.search.extract\nv0.2.1"]
+ end
 
-    subgraph "CI/CD Agents"
-        A1[ci-testing-agent]
-        A2[ci-auto-healer-agent]
-        A3[ci-failure-resolution-agent]
-        A4[ci-emergency-response-agent]
-        A5[ci-log-retrieval-agent]
-        A6[ci-pattern-guardian]
-        A7[ci-optimization-agent]
-        A8[ci-health-alert-agent]
-        A9[ci-triage-pipeline-agent]
-    end
+ subgraph "CI/CD Agents"
+ A1[ci-testing-agent]
+ A2[ci-auto-healer-agent]
+ A3[ci-failure-resolution-agent]
+ A4[ci-emergency-response-agent]
+ A5[ci-log-retrieval-agent]
+ A6[ci-pattern-guardian]
+ A7[ci-optimization-agent]
+ A8[ci-health-alert-agent]
+ A9[ci-triage-pipeline-agent]
+ end
 
-    subgraph "Testing Agents"
-        B1[autonomous-test-healer-agent]
-        B2[unified-coverage-agent]
-        B3[test-failure-analyzer-agent]
-        B4[test-enhancement-agent]
-        B5[fragile-test-guardian]
-        B6[mutation-testing-agent]
-    end
+ subgraph "Testing Agents"
+ B1[autonomous-test-healer-agent]
+ B2[unified-coverage-agent]
+ B3[test-failure-analyzer-agent]
+ B4[test-enhancement-agent]
+ B5[fragile-test-guardian]
+ B6[mutation-testing-agent]
+ end
 
-    subgraph "Documentation Agents"
-        C1[post-merge-doc-alignment-agent]
-        C2[documentation-quality-agent]
-        C3[doc-freshness-checker]
-        C4[link-validator-agent]
-        C5[unified-doc-agent]
-    end
+ subgraph "Documentation Agents"
+ C1[post-merge-doc-alignment-agent]
+ C2[documentation-quality-agent]
+ C3[doc-freshness-checker]
+ C4[link-validator-agent]
+ C5[unified-doc-agent]
+ end
 
-    subgraph "Security Agents"
-        D1[security-audit-agent]
-        D2[codeql-alert-resolution-agent]
-        D3[code-scanning-remediation-agent]
-        D4[secret-detection-agent]
-        D5[dependency-vulnerability-scanner]
-    end
+ subgraph "Security Agents"
+ D1[security-audit-agent]
+ D2[codeql-alert-resolution-agent]
+ D3[code-scanning-remediation-agent]
+ D4[secret-detection-agent]
+ D5[dependency-vulnerability-scanner]
+ end
 
-    subgraph "RAG/ML Agents"
-        E1[rag-index-manager]
-        E2[meta-tensor-validator]
-        E3[rag-meta-tensor-guardian]
-        E4[rag-module-management-agent]
-    end
+ subgraph "RAG/ML Agents"
+ E1[rag-index-manager]
+ E2[meta-tensor-validator]
+ E3[rag-meta-tensor-guardian]
+ E4[rag-module-management-agent]
+ end
 
-    subgraph "Orchestration"
-        F1[skills-master-agent]
-        F2[agent-orchestrator]
-        F3[self-healing-orchestrator-agent]
-    end
+ subgraph "Orchestration"
+ F1[skills-master-agent]
+ F2[agent-orchestrator]
+ F3[self-healing-orchestrator-agent]
+ end
 
-    S1 --> C1 & C2 & C3 & F1
+ S1 --> C1 & C2 & C3 & F1
 
-    S2 --> C1 & C3 & C5 & F1
+ S2 --> C1 & C3 & C5 & F1
 
-    S3 --> A1 & A2 & B1 & B3 & F1
+ S3 --> A1 & A2 & B1 & B3 & F1
 
-    F1 --> S1 & S2 & S3
+ F1 --> S1 & S2 & S3
 ```
 
 ---
@@ -106,29 +106,29 @@ graph LR
 %%{init: {'accessibility': {'title': 'Diagram Configuration showing "Concision: 0.85", "Acronym: 0.95"'}}%%
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4CAF50'}}}%%
 graph TD
-    subgraph "AAIS Breakdown — doc.retriever.core (0.92)"
-        DR_C["Concision: 0.85"]
-        DR_A["Acronym: 0.95"]
-        DR_S["Structure: 1.00"]
-        DR_CL["Clarity: 0.90"]
-        DR_CI["Citation: 0.80"]
-    end
+ subgraph "AAIS Breakdown — doc.retriever.core (0.92)"
+ DR_C["Concision: 0.85"]
+ DR_A["Acronym: 0.95"]
+ DR_S["Structure: 1.00"]
+ DR_CL["Clarity: 0.90"]
+ DR_CI["Citation: 0.80"]
+ end
 
-    subgraph "AAIS Breakdown — doc.refresh.agent (0.90)"
-        RF_C["Concision: 0.82"]
-        RF_A["Acronym: 0.93"]
-        RF_S["Structure: 1.00"]
-        RF_CL["Clarity: 0.88"]
-        RF_CI["Citation: 0.80"]
-    end
+ subgraph "AAIS Breakdown — doc.refresh.agent (0.90)"
+ RF_C["Concision: 0.82"]
+ RF_A["Acronym: 0.93"]
+ RF_S["Structure: 1.00"]
+ RF_CL["Clarity: 0.88"]
+ RF_CI["Citation: 0.80"]
+ end
 
-    subgraph "AAIS Breakdown — code.search.extract (0.88)"
-        CS_C["Concision: 0.80"]
-        CS_A["Acronym: 0.90"]
-        CS_S["Structure: 0.90"]
-        CS_CL["Clarity: 0.88"]
-        CS_CI["Citation: 0.80"]
-    end
+ subgraph "AAIS Breakdown — code.search.extract (0.88)"
+ CS_C["Concision: 0.80"]
+ CS_A["Acronym: 0.90"]
+ CS_S["Structure: 0.90"]
+ CS_CL["Clarity: 0.88"]
+ CS_CI["Citation: 0.80"]
+ end
 ```
 
 ---
@@ -140,23 +140,23 @@ graph TD
 
 flowchart LR
 
-    Q["Query Objective\n+ Capability Tags"] --> MATCH["Match Score\n(Jaccard similarity)"]
+ Q["Query Objective\n+ Capability Tags"] --> MATCH["Match Score\n(Jaccard similarity)"]
 
-    Q --> FRESH["Freshness Score\n(1 − budget exhaustion)"]
+ Q --> FRESH["Freshness Score\n(1 − budget exhaustion)"]
 
-    MATCH --> |"w=0.40"| TOTAL
+ MATCH --> |"w=0.40"| TOTAL
 
-    FRESH --> |"w=0.15"| TOTAL
+ FRESH --> |"w=0.15"| TOTAL
 
-    AAIS["AAIS Score\n(doc quality)"] --> |"w=0.25"| TOTAL
+ AAIS["AAIS Score\n(doc quality)"] --> |"w=0.25"| TOTAL
 
-    COST["Cost Penalty\n(token usage %)"] --> |"w=−0.10"| TOTAL
+ COST["Cost Penalty\n(token usage %)"] --> |"w=−0.10"| TOTAL
 
-    RISK["Risk Penalty\n(tier: low/med/high)"] --> |"w=−0.10"| TOTAL
+ RISK["Risk Penalty\n(tier: low/med/high)"] --> |"w=−0.10"| TOTAL
 
-    TOTAL["Total Score\n= Σ(w × dim)"] --> SELECT["Select\nHighest Score"]
+ TOTAL["Total Score\n= Σ(w × dim)"] --> SELECT["Select\nHighest Score"]
 
-    SELECT --> EXEC["ExecutionEnvelope\n.run()"]
+ SELECT --> EXEC["ExecutionEnvelope\n.run()"]
 ```
 
 ---
@@ -188,23 +188,23 @@ consumers, and complementary execution patterns. Percentage = recommendation con
 
 flowchart TD
 
-    SKILL["Skill Handler\n(handler.py)"] --> ENV["ExecutionEnvelope\n.run()"]
+ SKILL["Skill Handler\n(handler.py)"] --> ENV["ExecutionEnvelope\n.run()"]
 
-    ENV --> TEL["emit_event()"]
+ ENV --> TEL["emit_event()"]
 
-    TEL --> JSONL["logs/skill_events.jsonl"]
+ TEL --> JSONL["logs/skill_events.jsonl"]
 
-    TEL --> OTEL["OpenTelemetry Span\n(when SDK available)"]
+ TEL --> OTEL["OpenTelemetry Span\n(when SDK available)"]
 
-    JSONL --> READ["read_events()"]
+ JSONL --> READ["read_events()"]
 
-    READ --> SUM["summarise_events()"]
+ READ --> SUM["summarise_events()"]
 
-    SUM --> DASH[" This Dashboard\n(update via upsert)"]
+ SUM --> DASH[" This Dashboard\n(update via upsert)"]
 
-    SUM --> APP["Cognitive Brain App\npush_to_app()"]
+ SUM --> APP["Cognitive Brain App\npush_to_app()"]
 
-    SUM --> GH["GitHub Discussions\n(telemetry category)"]
+ SUM --> GH["GitHub Discussions\n(telemetry category)"]
 ```
 
 ---
@@ -216,37 +216,37 @@ flowchart TD
 
 stateDiagram-v2
 
-    [*] --> Discovery: registry.discover()
+ [*] --> Discovery: registry.discover()
 
-    Discovery --> Scoring: AAISScorer.score()
+ Discovery --> Scoring: AAISScorer.score()
 
-    Scoring --> GapAnalysis: identify AAIS < 0.75
+ Scoring --> GapAnalysis: identify AAIS < 0.75
 
-    GapAnalysis --> DocRefresh: doc.refresh.agent
+ GapAnalysis --> DocRefresh: doc.refresh.agent
 
-    DocRefresh --> ReScore: re-score AAIS
+ DocRefresh --> ReScore: re-score AAIS
 
-    ReScore --> PassGate: AAIS ≥ 0.80?
+ ReScore --> PassGate: AAIS ≥ 0.80?
 
-    PassGate --> Compress: Yes → compress_skill()
+ PassGate --> Compress: Yes compress_skill()
 
-    PassGate --> DocRefresh: No → re-apply refresh
+ PassGate --> DocRefresh: No re-apply refresh
 
-    Compress --> Distribute: install_skill()
+ Compress --> Distribute: install_skill()
 
-    Distribute --> EmitTelemetry: emit_event()
+ Distribute --> EmitTelemetry: emit_event()
 
-    EmitTelemetry --> UpdateRegistry: store patterns
+ EmitTelemetry --> UpdateRegistry: store patterns
 
-    UpdateRegistry --> RetireCheck: budget exhausted?
+ UpdateRegistry --> RetireCheck: budget exhausted?
 
-    RetireCheck --> Retire: Yes → archive agent
+ RetireCheck --> Retire: Yes archive agent
 
-    RetireCheck --> [*]: No → active
+ RetireCheck --> [*]: No active
 
-    Retire --> Retrain: design replacement
+ Retire --> Retrain: design replacement
 
-    Retrain --> [*]
+ Retrain --> [*]
 ```
 
 ---

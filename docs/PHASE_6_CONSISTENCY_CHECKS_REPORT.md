@@ -89,7 +89,7 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 **Example output:**
 ```
  Running Pre-Commit Consistency Checks
-════════════════════════════════════════════════════════════════════
+
 
 [1/5] Scanning for secrets...
  No secrets detected
@@ -107,7 +107,7 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 [5/5] Validating YAML files...
  YAML validation OK (3 files)
 
-════════════════════════════════════════════════════════════════════
+
  All pre-commit checks passed!
 ```
 
@@ -165,19 +165,19 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 
 ```json
 {
-  "heading-style": { "style": "atx" },
-  "heading-increment": true,
-  "first-heading-h1": true,
-  "first-line-heading": true,
-  "line-length": { "line_length": 120 },
-  "no-hard-tabs": true,
-  "no-trailing-spaces": true,
-  "no-multiple-blanks": true,
-  "blanks-around-headings": true,
-  "blanks-around-lists": true,
-  "list-marker-space": true,
-  "code-block-style": { "style": "fenced" },
-  "emphasis-style": { "style": "asterisk" }
+ "heading-style": { "style": "atx" },
+ "heading-increment": true,
+ "first-heading-h1": true,
+ "first-line-heading": true,
+ "line-length": { "line_length": 120 },
+ "no-hard-tabs": true,
+ "no-trailing-spaces": true,
+ "no-multiple-blanks": true,
+ "blanks-around-headings": true,
+ "blanks-around-lists": true,
+ "list-marker-space": true,
+ "code-block-style": { "style": "fenced" },
+ "emphasis-style": { "style": "asterisk" }
 }
 ```
 
@@ -185,16 +185,16 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 
 Valid links:
 ```markdown
-[docs](./file.md)           # Relative
-[docs](./file.md)          # Absolute
-[section](#anchor)              # Anchor
-[external](https://github.com)  # External
+[docs](./file.md) # Relative
+[docs](./file.md) # Absolute
+[section](#anchor) # Anchor
+[external](https://github.com) # External
 ```
 
 Invalid links (detected):
 ```markdown
-[missing](./nonexistent.md)  # File not found
-[bad-anchor](file.md#missing)   # Anchor missing
+[missing](./nonexistent.md) # File not found
+[bad-anchor](file.md#missing) # Anchor missing
 ```
 
 ## Test Results
@@ -202,11 +202,11 @@ Invalid links (detected):
 ### Cross-Reference Validation Results
 
 ```
-Files checked:       6,012
-Links validated:     8,657
-Errors found:        929 (broken links requiring fixes)
-Warnings:            2,525 (external URLs, informational)
-Status:               NEEDS FIXING
+Files checked: 6,012
+Links validated: 8,657
+Errors found: 929 (broken links requiring fixes)
+Warnings: 2,525 (external URLs, informational)
+Status: NEEDS FIXING
 ```
 
 **Major issues found:**
@@ -247,7 +247,7 @@ bash .github/scripts/install-consistency-hooks.sh
 ```bash
 # 1. Install tools
 npm install -g markdownlint-cli
-brew install yamllint  # or apt-get install yamllint
+brew install yamllint # or apt-get install yamllint
 
 # 2. Install hook
 cp .github/scripts/pre-commit-hook.sh .git/hooks/pre-commit

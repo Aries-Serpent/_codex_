@@ -110,9 +110,9 @@ from codex_ml.utils.wandb_logger import init_wandb
 logger = init_wandb(project="my-project", name="experiment-1")
 
 for epoch in range(10):
-    # Training step
-    loss = train_step()
-    logger.log({"epoch": epoch, "loss": loss})
+ # Training step
+ loss = train_step()
+ logger.log({"epoch": epoch, "loss": loss})
 
 logger.finish()
 ```
@@ -127,11 +127,11 @@ sanitizer = PromptSanitizer(strict_mode=True)
 user_prompt = input("Enter your prompt: ")
 
 try:
-    safe_prompt = sanitizer.sanitize(user_prompt)
-    # Use safe_prompt for model inference
-    result = model.generate(safe_prompt)
+ safe_prompt = sanitizer.sanitize(user_prompt)
+ # Use safe_prompt for model inference
+ result = model.generate(safe_prompt)
 except ValueError as e:
-    print(f"Unsafe prompt detected: {e}")
+ print(f"Unsafe prompt detected: {e}")
 ```
 
 ## Core Features
@@ -171,7 +171,7 @@ manifest.generate().save("data/train_manifest.json")
 
 # Verify integrity
 if manifest.has_drift("data/train_manifest.json"):
-    print("️ Dataset has changed!")
+ print(" Dataset has changed!")
 ```
 
 ## Autonomy (Phase 3)
@@ -182,14 +182,14 @@ from codex_ml.utils.self_healing import SelfHealingContext
 
 # Automatic OOM recovery
 with SelfHealingContext(batch_size=32, enable_oom_recovery=True) as healer:
-    trainer = Trainer(
-        model=model,
-        args=TrainingArguments(
-            per_device_train_batch_size=healer.batch_size
-        )
-    )
-    trainer.train()
-    # If OOM occurs, batch_size automatically reduced
+ trainer = Trainer(
+ model=model,
+ args=TrainingArguments(
+ per_device_train_batch_size=healer.batch_size
+ )
+ )
+ trainer.train()
+ # If OOM occurs, batch_size automatically reduced
 ```
 
 **Drift Detection:**
@@ -197,20 +197,20 @@ with SelfHealingContext(batch_size=32, enable_oom_recovery=True) as healer:
 from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 monitor = ComprehensiveDriftMonitor(
-    data_threshold=0.1,
-    model_threshold=0.1
+ data_threshold=0.1,
+ model_threshold=0.1
 )
 
 results = monitor.monitor_all(
-    current_data_stats=current_stats,
-    baseline_data_stats=baseline_stats,
-    current_metrics=current_metrics,
-    baseline_metrics=baseline_metrics
+ current_data_stats=current_stats,
+ baseline_data_stats=baseline_stats,
+ current_metrics=current_metrics,
+ baseline_metrics=baseline_metrics
 )
 
 if monitor.has_critical_drift():
-    print("️ Critical drift detected!")
-    # Trigger retraining
+ print(" Critical drift detected!")
+ # Trigger retraining
 ```
 
 **Early Stopping:**
@@ -218,9 +218,9 @@ if monitor.has_critical_drift():
 from codex_ml.training.early_stopping import auto_inject_early_stopping_for_trainer
 
 callbacks = auto_inject_early_stopping_for_trainer(
-    trainer_class=Trainer,
-    eval_dataset=eval_dataset,
-    patience=3
+ trainer_class=Trainer,
+ eval_dataset=eval_dataset,
+ patience=3
 )
 
 trainer = Trainer(..., callbacks=callbacks)
@@ -234,15 +234,15 @@ trainer = Trainer(..., callbacks=callbacks)
 from codex_ml.training.continuous_learning import ContinuousLearningPipeline
 
 pipeline = ContinuousLearningPipeline(
-    model_name="my_model",
-    drift_threshold=0.15,
-    min_samples_retrain=1000
+ model_name="my_model",
+ drift_threshold=0.15,
+ min_samples_retrain=1000
 )
 
 if pipeline.should_retrain(drift_score=0.2, samples_count=1500):
-    new_version = pipeline.retrain(train_fn, train_data)
-    if pipeline.compare_models(new_version)["is_better"]:
-        pipeline.deploy_model(new_version)
+ new_version = pipeline.retrain(train_fn, train_data)
+ if pipeline.compare_models(new_version)["is_better"]:
+ pipeline.deploy_model(new_version)
 ```
 
 **A/B Testing:**
@@ -250,11 +250,11 @@ if pipeline.should_retrain(drift_score=0.2, samples_count=1500):
 from codex_ml.training.ab_testing import ABTestManager, ABTestConfig
 
 config = ABTestConfig(
-    experiment_name="model_v2_test",
-    control_variant="v1.0",
-    treatment_variants=["v2.0"],
-    traffic_split={"v1.0": 0.5, "v2.0": 0.5},
-    primary_metric="accuracy"
+ experiment_name="model_v2_test",
+ control_variant="v1.0",
+ treatment_variants=["v2.0"],
+ traffic_split={"v1.0": 0.5, "v2.0": 0.5},
+ primary_metric="accuracy"
 )
 
 manager = ABTestManager(config)
@@ -265,8 +265,8 @@ manager.record_result("v2.0", {"accuracy": 0.94})
 
 # Determine winner
 if manager.is_significant():
-    winner = manager.get_winner()
-    manager.gradual_rollout(winner, steps=5)
+ winner = manager.get_winner()
+ manager.gradual_rollout(winner, steps=5)
 ```
 
 **Plugin Sandbox:**
@@ -274,14 +274,14 @@ if manager.is_significant():
 from codex_ml.plugins.plugin_sandbox import Plugin, PluginManager
 
 class MyPlugin(Plugin):
-    def initialize(self) -> bool:
-        return True
+ def initialize(self) -> bool:
+ return True
 
-    def execute(self, data):
-        return {"processed": data}
+ def execute(self, data):
+ return {"processed": data}
 
-    def cleanup(self):
-        pass
+ def cleanup(self):
+ pass
 
 manager = PluginManager()
 manager.register_plugin(MyPlugin())
@@ -306,73 +306,73 @@ from codex_ml.utils.self_healing import SelfHealingContext
 from codex_ml.monitoring.drift_detection import ComprehensiveDriftMonitor
 
 def autonomous_training(config, train_data, eval_data):
-    """Fully autonomous training pipeline."""
+ """Fully autonomous training pipeline."""
 
-    # 1. Enable determinism
-    enable_deterministic_mode()
+ # 1. Enable determinism
+ enable_deterministic_mode()
 
-    # 2. Validate dataset integrity
-    manifest = DatasetManifest("data/train")
-    if manifest.has_drift("data/train_manifest.json"):
-        raise ValueError("Dataset drift detected!")
+ # 2. Validate dataset integrity
+ manifest = DatasetManifest("data/train")
+ if manifest.has_drift("data/train_manifest.json"):
+ raise ValueError("Dataset drift detected!")
 
-    # 3. Validate config
-    drift = ConfigDrift(config)
-    drift.validate_against_baseline("config_baseline.json", strict=True)
+ # 3. Validate config
+ drift = ConfigDrift(config)
+ drift.validate_against_baseline("config_baseline.json", strict=True)
 
-    # 4. Initialize logging (offline)
-    logger = init_wandb(project="my-project", config=config)
+ # 4. Initialize logging (offline)
+ logger = init_wandb(project="my-project", config=config)
 
-    # 5. Setup early stopping
-    callbacks = auto_inject_early_stopping_for_trainer(
-        trainer_class=Trainer,
-        eval_dataset=eval_data,
-        patience=3
-    )
+ # 5. Setup early stopping
+ callbacks = auto_inject_early_stopping_for_trainer(
+ trainer_class=Trainer,
+ eval_dataset=eval_data,
+ patience=3
+ )
 
-    # 6. Train with self-healing
-    with SelfHealingContext(batch_size=config["batch_size"]) as healer:
-        trainer = Trainer(
-            model=model,
-            args=TrainingArguments(
-                per_device_train_batch_size=healer.batch_size,
-                evaluation_strategy="epoch"
-            ),
-            train_dataset=train_data,
-            eval_dataset=eval_data,
-            callbacks=callbacks
-        )
+ # 6. Train with self-healing
+ with SelfHealingContext(batch_size=config["batch_size"]) as healer:
+ trainer = Trainer(
+ model=model,
+ args=TrainingArguments(
+ per_device_train_batch_size=healer.batch_size,
+ evaluation_strategy="epoch"
+ ),
+ train_dataset=train_data,
+ eval_dataset=eval_data,
+ callbacks=callbacks
+ )
 
-        trainer.train()
+ trainer.train()
 
-        # Log final metrics
-        logger.log(trainer.state.log_history[-1])
+ # Log final metrics
+ logger.log(trainer.state.log_history[-1])
 
-    # 7. Save checkpoint with integrity
-    checkpoint_path = Path("checkpoint.pt")
-    torch.save(model.state_dict(), checkpoint_path)
+ # 7. Save checkpoint with integrity
+ checkpoint_path = Path("checkpoint.pt")
+ torch.save(model.state_dict(), checkpoint_path)
 
-    # Save integrity metadata
-    integrity = CheckpointIntegrity(checkpoint_path)
-    integrity.save_integrity(metadata={"config": config})
+ # Save integrity metadata
+ integrity = CheckpointIntegrity(checkpoint_path)
+ integrity.save_integrity(metadata={"config": config})
 
-    # Save RNG state for deterministic resume
-    rng_state = RNGState()
-    rng_state.capture()
-    rng_state.save_to_file(checkpoint_path.with_suffix(".pt.rng.json"))
+ # Save RNG state for deterministic resume
+ rng_state = RNGState()
+ rng_state.capture()
+ rng_state.save_to_file(checkpoint_path.with_suffix(".pt.rng.json"))
 
-    logger.finish()
+ logger.finish()
 
-    return model
+ return model
 
 if __name__ == "__main__":
-    config = {
-        "learning_rate": 0.001,
-        "batch_size": 32,
-        "epochs": 10
-    }
+ config = {
+ "learning_rate": 0.001,
+ "batch_size": 32,
+ "epochs": 10
+ }
 
-    model = autonomous_training(config, train_data, eval_data)
+ model = autonomous_training(config, train_data, eval_data)
 ```
 
 ## CLI Usage
@@ -382,14 +382,14 @@ if __name__ == "__main__":
 ```bash
 # Initial training
 python cli/train_codex.py \
-    --train-file data/train.txt \
-    --model-name my_model \
-    --output-dir checkpoints/
+ --train-file data/train.txt \
+ --model-name my_model \
+ --output-dir checkpoints/
 
 # Resume with strict RNG validation (deterministic)
 python cli/train_codex.py \
-    --codex-resume-checkpoint checkpoints/checkpoint.pt \
-    --strict-resume
+ --codex-resume-checkpoint checkpoints/checkpoint.pt \
+ --strict-resume
 ```
 
 ## Prompt Sanitization
@@ -455,32 +455,32 @@ Create a `config.yaml`:
 
 ```yaml
 model:
-  name: my_model
-  architecture: transformer
+ name: my_model
+ architecture: transformer
 
 training:
-  learning_rate: 0.001
-  batch_size: 32
-  epochs: 10
+ learning_rate: 0.001
+ batch_size: 32
+ epochs: 10
 
 reproducibility:
-  enable_determinism: true
-  save_rng_state: true
-  validate_dataset: true
+ enable_determinism: true
+ save_rng_state: true
+ validate_dataset: true
 
 autonomy:
-  enable_self_healing: true
-  enable_early_stopping: true
-  early_stopping_patience: 3
+ enable_self_healing: true
+ enable_early_stopping: true
+ early_stopping_patience: 3
 
 continuous_learning:
-  drift_threshold: 0.15
-  min_samples_retrain: 1000
+ drift_threshold: 0.15
+ min_samples_retrain: 1000
 
 observability:
-  enable_health_probes: true
-  enable_metrics: true
-  log_offline: true
+ enable_health_probes: true
+ enable_metrics: true
+ log_offline: true
 ```
 
 ## Testing Your Setup
@@ -538,7 +538,7 @@ python -c "import sys; print(sys.path)"
 ```python
 # Ensure deterministic mode is enabled BEFORE any operations
 from codex_ml.utils.deterministic import enable_deterministic_mode
-enable_deterministic_mode()  # Must be called first
+enable_deterministic_mode() # Must be called first
 ```
 
 **3. Health Checks Failing**
@@ -547,8 +547,8 @@ from codex_ml.serving.health import readiness_check
 
 # Check what's failing
 status = readiness_check(
-    required_dirs=[Path("data"), Path("models")],
-    min_disk_space_gb=1.0
+ required_dirs=[Path("data"), Path("models")],
+ min_disk_space_gb=1.0
 )
 print(status["checks"])
 ```
@@ -562,8 +562,8 @@ health = manager.get_plugin_health_report()
 
 # Check failure count
 for plugin_name, info in health["plugins"].items():
-    if info["status"] == "disabled":
-        print(f"{plugin_name} disabled: {info['last_error']}")
+ if info["status"] == "disabled":
+ print(f"{plugin_name} disabled: {info['last_error']}")
 
 # Manually re-enable
 manager.sandbox.enable_plugin(plugin_name)

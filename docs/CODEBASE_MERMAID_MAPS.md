@@ -167,16 +167,16 @@ flowchart LR
 > **Updated 2026-07-13
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing SQLiteMemory\nSTM → LTM\n80% capacity trigger, TopologyManager\nsemantic nav'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing SQLiteMemory\nSTM LTM\n80% capacity trigger, TopologyManager\nsemantic nav'}}%%
 
 graph TD
  subgraph "Cognitive Brain Core (.codex/)"
- SM[SQLiteMemory\nSTM → LTM\n80% capacity trigger]
+ SM[SQLiteMemory\nSTM LTM\n80% capacity trigger]
  TM[TopologyManager\nsemantic nav]
  OT[ObjectivesTracker\nphase goals]
  PL[PatternLibrary\nfix patterns]
  QEC[QEC Decision Engine\nk₁=0.332]
- MS[memory-sync-agent\nSTM→LTM at 80%\nstale LTM prune]
+ MS[memory-sync-agent\nSTMLTM at 80%\nstale LTM prune]
  end
 
  subgraph "Phase 9 — Autonomous Ops Layer (PR #4356)"
@@ -184,7 +184,7 @@ graph TD
  APR[AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md\n5 surfaces · zero human gates]
  SHD[COPILOT_SESSION_HANDOFF_DESIGN.md\nstate machine · self-healing loop]
  TTL[COPILOT_SESSION_TTL_SECONDS\nrepo var · default 43200s]
- VAR[pending_var_updates.json\n10 vars queued → @agent-var-writer]
+ VAR[pending_var_updates.json\n10 vars queued @agent-var-writer]
  WHK[webhook_config.json\n4 hooks active=true]
  end
 
@@ -204,7 +204,7 @@ graph TD
 
  CI_SIG & PR_SIG & WF_SIG & MEM --> SM
 
- SM -->|compress STM→LTM at 80%| MS
+ SM -->|compress STMLTM at 80%| MS
 
  MS --> SM
 
@@ -247,7 +247,7 @@ graph LR
  REPOV[Repository Variables\nNODE_JS_VERSION\nCODEX_CACHE_VERSION\nCOPILOT_RUNNER_PROFILE\nCODEX_CI_FAILURE_*]
  AGENTV[Agents Variables\nCOPILOT_AGENT_*\nCOPILOT_WEC_*\nCOGNITIVE_BRAIN_*]
  ORGS[Org / Repo Secrets\nCODEX_MASTER_KEY\nCODEX_BACKUP_KEY\n_GITHUB_APP_*]
- SETUP[.github/workflows/\ncopilot-setup-steps.yml\nruns-on → ubuntu-latest fallback\ncache → v2]
+ SETUP[.github/workflows/\ncopilot-setup-steps.yml\nruns-on ubuntu-latest fallback\ncache v2]
  end
 
  subgraph "Runtime Exports"
@@ -336,8 +336,8 @@ flowchart TD
  SCAN[scripts/ci/check_pr_comments.py\n--pr PR_NUMBER]
  CLASSIFY{Classify\ncomment}
  BLOCKING[ BLOCKING\nmbaetiong + critical bots]
- WARNING[️ WARNING\ninfomational bots]
- INFO[ℹ️ INFO\ndependabot etc]
+ WARNING[ WARNING\ninfomational bots]
+ INFO[ℹ INFO\ndependabot etc]
  end
 
  subgraph "Copilot Response Sources"
@@ -468,8 +468,8 @@ graph TD
  end
 
  subgraph "Legacy shadow (root-level)"
- LEGACY_CONFIG[config_legacy/config/\nopenai_client.py ← Python finds this]
- LEGACY_SVC[services/github/\nclient.py ← Python finds this]
+ LEGACY_CONFIG[config_legacy/config/\nopenai_client.py Python finds this]
+ LEGACY_SVC[services/github/\nclient.py Python finds this]
  end
 
  subgraph "Test imports"
@@ -510,7 +510,7 @@ flowchart TD
 
  subgraph "Token Chain (T-01 Fixed — PR #4356)"
  CHAIN["GH_TOKEN = CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY\n|| github.token\nAll checkout + write ops"]
- T01_NOTE["️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
+ T01_NOTE[" Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
  end
 
  subgraph "Session TTL Control (PR #4356)"
@@ -604,7 +604,7 @@ graph TD
  end
 
  subgraph "scripts/"
- CI_SCRIPTS[ci/\nauto_fix_common_issues.py\ncheck_pr_comments.py\nsync_tracked_files.py\ntest_variables_api.py ← PR #3876]
+ CI_SCRIPTS[ci/\nauto_fix_common_issues.py\ncheck_pr_comments.py\nsync_tracked_files.py\ntest_variables_api.py PR #3876]
  COG_SCRIPTS[cognitive/\ntopology_manager.py\ncache_manager.py]
  end
 
@@ -889,7 +889,7 @@ graph TD
  AL1[Phase 8.3: QEC k₁ tuning 80 to 100%]
  AL2[Phase 8.4: Transfer Learning scaffold]
  AL3[Cognitive Brain pattern harvest from Phase 9]
- AL4[memory-sync-agent STM→LTM consolidation]
+ AL4[memory-sync-agent STMLTM consolidation]
  end
 
  CB1 & CB2 & CB3 & CB4 --> RG1 & RG2 & RG3 & RG4
@@ -1056,7 +1056,7 @@ Constraints: Do NOT delete test stubs — only production src/ paths.
 ```
 You are continuing Phase 11 coverage work on Aries-Serpent/_codex_.
 Context: Two modules remain at 0% coverage from the S1293 cognitive run.
-Files: src/codex/cognitive/okr_tracker.py (141 stmts, 0%), src/codex/cognitive/task_router.py (104 stmts, 0%)  # pragma: allowlist secret
+Files: src/codex/cognitive/okr_tracker.py (141 stmts, 0%), src/codex/cognitive/task_router.py (104 stmts, 0%) # pragma: allowlist secret
 Task: Add targeted tests to reach ≥60% on each file.
 Constraints:
 - Use tests/cognitive/ directory
@@ -1070,11 +1070,11 @@ Constraints:
 ```
 You are continuing Phase 11 coverage depth work on Aries-Serpent/_codex_.
 Context: Several cognitive modules are at 58–69% coverage after S1293.
-Files (current → target):
- src/codex/cognitive/knowledge_distiller.py 58% → 75%
- src/codex/cognitive/objective_adjuster.py 58% → 75%
- src/codex/cognitive/session_hook.py 69% → 80%
- src/codex/cognitive/retrieval_optimizer.py 69% → 80%
+Files (current target):
+ src/codex/cognitive/knowledge_distiller.py 58% 75%
+ src/codex/cognitive/objective_adjuster.py 58% 75%
+ src/codex/cognitive/session_hook.py 69% 80%
+ src/codex/cognitive/retrieval_optimizer.py 69% 80%
 Task: Add gap-filling tests for each module.
 Constraints:
 - Use tests/cognitive/ directory

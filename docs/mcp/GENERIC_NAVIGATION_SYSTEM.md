@@ -82,31 +82,31 @@
 
 graph TD
 
-    A[User Question] --> B{Query Type}
+ A[User Question] --> B{Query Type}
 
-    B -->|Structure| C[CODEBASE_MAP.md]
+ B -->|Structure| C[CODEBASE_MAP.md]
 
-    B -->|Feature Location| D[NAVIGATION_INDEX.json]
+ B -->|Feature Location| D[NAVIGATION_INDEX.json]
 
-    B -->|Implementation| E[File Load + Dependencies]
+ B -->|Implementation| E[File Load + Dependencies]
 
-    B -->|Extension| F[ARCHITECTURE_GUIDE.md]
+ B -->|Extension| F[ARCHITECTURE_GUIDE.md]
 
-    C --> G[Directory Tree Response]
+ C --> G[Directory Tree Response]
 
-    D --> H[Path Resolution]
+ D --> H[Path Resolution]
 
-    H --> E
+ H --> E
 
-    E --> I[Dependency Graph Traversal]
+ E --> I[Dependency Graph Traversal]
 
-    I --> J[Related Files Load]
+ I --> J[Related Files Load]
 
-    J --> K[Contextual Response]
+ J --> K[Contextual Response]
 
-    F --> L[Extension Point + Pattern]
+ F --> L[Extension Point + Pattern]
 
-    L --> M[Code Generation Guidance]
+ L --> M[Code Generation Guidance]
 ```
 
 ### Fields (Navigation State Evolution)
@@ -248,9 +248,9 @@ python scripts/mcp/generate_navigation_system.py --deep-analysis
 # Ensure NAVIGATION_INDEX.json matches CODEBASE_MAP.md
 
 python scripts/mcp/validate_navigation_consistency.py \
-  --index NAVIGATION_INDEX.json \
-  --map CODEBASE_MAP.md \
-  --architecture ARCHITECTURE_GUIDE.md
+ --index NAVIGATION_INDEX.json \
+ --map CODEBASE_MAP.md \
+ --architecture ARCHITECTURE_GUIDE.md
 ```
 
 ## Circuit Breakers
@@ -306,64 +306,64 @@ Every ChatGPT Project package should include:
 
 ```json
 {
-  "repository": {
-    "name": "repository_name",
-    "description": "Repository purpose",
-    "primary_language": "python",
-    "framework": "framework_name",
-    "version": "1.0.0"
-  },
-  "architecture": {
-    "pattern": "modular|monolithic|microservices|layered",
-    "entry_points": [
-      {
-        "file": "src__main.py",
-        "original_path": "src/main.py",
-        "purpose": "Main application entry"
-      }
-    ],
-    "core_modules": [
-      {
-        "name": "agents",
-        "path": "src__agents__",
-        "purpose": "Agent system implementation",
-        "key_files": ["workflow_navigator.py", "quantum_game_theory.py"]
-      }
-    ]
-  },
-  "navigation_hints": {
-    "to_find_feature_implementation": "src__feature_name__",
-    "to_find_tests": "tests__feature_name__",
-    "to_find_documentation": "docs__feature_name__",
-    "to_find_configuration": "config__",
-    "to_find_utilities": "src__utils__"
-  },
-  "file_relationships": {
-    "src__agents__workflow_navigator.py": {
-      "depends_on": [
-        "src__agents__base.py",
-        "src__utils__state_management.py"
-      ],
-      "used_by": [
-        "tests__agents__test_workflow_navigator.py",
-        "src__main.py"
-      ],
-      "documentation": "docs__agents__workflow_navigator.md"
-    }
-  },
-  "naming_conventions": {
-    "classes": "PascalCase",
-    "functions": "snake_case",
-    "constants": "UPPER_SNAKE_CASE",
-    "private": "_prefix",
-    "test_files": "test_*.py"
-  },
-  "common_patterns": {
-    "error_handling": "Use custom exceptions from src__exceptions.py",
-    "logging": "Use logger from src__utils__logging.py",
-    "configuration": "Use config from src__config.py",
-    "testing": "Use fixtures from tests__conftest.py"
-  }
+ "repository": {
+ "name": "repository_name",
+ "description": "Repository purpose",
+ "primary_language": "python",
+ "framework": "framework_name",
+ "version": "1.0.0"
+ },
+ "architecture": {
+ "pattern": "modular|monolithic|microservices|layered",
+ "entry_points": [
+ {
+ "file": "src__main.py",
+ "original_path": "src/main.py",
+ "purpose": "Main application entry"
+ }
+ ],
+ "core_modules": [
+ {
+ "name": "agents",
+ "path": "src__agents__",
+ "purpose": "Agent system implementation",
+ "key_files": ["workflow_navigator.py", "quantum_game_theory.py"]
+ }
+ ]
+ },
+ "navigation_hints": {
+ "to_find_feature_implementation": "src__feature_name__",
+ "to_find_tests": "tests__feature_name__",
+ "to_find_documentation": "docs__feature_name__",
+ "to_find_configuration": "config__",
+ "to_find_utilities": "src__utils__"
+ },
+ "file_relationships": {
+ "src__agents__workflow_navigator.py": {
+ "depends_on": [
+ "src__agents__base.py",
+ "src__utils__state_management.py"
+ ],
+ "used_by": [
+ "tests__agents__test_workflow_navigator.py",
+ "src__main.py"
+ ],
+ "documentation": "docs__agents__workflow_navigator.md"
+ }
+ },
+ "naming_conventions": {
+ "classes": "PascalCase",
+ "functions": "snake_case",
+ "constants": "UPPER_SNAKE_CASE",
+ "private": "_prefix",
+ "test_files": "test_*.py"
+ },
+ "common_patterns": {
+ "error_handling": "Use custom exceptions from src__exceptions.py",
+ "logging": "Use logger from src__utils__logging.py",
+ "configuration": "Use config from src__config.py",
+ "testing": "Use fixtures from tests__conftest.py"
+ }
 }
 ```
 
@@ -389,18 +389,18 @@ Location: `scripts/mcp/generate_navigation_index.py`
 
 \`\`\`
 repository/
-├── src/                    # Source code
-│   ├── agents/            # Agent implementations
-│   │   ├── workflow_navigator.py
-│   │   └── quantum_game_theory.py
-│   ├── utils/             # Utility functions
-│   └── main.py            # Application entry
-├── tests/                 # Test suite
-│   ├── agents/           # Agent tests
-│   └── integration/      # Integration tests
-├── docs/                  # Documentation
-├── config/               # Configuration files
-└── scripts/              # Build and utility scripts
+ src/ # Source code
+ agents/ # Agent implementations
+ workflow_navigator.py
+ quantum_game_theory.py
+ utils/ # Utility functions
+ main.py # Application entry
+ tests/ # Test suite
+ agents/ # Agent tests
+ integration/ # Integration tests
+ docs/ # Documentation
+ config/ # Configuration files
+ scripts/ # Build and utility scripts
 \`\`\`
 
 ## Module Overview
@@ -408,11 +408,11 @@ repository/
 ### Core Modules
 
 #### Agents (`src/agents/`)
-**Purpose**: Autonomous agent system implementation  
+**Purpose**: Autonomous agent system implementation 
 **Key Files**:
 - `workflow_navigator.py` - Workflow state management
-- `quantum_game_theory.py` - Quantum-inspired decision making  
-**Tests**: `tests/agents/`  
+- `quantum_game_theory.py` - Quantum-inspired decision making 
+**Tests**: `tests/agents/` 
 **Documentation**: `docs/agents/`
 
 [... repeat for each module ...]
@@ -433,12 +433,12 @@ repository/
 
 ### Import Chains
 \`\`\`
-main.py → agents/workflow_navigator.py → utils/state_management.py
+main.py agents/workflow_navigator.py utils/state_management.py
 \`\`\`
 
 ### Test Coverage
 \`\`\`
-src/agents/workflow_navigator.py ← tests/agents/test_workflow_navigator.py
+src/agents/workflow_navigator.py tests/agents/test_workflow_navigator.py
 \`\`\`
 
 ## Key Patterns
@@ -487,16 +487,16 @@ Access config: `from src.config import settings`
 ### Layers
 
 1. **Presentation Layer** (`src/api/`)
-   - REST API endpoints
-   - Request/response handling
+ - REST API endpoints
+ - Request/response handling
 
 2. **Business Logic Layer** (`src/agents/`)
-   - Core business logic
-   - Agent implementations
+ - Core business logic
+ - Agent implementations
 
 3. **Data Layer** (`src/data/`)
-   - Database access
-   - Data models
+ - Database access
+ - Data models
 
 ### Design Principles
 
@@ -510,33 +510,33 @@ Access config: `from src.config import settings`
 ### Agent System
 \`\`\`
 BaseAgent (base.py)
-    ├── WorkflowNavigator (workflow_navigator.py)
-    ├── QuantumGameTheory (quantum_game_theory.py)
-    └── [Other agents]
+ WorkflowNavigator (workflow_navigator.py)
+ QuantumGameTheory (quantum_game_theory.py)
+ [Other agents]
 \`\`\`
 
 ### Data Flow
 \`\`\`
-Request → API Layer → Business Layer → Data Layer → Database
-         ↓            ↓                ↓
-      Validation   Processing      Storage
+Request API Layer Business Layer Data Layer Database
+ 
+ Validation Processing Storage
 \`\`\`
 
 ## Design Patterns Used
 
 ### 1. Factory Pattern
-**Location**: `src/factories/`  
-**Purpose**: Object creation abstraction  
+**Location**: `src/factories/` 
+**Purpose**: Object creation abstraction 
 **Example**: `AgentFactory.create_agent(type="workflow")`
 
 ### 2. Observer Pattern
-**Location**: `src/observers/`  
-**Purpose**: Event notification  
+**Location**: `src/observers/` 
+**Purpose**: Event notification 
 **Example**: Agents observe workflow state changes
 
 ### 3. Strategy Pattern
-**Location**: `src/strategies/`  
-**Purpose**: Algorithm selection at runtime  
+**Location**: `src/strategies/` 
+**Purpose**: Algorithm selection at runtime 
 **Example**: Different quantum calculation strategies
 
 ## Extension Points
@@ -609,16 +609,16 @@ Request → API Layer → Business Layer → Data Layer → Database
 ## Common Pitfalls
 
 ### Don't
--  Import from `tests/` in `src/`
--  Circular imports between modules
--  Hardcode configuration values
--  Skip input validation
+- Import from `tests/` in `src/`
+- Circular imports between modules
+- Hardcode configuration values
+- Skip input validation
 
 ### Do
--  Use dependency injection
--  Follow naming conventions
--  Write comprehensive tests
--  Document public APIs
+- Use dependency injection
+- Follow naming conventions
+- Write comprehensive tests
+- Document public APIs
 ```
 
 ---
@@ -635,89 +635,89 @@ You are ChatGPT Assistant with access to a COMPLETE codebase uploaded as a flat-
 ## Startup Sequence
 
 1. **Load Navigation Index FIRST**
-   - Parse `NAVIGATION_INDEX.json`
-   - Build mental model of:
-     - Repository structure
-     - Module relationships
-     - Naming conventions
-     - Common patterns
+ - Parse `NAVIGATION_INDEX.json`
+ - Build mental model of:
+ - Repository structure
+ - Module relationships
+ - Naming conventions
+ - Common patterns
 
 2. **Read Codebase Map**
-   - Parse `CODEBASE_MAP.md`
-   - Understand directory structure
-   - Identify key modules and their purposes
-   - Note file relationships
+ - Parse `CODEBASE_MAP.md`
+ - Understand directory structure
+ - Identify key modules and their purposes
+ - Note file relationships
 
 3. **Study Architecture Guide**
-   - Parse `ARCHITECTURE_GUIDE.md`
-   - Understand system architecture
-   - Learn design patterns used
-   - Identify extension points
+ - Parse `ARCHITECTURE_GUIDE.md`
+ - Understand system architecture
+ - Learn design patterns used
+ - Identify extension points
 
 4. **Load Manifest**
-   - Parse `manifest.json`
-   - Map flat names to original paths
-   - Build file index with metadata
+ - Parse `manifest.json`
+ - Map flat names to original paths
+ - Build file index with metadata
 
 5. **Scan Quick Reference**
-   - Parse `archive/sessions/2026-01/QUICK_REFERENCE.md`
-   - Identify frequently used patterns
-   - Note utility locations
+ - Parse `archive/sessions/2026-01/QUICK_REFERENCE.md`
+ - Identify frequently used patterns
+ - Note utility locations
 
 ## Navigation Protocol
 
 ### When User Asks "How does [feature] work?"
 
 1. **Locate Feature**:
-   - Check `NAVIGATION_INDEX.json` → `core_modules`
-   - Find in `CODEBASE_MAP.md` → Module Overview
-   - Identify key files
+ - Check `NAVIGATION_INDEX.json` `core_modules`
+ - Find in `CODEBASE_MAP.md` Module Overview
+ - Identify key files
 
 2. **Analyze Implementation**:
-   - Load main implementation file
-   - Check dependencies in `file_relationships`
-   - Review tests for usage examples
+ - Load main implementation file
+ - Check dependencies in `file_relationships`
+ - Review tests for usage examples
 
 3. **Explain**:
-   - Show file location (both flat and original path)
-   - Explain core logic
-   - Reference related components
-   - Show test examples
+ - Show file location (both flat and original path)
+ - Explain core logic
+ - Reference related components
+ - Show test examples
 
 ### When User Asks "Where is [functionality]?"
 
 1. **Use Navigation Hints**:
-   - Check `NAVIGATION_INDEX.json` → `navigation_hints`
-   - Apply naming conventions
-   - Search relevant modules
+ - Check `NAVIGATION_INDEX.json` `navigation_hints`
+ - Apply naming conventions
+ - Search relevant modules
 
 2. **Provide Path**:
-   - Original path: `src/module/file.py`
-   - Flat name: `src__module__file.py`
-   - Line number if applicable
+ - Original path: `src/module/file.py`
+ - Flat name: `src__module__file.py`
+ - Line number if applicable
 
 ### When User Requests "Add new [component]"
 
 1. **Find Extension Point**:
-   - Check `ARCHITECTURE_GUIDE.md` → Extension Points
-   - Identify base class/interface
-   - Note required methods
+ - Check `ARCHITECTURE_GUIDE.md` Extension Points
+ - Identify base class/interface
+ - Note required methods
 
 2. **Follow Patterns**:
-   - Review similar existing components
-   - Apply naming conventions
-   - Use common patterns (error handling, logging, etc.)
+ - Review similar existing components
+ - Apply naming conventions
+ - Use common patterns (error handling, logging, etc.)
 
 3. **Generate Code**:
-   - Follow existing style
-   - Include proper imports
-   - Add docstrings
-   - Reference related tests
+ - Follow existing style
+ - Include proper imports
+ - Add docstrings
+ - Reference related tests
 
 4. **Suggest Tests**:
-   - Location: `tests/<module>/test_<new_component>.py`
-   - Follow existing test patterns
-   - Use appropriate fixtures
+ - Location: `tests/<module>/test_<new_component>.py`
+ - Follow existing test patterns
+ - Use appropriate fixtures
 
 ## Context Management
 
@@ -851,152 +851,152 @@ import subprocess
 
 
 class NavigationSystemGenerator:
-    """Generate NAVIGATION_INDEX.json and CODEBASE_MAP.md"""
+ """Generate NAVIGATION_INDEX.json and CODEBASE_MAP.md"""
 
-    def __init__(self, repo_root: Path):
-        self.repo_root = repo_root
-        self.modules = {}
-        self.relationships = {}
+ def __init__(self, repo_root: Path):
+ self.repo_root = repo_root
+ self.modules = {}
+ self.relationships = {}
 
-    def analyze_codebase(self):
-        """Analyze repository structure"""
-        # Find all Python files
-        py_files = list(self.repo_root.rglob("*.py"))
+ def analyze_codebase(self):
+ """Analyze repository structure"""
+ # Find all Python files
+ py_files = list(self.repo_root.rglob("*.py"))
 
-        # Build module map
-        for py_file in py_files:
-            rel_path = py_file.relative_to(self.repo_root)
-            module_info = self.analyze_file(py_file)
-            self.modules[str(rel_path)] = module_info
+ # Build module map
+ for py_file in py_files:
+ rel_path = py_file.relative_to(self.repo_root)
+ module_info = self.analyze_file(py_file)
+ self.modules[str(rel_path)] = module_info
 
-        # Analyze relationships
-        self.analyze_relationships()
+ # Analyze relationships
+ self.analyze_relationships()
 
-    def analyze_file(self, file_path: Path) -> Dict:
-        """Analyze single Python file"""
-        try:
-            with open(file_path) as f:
-                tree = ast.parse(f.read())
+ def analyze_file(self, file_path: Path) -> Dict:
+ """Analyze single Python file"""
+ try:
+ with open(file_path) as f:
+ tree = ast.parse(f.read())
 
-            return {
-                "classes": [node.name for node in ast.walk(tree)
-                           if isinstance(node, ast.ClassDef)],
-                "functions": [node.name for node in ast.walk(tree)
-                             if isinstance(node, ast.FunctionDef)],
-                "imports": self.extract_imports(tree)
-            }
-        except Exception as e:
-            return {"error": str(e)}
+ return {
+ "classes": [node.name for node in ast.walk(tree)
+ if isinstance(node, ast.ClassDef)],
+ "functions": [node.name for node in ast.walk(tree)
+ if isinstance(node, ast.FunctionDef)],
+ "imports": self.extract_imports(tree)
+ }
+ except Exception as e:
+ return {"error": str(e)}
 
-    def extract_imports(self, tree) -> List[str]:
-        """Extract import statements"""
-        imports = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                imports.extend(alias.name for alias in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    imports.append(node.module)
-        return imports
+ def extract_imports(self, tree) -> List[str]:
+ """Extract import statements"""
+ imports = []
+ for node in ast.walk(tree):
+ if isinstance(node, ast.Import):
+ imports.extend(alias.name for alias in node.names)
+ elif isinstance(node, ast.ImportFrom):
+ if node.module:
+ imports.append(node.module)
+ return imports
 
-    def analyze_relationships(self):
-        """Build file relationship graph"""
-        for file_path, info in self.modules.items():
-            deps = []
-            for imp in info.get("imports", []):
-                # Try to resolve to local file
-                # Simple heuristic: convert import to file path
-                potential_path = imp.replace(".", "/") + ".py"
-                if potential_path in self.modules:
-                    deps.append(potential_path)
+ def analyze_relationships(self):
+ """Build file relationship graph"""
+ for file_path, info in self.modules.items():
+ deps = []
+ for imp in info.get("imports", []):
+ # Try to resolve to local file
+ # Simple heuristic: convert import to file path
+ potential_path = imp.replace(".", "/") + ".py"
+ if potential_path in self.modules:
+ deps.append(potential_path)
 
-            self.relationships[file_path] = {
-                "depends_on": deps,
-                "used_by": []  # Will be filled in next pass
-            }
+ self.relationships[file_path] = {
+ "depends_on": deps,
+ "used_by": [] # Will be filled in next pass
+ }
 
-        # Fill in "used_by"
-        for file_path, rels in self.relationships.items():
-            for dep in rels["depends_on"]:
-                if dep in self.relationships:
-                    self.relationships[dep]["used_by"].append(file_path)
+ # Fill in "used_by"
+ for file_path, rels in self.relationships.items():
+ for dep in rels["depends_on"]:
+ if dep in self.relationships:
+ self.relationships[dep]["used_by"].append(file_path)
 
-    def generate_navigation_index(self) -> Dict:
-        """Generate NAVIGATION_INDEX.json content"""
-        # Identify entry points (files with if __name__ == "__main__")
-        entry_points = self.find_entry_points()
+ def generate_navigation_index(self) -> Dict:
+ """Generate NAVIGATION_INDEX.json content"""
+ # Identify entry points (files with if __name__ == "__main__")
+ entry_points = self.find_entry_points()
 
-        # Identify core modules (top-level directories)
-        core_modules = self.identify_core_modules()
+ # Identify core modules (top-level directories)
+ core_modules = self.identify_core_modules()
 
-        return {
-            "repository": {
-                "name": self.repo_root.name,
-                "description": "Auto-generated navigation index",
-                "primary_language": "python"
-            },
-            "architecture": {
-                "pattern": "modular",
-                "entry_points": entry_points,
-                "core_modules": core_modules
-            },
-            "file_relationships": self.relationships,
-            "naming_conventions": {
-                "classes": "PascalCase",
-                "functions": "snake_case",
-                "constants": "UPPER_SNAKE_CASE",
-                "test_files": "test_*.py"
-            }
-        }
+ return {
+ "repository": {
+ "name": self.repo_root.name,
+ "description": "Auto-generated navigation index",
+ "primary_language": "python"
+ },
+ "architecture": {
+ "pattern": "modular",
+ "entry_points": entry_points,
+ "core_modules": core_modules
+ },
+ "file_relationships": self.relationships,
+ "naming_conventions": {
+ "classes": "PascalCase",
+ "functions": "snake_case",
+ "constants": "UPPER_SNAKE_CASE",
+ "test_files": "test_*.py"
+ }
+ }
 
-    def find_entry_points(self) -> List[Dict]:
-        """Find main entry points"""
-        entry_points = []
-        for file_path in self.modules.keys():
-            try:
-                with open(self.repo_root / file_path) as f:
-                    if 'if __name__ == "__main__":' in f.read():
-                        entry_points.append({
-                            "file": file_path.replace("/", "__"),
-                            "original_path": file_path,
-                            "purpose": "Entry point"
-                        })
-            except:
-                pass
-        return entry_points
+ def find_entry_points(self) -> List[Dict]:
+ """Find main entry points"""
+ entry_points = []
+ for file_path in self.modules.keys():
+ try:
+ with open(self.repo_root / file_path) as f:
+ if 'if __name__ == "__main__":' in f.read():
+ entry_points.append({
+ "file": file_path.replace("/", "__"),
+ "original_path": file_path,
+ "purpose": "Entry point"
+ })
+ except:
+ pass
+ return entry_points
 
-    def identify_core_modules(self) -> List[Dict]:
-        """Identify core modules from directory structure"""
-        # Get top-level directories with Python files
-        modules = {}
-        for file_path in self.modules.keys():
-            parts = Path(file_path).parts
-            if len(parts) > 1 and parts[0] in ["src", "lib"]:
-                module_name = parts[1]
-                if module_name not in modules:
-                    modules[module_name] = []
-                modules[module_name].append(file_path)
+ def identify_core_modules(self) -> List[Dict]:
+ """Identify core modules from directory structure"""
+ # Get top-level directories with Python files
+ modules = {}
+ for file_path in self.modules.keys():
+ parts = Path(file_path).parts
+ if len(parts) > 1 and parts[0] in ["src", "lib"]:
+ module_name = parts[1]
+ if module_name not in modules:
+ modules[module_name] = []
+ modules[module_name].append(file_path)
 
-        result = []
-        for module_name, files in modules.items():
-            result.append({
-                "name": module_name,
-                "path": f"src__{module_name}__",
-                "file_count": len(files),
-                "key_files": [Path(f).name for f in files[:5]]
-            })
+ result = []
+ for module_name, files in modules.items():
+ result.append({
+ "name": module_name,
+ "path": f"src__{module_name}__",
+ "file_count": len(files),
+ "key_files": [Path(f).name for f in files[:5]]
+ })
 
-        return result
+ return result
 
-    def generate_codebase_map(self) -> str:
-        """Generate CODEBASE_MAP.md content"""
-        # Generate tree structure
-        tree = self.generate_tree()
+ def generate_codebase_map(self) -> str:
+ """Generate CODEBASE_MAP.md content"""
+ # Generate tree structure
+ tree = self.generate_tree()
 
-        # Generate module overview
-        module_overview = self.generate_module_overview()
+ # Generate module overview
+ module_overview = self.generate_module_overview()
 
-        return f"""# Codebase Map: {self.repo_root.name}
+ return f"""# Codebase Map: {self.repo_root.name}
 
 ## Directory Structure
 
@@ -1019,55 +1019,55 @@ class NavigationSystemGenerator:
 See archive/sessions/2026-01/QUICK_REFERENCE.md for common patterns and utilities.
 """
 
-    def generate_tree(self) -> str:
-        """Generate directory tree"""
-        # Simple tree generation
-        result = [f"{self.repo_root.name}/"]
+ def generate_tree(self) -> str:
+ """Generate directory tree"""
+ # Simple tree generation
+ result = [f"{self.repo_root.name}/"]
 
-        # Get unique directories
-        dirs = set()
-        for file_path in self.modules.keys():
-            parts = Path(file_path).parts
-            for i in range(len(parts)):
-                dirs.add("/".join(parts[:i+1]))
+ # Get unique directories
+ dirs = set()
+ for file_path in self.modules.keys():
+ parts = Path(file_path).parts
+ for i in range(len(parts)):
+ dirs.add("/".join(parts[:i+1]))
 
-        for d in sorted(dirs)[:20]:  # Limit for readability
-            depth = d.count("/")
-            result.append("  " * depth + "├── " + d.split("/")[-1] + "/")
+ for d in sorted(dirs)[:20]: # Limit for readability
+ depth = d.count("/")
+ result.append(" " * depth + " " + d.split("/")[-1] + "/")
 
-        return "\n".join(result)
+ return "\n".join(result)
 
-    def generate_module_overview(self) -> str:
-        """Generate module overview section"""
-        # Group files by top-level module
-        # ... (implementation details)
-        return "### Core Modules\n\n[Auto-generated module descriptions]"
+ def generate_module_overview(self) -> str:
+ """Generate module overview section"""
+ # Group files by top-level module
+ # ... (implementation details)
+ return "### Core Modules\n\n[Auto-generated module descriptions]"
 
-    def save(self, output_dir: Path):
-        """Save generated files"""
-        output_dir.mkdir(parents=True, exist_ok=True)
+ def save(self, output_dir: Path):
+ """Save generated files"""
+ output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save NAVIGATION_INDEX.json
-        nav_index = self.generate_navigation_index()
-        with open(output_dir / "NAVIGATION_INDEX.json", "w") as f:
-            json.dump(nav_index, f, indent=2)
+ # Save NAVIGATION_INDEX.json
+ nav_index = self.generate_navigation_index()
+ with open(output_dir / "NAVIGATION_INDEX.json", "w") as f:
+ json.dump(nav_index, f, indent=2)
 
-        # Save CODEBASE_MAP.md
-        codebase_map = self.generate_codebase_map()
-        with open(output_dir / "CODEBASE_MAP.md", "w") as f:
-            f.write(codebase_map)
+ # Save CODEBASE_MAP.md
+ codebase_map = self.generate_codebase_map()
+ with open(output_dir / "CODEBASE_MAP.md", "w") as f:
+ f.write(codebase_map)
 
-        print(f" Generated navigation system in {output_dir}")
+ print(f" Generated navigation system in {output_dir}")
 
 
 if __name__ == "__main__":
-    import sys
-    repo_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd()
-    output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(".github/tmp")
+ import sys
+ repo_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd()
+ output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(".github/tmp")
 
-    generator = NavigationSystemGenerator(repo_root)
-    generator.analyze_codebase()
-    generator.save(output_dir)
+ generator = NavigationSystemGenerator(repo_root)
+ generator.analyze_codebase()
+ generator.save(output_dir)
 ```
 
 ---
@@ -1120,22 +1120,22 @@ When loaded with full codebase + navigation system:
 
 **Assistant**:
 ```
-📂 Repository: _codex_
+ Repository: _codex_
 
 Based on NAVIGATION_INDEX.json and CODEBASE_MAP.md:
 
 Core Modules:
 1. agents/ - Autonomous agent system
-   - workflow_navigator.py - Workflow state management
-   - quantum_game_theory.py - Quantum decision making
+ - workflow_navigator.py - Workflow state management
+ - quantum_game_theory.py - Quantum decision making
 
 2. utils/ - Utility functions
-   - state_management.py - State handling
-   - logging.py - Logging utilities
+ - state_management.py - State handling
+ - logging.py - Logging utilities
 
 3. api/ - REST API layer
-   - routes.py - API endpoints
-   - schemas.py - Request/response schemas
+ - routes.py - API endpoints
+ - schemas.py - Request/response schemas
 
 Entry Points:
 - src__main.py (src/main.py) - Main application

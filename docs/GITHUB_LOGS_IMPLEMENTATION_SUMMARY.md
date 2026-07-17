@@ -69,7 +69,7 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344
 
 ### API Method
 ```bash
-  -H "Authorization: Bearer $GITHUB_TOKEN"
+ -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 ### MCP Method
@@ -77,9 +77,9 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344
 from mcp.tools.github_logs import fetch_check_run_logs
 
 result = fetch_check_run_logs({
-    "owner": "Aries-Serpent",
-    "repo": "_codex_",
-    "check_run_id": 59990656344
+ "owner": "Aries-Serpent",
+ "repo": "_codex_",
+ "check_run_id": 59990656344
 })
 print(result["logs"])
 ```
@@ -88,15 +88,15 @@ print(result["logs"])
 
 ```
 GitHub API (api.github.com)
-         ↓
+ 
 GitHubClient (async/sync)
-    ├── get_check_run()
-    ├── list_check_runs_for_ref()
-    └── get_check_run_logs()
-         ↓
-    ┌────┴────┬─────────┐
-    ↓         ↓         ↓
-   CLI       API       MCP
+ get_check_run()
+ list_check_runs_for_ref()
+ get_check_run_logs()
+ 
+ 
+ 
+ CLI API MCP
 ```
 
 ## Code Quality Metrics
@@ -225,9 +225,9 @@ The GitHub Actions Log Fetcher implementation is **COMPLETE** and **PRODUCTION-R
 ### Next Steps for User
 
 1. **Immediate Use**:
-   ```bash
-   export GITHUB_TOKEN="your_token"
-   codex github-logs check-run Aries-Serpent _codex_ 59990656344
+ ```bash
+ export GITHUB_TOKEN="your_token"
+ codex github-logs check-run Aries-Serpent _codex_ 59990656344
  ```
 
 2. **For API Usage**:

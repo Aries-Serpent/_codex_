@@ -221,10 +221,10 @@ This governance document defines the authority structure, decision protocols, an
 
 ### Path - Decision Flow
 ```
-Contributor → Code Owner → Team Lead → Architect → Resolution
-     ↓            ↓            ↓           ↓           ↓
-  Submit PR   First Review   Escalate   Final Call   Merge/Close
-  + Tests     + CI Pass      + Context  + ADR       + Changelog
+Contributor Code Owner Team Lead Architect Resolution
+ 
+ Submit PR First Review Escalate Final Call Merge/Close
+ + Tests + CI Pass + Context + ADR + Changelog
 ```
 **Alignment:** Progressive authority increase with technical rigor at each gate
 
@@ -248,10 +248,10 @@ Contributor → Code Owner → Team Lead → Architect → Resolution
 
 ### Balance - Efficiency vs Quality
 ```
-Small Changes: Speed 90% | Rigor 10%  (Fast iteration)
-Medium Changes: Speed 60% | Rigor 40%  (Balanced review)
-Major Changes: Speed 30% | Rigor 70%  (Thorough validation)
-Emergency: Speed 95% | Rigor 5% → 70% (Fast action + post-hoc review)
+Small Changes: Speed 90% | Rigor 10% (Fast iteration)
+Medium Changes: Speed 60% | Rigor 40% (Balanced review)
+Major Changes: Speed 30% | Rigor 70% (Thorough validation)
+Emergency: Speed 95% | Rigor 5% 70% (Fast action + post-hoc review)
 ```
 **Equilibrium Point:** Change impact determines review depth and timeline
 
@@ -267,13 +267,13 @@ Emergency: Speed 95% | Rigor 5% → 70% (Fast action + post-hoc review)
 
 ### Team Energy Allocation
 ```
-@Aries-Serpent/architects:   ████ 15% (High-leverage decisions only)
-@Aries-Serpent/security:     ███ 10% (Critical reviews + audits)
-@Aries-Serpent/ml-core:      ██████ 20% (ML feature development)
-@Aries-Serpent/app-core:     ██████ 20% (Core application logic)
-@Aries-Serpent/ops-team:     ████ 15% (CI/CD, infrastructure)
-@Aries-Serpent/docs-team:    ████ 15% (Documentation, examples)
-Community Contributors:      █ 5% (External contributions)
+@Aries-Serpent/architects: ████ 15% (High-leverage decisions only)
+@Aries-Serpent/security: ███ 10% (Critical reviews + audits)
+@Aries-Serpent/ml-core: ██████ 20% (ML feature development)
+@Aries-Serpent/app-core: ██████ 20% (Core application logic)
+@Aries-Serpent/ops-team: ████ 15% (CI/CD, infrastructure)
+@Aries-Serpent/docs-team: ████ 15% (Documentation, examples)
+Community Contributors: █ 5% (External contributions)
 ```
 
 **Rationale:** Architect time reserved for strategic decisions; teams empowered for domain expertise areas.

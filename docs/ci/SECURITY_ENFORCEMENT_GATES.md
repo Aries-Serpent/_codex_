@@ -18,34 +18,34 @@ This document specifies the security enforcement gates that block or warn on cod
 ## Gate Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   Code Change (Push / PR)                       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
-         ┌───────────────────────┼────────────────────────────┐
-         │                       │                            │
-         ▼                       ▼                            ▼
-    ┌─────────┐            ┌──────────┐             ┌─────────────┐
-    │ Semgrep │            │ pip-audit│             │  Bandit     │
-    │  SAST   │            │  Vulns   │             │ Security    │
-    └────┬────┘            └────┬─────┘             └─────┬───────┘
-         │                      │                        │
-         │ [HIGH/CRITICAL]      │ [CRITICAL]             │ [CRITICAL]
-         │                      │                        │
-         └──────────────┬───────┴────────────────────────┘
-                        │
-                        ▼
-              ┌──────────────────────┐
-              │ Parse Severity Level │
-              └──────┬───────────────┘
-                     │
-         ┌───────────┴───────────┐
-         │                       │
-     [BLOCK]              [WARN/ADVISORY]
-         │                       │
-         ▼                       ▼
-    Fail Job              Continue with warning
-    Exit code 1           (advisory only)
+
+ Code Change (Push / PR) 
+
+ 
+ 
+ 
+ 
+ 
+ Semgrep pip-audit Bandit 
+ SAST Vulns Security 
+ 
+ 
+ [HIGH/CRITICAL] [CRITICAL] [CRITICAL]
+ 
+ 
+ 
+ 
+ 
+ Parse Severity Level 
+ 
+ 
+ 
+ 
+ [BLOCK] [WARN/ADVISORY]
+ 
+ 
+ Fail Job Continue with warning
+ Exit code 1 (advisory only)
 ```
 
 ---
@@ -88,9 +88,9 @@ github/codeql-action/upload-sarif@v4 --sarif-file semgrep.sarif
 
 ```yaml
 config: >-
-  p/security-audit      # Top security rules
-  p/python              # Python-specific checks
-  p/owasp-top-ten       # OWASP Top 10
+ p/security-audit # Top security rules
+ p/python # Python-specific checks
+ p/owasp-top-ten # OWASP Top 10
 ```
 
 See: [Semgrep Registry](https://semgrep.dev/r)
@@ -119,12 +119,12 @@ See: [Semgrep Registry](https://semgrep.dev/r)
 
 ```bash
 pip-audit -r requirements.txt -r requirements-dev.txt \
-  --format json -o ci_pip_audit.json
+ --format json -o ci_pip_audit.json
 
 # Parse CRITICAL severity from JSON output
 if grep -i 'CRITICAL' pip_audit_output.txt; then
-  echo "::error::CRITICAL CVE detected"
-  exit 1  # Block PR
+ echo "::error::CRITICAL CVE detected"
+ exit 1 # Block PR
 fi
 ```
 
@@ -171,16 +171,16 @@ None at this time. All CRITICAL CVEs block PRs.
 
 ```bash
 bandit -r src/ --configfile .bandit \
-  -f json -o bandit-report.json \
-  -f txt -o bandit-output.txt
+ -f json -o bandit-report.json \
+ -f txt -o bandit-output.txt
 
 # Count CRITICAL and HIGH
 CRITICAL_COUNT=$(jq '[.results[] | select(.severity == "HIGH" and .confidence == "HIGH")] | length' bandit-report.json)
 HIGH_COUNT=$(jq '[.results[] | select(.severity == "HIGH")] | length' bandit-report.json)
 
 if [ $CRITICAL_COUNT -gt 0 ]; then
-  echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL issues"
-  exit 1  # Block PR
+ echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL issues"
+ exit 1 # Block PR
 fi
 ```
 
@@ -264,14 +264,14 @@ When a PR is opened, all gates run in parallel:
 
 ```
 GitHub PR
-  ├─ Semgrep SAST (10 min)
-  │   └─ [BLOCK] if HIGH/CRITICAL found
-  ├─ pip-audit (5 min)
-  │   └─ [BLOCK] if CRITICAL CVE found
-  ├─ Bandit (2 min)
-  │   └─ [BLOCK] if CRITICAL issue found
-  └─ CodeQL (45 min)
-      └─ [WARN] if HIGH/MEDIUM found
+ Semgrep SAST (10 min)
+ [BLOCK] if HIGH/CRITICAL found
+ pip-audit (5 min)
+ [BLOCK] if CRITICAL CVE found
+ Bandit (2 min)
+ [BLOCK] if CRITICAL issue found
+ CodeQL (45 min)
+ [WARN] if HIGH/MEDIUM found
 
 Result: PR can merge only if all gates pass
 ```

@@ -188,7 +188,7 @@ nav:
 **Example Validation**:
 ```bash
 # Check if deployed docs match source
-Sync Status: ️ PARTIAL (2 files out of sync)
+Sync Status: PARTIAL (2 files out of sync)
 
 Files Analyzed: 127 documentation files
 In Sync: 125 files (98%)
@@ -236,7 +236,7 @@ Actions:
 ```bash
 Broken Link: [User Guide](../guides/user-guide.md)
 Issue: File not found (404)
-Fix: AUTO-FIXED → [User Guide](../guides/CODE_STYLE_GUIDE.md)
+Fix: AUTO-FIXED [User Guide](../guides/CODE_STYLE_GUIDE.md)
 Confidence: 95% (similar filename match)
 ```
 
@@ -444,11 +444,11 @@ $ mkdocs build --verbose
 ### 4. File Structure Verification
 ```bash
 site/
-├── status/
-│ └── GITHUB_PAGES_STATUS/
-│ └── index.html (478K)
-├── index.html
-└── ... (all other pages)
+ status/
+ GITHUB_PAGES_STATUS/
+ index.html (478K)
+ index.html
+ ... (all other pages)
 ```
 
 ---

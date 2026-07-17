@@ -59,100 +59,100 @@ Allowed file patterns are governed by `.codex/fast_forward_allowlist.yaml`.
 
 flowchart TD
 
-    A([Push to PR branch]) --> B[GitHub Actions triggers\nmonitored workflow]
+ A([Push to PR branch]) --> B[GitHub Actions triggers\nmonitored workflow]
 
-    B --> C{Workflow\nresult?}
+ B --> C{Workflow\nresult?}
 
-    C -->|success| Z([CI green — no rescue needed])
+ C -->|success| Z([CI green — no rescue needed])
 
-    C -->|failure| D
+ C -->|failure| D
 
-    D[Inline rescue job inside\nfailing workflow fires] --> E[POST or PATCH\nChannel A comment\ngeneric fix instructions]
+ D[Inline rescue job inside\nfailing workflow fires] --> E[POST or PATCH\nChannel A comment\ngeneric fix instructions]
 
-    D --> F[workflow_run: completed\ntriggers ci-rescue.yml]
+ D --> F[workflow_run: completed\ntriggers ci-rescue.yml]
 
-    F --> G[ci-rescue.yml\nRescue — analyse and post RCA]
+ F --> G[ci-rescue.yml\nRescue — analyse and post RCA]
 
-    G --> H[Download ci_rescue.py\nfrom PR head SHA]
+ G --> H[Download ci_rescue.py\nfrom PR head SHA]
 
-    H --> I[Fetch failed job logs\nvia GitHub API]
+ H --> I[Fetch failed job logs\nvia GitHub API]
 
-    I --> J[Match against\nci_failure_patterns.yaml]
+ I --> J[Match against\nci_failure_patterns.yaml]
 
-    J --> K{Pattern\nmatched?}
+ J --> K{Pattern\nmatched?}
 
-    K -->|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
+ K -->|known pattern| L[Build structured RCA comment\nwith fix command + log snippet]
 
-    K -->|unknown| M[Build generic escalation\nwith raw log excerpt]
+ K -->|unknown| M[Build generic escalation\nwith raw log excerpt]
 
-    L --> N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
+ L --> N[Upsert SHA-scoped comment\nChannel B RCA\nat-copilot+claude-sonnet-4.6]
 
-    M --> N
+ M --> N
 
-    D --> SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
+ D --> SH[copilot-iterative-self-healing.yml\ncancel-in-progress=false\nevery failure gets own run]
 
-    SH --> SH2{Auto-fix\npatterns\nexhausted?}
+ SH --> SH2{Auto-fix\npatterns\nexhausted?}
 
-    SH2 -->|no| SH3[Apply auto-fix pattern\npush fix commit]
+ SH2 -->|no| SH3[Apply auto-fix pattern\npush fix commit]
 
-    SH2 -->|yes| SH4[Escalation comment\nto @copilot]
+ SH2 -->|yes| SH4[Escalation comment\nto @copilot]
 
-    SCHED([⏱️ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --> PM[Poll ALL open PRs\nfor unaddressed failures]
+ SCHED([ Scheduled every 30 min\nproactive-ci-monitor.yml\nS280 NEW]) --> PM[Poll ALL open PRs\nfor unaddressed failures]
 
-    PM --> PM2{Failure found\nwith no rescue\ncomment yet?}
+ PM --> PM2{Failure found\nwith no rescue\ncomment yet?}
 
-    PM2 -->|no| PM3([Nothing to do])
+ PM2 -->|no| PM3([Nothing to do])
 
-    PM2 -->|transient infra| PM4([Skip — auto-retry])
+ PM2 -->|transient infra| PM4([Skip — auto-retry])
 
-    PM2 -->|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
+ PM2 -->|real failure| PM5[Classify with\npattern catalogue\nconfidence score]
 
-    PM5 --> PM6{confidence ≥\nthreshold?}
+ PM5 --> PM6{confidence ≥\nthreshold?}
 
-    PM6 -->|no| PM7([Below threshold\nskip])
+ PM6 -->|no| PM7([Below threshold\nskip])
 
-    PM6 -->|yes| PM8[POST @copilot rescue\ncomment to PR]
+ PM6 -->|yes| PM8[POST @copilot rescue\ncomment to PR]
 
-    N --> O{Copilot session\nstarted within\n45 min?}
+ N --> O{Copilot session\nstarted within\n45 min?}
 
-    PM8 --> O
+ PM8 --> O
 
-    SH4 --> O
+ SH4 --> O
 
-    O -->|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
+ O -->|yes| P[Copilot Coding Agent\nreads RCA and applies fix]
 
-    O -->|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
+ O -->|no / dropped| Q[copilot-agent-checkin.yml\nmissed-trigger guard fires]
 
-    Q --> T[POST retrigger comment\nsession-done-retrigger]
+ Q --> T[POST retrigger comment\nsession-done-retrigger]
 
-    T --> P
+ T --> P
 
-    P --> U[Apply fix locally\nrun ruff + pytest]
+ P --> U[Apply fix locally\nrun ruff + pytest]
 
-    U --> V[commit + report_progress\npush to branch]
+ U --> V[commit + report_progress\npush to branch]
 
-    V --> W[Reply to RCA comment:\nFixed in commit SHA]
+ V --> W[Reply to RCA comment:\nFixed in commit SHA]
 
-    W --> X[New CI run\non fixed commit]
+ W --> X[New CI run\non fixed commit]
 
-    X --> C
+ X --> C
 
-    subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
+ subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
 
-        FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --> FF2[workflow-execution-gate.yml\nparses FF section]
+ FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --> FF2[workflow-execution-gate.yml\nparses FF section]
 
-        FF2 --> FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
+ FF2 --> FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
 
-        FF3 --> FF4{Merge\nmode?}
+ FF3 --> FF4{Merge\nmode?}
 
-        FF4 -->|create-pr| FF5[Open fast-forward PR\nstaging → main]
+ FF4 -->|create-pr| FF5[Open fast-forward PR\nstaging main]
 
-        FF4 -->|direct-push| FF6[Push files directly\nto main]
+ FF4 -->|direct-push| FF6[Push files directly\nto main]
 
-        FF5 --> FF7([Files take effect on main\nimmediately])
+ FF5 --> FF7([Files take effect on main\nimmediately])
 
-        FF6 --> FF7
-    end
+ FF6 --> FF7
+ end
 ```
 
 ---
@@ -163,34 +163,34 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Flowchart showing auto-fix-pr-check.yml\nrescue-comment job, PATCH or POST\nci-rescue:NNN'}}%%
 
 graph LR
-    subgraph "Channel A — Generic Fix Notice"
+ subgraph "Channel A — Generic Fix Notice"
 
-        A1[auto-fix-pr-check.yml\nrescue-comment job] --> A2[PATCH or POST\nci-rescue:NNN]
+ A1[auto-fix-pr-check.yml\nrescue-comment job] --> A2[PATCH or POST\nci-rescue:NNN]
 
-        A3[pre-merge-validation.yml\nrescue-comment job] --> A2
-    end
+ A3[pre-merge-validation.yml\nrescue-comment job] --> A2
+ end
 
-    subgraph "Channel B — RCA Golden Path"
+ subgraph "Channel B — RCA Golden Path"
 
-        B1[ci-rescue.yml\nworkflow_run trigger] --> B2[ci_rescue.py\npattern analysis engine]
+ B1[ci-rescue.yml\nworkflow_run trigger] --> B2[ci_rescue.py\npattern analysis engine]
 
-        B2 --> B3[POST or PATCH\nci-rescue:NNN:sha12\nat-copilot+claude-sonnet-4.6]
-    end
+ B2 --> B3[POST or PATCH\nci-rescue:NNN:sha12\nat-copilot+claude-sonnet-4.6]
+ end
 
-    subgraph "Missed-Trigger Guard"
+ subgraph "Missed-Trigger Guard"
 
-        C1[copilot-agent-checkin.yml\npush trigger every commit] --> C2{Latest rescue comment\nhas at-copilot + age under 45 min?}
+ C1[copilot-agent-checkin.yml\npush trigger every commit] --> C2{Latest rescue comment\nhas at-copilot + age under 45 min?}
 
-        C2 -->|yes| C3[Skip — RCA is live]
+ C2 -->|yes| C3[Skip — RCA is live]
 
-        C2 -->|no| C4[POST retrigger\nsession-done-retrigger]
-    end
+ C2 -->|no| C4[POST retrigger\nsession-done-retrigger]
+ end
 
-    A2 -.->|both markers detected by| C1
-    B3 -.->|both markers detected by| C1
+ A2 -.->|both markers detected by| C1
+ B3 -.->|both markers detected by| C1
 
-    style B3 fill:#d4edda,stroke:#28a745
-    style C3 fill:#d4edda,stroke:#28a745
+ style B3 fill:#d4edda,stroke:#28a745
+ style C3 fill:#d4edda,stroke:#28a745
 ```
 
 **Key insight:** Channel B (SHA-scoped RCA from `ci_rescue.py`) is the **golden path** because it:
@@ -208,33 +208,33 @@ graph LR
 
 stateDiagram-v2
 
-    [*] --> NoRescue : branch has no open rescue comment
+ [*] --> NoRescue : branch has no open rescue comment
 
-    NoRescue --> ChannelA_Open : Workflow fails\ninline rescue job posts Channel A
+ NoRescue --> ChannelA_Open : Workflow fails\ninline rescue job posts Channel A
 
-    NoRescue --> ChannelB_Open : Workflow fails\nci-rescue.yml fires\nci_rescue.py posts Channel B
+ NoRescue --> ChannelB_Open : Workflow fails\nci-rescue.yml fires\nci_rescue.py posts Channel B
 
-    ChannelA_Open --> ChannelA_Appended : Same PR fails again\nPATCH to existing comment
+ ChannelA_Open --> ChannelA_Appended : Same PR fails again\nPATCH to existing comment
 
-    ChannelB_Open --> ChannelB_Appended : Same SHA fails again\ndifferent workflow\nPATCH to existing RCA
+ ChannelB_Open --> ChannelB_Appended : Same SHA fails again\ndifferent workflow\nPATCH to existing RCA
 
-    ChannelB_Open --> SessionActive : at-copilot mention\nstarts Copilot session
+ ChannelB_Open --> SessionActive : at-copilot mention\nstarts Copilot session
 
-    ChannelB_Appended --> SessionActive : at-copilot mention\nstarts Copilot session
+ ChannelB_Appended --> SessionActive : at-copilot mention\nstarts Copilot session
 
-    ChannelA_Open --> Retriggered : over 45 min, no Copilot reply\nmissed-trigger guard fires
+ ChannelA_Open --> Retriggered : over 45 min, no Copilot reply\nmissed-trigger guard fires
 
-    ChannelB_Open --> GracePeriod : Copilot not seen yet\nbut RCA under 45 min old\nmissed-trigger guard skips
+ ChannelB_Open --> GracePeriod : Copilot not seen yet\nbut RCA under 45 min old\nmissed-trigger guard skips
 
-    GracePeriod --> SessionActive : Copilot session starts\nwithin grace period
+ GracePeriod --> SessionActive : Copilot session starts\nwithin grace period
 
-    GracePeriod --> Retriggered : over 45 min elapsed\nno Copilot action
+ GracePeriod --> Retriggered : over 45 min elapsed\nno Copilot action
 
-    Retriggered --> SessionActive : Retrigger at-copilot\nstarts session
+ Retriggered --> SessionActive : Retrigger at-copilot\nstarts session
 
-    SessionActive --> Resolved : Copilot replies\nFixed in SHA
+ SessionActive --> Resolved : Copilot replies\nFixed in SHA
 
-    Resolved --> [*] : CI green on new commit
+ Resolved --> [*] : CI green on new commit
 ```
 
 ---
@@ -247,62 +247,62 @@ This documents the **exact sequence** that produced the ideal rescue scenario �
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing skip ci, skip ci'}}%%
 
 sequenceDiagram
-    autonumber
-    actor Dev as Copilot Agent S243
-    participant GH as GitHub Actions
-    participant AutoFix as auto-fix-pr-check.yml
-    participant Rescue as ci-rescue.yml
-    participant Engine as ci_rescue.py
-    participant PR as PR 3818 Comments
-    participant Guard as copilot-agent-checkin.yml
-    participant Agent as Copilot Coding Agent S244
+ autonumber
+ actor Dev as Copilot Agent S243
+ participant GH as GitHub Actions
+ participant AutoFix as auto-fix-pr-check.yml
+ participant Rescue as ci-rescue.yml
+ participant Engine as ci_rescue.py
+ participant PR as PR 3818 Comments
+ participant Guard as copilot-agent-checkin.yml
+ participant Agent as Copilot Coding Agent S244
 
-    Dev->>GH: push f8718be9 S243 fixes P2A/P2B/P2C
-    Note over GH: CI bot auto-commits follow:<br/>chore(auth) [skip ci]<br/>chore(d00) [skip ci]<br/>1a9fcaab (non-skip-ci fix)
+ Dev->>GH: push f8718be9 S243 fixes P2A/P2B/P2C
+ Note over GH: CI bot auto-commits follow:<br/>chore(auth) [skip ci]<br/>chore(d00) [skip ci]<br/>1a9fcaab (non-skip-ci fix)
 
-    GH->>AutoFix: push 1a9fcaab triggers PR Auto-Fix Check run 23772216208
+ GH->>AutoFix: push 1a9fcaab triggers PR Auto-Fix Check run 23772216208
 
-    AutoFix->>AutoFix: auto_fix_common_issues.py --check-only<br/>Pattern 22 detected<br/>CODEX_MANIFEST stale after bot commits
+ AutoFix->>AutoFix: auto_fix_common_issues.py --check-only<br/>Pattern 22 detected<br/>CODEX_MANIFEST stale after bot commits
 
-    AutoFix->>PR: PATCH Channel A comment<br/>ci-rescue:3818<br/>Append Failure Update
+ AutoFix->>PR: PATCH Channel A comment<br/>ci-rescue:3818<br/>Append Failure Update
 
-    AutoFix-->>AutoFix: exit 1 auto_fixable over 0
+ AutoFix-->>AutoFix: exit 1 auto_fixable over 0
 
-    GH->>Rescue: workflow_run completed failure<br/>PR Auto-Fix Check
+ GH->>Rescue: workflow_run completed failure<br/>PR Auto-Fix Check
 
-    Rescue->>Rescue: Download ci_rescue.py from branch head SHA
+ Rescue->>Rescue: Download ci_rescue.py from branch head SHA
 
-    Rescue->>Engine: python3 ci_rescue.py --run-id 23772216208
+ Rescue->>Engine: python3 ci_rescue.py --run-id 23772216208
 
-    Engine->>GH: GET actions/runs/23772216208/jobs
+ Engine->>GH: GET actions/runs/23772216208/jobs
 
-    GH-->>Engine: Job logs failed job
+ GH-->>Engine: Job logs failed job
 
-    Engine->>Engine: Match logs against ci_failure_patterns.yaml<br/>RP-004 Pattern 22 matched<br/>CODEX_MANIFEST drift
+ Engine->>Engine: Match logs against ci_failure_patterns.yaml<br/>RP-004 Pattern 22 matched<br/>CODEX_MANIFEST drift
 
-    Engine->>PR: POST Channel B RCA comment 4158728043<br/>ci-rescue:3818:1a9fcaab5380<br/>at-copilot+claude-sonnet-4.6 please investigate
+ Engine->>PR: POST Channel B RCA comment 4158728043<br/>ci-rescue:3818:1a9fcaab5380<br/>at-copilot+claude-sonnet-4.6 please investigate
 
-    Note over PR: Comment 4158728043 created<br/>THE GOLDEN PATH COMMENT
+ Note over PR: Comment 4158728043 created<br/>THE GOLDEN PATH COMMENT
 
-    PR->>Agent: at-copilot+claude-sonnet-4.6 mention<br/>triggers Copilot Coding Agent session
+ PR->>Agent: at-copilot+claude-sonnet-4.6 mention<br/>triggers Copilot Coding Agent session
 
-    Agent->>Agent: Load CODEBASE_AGENCY_POLICY.md<br/>Run sync_tracked_files.py --check
+ Agent->>Agent: Load CODEBASE_AGENCY_POLICY.md<br/>Run sync_tracked_files.py --check
 
-    Agent->>Agent: Fix RP-004 loop root cause<br/>Pattern 22 to soft_warning_patterns<br/>no longer blocks CI exit code
+ Agent->>Agent: Fix RP-004 loop root cause<br/>Pattern 22 to soft_warning_patterns<br/>no longer blocks CI exit code
 
-    Agent->>Agent: Harden missed-trigger guard<br/>rescueMarkerRe matches both channels<br/>45-min grace period for at-copilot RCA
+ Agent->>Agent: Harden missed-trigger guard<br/>rescueMarkerRe matches both channels<br/>45-min grace period for at-copilot RCA
 
-    Agent->>Agent: Create docs/ci/CI_RESCUE_PIPELINE.md<br/>Create tests/ci/test_generate_coverage_map.py
+ Agent->>Agent: Create docs/ci/CI_RESCUE_PIPELINE.md<br/>Create tests/ci/test_generate_coverage_map.py
 
-    Agent->>Agent: sync_tracked_files.py --fix<br/>all 5 checks pass
+ Agent->>Agent: sync_tracked_files.py --fix<br/>all 5 checks pass
 
-    Agent->>GH: report_progress push S244 commit
+ Agent->>GH: report_progress push S244 commit
 
-    Agent->>PR: Reply to comment 4158728043<br/>Fixed in commit SHA
+ Agent->>PR: Reply to comment 4158728043<br/>Fixed in commit SHA
 
-    GH->>AutoFix: New CI run on S244 commit<br/>Pattern 22 is warning only no exit 1
+ GH->>AutoFix: New CI run on S244 commit<br/>Pattern 22 is warning only no exit 1
 
-    Note over AutoFix: CI green no rescue needed
+ Note over AutoFix: CI green no rescue needed
 ```
 
 ---
@@ -313,30 +313,30 @@ sequenceDiagram
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
 
 timeline
-    title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
+ title Single PR Rescue Comment Timeline PR 3818 commit 1a9fcaab
 
-    section Before Rescue
-        2026-03-30T22-52Z : S243 Copilot push f8718be9
-                          : CI bot auto-commits skip ci
-                          : 1a9fcaab pushed non-skip-ci
+ section Before Rescue
+ 2026-03-30T22-52Z : S243 Copilot push f8718be9
+ : CI bot auto-commits skip ci
+ : 1a9fcaab pushed non-skip-ci
 
-    section Auto-Fix Check Run 23772216208
-        2026-03-30T23-11Z : auto-fix-pr-check.yml starts
-        2026-03-30T23-14Z : Pattern 22 detected exit 1
-                          : Channel A comment appended
+ section Auto-Fix Check Run 23772216208
+ 2026-03-30T23-11Z : auto-fix-pr-check.yml starts
+ 2026-03-30T23-14Z : Pattern 22 detected exit 1
+ : Channel A comment appended
 
-    section CI Rescue
-        2026-03-30T23-14Z : ci-rescue.yml triggered
-        2026-03-30T23-15Z : ci_rescue.py RP-004 matched
-                          : Channel B RCA posted comment 4158728043
-                          : at-copilot+claude-sonnet-4.6 invoked
+ section CI Rescue
+ 2026-03-30T23-14Z : ci-rescue.yml triggered
+ 2026-03-30T23-15Z : ci_rescue.py RP-004 matched
+ : Channel B RCA posted comment 4158728043
+ : at-copilot+claude-sonnet-4.6 invoked
 
-    section Copilot Session S244
-        2026-03-30T23-22Z : S244 session starts
-                          : RP-004 loop-break implemented
-                          : Missed-trigger guard hardened
-                          : Docs and tests created
-                          : Fix pushed
+ section Copilot Session S244
+ 2026-03-30T23-22Z : S244 session starts
+ : RP-004 loop-break implemented
+ : Missed-trigger guard hardened
+ : Docs and tests created
+ : Fix pushed
 ```
 
 ---
@@ -347,55 +347,55 @@ timeline
 %%{init: {'accessibility': {'title': 'Flowchart showing PR Auto-Fix Check, Pre-Merge Validation'}}%%
 
 graph TD
-    subgraph "Monitored Workflows — trigger ci-rescue.yml"
-        W1[PR Auto-Fix Check]
-        W2[Pre-Merge Validation]
-        W3[Validation Pipeline]
-        W4[mypy Baseline]
-        W5[Workflow Compliance Audit]
-        W6[Iterative Self-Healing CI]
-        W7[Test RAG Pipeline]
-        W8[Resilient Validation Suite]
-        W9[Security Scan]
-        W10[Auto-Fix Common CI Issues]
-    end
+ subgraph "Monitored Workflows — trigger ci-rescue.yml"
+ W1[PR Auto-Fix Check]
+ W2[Pre-Merge Validation]
+ W3[Validation Pipeline]
+ W4[mypy Baseline]
+ W5[Workflow Compliance Audit]
+ W6[Iterative Self-Healing CI]
+ W7[Test RAG Pipeline]
+ W8[Resilient Validation Suite]
+ W9[Security Scan]
+ W10[Auto-Fix Common CI Issues]
+ end
 
-    subgraph "Rescue Infrastructure"
-        R1[ci-rescue.yml\nworkflow_run trigger]
-        R2[ci_rescue.py\npattern analysis engine]
-        R3[ci_failure_patterns.yaml\npattern library]
-    end
+ subgraph "Rescue Infrastructure"
+ R1[ci-rescue.yml\nworkflow_run trigger]
+ R2[ci_rescue.py\npattern analysis engine]
+ R3[ci_failure_patterns.yaml\npattern library]
+ end
 
-    subgraph "Comment System"
-        C1[Channel A\nci-rescue:NNN\ngeneric fix notice]
-        C2[Channel B RCA\nci-rescue:NNN:sha\nat-copilot mention GOLDEN PATH]
-    end
+ subgraph "Comment System"
+ C1[Channel A\nci-rescue:NNN\ngeneric fix notice]
+ C2[Channel B RCA\nci-rescue:NNN:sha\nat-copilot mention GOLDEN PATH]
+ end
 
-    subgraph "Session Management"
-        S1[copilot-agent-checkin.yml\nmissed-trigger guard]
-        S2[Copilot Coding Agent\nsession]
-    end
+ subgraph "Session Management"
+ S1[copilot-agent-checkin.yml\nmissed-trigger guard]
+ S2[Copilot Coding Agent\nsession]
+ end
 
-    W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & W10 -->|failure| R1
+ W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & W10 -->|failure| R1
 
-    W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 -->|inline rescue job| C1
+ W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 -->|inline rescue job| C1
 
-    R1 --> R2
+ R1 --> R2
 
-    R2 --> R3
+ R2 --> R3
 
-    R2 --> C2
-    C1 -.->|detected by| S1
-    C2 -.->|detected by| S1
+ R2 --> C2
+ C1 -.->|detected by| S1
+ C2 -.->|detected by| S1
 
-    C2 -->|at-copilot mention| S2
+ C2 -->|at-copilot mention| S2
 
-    S1 -->|retrigger if dropped| S2
+ S1 -->|retrigger if dropped| S2
 
-    S2 -->|push fix| W1
+ S2 -->|push fix| W1
 
-    style C2 fill:#d4edda,stroke:#28a745
-    style S2 fill:#cce5ff,stroke:#004085
+ style C2 fill:#d4edda,stroke:#28a745
+ style S2 fill:#cce5ff,stroke:#004085
 ```
 
 ---
@@ -408,40 +408,40 @@ graph TD
 %%{init: {'accessibility': {'title': 'Flowchart showing Bot auto-commit\nchore auth / chore d00, CODEX_MANIFEST\nhash drifts'}}%%
 
 graph LR
-    subgraph "BEFORE fix — infinite loop"
+ subgraph "BEFORE fix — infinite loop"
 
-        AP1[Bot auto-commit\nchore auth / chore d00] --> AP2[CODEX_MANIFEST\nhash drifts]
+ AP1[Bot auto-commit\nchore auth / chore d00] --> AP2[CODEX_MANIFEST\nhash drifts]
 
-        AP2 --> AP3[Pattern 22 = hard ERROR\nin auto_fixable_patterns]
+ AP2 --> AP3[Pattern 22 = hard ERROR\nin auto_fixable_patterns]
 
-        AP3 --> AP4[CI fails exit 1]
+ AP3 --> AP4[CI fails exit 1]
 
-        AP4 --> AP5[ci-rescue.yml fires\nRCA posted]
+ AP4 --> AP5[ci-rescue.yml fires\nRCA posted]
 
-        AP5 --> AP6[Copilot session\nruns sync --fix]
+ AP5 --> AP6[Copilot session\nruns sync --fix]
 
-        AP6 --> AP7[Fix commit pushed]
+ AP6 --> AP7[Fix commit pushed]
 
-        AP7 --> AP1
-    end
+ AP7 --> AP1
+ end
 
-    subgraph "AFTER fix — loop broken"
+ subgraph "AFTER fix — loop broken"
 
-        FX1[Bot auto-commit] --> FX2[CODEX_MANIFEST drifts]
+ FX1[Bot auto-commit] --> FX2[CODEX_MANIFEST drifts]
 
-        FX2 --> FX3[Pattern 22 = soft WARNING\nin soft_warning_patterns]
+ FX2 --> FX3[Pattern 22 = soft WARNING\nin soft_warning_patterns]
 
-        FX3 --> FX4[CI reports warning\nno exit 1]
+ FX3 --> FX4[CI reports warning\nno exit 1]
 
-        FX4 --> FX5[No rescue comment\nno loop]
-    end
+ FX4 --> FX5[No rescue comment\nno loop]
+ end
 
-    style AP1 fill:#ffcccc,stroke:#cc0000
-    style AP4 fill:#ffcccc,stroke:#cc0000
-    style AP5 fill:#ffcccc,stroke:#cc0000
-    style AP7 fill:#ffcccc,stroke:#cc0000
-    style FX4 fill:#d4edda,stroke:#28a745
-    style FX5 fill:#d4edda,stroke:#28a745
+ style AP1 fill:#ffcccc,stroke:#cc0000
+ style AP4 fill:#ffcccc,stroke:#cc0000
+ style AP5 fill:#ffcccc,stroke:#cc0000
+ style AP7 fill:#ffcccc,stroke:#cc0000
+ style FX4 fill:#d4edda,stroke:#28a745
+ style FX5 fill:#d4edda,stroke:#28a745
 ```
 
 ### Anti-Pattern 2: Duplicate Retriggers (Fixed in S244)
@@ -450,26 +450,26 @@ graph LR
 %%{init: {'accessibility': {'title': 'Flowchart showing RCA Channel B posted\nat-copilot+claude-sonnet, Bot commit pushes\ntriggers checkin.yml'}}%%
 
 graph LR
-    subgraph "BEFORE fix — competing sessions"
+ subgraph "BEFORE fix — competing sessions"
 
-        D1[RCA Channel B posted\nat-copilot+claude-sonnet] --> D2[Bot commit pushes\ntriggers checkin.yml]
+ D1[RCA Channel B posted\nat-copilot+claude-sonnet] --> D2[Bot commit pushes\ntriggers checkin.yml]
 
-        D2 --> D3[Guard sees open\nChannel A rescue\nno at-copilot check]
+ D2 --> D3[Guard sees open\nChannel A rescue\nno at-copilot check]
 
-        D3 --> D4[Guard posts retrigger\nduplicate at-copilot\ncompeting sessions]
-    end
+ D3 --> D4[Guard posts retrigger\nduplicate at-copilot\ncompeting sessions]
+ end
 
-    subgraph "AFTER fix — 45-min grace"
+ subgraph "AFTER fix — 45-min grace"
 
-        G1[RCA Channel B posted\nat-copilot+claude-sonnet] --> G2[Bot commit pushes\ntriggers checkin.yml]
+ G1[RCA Channel B posted\nat-copilot+claude-sonnet] --> G2[Bot commit pushes\ntriggers checkin.yml]
 
-        G2 --> G3[Guard detects\nrcaHasCopilotCall\nage under 45 min]
+ G2 --> G3[Guard detects\nrcaHasCopilotCall\nage under 45 min]
 
-        G3 --> G4[Guard skips\nRCA is still live\nno duplicate]
-    end
+ G3 --> G4[Guard skips\nRCA is still live\nno duplicate]
+ end
 
-    style D4 fill:#ffcccc,stroke:#cc0000
-    style G4 fill:#d4edda,stroke:#28a745
+ style D4 fill:#ffcccc,stroke:#cc0000
+ style G4 fill:#d4edda,stroke:#28a745
 ```
 
 ---
@@ -503,23 +503,23 @@ graph LR
 
 flowchart LR
 
-    A([New rescue channel needed]) --> B{Can ci_rescue.py\nhandle this pattern?}
+ A([New rescue channel needed]) --> B{Can ci_rescue.py\nhandle this pattern?}
 
-    B -->|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]
+ B -->|yes| C[Add pattern to\nci_failure_patterns.yaml\nfix_command + log_regexes]
 
-    B -->|no| D[Create inline rescue job\nin the failing workflow]
+ B -->|no| D[Create inline rescue job\nin the failing workflow]
 
-    C --> E[ci-rescue.yml picks it up\nautomatically]
+ C --> E[ci-rescue.yml picks it up\nautomatically]
 
-    D --> F[Use PR-scoped marker or\nSHA-scoped if per-commit context needed]
+ D --> F[Use PR-scoped marker or\nSHA-scoped if per-commit context needed]
 
-    E --> G[Update SKIP_BODY_MARKERS\nin check_pr_comments.py]
+ E --> G[Update SKIP_BODY_MARKERS\nin check_pr_comments.py]
 
-    F --> G
+ F --> G
 
-    G --> H[Add to monitoring list\nin ci-rescue.yml workflows:]
+ G --> H[Add to monitoring list\nin ci-rescue.yml workflows:]
 
-    H --> I([Done])
+ H --> I([Done])
 ```
 
 **Mandatory checklist for new rescue channels:**

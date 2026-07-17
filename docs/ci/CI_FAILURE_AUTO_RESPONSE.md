@@ -28,55 +28,55 @@ automatically:
 ## 1. End-to-End Process Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing  CI Workflow completes on main, Job: close-on-fix'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing CI Workflow completes on main, Job: close-on-fix'}}%%
 
 flowchart TD
 
-    A([ CI Workflow completes on main]) --> B{conclusion?}
+ A([ CI Workflow completes on main]) --> B{conclusion?}
 
-    B -- success --> Z1[Job: close-on-fix]
+ B -- success --> Z1[Job: close-on-fix]
 
-    Z1 --> Z2{Open ci-failure\nissue for this workflow?}
+ Z1 --> Z2{Open ci-failure\nissue for this workflow?}
 
-    Z2 -- Yes --> Z3[ Auto-close issue\n+ post comment]
+ Z2 -- Yes --> Z3[ Auto-close issue\n+ post comment]
 
-    Z2 -- No  --> Z4([End — nothing to close])
+ Z2 -- No --> Z4([End — nothing to close])
 
-    B -- failure --> C
+ B -- failure --> C
 
-    subgraph LOCK [" Global Serialisation Lock (one instance at a time)"]
-        C[Job: triage\nClassify + Deduplicate]
+ subgraph LOCK [" Global Serialisation Lock (one instance at a time)"]
+ C[Job: triage\nClassify + Deduplicate]
 
-        C --> D{L1: open ci-failure\nissue already exists?}
+ C --> D{L1: open ci-failure\nissue already exists?}
 
-        D -- Yes --> E1[action = skip]
+ D -- Yes --> E1[action = skip]
 
-        D -- No --> F{L2: any fix/ci-*\nbranch active?}
+ D -- No --> F{L2: any fix/ci-*\nbranch active?}
 
-        F -- Yes --> E2[action = queue\nSingle-branch rule active]
+ F -- Yes --> E2[action = queue\nSingle-branch rule active]
 
-        F -- No  --> E3[action = new_issue]
-    end
+ F -- No --> E3[action = new_issue]
+ end
 
-    E1 --> DASH
+ E1 --> DASH
 
-    E2 --> ISS
+ E2 --> ISS
 
-    E3 --> ISS
+ E3 --> ISS
 
-    ISS[Job: create-issue\nOpen labelled GitHub Issue]
+ ISS[Job: create-issue\nOpen labelled GitHub Issue]
 
-    ISS --> SEV{severity?}
+ ISS --> SEV{severity?}
 
-    SEV -- normal   --> DASH
+ SEV -- normal --> DASH
 
-    SEV -- critical --> FPR[Job: create-fix-pr\nCreate fix/ci-* branch\nOpen PR + @copilot command]
+ SEV -- critical --> FPR[Job: create-fix-pr\nCreate fix/ci-* branch\nOpen PR + @copilot command]
 
-    FPR --> DASH
+ FPR --> DASH
 
-    DASH[Job: post-dashboard\nUpdate PR Status Dashboard\nvia pr_comment_consolidator.py]
+ DASH[Job: post-dashboard\nUpdate PR Status Dashboard\nvia pr_comment_consolidator.py]
 
-    DASH --> END([End])
+ DASH --> END([End])
 ```
 
 ---
@@ -90,47 +90,47 @@ Subsequent failures are queued until the active branch merges.
 %%{init: {'accessibility': {'title': 'State Diagram showing *'}}%%
 
 stateDiagram-v2
-    direction LR
+ direction LR
 
-    [*]          --> Idle          : system start
+ [*] --> Idle : system start
 
-    Idle         --> Triaging      : workflow_run.failure on main
+ Idle --> Triaging : workflow_run.failure on main
 
-    Triaging     --> Skipped       : existing issue found (L1)
+ Triaging --> Skipped : existing issue found (L1)
 
-    Triaging     --> Queued        : fix branch active (L2 — single-branch rule)
+ Triaging --> Queued : fix branch active (L2 — single-branch rule)
 
-    Triaging     --> IssueOpened   : no existing tracker
+ Triaging --> IssueOpened : no existing tracker
 
-    IssueOpened  --> FixPROpen     : severity == critical
+ IssueOpened --> FixPROpen : severity == critical
 
-    IssueOpened  --> AwaitingFix   : severity == normal
+ IssueOpened --> AwaitingFix : severity == normal
 
-    FixPROpen    --> CopilotActive : @copilot assigned
+ FixPROpen --> CopilotActive : @copilot assigned
 
-    CopilotActive --> FixMerged   : PR approved + merged to main
+ CopilotActive --> FixMerged : PR approved + merged to main
 
-    AwaitingFix  --> FixMerged    : developer merges fix
+ AwaitingFix --> FixMerged : developer merges fix
 
-    FixMerged    --> IssueClosed  : workflow_run.success on main
+ FixMerged --> IssueClosed : workflow_run.success on main
 
-    Queued       --> Triaging     : active fix branch merges (re-triggered)
+ Queued --> Triaging : active fix branch merges (re-triggered)
 
-    IssueClosed  --> Idle
+ IssueClosed --> Idle
 
-    Skipped      --> Idle
+ Skipped --> Idle
 
-    note right of Queued
-      Dashboard shows queue state.
-      Issue opened with "QUEUED" label.
-      No second branch created.
-    end note
+ note right of Queued
+ Dashboard shows queue state.
+ Issue opened with "QUEUED" label.
+ No second branch created.
+ end note
 
-    note right of FixPROpen
-      Branch: fix/ci-<slug>-<ts>
-      PR body: @copilot instructions
-      Issue cross-linked to PR
-    end note
+ note right of FixPROpen
+ Branch: fix/ci-<slug>-<ts>
+ PR body: @copilot instructions
+ Issue cross-linked to PR
+ end note
 ```
 
 ---
@@ -138,23 +138,23 @@ stateDiagram-v2
 ## 3. Severity Classification
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name,  Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name, Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
 
 flowchart LR
 
-    WF([Workflow Name]) --> SC{Pattern match}
+ WF([Workflow Name]) --> SC{Pattern match}
 
-    SC -->|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
+ SC -->|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
 
-    SC -->|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
+ SC -->|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
 
-    SC -->|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
+ SC -->|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
 
-    SC -->|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
+ SC -->|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
 
-    S1 & S2 & S3 --> FPR[ Fix PR\n+ @copilot]
+ S1 & S2 & S3 --> FPR[ Fix PR\n+ @copilot]
 
-    S4 --> ISO[ Issue only\nManual fix]
+ S4 --> ISO[ Issue only\nManual fix]
 ```
 
 ---
@@ -165,47 +165,47 @@ flowchart LR
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >> DEV : issue opened, manual '}}%%
 
 sequenceDiagram
-    actor CI   as CI Workflow (main)
-    participant WR as workflow_run trigger
-    participant T  as triage job ( locked)
-    participant GH as GitHub API
-    participant DB as PR Status Dashboard
-    participant CP as @copilot Agent
-    actor DEV  as Developer
+ actor CI as CI Workflow (main)
+ participant WR as workflow_run trigger
+ participant T as triage job ( locked)
+ participant GH as GitHub API
+ participant DB as PR Status Dashboard
+ participant CP as @copilot Agent
+ actor DEV as Developer
 
-    CI  ->> WR : concludes: failure
-    WR  ->> T  : acquire global lock → start
+ CI ->> WR : concludes: failure
+ WR ->> T : acquire global lock start
 
-    T   ->> GH : list open ci-failure issues (L1)
-    T   ->> GH : list all branches — find fix/ci-* (L2)
+ T ->> GH : list open ci-failure issues (L1)
+ T ->> GH : list all branches — find fix/ci-* (L2)
 
-    alt No existing issue AND no fix branch
-        T  ->> GH : create GitHub Issue
-        alt severity == critical
-            T  ->> GH : create fix/ci-<slug> branch
-            T  ->> GH : open PR (head=fix/ci-*, base=main)
-            T  ->> CP : @copilot diagnose and fix
-            CP ->> GH : push commits to fix branch
-            DEV ->> GH : review + approve PR
-            GH ->> CI : merge fix/ci-* → main
-        else severity == normal
+ alt No existing issue AND no fix branch
+ T ->> GH : create GitHub Issue
+ alt severity == critical
+ T ->> GH : create fix/ci-<slug> branch
+ T ->> GH : open PR (head=fix/ci-*, base=main)
+ T ->> CP : @copilot diagnose and fix
+ CP ->> GH : push commits to fix branch
+ DEV ->> GH : review + approve PR
+ GH ->> CI : merge fix/ci-* main
+ else severity == normal
 
-            T  -->> DEV : issue opened, manual fix required
-        end
-    else Fix branch already active  (single-branch rule)
-        T  ->> GH : create GitHub Issue (queued state)
-        Note over T,GH : No new branch. Queue shown on dashboard.
-    else Existing issue already open
-        Note over T : Skip — no duplicate issue or branch
-    end
+ T -->> DEV : issue opened, manual fix required
+ end
+ else Fix branch already active (single-branch rule)
+ T ->> GH : create GitHub Issue (queued state)
+ Note over T,GH : No new branch. Queue shown on dashboard.
+ else Existing issue already open
+ Note over T : Skip — no duplicate issue or branch
+ end
 
-    T   ->> DB : update PR Status Dashboard section
+ T ->> DB : update PR Status Dashboard section
 
-    WR  -->> T : release global lock
+ WR -->> T : release global lock
 
-    CI  ->> WR : concludes: success (after fix)
-    WR  ->> GH : auto-close matching ci-failure issues
-    GH  ->> DB : post  resolved section to dashboard
+ CI ->> WR : concludes: success (after fix)
+ WR ->> GH : auto-close matching ci-failure issues
+ GH ->> DB : post resolved section to dashboard
 ```
 
 ---
@@ -231,20 +231,20 @@ active PR. No additional standalone comments are posted.
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
 
 gantt
-    title  Single-Branch Rule — Failure Queue Timeline
-    dateFormat HH:mm
-    axisFormat %H:%M
+ title Single-Branch Rule — Failure Queue Timeline
+ dateFormat HH:mm
+ axisFormat %H:%M
 
-    section Active Fix
-    fix/ci-auth-tests (PR #N)   : active, a1, 09:00, 60m
+ section Active Fix
+ fix/ci-auth-tests (PR #N) : active, a1, 09:00, 60m
 
-    section Queued Failures
-    CodeQL fails → Issue #M     : crit, q1, 09:05, 55m
-    Docker Build fails → Issue #P : crit, q2, 09:20, 40m
+ section Queued Failures
+ CodeQL fails Issue #M : crit, q1, 09:05, 55m
+ Docker Build fails Issue #P : crit, q2, 09:20, 40m
 
-    section Resolution
-    fix/ci-auth-tests merged    : milestone, m1, 10:00, 0m
-    Queue processed (next triage) : q3, 10:00, 5m
+ section Resolution
+ fix/ci-auth-tests merged : milestone, m1, 10:00, 0m
+ Queue processed (next triage) : q3, 10:00, 5m
 ```
 
 > **Queue rule:** Issues `#M` and `#P` are opened immediately with a "QUEUED" note
@@ -259,19 +259,19 @@ gantt
 %%{init: {'accessibility': {'title': 'Flowchart showing triage\n holds global lock, create-issue\nall non-skip failures'}}%%
 
 graph LR
-    T[triage\n holds global lock]
+ T[triage\n holds global lock]
 
-    T --> CI[create-issue\nall non-skip failures]
+ T --> CI[create-issue\nall non-skip failures]
 
-    T --> CF[close-on-fix\nsuccess path only]
+ T --> CF[close-on-fix\nsuccess path only]
 
-    CI --> FP[create-fix-pr\ncritical + new_issue only]
+ CI --> FP[create-fix-pr\ncritical + new_issue only]
 
-    CI  --> PD[post-dashboard]
+ CI --> PD[post-dashboard]
 
-    FP  --> PD
+ FP --> PD
 
-    T   --> PD
+ T --> PD
 ```
 
 ---
@@ -297,11 +297,11 @@ To monitor an additional workflow, add its **exact `name:` field value** to the
 
 ```yaml
 on:
-  workflow_run:
-    workflows:
-      - "My New Workflow"   # ← add here
-    types: [completed]
-    branches: [main]
+ workflow_run:
+ workflows:
+ - "My New Workflow" # add here
+ types: [completed]
+ branches: [main]
 ```
 
 ---

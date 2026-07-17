@@ -50,49 +50,49 @@
 
 stateDiagram-v2
 
-    [*] --> ModelE : initial state
+ [*] --> ModelE : initial state
 
-    ModelE --> ModelD_READY : All 5 conditions met\n(C1 ∧ C2 ∧ C3 ∧ C4 ∧ C5)
+ ModelE --> ModelD_READY : All 5 conditions met\n(C1 ∧ C2 ∧ C3 ∧ C4 ∧ C5)
 
-    ModelD_READY --> ModelE : Any condition fails
+ ModelD_READY --> ModelE : Any condition fails
 
-    ModelD_READY --> ModelD : CODEX_AGENT_AUTONOMY_LEVEL\n= D_CAPABLE (repo var set)
+ ModelD_READY --> ModelD : CODEX_AGENT_AUTONOMY_LEVEL\n= D_CAPABLE (repo var set)
 
-    ModelD --> D_SUSPENDED : violation_count > threshold\nOR condition regression
+ ModelD --> D_SUSPENDED : violation_count > threshold\nOR condition regression
 
-    D_SUSPENDED --> ModelE : Auto-revert on\nemergency lockdown
+ D_SUSPENDED --> ModelE : Auto-revert on\nemergency lockdown
 ```
 
 ### ASCII Representation
 
 ```
-          ┌─────────────────────────────────────────┐
-          │         OPERATING MODEL FSM              │
-          │                                          │
-    ┌─────▼──────┐   All 5 conditions met   ┌───────▼──────┐
-    │            │ ──────────────────────► │              │
-    │  Model E   │                         │ Model D_READY │
-    │ (current)  │ ◄────────────────────── │  (validated) │
-    │            │   Any condition fails    │              │
-    └────────────┘                         └──────┬───────┘
-                                                  │
-                                    CODEX_AGENT_AUTONOMY_LEVEL
-                                    = D_CAPABLE (repo variable)
-                                                  │
-                                           ┌──────▼───────┐
-                                           │   Model D    │
-                                           │ (Orchestrator│
-                                           │  Active)     │
-                                           └──────┬───────┘
-                                                  │
-                                    violation_count > threshold
-                                    OR condition regression
-                                                  │
-                                           ┌──────▼───────┐
-                                           │  D_SUSPENDED │
-                                           │ (auto-reverts│
-                                           │    to E)     │
-                                           └──────────────┘
+ 
+ OPERATING MODEL FSM 
+ 
+ All 5 conditions met 
+ 
+ Model E Model D_READY 
+ (current) (validated) 
+ Any condition fails 
+ 
+ 
+ CODEX_AGENT_AUTONOMY_LEVEL
+ = D_CAPABLE (repo variable)
+ 
+ 
+ Model D 
+ (Orchestrator
+ Active) 
+ 
+ 
+ violation_count > threshold
+ OR condition regression
+ 
+ 
+ D_SUSPENDED 
+ (auto-reverts
+ to E) 
+ 
 ```
 
 ---
@@ -117,15 +117,15 @@ the 5-condition check as a GitHub Actions job:
 ```yaml
 # .github/workflows/e-to-d-transition-gate.yml (Phase 4)
 # Checks C1–C5; posts readiness score as job summary
-# Canary: Tier-2 (warn) for 2 sprints → Tier-1 (exit 1) after observation
+# Canary: Tier-2 (warn) for 2 sprints Tier-1 (exit 1) after observation
 on:
-  pull_request:
-  workflow_dispatch:
+ pull_request:
+ workflow_dispatch:
 jobs:
-  transition-readiness:
-    name: " E→D Transition Readiness Check"
-    timeout-minutes: 10
-    # ... 5-condition JavaScript check via actions/github-script
+ transition-readiness:
+ name: " ED Transition Readiness Check"
+ timeout-minutes: 10
+ # ... 5-condition JavaScript check via actions/github-script
 ```
 
 ---

@@ -118,11 +118,11 @@ Gate 3 — CI RUNS IT: a workflow step exercises it on every PR push
 ## §4 — Honest Composite Score
 
 ```
-ACE 6-Layer  × 40% = 75.1 × 0.40 = 30.04
-MSV          × 30% = 70.0 × 0.30 = 21.00
-Agentic      × 30% = 70.2 × 0.30 = 21.06
-─────────────────────────────────────────
-HONEST COMPOSITE              = 72.10 / 100
+ACE 6-Layer × 40% = 75.1 × 0.40 = 30.04
+MSV × 30% = 70.0 × 0.30 = 21.00
+Agentic × 30% = 70.2 × 0.30 = 21.06
+
+HONEST COMPOSITE = 72.10 / 100
 ```
 
 > Rounded to **74/100** accounting for three unscored strengths not captured in the V3 matrix:
@@ -137,13 +137,13 @@ HONEST COMPOSITE              = 72.10 / 100
 ## §5 — Honest Score Trajectory
 
 ```
-V1.0 (87.3) — S1-S10:  ████████░░░░░░░░░░░░  Initial build
-V2.0 (91.8) — S20-S30:  █████████░░░░░░░░░░░  Auth + RAG
-V3.2 (95.3) — S83:      ██████████░░░░░░░░░░  Agents + patterns
-V3.4 (97.0) — S83:      ███████████░░░░░░░░░  CI auto-fix
-V4.0 (98.5) — S41:      ████████████░░░░░░░░  Memory + xterm (claimed)
-─────────────────────────────────────────────────────────────────
-HONEST V1.0 (74) — S24: ███████░░░░░░░░░░░░░  Evidence-gated re-score
+V1.0 (87.3) — S1-S10: ████████░░░░░░░░░░░░ Initial build
+V2.0 (91.8) — S20-S30: █████████░░░░░░░░░░░ Auth + RAG
+V3.2 (95.3) — S83: ██████████░░░░░░░░░░ Agents + patterns
+V3.4 (97.0) — S83: ███████████░░░░░░░░░ CI auto-fix
+V4.0 (98.5) — S41: ████████████░░░░░░░░ Memory + xterm (claimed)
+
+HONEST V1.0 (74) — S24: ███████░░░░░░░░░░░░░ Evidence-gated re-score
 ```
 
 The gap between claimed (98.5) and honest (74) = **24.5 points of inflation** across ~30 sessions.
@@ -157,32 +157,32 @@ To prevent re-inflation in future sessions, the following rules are mandatory:
 
 ```yaml
 scoring_integrity_rules:
-  rule_1_no_credit_for_plans:
-    description: "Planned items score 0 until all 3 gates pass"
-    check: "Verify file exists in src/ before claiming any points"
+ rule_1_no_credit_for_plans:
+ description: "Planned items score 0 until all 3 gates pass"
+ check: "Verify file exists in src/ before claiming any points"
 
-  rule_2_ci_failures_deduct:
-    description: "Each code-fixable CI failure deducts 0.5 pts from L5"
-    exclusions: ["GHCR push (GitHub Team limit)", "CodeQL on feature branches (no GHAS)",
-                 "Dependency Submission API 500 (transient infra)", "Copilot coding agent infra"]
-    check: "Count only failures fixable without admin action or subscription upgrade"
+ rule_2_ci_failures_deduct:
+ description: "Each code-fixable CI failure deducts 0.5 pts from L5"
+ exclusions: ["GHCR push (GitHub Team limit)", "CodeQL on feature branches (no GHAS)",
+ "Dependency Submission API 500 (transient infra)", "Copilot coding agent infra"]
+ check: "Count only failures fixable without admin action or subscription upgrade"
 
-  rule_3_coverage_threshold:
-    description: "Coverage score = actual% / target%. Current: 72/80 = 90% of Correctness target"
-    check: "pytest --cov-fail-under=80 must pass before claiming full Correctness Awareness"
+ rule_3_coverage_threshold:
+ description: "Coverage score = actual% / target%. Current: 72/80 = 90% of Correctness target"
+ check: "pytest --cov-fail-under=80 must pass before claiming full Correctness Awareness"
 
-  rule_4_pattern_count:
-    description: "Experience Matching score = min(100, patterns_in_store / 50 * 100)"
-    check: "11/50 = 22% of target → Experience Matching capped at 62/100 until 50+ patterns"
+ rule_4_pattern_count:
+ description: "Experience Matching score = min(100, patterns_in_store / 50 * 100)"
+ check: "11/50 = 22% of target Experience Matching capped at 62/100 until 50+ patterns"
 
-  rule_5_no_self_score_increase:
-    description: "Score can only increase when a new component passes all 3 gates in same PR"
-    check: "Score frozen until PR merged; re-score only in dedicated AAIS assessment session"
+ rule_5_no_self_score_increase:
+ description: "Score can only increase when a new component passes all 3 gates in same PR"
+ check: "Score frozen until PR merged; re-score only in dedicated AAIS assessment session"
 
-  rule_6_subscription_scope:
-    description: "All recommendations must be feasible within GitHub Team + Copilot Pro Plus"
-    budget: "3,000 Actions min/mo · 2GB artifacts · 1,500 Copilot premium requests/mo"
-    check: "Flag any roadmap item requiring GHAS, larger runners, or Copilot Enterprise"
+ rule_6_subscription_scope:
+ description: "All recommendations must be feasible within GitHub Team + Copilot Pro Plus"
+ budget: "3,000 Actions min/mo · 2GB artifacts · 1,500 Copilot premium requests/mo"
+ check: "Flag any roadmap item requiring GHAS, larger runners, or Copilot Enterprise"
 ```
 
 ---
@@ -242,23 +242,23 @@ From the AAIS_100_AND_COVERAGE_100_ROADMAP.md + web research (ACE arXiv, ICLR 20
 %%{init: {'accessibility': {'title': 'Flowchart showing "Claimed: 98.5/100\n(S+ Grade)\nSelf-assessed, plans credited,\nno CI-failure deduction", "Honest: 74/100\n(B− Grade)\nEvidence-gated, 3-gate rule,\nsubscription-adjusted"'}}%%
 
 graph LR
-    subgraph "Claimed vs Honest — 2026-03-14"
-        C["Claimed: 98.5/100\n(S+ Grade)\nSelf-assessed, plans credited,\nno CI-failure deduction"]
-        H["Honest: 74/100\n(B− Grade)\nEvidence-gated, 3-gate rule,\nsubscription-adjusted"]
-        T["Target (within budget): 88/100\n(B+ Grade)\n~12-15 sessions, no admin needed"]
-        U["Ceiling (with admin): 91/100\n(A Grade)\nGHAS add-on + GHCR fix"]
-    end
+ subgraph "Claimed vs Honest — 2026-03-14"
+ C["Claimed: 98.5/100\n(S+ Grade)\nSelf-assessed, plans credited,\nno CI-failure deduction"]
+ H["Honest: 74/100\n(B− Grade)\nEvidence-gated, 3-gate rule,\nsubscription-adjusted"]
+ T["Target (within budget): 88/100\n(B+ Grade)\n~12-15 sessions, no admin needed"]
+ U["Ceiling (with admin): 91/100\n(A Grade)\nGHAS add-on + GHCR fix"]
+ end
 
-    C -->|"−24.5 pts inflation removed"| H
+ C -->|"−24.5 pts inflation removed"| H
 
-    H -->|"+14 pts achievable"| T
+ H -->|"+14 pts achievable"| T
 
-    T -->|"+3 pts needs admin"| U
+ T -->|"+3 pts needs admin"| U
 
-    style C fill:#ff6b6b
-    style H fill:#ffd700
-    style T fill:#98fb98
-    style U fill:#87ceeb
+ style C fill:#ff6b6b
+ style H fill:#ffd700
+ style T fill:#98fb98
+ style U fill:#87ceeb
 ```
 
 ---

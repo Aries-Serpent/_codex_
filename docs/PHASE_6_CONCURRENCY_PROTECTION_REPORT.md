@@ -33,16 +33,16 @@ Phase 6 implements comprehensive thread-safety and concurrency protection for th
 ```text
 # Per-thread connection reuse
 pool = SQLiteConnectionPool(
-    db_path=".codex/sessions.db",
-    max_connections=20,
-    timeout=30.0,
-    wal_mode=True,  # Write-Ahead Logging enabled
+ db_path=".codex/sessions.db",
+ max_connections=20,
+ timeout=30.0,
+ wal_mode=True, # Write-Ahead Logging enabled
 )
 
 # Automatic WAL mode configuration
 PRAGMA journal_mode = WAL
 PRAGMA synchronous = NORMAL
-PRAGMA cache_size = -64000  # 64MB cache
+PRAGMA cache_size = -64000 # 64MB cache
 ```
 
 **Features**:
@@ -68,12 +68,12 @@ PRAGMA cache_size = -64000  # 64MB cache
 rw_lock = ReadWriteLock(timeout=60.0)
 
 with rw_lock.read_lock():
-    # Multiple threads can hold this simultaneously
-    embedding = index.reconstruct(idx)
+ # Multiple threads can hold this simultaneously
+ embedding = index.reconstruct(idx)
 
 with rw_lock.write_lock():
-    # Only one thread can hold this
-    index.add(vectors)
+ # Only one thread can hold this
+ index.add(vectors)
 ```
 
 **Features**:
@@ -99,8 +99,8 @@ archive_lock = ArchiveOperationLock(timeout=60.0, max_retries=3)
 
 # Mutually exclusive per-session
 with archive_lock.archive_lock("SESSION_ID"):
-    # Only one archive/retrieve operation on this session at a time
-    archive_data()
+ # Only one archive/retrieve operation on this session at a time
+ archive_data()
 ```
 
 **Features**:
@@ -160,24 +160,24 @@ db.archive_session(session_id, reason="cleanup")
 ```python
 # Per-component metrics
 metrics = {
-    "timestamp": 1719122126.5,
-    "db_path": ".codex/sessions.db",
-    "connection_pool": {
-        "lock_wait_times_ms": [0.5, 0.7, 0.6, ...],
-        "lock_contention_count": 2,
-        "deadlock_retries": 0,
-        "lock_held_count": 0,
-        "max_wait_time_ms": 0.8,
-        "avg_wait_time_ms": 0.65
-    },
-    "write_lock": {
-        "lock_wait_times_ms": [1.2, 1.5, ...],
-        "lock_contention_count": 8,
-        "deadlock_retries": 1,
-        "lock_held_count": 50,
-        "max_wait_time_ms": 1.8,
-        "avg_wait_time_ms": 1.35
-    }
+ "timestamp": 1719122126.5,
+ "db_path": ".codex/sessions.db",
+ "connection_pool": {
+ "lock_wait_times_ms": [0.5, 0.7, 0.6, ...],
+ "lock_contention_count": 2,
+ "deadlock_retries": 0,
+ "lock_held_count": 0,
+ "max_wait_time_ms": 0.8,
+ "avg_wait_time_ms": 0.65
+ },
+ "write_lock": {
+ "lock_wait_times_ms": [1.2, 1.5, ...],
+ "lock_contention_count": 8,
+ "deadlock_retries": 1,
+ "lock_held_count": 50,
+ "max_wait_time_ms": 1.8,
+ "avg_wait_time_ms": 1.35
+ }
 }
 ```
 
@@ -222,9 +222,9 @@ metrics = {
 ```python
 # Automatic deadlock recovery with exponential backoff
 result = DeadlockRecovery.retry_with_backoff(
-    func=database_operation,
-    max_retries=3,
-    base_delay=0.1  # 100ms, 200ms, 400ms
+ func=database_operation,
+ max_retries=3,
+ base_delay=0.1 # 100ms, 200ms, 400ms
 )
 ```
 
@@ -291,15 +291,15 @@ Timeout: After 3 retries, raise TimeoutError
 Total operations: 300 (stress test at scale)
 Success rate: 94% (282/300 succeeded)
 Operation breakdown:
-  - Reads: ~35% (95 operations)
-  - Writes: ~33% (100 operations)
-  - Archives: ~32% (87 operations)
+ - Reads: ~35% (95 operations)
+ - Writes: ~33% (100 operations)
+ - Archives: ~32% (87 operations)
 
 Lock metrics:
-  - Max wait time: 18.5ms (reads), 24.3ms (writes)
-  - Avg wait time: 2.1ms (reads), 5.8ms (writes)
-  - Deadlock retries: 3 (auto-recovered)
-  - Contention count: 147 (out of 300 ops, 49%)
+ - Max wait time: 18.5ms (reads), 24.3ms (writes)
+ - Avg wait time: 2.1ms (reads), 5.8ms (writes)
+ - Deadlock retries: 3 (auto-recovered)
+ - Contention count: 147 (out of 300 ops, 49%)
 ```
 
 **Acceptable Performance**
@@ -315,37 +315,37 @@ Lock metrics:
 ## Component Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│         Session Query API (Thread-Safe)            │
-├─────────────────────────────────────────────────────┤
-│  get_session()  query_sessions()  search_sessions() │
-│  insert_session()  update_session_status()          │
-│  archive_session()                                  │
-└──────────────┬──────────────────────────────────────┘
-               │
-       ┌───────┴────────┬──────────────────┐
-       │                │                  │
-┌──────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
-│ThreadSafeDB │  │ThreadSafeEMB│  │ThreadSafeARC│
-└──────┬──────┘  └──────┬──────┘  └──────┬──────┘
-       │                │                │
-    ┌──▼────────────────▼─┬──────────────▼──┐
-    │   Concurrency Layer │                 │
-    ├─────────────────────┤                 │
-    │ • RLock (DB writes) │                 │
-    │ • RWLock (Faiss)    │                 │
-    │ • ArchLock (Arch)   │                 │
-    │ • Metrics tracking  │                 │
-    │ • Error logging     │                 │
-    └─────────────────────┘                 │
-                                            │
-    ┌───────────────────────────────────────┴──┐
-    │  Underlying Systems                      │
-    ├──────────────────────────────────────────┤
-    │ • SQLite DB (WAL mode, 30s timeout)      │
-    │ • Faiss Index (384-dim vectors)          │
-    │ • Archive Service (zstd compression)     │
-    └──────────────────────────────────────────┘
+
+ Session Query API (Thread-Safe) 
+
+ get_session() query_sessions() search_sessions() 
+ insert_session() update_session_status() 
+ archive_session() 
+
+ 
+ 
+ 
+ 
+ThreadSafeDB ThreadSafeEMB ThreadSafeARC
+ 
+ 
+ 
+ Concurrency Layer 
+ 
+ • RLock (DB writes) 
+ • RWLock (Faiss) 
+ • ArchLock (Arch) 
+ • Metrics tracking 
+ • Error logging 
+ 
+ 
+ 
+ Underlying Systems 
+ 
+ • SQLite DB (WAL mode, 30s timeout) 
+ • Faiss Index (384-dim vectors) 
+ • Archive Service (zstd compression) 
+ 
 ```
 
 ---
@@ -365,11 +365,11 @@ sessions = db.query_sessions(status="complete", days=7, limit=50)
 
 # Write operations (thread-safe, with exclusive lock)
 db.insert_session({
-    "session_id": "NEW_SESSION",
-    "status": "pending",
-    "timestamp": "2026-06-23",
-    "pr_number": 5000,
-    "branch": "main"
+ "session_id": "NEW_SESSION",
+ "status": "pending",
+ "timestamp": "2026-06-23",
+ "pr_number": 5000,
+ "branch": "main"
 })
 
 db.update_session_status("SESSION_123", "complete")
@@ -384,19 +384,19 @@ import concurrent.futures
 db = ThreadSafeSessionDB()
 
 def worker(worker_id: int):
-    for i in range(100):
-        if i % 2 == 0:
-            db.query_sessions(days=7)
-        else:
-            db.insert_session({
-                "session_id": f"W{worker_id}_S{i}",
-                "status": "complete",
-                "timestamp": "2026-06-23"
-            })
+ for i in range(100):
+ if i % 2 == 0:
+ db.query_sessions(days=7)
+ else:
+ db.insert_session({
+ "session_id": f"W{worker_id}_S{i}",
+ "status": "complete",
+ "timestamp": "2026-06-23"
+ })
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-    futures = [executor.submit(worker, i) for i in range(10)]
-    results = [f.result() for f in concurrent.futures.as_completed(futures)]
+ futures = [executor.submit(worker, i) for i in range(10)]
+ results = [f.result() for f in concurrent.futures.as_completed(futures)]
 
 db.save_metrics()
 db.cleanup()
@@ -411,8 +411,8 @@ guard = ArchiveSessionGuard()
 
 # Archive with automatic locking
 def archive_impl(session_id: str):
-    # ... archive logic ...
-    return {"archived": True}
+ # ... archive logic ...
+ return {"archived": True}
 
 result = guard.archive_with_lock("SESSION_123", archive_impl)
 
@@ -433,7 +433,7 @@ db = ThreadSafeSessionDB()
 # ... perform operations ...
 
 # Export metrics to JSON
-db.save_metrics()  # Saved to .codex/concurrency_metrics.json
+db.save_metrics() # Saved to .codex/concurrency_metrics.json
 
 # Get metrics programmatically
 metrics = db.get_metrics()
@@ -479,16 +479,16 @@ tail -20 .codex/concurrency_errors.log
 
 ```
 src/codex/logging/
-├── concurrency.py                    # Core concurrency primitives (13KB)
-├── thread_safe_session_db.py        # Thread-safe DB wrapper (15KB)
-├── thread_safe_embeddings.py        # Thread-safe Faiss wrapper (11KB)
-└── thread_safe_archive.py           # Thread-safe archive wrapper (7KB)
+ concurrency.py # Core concurrency primitives (13KB)
+ thread_safe_session_db.py # Thread-safe DB wrapper (15KB)
+ thread_safe_embeddings.py # Thread-safe Faiss wrapper (11KB)
+ thread_safe_archive.py # Thread-safe archive wrapper (7KB)
 
 src/tests/
-└── test_concurrency_protection.py   # 13 comprehensive tests (17KB)
+ test_concurrency_protection.py # 13 comprehensive tests (17KB)
 
 docs/
-└── PHASE_6_CONCURRENCY_PROTECTION_REPORT.md  # This documentation
+ PHASE_6_CONCURRENCY_PROTECTION_REPORT.md # This documentation
 ```
 
 ---

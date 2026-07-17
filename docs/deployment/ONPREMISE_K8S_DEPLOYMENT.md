@@ -17,62 +17,62 @@ This guide covers deploying Codex ML on self-hosted Kubernetes infrastructure wi
 ### Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│        On-Premise Kubernetes Cluster                │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────────────────────────────────────────┐  │
-│  │  Load Balancer (MetalLB)                     │  │
-│  │  - Layer 4 load balancing                    │  │
-│  │  - Sticky sessions                           │  │
-│  │  - Health checks                             │  │
-│  └──────────┬───────────────────────────────────┘  │
-│             │                                      │
-│  ┌──────────▼───────────────────────────────────┐  │
-│  │  Kubernetes Master Nodes (3)                 │  │
-│  │  - Control plane HA                          │  │
-│  │  - etcd database replication                 │  │
-│  │  - API server load balancing                 │  │
-│  └──────────┬───────────────────────────────────┘  │
-│             │                                      │
-│  ┌──────────▼───────────────────────────────────┐  │
-│  │  Worker Nodes (5-10)                         │  │
-│  │  ├─ Node 1 (4 CPU, 8GB RAM)                 │  │
-│  │  ├─ Node 2 (4 CPU, 8GB RAM)                 │  │
-│  │  ├─ Node 3 (4 CPU, 8GB RAM)                 │  │
-│  │  └─ Node N                                   │  │
-│  │                                               │  │
-│  │  ┌────────────────────────────────────────┐  │  │
-│  │  │ Codex ML Pod (Deployment)              │  │  │
-│  │  │ - Replicas: 3                          │  │  │
-│  │  │ - CPU: 2, Memory: 4Gi per pod         │  │  │
-│  │  │ - Health checks enabled                │  │  │
-│  │  └────────────────────────────────────────┘  │  │
-│  └──────────┬───────────────────────────────────┘  │
-│             │                                      │
-│  ┌──────────▼───────────────────────────────────┐  │
-│  │  Storage Layer                               │  │
-│  │  ├─ Local storage (node-local)              │  │
-│  │  ├─ NFS/iSCSI (shared storage)              │  │
-│  │  └─ Persistent Volume Claims                │  │
-│  └──────────┬───────────────────────────────────┘  │
-│             │                                      │
-│  ┌──────────▼───────────────────────────────────┐  │
-│  │  Data Layer                                  │  │
-│  │  ├─ PostgreSQL (HA with streaming repl.)   │  │
-│  │  ├─ Redis (cluster mode)                   │  │
-│  │  └─ NFS for backup storage                 │  │
-│  └──────────────────────────────────────────────┘  │
-│             │                                      │
-│  ┌──────────▼───────────────────────────────────┐  │
-│  │  Monitoring & Logging                       │  │
-│  │  ├─ Prometheus (metrics collection)         │  │
-│  │  ├─ Grafana (visualization)                 │  │
-│  │  ├─ Loki (log aggregation)                 │  │
-│  │  └─ AlertManager (alerts)                  │  │
-│  └──────────────────────────────────────────────┘  │
-│                                                    │
-└────────────────────────────────────────────────────┘
+
+ On-Premise Kubernetes Cluster 
+
+ 
+ 
+ Load Balancer (MetalLB) 
+ - Layer 4 load balancing 
+ - Sticky sessions 
+ - Health checks 
+ 
+ 
+ 
+ Kubernetes Master Nodes (3) 
+ - Control plane HA 
+ - etcd database replication 
+ - API server load balancing 
+ 
+ 
+ 
+ Worker Nodes (5-10) 
+ Node 1 (4 CPU, 8GB RAM) 
+ Node 2 (4 CPU, 8GB RAM) 
+ Node 3 (4 CPU, 8GB RAM) 
+ Node N 
+ 
+ 
+ Codex ML Pod (Deployment) 
+ - Replicas: 3 
+ - CPU: 2, Memory: 4Gi per pod 
+ - Health checks enabled 
+ 
+ 
+ 
+ 
+ Storage Layer 
+ Local storage (node-local) 
+ NFS/iSCSI (shared storage) 
+ Persistent Volume Claims 
+ 
+ 
+ 
+ Data Layer 
+ PostgreSQL (HA with streaming repl.) 
+ Redis (cluster mode) 
+ NFS for backup storage 
+ 
+ 
+ 
+ Monitoring & Logging 
+ Prometheus (metrics collection) 
+ Grafana (visualization) 
+ Loki (log aggregation) 
+ AlertManager (alerts) 
+ 
+ 
+
 ```
 
 ---
@@ -99,7 +99,7 @@ This guide covers deploying Codex ML on self-hosted Kubernetes infrastructure wi
 # Container runtime: Docker 20.10+ or containerd 1.5+
 
 # Verify OS
-lsb_release -a  # or cat /etc/os-release
+lsb_release -a # or cat /etc/os-release
 
 # Check kernel version
 uname -r
@@ -131,15 +131,15 @@ echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 
 # Configure firewall rules
 # On each master node:
-sudo firewall-cmd --permanent --add-port=6443/tcp  # API server
-sudo firewall-cmd --permanent --add-port=2379-2380/tcp  # etcd
-sudo firewall-cmd --permanent --add-port=10250/tcp  # Kubelet
-sudo firewall-cmd --permanent --add-port=10251/tcp  # Scheduler
-sudo firewall-cmd --permanent --add-port=10252/tcp  # Controller
+sudo firewall-cmd --permanent --add-port=6443/tcp # API server
+sudo firewall-cmd --permanent --add-port=2379-2380/tcp # etcd
+sudo firewall-cmd --permanent --add-port=10250/tcp # Kubelet
+sudo firewall-cmd --permanent --add-port=10251/tcp # Scheduler
+sudo firewall-cmd --permanent --add-port=10252/tcp # Controller
 
 # On each worker node:
-sudo firewall-cmd --permanent --add-port=10250/tcp  # Kubelet
-sudo firewall-cmd --permanent --add-port=30000-32767/tcp  # NodePort
+sudo firewall-cmd --permanent --add-port=10250/tcp # Kubelet
+sudo firewall-cmd --permanent --add-port=30000-32767/tcp # NodePort
 
 sudo firewall-cmd --reload
 
@@ -164,8 +164,8 @@ sudo apt-get remove docker docker-engine docker.io containerd runc -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
 echo \
-  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+ "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+ $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Install Docker
 sudo apt-get update
@@ -181,13 +181,13 @@ docker --version
 # Configure Docker daemon
 sudo tee /etc/docker/daemon.json > /dev/null <<EOF
 {
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m",
-    "max-file": "3"
-  },
-  "insecure-registries": ["registry.example.com:5000"]
+ "exec-opts": ["native.cgroupdriver=systemd"],
+ "log-driver": "json-file",
+ "log-opts": {
+ "max-size": "100m",
+ "max-file": "3"
+ },
+ "insecure-registries": ["registry.example.com:5000"]
 }
 EOF
 
@@ -234,32 +234,32 @@ kind: ClusterConfiguration
 kubernetesVersion: v0.2.1
 controlPlaneEndpoint: "10.0.0.10:6443"
 apiServer:
-  certSANs:
-  - "10.0.0.10"
-  - "10.0.0.11"
-  - "10.0.0.12"
-  - "k8s-master-1"
-  - "k8s-master-2"
-  - "k8s-master-3"
-  extraArgs:
-    audit-log-path: /var/log/audit/audit.log
-    audit-log-maxage: "10"
-    audit-log-maxbackup: "5"
-    audit-log-maxsize: "100"
+ certSANs:
+ - "10.0.0.10"
+ - "10.0.0.11"
+ - "10.0.0.12"
+ - "k8s-master-1"
+ - "k8s-master-2"
+ - "k8s-master-3"
+ extraArgs:
+ audit-log-path: /var/log/audit/audit.log
+ audit-log-maxage: "10"
+ audit-log-maxbackup: "5"
+ audit-log-maxsize: "100"
 etcd:
-  local:
-    dataDir: /var/lib/etcd
+ local:
+ dataDir: /var/lib/etcd
 networking:
-  dnsDomain: cluster.local
-  podSubnet: "10.244.0.0/16"
-  serviceSubnet: "10.96.0.0/12"
+ dnsDomain: cluster.local
+ podSubnet: "10.244.0.0/16"
+ serviceSubnet: "10.96.0.0/12"
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 nodeRegistration:
-  kubeletExtraArgs:
-    cgroup-driver: systemd
-    max-pods: "110"
+ kubeletExtraArgs:
+ cgroup-driver: systemd
+ max-pods: "110"
 EOF
 
 # Initialize the cluster
@@ -301,9 +301,9 @@ cat join-command.txt
 
 # Execute the join command (add --control-plane flag for additional masters)
 sudo kubeadm join 10.0.0.10:6443 --token <token> \
-  --discovery-token-ca-cert-hash sha256:<hash> \
-  --control-plane \
-  --certificate-key <cert-key>
+ --discovery-token-ca-cert-hash sha256:<hash> \
+ --control-plane \
+ --certificate-key <cert-key>
 
 # Verify all masters are ready
 kubectl get nodes
@@ -314,7 +314,7 @@ kubectl get nodes
 ```bash
 # On each worker node:
 sudo kubeadm join 10.0.0.10:6443 --token <token> \
-  --discovery-token-ca-cert-hash sha256:<hash>
+ --discovery-token-ca-cert-hash sha256:<hash>
 
 # Verify all nodes are ready
 kubectl get nodes -o wide
@@ -331,20 +331,20 @@ cat > metallb-config.yaml <<'EOF'
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: first-pool
-  namespace: metallb-system
+ name: first-pool
+ namespace: metallb-system
 spec:
-  addresses:
-  - 10.0.0.100-10.0.0.110
+ addresses:
+ - 10.0.0.100-10.0.0.110
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: example
-  namespace: metallb-system
+ name: example
+ namespace: metallb-system
 spec:
-  ipAddressPools:
-  - first-pool
+ ipAddressPools:
+ - first-pool
 EOF
 
 kubectl apply -f metallb-config.yaml
@@ -372,9 +372,9 @@ sudo systemctl restart nfs-kernel-server
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
 
 helm install nfs-subdir-external-provisioner \
-  nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-  --set nfs.server=10.0.0.30 \
-  --set nfs.path=/srv/k8s-nfs
+ nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+ --set nfs.server=10.0.0.30 \
+ --set nfs.path=/srv/k8s-nfs
 ```
 
 ### 10. Deploy PostgreSQL (StatefulSet)
@@ -388,92 +388,92 @@ cat > postgres-statefulset.yaml <<'EOF'
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-secret
-  namespace: data-layer
+ name: postgres-secret
+ namespace: data-layer
 type: Opaque
 data:
-  password: Y29kZXgtcGFzc3dvcmQ=  # codex-password in base64
+ password: Y29kZXgtcGFzc3dvcmQ= # codex-password in base64
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
-  namespace: data-layer
+ name: postgres-pvc
+ namespace: data-layer
 spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: nfs-client
-  resources:
-    requests:
-      storage: 100Gi
+ accessModes:
+ - ReadWriteOnce
+ storageClassName: nfs-client
+ resources:
+ requests:
+ storage: 100Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
-  namespace: data-layer
+ name: postgres
+ namespace: data-layer
 spec:
-  serviceName: postgres
-  replicas: 1
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-      - name: postgres
-        image: postgres:14-alpine
-        env:
-        - name: POSTGRES_DB
-          value: codex
-        - name: POSTGRES_USER
-          value: codex_admin
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: password
-        ports:
-        - containerPort: 5432
-          name: postgres
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 4Gi
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - exec pg_isready -U codex_admin -h 127.0.0.1
-          initialDelaySeconds: 30
-          periodSeconds: 10
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+ serviceName: postgres
+ replicas: 1
+ selector:
+ matchLabels:
+ app: postgres
+ template:
+ metadata:
+ labels:
+ app: postgres
+ spec:
+ containers:
+ - name: postgres
+ image: postgres:14-alpine
+ env:
+ - name: POSTGRES_DB
+ value: codex
+ - name: POSTGRES_USER
+ value: codex_admin
+ - name: POSTGRES_PASSWORD
+ valueFrom:
+ secretKeyRef:
+ name: postgres-secret
+ key: password
+ ports:
+ - containerPort: 5432
+ name: postgres
+ volumeMounts:
+ - name: postgres-storage
+ mountPath: /var/lib/postgresql/data
+ resources:
+ requests:
+ cpu: 1000m
+ memory: 2Gi
+ limits:
+ cpu: 2000m
+ memory: 4Gi
+ livenessProbe:
+ exec:
+ command:
+ - /bin/sh
+ - -c
+ - exec pg_isready -U codex_admin -h 127.0.0.1
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ volumes:
+ - name: postgres-storage
+ persistentVolumeClaim:
+ claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
-  namespace: data-layer
+ name: postgres
+ namespace: data-layer
 spec:
-  clusterIP: None
-  ports:
-  - port: 5432
-    targetPort: 5432
-  selector:
-    app: postgres
+ clusterIP: None
+ ports:
+ - port: 5432
+ targetPort: 5432
+ selector:
+ app: postgres
 EOF
 
 kubectl apply -f postgres-statefulset.yaml
@@ -487,85 +487,85 @@ cat > redis-statefulset.yaml <<'EOF'
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: redis-config
-  namespace: data-layer
+ name: redis-config
+ namespace: data-layer
 data:
-  redis.conf: |
-    maxmemory 2gb
-    maxmemory-policy allkeys-lru
-    appendonly yes
-    appendfsync everysec
+ redis.conf: |
+ maxmemory 2gb
+ maxmemory-policy allkeys-lru
+ appendonly yes
+ appendfsync everysec
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis-pvc
-  namespace: data-layer
+ name: redis-pvc
+ namespace: data-layer
 spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: nfs-client
-  resources:
-    requests:
-      storage: 20Gi
+ accessModes:
+ - ReadWriteOnce
+ storageClassName: nfs-client
+ resources:
+ requests:
+ storage: 20Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis
-  namespace: data-layer
+ name: redis
+ namespace: data-layer
 spec:
-  serviceName: redis
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redis
-  template:
-    metadata:
-      labels:
-        app: redis
-    spec:
-      containers:
-      - name: redis
-        image: redis:7-alpine
-        command:
-          - redis-server
-          - /usr/local/etc/redis/redis.conf
-        ports:
-        - containerPort: 6379
-          name: redis
-        volumeMounts:
-        - name: redis-data
-          mountPath: /data
-        - name: redis-config
-          mountPath: /usr/local/etc/redis/
-        resources:
-          requests:
-            cpu: 500m
-            memory: 1Gi
-          limits:
-            cpu: 1000m
-            memory: 2Gi
-      volumes:
-      - name: redis-config
-        configMap:
-          name: redis-config
-      - name: redis-data
-        persistentVolumeClaim:
-          claimName: redis-pvc
+ serviceName: redis
+ replicas: 1
+ selector:
+ matchLabels:
+ app: redis
+ template:
+ metadata:
+ labels:
+ app: redis
+ spec:
+ containers:
+ - name: redis
+ image: redis:7-alpine
+ command:
+ - redis-server
+ - /usr/local/etc/redis/redis.conf
+ ports:
+ - containerPort: 6379
+ name: redis
+ volumeMounts:
+ - name: redis-data
+ mountPath: /data
+ - name: redis-config
+ mountPath: /usr/local/etc/redis/
+ resources:
+ requests:
+ cpu: 500m
+ memory: 1Gi
+ limits:
+ cpu: 1000m
+ memory: 2Gi
+ volumes:
+ - name: redis-config
+ configMap:
+ name: redis-config
+ - name: redis-data
+ persistentVolumeClaim:
+ claimName: redis-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
-  namespace: data-layer
+ name: redis
+ namespace: data-layer
 spec:
-  clusterIP: None
-  ports:
-  - port: 6379
-    targetPort: 6379
-  selector:
-    app: redis
+ clusterIP: None
+ ports:
+ - port: 6379
+ targetPort: 6379
+ selector:
+ app: redis
 EOF
 
 kubectl apply -f redis-statefulset.yaml
@@ -579,123 +579,123 @@ kubectl create namespace codex-ml
 
 # Create secret for Docker registry
 kubectl create secret docker-registry docker-secret \
-  --docker-server=registry.example.com \
-  --docker-username=username \
-  --docker-****** \
-  --docker-email=email@example.com \
-  -n codex-ml
+ --docker-server=registry.example.com \
+ --docker-username=username \
+ --docker-****** \
+ --docker-email=email@example.com \
+ -n codex-ml
 
 # Create application deployment
 cat > codex-deployment.yaml <<'EOF'
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: codex-ml
-  namespace: codex-ml
+ name: codex-ml
+ namespace: codex-ml
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: codex-ml
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  template:
-    metadata:
-      labels:
-        app: codex-ml
-    spec:
-      imagePullSecrets:
-      - name: docker-secret
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - codex-ml
-              topologyKey: kubernetes.io/hostname
-      containers:
-      - name: codex-ml
-        image: registry.example.com/codex-ml:1.0.0
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8000
-          name: http
-        env:
-        - name: DATABASE_URL
-          value: "******postgres.data-layer.svc.cluster.local:5432/codex"
-        - name: REDIS_URL
-          value: "redis://redis.data-layer.svc.cluster.local:6379/0"
-        - name: ENVIRONMENT
-          value: "production"
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 4Gi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          failureThreshold: 2
+ replicas: 3
+ selector:
+ matchLabels:
+ app: codex-ml
+ strategy:
+ type: RollingUpdate
+ rollingUpdate:
+ maxSurge: 1
+ maxUnavailable: 0
+ template:
+ metadata:
+ labels:
+ app: codex-ml
+ spec:
+ imagePullSecrets:
+ - name: docker-secret
+ affinity:
+ podAntiAffinity:
+ preferredDuringSchedulingIgnoredDuringExecution:
+ - weight: 100
+ podAffinityTerm:
+ labelSelector:
+ matchExpressions:
+ - key: app
+ operator: In
+ values:
+ - codex-ml
+ topologyKey: kubernetes.io/hostname
+ containers:
+ - name: codex-ml
+ image: registry.example.com/codex-ml:1.0.0
+ imagePullPolicy: Always
+ ports:
+ - containerPort: 8000
+ name: http
+ env:
+ - name: DATABASE_URL
+ value: "******postgres.data-layer.svc.cluster.local:5432/codex"
+ - name: REDIS_URL
+ value: "redis://redis.data-layer.svc.cluster.local:6379/0"
+ - name: ENVIRONMENT
+ value: "production"
+ resources:
+ requests:
+ cpu: 1000m
+ memory: 2Gi
+ limits:
+ cpu: 2000m
+ memory: 4Gi
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ failureThreshold: 3
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: 8000
+ initialDelaySeconds: 10
+ periodSeconds: 5
+ failureThreshold: 2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: codex-ml-service
-  namespace: codex-ml
+ name: codex-ml-service
+ namespace: codex-ml
 spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 8000
-    protocol: TCP
-  selector:
-    app: codex-ml
+ type: LoadBalancer
+ ports:
+ - port: 80
+ targetPort: 8000
+ protocol: TCP
+ selector:
+ app: codex-ml
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: codex-ml-hpa
-  namespace: codex-ml
+ name: codex-ml-hpa
+ namespace: codex-ml
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: codex-ml
-  minReplicas: 3
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+ scaleTargetRef:
+ apiVersion: apps/v1
+ kind: Deployment
+ name: codex-ml
+ minReplicas: 3
+ maxReplicas: 10
+ metrics:
+ - type: Resource
+ resource:
+ name: cpu
+ target:
+ type: Utilization
+ averageUtilization: 70
+ - type: Resource
+ resource:
+ name: memory
+ target:
+ type: Utilization
+ averageUtilization: 80
 EOF
 
 kubectl apply -f codex-deployment.yaml
@@ -715,24 +715,24 @@ helm repo update
 
 # Install Prometheus
 helm install prometheus prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --create-namespace \
-  --values - <<EOF
+ --namespace monitoring \
+ --create-namespace \
+ --values - <<EOF
 prometheus:
-  prometheusSpec:
-    retention: 30d
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 50Gi
+ prometheusSpec:
+ retention: 30d
+ storageSpec:
+ volumeClaimTemplate:
+ spec:
+ accessModes: ["ReadWriteOnce"]
+ resources:
+ requests:
+ storage: 50Gi
 grafana:
-  adminPassword: admin123456
-  persistence:
-    enabled: true
-    size: 10Gi
+ adminPassword: admin123456
+ persistence:
+ enabled: true
+ size: 10Gi
 EOF
 
 # Expose Grafana
@@ -749,11 +749,11 @@ kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80 &
 ```bash
 # Backup etcd
 sudo ETCDCTL_API=3 etcdctl \
-  --endpoints=https://127.0.0.1:2379 \
-  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-  --cert=/etc/kubernetes/pki/etcd/server.crt \
-  --key=/etc/kubernetes/pki/etcd/server.key \
-  snapshot save /backup/etcd-backup.db
+ --endpoints=https://127.0.0.1:2379 \
+ --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+ --cert=/etc/kubernetes/pki/etcd/server.crt \
+ --key=/etc/kubernetes/pki/etcd/server.key \
+ snapshot save /backup/etcd-backup.db
 
 # Backup persistent data
 kubectl get pvc -A -o json | jq '.items[] | {namespace: .metadata.namespace, name: .metadata.name}' > /backup/pvc-manifest.json

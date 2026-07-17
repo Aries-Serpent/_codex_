@@ -155,13 +155,13 @@ Testing the diagrams against key onboarding questions:
 ### Before (7% Coverage - 7 diagrams)
 ```
 Architecture Documentation: 60% quality
-├─ System overview: Present (1 diagram)
-├─ Component details: Sparse (1 diagram)
-├─ Workflows: Partial (3 diagrams)
-├─ Data flows: Minimal (1 diagram)
-├─ Infrastructure: Missing (0 diagrams)
-├─ Security: Missing (0 diagrams)
-└─ Deployment: Missing (0 diagrams)
+ System overview: Present (1 diagram)
+ Component details: Sparse (1 diagram)
+ Workflows: Partial (3 diagrams)
+ Data flows: Minimal (1 diagram)
+ Infrastructure: Missing (0 diagrams)
+ Security: Missing (0 diagrams)
+ Deployment: Missing (0 diagrams)
 
 New Contributor Experience: 2/5 ⭐⭐
 "I need to reverse-engineer the system from code"
@@ -170,13 +170,13 @@ New Contributor Experience: 2/5 ⭐⭐
 ### After Phase 1 (17% Coverage - 17 diagrams)
 ```
 Architecture Documentation: 68% quality
-├─ System overview: Excellent (2 diagrams: context + layers)
-├─ Component details: Good (1 diagram: dependencies)
-├─ Workflows: Good (4 diagrams: training, monitoring, etc.)
-├─ Data flows: Good (1 diagram)
-├─ Infrastructure: Excellent (2 diagrams: deployment, data)
-├─ Security: Excellent (1 diagram)
-└─ Deployment: Excellent (1 diagram)
+ System overview: Excellent (2 diagrams: context + layers)
+ Component details: Good (1 diagram: dependencies)
+ Workflows: Good (4 diagrams: training, monitoring, etc.)
+ Data flows: Good (1 diagram)
+ Infrastructure: Excellent (2 diagrams: deployment, data)
+ Security: Excellent (1 diagram)
+ Deployment: Excellent (1 diagram)
 
 New Contributor Experience: 4/5 ⭐⭐⭐⭐
 "I can understand the system from diagrams + guide"
@@ -216,24 +216,24 @@ New Contributor Experience: 4/5 ⭐⭐⭐⭐
 
 ```
 Phase 1: Tier 1 (Foundation)
- ├─ 10 diagrams
- ├─ 2 hours invested 
- └─ Coverage: 7% → 15%
+ 10 diagrams
+ 2 hours invested 
+ Coverage: 7% 15%
 
 Phase 2: Tier 2 (Components)
- ├─ 15 diagrams
- ├─ 3-4 hours estimated
- └─ Coverage: 15% → 45%
+ 15 diagrams
+ 3-4 hours estimated
+ Coverage: 15% 45%
 
 Phase 3: Tier 3 (Integration)
- ├─ 5 diagrams
- ├─ 1 hour estimated
- └─ Coverage: 45% → 50%
+ 5 diagrams
+ 1 hour estimated
+ Coverage: 45% 50%
 
 Phase 4: Bonus Coverage
- ├─ 20-30 diagrams
- ├─ 15-20 hours estimated
- └─ Coverage: 50% → 85%+
+ 20-30 diagrams
+ 15-20 hours estimated
+ Coverage: 50% 85%+
 
 Total: 50-60 hours for 85%+ coverage
 Accelerated Path: 30 hours for 50%+ coverage On track

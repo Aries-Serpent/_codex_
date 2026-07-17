@@ -65,7 +65,7 @@ the authorizing user's permissions.
 python scripts/ci/github_app_bootstrap.py --generate-manifest-url
 
 # Step 2: Admin completes registration in browser, receives one-time code
-# Step 3: Convert code → credentials
+# Step 3: Convert code credentials
 python scripts/ci/github_app_bootstrap.py --convert-code <ONE_TIME_CODE>
 ```
 

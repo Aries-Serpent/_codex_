@@ -96,10 +96,10 @@ Comprehensive log security module providing:
 
 **Functions**:
 ```python
-sanitize_log(value, max_length=500)          # Remove control chars
-mask_sensitive(message)                       # Redact secrets
+sanitize_log(value, max_length=500) # Remove control chars
+mask_sensitive(message) # Redact secrets
 safe_log_message(message, mask_secrets=True) # Combined protection
-sanitize_dict_for_log(data, ...)            # Clean dictionaries
+sanitize_dict_for_log(data, ...) # Clean dictionaries
 ```
 
 **Verification**:
@@ -139,33 +139,33 @@ Documentation enables developers to use security features correctly.
 
 ```
 ======================================================================
-🛡️  SECURITY VALIDATION REPORT
+ SECURITY VALIDATION REPORT
 ======================================================================
 
 1. Checking for unsafe eval() usage...
-    PASS - Found 0 unsafe eval() calls
+ PASS - Found 0 unsafe eval() calls
 
 2. Checking for shell=True in subprocess...
-    PASS - Found 0 instances
+ PASS - Found 0 instances
 
 3. Checking MD5 usage has usedforsecurity parameter...
-    PASS - 0/0 MD5 calls are safe (100%)
+ PASS - 0/0 MD5 calls are safe (100%)
 
 4. Checking exception handlers have logging...
-   ️  WARN - 1324/2167 exception handlers have logging (61%)
+ WARN - 1324/2167 exception handlers have logging (61%)
 
 5. Checking pickle.load usage...
-    PASS - Found 0 direct pickle.load() calls
+ PASS - Found 0 direct pickle.load() calls
 
 6. Checking torch.load usage...
-    PASS - 0/0 torch.load() calls use weights_only (100%)
+ PASS - 0/0 torch.load() calls use weights_only (100%)
 
 ======================================================================
 Total Checks: 6
 Passed: 5
 Failed: 1 (minor - exception logging coverage)
 
-️  MOST SECURITY CHECKS PASSED
+ MOST SECURITY CHECKS PASSED
  Codebase is acceptable with minor improvements needed
 ======================================================================
 ```
@@ -192,10 +192,10 @@ pip list | grep -E "(filelock|torch|starlette|nbconvert)"
 
 **Expected Output**:
 ```
-filelock    3.20.1
-torch       2.2.2
-starlette   0.37.2
-nbconvert   7.16.4
+filelock 3.20.1
+torch 2.2.2
+starlette 0.37.2
+nbconvert 7.16.4
 ```
 
 ---
@@ -264,7 +264,7 @@ logger.info(f"User {sanitize_log(username)} logged in")
 
 # Mask secrets automatically
 safe_msg = mask_sensitive("Token: sk_live_abc123xyz")
-# → "Token: ***REDACTED***"
+# "Token: ***REDACTED***"
 ```
 
 ## 3. Encrypted Storage
@@ -274,7 +274,7 @@ safe_msg = mask_sensitive("Token: sk_live_abc123xyz")
 ```python
 from codex.security.storage import SecureStorage
 
-storage = SecureStorage(algorithm='fernet')  # or 'aes-gcm', 'chacha20'
+storage = SecureStorage(algorithm='fernet') # or 'aes-gcm', 'chacha20'
 storage.store_secret("api_key.enc", secret_key)
 value = storage.load_secret("api_key.enc")
 ```
@@ -311,14 +311,14 @@ value = storage.load_secret("api_key.enc")
 name: Security Validation
 on: [pull_request, push]
 jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Security Validation
-        run: python scripts/security/validate_security.py
-      - name: Security Tests
-        run: pytest tests/security/ -v
+ security:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Security Validation
+ run: python scripts/security/validate_security.py
+ - name: Security Tests
+ run: pytest tests/security/ -v
 ```
 
 ---

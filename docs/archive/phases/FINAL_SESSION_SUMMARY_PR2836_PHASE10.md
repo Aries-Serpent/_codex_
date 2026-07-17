@@ -384,8 +384,8 @@
 # 1. Navigate to: https://console.cloud.google.com/
 # 2. Create project: codex-notebooklm-integration
 # 3. Enable Google Drive API
-# 4. Create Service Account → Download JSON key
-# 5. Create OAuth 2.0 Client ID (Desktop) → Download credentials
+# 4. Create Service Account Download JSON key
+# 5. Create OAuth 2.0 Client ID (Desktop) Download credentials
 ```
 
 **HA-GH-001: Inject Secrets** (~10-15 min)
@@ -416,7 +416,7 @@ gh run watch
 ```
 1. Navigate to: https://notebooklm.google.com/
 2. Create notebook: "Codex Architecture Knowledge Base"
-3. Add source: Google Drive → codex-architecture-sync.xml
+3. Add source: Google Drive codex-architecture-sync.xml
 4. Configure instructions: Copy from docs/notebooklm-architect-prompt.md
 5. Test query: "Perform a health check"
 ```
@@ -490,7 +490,7 @@ Manual setup pending:
 6. Report completion percentages
 
 **Success Criteria**:
-- End-to-end sync working (commit → XML → Drive → NotebookLM)
+- End-to-end sync working (commit XML Drive NotebookLM)
 - AI Architect responding with recursive analysis
 - Cognitive brain health maintained at 95%+
 - All documentation accurate and up-to-date

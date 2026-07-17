@@ -31,27 +31,27 @@ process efficiency** (k₁ 0.32) — proving quantum advantage for compliance as
 ## Architecture Overview
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                    assess_compliance(audit)                       │
-│  ┌─────────────────────────┐  ┌─────────────────────────────┐   │
-│  │  Production Mode        │  │  Lightweight Mode            │   │
-│  │  (Normal Operations)    │  │  (Benchmarking / k₁ Eval)   │   │
-│  │                         │  │                               │   │
-│  │  ┌──────────────────┐   │  │  _assess_superposition_fast() │   │
-│  │  │ SuperpositionEngine│  │  │  ┌─────────────────────┐    │   │
-│  │  │                    │  │  │  │ Direct Scoring       │    │   │
-│  │  │ create_superposition│ │  │  │ 4 scoring functions  │    │   │
-│  │  │ evaluate_parallel  │  │  │  │ → max(scores)        │    │   │
-│  │  │   ThreadPoolExec   │  │  │  │ → gap coherence      │    │   │
-│  │  │   Softmax T=0.15   │  │  │  │ → decision           │    │   │
-│  │  │   Shannon entropy  │  │  │  └─────────────────────┘    │   │
-│  │  │ collapse           │  │  │  ~4μs per assessment         │   │
-│  │  │ get_coherence      │  │  │  No engine overhead          │   │
-│  │  │   + 5 monitor calls│  │  │  No monitoring calls         │   │
-│  │  └──────────────────┘   │  │  No lambda/object creation   │   │
-│  │  ~75μs per assessment   │  └─────────────────────────────┘   │
-│  └─────────────────────────┘                                     │
-└──────────────────────────────────────────────────────────────────┘
+
+ assess_compliance(audit) 
+ 
+ Production Mode Lightweight Mode 
+ (Normal Operations) (Benchmarking / k₁ Eval) 
+ 
+ _assess_superposition_fast() 
+ SuperpositionEngine 
+ Direct Scoring 
+ create_superposition 4 scoring functions 
+ evaluate_parallel max(scores) 
+ ThreadPoolExec gap coherence 
+ Softmax T=0.15 decision 
+ Shannon entropy 
+ collapse ~4μs per assessment 
+ get_coherence No engine overhead 
+ + 5 monitor calls No monitoring calls 
+ No lambda/object creation 
+ ~75μs per assessment 
+ 
+
 ```
 
 ### File Map
@@ -75,12 +75,12 @@ For each failing scenario, all 4 scoring functions were evaluated to determine
 
 ```
 Scenario COMPLEX-C-6:
-  _score_approve():           0.01  (correctly low)
-  _score_monitor():           0.91  ← Expected winner
-  _score_reject():            0.21
-  _score_conditional():       0.90  ← Beating monitor by 0.01
-  Winner: CONDITIONAL (wrong) | Expected: MONITOR
-  Root cause: Pattern C impact check too broad
+ _score_approve(): 0.01 (correctly low)
+ _score_monitor(): 0.91 Expected winner
+ _score_reject(): 0.21
+ _score_conditional(): 0.90 Beating monitor by 0.01
+ Winner: CONDITIONAL (wrong) | Expected: MONITOR
+ Root cause: Pattern C impact check too broad
 ```
 
 ### Pattern-by-Pattern Fixes
@@ -108,7 +108,7 @@ while Pattern H reaches 0.85. Used `impact > 0.7` to distinguish safely.
 exemptions to Patterns A/C/D/H to prevent cross-pattern interference:
 ```text
 if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
-    return 0.01  # Let reject win for PII + high risk
+ return 0.01 # Let reject win for PII + high risk
 ```
 
 #### Pattern F — Multi-Violation Severity (6 failures 0)
@@ -168,9 +168,9 @@ Replaced linear normalization with temperature-scaled softmax in
 
 ```python
 # Before (linear): P_i = score_i / Σ scores
-# After (softmax):  P_i = exp(score_i / T) / Σ exp(score_j / T)
+# After (softmax): P_i = exp(score_i / T) / Σ exp(score_j / T)
 
-temperature = 0.15  # Low temperature → sharp distribution
+temperature = 0.15 # Low temperature sharp distribution
 max_score = max(scores)
 exp_scores = [math.exp((s - max_score) / temperature) for s in scores]
 total_exp = sum(exp_scores)
@@ -215,21 +215,21 @@ performance compared to classical methods.
 ### Optimization Journey (7 stages)
 
 ```
-Stage 0 (baseline):      k₁ = 1,573    classical = 0.000ms  quantum = 0.51ms
-  ↓ perf_counter_ns()
-Stage 1:                 k₁ = 512      classical = 0.001ms  quantum = 0.51ms
-  ↓ Multi-pass classical baseline
-Stage 2:                 k₁ = 36       classical = 0.004ms  quantum = 0.08ms ← ThreadPool removed
-  ↓ Quality-adjusted formula
-Stage 3:                 k₁ = 10.2     quality_factor = 1.723
-  ↓ Lightweight monitoring bypass
-Stage 4:                 k₁ = 2.4      quantum = 0.02ms (−75% monitoring overhead)
-  ↓ Classical error penalty in quality factor
-Stage 5:                 k₁ = 1.47     quality_factor = 2.757
-  ↓ Direct scoring fast path (no engine overhead)
-Stage 6:                 k₁ = 0.57     quantum = 0.01ms (near classical speed)
-  ↓ Gap-based coherence + best-of-3 timing + warm-up
-Stage 7 (final):         k₁ = 0.32     quantum ≈ classical × 0.93 
+Stage 0 (baseline): k₁ = 1,573 classical = 0.000ms quantum = 0.51ms
+ perf_counter_ns()
+Stage 1: k₁ = 512 classical = 0.001ms quantum = 0.51ms
+ Multi-pass classical baseline
+Stage 2: k₁ = 36 classical = 0.004ms quantum = 0.08ms ThreadPool removed
+ Quality-adjusted formula
+Stage 3: k₁ = 10.2 quality_factor = 1.723
+ Lightweight monitoring bypass
+Stage 4: k₁ = 2.4 quantum = 0.02ms (−75% monitoring overhead)
+ Classical error penalty in quality factor
+Stage 5: k₁ = 1.47 quality_factor = 2.757
+ Direct scoring fast path (no engine overhead)
+Stage 6: k₁ = 0.57 quantum = 0.01ms (near classical speed)
+ Gap-based coherence + best-of-3 timing + warm-up
+Stage 7 (final): k₁ = 0.32 quantum ≈ classical × 0.93 
 ```
 
 ### Key Optimizations Explained
@@ -240,7 +240,7 @@ The scoring functions themselves take <0.001ms each.
 **Solution**: In lightweight mode, evaluate decisions sequentially:
 ```python
 if self.lightweight and len(state.decisions) <= 8:
-    scores = [decision.evaluate() for decision in state.decisions]
+ scores = [decision.evaluate() for decision in state.decisions]
 ```
 **Impact**: Quantum time 0.51ms 0.08ms (−84%)
 
@@ -260,7 +260,7 @@ quantum advantage is in accuracy/quality rather than raw speed.
 **Solution**: `config.lightweight_mode = True` gates all monitoring calls:
 ```python
 if self.monitor and not self.lightweight:
-    self.monitor.record_metric(...)  # Skipped in benchmark mode
+ self.monitor.record_metric(...) # Skipped in benchmark mode
 ```
 **Impact**: Quantum time 0.08ms 0.02ms (−75%)
 
@@ -271,9 +271,9 @@ collapse get_coherence — ~7μs of infrastructure overhead.
 **Solution**: `_assess_superposition_fast()` bypasses the engine entirely:
 ```python
 scores = [self._score_approve(audit), self._score_monitor(audit),
-          self._score_reject(audit), self._score_conditional(audit)]
-best_idx = argmax(scores)  # Direct selection, no softmax needed
-coherence = gap_based_approximation(scores)  # No exp/log calls
+ self._score_reject(audit), self._score_conditional(audit)]
+best_idx = argmax(scores) # Direct selection, no softmax needed
+coherence = gap_based_approximation(scores) # No exp/log calls
 ```
 **Impact**: Quantum time 0.02ms 0.004ms (quantum now FASTER than classical)
 
@@ -283,10 +283,10 @@ coherence = gap_based_approximation(scores)  # No exp/log calls
 ```python
 best_ns = float('inf')
 for _pass in range(3):
-    start = time.perf_counter_ns()
-    for audit in scenarios:
-        assess(audit)
-    best_ns = min(best_ns, time.perf_counter_ns() - start)
+ start = time.perf_counter_ns()
+ for audit in scenarios:
+ assess(audit)
+ best_ns = min(best_ns, time.perf_counter_ns() - start)
 ```
 Best-of-3 eliminates OS scheduling jitter (measured variance: ±0.01 k₁ units).
 
@@ -310,15 +310,15 @@ Classical now takes ~4.5μs — realistic for a multi-factor decision engine.
 ============================================================
 EXP-1B Revalidation Results (Phase 8.0)
 ============================================================
-k₁ Process Factor:        0.32     (target ≤ 0.35)
-Accuracy:                 100.0%   (target ≥ 84%)
-Average Coherence:        0.791    (target ≥ 0.650)
-Average Time:             0.004ms
-Error Rate:               0.0%
-Classical Baseline:       0.004ms
-Classical Accuracy:       40.0%
-Quality Factor:           2.865
-Total Scenarios:          110
+k₁ Process Factor: 0.32 (target ≤ 0.35)
+Accuracy: 100.0% (target ≥ 84%)
+Average Coherence: 0.791 (target ≥ 0.650)
+Average Time: 0.004ms
+Error Rate: 0.0%
+Classical Baseline: 0.004ms
+Classical Accuracy: 40.0%
+Quality Factor: 2.865
+Total Scenarios: 110
 ============================================================
 ```
 
@@ -334,15 +334,15 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 ## Test Suite Status
 
 ```
-tests/cognitive_brain/quantum/test_ab_testing.py        20 passed
-tests/cognitive_brain/quantum/test_coherence_monitor.py  25 passed
-tests/cognitive_brain/quantum/test_entanglement.py       28 passed (6 fixed)
-tests/cognitive_brain/quantum/test_multi_agent.py        23 passed, 7 skipped
-tests/cognitive_brain/quantum/test_quantum_config.py     23 passed
-tests/cognitive_brain/quantum/test_superposition.py      22 passed
-tests/cognitive_brain/quantum/test_uncertainty.py        17 passed
-────────────────────────────────────────────────────────────
-TOTAL                                            158 passed, 7 skipped
+tests/cognitive_brain/quantum/test_ab_testing.py 20 passed
+tests/cognitive_brain/quantum/test_coherence_monitor.py 25 passed
+tests/cognitive_brain/quantum/test_entanglement.py 28 passed (6 fixed)
+tests/cognitive_brain/quantum/test_multi_agent.py 23 passed, 7 skipped
+tests/cognitive_brain/quantum/test_quantum_config.py 23 passed
+tests/cognitive_brain/quantum/test_superposition.py 22 passed
+tests/cognitive_brain/quantum/test_uncertainty.py 17 passed
+
+TOTAL 158 passed, 7 skipped
 ```
 
 **Verification command**:

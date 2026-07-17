@@ -193,50 +193,50 @@ Codex ML has achieved **perfect Level 4 MLOps maturity** with 71/71 Azure MLOps 
 
 ```
 _codex_/
-├── manifests/k8s/                      # Kubernetes manifests
-│   ├── base/                           # Base K8s configuration
-│   │   ├── deployment.yaml             # Main deployment (3 replicas)
-│   │   ├── service.yaml                # ClusterIP service
-│   │   ├── configmap.yaml              # Application config
-│   │   ├── secret.yaml.template        # Secret template
-│   │   ├── hpa.yaml                    # HorizontalPodAutoscaler
-│   │   ├── resourcequota.yaml          # Resource quotas
-│   │   ├── servicemonitor.yaml         # Prometheus integration
-│   │   └── kustomization.yaml          # Kustomize base
-│   └── overlays/                       # Environment overlays
-│       ├── development/                # Dev environment
-│       └── production/                 # Prod environment
-│
-├── src/codex_ml/
-│   ├── features/                       # Feature store
-│   │   ├── __init__.py
-│   │   ├── feature_store.py            # Core feature store
-│   │   └── monitoring.py               # Health & freshness
-│   ├── events/                         # Cloud events
-│   │   ├── __init__.py
-│   │   ├── base.py                     # Event base classes
-│   │   ├── azure_events.py             # Azure Event Grid
-│   │   └── aws_events.py               # AWS EventBridge
-│   ├── training/
-│   │   └── event_integration.py        # Training event emitter
-│   ├── monitoring/
-│   │   └── feature_freshness_drift.py  # Freshness drift detector
-│   └── cli/
-│       └── features.py                 # Feature CLI commands
-│
-├── configs/events/
-│   └── event_config.yaml               # Event configuration
-│
-├── scripts/
-│   └── k8s_deploy.sh                   # K8s deployment script
-│
-├── examples/features/
-│   └── text_features.py                # Example features
-│
-└── .github/prompts/followup_execution_plan/
-    ├── AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
-    ├── COMPARISON_RATING.md
-    └── IMPLEMENTATION_ROADMAP.md
+ manifests/k8s/ # Kubernetes manifests
+ base/ # Base K8s configuration
+ deployment.yaml # Main deployment (3 replicas)
+ service.yaml # ClusterIP service
+ configmap.yaml # Application config
+ secret.yaml.template # Secret template
+ hpa.yaml # HorizontalPodAutoscaler
+ resourcequota.yaml # Resource quotas
+ servicemonitor.yaml # Prometheus integration
+ kustomization.yaml # Kustomize base
+ overlays/ # Environment overlays
+ development/ # Dev environment
+ production/ # Prod environment
+
+ src/codex_ml/
+ features/ # Feature store
+ __init__.py
+ feature_store.py # Core feature store
+ monitoring.py # Health & freshness
+ events/ # Cloud events
+ __init__.py
+ base.py # Event base classes
+ azure_events.py # Azure Event Grid
+ aws_events.py # AWS EventBridge
+ training/
+ event_integration.py # Training event emitter
+ monitoring/
+ feature_freshness_drift.py # Freshness drift detector
+ cli/
+ features.py # Feature CLI commands
+
+ configs/events/
+ event_config.yaml # Event configuration
+
+ scripts/
+ k8s_deploy.sh # K8s deployment script
+
+ examples/features/
+ text_features.py # Example features
+
+ .github/prompts/followup_execution_plan/
+ AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
+ COMPARISON_RATING.md
+ IMPLEMENTATION_ROADMAP.md
 ```
 
 ---
@@ -303,36 +303,36 @@ store = FeatureStore(".codex/feature_store")
 
 # Define features
 features = [
-    Feature(
-        name="token_count",
-        transform_fn=lambda inputs: len(inputs["text"].split()),
-        metadata=FeatureMetadata(
-            name="token_count",
-            version="1.0.0",
-            dtype="int",
-            description="Number of tokens",
-            created_at=datetime.now().isoformat(),
-            updated_at=datetime.now().isoformat(),
-            tags={"category": "text_stats"},
-        ),
-    )
+ Feature(
+ name="token_count",
+ transform_fn=lambda inputs: len(inputs["text"].split()),
+ metadata=FeatureMetadata(
+ name="token_count",
+ version="1.0.0",
+ dtype="int",
+ description="Number of tokens",
+ created_at=datetime.now().isoformat(),
+ updated_at=datetime.now().isoformat(),
+ tags={"category": "text_stats"},
+ ),
+ )
 ]
 
 # Register feature group
 group = FeatureGroup(
-    name="text_features",
-    features=features,
-    version="1.0.0",
-    description="Text processing features",
+ name="text_features",
+ features=features,
+ version="1.0.0",
+ description="Text processing features",
 )
 store.register_feature_group(group)
 
 # Materialize features
 result = store.materialize_features(
-    ["token_count"],
-    {"text": "Hello world"},
+ ["token_count"],
+ {"text": "Hello world"},
 )
-print(result)  # {'token_count': 2}
+print(result) # {'token_count': 2}
 ```
 
 ## 3. Cloud Events
@@ -373,8 +373,8 @@ print(f"Minutes: {status.freshness_minutes:.2f}")
 detector = FeatureFreshnessDriftDetector(monitor)
 drift_scores = {"feature1": 0.15, "feature2": 0.82}
 report = detector.get_drift_report_with_freshness(
-    ["feature1", "feature2"],
-    drift_scores,
+ ["feature1", "feature2"],
+ drift_scores,
 )
 ```
 

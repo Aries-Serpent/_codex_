@@ -75,9 +75,9 @@ python3 scripts/rotate_jwt_secret.py
 python3 scripts/rotate_jwt_secret.py --verify
 
 # Expected output:
-#  TOKEN_SECRET_KEY is set
-#  CODEX_MASTER_KEY is set
-#  Backup directory exists
+# TOKEN_SECRET_KEY is set
+# CODEX_MASTER_KEY is set
+# Backup directory exists
 ```
 
 ## Step 3: Perform Rotation
@@ -115,8 +115,8 @@ import jwt
 
 secret = os.getenv('TOKEN_SECRET_KEY')
 payload = {
-    'sub': 'test-user',
-    'exp': datetime.utcnow() + timedelta(hours=1)
+ 'sub': 'test-user',
+ 'exp': datetime.utcnow() + timedelta(hours=1)
 }
 token = jwt.encode(payload, secret, algorithm='HS256')
 print(f' JWT generated: {token[:50]}...')
@@ -200,9 +200,9 @@ python3 scripts/github_secrets_sync.py --rotate
 python3 scripts/github_secrets_sync.py --validate
 
 # Expected output:
-#  TOKEN_SECRET_KEY: accessible
-#  GITHUB_OAUTH_CLIENT_SECRET: accessible
-#  SESSION_ENCRYPTION_KEY: accessible
+# TOKEN_SECRET_KEY: accessible
+# GITHUB_OAUTH_CLIENT_SECRET: accessible
+# SESSION_ENCRYPTION_KEY: accessible
 ```
 
 ## Step 5: Sync to Downstream Systems
@@ -238,9 +238,9 @@ Manually set or update individual secrets via Copilot Agent automation.
 ```bash
 # Generate a new secure secret (32 bytes = 256 bits)
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action generate-key \
-  --name NEW_SECRET_NAME \
-  --key-length 32
+ --action generate-key \
+ --name NEW_SECRET_NAME \
+ --key-length 32
 
 # The script will:
 # 1. Generate cryptographically secure random key
@@ -252,10 +252,10 @@ python3 scripts/phase10/automated_secrets_manager.py \
 ```bash
 # Set secret with specific value
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action set \
-  --name SECRET_NAME \
-  --value "your-secret-value" \
-  --method api
+ --action set \
+ --name SECRET_NAME \
+ --value "your-secret-value" \
+ --method api
 
 # Methods:
 # - api: Direct GitHub REST API (requires PyNaCl)
@@ -267,18 +267,18 @@ python3 scripts/phase10/automated_secrets_manager.py \
 ```bash
 # Verify secret exists in GitHub
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action verify \
-  --name SECRET_NAME
+ --action verify \
+ --name SECRET_NAME
 
 # Expected output:
-#  SECRET_NAME exists in GitHub Secrets
+# SECRET_NAME exists in GitHub Secrets
 ```
 
 ## Step 4: List All Secrets
 ```bash
 # List all configured secrets (names only, no values)
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action list
+ --action list
 
 # Output example:
 # Secrets in Aries-Serpent/_codex_:
@@ -430,13 +430,13 @@ After automated rotation:
 
 ```bash
 # JWT rotation
-python3 scripts/rotate_jwt_secret.py              # Rotate
-python3 scripts/rotate_jwt_secret.py --verify     # Verify
-python3 scripts/rotate_jwt_secret.py --rollback   # Rollback
+python3 scripts/rotate_jwt_secret.py # Rotate
+python3 scripts/rotate_jwt_secret.py --verify # Verify
+python3 scripts/rotate_jwt_secret.py --rollback # Rollback
 
 # Secrets sync
-python3 scripts/github_secrets_sync.py --backup   # Backup
-python3 scripts/github_secrets_sync.py --rotate   # Rotate all
+python3 scripts/github_secrets_sync.py --backup # Backup
+python3 scripts/github_secrets_sync.py --rotate # Rotate all
 python3 scripts/github_secrets_sync.py --validate # Validate
 
 # Manual injection
@@ -449,18 +449,18 @@ python3 scripts/phase10/automated_secrets_manager.py --action verify --name SECR
 
 ```
 .codex/
-├── secrets/  # pragma: allowlist secret
-│   └── backups/          # Encrypted secret backups  # pragma: allowlist secret
-│       ├── jwt_secret_<timestamp>.enc  # pragma: allowlist secret
-│       └── secrets_backup_<timestamp>.json.enc  # pragma: allowlist secret
-└── audit/
-    └── phase10/          # Audit logs
-        └── secrets-rotation-<timestamp>.log  # pragma: allowlist secret
+ secrets/ # pragma: allowlist secret
+ backups/ # Encrypted secret backups # pragma: allowlist secret
+ jwt_secret_<timestamp>.enc # pragma: allowlist secret
+ secrets_backup_<timestamp>.json.enc # pragma: allowlist secret
+ audit/
+ phase10/ # Audit logs
+ secrets-rotation-<timestamp>.log # pragma: allowlist secret
 
 .github/workflows/
-├── auth-token-rotation.yml      # JWT rotation workflow  # pragma: allowlist secret
-├── auth-secret-rotation.yml     # Multi-secret rotation  # pragma: allowlist secret
-└── phase10-automated-secrets-setup.yml  # Initial setup  # pragma: allowlist secret
+ auth-token-rotation.yml # JWT rotation workflow # pragma: allowlist secret
+ auth-secret-rotation.yml # Multi-secret rotation # pragma: allowlist secret
+ phase10-automated-secrets-setup.yml # Initial setup # pragma: allowlist secret
 ```
 
 ---

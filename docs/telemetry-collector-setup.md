@@ -169,7 +169,7 @@ integration.on_decision_made(
 
 # 2. Telemetry collector:
 # - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0
-# - Checks SLA: 3600 <= 14400 → sla_met=true
+# - Checks SLA: 3600 <= 14400 sla_met=true
 # - Creates event with sla_status="met"
 
 # 3. SLA monitor:
@@ -444,7 +444,7 @@ print(result)
 # "escalation_triggered": True,
 # }
 
-# Escalation callback fires → escalates to Release Manager's manager
+# Escalation callback fires escalates to Release Manager's manager
 ```
 
 ### Example 3: Generate Compliance Report
@@ -534,7 +534,7 @@ print(f"Limit: {cardinality['limit']}")
 print(f"Safe: {cardinality['cardinality_safe']}")
 
 if cardinality['warning']:
- print(f"️ {cardinality['warning']}")
+ print(f" {cardinality['warning']}")
 ```
 
 ---

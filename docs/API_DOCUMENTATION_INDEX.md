@@ -311,10 +311,10 @@ Start with [`CORE_API_REFERENCE.md`](./CORE_API_REFERENCE.md)
 ## Coverage Progress
 
 ```
-Phase 1: 4.3% → 4.3% (No new docs yet, inventory only)
-Phase 2: 4.3% → 17.3% (98+ signatures documented)
-Phase 3: 17.3% → 17.3% (Gap analysis, no new docs)
-Phase 4: 17.3% → 20%+ (Target achieved with quick wins)
+Phase 1: 4.3% 4.3% (No new docs yet, inventory only)
+Phase 2: 4.3% 17.3% (98+ signatures documented)
+Phase 3: 17.3% 17.3% (Gap analysis, no new docs)
+Phase 4: 17.3% 20%+ (Target achieved with quick wins)
 ```
 
 **Current:** 17.3% of 568 signatures = 98+ functions documented

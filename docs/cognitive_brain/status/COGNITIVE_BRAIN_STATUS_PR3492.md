@@ -36,30 +36,30 @@
 %%{init: {'accessibility': {'title': 'Diagram showing "PR #3492 Deliverables", " ZendeskAPIClient.update_user()\nPUT /api/v2/users/{id}.json\nRole/access-level changes"'}}%%
 
 graph TB
-    subgraph PR3492["PR #3492 Deliverables"]
-        API[" ZendeskAPIClient.update_user()\nPUT /api/v2/users/{id}.json\nRole/access-level changes"]
-        P26[" CODEX_CI_LAST_GREEN_SHA\nAuto-written on green CI\nEnables git bisect workflows"]
-        EMBED_GUARD[" EMBEDDING_INDEX_AUTO_REBUILD guard\nFAISS trigger gated on repo variable\nPause rebuilds without workflow commit"]
-        RBAC_ACTIVE[" COGNITIVE_BRAIN_ALLOWED_ACTORS\nNow active: 4 actors\nORG_OWNER tier via StructuralPolicyManager"]
-    end
+ subgraph PR3492["PR #3492 Deliverables"]
+ API[" ZendeskAPIClient.update_user()\nPUT /api/v2/users/{id}.json\nRole/access-level changes"]
+ P26[" CODEX_CI_LAST_GREEN_SHA\nAuto-written on green CI\nEnables git bisect workflows"]
+ EMBED_GUARD[" EMBEDDING_INDEX_AUTO_REBUILD guard\nFAISS trigger gated on repo variable\nPause rebuilds without workflow commit"]
+ RBAC_ACTIVE[" COGNITIVE_BRAIN_ALLOWED_ACTORS\nNow active: 4 actors\nORG_OWNER tier via StructuralPolicyManager"]
+ end
 
-    subgraph AGENTS["Agent Updates"]
-        CBM["cognitive-brain-manager.md v3.0\nMermaid updated with RBAC + CI Health\nPR #3492 metrics added"]
-        CBSI["cognitive-brain-session-injector.md v1.1\nALLOWED_ACTORS now  (was ️)"]
-    end
+ subgraph AGENTS["Agent Updates"]
+ CBM["cognitive-brain-manager.md v3.0\nMermaid updated with RBAC + CI Health\nPR #3492 metrics added"]
+ CBSI["cognitive-brain-session-injector.md v1.1\nALLOWED_ACTORS now (was )"]
+ end
 
-    subgraph STATE["Current Repository State"]
-        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
-        GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
-        WF["96 workflows"]
-        RBAC["StructuralPolicyManager RBAC\n4 allowed actors via env var\nCODEX_MASTER_KEY + CODEX_BACKUP_KEY granted"]
-    end
+ subgraph STATE["Current Repository State"]
+ REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+ GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
+ WF["96 workflows"]
+ RBAC["StructuralPolicyManager RBAC\n4 allowed actors via env var\nCODEX_MASTER_KEY + CODEX_BACKUP_KEY granted"]
+ end
 
-    PR3492 --> AGENTS
+ PR3492 --> AGENTS
 
-    PR3492 --> STATE
+ PR3492 --> STATE
 
-    RBAC_ACTIVE --> RBAC
+ RBAC_ACTIVE --> RBAC
 ```
 
 ---
@@ -103,23 +103,23 @@ graph TB
 
 flowchart LR
 
-    NOW["PR #3492\n ALL P2 WIRING COMPLETE"] --> P3
+ NOW["PR #3492\n ALL P2 WIRING COMPLETE"] --> P3
 
-    P3["P3 — First D_CAPABLE Promotion\n(future scope)"]
+ P3["P3 — First D_CAPABLE Promotion\n(future scope)"]
 
-    P3 --> P3A["Define D_CAPABLE criteria\nper agent type"]
+ P3 --> P3A["Define D_CAPABLE criteria\nper agent type"]
 
-    P3 --> P3B["Owner approval required\ne-to-d gate 5/5 "]
+ P3 --> P3B["Owner approval required\ne-to-d gate 5/5 "]
 
-    P3 --> P3C["Update AGENT_REGISTRY.yaml\nautonomous_model: D_CAPABLE"]
+ P3 --> P3C["Update AGENT_REGISTRY.yaml\nautonomous_model: D_CAPABLE"]
 
-    P4["P4 — Enhancements"]
+ P4["P4 — Enhancements"]
 
-    P4 --> P4A["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\nwire to brain_interface.py"]
+ P4 --> P4A["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\nwire to brain_interface.py"]
 
-    P4 --> P4B["COPILOT_AGENT_SESSION_RESTORE_ENABLED\nwire to session-log-retrieval-agent"]
+ P4 --> P4B["COPILOT_AGENT_SESSION_RESTORE_ENABLED\nwire to session-log-retrieval-agent"]
 
-    P4 --> P4C["AUTO_PROMOTE_TIER_ENABLED\ntrue when auto_promote_tier.py validated"]
+ P4 --> P4C["AUTO_PROMOTE_TIER_ENABLED\ntrue when auto_promote_tier.py validated"]
 ```
 
 ---

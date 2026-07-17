@@ -74,10 +74,10 @@ This index serves as the primary navigation point for all administrative documen
 
 ### Path - Navigation Flow
 ```
-User/Agent → INDEX.md → Category → Specific Doc → Information
-     ↓           ↓          ↓           ↓             ↓
-  Arrival    Overview   Policies    Genesis        Action
-            Links      Governance   Roadmap       Execute
+User/Agent INDEX.md Category Specific Doc Information
+ 
+ Arrival Overview Policies Genesis Action
+ Links Governance Roadmap Execute
 ```
 **Alignment:** Hierarchical structure with minimal depth for rapid access
 
@@ -116,9 +116,9 @@ Depth: Minimal detail in index, defer to linked docs (10% summary, 90% delegatio
 
 ### Link Maintenance Effort
 ```
-Iteration-Cycle Link Checks:  ██ 10% (Automated)
-Milestone Reviews:            ███ 15% (Human verification)
-On-Demand Updates:            ████████ 75% (When docs added/removed)
+Iteration-Cycle Link Checks: ██ 10% (Automated)
+Milestone Reviews: ███ 15% (Human verification)
+On-Demand Updates: ████████ 75% (When docs added/removed)
 ```
 
 ---

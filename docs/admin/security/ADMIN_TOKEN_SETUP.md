@@ -42,9 +42,9 @@ This guide walks administrators through setting up **secure GitHub token storage
 
 ```bash
 # Check installed tools
-gh --version          # GitHub CLI
-python3 --version     # Python 3.8+
-pip3 --version        # Python package manager
+gh --version # GitHub CLI
+python3 --version # Python 3.8+
+pip3 --version # Python package manager
 
 # Install cryptography library (for AES encryption)
 pip3 install cryptography
@@ -87,24 +87,24 @@ python3 scripts/security/token_encryption_tool.py
 **Example output**:
 
 ```
- _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
- Energy: 5/5 |  Security Mode Active
+ _CODEX_ TOKEN ENCRYPTION TOOL v2.0 # pragma: allowlist secret
+ Energy: 5/5 | Security Mode Active
 ================================================================================
 
-Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
+Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN # pragma: allowlist secret
 
  Encryption complete!
 
- COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
+ COPY THESE VALUES TO GITHUB SECRETS: # pragma: allowlist secret
 
-🥇 RECOMMENDED - Base64 Encoding:
-   Secret Name:  CODEX_GHP_TOKEN_BASE64  # pragma: allowlist secret
-   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4  # pragma: allowlist secret
+ RECOMMENDED - Base64 Encoding:
+ Secret Name: CODEX_GHP_TOKEN_BASE64 # pragma: allowlist secret
+ Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4 # pragma: allowlist secret
 
  MOST SECURE - AES-256-GCM Encryption:
-   Secret Name: CODEX_GHP_TOKEN_AES_KEY  # pragma: allowlist secret
-   Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz  # pragma: allowlist secret
-   ...
+ Secret Name: CODEX_GHP_TOKEN_AES_KEY # pragma: allowlist secret
+ Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz # pragma: allowlist secret
+ ...
 ```
 
 ## Step 3: Add Secrets to GitHub
@@ -233,13 +233,13 @@ python3 scripts/security/token_encryption_tool.py
 
 **Solutions**:
 1. Install cryptography library:
-   ```bash
-   pip3 install cryptography
+ ```bash
+ pip3 install cryptography
  ```
 2. Add to workflow:
-   ```yaml
-   - name: Install cryptography
-     run: pip install cryptography
+ ```yaml
+ - name: Install cryptography
+ run: pip install cryptography
  ```
 3. Use Base64 encoding as fallback
 

@@ -35,10 +35,10 @@ pip install -e ".[minimal]"
 If you are new to the platform, read the tutorials in order:
 
 ```
-01 → understand what drift looks like
-02 → compare model versions with statistics
-03 → automate the detect → retrain → promote cycle
-04 → harden your service for production
+01 understand what drift looks like
+02 compare model versions with statistics
+03 automate the detect retrain promote cycle
+04 harden your service for production
 ```
 
 Each tutorial links to the next one so you can follow the chain naturally.

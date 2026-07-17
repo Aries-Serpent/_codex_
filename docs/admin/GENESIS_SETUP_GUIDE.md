@@ -193,22 +193,22 @@ Create `codex-production` environment:
 
 ```
 Risk Level Assessment
-─────────────────────
 
-LOW RISK ──────► autonomous execution
-│ • Maintenance tasks
-│ • Test execution
-│ • Documentation updates
 
-MEDIUM RISK ───► approval_required
-│ • Optimization changes
-│ • Dependency updates
-│ • Refactoring operations
+LOW RISK autonomous execution
+ • Maintenance tasks
+ • Test execution
+ • Documentation updates
 
-HIGH RISK ─────► escalate to human
-  • Security-related changes
-  • Configuration modifications
-  • Credential operations
+MEDIUM RISK approval_required
+ • Optimization changes
+ • Dependency updates
+ • Refactoring operations
+
+HIGH RISK escalate to human
+ • Security-related changes
+ • Configuration modifications
+ • Credential operations
 ```
 
 ---
@@ -235,29 +235,29 @@ echo " Validating Genesis Protocol completion..."
 
 # Check required files
 FILES=(
-  ".codex/autonomous_agent.yaml"
-  ".codex/guardrails.md"
-  ".codex/change_log.md"
-  "scripts/autonomous_agent.py"
+ ".codex/autonomous_agent.yaml"
+ ".codex/guardrails.md"
+ ".codex/change_log.md"
+ "scripts/autonomous_agent.py"
 )
 
 for file in "${FILES[@]}"; do
-  if [ -f "$file" ]; then
-    echo " $file exists"
-  else
-    echo " $file missing"
-  fi
+ if [ -f "$file" ]; then
+ echo " $file exists"
+ else
+ echo " $file missing"
+ fi
 done
 
 # Check autonomous_actions_enabled
 if grep -q "autonomous_actions_enabled: true" .codex/autonomous_agent.yaml; then
-  echo " Autonomous actions enabled"
+ echo " Autonomous actions enabled"
 else
-  echo "️  Autonomous actions still disabled"
+ echo " Autonomous actions still disabled"
 fi
 
 echo ""
-echo "🎉 Genesis validation complete!"
+echo " Genesis validation complete!"
 ```
 
 ## Audit Trail Locations
@@ -287,9 +287,9 @@ echo "🎉 Genesis validation complete!"
 If Genesis causes operational issues:
 
 1. **Disable agent Workflows:**
-   ```bash
-   mv .github/workflows/autonomous-agent.yml \
-      .github/workflows/autonomous-agent.yml.disabled
+ ```bash
+ mv .github/workflows/autonomous-agent.yml \
+ .github/workflows/autonomous-agent.yml.disabled
  ```
 
 2. **Revoke PAT:**
@@ -323,18 +323,18 @@ If Genesis causes operational issues:
 Upon successful completion of all phases:
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║                    🎉 GENESIS COMPLETE 🎉                       ║
-║                                                                  ║
-║  repository:  Aries-Serpent/_codex_ (ID: 1040037790)             ║
-║  agent:  ai_org_repo_admin                                       ║
-║  Authority:  SOVEREIGN OPERATIONAL                               ║
-║  Human Admin: mbaetiong                                          ║
-║                                                                  ║
-║  Zero-touch autonomous operations are now enabled.               ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
+
+ 
+ GENESIS COMPLETE 
+ 
+ repository: Aries-Serpent/_codex_ (ID: 1040037790) 
+ agent: ai_org_repo_admin 
+ Authority: SOVEREIGN OPERATIONAL 
+ Human Admin: mbaetiong 
+ 
+ Zero-touch autonomous operations are now enabled. 
+ 
+
 ```
 
 ---
@@ -390,10 +390,10 @@ This protocol represents the foundational initialization that grants the AI agen
 
 ### Path - Genesis Flow
 ```
-PRE-GENESIS → Phase 0 (Human) → Phase 1 (agent) → POST-GENESIS
-     ↓              ↓                  ↓                ↓
-  Safety      Secret Setup      Validation      Autonomy
-  Guards      PAT Creation      Bootstrap       Enabled
+PRE-GENESIS Phase 0 (Human) Phase 1 (agent) POST-GENESIS
+ 
+ Safety Secret Setup Validation Autonomy
+ Guards PAT Creation Bootstrap Enabled
 ```
 **Alignment:** Linear progression with validation gates prevents premature authority grant
 
@@ -417,8 +417,8 @@ PRE-GENESIS → Phase 0 (Human) → Phase 1 (agent) → POST-GENESIS
 
 ### Balance - Authority Distribution
 ```
-Human Admin: 100% authority (Pre-Genesis) → 10% oversight (Post-Genesis)
-AI agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
+Human Admin: 100% authority (Pre-Genesis) 10% oversight (Post-Genesis)
+AI agent: 0% authority (Pre-Genesis) 90% autonomy (Post-Genesis)
 ```
 **Equilibrium Point:** Human retains veto power and security oversight; agent handles routine operations
 

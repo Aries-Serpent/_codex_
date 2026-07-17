@@ -13,33 +13,33 @@
 ## Overview
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🔑 Token Rotation Start, "§1 Create new PAT\n(do NOT revoke old yet)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Token Rotation Start, "§1 Create new PAT\n(do NOT revoke old yet)"'}}%%
 
 flowchart TD
 
-    START([🔑 Token Rotation Start]) --> ASSESS{Rotation reason?}
+ START([ Token Rotation Start]) --> ASSESS{Rotation reason?}
 
-    ASSESS -->|Scheduled 90-day| SCHEDULED["§1 Create new PAT\n(do NOT revoke old yet)"]
+ ASSESS -->|Scheduled 90-day| SCHEDULED["§1 Create new PAT\n(do NOT revoke old yet)"]
 
-    ASSESS -->|Suspected compromise| EMERGENCY["§E Emergency:\nRevoke old PAT FIRST\nthen §1"]
+ ASSESS -->|Suspected compromise| EMERGENCY["§E Emergency:\nRevoke old PAT FIRST\nthen §1"]
 
-    SCHEDULED --> CREATE_PAT["§1 Create new Personal Access Token\n(GitHub → Settings → Developer Settings)"]
+ SCHEDULED --> CREATE_PAT["§1 Create new Personal Access Token\n(GitHub Settings Developer Settings)"]
 
-    CREATE_PAT --> REQUIRED_SCOPES["§2 Set required scopes\nrepo, workflow, admin:repo_hook,\nvariables:write, read:org"]
+ CREATE_PAT --> REQUIRED_SCOPES["§2 Set required scopes\nrepo, workflow, admin:repo_hook,\nvariables:write, read:org"]
 
-    REQUIRED_SCOPES --> UPDATE_SECRET["§3 Update CODEX_MASTER_KEY secret\nin repository settings"]
+ REQUIRED_SCOPES --> UPDATE_SECRET["§3 Update CODEX_MASTER_KEY secret\nin repository settings"]
 
-    UPDATE_SECRET --> UPDATE_BACKUP["§4 Rotate CODEX_BACKUP_KEY\n(same process, different PAT)"]
+ UPDATE_SECRET --> UPDATE_BACKUP["§4 Rotate CODEX_BACKUP_KEY\n(same process, different PAT)"]
 
-    UPDATE_BACKUP --> VERIFY["§5 Verify — trigger\nagent-auth-delegation.yml"]
+ UPDATE_BACKUP --> VERIFY["§5 Verify — trigger\nagent-auth-delegation.yml"]
 
-    VERIFY -->| Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
+ VERIFY -->| Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
 
-    VERIFY -->| Fail| DEBUG["§7 Debug — see Troubleshooting"]
+ VERIFY -->| Fail| DEBUG["§7 Debug — see Troubleshooting"]
 
-    REVOKE_OLD --> LOG["§8 Log rotation in\nthis file + CHANGELOG.md"]
+ REVOKE_OLD --> LOG["§8 Log rotation in\nthis file + CHANGELOG.md"]
 
-    LOG --> DONE([ Rotation Complete])
+ LOG --> DONE([ Rotation Complete])
 ```
 
 ---
@@ -102,7 +102,7 @@ flowchart TD
 ```bash
 # Authenticate with a PAT that has admin:repo_hook or use your browser session
 echo "YOUR_NEW_PAT_HERE" | gh secret set CODEX_MASTER_KEY \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -118,7 +118,7 @@ Rotate it on the same schedule but generate a **separate** PAT.
 
 ```bash
 echo "YOUR_BACKUP_PAT_HERE" | gh secret set CODEX_BACKUP_KEY \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -129,8 +129,8 @@ echo "YOUR_BACKUP_PAT_HERE" | gh secret set CODEX_BACKUP_KEY \
 
 ```bash
 gh workflow run agent-auth-delegation.yml \
-  --repo Aries-Serpent/_codex_ \
-  --ref main
+ --repo Aries-Serpent/_codex_ \
+ --ref main
 ```
 
 Or navigate to:
@@ -187,9 +187,9 @@ If you believe the token was leaked (e.g., accidentally committed, exposed in lo
 1. **Immediately** revoke the old PAT at `https://github.com/settings/tokens`
 2. Follow §1–§4 above to create and deploy new tokens
 3. Audit recent workflow runs for unauthorized variable changes:
-   ```bash
-   gh api repos/Aries-Serpent/_codex_/actions/runs \
-     --jq '.workflow_runs[:20] | .[] | {id, name, conclusion, created_at}'
+ ```bash
+ gh api repos/Aries-Serpent/_codex_/actions/runs \
+ --jq '.workflow_runs[:20] | .[] | {id, name, conclusion, created_at}'
  ```
 4. Check `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` for unexpected agent activations
 5. File a GitHub security advisory if repository data was accessed: `https://github.com/Aries-Serpent/_codex_/security/advisories/new`

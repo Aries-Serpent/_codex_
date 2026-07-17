@@ -107,24 +107,24 @@
 **Priority order (time budget: 60 min):**
 
 1. CI/CD cache optimization (15-20 min)
-   - Add caching to 15+ Python workflows
-   - Pattern: actions/cache@v4 + pip cache key
+ - Add caching to 15+ Python workflows
+ - Pattern: actions/cache@v4 + pip cache key
 
 2. WebSocket metrics integration (20-25 min)
-   - Implement /ws/metrics endpoint in cli_api_server.py
-   - Wire MetricsDashboard.tsx to live WebSocket
+ - Implement /ws/metrics endpoint in cli_api_server.py
+ - Wire MetricsDashboard.tsx to live WebSocket
 
 3. Coverage gap-fill tests (25-30 min)
-   - Implement test bodies for 6 cognitive modules
-   - Target: 34.56% → 40%+ statement coverage
+ - Implement test bodies for 6 cognitive modules
+ - Target: 34.56% 40%+ statement coverage
 
 4. Session context enrichment (10-15 min)
-   - Enhance AgentSessionContext with failure patterns, blocked objectives, alerts
-   - Target: 20% → <5% context loss
+ - Enhance AgentSessionContext with failure patterns, blocked objectives, alerts
+ - Target: 20% <5% context loss
 
 5. Final validation & docs (5-10 min)
-   - Verify all changes pass ruff + pytest
-   - Update CHANGELOG + accountability report
+ - Verify all changes pass ruff + pytest
+ - Update CHANGELOG + accountability report
 ```
 
 ---

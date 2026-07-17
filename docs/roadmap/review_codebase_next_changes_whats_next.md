@@ -101,10 +101,10 @@
 - If failures are infrastructure-only (startup/action_required/no jobs), document evidence and keep code unchanged.
 - Confirm all review-thread comments remain resolved.
 - Keep living docs synchronized:
-  - docs/roadmap/review_codebase_next_changes_whats_next.md
-  - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
-  - CHANGELOG.md
-  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+ - docs/roadmap/review_codebase_next_changes_whats_next.md
+ - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+ - CHANGELOG.md
+ - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Preserve final 5-minute wrap-up reserve in the next pass.
 ```
 
@@ -174,21 +174,21 @@ IMMEDIATE ACTIONS:
 
 COVERAGE NEXT PHASE (delegate to unified-coverage-agent + test-enhancement-agent):
 1. services/ita/: all modules at 0% (git_ops, hygiene, knowledge_base, main, security, tests_runner, models)
-2. services/msp_gateway/: rate_limit 49%→≥70%, tenant_context 16%→≥50%
+2. services/msp_gateway/: rate_limit 49%≥70%, tenant_context 16%≥50%
 3. src/training/: mock torch; target trainer.py ≥40%
 4. mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%)
 5. Run nox -s tests --cov for cross-domain number after blockers fixed
 
 MEASUREMENT COMMANDS (verified working):
-  - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
-  - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
-  - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
+ - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+ - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
+ - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
 
 UPDATE LIVING DOCS after each phase:
-  - docs/roadmap/review_codebase_next_changes_whats_next.md
-  - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
-  - CHANGELOG.md
-  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+ - docs/roadmap/review_codebase_next_changes_whats_next.md
+ - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
+ - CHANGELOG.md
+ - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
 ```
@@ -273,27 +273,27 @@ STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, ph
 @copilot continue coverage improvement on branch copilot/explore-codebase-implementation-plan.
 STATE: Phase C/D/E COMPLETE (2026-05-27T21:19Z session).
 CONFIRMED RESULTS:
-  - Phase C: src/security/ = 90.72%  (885 passed, 17 skip)
-  - Phase D: CB-001 through CB-006 all complete 
-  - Phase E: services/api/main.py 71.38% , rate_limit 49.52%, training 11.97% (torch-blocked)
+ - Phase C: src/security/ = 90.72% (885 passed, 17 skip)
+ - Phase D: CB-001 through CB-006 all complete 
+ - Phase E: services/api/main.py 71.38% , rate_limit 49.52%, training 11.97% (torch-blocked)
 
 NEXT OBJECTIVES (delegate to unified-coverage-agent + test-enhancement-agent):
-1. services/msp_gateway/: rate_limit 49%→≥70%, tenant_context 16%→≥50%, msp_gateway/app.py 0%→≥60%
+1. services/msp_gateway/: rate_limit 49%≥70%, tenant_context 16%≥50%, msp_gateway/app.py 0%≥60%
 2. services/ita/: all modules at 0% (git_ops, hygiene, knowledge_base, main, security, tests_runner, models)
 3. src/training/: mock torch imports to test torch-free code paths; target trainer.py ≥40%
 4. Run mutation-testing-agent on src/security/ (provider_factory 79%, aws_provider 70%) to find weak assertions
 5. Run nox -s tests --cov to get cross-domain overall coverage number
 
 MEASUREMENT COMMANDS (verified working):
-  - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
-  - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
-  - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
+ - python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
+ - python -m pytest tests/training/ -m "not requires_torch" --cov=src/training --cov-report=term-missing -q
+ - python -m pytest tests/services/ -m "not requires_torch" --cov=services --cov-report=term-missing -q
 
 UPDATE LIVING DOCS after each phase:
-  - docs/roadmap/review_codebase_next_changes_whats_next.md
-  - docs/reporting/next_expected_codebase_change_48h.md
-  - CHANGELOG.md
-  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+ - docs/roadmap/review_codebase_next_changes_whats_next.md
+ - docs/reporting/next_expected_codebase_change_48h.md
+ - CHANGELOG.md
+ - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ## Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)

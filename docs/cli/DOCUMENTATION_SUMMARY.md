@@ -84,9 +84,9 @@ Enhanced commands with comprehensive docstrings:
 
 ```
 docs/cli/
-├── COMMAND_REFERENCE.md (complete reference)
-├── DOCUMENTATION_SUMMARY.md (this file)
-└── [future: module-specific guides]
+ COMMAND_REFERENCE.md (complete reference)
+ DOCUMENTATION_SUMMARY.md (this file)
+ [future: module-specific guides]
 ```
 
 ---
@@ -184,36 +184,36 @@ Already documented:
 
 ### Before Documentation
 ```
-Documented:    12 commands (32%)
-├─ cli.py:           8 commands
-├─ cli_rag.py:       3 commands  
-├─ cli_zendesk.py:   1 command (snapshot only)
-└─ Others:           0 commands
+Documented: 12 commands (32%)
+ cli.py: 8 commands
+ cli_rag.py: 3 commands 
+ cli_zendesk.py: 1 command (snapshot only)
+ Others: 0 commands
 
-Undocumented:  25 commands (68%)
-├─ cli_rag.py:       5 commands
-├─ cli_zendesk.py:   8 commands
-├─ cli_knowledge.py: 4 commands
-├─ cli_release.py:   4 commands
-├─ cli_roles.py:     1 command
-├─ cli_qa.py:        1 command
-└─ cli_maps.py:      1 command
+Undocumented: 25 commands (68%)
+ cli_rag.py: 5 commands
+ cli_zendesk.py: 8 commands
+ cli_knowledge.py: 4 commands
+ cli_release.py: 4 commands
+ cli_roles.py: 1 command
+ cli_qa.py: 1 command
+ cli_maps.py: 1 command
 ```
 
 ### After Documentation
 ```
-Documented:    48 commands (98%)
-├─ cli.py:           20+ commands
-├─ cli_rag.py:       8 commands 
-├─ cli_zendesk.py:   9 commands 
-├─ cli_knowledge.py: 4 commands  (3 docstrings added)
-├─ cli_release.py:   4 commands  (4 docstrings added)
-├─ cli_roles.py:     1 command  (1 docstring added)
-├─ cli_qa.py:        1 command  (1 docstring added)
-└─ cli_maps.py:      1 command 
+Documented: 48 commands (98%)
+ cli.py: 20+ commands
+ cli_rag.py: 8 commands 
+ cli_zendesk.py: 9 commands 
+ cli_knowledge.py: 4 commands (3 docstrings added)
+ cli_release.py: 4 commands (4 docstrings added)
+ cli_roles.py: 1 command (1 docstring added)
+ cli_qa.py: 1 command (1 docstring added)
+ cli_maps.py: 1 command 
 
-Remaining:     2 commands (2%)
-└─ Minor internal utilities
+Remaining: 2 commands (2%)
+ Minor internal utilities
 ```
 
 ---
@@ -301,35 +301,35 @@ Each docstring includes:
 ```python
 @app.command("example")
 def example_cmd(param1: str = None, param2: str = None) -> None:
-    """One-line summary.
+ """One-line summary.
 
-    Detailed description explaining:
-    - What the command does
-    - When to use it
-    - Key features
+ Detailed description explaining:
+ - What the command does
+ - When to use it
+ - Key features
 
-    Args:
-        param1: Type and description
-        param2: Type and description
+ Args:
+ param1: Type and description
+ param2: Type and description
 
-    Output:
-        Description of output format with structure
+ Output:
+ Description of output format with structure
 
-    Examples:
-        # Simple usage
-        codex module example
+ Examples:
+ # Simple usage
+ codex module example
 
-        # With parameters
-        codex module example --param value
+ # With parameters
+ codex module example --param value
 
-    See Also:
-        codex other-command - Related operation
+ See Also:
+ codex other-command - Related operation
 
-    Notes:
-        - Safety considerations
-        - Requirements
-        - Limitations
-    """
+ Notes:
+ - Safety considerations
+ - Requirements
+ - Limitations
+ """
 ```
 
 ---

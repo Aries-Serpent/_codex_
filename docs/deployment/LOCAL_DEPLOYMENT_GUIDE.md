@@ -35,8 +35,8 @@ cd /home/runner/work/_codex_/_codex_
 mkdocs serve
 
 # Output:
-# INFO     -  Building documentation...
-# INFO     -  Listening on http://127.0.0.1:8000
+# INFO - Building documentation...
+# INFO - Listening on http://127.0.0.1:8000
 ```
 
 ### Access Documentation
@@ -57,11 +57,11 @@ The development server automatically:
 mkdocs build --verbose
 
 # Output directory:
-# site/                              # 💾 Generated static files
-#   ├── index.html                   # Homepage
-#   ├── assets/                      # CSS, JS, images
-#   ├── search/                      # Search index
-#   └── [page_name]/index.html       # All documentation pages
+# site/ # Generated static files
+# index.html # Homepage
+# assets/ # CSS, JS, images
+# search/ # Search index
+# [page_name]/index.html # All documentation pages
 ```
 
 ### Verify Build Output
@@ -211,9 +211,9 @@ EXPOSE 80
 **Usage**:
 ```bash
 bash deploy/deploy.sh \
-  --namespace codex-ml \
-  --image-tag v1.2.3 \
-  --environment production
+ --namespace codex-ml \
+ --image-tag v1.2.3 \
+ --environment production
 ```
 
 ### 2. `deploy/setup_universal.sh`
@@ -299,28 +299,28 @@ docs_dir: docs/
 site_dir: site/
 
 theme:
-  name: material
-  language: en
-  features: [12 features for navigation & search]
+ name: material
+ language: en
+ features: [12 features for navigation & search]
 
 plugins:
-  - material/search
-  - mermaid2:
-      version: "10.4.0"
+ - material/search
+ - mermaid2:
+ version: "10.4.0"
 
 nav:
-  - Home: index.md
-  - [40+ documentation sections with 100+ total nav entries]
+ - Home: index.md
+ - [40+ documentation sections with 100+ total nav entries]
 
 markdown_extensions:
-  - [11 markdown extensions for enhanced formatting]
+ - [11 markdown extensions for enhanced formatting]
 
 validation:
-  links:
-    absolute_links: ignore
-    anchors: ignore
-  nav:
-    omitted_files: ignore
+ links:
+ absolute_links: ignore
+ anchors: ignore
+ nav:
+ omitted_files: ignore
 ```
 
 ### Navigation Coverage
@@ -405,8 +405,8 @@ pip show mkdocs-mermaid2-plugin
 
 # Verify in mkdocs.yml:
 # plugins:
-#   - mermaid2:
-#       version: "10.4.0"
+# - mermaid2:
+# version: "10.4.0"
 
 # Rebuild
 mkdocs build --clean

@@ -46,9 +46,9 @@ The circuit breaker monitors call outcomes at the service boundary and transitio
 through three states:
 
 ```
-CLOSED → (failure_threshold exceeded) → OPEN → (timeout elapsed) → HALF-OPEN
-HALF-OPEN → (probe success) → CLOSED
-HALF-OPEN → (probe failure) → OPEN
+CLOSED (failure_threshold exceeded) OPEN (timeout elapsed) HALF-OPEN
+HALF-OPEN (probe success) CLOSED
+HALF-OPEN (probe failure) OPEN
 ```
 
 - In `OPEN` state, calls fail fast without hitting the downstream service, giving
@@ -89,8 +89,8 @@ The layers are designed to compose without coupling:
 
 ```
 CircuitBreaker(service_boundary)
-  └── RetryWithBackoff(individual_call)
-        └── GracefulDegradation(feature_group)
+ RetryWithBackoff(individual_call)
+ GracefulDegradation(feature_group)
 ```
 
 The circuit breaker wraps the entire service boundary. Retry wraps each individual

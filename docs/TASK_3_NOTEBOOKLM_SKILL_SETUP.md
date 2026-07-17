@@ -123,14 +123,14 @@ python scripts/run.py notebook_manager.py list
 **Expected Output**:
 ```
  Registered Notebooks:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Name: codex_architecture
 Description: Codex Architecture Knowledge Base - AI-powered development platform
 Notebook ID: [YOUR_NOTEBOOK_ID]
 Sources: 1 (codex-architecture-sync.xml)
 Status: Active
 Last updated: 2026-07-11
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
 
 **Test Query**:
@@ -201,14 +201,14 @@ python scripts/run.py config.py show
 **Expected Configuration Output**:
 ```
  NotebookLM Skill Configuration:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 auto_context: true
 context_window: 128000
 enable_cache: true
 cache_ttl: 3600
 query_timeout: 30
 default_notebook: codex_architecture
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ```
 
 ---
@@ -439,7 +439,7 @@ python scripts/run.py config.py set --query-timeout 60
 ls -la ~/.claude/skills/notebooklm/
 
 # Check Claude Code skill settings
-# Settings → Extensions → Claude Skills → Refresh
+# Settings Extensions Claude Skills Refresh
 
 # Restart Claude Code application
 ```

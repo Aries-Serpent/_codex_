@@ -95,24 +95,24 @@ Phase 4 tests are **pattern-based tests** that validate conditional branch struc
 ```python
 # Pattern test - validates structure, not production code
 def test_scope_hierarchical_admin_branch(self) -> None:
-    """Test hierarchical admin scope implies write + read."""
-    permission = "admin"
-    if permission == "admin":
-        implied = ["write", "read"]
-    # Uses mocks, doesn't test actual code
+ """Test hierarchical admin scope implies write + read."""
+ permission = "admin"
+ if permission == "admin":
+ implied = ["write", "read"]
+ # Uses mocks, doesn't test actual code
 ```
 
 ## What TO Do (Phase 5 Approach)
 ```python
 # Module integration test - tests production code
 def test_token_scope_hierarchical_admin(self) -> None:
-    """Test TokenScope admin permission includes write and read."""
-    from src.security.scope_validator import TokenScope
+ """Test TokenScope admin permission includes write and read."""
+ from src.security.scope_validator import TokenScope
 
-    scope = TokenScope.ADMIN_REPO
-    # Test actual conditional branches in TokenScope class
-    assert scope & TokenScope.WRITE_REPO
-    assert scope & TokenScope.READ_REPO
+ scope = TokenScope.ADMIN_REPO
+ # Test actual conditional branches in TokenScope class
+ assert scope & TokenScope.WRITE_REPO
+ assert scope & TokenScope.READ_REPO
 ```
 
 ## Phase 5 Focus Areas
@@ -179,13 +179,13 @@ def test_token_scope_hierarchical_admin(self) -> None:
 ### Files Available for Review
 ```bash
 /home/runner/work/_codex_/_codex_/
-├── coverage_validation_report.md          # Detailed validation report
-├── coverage_phase4.json                   # JSON coverage data
-├── coverage_gaps.txt                      # Gap analysis
-├── pytest_phase4.log                      # Test execution log
-├── PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md  # This summary
-└── htmlcov/phase4_complete/
-    └── index.html                         # HTML coverage report
+ coverage_validation_report.md # Detailed validation report
+ coverage_phase4.json # JSON coverage data
+ coverage_gaps.txt # Gap analysis
+ pytest_phase4.log # Test execution log
+ PHASE_4_ITERATION_IMPROVEMENT_SUMMARY.md # This summary
+ htmlcov/phase4_complete/
+ index.html # HTML coverage report
 ```
 
 ---

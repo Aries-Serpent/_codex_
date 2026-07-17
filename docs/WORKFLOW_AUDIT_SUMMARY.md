@@ -24,9 +24,9 @@
 
 ```
 Total Workflows: 207
-├─ CRITICAL: 4 workflows (1.9%) 
-├─ HIGH-RISK: 129 workflows (62.3%) 
-└─ SAFE: 74 workflows (35.7%) 
+ CRITICAL: 4 workflows (1.9%) 
+ HIGH-RISK: 129 workflows (62.3%) 
+ SAFE: 74 workflows (35.7%) 
 ```
 
 ### Root File Reference Distribution
@@ -185,26 +185,26 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 ### File Reference Breakdown
 
 ```
-┌─ Configuration Files (96 references)
-│ ├─ pyproject.toml: 41 workflows
-│ ├─ setup.py: 14 workflows
-│ ├─ noxfile.py: 7 workflows
-│ ├─ mkdocs.yml: 12 workflows
-│ ├─ Makefile: 8 workflows
-│ └─ Other: 14 workflows
-│
-├─ Infrastructure (215 references)
-│ ├─ .codex/: 126 workflows
-│ ├─ .github/workflows/: 89 workflows
-│ └─ tests/: 68 workflows
-│
-├─ Dependencies (35 references)
-│ ├─ requirements-*.txt: 35 workflows
-│ └─ Other: 12 workflows
-│
-└─ Documentation (18 references)
- ├─ README.md: 18 workflows
- └─ .github/docs/: 3 workflows
+ Configuration Files (96 references)
+ pyproject.toml: 41 workflows
+ setup.py: 14 workflows
+ noxfile.py: 7 workflows
+ mkdocs.yml: 12 workflows
+ Makefile: 8 workflows
+ Other: 14 workflows
+
+ Infrastructure (215 references)
+ .codex/: 126 workflows
+ .github/workflows/: 89 workflows
+ tests/: 68 workflows
+
+ Dependencies (35 references)
+ requirements-*.txt: 35 workflows
+ Other: 12 workflows
+
+ Documentation (18 references)
+ README.md: 18 workflows
+ .github/docs/: 3 workflows
 ```
 
 ### Trigger Filter Analysis
@@ -302,34 +302,34 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ```
 repository/
-├─ .github/
-│ ├─ workflows/ (keep as-is)
-│ ├─ actions/ (keep as-is)
-│ └─ docs/ (keep as-is)
-├─ config/ (NEW: Move config files here)
-│ ├─ pyproject.toml
-│ ├─ setup.py
-│ ├─ setup.cfg
-│ ├─ pytest.ini
-│ ├─ mypy.ini
-│ ├─ .mypy_baseline
-│ ├─ bandit.yaml
-│ ├─ mkdocs.yml
-│ └─ commitlint.config.mjs
-├─ build/ (NEW: Move build files here)
-│ ├─ Makefile
-│ ├─ noxfile.py
-│ ├─ Dockerfile
-│ └─ docker-compose.yml
-├─ requirements/ (NEW: Move requirements here)
-│ ├─ requirements.txt
-│ ├─ requirements-dev.txt
-│ ├─ requirements-test.txt
-│ └─ ... (other requirements files)
-├─ docs/ (Keep as-is, update references)
-├─ tests/ (Keep as-is)
-├─ src/ (Keep as-is)
-└─ ... (other directories)
+ .github/
+ workflows/ (keep as-is)
+ actions/ (keep as-is)
+ docs/ (keep as-is)
+ config/ (NEW: Move config files here)
+ pyproject.toml
+ setup.py
+ setup.cfg
+ pytest.ini
+ mypy.ini
+ .mypy_baseline
+ bandit.yaml
+ mkdocs.yml
+ commitlint.config.mjs
+ build/ (NEW: Move build files here)
+ Makefile
+ noxfile.py
+ Dockerfile
+ docker-compose.yml
+ requirements/ (NEW: Move requirements here)
+ requirements.txt
+ requirements-dev.txt
+ requirements-test.txt
+ ... (other requirements files)
+ docs/ (Keep as-is, update references)
+ tests/ (Keep as-is)
+ src/ (Keep as-is)
+ ... (other directories)
 ```
 
 ### Workflows That Need Updating

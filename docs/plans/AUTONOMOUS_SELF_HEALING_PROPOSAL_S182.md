@@ -54,35 +54,35 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 
 flowchart TD
 
-    A[Any Workflow Fails] --> B{iterative-self-healing-ci.yml}
+ A[Any Workflow Fails] --> B{iterative-self-healing-ci.yml}
 
-    B --> C[D-00 Triage]
+ B --> C[D-00 Triage]
 
-    C --> D{Pattern Classification}
+ C --> D{Pattern Classification}
 
-    D -->|fixable| E[Auto-Fix Matrix<br/>max 3 iterations]
+ D -->|fixable| E[Auto-Fix Matrix<br/>max 3 iterations]
 
-    D -->|non-fixable| F[Escalate to Human]
+ D -->|non-fixable| F[Escalate to Human]
 
-    E --> G{Fix Applied?}
+ E --> G{Fix Applied?}
 
-    G -->|yes| H[Commit & Push]
+ G -->|yes| H[Commit & Push]
 
-    G -->|no| I{Iterations Left?}
+ G -->|no| I{Iterations Left?}
 
-    I -->|yes| E
+ I -->|yes| E
 
-    I -->|no| F
+ I -->|no| F
 
-    H --> J[Verify Fix]
+ H --> J[Verify Fix]
 
-    J -->|pass| K[ Self-Healed]
+ J -->|pass| K[ Self-Healed]
 
-    J -->|fail| I
+ J -->|fail| I
 
-    style A fill:#ff6b6b
-    style K fill:#51cf66
-    style F fill:#ffd43b
+ style A fill:#ff6b6b
+ style K fill:#51cf66
+ style F fill:#ffd43b
 ```
 
 ### Current Auto-Fix Pattern Coverage
@@ -117,61 +117,61 @@ fail or are not available.
 %%{init: {'accessibility': {'title': 'Flowchart showing copilot/session-*, copilot/sub-pr-*'}}%%
 
 flowchart LR
-    subgraph "Agent Sessions"
-        S1[copilot/session-*]
-        S2[copilot/sub-pr-*]
-    end
+ subgraph "Agent Sessions"
+ S1[copilot/session-*]
+ S2[copilot/sub-pr-*]
+ end
 
-    subgraph "Staging"
-        OD[0D_base_<br/>Integration Branch]
-    end
+ subgraph "Staging"
+ OD[0D_base_<br/>Integration Branch]
+ end
 
-    subgraph "Production"
-        M[main]
-    end
+ subgraph "Production"
+ M[main]
+ end
 
-    S1 -->|Sub-PR| OD
+ S1 -->|Sub-PR| OD
 
-    S2 -->|Sub-PR| OD
+ S2 -->|Sub-PR| OD
 
-    OD -->|Promotion PR #3630| M
+ OD -->|Promotion PR #3630| M
 
-    style S1 fill:#74c0fc
-    style S2 fill:#74c0fc
-    style OD fill:#ffd43b
-    style M fill:#51cf66
+ style S1 fill:#74c0fc
+ style S2 fill:#74c0fc
+ style OD fill:#ffd43b
+ style M fill:#51cf66
 ```
 
 ### Detailed Merge Direction
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SubPR:  All checks pass
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SubPR: All checks pass
 
-  '}}%%
+ '}}%%
 sequenceDiagram
-    participant Agent as Copilot Agent
-    participant SubPR as Sub-PR Branch
-    participant OD as 0D_base_
-    participant Main as main
-    participant CI as CI Checks
+ participant Agent as Copilot Agent
+ participant SubPR as Sub-PR Branch
+ participant OD as 0D_base_
+ participant Main as main
+ participant CI as CI Checks
 
-    Note over Agent,Main: Session Lifecycle
+ Note over Agent,Main: Session Lifecycle
 
-    Agent->>SubPR: Create copilot/session-* branch
-    Agent->>SubPR: Push commits (code changes)
-    CI->>SubPR: Run CI checks
+ Agent->>SubPR: Create copilot/session-* branch
+ Agent->>SubPR: Push commits (code changes)
+ CI->>SubPR: Run CI checks
 
-    CI-->>SubPR:  All checks pass
+ CI-->>SubPR: All checks pass
 
-    SubPR->>OD: Merge sub-PR into 0D_base_
-    CI->>OD: Run integration checks
+ SubPR->>OD: Merge sub-PR into 0D_base_
+ CI->>OD: Run integration checks
 
-    CI-->>OD:  Staging verified
+ CI-->>OD: Staging verified
 
-    OD->>Main: Promotion PR #3630 merge
-    CI->>Main: Run production checks
+ OD->>Main: Promotion PR #3630 merge
+ CI->>Main: Run production checks
 
-    CI-->>Main:  Production ready
+ CI-->>Main: Production ready
 ```
 
 ### Workflow Relationships
@@ -180,56 +180,56 @@ sequenceDiagram
 %%{init: {'accessibility': {'title': 'Flowchart showing PR Created/Edited, Workflow Failed'}}%%
 
 flowchart TB
-    subgraph "Trigger Layer"
-        PR[PR Created/Edited]
-        WF_FAIL[Workflow Failed]
-        MANUAL[Manual Dispatch]
-        CHAIN[Session Chain Trigger]
-    end
+ subgraph "Trigger Layer"
+ PR[PR Created/Edited]
+ WF_FAIL[Workflow Failed]
+ MANUAL[Manual Dispatch]
+ CHAIN[Session Chain Trigger]
+ end
 
-    subgraph "Gate Layer"
-        AUTH[agent-auth-delegation.yml<br/>11-gate compliance]
-        COST[cost-gate.yml<br/>Tier classification]
-        PREFLIGHT[cognitive-preflight<br/>REQ-1 through REQ-11]
-    end
+ subgraph "Gate Layer"
+ AUTH[agent-auth-delegation.yml<br/>11-gate compliance]
+ COST[cost-gate.yml<br/>Tier classification]
+ PREFLIGHT[cognitive-preflight<br/>REQ-1 through REQ-11]
+ end
 
-    subgraph "Execution Layer"
-        SELF_HEAL[iterative-self-healing-ci.yml<br/>D-00 triage + auto-fix]
-        SESSION[copilot-session-chain.yml<br/>Auto-open next session]
-        EVOLVE[copilot-evolution-suite.yml<br/>Self-evolution pipeline]
-    end
+ subgraph "Execution Layer"
+ SELF_HEAL[iterative-self-healing-ci.yml<br/>D-00 triage + auto-fix]
+ SESSION[copilot-session-chain.yml<br/>Auto-open next session]
+ EVOLVE[copilot-evolution-suite.yml<br/>Self-evolution pipeline]
+ end
 
-    subgraph "Resolution Layer"
-        AUTO_FIX[auto_fix_common_issues.py<br/>17 patterns]
-        WRAPUP[session_wrapup_autofix.py<br/>REQ-4/REQ-5 compliance]
-        COPILOT[Copilot Coding Agent<br/>Complex fixes]
-    end
+ subgraph "Resolution Layer"
+ AUTO_FIX[auto_fix_common_issues.py<br/>17 patterns]
+ WRAPUP[session_wrapup_autofix.py<br/>REQ-4/REQ-5 compliance]
+ COPILOT[Copilot Coding Agent<br/>Complex fixes]
+ end
 
-    PR --> AUTH
+ PR --> AUTH
 
-    AUTH --> PREFLIGHT
+ AUTH --> PREFLIGHT
 
-    PREFLIGHT -->|pass| SESSION
+ PREFLIGHT -->|pass| SESSION
 
-    PREFLIGHT -->|fail| WRAPUP
+ PREFLIGHT -->|fail| WRAPUP
 
-    WF_FAIL --> SELF_HEAL
+ WF_FAIL --> SELF_HEAL
 
-    SELF_HEAL -->|fixable| AUTO_FIX
+ SELF_HEAL -->|fixable| AUTO_FIX
 
-    SELF_HEAL -->|non-fixable| COPILOT
+ SELF_HEAL -->|non-fixable| COPILOT
 
-    MANUAL --> SESSION
+ MANUAL --> SESSION
 
-    CHAIN --> SESSION
+ CHAIN --> SESSION
 
-    AUTO_FIX -->|success| SELF_HEAL
+ AUTO_FIX -->|success| SELF_HEAL
 
-    AUTO_FIX -->|fail| COPILOT
+ AUTO_FIX -->|fail| COPILOT
 
-    style COPILOT fill:#74c0fc,stroke:#339af0,stroke-width:2px
-    style SELF_HEAL fill:#ffd43b
-    style AUTH fill:#ff922b
+ style COPILOT fill:#74c0fc,stroke:#339af0,stroke-width:2px
+ style SELF_HEAL fill:#ffd43b
+ style AUTH fill:#ff922b
 ```
 
 ### Resolve Push Target Algorithm
@@ -239,24 +239,24 @@ flowchart TB
 
 flowchart TD
 
-    START[resolve-push-target] --> A{0D_base_ exists?}
+ START[resolve-push-target] --> A{0D_base_ exists?}
 
-    A -->|no| MAIN[Push to main]
+ A -->|no| MAIN[Push to main]
 
-    A -->|yes| B{Open sub-PR<br/>targeting 0D_base_?}
+ A -->|yes| B{Open sub-PR<br/>targeting 0D_base_?}
 
-    B -->|yes| SUB[Push to sub-PR branch<br/>reason: sub_pr]
+ B -->|yes| SUB[Push to sub-PR branch<br/>reason: sub_pr]
 
-    B -->|no| OD[Push to 0D_base_<br/>reason: integration_branch]
+ B -->|no| OD[Push to 0D_base_<br/>reason: integration_branch]
 
-    MAIN --> END[Output: branch + reason]
+ MAIN --> END[Output: branch + reason]
 
-    SUB --> END
+ SUB --> END
 
-    OD --> END
+ OD --> END
 
-    style START fill:#74c0fc
-    style END fill:#51cf66
+ style START fill:#74c0fc
+ style END fill:#51cf66
 ```
 
 ### Expected Errors in Current Workflow Architecture
@@ -288,32 +288,32 @@ triggers from spawning parallel sessions on different PRs.
 
 flowchart TD
 
-    TRIGGER["@copilot continue<br/>or auth-delegation trigger"] --> CHECK{Check repo var<br/>COPILOT_ACTIVE_SESSION}
+ TRIGGER["@copilot continue<br/>or auth-delegation trigger"] --> CHECK{Check repo var<br/>COPILOT_ACTIVE_SESSION}
 
-    CHECK -->|empty/expired| ACQUIRE[Set COPILOT_ACTIVE_SESSION<br/>= PR# + timestamp]
+ CHECK -->|empty/expired| ACQUIRE[Set COPILOT_ACTIVE_SESSION<br/>= PR# + timestamp]
 
-    CHECK -->|active session exists| MULTI{COPILOT_MULTI_SESSION<br/>enabled?}
+ CHECK -->|active session exists| MULTI{COPILOT_MULTI_SESSION<br/>enabled?}
 
-    MULTI -->|yes| ACQUIRE
+ MULTI -->|yes| ACQUIRE
 
-    MULTI -->|no| QUEUE[Queue: post comment<br/>'Session queued — PR #N active']
+ MULTI -->|no| QUEUE[Queue: post comment<br/>'Session queued — PR #N active']
 
-    ACQUIRE --> RUN[Start Copilot Session]
+ ACQUIRE --> RUN[Start Copilot Session]
 
-    RUN --> COMPLETE[Session completes]
+ RUN --> COMPLETE[Session completes]
 
-    COMPLETE --> RELEASE[Clear COPILOT_ACTIVE_SESSION]
+ COMPLETE --> RELEASE[Clear COPILOT_ACTIVE_SESSION]
 
-    RELEASE --> NEXT{Queued sessions?}
+ RELEASE --> NEXT{Queued sessions?}
 
-    NEXT -->|yes| TRIGGER_NEXT["Post @copilot continue<br/>on queued PR"]
+ NEXT -->|yes| TRIGGER_NEXT["Post @copilot continue<br/>on queued PR"]
 
-    NEXT -->|no| DONE[ Done]
+ NEXT -->|no| DONE[ Done]
 
-    style TRIGGER fill:#74c0fc
-    style QUEUE fill:#ffd43b
-    style RUN fill:#51cf66
-    style DONE fill:#51cf66
+ style TRIGGER fill:#74c0fc
+ style QUEUE fill:#ffd43b
+ style RUN fill:#51cf66
+ style DONE fill:#51cf66
 ```
 
 ### Implementation: Repository Variables
@@ -329,36 +329,36 @@ flowchart TD
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Gate: empty
 
-    Gate'}}%%
+ Gate'}}%%
 sequenceDiagram
-    participant PR1 as PR #3724
-    participant Gate as Session Gate
-    participant Var as Repo Variables
-    participant PR2 as PR #3725
+ participant PR1 as PR #3724
+ participant Gate as Session Gate
+ participant Var as Repo Variables
+ participant PR2 as PR #3725
 
-    Note over PR1,PR2: Single-Session Mode (default)
+ Note over PR1,PR2: Single-Session Mode (default)
 
-    PR1->>Gate: @copilot continue
-    Gate->>Var: Check COPILOT_ACTIVE_SESSION
+ PR1->>Gate: @copilot continue
+ Gate->>Var: Check COPILOT_ACTIVE_SESSION
 
-    Var-->>Gate: empty
-    Gate->>Var: Set = "3724|1774576800|12345"
-    Gate->>PR1:  Session started
+ Var-->>Gate: empty
+ Gate->>Var: Set = "3724|1774576800|12345"
+ Gate->>PR1: Session started
 
-    PR2->>Gate: @copilot continue
-    Gate->>Var: Check COPILOT_ACTIVE_SESSION
+ PR2->>Gate: @copilot continue
+ Gate->>Var: Check COPILOT_ACTIVE_SESSION
 
-    Var-->>Gate: "3724|..." (active)
-    Gate->>Var: Check COPILOT_MULTI_SESSION
+ Var-->>Gate: "3724|..." (active)
+ Gate->>Var: Check COPILOT_MULTI_SESSION
 
-    Var-->>Gate: "false"
-    Gate->>Var: Append "3725" to COPILOT_SESSION_QUEUE
-    Gate->>PR2:  Queued (PR #3724 active)
+ Var-->>Gate: "false"
+ Gate->>Var: Append "3725" to COPILOT_SESSION_QUEUE
+ Gate->>PR2: Queued (PR #3724 active)
 
-    PR1->>Gate: Session complete
-    Gate->>Var: Clear COPILOT_ACTIVE_SESSION
-    Gate->>Var: Pop "3725" from queue
-    Gate->>PR2: @copilot continue (auto-trigger)
+ PR1->>Gate: Session complete
+ Gate->>Var: Clear COPILOT_ACTIVE_SESSION
+ Gate->>Var: Pop "3725" from queue
+ Gate->>PR2: @copilot continue (auto-trigger)
 ```
 
 ### Workflow Integration Points
@@ -369,41 +369,41 @@ The session gate integrates into `agent-auth-delegation.yml` at two points:
 2. **On session completion** (new workflow or job) — Release lock, trigger next
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation  always-on'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation always-on'}}%%
 
 flowchart LR
-    subgraph "agent-auth-delegation.yml"
+ subgraph "agent-auth-delegation.yml"
 
-        A[detect-checkbox] --> B[activate-delegation  always-on]
+ A[detect-checkbox] --> B[activate-delegation always-on]
 
-        B --> C[cognitive-preflight]
+ B --> C[cognitive-preflight]
 
-        C --> D[activate-delegation]
+ C --> D[activate-delegation]
 
-        D --> E{Session Gate}
+ D --> E{Session Gate}
 
-        E -->|acquired| F["Post @copilot continue"]
+ E -->|acquired| F["Post @copilot continue"]
 
-        E -->|busy| G[Queue PR + post wait comment]
-    end
+ E -->|busy| G[Queue PR + post wait comment]
+ end
 
-    subgraph "session-release (new)"
+ subgraph "session-release (new)"
 
-        H[PR merged/closed] --> I[Clear COPILOT_ACTIVE_SESSION]
+ H[PR merged/closed] --> I[Clear COPILOT_ACTIVE_SESSION]
 
-        I --> J{Queue non-empty?}
+ I --> J{Queue non-empty?}
 
-        J -->|yes| K["Trigger auth-delegation<br/>for next PR"]
+ J -->|yes| K["Trigger auth-delegation<br/>for next PR"]
 
-        J -->|no| L[Done]
-    end
+ J -->|no| L[Done]
+ end
 
-    F --> H
-    G -.->|later| E
+ F --> H
+ G -.->|later| E
 
-    style E fill:#ff922b,stroke:#e8590c,stroke-width:2px
-    style F fill:#51cf66
-    style G fill:#ffd43b
+ style E fill:#ff922b,stroke:#e8590c,stroke-width:2px
+ style F fill:#51cf66
+ style G fill:#ffd43b
 ```
 
 ---
@@ -416,18 +416,18 @@ The "Multiple Copilot Coding Agent Sessions" checkbox is added **below** the exi
 Agent Token Delegation checkbox in the PR template:
 
 ```markdown
-###  Agent Token Delegation
+### Agent Token Delegation
 
 - [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
-  - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]`
-  - Triggers the [`agent-auth-delegation`](../.github/workflows/agent-auth-delegation.yml) gated workflow
-  - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
+ - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]`
+ - Triggers the [`agent-auth-delegation`](../.github/workflows/agent-auth-delegation.yml) gated workflow
+ - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
 
 - [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)
-  - ️ **Default: disabled** — Only ONE Copilot session active at a time
-  - When enabled: allows parallel Copilot sessions on different PRs
-  - When disabled: sessions are queued and executed sequentially
-  - **Caution:** Multiple sessions may cause merge conflicts on shared files
+ - **Default: disabled** — Only ONE Copilot session active at a time
+ - When enabled: allows parallel Copilot sessions on different PRs
+ - When disabled: sessions are queued and executed sequentially
+ - **Caution:** Multiple sessions may cause merge conflicts on shared files
 ```
 
 ### Detection Logic
@@ -441,7 +441,7 @@ if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH
 
 # New pattern:
 if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_MULTI_SESSION'; then
-  echo "multi_session=true" >> "$GITHUB_OUTPUT"
+ echo "multi_session=true" >> "$GITHUB_OUTPUT"
 fi
 ```
 
@@ -455,56 +455,56 @@ fi
 %%{init: {'accessibility': {'title': 'Flowchart showing Workflow Failure, D-00 Triage<br/>collect_telemetry.py'}}%%
 
 flowchart TD
-    subgraph "Layer 1: Detection"
+ subgraph "Layer 1: Detection"
 
-        FAIL[Workflow Failure] --> TRIAGE[D-00 Triage<br/>collect_telemetry.py]
+ FAIL[Workflow Failure] --> TRIAGE[D-00 Triage<br/>collect_telemetry.py]
 
-        TRIAGE --> CLASSIFY{Pattern<br/>Classification}
-    end
+ TRIAGE --> CLASSIFY{Pattern<br/>Classification}
+ end
 
-    subgraph "Layer 2: Auto-Fix (existing)"
+ subgraph "Layer 2: Auto-Fix (existing)"
 
-        CLASSIFY -->|known fixable| AUTOFIX[auto_fix_common_issues.py<br/>17 patterns]
+ CLASSIFY -->|known fixable| AUTOFIX[auto_fix_common_issues.py<br/>17 patterns]
 
-        AUTOFIX --> VERIFY1{Verify}
+ AUTOFIX --> VERIFY1{Verify}
 
-        VERIFY1 -->|pass| COMMIT1[Commit + Push]
+ VERIFY1 -->|pass| COMMIT1[Commit + Push]
 
-        VERIFY1 -->|fail| RETRY{Retries left?}
+ VERIFY1 -->|fail| RETRY{Retries left?}
 
-        RETRY -->|yes| AUTOFIX
-    end
+ RETRY -->|yes| AUTOFIX
+ end
 
-    subgraph "Layer 3: Copilot Escalation (new)"
+ subgraph "Layer 3: Copilot Escalation (new)"
 
-        CLASSIFY -->|unknown/complex| COPILOT_GATE{Session Gate<br/>available?}
+ CLASSIFY -->|unknown/complex| COPILOT_GATE{Session Gate<br/>available?}
 
-        RETRY -->|no| COPILOT_GATE
+ RETRY -->|no| COPILOT_GATE
 
-        COPILOT_GATE -->|yes| COPILOT_SESSION["@copilot+claude-opus-4.6<br/>Autonomous fix session"]
+ COPILOT_GATE -->|yes| COPILOT_SESSION["@copilot+claude-opus-4.6<br/>Autonomous fix session"]
 
-        COPILOT_GATE -->|no/queued| QUEUE_FIX[Queue for next<br/>available session]
+ COPILOT_GATE -->|no/queued| QUEUE_FIX[Queue for next<br/>available session]
 
-        COPILOT_SESSION --> VERIFY2{Self-review<br/>5-pass}
+ COPILOT_SESSION --> VERIFY2{Self-review<br/>5-pass}
 
-        VERIFY2 -->|pass| COMMIT2[Commit + Push]
+ VERIFY2 -->|pass| COMMIT2[Commit + Push]
 
-        VERIFY2 -->|fail| HUMAN
-    end
+ VERIFY2 -->|fail| HUMAN
+ end
 
-    subgraph "Layer 4: Human Escalation"
+ subgraph "Layer 4: Human Escalation"
 
-        CLASSIFY -->|blocked/security| HUMAN[Create Issue<br/>tag @mbaetiong]
-    end
+ CLASSIFY -->|blocked/security| HUMAN[Create Issue<br/>tag @mbaetiong]
+ end
 
-    COMMIT1 --> DONE[ Self-Healed]
+ COMMIT1 --> DONE[ Self-Healed]
 
-    COMMIT2 --> DONE
+ COMMIT2 --> DONE
 
-    style FAIL fill:#ff6b6b
-    style DONE fill:#51cf66
-    style COPILOT_SESSION fill:#74c0fc,stroke:#339af0,stroke-width:3px
-    style HUMAN fill:#ffd43b
+ style FAIL fill:#ff6b6b
+ style DONE fill:#51cf66
+ style COPILOT_SESSION fill:#74c0fc,stroke:#339af0,stroke-width:3px
+ style HUMAN fill:#ffd43b
 ```
 
 ### Copilot Escalation Trigger
@@ -541,56 +541,56 @@ When auto-fix exhausts all iterations, the self-healing workflow posts a structu
 
 flowchart TD
 
-    F[CI Failure Detected] --> T{Triage Pattern}
+ F[CI Failure Detected] --> T{Triage Pattern}
 
-    T -->|ruff-*| R[ruff --fix]
+ T -->|ruff-*| R[ruff --fix]
 
-    T -->|import-*| I[Import rewrite]
+ T -->|import-*| I[Import rewrite]
 
-    T -->|yaml-*| Y[YAML fix]
+ T -->|yaml-*| Y[YAML fix]
 
-    T -->|mypy-baseline| M[Baseline bump]
+ T -->|mypy-baseline| M[Baseline bump]
 
-    T -->|changelog-*| C[Auto-append]
+ T -->|changelog-*| C[Auto-append]
 
-    T -->|policy-gate-*| P[session_wrapup_autofix.py]
+ T -->|policy-gate-*| P[session_wrapup_autofix.py]
 
-    T -->|branch-diverged| B[Auto-rebase]
+ T -->|branch-diverged| B[Auto-rebase]
 
-    T -->|timeout-config| TC[Config patch]
+ T -->|timeout-config| TC[Config patch]
 
-    T -->|self-healing| SH[ Block cascade]
+ T -->|self-healing| SH[ Block cascade]
 
-    T -->|unknown| U["@copilot escalation"]
+ T -->|unknown| U["@copilot escalation"]
 
-    R --> V{Verify}
+ R --> V{Verify}
 
-    I --> V
+ I --> V
 
-    Y --> V
+ Y --> V
 
-    M --> V
+ M --> V
 
-    C --> V
+ C --> V
 
-    P --> V
+ P --> V
 
-    B --> V
+ B --> V
 
-    TC --> V
+ TC --> V
 
-    U --> V
+ U --> V
 
-    V -->|pass| DONE[ Fixed]
+ V -->|pass| DONE[ Fixed]
 
-    V -->|fail, retries left| T
+ V -->|fail, retries left| T
 
-    V -->|fail, no retries| U
+ V -->|fail, no retries| U
 
-    style F fill:#ff6b6b
-    style DONE fill:#51cf66
-    style SH fill:#ff6b6b
-    style U fill:#74c0fc
+ style F fill:#ff6b6b
+ style DONE fill:#51cf66
+ style SH fill:#ff6b6b
+ style U fill:#74c0fc
 ```
 
 ---
@@ -642,37 +642,37 @@ infrastructure that handles them, and the new mechanisms this proposal adds.
 %%{init: {'accessibility': {'title': 'Flowchart showing Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h, Concurrent agent sessions<br/>Two sessions edit same file'}}%%
 
 flowchart TD
-    subgraph "Conflict Sources"
-        CS1[Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h]
-        CS2[Concurrent agent sessions<br/>Two sessions edit same file]
-        CS3[Self-healing commits<br/>Auto-fix pushes conflict<br/>with agent work]
-        CS4[report_progress race<br/>CI auto-commit + agent<br/>push simultaneously]
-        CS5[Promotion merge<br/>0D_base_ → main<br/>accumulated conflicts]
-    end
+ subgraph "Conflict Sources"
+ CS1[Bot metadata drift<br/>Scheduled workflows commit<br/>to main every 2-24h]
+ CS2[Concurrent agent sessions<br/>Two sessions edit same file]
+ CS3[Self-healing commits<br/>Auto-fix pushes conflict<br/>with agent work]
+ CS4[report_progress race<br/>CI auto-commit + agent<br/>push simultaneously]
+ CS5[Promotion merge<br/>0D_base_ main<br/>accumulated conflicts]
+ end
 
-    subgraph "Conflict Types"
-        CT1[Branch Divergence<br/>HEAD behind base]
-        CT2[File-level Conflict<br/>Same file modified in<br/>both branches]
-        CT3[Semantic Conflict<br/>Changes compile but<br/>break integration]
-    end
+ subgraph "Conflict Types"
+ CT1[Branch Divergence<br/>HEAD behind base]
+ CT2[File-level Conflict<br/>Same file modified in<br/>both branches]
+ CT3[Semantic Conflict<br/>Changes compile but<br/>break integration]
+ end
 
-    CS1 --> CT1
+ CS1 --> CT1
 
-    CS2 --> CT2
+ CS2 --> CT2
 
-    CS3 --> CT2
+ CS3 --> CT2
 
-    CS4 --> CT2
+ CS4 --> CT2
 
-    CS5 --> CT2
+ CS5 --> CT2
 
-    CS5 --> CT3
+ CS5 --> CT3
 
-    style CS1 fill:#ffd43b
-    style CS2 fill:#ff6b6b
-    style CS3 fill:#ff922b
-    style CS4 fill:#ff922b
-    style CS5 fill:#ffd43b
+ style CS1 fill:#ffd43b
+ style CS2 fill:#ff6b6b
+ style CS3 fill:#ff922b
+ style CS4 fill:#ff922b
+ style CS5 fill:#ffd43b
 ```
 
 ### Existing Infrastructure (Already Deployed)
@@ -682,38 +682,38 @@ flowchart TD
 **File:** `scripts/ci/branch_rebase_check.py` (authoritative rebase gate)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize,  REQ-10 PASS'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize, REQ-10 PASS'}}%%
 
 flowchart TD
 
-    PR[PR push/synchronize] --> CHECK{Compare base vs head}
+ PR[PR push/synchronize] --> CHECK{Compare base vs head}
 
-    CHECK -->|up-to-date| PASS[ REQ-10 PASS]
+ CHECK -->|up-to-date| PASS[ REQ-10 PASS]
 
-    CHECK -->|ahead only| PASS
+ CHECK -->|ahead only| PASS
 
-    CHECK -->|behind / diverged| GAP[Fetch gap commits]
+ CHECK -->|behind / diverged| GAP[Fetch gap commits]
 
-    GAP --> CLASSIFY{All gap commits are<br/>bot skip-ci?}
+ GAP --> CLASSIFY{All gap commits are<br/>bot skip-ci?}
 
-    CLASSIFY -->|yes| AUTO[GitHub Merges API<br/>auto-merge base into head]
+ CLASSIFY -->|yes| AUTO[GitHub Merges API<br/>auto-merge base into head]
 
-    CLASSIFY -->|no| MANUAL[Post rich helper comment<br/>with conflict analysis]
+ CLASSIFY -->|no| MANUAL[Post rich helper comment<br/>with conflict analysis]
 
-    AUTO --> MERGED{Merge succeeded?}
+ AUTO --> MERGED{Merge succeeded?}
 
-    MERGED -->|yes| RESOLVED[ Auto-merged<br/>BRANCH_REBASE_RESOLVED posted]
+ MERGED -->|yes| RESOLVED[ Auto-merged<br/>BRANCH_REBASE_RESOLVED posted]
 
-    MERGED -->|no| MANUAL
+ MERGED -->|no| MANUAL
 
-    MANUAL --> RISK[detect_conflict_risk:<br/>file overlap analysis]
+ MANUAL --> RISK[detect_conflict_risk:<br/>file overlap analysis]
 
-    RISK --> COMMENT["Post PR comment:<br/>• Gap commit table<br/>• Conflict-risk files<br/>• CLI instructions<br/>• @copilot prompt"]
+ RISK --> COMMENT["Post PR comment:<br/>• Gap commit table<br/>• Conflict-risk files<br/>• CLI instructions<br/>• @copilot prompt"]
 
-    style PASS fill:#51cf66
-    style RESOLVED fill:#51cf66
-    style MANUAL fill:#ffd43b
-    style COMMENT fill:#74c0fc
+ style PASS fill:#51cf66
+ style RESOLVED fill:#51cf66
+ style MANUAL fill:#ffd43b
+ style COMMENT fill:#74c0fc
 ```
 
 **How it works:**
@@ -733,8 +733,8 @@ flowchart TD
 **Conflict risk detection (`detect_conflict_risk()`):**
 ```python
 def detect_conflict_risk(pr_files: list[str], gap_files: set[str]) -> list[str]:
-    """Return files present in both the PR and the gap (potential conflicts)."""
-    return sorted(set(pr_files) & gap_files)
+ """Return files present in both the PR and the gap (potential conflicts)."""
+ return sorted(set(pr_files) & gap_files)
 ```
 
 When overlapping files are detected, the comment includes:
@@ -760,11 +760,11 @@ conflict status weighted at **15%** of the total:
 # From pr_comment_consolidator.py — component 3
 mergeable = pr.get("mergeable")
 if mergeable is True:
-    conflict_score = 1.0    # "no conflicts"
+ conflict_score = 1.0 # "no conflicts"
 elif mergeable is False:
-    conflict_score = 0.0    # "merge conflicts detected"
+ conflict_score = 0.0 # "merge conflicts detected"
 else:
-    conflict_score = 0.5    # None → GitHub still computing
+ conflict_score = 0.5 # None GitHub still computing
 ```
 
 ## Layer 3: Concurrency Prevention via Workflow Groups
@@ -773,8 +773,8 @@ All key workflows use `concurrency` groups to prevent parallel runs on the same 
 
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+ group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true
 ```
 
 This ensures that if a self-healing commit triggers a re-run, the previous run is
@@ -785,8 +785,8 @@ cancelled — preventing two runs from pushing conflicting commits to the same b
 The sub-PR architecture is the primary structural defense against conflicts:
 
 ```
-Session A: copilot/session-A → 0D_base_ (merged)
-Session B: copilot/session-B → 0D_base_ (starts AFTER A merges)
+Session A: copilot/session-A 0D_base_ (merged)
+Session B: copilot/session-B 0D_base_ (starts AFTER A merges)
 ```
 
 `copilot-session-chain.yml` auto-opens the next session only when the previous
@@ -809,57 +809,57 @@ The **Session Concurrency Gate** (Section 4) prevents the most common conflict s
 %%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Acquires lock'}}%%
 
 flowchart TD
-    subgraph "Single-Session Mode (default)"
+ subgraph "Single-Session Mode (default)"
 
-        S1[Session A starts] --> LOCK[Acquires lock]
+ S1[Session A starts] --> LOCK[Acquires lock]
 
-        LOCK --> EDIT_A[Edits sentinel files]
+ LOCK --> EDIT_A[Edits sentinel files]
 
-        S2[Session B triggered] --> QUEUE[Queued — lock held by A]
+ S2[Session B triggered] --> QUEUE[Queued — lock held by A]
 
-        EDIT_A --> PUSH_A[Push without conflicts]
+ EDIT_A --> PUSH_A[Push without conflicts]
 
-        PUSH_A --> RELEASE[Release lock]
+ PUSH_A --> RELEASE[Release lock]
 
-        RELEASE --> DEQUEUE[Session B starts]
+ RELEASE --> DEQUEUE[Session B starts]
 
-        DEQUEUE --> EDIT_B[Edits sentinel files<br/>from latest HEAD]
+ DEQUEUE --> EDIT_B[Edits sentinel files<br/>from latest HEAD]
 
-        EDIT_B --> PUSH_B[Push without conflicts]
-    end
+ EDIT_B --> PUSH_B[Push without conflicts]
+ end
 
-    style S1 fill:#51cf66
-    style QUEUE fill:#ffd43b
-    style DEQUEUE fill:#51cf66
-    style PUSH_A fill:#51cf66
-    style PUSH_B fill:#51cf66
+ style S1 fill:#51cf66
+ style QUEUE fill:#ffd43b
+ style DEQUEUE fill:#51cf66
+ style PUSH_A fill:#51cf66
+ style PUSH_B fill:#51cf66
 ```
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Session A starts, Edits files'}}%%
 
 flowchart TD
-    subgraph "Multi-Session Mode (opt-in)"
+ subgraph "Multi-Session Mode (opt-in)"
 
-        M1[Session A starts] --> EDIT_MA[Edits files]
+ M1[Session A starts] --> EDIT_MA[Edits files]
 
-        M2[Session B starts] --> EDIT_MB[Edits same files]
+ M2[Session B starts] --> EDIT_MB[Edits same files]
 
-        EDIT_MA --> PUSH_MA[Push]
+ EDIT_MA --> PUSH_MA[Push]
 
-        EDIT_MB --> PUSH_MB{Push}
+ EDIT_MB --> PUSH_MB{Push}
 
-        PUSH_MB -->|conflict| REBASE["Auto-rebase:<br/>git pull --rebase origin branch"]
+ PUSH_MB -->|conflict| REBASE["Auto-rebase:<br/>git pull --rebase origin branch"]
 
-        REBASE -->|success| RETRY[Retry push]
+ REBASE -->|success| RETRY[Retry push]
 
-        REBASE -->|conflict| ESCALATE["Post conflict comment<br/>for Copilot/human resolution"]
-    end
+ REBASE -->|conflict| ESCALATE["Post conflict comment<br/>for Copilot/human resolution"]
+ end
 
-    style M1 fill:#74c0fc
-    style M2 fill:#74c0fc
-    style PUSH_MA fill:#51cf66
-    style ESCALATE fill:#ff6b6b
+ style M1 fill:#74c0fc
+ style M2 fill:#74c0fc
+ style PUSH_MA fill:#51cf66
+ style ESCALATE fill:#ff6b6b
 ```
 
 #### Enhancement 2: Self-Healing Commit Conflict Prevention
@@ -872,43 +872,43 @@ agent work. The proposal adds a **pre-push conflict check**:
 
 '}}%%
 sequenceDiagram
-    participant SH as Self-Healing CI
-    participant API as GitHub API
-    participant Agent as Active Agent Session
+ participant SH as Self-Healing CI
+ participant API as GitHub API
+ participant Agent as Active Agent Session
 
-    SH->>API: Check COPILOT_ACTIVE_SESSION
+ SH->>API: Check COPILOT_ACTIVE_SESSION
 
-    API-->>SH: "3724|timestamp|run_id"
+ API-->>SH: "3724|timestamp|run_id"
 
-    alt Agent session active on same branch
-        SH->>SH: Skip push — agent will handle fix
-        SH->>API: Post comment: "Fix available, agent session active"
-    else Agent on different branch or no session
-        SH->>API: Push fix commit
-    end
+ alt Agent session active on same branch
+ SH->>SH: Skip push — agent will handle fix
+ SH->>API: Post comment: "Fix available, agent session active"
+ else Agent on different branch or no session
+ SH->>API: Push fix commit
+ end
 ```
 
 **Implementation:** Add to `iterative-self-healing-ci.yml` before the commit step:
 
 ```yaml
 - name: "Check for active agent session on target branch"
-  id: agent_check
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-  run: |
-    ACTIVE=$(gh variable get COPILOT_ACTIVE_SESSION --repo Aries-Serpent/_codex_ 2>/dev/null || echo "")
-    if [ -n "$ACTIVE" ]; then
-      ACTIVE_PR=$(echo "$ACTIVE" | cut -d'|' -f1)
-      ACTIVE_BRANCH=$(gh pr view "$ACTIVE_PR" --json headRefName -q .headRefName 2>/dev/null || echo "")
-      if [ "$ACTIVE_BRANCH" = "$TARGET_BRANCH" ]; then
-        echo "skip_push=true" >> "$GITHUB_OUTPUT"
-        echo "️ Active agent session on $TARGET_BRANCH (PR #$ACTIVE_PR) — skipping push"
-      else
-        echo "skip_push=false" >> "$GITHUB_OUTPUT"
-      fi
-    else
-      echo "skip_push=false" >> "$GITHUB_OUTPUT"
-    fi
+ id: agent_check
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ run: |
+ ACTIVE=$(gh variable get COPILOT_ACTIVE_SESSION --repo Aries-Serpent/_codex_ 2>/dev/null || echo "")
+ if [ -n "$ACTIVE" ]; then
+ ACTIVE_PR=$(echo "$ACTIVE" | cut -d'|' -f1)
+ ACTIVE_BRANCH=$(gh pr view "$ACTIVE_PR" --json headRefName -q .headRefName 2>/dev/null || echo "")
+ if [ "$ACTIVE_BRANCH" = "$TARGET_BRANCH" ]; then
+ echo "skip_push=true" >> "$GITHUB_OUTPUT"
+ echo " Active agent session on $TARGET_BRANCH (PR #$ACTIVE_PR) — skipping push"
+ else
+ echo "skip_push=false" >> "$GITHUB_OUTPUT"
+ fi
+ else
+ echo "skip_push=false" >> "$GITHUB_OUTPUT"
+ fi
 ```
 
 #### Enhancement 3: report_progress Conflict Recovery
@@ -943,26 +943,26 @@ structured `@copilot` comment with conflict context:
 
 flowchart TD
 
-    CONFLICT[Merge conflict detected] --> ANALYZE[Identify conflicting files]
+ CONFLICT[Merge conflict detected] --> ANALYZE[Identify conflicting files]
 
-    ANALYZE --> CLASSIFY{Conflict type}
+ ANALYZE --> CLASSIFY{Conflict type}
 
-    CLASSIFY -->|Sentinel files only<br/>CHANGELOG, accountability| AUTO_RESOLVE["Auto-resolve:<br/>Accept both, append"]
+ CLASSIFY -->|Sentinel files only<br/>CHANGELOG, accountability| AUTO_RESOLVE["Auto-resolve:<br/>Accept both, append"]
 
-    CLASSIFY -->|Code files| COPILOT_FIX["Post @copilot prompt:<br/>• Conflicting files list<br/>• Both versions shown<br/>• Resolution strategy"]
+ CLASSIFY -->|Code files| COPILOT_FIX["Post @copilot prompt:<br/>• Conflicting files list<br/>• Both versions shown<br/>• Resolution strategy"]
 
-    CLASSIFY -->|Workflow/config files| HUMAN["Escalate to human:<br/>@mbaetiong"]
+ CLASSIFY -->|Workflow/config files| HUMAN["Escalate to human:<br/>@mbaetiong"]
 
-    AUTO_RESOLVE --> PUSH[Push resolved]
+ AUTO_RESOLVE --> PUSH[Push resolved]
 
-    COPILOT_FIX --> SESSION[Copilot session resolves]
+ COPILOT_FIX --> SESSION[Copilot session resolves]
 
-    SESSION --> PUSH
+ SESSION --> PUSH
 
-    style CONFLICT fill:#ff6b6b
-    style AUTO_RESOLVE fill:#51cf66
-    style PUSH fill:#51cf66
-    style HUMAN fill:#ffd43b
+ style CONFLICT fill:#ff6b6b
+ style AUTO_RESOLVE fill:#51cf66
+ style PUSH fill:#51cf66
+ style HUMAN fill:#ffd43b
 ```
 
 **Sentinel file auto-resolution strategy:**
@@ -973,13 +973,13 @@ conflicts can be auto-resolved by accepting both sides:
 ```bash
 # Auto-resolve sentinel files (append-only pattern)
 for f in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md; do
-  if git diff --name-only --diff-filter=U | grep -q "$f"; then
-    # Accept both: keep all content from both sides
-    git checkout --theirs "$f"  # Take remote version
-    # Re-append our additions (stored in a temp file before merge)
-    cat "/tmp/our_additions_${f##*/}" >> "$f"
-    git add "$f"
-  fi
+ if git diff --name-only --diff-filter=U | grep -q "$f"; then
+ # Accept both: keep all content from both sides
+ git checkout --theirs "$f" # Take remote version
+ # Re-append our additions (stored in a temp file before merge)
+ cat "/tmp/our_additions_${f##*/}" >> "$f"
+ git add "$f"
+ fi
 done
 ```
 
@@ -993,60 +993,60 @@ Codebase Agency Policy and enforced via `copilot-setup-steps.yml`.
 %%{init: {'accessibility': {'title': 'Flowchart showing "@copilot continue triggers", copilot-setup-steps.yml runs'}}%%
 
 flowchart TD
-    subgraph "Session START"
+ subgraph "Session START"
 
-        A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
+ A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
 
-        A2 --> A3{Check PR mergeable<br/>via GitHub API}
+ A2 --> A3{Check PR mergeable<br/>via GitHub API}
 
-        A3 -->|CONFLICTING| A4["::warning:: annotation<br/>COPILOT_MERGE_CONFLICT=true"]
+ A3 -->|CONFLICTING| A4["::warning:: annotation<br/>COPILOT_MERGE_CONFLICT=true"]
 
-        A3 -->|MERGEABLE| A5[" No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
+ A3 -->|MERGEABLE| A5[" No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
 
-        A3 -->|UNKNOWN| A6["ℹ️ Status pending"]
+ A3 -->|UNKNOWN| A6["ℹ Status pending"]
 
-        A2 --> A7{Check branch<br/>behind count}
+ A2 --> A7{Check branch<br/>behind count}
 
-        A7 -->|behind > 0| A8["::warning:: annotation<br/>COPILOT_BRANCH_BEHIND=N"]
+ A7 -->|behind > 0| A8["::warning:: annotation<br/>COPILOT_BRANCH_BEHIND=N"]
 
-        A7 -->|behind = 0| A9[" Up-to-date"]
+ A7 -->|behind = 0| A9[" Up-to-date"]
 
-        A2 --> A10{git merge-tree<br/>dry-run}
+ A2 --> A10{git merge-tree<br/>dry-run}
 
-        A10 -->|conflicts| A11["::warning:: N file(s)<br/>with potential conflicts"]
+ A10 -->|conflicts| A11["::warning:: N file(s)<br/>with potential conflicts"]
 
-        A10 -->|clean| A12[" No file-level conflicts"]
+ A10 -->|clean| A12[" No file-level conflicts"]
 
-        A4 --> A13[Agent resolves conflicts<br/>BEFORE any other work]
+ A4 --> A13[Agent resolves conflicts<br/>BEFORE any other work]
 
-        A8 --> A13
-    end
+ A8 --> A13
+ end
 
-    subgraph "Session END"
+ subgraph "Session END"
 
-        B1[Agent about to conclude] --> B2[Fetch latest base branch]
+ B1[Agent about to conclude] --> B2[Fetch latest base branch]
 
-        B2 --> B3{Re-check mergeable<br/>status}
+ B2 --> B3{Re-check mergeable<br/>status}
 
-        B3 -->|CONFLICTING| B4[Resolve before final commit]
+ B3 -->|CONFLICTING| B4[Resolve before final commit]
 
-        B3 -->|MERGEABLE| B5[" Session ends clean"]
+ B3 -->|MERGEABLE| B5[" Session ends clean"]
 
-        B1 --> B6{Check for new commits<br/>on base since session start}
+ B1 --> B6{Check for new commits<br/>on base since session start}
 
-        B6 -->|new commits| B7[Rebase/merge base into head]
+ B6 -->|new commits| B7[Rebase/merge base into head]
 
-        B6 -->|no new commits| B8[" No drift"]
-    end
+ B6 -->|no new commits| B8[" No drift"]
+ end
 
-    style A4 fill:#ff6b6b
-    style A8 fill:#ffd43b
-    style A5 fill:#51cf66
-    style A9 fill:#51cf66
-    style A12 fill:#51cf66
-    style B4 fill:#ff6b6b
-    style B5 fill:#51cf66
-    style B8 fill:#51cf66
+ style A4 fill:#ff6b6b
+ style A8 fill:#ffd43b
+ style A5 fill:#51cf66
+ style A9 fill:#51cf66
+ style A12 fill:#51cf66
+ style B4 fill:#ff6b6b
+ style B5 fill:#51cf66
+ style B8 fill:#51cf66
 ```
 
 **Implementation (already deployed in `copilot-setup-steps.yml`):**
@@ -1069,7 +1069,7 @@ git fetch origin "${BASE_BRANCH}"
 # Check for new commits since session start
 NEW_COMMITS=$(git rev-list --count "HEAD..origin/${BASE_BRANCH}")
 if [ "$NEW_COMMITS" -gt 0 ]; then
-  git pull --rebase origin "${BASE_BRANCH}"
+ git pull --rebase origin "${BASE_BRANCH}"
 fi
 
 # Verify no conflicts
@@ -1091,49 +1091,49 @@ relevant failure patterns. Two issue labels are monitored:
 %%{init: {'accessibility': {'title': 'Flowchart showing copilot-setup-steps.yml, "gh issue list --label ci-failure"'}}%%
 
 flowchart TD
-    subgraph "Session Start — CI Issue Check"
+ subgraph "Session Start — CI Issue Check"
 
-        S1[copilot-setup-steps.yml] --> S2["gh issue list --label ci-failure"]
+ S1[copilot-setup-steps.yml] --> S2["gh issue list --label ci-failure"]
 
-        S1 --> S3["gh issue list --label ci-health-alert"]
+ S1 --> S3["gh issue list --label ci-health-alert"]
 
-        S2 --> S4{Open issues?}
+ S2 --> S4{Open issues?}
 
-        S3 --> S4
+ S3 --> S4
 
-        S4 -->|yes| S5["::warning:: annotation<br/>Lists issue titles<br/>Sets COPILOT_CI_FAILURE_ISSUES=N"]
+ S4 -->|yes| S5["::warning:: annotation<br/>Lists issue titles<br/>Sets COPILOT_CI_FAILURE_ISSUES=N"]
 
-        S4 -->|no| S6[" No open CI failure issues"]
-    end
+ S4 -->|no| S6[" No open CI failure issues"]
+ end
 
-    subgraph "Agent Action"
+ subgraph "Agent Action"
 
-        S5 --> A1[Agent reads CI failure issues]
+ S5 --> A1[Agent reads CI failure issues]
 
-        A1 --> A2{Pattern affects<br/>this PR?}
+ A1 --> A2{Pattern affects<br/>this PR?}
 
-        A2 -->|yes| A3[Fix as part of session work]
+ A2 -->|yes| A3[Fix as part of session work]
 
-        A2 -->|no| A4[Document in accountability report]
-    end
+ A2 -->|no| A4[Document in accountability report]
+ end
 
-    subgraph "CI Issue Lifecycle"
+ subgraph "CI Issue Lifecycle"
 
-        FAIL[Workflow fails on main] --> CREATE[ci-failure-issue-creator.yml<br/>creates issue + fix branch]
+ FAIL[Workflow fails on main] --> CREATE[ci-failure-issue-creator.yml<br/>creates issue + fix branch]
 
-        CREATE --> ISSUE["Issue #N with<br/>label 'ci-failure'"]
+ CREATE --> ISSUE["Issue #N with<br/>label 'ci-failure'"]
 
-        ISSUE --> AGENT[Agent reads + fixes]
+ ISSUE --> AGENT[Agent reads + fixes]
 
-        AGENT --> PASS[Workflow passes on main]
+ AGENT --> PASS[Workflow passes on main]
 
-        PASS --> CLOSE[ci-failure-issue-creator.yml<br/>auto-closes issue]
-    end
+ PASS --> CLOSE[ci-failure-issue-creator.yml<br/>auto-closes issue]
+ end
 
-    style S5 fill:#ffd43b
-    style S6 fill:#51cf66
-    style A3 fill:#51cf66
-    style CLOSE fill:#51cf66
+ style S5 fill:#ffd43b
+ style S6 fill:#51cf66
+ style A3 fill:#51cf66
+ style CLOSE fill:#51cf66
 ```
 
 **Implementation (already deployed in `copilot-setup-steps.yml`):**
@@ -1162,54 +1162,54 @@ check whether CI failure issues exist.
 %%{init: {'accessibility': {'title': 'Flowchart showing Session Concurrency Gate<br/>Single session default, Workflow concurrency groups<br/>cancel-in-progress: true'}}%%
 
 flowchart TB
-    subgraph "Prevention Layer"
-        P1[Session Concurrency Gate<br/>Single session default]
-        P2[Workflow concurrency groups<br/>cancel-in-progress: true]
-        P3[Sub-PR sequential model<br/>Chain opens next after merge]
-        P4[Sentinel file conventions<br/>Append-only patterns]
-    end
+ subgraph "Prevention Layer"
+ P1[Session Concurrency Gate<br/>Single session default]
+ P2[Workflow concurrency groups<br/>cancel-in-progress: true]
+ P3[Sub-PR sequential model<br/>Chain opens next after merge]
+ P4[Sentinel file conventions<br/>Append-only patterns]
+ end
 
-    subgraph "Detection Layer"
-        D1[branch_rebase_check.py<br/>REQ-10 hard block]
-        D2[PR mergeable API check<br/>15% of readiness score]
-        D3[detect_conflict_risk<br/>File overlap analysis]
-        D4[Active session check<br/>Before self-healing push]
-    end
+ subgraph "Detection Layer"
+ D1[branch_rebase_check.py<br/>REQ-10 hard block]
+ D2[PR mergeable API check<br/>15% of readiness score]
+ D3[detect_conflict_risk<br/>File overlap analysis]
+ D4[Active session check<br/>Before self-healing push]
+ end
 
-    subgraph "Resolution Layer"
-        R1[Auto-merge via Merges API<br/>Bot-only skip-ci gaps]
-        R2[git pull --rebase + autoStash<br/>Agent-side conflict recovery]
-        R3[Sentinel file auto-resolve<br/>Accept-both for append-only]
-        R4["Copilot @copilot escalation<br/>Structured fix prompt"]
-        R5[Human escalation<br/>@mbaetiong for config/workflow]
-    end
+ subgraph "Resolution Layer"
+ R1[Auto-merge via Merges API<br/>Bot-only skip-ci gaps]
+ R2[git pull --rebase + autoStash<br/>Agent-side conflict recovery]
+ R3[Sentinel file auto-resolve<br/>Accept-both for append-only]
+ R4["Copilot @copilot escalation<br/>Structured fix prompt"]
+ R5[Human escalation<br/>@mbaetiong for config/workflow]
+ end
 
-    P1 --> D1
+ P1 --> D1
 
-    P2 --> D2
+ P2 --> D2
 
-    P3 --> D3
+ P3 --> D3
 
-    P4 --> D4
+ P4 --> D4
 
-    D1 --> R1
+ D1 --> R1
 
-    D1 --> R4
+ D1 --> R4
 
-    D2 --> R2
+ D2 --> R2
 
-    D3 --> R3
+ D3 --> R3
 
-    D4 --> R4
+ D4 --> R4
 
-    D4 --> R5
+ D4 --> R5
 
-    style P1 fill:#51cf66
-    style P2 fill:#51cf66
-    style P3 fill:#51cf66
-    style R1 fill:#74c0fc
-    style R4 fill:#74c0fc
-    style R5 fill:#ffd43b
+ style P1 fill:#51cf66
+ style P2 fill:#51cf66
+ style P3 fill:#51cf66
+ style R1 fill:#74c0fc
+ style R4 fill:#74c0fc
+ style R5 fill:#ffd43b
 ```
 
 ---
@@ -1222,75 +1222,75 @@ flowchart TB
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #1 checks gate, PR #2 checks gate'}}%%
 
 flowchart TD
-    subgraph "Edge Case 1: Race Condition"
+ subgraph "Edge Case 1: Race Condition"
 
-        EC1A[PR #1 checks gate] --> EC1B[PR #2 checks gate]
+ EC1A[PR #1 checks gate] --> EC1B[PR #2 checks gate]
 
-        EC1B --> EC1C{Both see 'empty'?}
+ EC1B --> EC1C{Both see 'empty'?}
 
-        EC1C -->|possible| EC1D[Both acquire lock]
+ EC1C -->|possible| EC1D[Both acquire lock]
 
-        EC1D --> EC1E[Mitigation: atomic<br/>check-and-set via API]
-    end
+ EC1D --> EC1E[Mitigation: atomic<br/>check-and-set via API]
+ end
 
-    subgraph "Edge Case 2: Stale Lock"
+ subgraph "Edge Case 2: Stale Lock"
 
-        EC2A[Session starts] --> EC2B[Session crashes/times out]
+ EC2A[Session starts] --> EC2B[Session crashes/times out]
 
-        EC2B --> EC2C[Lock never released]
+ EC2B --> EC2C[Lock never released]
 
-        EC2C --> EC2D[Mitigation: TTL on lock<br/>4-hour expiry]
-    end
+ EC2C --> EC2D[Mitigation: TTL on lock<br/>4-hour expiry]
+ end
 
-    subgraph "Edge Case 3: Cascade Prevention"
+ subgraph "Edge Case 3: Cascade Prevention"
 
-        EC3A[Self-heal commits fix] --> EC3B[Triggers workflow_run]
+ EC3A[Self-heal commits fix] --> EC3B[Triggers workflow_run]
 
-        EC3B --> EC3C{Pattern = self-healing?}
+ EC3B --> EC3C{Pattern = self-healing?}
 
-        EC3C -->|yes| EC3D[Block re-entry]
+ EC3C -->|yes| EC3D[Block re-entry]
 
-        EC3C -->|no| EC3E[Allow — genuine new failure]
-    end
+ EC3C -->|no| EC3E[Allow — genuine new failure]
+ end
 
-    subgraph "Edge Case 4: Queue Overflow"
+ subgraph "Edge Case 4: Queue Overflow"
 
-        EC4A[5 PRs queued] --> EC4B{Queue limit exceeded?}
+ EC4A[5 PRs queued] --> EC4B{Queue limit exceeded?}
 
-        EC4B -->|yes| EC4C[Drop oldest + notify]
+ EC4B -->|yes| EC4C[Drop oldest + notify]
 
-        EC4B -->|no| EC4D[Add to queue]
-    end
+ EC4B -->|no| EC4D[Add to queue]
+ end
 
-    subgraph "Edge Case 5: Merge Conflict During Promotion"
+ subgraph "Edge Case 5: Merge Conflict During Promotion"
 
-        EC5A[0D_base_ accumulates<br/>sub-PR merges] --> EC5B[Promotion PR to main]
+ EC5A[0D_base_ accumulates<br/>sub-PR merges] --> EC5B[Promotion PR to main]
 
-        EC5B --> EC5C{Conflicts with main?}
+ EC5B --> EC5C{Conflicts with main?}
 
-        EC5C -->|yes| EC5D[Human resolves —<br/>never auto-merge to main]
+ EC5C -->|yes| EC5D[Human resolves —<br/>never auto-merge to main]
 
-        EC5C -->|no| EC5E[Clean promotion]
-    end
+ EC5C -->|no| EC5E[Clean promotion]
+ end
 
-    subgraph "Edge Case 6: Rebase During Active Session"
+ subgraph "Edge Case 6: Rebase During Active Session"
 
-        EC6A[Agent working on branch] --> EC6B[Bot commit lands on main]
+ EC6A[Agent working on branch] --> EC6B[Bot commit lands on main]
 
-        EC6B --> EC6C[Branch now 'behind']
+ EC6B --> EC6C[Branch now 'behind']
 
-        EC6C --> EC6D[REQ-10 fires on next push]
+ EC6C --> EC6D[REQ-10 fires on next push]
 
-        EC6D --> EC6E["Auto-merge if bot-only gap<br/>Agent continues uninterrupted"]
-    end
+ EC6D --> EC6E["Auto-merge if bot-only gap<br/>Agent continues uninterrupted"]
+ end
 
-    style EC1E fill:#51cf66
-    style EC2D fill:#51cf66
-    style EC3D fill:#ff6b6b
-    style EC3E fill:#51cf66
-    style EC5D fill:#ffd43b
-    style EC5E fill:#51cf66
-    style EC6E fill:#51cf66
+ style EC1E fill:#51cf66
+ style EC2D fill:#51cf66
+ style EC3D fill:#ff6b6b
+ style EC3E fill:#51cf66
+ style EC5D fill:#ffd43b
+ style EC5E fill:#51cf66
+ style EC6E fill:#51cf66
 ```
 
 ### Potential Blockers
@@ -1317,28 +1317,28 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title Implementation Roadmap
-    dateFormat YYYY-MM-DD
+ title Implementation Roadmap
+ dateFormat YYYY-MM-DD
 
-    section Phase 1 - Session Gate
-    Add COPILOT_ACTIVE_SESSION variable     :p1a, 2026-03-24, 1d
-    Add session lock/unlock to auth-delegation :p1b, after p1a, 1d
-    Add session release on PR close         :p1c, after p1b, 1d
-    Add queue management                    :p1d, after p1c, 1d
+ section Phase 1 - Session Gate
+ Add COPILOT_ACTIVE_SESSION variable :p1a, 2026-03-24, 1d
+ Add session lock/unlock to auth-delegation :p1b, after p1a, 1d
+ Add session release on PR close :p1c, after p1b, 1d
+ Add queue management :p1d, after p1c, 1d
 
-    section Phase 2 - PR Template
-    Add Multiple Sessions checkbox          :p2a, after p1d, 1d
-    Add checkbox detection logic            :p2b, after p2a, 1d
+ section Phase 2 - PR Template
+ Add Multiple Sessions checkbox :p2a, after p1d, 1d
+ Add checkbox detection logic :p2b, after p2a, 1d
 
-    section Phase 3 - Copilot Escalation
-    Add escalation trigger to self-healing  :p3a, after p2b, 2d
-    Add structured @copilot comment format  :p3b, after p3a, 1d
-    Integration test with live failure      :p3c, after p3b, 2d
+ section Phase 3 - Copilot Escalation
+ Add escalation trigger to self-healing :p3a, after p2b, 2d
+ Add structured @copilot comment format :p3b, after p3a, 1d
+ Integration test with live failure :p3c, after p3b, 2d
 
-    section Phase 4 - Verification
-    End-to-end testing                      :p4a, after p3c, 2d
-    Documentation update                    :p4b, after p4a, 1d
-    Production deployment                   :p4c, after p4b, 1d
+ section Phase 4 - Verification
+ End-to-end testing :p4a, after p3c, 2d
+ Documentation update :p4b, after p4a, 1d
+ Production deployment :p4c, after p4b, 1d
 ```
 
 ### Detailed Implementation Steps
@@ -1351,66 +1351,66 @@ Add a new step before the `@copilot continue` posting (Step 3d):
 
 ```yaml
 - name: "Session Concurrency Gate"
-  id: session_gate
-  uses: actions/github-script@v7
-  with:
-    github-token: ${{ secrets.CODEX_MASTER_KEY }}
-    script: |
-      const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
-      const TTL_SECONDS = 14400; // 4 hours
-      const now = Math.floor(Date.now() / 1000);
+ id: session_gate
+ uses: actions/github-script@v7
+ with:
+ github-token: ${{ secrets.CODEX_MASTER_KEY }}
+ script: |
+ const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
+ const TTL_SECONDS = 14400; // 4 hours
+ const now = Math.floor(Date.now() / 1000);
 
-      // Check multi-session flag
-      let multiSession = false;
-      try {
-        const resp = await github.request(
-          'GET /repos/{owner}/{repo}/actions/variables/{name}',
-          { owner: context.repo.owner, repo: context.repo.repo,
-            name: 'COPILOT_MULTI_SESSION' }
-        );
-        multiSession = resp.data.value === 'true';
-      } catch (e) { /* variable doesn't exist — default false */ }
+ // Check multi-session flag
+ let multiSession = false;
+ try {
+ const resp = await github.request(
+ 'GET /repos/{owner}/{repo}/actions/variables/{name}',
+ { owner: context.repo.owner, repo: context.repo.repo,
+ name: 'COPILOT_MULTI_SESSION' }
+ );
+ multiSession = resp.data.value === 'true';
+ } catch (e) { /* variable doesn't exist — default false */ }
 
-      // Check active session
-      let activeSession = '';
-      try {
-        const resp = await github.request(
-          'GET /repos/{owner}/{repo}/actions/variables/{name}',
-          { owner: context.repo.owner, repo: context.repo.repo,
-            name: 'COPILOT_ACTIVE_SESSION' }
-        );
-        activeSession = resp.data.value || '';
-      } catch (e) { /* variable doesn't exist */ }
+ // Check active session
+ let activeSession = '';
+ try {
+ const resp = await github.request(
+ 'GET /repos/{owner}/{repo}/actions/variables/{name}',
+ { owner: context.repo.owner, repo: context.repo.repo,
+ name: 'COPILOT_ACTIVE_SESSION' }
+ );
+ activeSession = resp.data.value || '';
+ } catch (e) { /* variable doesn't exist */ }
 
-      // Parse active session: "PR#|timestamp|run_id"
-      let lockAcquired = false;
-      if (activeSession) {
-        const [activePR, activeTime, activeRun] = activeSession.split('|');
-        const elapsed = now - parseInt(activeTime, 10);
-        if (elapsed > TTL_SECONDS) {
-          core.info(`Active session expired (${elapsed}s > ${TTL_SECONDS}s) — clearing`);
-          lockAcquired = true;
-        } else if (multiSession) {
-          core.info(`Multi-session enabled — allowing concurrent session`);
-          lockAcquired = true;
-        } else {
-          core.info(`Session busy — PR #${activePR} active for ${elapsed}s`);
-          // Queue this PR
-          // ... queue management logic ...
-          core.setOutput('acquired', 'false');
-          core.setOutput('active_pr', activePR);
-          return;
-        }
-      } else {
-        lockAcquired = true;
-      }
+ // Parse active session: "PR#|timestamp|run_id"
+ let lockAcquired = false;
+ if (activeSession) {
+ const [activePR, activeTime, activeRun] = activeSession.split('|');
+ const elapsed = now - parseInt(activeTime, 10);
+ if (elapsed > TTL_SECONDS) {
+ core.info(`Active session expired (${elapsed}s > ${TTL_SECONDS}s) — clearing`);
+ lockAcquired = true;
+ } else if (multiSession) {
+ core.info(`Multi-session enabled — allowing concurrent session`);
+ lockAcquired = true;
+ } else {
+ core.info(`Session busy — PR #${activePR} active for ${elapsed}s`);
+ // Queue this PR
+ // ... queue management logic ...
+ core.setOutput('acquired', 'false');
+ core.setOutput('active_pr', activePR);
+ return;
+ }
+ } else {
+ lockAcquired = true;
+ }
 
-      if (lockAcquired) {
-        // Acquire lock
-        const value = `${prNumber}|${now}|${context.runId}`;
-        // ... upsertVar('COPILOT_ACTIVE_SESSION', value) ...
-        core.setOutput('acquired', 'true');
-      }
+ if (lockAcquired) {
+ // Acquire lock
+ const value = `${prNumber}|${now}|${context.runId}`;
+ // ... upsertVar('COPILOT_ACTIVE_SESSION', value) ...
+ core.setOutput('acquired', 'true');
+ }
 ```
 
 #### Step 2: PR Template Update
@@ -1487,66 +1487,66 @@ grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && 
 %%{init: {'accessibility': {'title': 'Flowchart showing orchestrator-agent, cognitive-brain-manager'}}%%
 
 flowchart TD
-    subgraph "Orchestration Layer"
-        ORCH[orchestrator-agent]
-        BRAIN[cognitive-brain-manager]
-    end
+ subgraph "Orchestration Layer"
+ ORCH[orchestrator-agent]
+ BRAIN[cognitive-brain-manager]
+ end
 
-    subgraph "CI/CD Agents"
-        HEAL[autonomous-test-healer-agent]
-        CI_TEST[ci-testing-agent]
-        CI_FIX[ci-failure-resolution-agent]
-        CI_HEAL[ci-auto-healer-agent]
-        WF_FIX[workflow-ci-fixer]
-    end
+ subgraph "CI/CD Agents"
+ HEAL[autonomous-test-healer-agent]
+ CI_TEST[ci-testing-agent]
+ CI_FIX[ci-failure-resolution-agent]
+ CI_HEAL[ci-auto-healer-agent]
+ WF_FIX[workflow-ci-fixer]
+ end
 
-    subgraph "Security Agents"
-        SEC_AUDIT[security-audit-agent]
-        CODEQL[codeql-alert-resolution-agent]
-        SEC_SCAN[unified-security-scanner]
-    end
+ subgraph "Security Agents"
+ SEC_AUDIT[security-audit-agent]
+ CODEQL[codeql-alert-resolution-agent]
+ SEC_SCAN[unified-security-scanner]
+ end
 
-    subgraph "Quality Agents"
-        QA[qa-walkthrough-agent]
-        COV[unified-coverage-agent]
-        DOC[unified-doc-agent]
-    end
+ subgraph "Quality Agents"
+ QA[qa-walkthrough-agent]
+ COV[unified-coverage-agent]
+ DOC[unified-doc-agent]
+ end
 
-    subgraph "Session Management"
-        SESSION_LOG[session-log-retrieval-agent]
-        SESSION_ANALYSIS[session-analysis-agent]
-    end
+ subgraph "Session Management"
+ SESSION_LOG[session-log-retrieval-agent]
+ SESSION_ANALYSIS[session-analysis-agent]
+ end
 
-    ORCH --> CI_TEST
+ ORCH --> CI_TEST
 
-    ORCH --> CI_FIX
+ ORCH --> CI_FIX
 
-    ORCH --> SEC_AUDIT
+ ORCH --> SEC_AUDIT
 
-    ORCH --> QA
+ ORCH --> QA
 
-    BRAIN --> ORCH
+ BRAIN --> ORCH
 
-    BRAIN --> SESSION_ANALYSIS
+ BRAIN --> SESSION_ANALYSIS
 
-    CI_FIX --> CI_HEAL
+ CI_FIX --> CI_HEAL
 
-    CI_HEAL --> HEAL
+ CI_HEAL --> HEAL
 
-    CI_HEAL --> WF_FIX
+ CI_HEAL --> WF_FIX
 
-    SEC_AUDIT --> CODEQL
+ SEC_AUDIT --> CODEQL
 
-    SEC_AUDIT --> SEC_SCAN
+ SEC_AUDIT --> SEC_SCAN
 
-    QA --> COV
+ QA --> COV
 
-    QA --> DOC
+ QA --> DOC
 
-    style ORCH fill:#ff922b
-    style BRAIN fill:#845ef7
-    style HEAL fill:#51cf66
-    style CI_HEAL fill:#51cf66
+ style ORCH fill:#ff922b
+ style BRAIN fill:#845ef7
+ style HEAL fill:#51cf66
+ style CI_HEAL fill:#51cf66
 ```
 
 ### D_CAPABLE Agent Promotion Path
@@ -1556,28 +1556,28 @@ flowchart TD
 
 flowchart LR
 
-    E[E Model<br/>Advisory Only] -->|5-gate check| D[D_CAPABLE<br/>Autonomous]
+ E[E Model<br/>Advisory Only] -->|5-gate check| D[D_CAPABLE<br/>Autonomous]
 
-    subgraph "E→D Gate Conditions"
-        C1[C1: AGENT_REGISTRY present]
-        C2[C2: CODEX_MANIFEST valid]
-        C3[C3: Tier-3 SOFT ≤ 2]
-        C4[C4: Handoff gate deployed]
-        C5[C5: GROUNDED count ≥ 8]
-    end
+ subgraph "ED Gate Conditions"
+ C1[C1: AGENT_REGISTRY present]
+ C2[C2: CODEX_MANIFEST valid]
+ C3[C3: Tier-3 SOFT ≤ 2]
+ C4[C4: Handoff gate deployed]
+ C5[C5: GROUNDED count ≥ 8]
+ end
 
-    C1 --> D
+ C1 --> D
 
-    C2 --> D
+ C2 --> D
 
-    C3 --> D
+ C3 --> D
 
-    C4 --> D
+ C4 --> D
 
-    C5 --> D
+ C5 --> D
 
-    style E fill:#74c0fc
-    style D fill:#51cf66
+ style E fill:#74c0fc
+ style D fill:#51cf66
 ```
 
 ---

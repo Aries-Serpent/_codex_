@@ -53,24 +53,24 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 1. Click "Try It Out"
 2. Enter text or upload data:
-   ```
-   Input: "I love this product!"
+ ```
+ Input: "I love this product!"
  ```
 3. Click "Predict"
 4. See instant result:
-   ```
-   Sentiment: POSITIVE
-   Confidence: 95%
+ ```
+ Sentiment: POSITIVE
+ Confidence: 95%
  ```
 
 **Option B: Batch Upload**
 
 1. Click "Upload File"
 2. Upload CSV file:
-   ```
-   text,category
-   "Great product!",product_review
-   "Terrible experience.",product_review
+ ```
+ text,category
+ "Great product!",product_review
+ "Terrible experience.",product_review
  ```
 3. Click "Process"
 4. Results display in table format
@@ -109,9 +109,9 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 ```
  1000 reviews processed
  78% positive sentiment
- 15% negative sentiment  
+ 15% negative sentiment 
  7% neutral
-→ Share dashboard link with team
+ Share dashboard link with team
 ```
 
 ### Use Case 2: Content Categorization
@@ -130,7 +130,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
  Billing Issues: 245 tickets
  Technical Support: 428 tickets
  Feature Requests: 187 tickets
-→ Auto-route to teams
+ Auto-route to teams
 ```
 
 ### Use Case 3: Quality Control
@@ -148,9 +148,9 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 **Result:**
 ```
  5000 products scanned
-️ 12 anomalies detected
+ 12 anomalies detected
  Manual review queue ready
-→ QA team investigates
+ QA team investigates
 ```
 
 ---
@@ -191,8 +191,8 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 **Example:**
 ```
 Alert: Daily Sentiment Summary
-📧 Send to: team@company.com
-📅 Time: 9:00 AM daily
+ Send to: team@company.com
+ Time: 9:00 AM daily
  Include: Sentiment trends, top issues
 ```
 
@@ -229,8 +229,8 @@ Alert: Daily Sentiment Summary
 **Tip 2: Look for Confidence Scores**
 ```
  95% confidence = Very reliable
-️ 70% confidence = Generally reliable
-️️ 50% confidence = Be cautious
+ 70% confidence = Generally reliable
+ 50% confidence = Be cautious
 ```
 
 **Tip 3: Export for Excel**
@@ -257,10 +257,10 @@ Alert: Daily Sentiment Summary
 
 **How to fix:**
 ```
- customer_reviews.pdf → Download as CSV
- data.txt (no headers) → Add headers: text, date, category
- huge_file_500mb.csv → Split into 5 files of 100mb each
- feedback.csv → Ready to upload
+ customer_reviews.pdf Download as CSV
+ data.txt (no headers) Add headers: text, date, category
+ huge_file_500mb.csv Split into 5 files of 100mb each
+ feedback.csv Ready to upload
 ```
 
 ### Issue: "Predictions Look Wrong"

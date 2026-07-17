@@ -123,21 +123,21 @@ All examples tested and working correctly.
 
 ```
 Authentication System
-├── OAuth Manager (oauth_manager.py)
-│   ├── GitHub OAuth2 flow
-│   ├── PKCE implementation
-│   ├── Token exchange
-│   └── User API integration
-├── MFA Provider (mfa_provider.py)
-│   ├── TOTP generation
-│   ├── Backup codes
-│   ├── Rate limiting
-│   └── Recovery mechanisms
-└── Token Manager (token_manager.py)
-    ├── Token generation
-    ├── Token validation
-    ├── Session management
-    └── Revocation handling
+ OAuth Manager (oauth_manager.py)
+ GitHub OAuth2 flow
+ PKCE implementation
+ Token exchange
+ User API integration
+ MFA Provider (mfa_provider.py)
+ TOTP generation
+ Backup codes
+ Rate limiting
+ Recovery mechanisms
+ Token Manager (token_manager.py)
+ Token generation
+ Token validation
+ Session management
+ Revocation handling
 ```
 
 ### Security Features

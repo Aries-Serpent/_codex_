@@ -84,9 +84,9 @@ ps aux | grep codex_ml
 python3.12 -m venv venv_0.2.0
 
 # Activate virtual environment
-source venv_0.2.0/bin/activate  # On macOS/Linux
+source venv_0.2.0/bin/activate # On macOS/Linux
 # OR
-venv_0.2.0\Scripts\activate  # On Windows
+venv_0.2.0\Scripts\activate # On Windows
 ```
 
 ### Step 2: Upgrade Package
@@ -107,11 +107,11 @@ pip show codex-ml
 ```bash
 # Install v0.2.0 with constraints file
 pip install --upgrade codex-ml==0.2.0 \
-    --constraint requirements.txt
+ --constraint requirements.txt
 
 # If constraints conflict, resolve manually
 pip install --upgrade codex-ml==0.2.0 \
-    --use-deprecated=legacy-resolver
+ --use-deprecated=legacy-resolver
 ```
 
 #### Option C: Testing in Isolated Environment
@@ -209,20 +209,20 @@ python -c "import codex_ml; print(codex_ml.__file__)"
 python << 'EOF'
 import sys
 try:
-    from codex_ml.telemetry import Telemetry
-    print("✓ Telemetry module imported successfully")
-    
-    from codex_ml.metrics import MetricsRegistry
-    print("✓ Metrics module imported successfully")
-    
-    from codex_ml.safety import SafetyModeration
-    print("✓ Safety module imported successfully")
-    
-    print("\n✓ All core imports successful")
-    sys.exit(0)
+ from codex_ml.telemetry import Telemetry
+ print(" Telemetry module imported successfully")
+ 
+ from codex_ml.metrics import MetricsRegistry
+ print(" Metrics module imported successfully")
+ 
+ from codex_ml.safety import SafetyModeration
+ print(" Safety module imported successfully")
+ 
+ print("\n All core imports successful")
+ sys.exit(0)
 except Exception as e:
-    print(f"✗ Import failed: {e}")
-    sys.exit(1)
+ print(f" Import failed: {e}")
+ sys.exit(1)
 EOF
 ```
 
@@ -266,12 +266,12 @@ cache = CacheManager()
 start = time.time()
 
 for i in range(1000):
-    cache.set(f"key_{i}", f"value_{i}", ttl=3600)
-    value = cache.get(f"key_{i}")
+ cache.set(f"key_{i}", f"value_{i}", ttl=3600)
+ value = cache.get(f"key_{i}")
 
 elapsed = time.time() - start
 print(f"1000 cache ops completed in {elapsed:.2f}s")
-print("✓ Performance baseline acceptable" if elapsed < 5.0 else "✗ Performance degraded")
+print(" Performance baseline acceptable" if elapsed < 5.0 else " Performance degraded")
 EOF
 ```
 
@@ -299,7 +299,7 @@ python -c "import py_compile; py_compile.main(['-b', '.'])"
 
 ```bash
 # If using virtual environment, switch to old environment
-source venv_old/bin/activate  # Switch to v0.1.x venv
+source venv_old/bin/activate # Switch to v0.1.x venv
 
 # OR restore from system backup
 pip install -r requirements.frozen.0.1.x
@@ -393,7 +393,7 @@ pip check
 
 # Resolve with constraints
 pip install --upgrade codex-ml==0.2.0 \
-    --constraint requirements-compatible.txt
+ --constraint requirements-compatible.txt
 
 # If persistent, use fresh environment
 python3.12 -m venv fresh_env
@@ -420,8 +420,8 @@ EOF
 pytest --no-xdist tests/
 
 # Verify resource availability
-free -h  # Check available memory
-df -h    # Check disk space
+free -h # Check available memory
+df -h # Check disk space
 ```
 
 ### Issue 4: Configuration Not Loading

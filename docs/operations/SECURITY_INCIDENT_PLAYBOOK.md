@@ -36,29 +36,29 @@ This playbook provides structured procedures for detecting, responding to, and r
 
 ```
 Security Alert Detected
-  │
-  ├─ Data accessed/exfiltrated?
-  │   ├─ YES → CRITICAL - Immediate response
-  │   └─ NO → Continue
-  │
-  ├─ System compromised (RCE, shell access)?
-  │   ├─ YES → CRITICAL - Immediate response
-  │   └─ NO → Continue
-  │
-  ├─ Credentials/tokens exposed?  # pragma: allowlist secret
-  │   ├─ YES → HIGH - Escalate immediately
-  │   └─ NO → Continue
-  │
-  ├─ Unauthorized access attempt (successful)?
-  │   ├─ YES → HIGH - Escalate immediately
-  │   └─ NO → Continue
-  │
-  ├─ Policy violation (intentional)?
-  │   ├─ YES → MEDIUM - Investigate
-  │   └─ NO → Continue
-  │
-  └─ Configuration drift/patch needed?
-      └─ LOW - Schedule remediation
+ 
+ Data accessed/exfiltrated?
+ YES CRITICAL - Immediate response
+ NO Continue
+ 
+ System compromised (RCE, shell access)?
+ YES CRITICAL - Immediate response
+ NO Continue
+ 
+ Credentials/tokens exposed? # pragma: allowlist secret
+ YES HIGH - Escalate immediately
+ NO Continue
+ 
+ Unauthorized access attempt (successful)?
+ YES HIGH - Escalate immediately
+ NO Continue
+ 
+ Policy violation (intentional)?
+ YES MEDIUM - Investigate
+ NO Continue
+ 
+ Configuration drift/patch needed?
+ LOW - Schedule remediation
 ```
 
 ---
@@ -203,7 +203,7 @@ tcpdump -i any -w /tmp/${INCIDENT_ID}-traffic.pcap
 # For application-level attacks:
 # Step 1: Disable affected endpoint
 kubectl patch deployment codex-api -n production --type='json' \
-  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env", "value":[{"name":"DISABLE_VULNERABLE_ENDPOINT","value":"true"}]}]'
+ -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/env", "value":[{"name":"DISABLE_VULNERABLE_ENDPOINT","value":"true"}]}]'
 
 # Step 2: Increase monitoring on endpoint
 # Step 3: Prepare rollback if needed
@@ -242,8 +242,8 @@ find / -newer /tmp/baseline -type f 2>/dev/null > /tmp/${INCIDENT_ID}-modified-f
 
 # Step 7: Collect database audit logs
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT * FROM audit_log WHERE timestamp > NOW() - INTERVAL '1 hour' ORDER BY timestamp DESC;" \
-  > /tmp/${INCIDENT_ID}-db-audit.txt
+ -c "SELECT * FROM audit_log WHERE timestamp > NOW() - INTERVAL '1 hour' ORDER BY timestamp DESC;" \
+ > /tmp/${INCIDENT_ID}-db-audit.txt
 
 # Step 8: Package all evidence
 tar -czf /tmp/${INCIDENT_ID}-evidence.tar.gz /tmp/${INCIDENT_ID}-*
@@ -260,8 +260,8 @@ sha256sum /tmp/${INCIDENT_ID}-evidence.tar.gz > /tmp/${INCIDENT_ID}-evidence.sha
 
 # Backup to secure location
 aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
-  s3://security-evidence-archive/${INCIDENT_ID}/evidence.tar.gz \
-  --sse AES256 --storage-class GLACIER
+ s3://security-evidence-archive/${INCIDENT_ID}/evidence.tar.gz \
+ --sse AES256 --storage-class GLACIER
 ```
 
 ## 3.2 Root Cause Analysis
@@ -271,18 +271,18 @@ aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
 ```bash
 # For SQL Injection:
 1. Review WAF logs for pattern
-   - What input field was vulnerable?
-   - What query was executed?
-   - Was it successful?
+ - What input field was vulnerable?
+ - What query was executed?
+ - Was it successful?
 
 2. Check application code
-   - Is query parameterized?
-   - Is input sanitized?
-   - What is vulnerable code path?
+ - Is query parameterized?
+ - Is input sanitized?
+ - What is vulnerable code path?
 
 3. Audit database changes
-   PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-     -c "SELECT * FROM pg_stat_statements WHERE query LIKE '%DROP%' OR query LIKE '%DELETE%';"
+ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
+ -c "SELECT * FROM pg_stat_statements WHERE query LIKE '%DROP%' OR query LIKE '%DELETE%';"
 
 # For Account Compromise:
 1. Review authentication logs for anomalies
@@ -293,28 +293,28 @@ aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
 
 # For Privilege Escalation:
 1. Review RBAC changes in Kubernetes
-   kubectl get rolebindings -n production --all-namespaces -o wide
+ kubectl get rolebindings -n production --all-namespaces -o wide
 
 2. Check sudo/privileged command logs
-   journalctl SYSLOG_IDENTIFIER=sudo
+ journalctl SYSLOG_IDENTIFIER=sudo
 
 3. Review IAM policy changes
-   aws iam list-role-policies --role-name prod-app-role
+ aws iam list-role-policies --role-name prod-app-role
 
 # For Malware/RCE:
 1. Check running processes for anomalies
-   ps auxww | grep -v "^root\|^USER" | sort -k3 -nr | head
+ ps auxww | grep -v "^root\|^USER" | sort -k3 -nr | head
 
 2. Check network connections
-   netstat -antp | grep ESTABLISHED
+ netstat -antp | grep ESTABLISHED
 
 3. Check file system for unauthorized files
-   find / -name "*.sh" -o -name "*.exe" -o -name "*backdoor*" 2>/dev/null
+ find / -name "*.sh" -o -name "*.exe" -o -name "*backdoor*" 2>/dev/null
 
 4. Check cron jobs and startup scripts
-   crontab -l
-   ls -la /etc/cron.d/
-   ls -la /usr/local/bin/ | head -20
+ crontab -l
+ ls -la /etc/cron.d/
+ ls -la /usr/local/bin/ | head -20
 ```
 
 ---
@@ -329,9 +329,9 @@ aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
 # Isolate compromised system from network
 # Option 1: Block IP at firewall
 aws ec2 revoke-security-group-ingress \
-  --group-id sg-12345678 \
-  --protocol tcp --port 22 \
-  --cidr 10.0.0.0/8
+ --group-id sg-12345678 \
+ --protocol tcp --port 22 \
+ --cidr 10.0.0.0/8
 
 # Option 2: Disconnect pod from cluster
 kubectl delete pod ${POD_NAME} -n production
@@ -341,14 +341,14 @@ kubectl apply -f - << EOF
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-compromised-pod
+ name: deny-compromised-pod
 spec:
-  podSelector:
-    matchLabels:
-      compromised: "true"
-  policyTypes:
-  - Ingress
-  - Egress
+ podSelector:
+ matchLabels:
+ compromised: "true"
+ policyTypes:
+ - Ingress
+ - Egress
 EOF
 ```
 
@@ -364,14 +364,14 @@ aws apigateway create-api-key --name "prod-api-key-$(date +%s)" --enabled
 
 # Step 3: Invalidate all sessions
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "DELETE FROM sessions WHERE created_at < NOW();"
+ -c "DELETE FROM sessions WHERE created_at < NOW();"
 
 # Step 4: Update RBAC
 kubectl delete rolebinding suspicious-binding -n production
 kubectl create rolebinding restricted-binding \
-  --clusterrole=edit \
-  --serviceaccount=production:default \
-  -n production
+ --clusterrole=edit \
+ --serviceaccount=production:default \
+ -n production
 ```
 
 **Strategy 3: Malware Eradication**
@@ -413,21 +413,21 @@ docker push ${REGISTRY}/codex-api:patched
 # Step 3: Force password reset for affected users
 # Query affected accounts
 AFFECTED_USERS=$(PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT id FROM users WHERE last_login > NOW() - INTERVAL '24 hours';")
+ -c "SELECT id FROM users WHERE last_login > NOW() - INTERVAL '24 hours';")
 
 # Invalidate their sessions
 for user_id in $AFFECTED_USERS; do
-  PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-    -c "DELETE FROM sessions WHERE user_id = ${user_id};"
+ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
+ -c "DELETE FROM sessions WHERE user_id = ${user_id};"
 done
 
 # Step 4: Apply WAF rules to prevent recurrence
 # Add rule blocking SQL injection patterns
 aws wafv2 update-web-acl \
-  --name prod-waf \
-  --region us-east-1 \
-  --scope REGIONAL \
-  --rules '[{...sql_injection_rule...}]'
+ --name prod-waf \
+ --region us-east-1 \
+ --scope REGIONAL \
+ --rules '[{...sql_injection_rule...}]'
 ```
 
 ---
@@ -449,14 +449,14 @@ aws wafv2 update-web-acl \
 # Restore database
 BACKUP_ID="secure-backup-2024-01-15-08-00"
 PGPASSWORD=$DB_PASSWORD pg_restore -h $DB_HOST -U $DB_USER -d codex_prod \
-  s3://security-backups/${BACKUP_ID}.dump
+ s3://security-backups/${BACKUP_ID}.dump
 
 # Restore application
 kubectl set image deployment/codex-api codex-api=${CLEAN_IMAGE} -n production
 
 # Step 3: Verify integrity
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT COUNT(*) FROM users; SELECT COUNT(*) FROM orders;"
+ -c "SELECT COUNT(*) FROM users; SELECT COUNT(*) FROM orders;"
 
 # Step 4: Validate system functionality
 ./tests/smoke-tests/critical-paths.sh
@@ -485,24 +485,24 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
 
 ```
 T+0: Security alert detected
-  └─ Notify: Security team in #security-incidents
+ Notify: Security team in #security-incidents
 
 T+5: Incident assessment complete
-  └─ Notify: Engineering director, on-call lead
-  └─ Notify: Product lead if customer-impacting
+ Notify: Engineering director, on-call lead
+ Notify: Product lead if customer-impacting
 
 T+15: Containment actions initiated
-  └─ Update: Executive summary in Slack
-  └─ Create: Internal incident ticket
+ Update: Executive summary in Slack
+ Create: Internal incident ticket
 
 T+30: Root cause identified
-  └─ Brief: Management team on findings
+ Brief: Management team on findings
 
 T+60: Mitigation in progress
-  └─ Update: All stakeholders on remediation steps
+ Update: All stakeholders on remediation steps
 
 T+24h: Post-incident review
-  └─ Brief: Full team on lessons learned
+ Brief: Full team on lessons learned
 ```
 
 ### 6.2 Customer Communication
@@ -511,15 +511,15 @@ T+24h: Post-incident review
 
 ```
 Was customer data accessed?
-  ├─ YES → Immediate notification (GDPR/CCPA requirement)
-  │   └─ Notify: Affected customers, regulators if required
-  │
-  └─ NO → Were systems unavailable?
-      ├─ YES (> 1 hour) → Notify: Customers of incident
-      │   └─ Emphasize: No data access, system restored, security review ongoing
-      │
-      └─ NO → No customer notification required
-          └─ Publish: General security update in blog/security page
+ YES Immediate notification (GDPR/CCPA requirement)
+ Notify: Affected customers, regulators if required
+ 
+ NO Were systems unavailable?
+ YES (> 1 hour) Notify: Customers of incident
+ Emphasize: No data access, system restored, security review ongoing
+ 
+ NO No customer notification required
+ Publish: General security update in blog/security page
 ```
 
 **Customer Notification Template**:
@@ -549,7 +549,7 @@ WHAT WE DID:
 - Enhanced monitoring to prevent recurrence
 
 WHAT YOU SHOULD DO:
-- [If password reset needed]: "We recommend you change your password"  # pragma: allowlist secret
+- [If password reset needed]: "We recommend you change your password" # pragma: allowlist secret
 - [If data breach]: "Monitor accounts for suspicious activity"
 - [If service disrupted]: "No action needed, service is now restored"
 
@@ -657,21 +657,21 @@ Security Team
 
 ```
 Security Incident
-  │
-  ├─ SEV-Critical
-  │   ├─ On-Call Security: [Phone: _____, Slack: @security-oncall]
-  │   ├─ Security Director: [Phone: _____, Slack: @security-director]
-  │   ├─ CTO: [Phone: _____, Slack: @cto]
-  │   └─ CEO: [Phone: _____, Slack: @ceo]
-  │
-  ├─ SEV-High
-  │   ├─ On-Call Security: [Phone: _____, Slack: @security-oncall]
-  │   ├─ Security Manager: [Phone: _____, Slack: @security-manager]
-  │   └─ Engineering Director: [Phone: _____, Slack: @eng-director]
-  │
-  └─ SEV-Medium/Low
-      ├─ Security Team: [Slack: #security-team]
-      └─ Security Lead: [Slack: @security-lead]
+ 
+ SEV-Critical
+ On-Call Security: [Phone: _____, Slack: @security-oncall]
+ Security Director: [Phone: _____, Slack: @security-director]
+ CTO: [Phone: _____, Slack: @cto]
+ CEO: [Phone: _____, Slack: @ceo]
+ 
+ SEV-High
+ On-Call Security: [Phone: _____, Slack: @security-oncall]
+ Security Manager: [Phone: _____, Slack: @security-manager]
+ Engineering Director: [Phone: _____, Slack: @eng-director]
+ 
+ SEV-Medium/Low
+ Security Team: [Slack: #security-team]
+ Security Lead: [Slack: @security-lead]
 ```
 
 ---

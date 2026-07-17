@@ -36,16 +36,16 @@ From production benchmarking (2026-06-14):
 ### 1.3 SLA Compliance
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                 SLA COMPLIANCE MATRIX                   │
-├─────────────────────────────────────────────────────────┤
-│ Baseline Load:          ALL TARGETS EXCEEDED          │
-│ Normal Load:            ALL TARGETS EXCEEDED          │
-│ High Load:              ALL TARGETS EXCEEDED          │
-│ Peak Load:              ALL TARGETS EXCEEDED          │
-│ Error Rate:             0% (all requests successful)  │
-│ Availability:           100%                          │
-└─────────────────────────────────────────────────────────┘
+
+ SLA COMPLIANCE MATRIX 
+
+ Baseline Load: ALL TARGETS EXCEEDED 
+ Normal Load: ALL TARGETS EXCEEDED 
+ High Load: ALL TARGETS EXCEEDED 
+ Peak Load: ALL TARGETS EXCEEDED 
+ Error Rate: 0% (all requests successful) 
+ Availability: 100% 
+
 ```
 
 ---
@@ -197,18 +197,18 @@ From production benchmarking (2026-06-14):
 ### 4.1 Response Time Percentiles (Normal Load)
 
 ```
-Percentile │ Latency (ms)
-───────────┼─────────────
-p0 (min)   │ 7.33
-p5         │ 8.41
-p10        │ 8.47
-p25        │ 9.36
-p50 (median)│ 10.55
-p75        │ 10.16
-p90        │ 11.49
-p95        │ 12.38
-p99        │ 13.78
-p100 (max) │ 13.78
+Percentile Latency (ms)
+
+p0 (min) 7.33
+p5 8.41
+p10 8.47
+p25 9.36
+p50 (median) 10.55
+p75 10.16
+p90 11.49
+p95 12.38
+p99 13.78
+p100 (max) 13.78
 ```
 
 ### 4.2 Latency Distribution Interpretation
@@ -321,11 +321,11 @@ The following are excluded from SLA calculations:
 Total API Response Time: 13.1ms (p99, peak load)
 
 Network Breakdown:
-  Client → LB:      ~1ms   (regional routing)
-  LB → App:         ~1ms   (local network)
-  App processing:   ~10ms  (business logic)
-  App → Database:   ~1ms   (query)
-  Total:            ~13ms
+ Client LB: ~1ms (regional routing)
+ LB App: ~1ms (local network)
+ App processing: ~10ms (business logic)
+ App Database: ~1ms (query)
+ Total: ~13ms
 ```
 
 ### 8.2 Geographic SLAs
@@ -345,24 +345,24 @@ Network Breakdown:
 
 ```yaml
 api_response_time_p50_ms:
-  target: 50
-  warning: 75
-  critical: 100
+ target: 50
+ warning: 75
+ critical: 100
 
 api_response_time_p99_ms:
-  target: 300
-  warning: 500
-  critical: 1000
+ target: 300
+ warning: 500
+ critical: 1000
 
 api_error_rate_percent:
-  target: 0.1
-  warning: 0.5
-  critical: 2.0
+ target: 0.1
+ warning: 0.5
+ critical: 2.0
 
 api_throughput_rps:
-  target: 90
-  warning: 60
-  critical: 30
+ target: 90
+ warning: 60
+ critical: 30
 ```
 
 ### 9.2 Alert Rules

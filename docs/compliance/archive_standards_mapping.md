@@ -34,11 +34,11 @@ from codex.archive.standardization import StandardizationManager
 
 manager = StandardizationManager(enable_signing=True)
 evidence_record = {
-    "ts": "2025-11-03T00:00:00Z",
-    "action": "ARCHIVE",
-    "actor": "user@example.com",
-    "tombstone": "uuid",
-    "sha256": "content_hash"
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user@example.com",
+ "tombstone": "uuid",
+ "sha256": "content_hash"
 }
 
 # Enhance with SLSA L3 metadata
@@ -72,28 +72,28 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
 **Archive Step (store)**:
 ```json
 {
-  "name": "archive",
-  "expected_materials": [
-    ["MATCH", "src/**/*.py", "WITH", "PRODUCTS", "FROM", "checkout"]
-  ],
-  "expected_products": [
-    ["CREATE", ".codex/evidence/archive_ops.jsonl"]
-  ],
-  "pubkeys": ["<GitHub OIDC>"]
+ "name": "archive",
+ "expected_materials": [
+ ["MATCH", "src/**/*.py", "WITH", "PRODUCTS", "FROM", "checkout"]
+ ],
+ "expected_products": [
+ ["CREATE", ".codex/evidence/archive_ops.jsonl"]
+ ],
+ "pubkeys": ["<GitHub OIDC>"]
 }
 ```text
 
 **Restore Step**:
 ```json
 {
-  "name": "restore",
-  "expected_materials": [
-    ["MATCH", ".codex/evidence/archive_ops.jsonl", "IN", "archive"]
-  ],
-  "expected_products": [
-    ["CREATE", "restored/**/*"]
-  ],
-  "pubkeys": ["<GitHub OIDC>"]
+ "name": "restore",
+ "expected_materials": [
+ ["MATCH", ".codex/evidence/archive_ops.jsonl", "IN", "archive"]
+ ],
+ "expected_products": [
+ ["CREATE", "restored/**/*"]
+ ],
+ "pubkeys": ["<GitHub OIDC>"]
 }
 ```text
 
@@ -104,11 +104,11 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
 from codex.archive.in_toto_integration import generate_link_metadata
 
 link = generate_link_metadata(
-    step_name="archive",
-    materials={"src/file.py": "sha256:..."},
-    products={".codex/evidence/archive_ops.jsonl": "sha256:..."},
-    command=["codex", "archive", "store"],
-    return_value=0
+ step_name="archive",
+ materials={"src/file.py": "sha256:..."},
+ products={".codex/evidence/archive_ops.jsonl": "sha256:..."},
+ command=["codex", "archive", "store"],
+ return_value=0
 )
 # Store link metadata reference in standardizationMetadata.in_toto_attestation_id
 ```text
@@ -135,24 +135,24 @@ link = generate_link_metadata(
 **v2 Evidence Record** (SAA-compliant):
 ```json
 {
-  "ts": "2025-11-03T00:00:00Z",
-  "action": "ARCHIVE",
-  "actor": "user@example.com",
-  "repo": "_codex_",
-  "path": "src/module.py",
-  "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
-  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", <!-- pragma: allowlist secret -->
-  "size": 4096,
-  "commit": "abc123def456", <!-- pragma: allowlist secret -->
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "schema_version": "2.0",
-    "slsa_level": "L3",
-    "signature": "MOCK_SIG_abc123...",
-    "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "2025-11-03T00:00:01Z"
-  }
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user@example.com",
+ "repo": "_codex_",
+ "path": "src/module.py",
+ "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
+ "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", <!-- pragma: allowlist secret -->
+ "size": 4096,
+ "commit": "abc123def456", <!-- pragma: allowlist secret -->
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "schema_version": "2.0",
+ "slsa_level": "L3",
+ "signature": "MOCK_SIG_abc123...",
+ "certificate_chain": ["-----BEGIN CERTIFICATE-----..."],
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "2025-11-03T00:00:01Z"
+ }
 }
 ```text
 
@@ -172,7 +172,7 @@ print(f"Signing: {'Enabled' if report['signing_enabled'] else 'Disabled'}")
 print(f"Schema Versions: {report['schema_versions_supported']}")
 print("\nCompliance Status:")
 for standard, status in report['compliance'].items():
-    print(f"  {standard}: {'' if status else ''}")
+ print(f" {standard}: {'' if status else ''}")
 EOF
 ```text
 
@@ -239,9 +239,9 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 **Clean Run**:
 ```text
  Validation Results: 1234 records scanned
-    Valid: 1234
-   ️  Warnings: 0
-    Errors: 0
+ Valid: 1234
+ Warnings: 0
+ Errors: 0
 
  All checks passed!
 ```text
@@ -252,13 +252,13 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3
-Signing Enabled:  Yes
+Signing Enabled: Yes
 Schema Versions Supported: 1.0, 2.0
 
 Compliance:
-   SLSA_L3
-   IN_TOTO_READY
-   SAA_COMPLIANT
+ SLSA_L3
+ IN_TOTO_READY
+ SAA_COMPLIANT
 ```text
 ---
 

@@ -85,21 +85,21 @@
 
 graph LR
 
-    A[Repository Files] --> B[Topic/Custom Selection]
+ A[Repository Files] --> B[Topic/Custom Selection]
 
-    B --> C[File Staging]
+ B --> C[File Staging]
 
-    C --> D[Flat Structure Transform]
+ C --> D[Flat Structure Transform]
 
-    D --> E[Manifest Generation]
+ D --> E[Manifest Generation]
 
-    E --> F[Zip Packaging]
+ E --> F[Zip Packaging]
 
-    F --> G[Validation]
+ F --> G[Validation]
 
-    G --> H[ChatGPT Upload]
+ G --> H[ChatGPT Upload]
 
-    H --> I[Operational Verification]
+ H --> I[Operational Verification]
 ```
 
 ### Fields (State Transitions)
@@ -187,8 +187,8 @@ rm package_broken.zip
 ```bash
 # Rollback: Use custom filters to refine
 python scripts/mcp/select_components.py \
-    --overrides "src/zendesk/**,tests/zendesk/**" \
-    --output /tmp/corrected.txt
+ --overrides "src/zendesk/**,tests/zendesk/**" \
+ --output /tmp/corrected.txt
 # Re-package with corrected list
 ```
 
@@ -223,7 +223,7 @@ python scripts/mcp/select_components.py --topic zendesk --output /tmp/filelist.t
 ```bash
 # If manifest validation fails
 unzip -p package.zip manifest.json > /tmp/manifest_test.json
-jq . /tmp/manifest_test.json  # Identify JSON errors
+jq . /tmp/manifest_test.json # Identify JSON errors
 
 # Regenerate manifest manually if needed
 ./scripts/mcp/package_flatten.sh /tmp/stage package_fixed.zip --regenerate-manifest
@@ -292,16 +292,16 @@ cd /path/to/_codex_
 
 # 1. Select files
 python scripts/mcp/select_components.py \
-    --topic zendesk \
-    --output /tmp/filelist.txt
+ --topic zendesk \
+ --output /tmp/filelist.txt
 
 # 2. Stage files
 mkdir -p /tmp/stage
 while IFS= read -r rel; do
-    if [ -f "$rel" ]; then
-        mkdir -p "/tmp/stage/$(dirname "$rel")"
-        cp "$rel" "/tmp/stage/$rel"
-    fi
+ if [ -f "$rel" ]; then
+ mkdir -p "/tmp/stage/$(dirname "$rel")"
+ cp "$rel" "/tmp/stage/$rel"
+ fi
 done < /tmp/filelist.txt
 
 # 3. Package and flatten
@@ -391,18 +391,18 @@ Use `--overrides` to specify custom glob patterns (comma-separated):
 ```bash
 # Package only Python files in src/agents
 python scripts/mcp/select_components.py \
-    --overrides "src/agents/**/*.py,tests/agents/**/*.py" \
-    --output /tmp/custom_files.txt
+ --overrides "src/agents/**/*.py,tests/agents/**/*.py" \
+ --output /tmp/custom_files.txt
 
 # Package specific subdirectories
 python scripts/mcp/select_components.py \
-    --overrides "src/zendesk/**,docs/zendesk/**" \
-    --output /tmp/zendesk_subset.txt
+ --overrides "src/zendesk/**,docs/zendesk/**" \
+ --output /tmp/zendesk_subset.txt
 
 # Package all YAML files
 python scripts/mcp/select_components.py \
-    --overrides "**/*.yml,**/*.yaml" \
-    --output /tmp/yaml_files.txt
+ --overrides "**/*.yml,**/*.yaml" \
+ --output /tmp/yaml_files.txt
 ```
 
 ## Workflow Usage
@@ -440,17 +440,17 @@ OUTPUT="package_${TOPIC}.zip"
 
 # 1. Select files by topic
 python scripts/mcp/select_components.py \
-    --topic "$TOPIC" \
-    --output /tmp/filelist.txt
+ --topic "$TOPIC" \
+ --output /tmp/filelist.txt
 
 # 2. Create staging directory
 mkdir -p /tmp/stage
 echo "Staging files..."
 while IFS= read -r rel; do
-    if [ -f "$rel" ]; then
-        mkdir -p "/tmp/stage/$(dirname "$rel")"
-        cp "$rel" "/tmp/stage/$rel"
-    fi
+ if [ -f "$rel" ]; then
+ mkdir -p "/tmp/stage/$(dirname "$rel")"
+ cp "$rel" "/tmp/stage/$rel"
+ fi
 done < /tmp/filelist.txt
 
 # 3. Package with flattening
@@ -467,7 +467,7 @@ SIZE_MB=$((SIZE_MB / 1024 / 1024))
 echo "Package size: ${SIZE_MB} MB"
 
 if [ "$SIZE_MB" -gt 50 ]; then
-    echo "️  Warning: Package exceeds 50 MB recommended limit"
+ echo " Warning: Package exceeds 50 MB recommended limit"
 fi
 
 # 6. Cleanup
@@ -496,10 +496,10 @@ echo "Total size: ${TOTAL_MB} MB"
 # Check for duplicate flat names
 DUPES=$(unzip -p package_zendesk.zip manifest.json | jq -r '.files[].flat_name' | sort | uniq -d)
 if [ -z "$DUPES" ]; then
-    echo " No duplicate flat names"
+ echo " No duplicate flat names"
 else
-    echo " Duplicate flat names found:"
-    echo "$DUPES"
+ echo " Duplicate flat names found:"
+ echo "$DUPES"
 fi
 ```
 
@@ -511,7 +511,7 @@ unzip -l package_zendesk.zip
 
 # Verify required files present
 for REQUIRED in "manifest.json" "README_dataset.md" "index.md"; do
-    unzip -l package_zendesk.zip | grep -q "$REQUIRED" && echo " $REQUIRED" || echo " Missing $REQUIRED"
+ unzip -l package_zendesk.zip | grep -q "$REQUIRED" && echo " $REQUIRED" || echo " Missing $REQUIRED"
 done
 
 # Extract and review index
@@ -548,9 +548,9 @@ rm -rf "$TEST_DIR"
 ### Option 2: Upload Extracted Files
 
 1. Extract package locally:
-   ```bash
-   mkdir extracted
-   unzip package_zendesk.zip -d extracted/
+ ```bash
+ mkdir extracted
+ unzip package_zendesk.zip -d extracted/
  ```
 
 2. Upload all files in `extracted/` to ChatGPT Project
@@ -582,8 +582,8 @@ Assistant should respond with files from manifest, showing original paths.
 ```bash
 # Instead of full "agents" topic, select specific agent
 python scripts/mcp/select_components.py \
-    --overrides "src/agents/workflow_navigator.py,tests/agents/test_workflow_navigator.py,docs/agents/workflow_navigator.md" \
-    --output /tmp/subset.txt
+ --overrides "src/agents/workflow_navigator.py,tests/agents/test_workflow_navigator.py,docs/agents/workflow_navigator.md" \
+ --output /tmp/subset.txt
 ```
 
 ## Duplicate Flat Names
@@ -613,7 +613,7 @@ If duplicates found, the packaging script needs enhancement to handle this (e.g.
 **Solution**: Verify glob patterns in `topics.json` and re-select:
 ```bash
 python scripts/mcp/select_components.py --topic zendesk --output /tmp/test.txt
-cat /tmp/test.txt  # Review selected files
+cat /tmp/test.txt # Review selected files
 ```
 
 ### ChatGPT Can't Load Manifest
@@ -634,8 +634,8 @@ Re-package if needed.
 ```bash
 # Select files from multiple topics
 python scripts/mcp/select_components.py \
-    --overrides "$(jq -r '.zendesk + .agents | join(",")' scripts/mcp/topics.json)" \
-    --output /tmp/combined.txt
+ --overrides "$(jq -r '.zendesk + .agents | join(",")' scripts/mcp/topics.json)" \
+ --output /tmp/combined.txt
 ```
 
 ## Filter by Language
@@ -643,8 +643,8 @@ python scripts/mcp/select_components.py \
 ```bash
 # Package only Python files from agents
 python scripts/mcp/select_components.py \
-    --overrides "src/agents/**/*.py,agents/**/*.py,tests/agents/**/*.py" \
-    --output /tmp/agents_python.txt
+ --overrides "src/agents/**/*.py,agents/**/*.py,tests/agents/**/*.py" \
+ --output /tmp/agents_python.txt
 ```
 
 ## Add Custom Metadata

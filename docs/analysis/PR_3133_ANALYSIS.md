@@ -86,7 +86,7 @@ This analysis generated **5 documents**. Here's how to use them:
 ### The Big Picture
 
 ```
-PR #3133: 0D_base_ → main
+PR #3133: 0D_base_ main
 - 155 commits
 - 894 files changed (+31,696 / -9,571 lines)
 - 5 CI checks failing
@@ -99,12 +99,12 @@ PR #3133: 0D_base_ → main
 **Workflow Dependency Chain**:
 ```
 Auto-Fix Check (FAILED: detected 1 alert)
-    ↓
-    ├─> Core Tests (tests , but marked  due to dependency)
-    ├─> Comprehensive Tests (tests , but marked  due to dependency)
-    └─> Test Summary ( aggregates dependency status)
-         +
-         CodeQL Scan (️ log unavailable - 404 error)
+ 
+ > Core Tests (tests , but marked due to dependency)
+ > Comprehensive Tests (tests , but marked due to dependency)
+ > Test Summary ( aggregates dependency status)
+ +
+ CodeQL Scan ( log unavailable - 404 error)
 ```
 
 **Translation**: One code quality issue workflow marks 4 other checks as failed even though they passed.

@@ -20,10 +20,10 @@
 
 ```
 docs/deploy/
-├── README.md                    # This file
-├── [deployment guides]          # Step-by-step guides
-├── [environment configs]        # Environment setup
-└── [runbooks]                   # Operational runbooks
+ README.md # This file
+ [deployment guides] # Step-by-step guides
+ [environment configs] # Environment setup
+ [runbooks] # Operational runbooks
 ```
 
 ---

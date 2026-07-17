@@ -59,38 +59,38 @@ analyzer = intuitive_aptitude()
 # Analyze Python code
 code = """
 def calculate_sum(numbers):
-    '''Calculate sum of numbers.
+ '''Calculate sum of numbers.
 
-    Args:
-        numbers: List of numbers
+ Args:
+ numbers: List of numbers
 
-    Returns:
-        int: Sum of all numbers
-    '''
-    total = 0
-    for num in numbers:
-        total += num
-    return total
+ Returns:
+ int: Sum of all numbers
+ '''
+ total = 0
+ for num in numbers:
+ total += num
+ return total
 """
 
 # Ingest and analyze
 if analyzer.ingest(code):
-    # Get high-level summary
-    summary = analyzer.get_summary()
-    print(f"Functions: {summary['functions_count']}")
-    print(f"Complexity: {summary['metrics']['complexity']}")
+ # Get high-level summary
+ summary = analyzer.get_summary()
+ print(f"Functions: {summary['functions_count']}")
+ print(f"Complexity: {summary['metrics']['complexity']}")
 
-    # Get detailed structure
-    structure = analyzer.get_detailed_structure()
-    print(f"Function args: {structure['functions']['calculate_sum']['args']}")
+ # Get detailed structure
+ structure = analyzer.get_detailed_structure()
+ print(f"Function args: {structure['functions']['calculate_sum']['args']}")
 
-    # Extract patterns
-    patterns = analyzer.extract_patterns()
-    print(f"Iterations found: {len(patterns['iteration'])}")
+ # Extract patterns
+ patterns = analyzer.extract_patterns()
+ print(f"Iterations found: {len(patterns['iteration'])}")
 
-    # Analyze code style
-    style = analyzer.analyze_code_style()
-    print(f"Naming: {style['naming']}")
+ # Analyze code style
+ style = analyzer.analyze_code_style()
+ print(f"Naming: {style['naming']}")
 ```
 
 ## Using analyze_and_suggest Helper
@@ -100,21 +100,21 @@ from analysis.intuitive_aptitude import analyze_and_suggest
 
 code = """
 def PoorlyFormattedFunction(x,y):
-    if x>0:
-        if y>0:
-            return x+y
-    return 0
+ if x>0:
+ if y>0:
+ return x+y
+ return 0
 """
 
 result = analyze_and_suggest(code)
 
 if result['success']:
-    print("Metrics:", result['summary']['metrics'])
-    print("Patterns:", result['patterns'])
-    print("Style:", result['style'])
-    print("Suggestions:", result['suggestions'])
+ print("Metrics:", result['summary']['metrics'])
+ print("Patterns:", result['patterns'])
+ print("Style:", result['style'])
+ print("Suggestions:", result['suggestions'])
 else:
-    print("Error:", result['error'])
+ print("Error:", result['error'])
 ```
 
 ## API Reference
@@ -185,13 +185,13 @@ High-level helper that analyzes code and provides suggestions.
 **Returns:**
 ```python
 {
-    'success': bool,
-    'error': Optional[str],
-    'summary': Dict,
-    'patterns': Dict,
-    'style': Dict,
-    'structure': Dict,
-    'suggestions': Dict
+ 'success': bool,
+ 'error': Optional[str],
+ 'summary': Dict,
+ 'patterns': Dict,
+ 'style': Dict,
+ 'structure': Dict,
+ 'suggestions': Dict
 }
 ```
 
@@ -206,12 +206,12 @@ analyzer.ingest(code)
 # Get error handling patterns
 error_patterns = analyzer.patterns['error_handling']
 for pattern in error_patterns:
-    print(f"Line {pattern['lineno']}: {pattern['handlers']}")
-    print(f"  Has finally: {pattern['has_finally']}")
+ print(f"Line {pattern['lineno']}: {pattern['handlers']}")
+ print(f" Has finally: {pattern['has_finally']}")
 
 # Get iteration patterns
 for pattern in analyzer.patterns['iteration']:
-    print(f"Loop at line {pattern['lineno']}: {pattern['kind']}")
+ print(f"Loop at line {pattern['lineno']}: {pattern['kind']}")
 ```
 
 ## Code Clone with Renaming
@@ -220,15 +220,15 @@ for pattern in analyzer.patterns['iteration']:
 analyzer = intuitive_aptitude()
 code = """
 def old_function(old_arg):
-    return old_arg * 2
+ return old_arg * 2
 """
 
 analyzer.ingest(code)
 
 # Clone with new names
 new_code = analyzer.clone_structure({
-    'old_function': 'new_function',
-    'old_arg': 'new_arg'
+ 'old_function': 'new_function',
+ 'old_arg': 'new_arg'
 })
 
 print(new_code)
@@ -243,9 +243,9 @@ analyzer = intuitive_aptitude()
 analyzer.ingest(complex_code)
 
 for func_name, func_info in analyzer.functions.items():
-    if func_info.complexity > 10:
-        print(f"High complexity: {func_name} ({func_info.complexity})")
-        print(f"  Calls: {', '.join(func_info.calls)}")
+ if func_info.complexity > 10:
+ print(f"High complexity: {func_name} ({func_info.complexity})")
+ print(f" Calls: {', '.join(func_info.calls)}")
 ```
 
 ### Style Analysis
@@ -259,7 +259,7 @@ style = analyzer.analyze_code_style()
 # Check naming conventions
 naming = style['naming']
 if naming['snake_case'] > naming['camelCase']:
-    print("Predominantly snake_case style")
+ print("Predominantly snake_case style")
 
 # Check docstring style
 docstrings = style['docstrings']
@@ -269,7 +269,7 @@ print(f"Dominant docstring style: {dominant[0]}")
 # Check paradigm
 paradigm = style['paradigm']
 if paradigm['functional_signals'] > paradigm['oop_signals']:
-    print("Functional programming style detected")
+ print("Functional programming style detected")
 ```
 
 ## Use Cases
@@ -278,106 +278,106 @@ if paradigm['functional_signals'] > paradigm['oop_signals']:
 
 ```python
 def analyze_quality(source_file):
-    with open(source_file) as f:
-        code = f.read()
+ with open(source_file) as f:
+ code = f.read()
 
-    result = analyze_and_suggest(code)
+ result = analyze_and_suggest(code)
 
-    if result['success']:
-        # Check complexity
-        if result['summary']['metrics']['complexity'] > 10:
-            print("️ High complexity detected")
+ if result['success']:
+ # Check complexity
+ if result['summary']['metrics']['complexity'] > 10:
+ print(" High complexity detected")
 
-        # Check for suggestions
-        if result['suggestions']:
-            print(" Suggestions:")
-            for key, suggestion in result['suggestions'].items():
-                print(f"  - {key}: {suggestion}")
+ # Check for suggestions
+ if result['suggestions']:
+ print(" Suggestions:")
+ for key, suggestion in result['suggestions'].items():
+ print(f" - {key}: {suggestion}")
 
-        # Check patterns
-        error_count = len(result['patterns']['error_handling'])
-        print(f" {error_count} error handling patterns found")
+ # Check patterns
+ error_count = len(result['patterns']['error_handling'])
+ print(f" {error_count} error handling patterns found")
 ```
 
 ### 2. Code Template Generation
 
 ```python
 def generate_test_skeleton(source_code):
-    analyzer = intuitive_aptitude()
-    analyzer.ingest(source_code)
+ analyzer = intuitive_aptitude()
+ analyzer.ingest(source_code)
 
-    test_code = []
-    for func_name, func_info in analyzer.functions.items():
-        test_name = f"test_{func_name}"
-        args = ", ".join(func_info.args)
+ test_code = []
+ for func_name, func_info in analyzer.functions.items():
+ test_name = f"test_{func_name}"
+ args = ", ".join(func_info.args)
 
-        test_code.append(f"""
+ test_code.append(f"""
 def {test_name}():
-    '''Test {func_name} function.'''
-    # TODO: Add test implementation
-    result = {func_name}({args})
-    assert result is not None
+ '''Test {func_name} function.'''
+ # TODO: Add test implementation
+ result = {func_name}({args})
+ assert result is not None
 """)
 
-    return "\n".join(test_code)
+ return "\n".join(test_code)
 ```
 
 ### 3. Refactoring Assistant
 
 ```python
 def suggest_refactoring(code):
-    analyzer = intuitive_aptitude()
-    analyzer.ingest(code)
+ analyzer = intuitive_aptitude()
+ analyzer.ingest(code)
 
-    suggestions = []
+ suggestions = []
 
-    # Find complex functions
-    for func_name, func_info in analyzer.functions.items():
-        if func_info.complexity > 10:
-            suggestions.append({
-                'type': 'complexity',
-                'function': func_name,
-                'complexity': func_info.complexity,
-                'suggestion': 'Consider splitting into smaller functions'
-            })
+ # Find complex functions
+ for func_name, func_info in analyzer.functions.items():
+ if func_info.complexity > 10:
+ suggestions.append({
+ 'type': 'complexity',
+ 'function': func_name,
+ 'complexity': func_info.complexity,
+ 'suggestion': 'Consider splitting into smaller functions'
+ })
 
-    # Find missing docstrings
-    for func_name, func_info in analyzer.functions.items():
-        if not func_info.docstring:
-            suggestions.append({
-                'type': 'documentation',
-                'function': func_name,
-                'suggestion': 'Add docstring'
-            })
+ # Find missing docstrings
+ for func_name, func_info in analyzer.functions.items():
+ if not func_info.docstring:
+ suggestions.append({
+ 'type': 'documentation',
+ 'function': func_name,
+ 'suggestion': 'Add docstring'
+ })
 
-    return suggestions
+ return suggestions
 ```
 
 ### 4. Style Consistency Checker
 
 ```python
 def check_style_consistency(project_files):
-    styles = []
+ styles = []
 
-    for file in project_files:
-        with open(file) as f:
-            code = f.read()
+ for file in project_files:
+ with open(file) as f:
+ code = f.read()
 
-        analyzer = intuitive_aptitude()
-        analyzer.ingest(code)
-        style = analyzer.analyze_code_style()
-        styles.append((file, style))
+ analyzer = intuitive_aptitude()
+ analyzer.ingest(code)
+ style = analyzer.analyze_code_style()
+ styles.append((file, style))
 
-    # Aggregate naming conventions
-    snake_total = sum(s['naming']['snake_case'] for _, s in styles)
-    camel_total = sum(s['naming']['camelCase'] for _, s in styles)
+ # Aggregate naming conventions
+ snake_total = sum(s['naming']['snake_case'] for _, s in styles)
+ camel_total = sum(s['naming']['camelCase'] for _, s in styles)
 
-    if snake_total > camel_total * 2:
-        print(" Project follows snake_case convention")
-    elif camel_total > snake_total * 2:
-        print(" Project follows camelCase convention")
-    else:
-        print("️ Mixed naming conventions detected")
+ if snake_total > camel_total * 2:
+ print(" Project follows snake_case convention")
+ elif camel_total > snake_total * 2:
+ print(" Project follows camelCase convention")
+ else:
+ print(" Mixed naming conventions detected")
 ```
 
 ## Testing

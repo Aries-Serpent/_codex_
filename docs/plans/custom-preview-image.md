@@ -26,21 +26,21 @@ the Cognitive Brain CLI API server for preview environments — covering:
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  Dockerfile.preview  (multi-stage)                                  │
-│                                                                     │
-│  ┌──────────────────┐   ┌──────────────────┐  ┌─────────────────┐ │
-│  │  preview-base    │   │    preview       │  │  preview-dev    │ │
-│  │  Python 3.12     │──▶│  non-root        │  │  + full tooling │ │
-│  │  + build deps    │   │  + health check  │◀─┤  + test suite   │ │
-│  │  + pip install   │   │  + EXPOSE 8765   │  │  + ruff/mypy    │ │
-│  └──────────────────┘   └──────────────────┘  └─────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-         │                        │                      │
-         ▼                        ▼                      ▼
-  CI build cache         GHCR :latest            GHCR :latest-dev
-                    ghcr.io/aries-serpent/   ghcr.io/aries-serpent/
-                    _codex_/preview:latest   _codex_/preview-dev:latest
+
+ Dockerfile.preview (multi-stage) 
+ 
+ 
+ preview-base preview preview-dev 
+ Python 3.12 non-root + full tooling 
+ + build deps + health check + test suite 
+ + pip install + EXPOSE 8765 + ruff/mypy 
+ 
+
+ 
+ 
+ CI build cache GHCR :latest GHCR :latest-dev
+ ghcr.io/aries-serpent/ ghcr.io/aries-serpent/
+ _codex_/preview:latest _codex_/preview-dev:latest
 ```
 
 ---
@@ -61,7 +61,7 @@ The `preview` target is smoke-tested after every build:
 
 ```bash
 docker run -d -p 18765:8765 ghcr.io/aries-serpent/_codex_/preview:latest
-curl -sf http://localhost:18765/api/health   # must return {"status":"ok"}
+curl -sf http://localhost:18765/api/health # must return {"status":"ok"}
 ```
 
 ---

@@ -28,12 +28,12 @@ This document defines all production metrics, their schema, collection methods, 
 **Dimensions**:
 ```yaml
 dimensions:
-  - method: "GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS"
-  - route: "/api/users|/api/orders|etc"
-  - status: "2xx|3xx|4xx|5xx"
-  - service: "api-gateway|auth-service|user-service"
-  - environment: "production|staging"
-  - version: "1.2.3"
+ - method: "GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS"
+ - route: "/api/users|/api/orders|etc"
+ - status: "2xx|3xx|4xx|5xx"
+ - service: "api-gateway|auth-service|user-service"
+ - environment: "production|staging"
+ - version: "1.2.3"
 ```
 
 **Percentiles**:
@@ -54,21 +54,21 @@ p99.9: 99.9th percentile
 **Targets**:
 ```yaml
 targets:
-  p50: 50ms
-  p95: 200ms
-  p99: 1000ms
-  p99.9: 2000ms
+ p50: 50ms
+ p95: 200ms
+ p99: 1000ms
+ p99.9: 2000ms
 ```
 
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - p95_latency > 500ms for 5 minutes
-  - p99_latency > 1500ms for 5 minutes
+ - p95_latency > 500ms for 5 minutes
+ - p99_latency > 1500ms for 5 minutes
 
 critical:
-  - p99_latency > 2000ms for 5 minutes
-  - p99_latency > 5000ms for 1 minute
+ - p99_latency > 2000ms for 5 minutes
+ - p99_latency > 5000ms for 1 minute
 ```
 
 **Collection Method**: Instrumented via OpenTelemetry middleware
@@ -95,11 +95,11 @@ http_request_duration_seconds_count{method="GET",route="/api/users",status="200"
 **Dimensions**:
 ```yaml
 dimensions:
-  - method: "GET|POST|PUT|DELETE|PATCH"
-  - route: "/api/users|/api/orders"
-  - status: "200|201|400|404|500"
-  - service: "api-gateway|auth-service"
-  - environment: "production"
+ - method: "GET|POST|PUT|DELETE|PATCH"
+ - route: "/api/users|/api/orders"
+ - status: "200|201|400|404|500"
+ - service: "api-gateway|auth-service"
+ - environment: "production"
 ```
 
 **Unit**: Requests per second (calculated from rate)
@@ -107,18 +107,18 @@ dimensions:
 **Targets**:
 ```yaml
 targets:
-  p50: 5000 req/s
-  peak: 15000 req/s
+ p50: 5000 req/s
+ peak: 15000 req/s
 ```
 
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - throughput increase >50% over 5 minutes (potential attack)
-  - throughput decrease >30% for 5 minutes (potential issue)
+ - throughput increase >50% over 5 minutes (potential attack)
+ - throughput decrease >30% for 5 minutes (potential issue)
 
 critical:
-  - throughput drops to <100 req/s from >1000 req/s
+ - throughput drops to <100 req/s from >1000 req/s
 ```
 
 **Collection Method**: Automatic via Prometheus counter
@@ -142,11 +142,11 @@ http_requests_total{method="GET",route="/api/users",status="200",service="user-s
 **Dimensions**:
 ```yaml
 dimensions:
-  - method: "GET|POST|PUT|DELETE"
-  - route: "/api/users|/api/orders"
-  - status: "400|401|403|404|500|502|503"
-  - error_type: "validation|authentication|authorization|not_found|timeout|server_error"
-  - service: "api-gateway|user-service"
+ - method: "GET|POST|PUT|DELETE"
+ - route: "/api/users|/api/orders"
+ - status: "400|401|403|404|500|502|503"
+ - error_type: "validation|authentication|authorization|not_found|timeout|server_error"
+ - service: "api-gateway|user-service"
 ```
 
 **Derived Metric**: Error Rate = errors_total / requests_total
@@ -154,21 +154,21 @@ dimensions:
 **Targets**:
 ```yaml
 targets:
-  baseline: <0.1%
-  warning: 0.1%-0.5%
-  critical: >0.5%
-  spike_tolerance: <1% for <1 minute
+ baseline: <0.1%
+ warning: 0.1%-0.5%
+ critical: >0.5%
+ spike_tolerance: <1% for <1 minute
 ```
 
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - error_rate > 0.5% for 5 minutes
+ - error_rate > 0.5% for 5 minutes
 
 critical:
-  - error_rate > 1% for 5 minutes
-  - error_rate > 5% for 1 minute
-  - HTTP 500 errors > 100 in 1 minute
+ - error_rate > 1% for 5 minutes
+ - error_rate > 5% for 1 minute
+ - HTTP 500 errors > 100 in 1 minute
 ```
 
 **Collection Method**: Automatic via Prometheus counter
@@ -199,9 +199,9 @@ pool_utilization = current_connections / max_connections
 **Targets**:
 ```yaml
 targets:
-  pool_utilization: <60%
-  warning: >75%
-  critical: >90%
+ pool_utilization: <60%
+ warning: >75%
+ critical: >90%
 
 query_latency_p95: <50ms
 query_latency_p99: <200ms
@@ -210,13 +210,13 @@ query_latency_p99: <200ms
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - pool_utilization > 75% for 5 minutes
-  - query_latency_p99 > 500ms for 5 minutes
+ - pool_utilization > 75% for 5 minutes
+ - query_latency_p99 > 500ms for 5 minutes
 
 critical:
-  - pool_utilization > 90%
-  - query_latency_p99 > 1000ms for 5 minutes
-  - connection_errors > 10 in 1 minute
+ - pool_utilization > 90%
+ - query_latency_p99 > 1000ms for 5 minutes
+ - connection_errors > 10 in 1 minute
 ```
 
 **Example**:
@@ -247,9 +247,9 @@ hit_ratio = hits / (hits + misses)
 **Targets**:
 ```yaml
 targets:
-  hit_ratio: >85%
-  warning: <80%
-  critical: <60%
+ hit_ratio: >85%
+ warning: <80%
+ critical: <60%
 
 operation_latency_p95: <5ms
 operation_latency_p99: <20ms
@@ -258,12 +258,12 @@ operation_latency_p99: <20ms
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - hit_ratio < 80% for 10 minutes
-  - operation_latency_p99 > 50ms for 10 minutes
+ - hit_ratio < 80% for 10 minutes
+ - operation_latency_p99 > 50ms for 10 minutes
 
 critical:
-  - hit_ratio < 60% for 5 minutes
-  - operation_latency_p99 > 100ms for 5 minutes
+ - hit_ratio < 60% for 5 minutes
+ - operation_latency_p99 > 100ms for 5 minutes
 ```
 
 **Example**:
@@ -294,8 +294,8 @@ process_resident_memory_bytes
 
 **Disk Metrics**:
 ```
-node_disk_read_bytes_total  # pragma: allowlist secret
-node_disk_write_bytes_total  # pragma: allowlist secret
+node_disk_read_bytes_total # pragma: allowlist secret
+node_disk_write_bytes_total # pragma: allowlist secret
 node_filesystem_avail_bytes
 node_filesystem_size_bytes
 ```
@@ -311,32 +311,32 @@ container_network_transmit_errors_total
 **Targets**:
 ```yaml
 targets:
-  cpu_utilization: <70%
-  memory_utilization: <75%
-  disk_utilization: <80%
+ cpu_utilization: <70%
+ memory_utilization: <75%
+ disk_utilization: <80%
 
 warnings:
-  cpu: >80%
-  memory: >85%
-  disk: >85%
+ cpu: >80%
+ memory: >85%
+ disk: >85%
 
 critical:
-  cpu: >95%
-  memory: >95%
-  disk: >90%
+ cpu: >95%
+ memory: >95%
+ disk: >90%
 ```
 
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - cpu_utilization > 80% for 5 minutes
-  - memory_utilization > 85% for 5 minutes
-  - disk_utilization > 85% for 30 minutes
+ - cpu_utilization > 80% for 5 minutes
+ - memory_utilization > 85% for 5 minutes
+ - disk_utilization > 85% for 30 minutes
 
 critical:
-  - cpu_utilization > 95% for 1 minute
-  - memory_utilization > 95%
-  - disk_utilization > 90% for 5 minutes
+ - cpu_utilization > 95% for 1 minute
+ - memory_utilization > 95%
+ - disk_utilization > 90% for 5 minutes
 ```
 
 **Example**:
@@ -367,9 +367,9 @@ lag = latest_offset - consumer_offset
 **Targets**:
 ```yaml
 targets:
-  consumer_lag: <10s
-  warning: >30s
-  critical: >60s
+ consumer_lag: <10s
+ warning: >30s
+ critical: >60s
 
 throughput: >1000 msg/s
 ```
@@ -377,12 +377,12 @@ throughput: >1000 msg/s
 **Alerting Thresholds**:
 ```yaml
 warnings:
-  - consumer_lag > 30s for 5 minutes
-  - message_throughput < 500 msg/s for 10 minutes
+ - consumer_lag > 30s for 5 minutes
+ - message_throughput < 500 msg/s for 10 minutes
 
 critical:
-  - consumer_lag > 60s for 5 minutes
-  - consumer_lag > 300s for 1 minute
+ - consumer_lag > 60s for 5 minutes
+ - consumer_lag > 300s for 1 minute
 ```
 
 **Example**:
@@ -431,31 +431,31 @@ order_processing_duration_seconds_bucket{le="5"} 8000
 **Architecture**:
 ```
 Application Instrumentation (OpenTelemetry SDK)
-  ↓
+ 
 Metrics Exporter (Prometheus endpoint)
-  ↓
+ 
 Prometheus Scraper (every 15s)
-  ↓
+ 
 Time Series Database (Prometheus/VictoriaMetrics)
-  ↓
+ 
 Visualization (Grafana)
-  ↓
+ 
 Alerting Engine (Prometheus AlertManager)
 ```
 
 **Scrape Configuration**:
 ```yaml
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+ scrape_interval: 15s
+ evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: "production"
-    static_configs:
-      - targets: ["api-gateway:8080", "user-service:8080", "order-service:8080"]
-    scrape_interval: 15s
-    scrape_timeout: 10s
-    metrics_path: "/metrics"
+ - job_name: "production"
+ static_configs:
+ - targets: ["api-gateway:8080", "user-service:8080", "order-service:8080"]
+ scrape_interval: 15s
+ scrape_timeout: 10s
+ metrics_path: "/metrics"
 ```
 
 ---
@@ -473,14 +473,14 @@ scrape_configs:
 **Retention Configuration**:
 ```yaml
 prometheus:
-  retention:
-    time: 15d  # Keep 15 days in hot storage
-    size: 10GB  # Or 10GB, whichever comes first
+ retention:
+ time: 15d # Keep 15 days in hot storage
+ size: 10GB # Or 10GB, whichever comes first
 
-  remote_storage:
-    enabled: true
-    url: "s3://bucket/prometheus"
-    retention: 1y
+ remote_storage:
+ enabled: true
+ url: "s3://bucket/prometheus"
+ retention: 1y
 ```
 
 ---
@@ -499,7 +499,7 @@ assert latency_ms >= 0
 assert cpu_percent <= 100
 
 # 3. Cardinality within limits
-assert cardinality < MAX_CARDINALITY  # Prevents explosion
+assert cardinality < MAX_CARDINALITY # Prevents explosion
 
 # 4. No stale metrics
 assert (now - metric_timestamp) < 5 * scrape_interval
@@ -509,7 +509,7 @@ assert (now - metric_timestamp) < 5 * scrape_interval
 
 ```promql
 # Check for metrics older than 2 scrape intervals
-absent(up) > 120  # Alert if no metrics for 2+ minutes
+absent(up) > 120 # Alert if no metrics for 2+ minutes
 ```
 
 ---
@@ -520,17 +520,17 @@ absent(up) > 120  # Alert if no metrics for 2+ minutes
 
 ```yaml
 panels:
-  - "HTTP Request Latency (p50, p95, p99)"
-  - "Request Throughput (req/s)"
-  - "Error Rate (%)"
-  - "Database Pool Utilization (%)"
-  - "Cache Hit Ratio (%)"
-  - "Consumer Lag (seconds)"
-  - "CPU Utilization (%)"
-  - "Memory Utilization (%)"
-  - "Disk Utilization (%)"
-  - "Active Alerts"
-  - "SLA Compliance"
+ - "HTTP Request Latency (p50, p95, p99)"
+ - "Request Throughput (req/s)"
+ - "Error Rate (%)"
+ - "Database Pool Utilization (%)"
+ - "Cache Hit Ratio (%)"
+ - "Consumer Lag (seconds)"
+ - "CPU Utilization (%)"
+ - "Memory Utilization (%)"
+ - "Disk Utilization (%)"
+ - "Active Alerts"
+ - "SLA Compliance"
 ```
 
 ---

@@ -84,11 +84,11 @@ curl 'http://localhost:9090/api/v1/query?query=rate(pg_query_duration_seconds_bu
 
 # Connection pool usage
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT count(*) FROM pg_stat_activity WHERE state = 'active';"
+ -c "SELECT count(*) FROM pg_stat_activity WHERE state = 'active';"
 
 # Slow query log
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"
+ -c "SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"
 ```
 
 ---
@@ -143,19 +143,19 @@ go tool pprof mem.prof
 ```bash
 # Step 1: Check query performance
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY total_time DESC LIMIT 20;"
+ -c "SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY total_time DESC LIMIT 20;"
 
 # Step 2: Check for missing indexes
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT schemaname, tablename, indexname FROM pg_indexes WHERE schemaname NOT IN ('pg_catalog', 'information_schema');"
+ -c "SELECT schemaname, tablename, indexname FROM pg_indexes WHERE schemaname NOT IN ('pg_catalog', 'information_schema');"
 
 # Step 3: Check table bloat
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) FROM pg_tables ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC LIMIT 10;"
+ -c "SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) FROM pg_tables ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC LIMIT 10;"
 
 # Step 4: Check connection pool status
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "SELECT pid, usename, application_name, state, query_start FROM pg_stat_activity WHERE state != 'idle';"
+ -c "SELECT pid, usename, application_name, state, query_start FROM pg_stat_activity WHERE state != 'idle';"
 ```
 
 **Database Performance Issues**:
@@ -176,15 +176,15 @@ SLOW_QUERY="SELECT * FROM orders WHERE user_id = $1 AND created_at > now() - INT
 
 # Explain query plan
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "EXPLAIN (ANALYZE, BUFFERS) ${SLOW_QUERY}"
+ -c "EXPLAIN (ANALYZE, BUFFERS) ${SLOW_QUERY}"
 
 # If doing seq scan, create index
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);"
+ -c "CREATE INDEX idx_orders_user_created ON orders(user_id, created_at);"
 
 # Verify index usage
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "EXPLAIN (ANALYZE, BUFFERS) ${SLOW_QUERY}"
+ -c "EXPLAIN (ANALYZE, BUFFERS) ${SLOW_QUERY}"
 ```
 
 ## 2.3 Cache Bottlenecks
@@ -218,9 +218,9 @@ redis-cli -h $REDIS_ENDPOINT --hotkeys
 ```bash
 # Pre-populate hot keys at startup
 redis-cli -h $REDIS_ENDPOINT MSET \
-  "config:feature-flags" '{"feature_a": true}' \
-  "user-profile:trending" '[{"id":1}, {"id":2}]' \
-  "leaderboard:top-100" '[...]'
+ "config:feature-flags" '{"feature_a": true}' \
+ "user-profile:trending" '[{"id":1}, {"id":2}]' \
+ "leaderboard:top-100" '[...]'
 ```
 
 ## 2.4 Network and Infrastructure Bottlenecks
@@ -268,8 +268,8 @@ iostat -x 1 10
 # In application code:
 profile = redis.get(f"user-profile:{user_id}")
 if not profile:
-    profile = db.query(f"SELECT * FROM users WHERE id = {user_id}")
-    redis.set(f"user-profile:{user_id}", profile, ex=300)
+ profile = db.query(f"SELECT * FROM users WHERE id = {user_id}")
+ redis.set(f"user-profile:{user_id}", profile, ex=300)
 return profile
 ```
 
@@ -310,11 +310,11 @@ pool_pre_ping: true
 ```bash
 # Bad: Individual queries in loop
 for user in users:
-    db.query(f"INSERT INTO logs VALUES ({user.id}, ...)")
+ db.query(f"INSERT INTO logs VALUES ({user.id}, ...)")
 
 # Good: Batch insert
 batch_insert_sql = "INSERT INTO logs (user_id, ...) VALUES " + \
-    ",".join([f"({user.id}, ...)" for user in users])
+ ",".join([f"({user.id}, ...)" for user in users])
 db.execute(batch_insert_sql)
 ```
 
@@ -334,7 +334,7 @@ EOF
 
 # Create needed indexes
 PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
-  -c "CREATE INDEX idx_orders_status_created ON orders(status, created_at);"
+ -c "CREATE INDEX idx_orders_status_created ON orders(status, created_at);"
 ```
 
 **Optimization 2: Query Refactoring**
@@ -343,7 +343,7 @@ PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d codex_prod \
 # Original slow query (N+1 problem):
 SELECT * FROM posts;
 FOR EACH post:
-    SELECT * FROM comments WHERE post_id = post.id;
+ SELECT * FROM comments WHERE post_id = post.id;
 
 # Optimized query (JOIN):
 SELECT p.*, c.*
@@ -357,13 +357,13 @@ ORDER BY p.id, c.id;
 ```bash
 # Create partitioned table for time-series data
 CREATE TABLE events (
-    id BIGSERIAL,
-    timestamp TIMESTAMP,
-    data JSONB
+ id BIGSERIAL,
+ timestamp TIMESTAMP,
+ data JSONB
 ) PARTITION BY RANGE (timestamp);
 
 CREATE TABLE events_2024_01 PARTITION OF events
-    FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+ FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
 ```
 
 ## 3.3 Cache Strategy Adjustment
@@ -371,19 +371,19 @@ CREATE TABLE events_2024_01 PARTITION OF events
 **Strategy 1: Multi-Level Caching**
 
 ```
-Request → L1 Cache (In-Process)
-  │ (Hit) → Return
-  │ (Miss) → L2 Cache (Redis)
-    │ (Hit) → Load to L1, Return
-    │ (Miss) → Database
-      │ Load to L2, Return
+Request L1 Cache (In-Process)
+ (Hit) Return
+ (Miss) L2 Cache (Redis)
+ (Hit) Load to L1, Return
+ (Miss) Database
+ Load to L2, Return
 ```
 
 **Strategy 2: Cache Invalidation Pattern**
 
 ```bash
 # TTL-based invalidation (safe, simple)
-redis.set(f"user:{user_id}", data, ex=300)  # 5 min TTL
+redis.set(f"user:{user_id}", data, ex=300) # 5 min TTL
 
 # Event-based invalidation (accurate)
 # When user updates:
@@ -391,7 +391,7 @@ redis.delete(f"user:{user_id}")
 redis.delete(f"user-profile:{user_id}")
 
 # Hybrid approach (TTL + event)
-redis.set(f"user:{user_id}", data, ex=3600)  # 1 hour TTL
+redis.set(f"user:{user_id}", data, ex=3600) # 1 hour TTL
 # On update, delete immediately (event-based)
 # But still expires if no update occurs
 ```
@@ -413,9 +413,9 @@ kubectl get pods -n production -o wide | grep codex-api
 ```bash
 # Increase CPU/Memory allocation
 kubectl set resources deployment codex-api \
-  -n production \
-  --requests=cpu=500m,memory=512Mi \
-  --limits=cpu=1000m,memory=1Gi
+ -n production \
+ --requests=cpu=500m,memory=512Mi \
+ --limits=cpu=1000m,memory=1Gi
 ```
 
 **Strategy 3: Auto-scaling Configuration**
@@ -423,9 +423,9 @@ kubectl set resources deployment codex-api \
 ```bash
 # Create HPA for automatic scaling
 kubectl autoscale deployment codex-api \
-  -n production \
-  --min=10 --max=50 \
-  --cpu-percent=70
+ -n production \
+ --min=10 --max=50 \
+ --cpu-percent=70
 ```
 
 ---
@@ -459,7 +459,7 @@ p95: 200ms
 p99: 350ms
 Error rate: 0%
 
-Assessment:  PASS - All metrics within SLA
+Assessment: PASS - All metrics within SLA
 ```
 
 ## 4.2 Stress Testing

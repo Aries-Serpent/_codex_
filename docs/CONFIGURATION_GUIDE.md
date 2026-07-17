@@ -15,23 +15,23 @@ Codex ML uses Hydra for configuration management, enabling flexible, reproducibl
 
 ```
 configs/
-├── training/
-│ ├── default.yaml
-│ ├── bert.yaml
-│ ├── gpt.yaml
-│ └── tokenizer/ # pragma: allowlist secret
-│ └── offline/
-│ └── tiny_vocab.yaml
-├── data/
-│ ├── default.yaml
-│ └── preprocessing.yaml
-├── hardware/
-│ ├── default.yaml
-│ ├── cuda.yaml
-│ └── cpu.yaml
-└── experiment/
- ├── base_experiment.yaml
- └── hyperparameter_sweep.yaml
+ training/
+ default.yaml
+ bert.yaml
+ gpt.yaml
+ tokenizer/ # pragma: allowlist secret
+ offline/
+ tiny_vocab.yaml
+ data/
+ default.yaml
+ preprocessing.yaml
+ hardware/
+ default.yaml
+ cuda.yaml
+ cpu.yaml
+ experiment/
+ base_experiment.yaml
+ hyperparameter_sweep.yaml
 ```
 
 ## Core Configuration Files
@@ -224,14 +224,14 @@ Create hierarchical configs with defaults:
 
 ```
 configs/
-├── training/
-│ ├── default.yaml
-│ ├── bert.yaml
-│ └── gpt.yaml
-├── data/
-│ ├── default.yaml
-│ └── large.yaml
-└── config.yaml
+ training/
+ default.yaml
+ bert.yaml
+ gpt.yaml
+ data/
+ default.yaml
+ large.yaml
+ config.yaml
 ```
 
 In `config.yaml`:
@@ -485,23 +485,23 @@ cfg = load_config(
 
 ```
 conf/
-├── errors/ # Error definitions
-│ └── defaults.yaml
-├── model/ # Model configurations
-│ ├── base.yaml
-│ ├── toy.yaml
-│ └── offline/
-├── training/ # Training configurations
-│ ├── base.yaml
-│ ├── continual/
-│ └── offline/
-├── evaluation/ # Evaluation configurations
-│ ├── base.yaml
-│ └── reasoning/
-└── data/ # Data configurations
- ├── base.yaml
- ├── tiny.yaml
- └── offline/
+ errors/ # Error definitions
+ defaults.yaml
+ model/ # Model configurations
+ base.yaml
+ toy.yaml
+ offline/
+ training/ # Training configurations
+ base.yaml
+ continual/
+ offline/
+ evaluation/ # Evaluation configurations
+ base.yaml
+ reasoning/
+ data/ # Data configurations
+ base.yaml
+ tiny.yaml
+ offline/
 ```
 
 ---

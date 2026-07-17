@@ -76,17 +76,17 @@ cd /home/runner/work/_codex_/_codex_
 
 # Run only existing tests (exclude Phase 4 branch_coverage tests)
 pytest tests/ \
-  --ignore=tests/branch_coverage/ \
-  --cov=src \
-  --cov=agents \
-  --cov=training \
-  --cov-report=term-missing \
-  --cov-report=html:htmlcov/baseline \
-  --cov-report=json:coverage_baseline.json \
-  --cov-branch \
-  -v \
-  --tb=short \
-  2>&1 | tee pytest_baseline.log
+ --ignore=tests/branch_coverage/ \
+ --cov=src \
+ --cov=agents \
+ --cov=training \
+ --cov-report=term-missing \
+ --cov-report=html:htmlcov/baseline \
+ --cov-report=json:coverage_baseline.json \
+ --cov-branch \
+ -v \
+ --tb=short \
+ 2>&1 | tee pytest_baseline.log
 ```
 
 **Expected Output**:
@@ -119,16 +119,16 @@ cd /home/runner/work/_codex_/_codex_
 
 # Run ALL tests including branch_coverage
 pytest tests/ \
-  --cov=src \
-  --cov=agents \
-  --cov=training \
-  --cov-report=term-missing \
-  --cov-report=html:htmlcov/phase4_complete \
-  --cov-report=json:coverage_phase4.json \
-  --cov-branch \
-  -v \
-  --tb=short \
-  2>&1 | tee pytest_phase4_complete.log
+ --cov=src \
+ --cov=agents \
+ --cov=training \
+ --cov-report=term-missing \
+ --cov-report=html:htmlcov/phase4_complete \
+ --cov-report=json:coverage_phase4.json \
+ --cov-branch \
+ -v \
+ --tb=short \
+ 2>&1 | tee pytest_phase4_complete.log
 ```
 
 **Expected Output**:
@@ -161,16 +161,16 @@ cd /home/runner/work/_codex_/_codex_
 
 # Run only branch_coverage tests
 pytest tests/branch_coverage/ \
-  --cov=src \
-  --cov=agents \
-  --cov=training \
-  --cov-report=term-missing \
-  --cov-report=html:htmlcov/branch_coverage_only \
-  --cov-report=json:coverage_branch_only.json \
-  --cov-branch \
-  -v \
-  --tb=short \
-  2>&1 | tee pytest_branch_coverage_only.log
+ --cov=src \
+ --cov=agents \
+ --cov=training \
+ --cov-report=term-missing \
+ --cov-report=html:htmlcov/branch_coverage_only \
+ --cov-report=json:coverage_branch_only.json \
+ --cov-branch \
+ -v \
+ --tb=short \
+ 2>&1 | tee pytest_branch_coverage_only.log
 ```
 
 **Expected Output**:
@@ -246,15 +246,15 @@ cd /home/runner/work/_codex_/_codex_
 
 # Generate detailed coverage report with missing lines
 pytest tests/ \
-  --cov=src \
-  --cov=agents \
-  --cov=training \
-  --cov-report=term-missing:skip-covered \
-  --cov-report=html:htmlcov/detailed \
-  --cov-report=json:coverage_detailed.json \
-  --cov-branch \
-  -v \
-  2>&1 | grep -E "^(src/|agents/|training/)" | tee coverage_gaps.txt
+ --cov=src \
+ --cov=agents \
+ --cov=training \
+ --cov-report=term-missing:skip-covered \
+ --cov-report=html:htmlcov/detailed \
+ --cov-report=json:coverage_detailed.json \
+ --cov-branch \
+ -v \
+ 2>&1 | grep -E "^(src/|agents/|training/)" | tee coverage_gaps.txt
 
 # Extract low coverage modules
 python3 << 'EOF'
@@ -265,12 +265,12 @@ files = data.get('files', {})
 print("\n=== Low Coverage Modules (<30%) ===")
 low_coverage = []
 for path, metrics in sorted(files.items()):
-    cov = metrics['summary']['percent_covered']
-    if cov < 30:
-        low_coverage.append((path, cov))
+ cov = metrics['summary']['percent_covered']
+ if cov < 30:
+ low_coverage.append((path, cov))
 
 for path, cov in sorted(low_coverage, key=lambda x: x[1]):
-    print(f"{cov:5.1f}%  {path}")
+ print(f"{cov:5.1f}% {path}")
 
 print(f"\nTotal low-coverage files: {len(low_coverage)}")
 EOF
@@ -328,7 +328,7 @@ $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 ## Coverage Improvement
 - **Delta**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; print(f'+{round(p-b, 2)}%')")
 - **Target**: +2.7-4.7% (Phase 4.1), +8-12% (Phase 4.1-4.3)
-- **Status**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; delta=p-b; print(' Target Met' if delta >= 2.7 else '️ Below Target')")
+- **Status**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; delta=p-b; print(' Target Met' if delta >= 2.7 else ' Below Target')")
 
 ## Coverage Reports
 - Terminal: `pytest_phase4_complete.log`

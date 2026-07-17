@@ -26,13 +26,13 @@ This implementation provides three interfaces for fetching logs from GitHub Acti
 ## Prerequisites
 
 1. **GitHub Token**: Set the `GITHUB_TOKEN` environment variable:
-   ```bash
-   export GITHUB_TOKEN="ghp_your_token_here"
+ ```bash
+ export GITHUB_TOKEN="ghp_your_token_here"
  ```
 
 2. **Dependencies**: Ensure required packages are installed:
-   ```bash
-   pip install httpx pydantic fastapi
+ ```bash
+ pip install httpx pydantic fastapi
  ```
 
 ## Usage
@@ -92,17 +92,17 @@ app.include_router(router)
 
 **Get Check Run Logs**
 ```bash
-  -H "Authorization: Bearer $GITHUB_TOKEN"
+ -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 **Get Job Logs**
 ```bash
-  -H "Authorization: Bearer $GITHUB_TOKEN"
+ -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 **List Check Runs**
 ```bash
-  -H "Authorization: Bearer $GITHUB_TOKEN"
+ -H "Authorization: Bearer $GITHUB_TOKEN"
 ```
 
 ### API Response Format
@@ -110,14 +110,14 @@ app.include_router(router)
 **Check Run Logs Response:**
 ```json
 {
-  "check_run_id": 59990656344,
-  "owner": "Aries-Serpent",
-  "repo": "_codex_",
-  "check_run_name": "Test Coverage",
-  "check_run_status": "completed",
-  "check_run_conclusion": "success",
-  "check_run_url": "https://github.com/Aries-Serpent/_codex_/runs/59990656344",
-  "logs": "2024-01-10T12:00:00Z Starting job...\n..."
+ "check_run_id": 59990656344,
+ "owner": "Aries-Serpent",
+ "repo": "_codex_",
+ "check_run_name": "Test Coverage",
+ "check_run_status": "completed",
+ "check_run_conclusion": "success",
+ "check_run_url": "https://github.com/Aries-Serpent/_codex_/runs/59990656344",
+ "logs": "2024-01-10T12:00:00Z Starting job...\n..."
 }
 ```
 
@@ -130,26 +130,26 @@ from mcp.tools.github_logs import fetch_check_run_logs, list_check_runs
 
 # Fetch check run logs
 result = fetch_check_run_logs({
-    "owner": "Aries-Serpent",
-    "repo": "_codex_",
-    "check_run_id": 59990656344
+ "owner": "Aries-Serpent",
+ "repo": "_codex_",
+ "check_run_id": 59990656344
 })
 
 if result["success"]:
-    print(result["logs"])
+ print(result["logs"])
 else:
-    print(f"Error: {result['error']}")
+ print(f"Error: {result['error']}")
 
 # List check runs
 result = list_check_runs({
-    "owner": "Aries-Serpent",
-    "repo": "_codex_",
-    "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d", <!-- pragma: allowlist secret -->
-    "status": "completed"
+ "owner": "Aries-Serpent",
+ "repo": "_codex_",
+ "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d", <!-- pragma: allowlist secret -->
+ "status": "completed"
 })
 
 for run in result["check_runs"]:
-    print(f"{run['id']}: {run['name']} - {run['conclusion']}")
+ print(f"{run['id']}: {run['name']} - {run['conclusion']}")
 ```
 
 ## AI Agent Integration
@@ -161,12 +161,12 @@ from mcp.tools.github_logs import GITHUB_LOGS_TOOLS
 
 # Register tools with your MCP server
 for tool_name, tool_config in GITHUB_LOGS_TOOLS.items():
-    mcp_server.register_tool(
-        name=tool_config["name"],
-        description=tool_config["description"],
-        function=tool_config["function"],
-        schema=tool_config["schema"]
-    )
+ mcp_server.register_tool(
+ name=tool_config["name"],
+ description=tool_config["description"],
+ function=tool_config["function"],
+ schema=tool_config["schema"]
+ )
 ```
 
 ## Implementation Details
@@ -174,25 +174,25 @@ for tool_name, tool_config in GITHUB_LOGS_TOOLS.items():
 ### Architecture
 
 ```
-┌─────────────────┐
-│   GitHub API    │
-└────────┬────────┘
-         │
-┌────────▼─────────────────────────────────┐
-│  services/github/client.py               │
-│  - GitHubClient (async)                  │
-│  - GitHubClientSync (sync wrapper)       │
-│  - Check run methods                     │
-│  - Job log methods                       │
-└────────┬─────────────────────────────────┘
-         │
-         ├───────────────┬─────────────────┬
-         │               │                 │
-┌────────▼──────┐ ┌──────▼──────┐  ┌──────▼────────┐
-│  CLI Interface │ │ API Endpoints│  │  MCP Tools    │
-│  cli_github    │ │  api/github  │  │  mcp/tools/   │
-│  _logs.py      │ │  _logs.py    │  │  github_logs  │
-└────────────────┘ └──────────────┘  └───────────────┘
+
+ GitHub API 
+
+ 
+
+ services/github/client.py 
+ - GitHubClient (async) 
+ - GitHubClientSync (sync wrapper) 
+ - Check run methods 
+ - Job log methods 
+
+ 
+ 
+ 
+ 
+ CLI Interface API Endpoints MCP Tools 
+ cli_github api/github mcp/tools/ 
+ _logs.py _logs.py github_logs 
+ 
 ```
 
 ### Files Created/Modified
@@ -249,9 +249,9 @@ codex github-logs check-run Aries-Serpent _codex_ 59990656344
 from mcp.tools.github_logs import fetch_check_run_logs
 
 result = fetch_check_run_logs({
-    "owner": "Aries-Serpent",
-    "repo": "_codex_",
-    "check_run_id": 59990656344
+ "owner": "Aries-Serpent",
+ "repo": "_codex_",
+ "check_run_id": 59990656344
 })
 print(result["logs"])
 ```
@@ -268,25 +268,25 @@ from services.github.client import GitHubClientSync
 
 @pytest.fixture
 def github_client():
-    return GitHubClientSync()
+ return GitHubClientSync()
 
 def test_get_check_run(github_client):
-    check_run = github_client.get_check_run(
-        "Aries-Serpent",
-        "_codex_",
-        59990656344
-    )
-    assert check_run.id == 59990656344
-    assert check_run.name is not None
+ check_run = github_client.get_check_run(
+ "Aries-Serpent",
+ "_codex_",
+ 59990656344
+ )
+ assert check_run.id == 59990656344
+ assert check_run.name is not None
 
 def test_get_check_run_logs(github_client):
-    logs = github_client.get_check_run_logs(
-        "Aries-Serpent",
-        "_codex_",
-        59990656344
-    )
-    assert isinstance(logs, str)
-    assert len(logs) > 0
+ logs = github_client.get_check_run_logs(
+ "Aries-Serpent",
+ "_codex_",
+ 59990656344
+ )
+ assert isinstance(logs, str)
+ assert len(logs) > 0
 ```
 
 ### Integration Tests

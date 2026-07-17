@@ -33,41 +33,41 @@ the **Copilot CLI** (FastAPI cognitive_app at port 8765), and the **CI/CD health
 %%{init: {'accessibility': {'title': 'Diagram showing "GitHub Repository Variables", " Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"'}}%%
 
 graph TB
-    subgraph GH["GitHub Repository Variables"]
-        direction TB
-        CB_GROUP[" Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
-        CLI_GROUP["🖥️ Copilot CLI\nCLI_BASE_URL\nCLI_ENABLED\nSESSION_RESTORE_ENABLED\nMAX_AUTONOMY_LEVEL\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED"]
-        CI_GROUP[" CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
-        STATIC_GROUP[" Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
-    end
+ subgraph GH["GitHub Repository Variables"]
+ direction TB
+ CB_GROUP[" Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
+ CLI_GROUP[" Copilot CLI\nCLI_BASE_URL\nCLI_ENABLED\nSESSION_RESTORE_ENABLED\nMAX_AUTONOMY_LEVEL\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED"]
+ CI_GROUP[" CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
+ STATIC_GROUP[" Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
+ end
 
-    subgraph CONSUMERS["Workflow / Code Consumers"]
-        CHATOPS["chatops_copilot_trigger.yml\n(session injection)"]
-        ADMIN["admin_setup_verification.yml\n(bootstrap validation)"]
-        HEALTH["ci-health-monitor.yml\n(failure rate writer)"]
-        AGENT_AUTH["agent-auth-delegation.yml\n(preflight + activation)"]
-        REGISTRY["agent-registry-validation.yml\n(FAISS rebuild trigger)"]
-        FRONTEND["cognitive_app / ApiClient.tsx\n(VITE_CLI_API_URL)"]
-        MANIFEST["scripts/ci/generate_manifest.py\n(context injection)"]
-    end
+ subgraph CONSUMERS["Workflow / Code Consumers"]
+ CHATOPS["chatops_copilot_trigger.yml\n(session injection)"]
+ ADMIN["admin_setup_verification.yml\n(bootstrap validation)"]
+ HEALTH["ci-health-monitor.yml\n(failure rate writer)"]
+ AGENT_AUTH["agent-auth-delegation.yml\n(preflight + activation)"]
+ REGISTRY["agent-registry-validation.yml\n(FAISS rebuild trigger)"]
+ FRONTEND["cognitive_app / ApiClient.tsx\n(VITE_CLI_API_URL)"]
+ MANIFEST["scripts/ci/generate_manifest.py\n(context injection)"]
+ end
 
-    CB_GROUP --> CHATOPS
+ CB_GROUP --> CHATOPS
 
-    CB_GROUP --> ADMIN
+ CB_GROUP --> ADMIN
 
-    CB_GROUP --> MANIFEST
+ CB_GROUP --> MANIFEST
 
-    CLI_GROUP --> FRONTEND
+ CLI_GROUP --> FRONTEND
 
-    CLI_GROUP --> AGENT_AUTH
+ CLI_GROUP --> AGENT_AUTH
 
-    CI_GROUP --> HEALTH
+ CI_GROUP --> HEALTH
 
-    CI_GROUP --> REGISTRY
+ CI_GROUP --> REGISTRY
 
-    STATIC_GROUP --> ADMIN
+ STATIC_GROUP --> ADMIN
 
-    STATIC_GROUP --> CHATOPS
+ STATIC_GROUP --> CHATOPS
 ```
 
 ---
@@ -155,19 +155,19 @@ LTM = long-term (SQLite persist), `both` = full recall pipeline.
 
 flowchart LR
 
-    VAR_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000"] --> MANIFEST["generate_manifest.py\nCONTEXT_WINDOW_BUDGET"]
+ VAR_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n= 32000"] --> MANIFEST["generate_manifest.py\nCONTEXT_WINDOW_BUDGET"]
 
-    VAR_LTM["COGNITIVE_BRAIN_LTM_RETENTION_DAYS\n= 90"] --> PRUNE["prune_corpus.py\nretention_days"]
+ VAR_LTM["COGNITIVE_BRAIN_LTM_RETENTION_DAYS\n= 90"] --> PRUNE["prune_corpus.py\nretention_days"]
 
-    VAR_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\n= 0.75"] --> BRAIN["brain_interface.py\nquery_patterns(min_confidence)"]
+ VAR_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\n= 0.75"] --> BRAIN["brain_interface.py\nquery_patterns(min_confidence)"]
 
-    VAR_TIER["COGNITIVE_BRAIN_MEMORY_TIER\n= both"] --> BRAIN
+ VAR_TIER["COGNITIVE_BRAIN_MEMORY_TIER\n= both"] --> BRAIN
 
-    MANIFEST --> INJECT["sanitize_for_injection()\nSession context payload"]
+ MANIFEST --> INJECT["sanitize_for_injection()\nSession context payload"]
 
-    BRAIN --> INJECT
+ BRAIN --> INJECT
 
-    INJECT --> SESSION["Copilot Agent Session\n<repository_memories>"]
+ INJECT --> SESSION["Copilot Agent Session\n<repository_memories>"]
 ```
 
 ---
@@ -218,17 +218,17 @@ Currently the gate score is 5/5 (D_CAPABLE unlocked) — this variable is the ru
 
 flowchart TD
 
-    VAR_URL["COPILOT_CLI_BASE_URL\n= http://localhost:8765"] --> |VITE_CLI_API_URL| FE_API["ApiClient.tsx\nXtermTerminal.tsx"]
+ VAR_URL["COPILOT_CLI_BASE_URL\n= http://localhost:8765"] --> |VITE_CLI_API_URL| FE_API["ApiClient.tsx\nXtermTerminal.tsx"]
 
-    VAR_URL --> |CI integration tests| TEST_SERVER["test API server\n(port override)"]
+ VAR_URL --> |CI integration tests| TEST_SERVER["test API server\n(port override)"]
 
-    VAR_ENABLED["COPILOT_CLI_ENABLED\n= true"] --> |feature gate| WORKFLOW_STEP["copilot-setup-steps.yml\nStart CLI API Server step"]
+ VAR_ENABLED["COPILOT_CLI_ENABLED\n= true"] --> |feature gate| WORKFLOW_STEP["copilot-setup-steps.yml\nStart CLI API Server step"]
 
-    VAR_RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED\n= true"] --> SESSION_AGENT["session-log-retrieval-agent\nContext injection at session start"]
+ VAR_RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED\n= true"] --> SESSION_AGENT["session-log-retrieval-agent\nContext injection at session start"]
 
-    VAR_AUTONOMY["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\n= E"] --> |runtime cap| GATE["e-to-d-transition-gate.yml\nFSM autonomy control"]
+ VAR_AUTONOMY["COPILOT_AGENT_MAX_AUTONOMY_LEVEL\n= E"] --> |runtime cap| GATE["e-to-d-transition-gate.yml\nFSM autonomy control"]
 
-    GATE --> |D_CAPABLE score 5/5| AGENT_ACTIONS["Autonomous agent actions\n(require human approval at tier D)"]
+ GATE --> |D_CAPABLE score 5/5| AGENT_ACTIONS["Autonomous agent actions\n(require human approval at tier D)"]
 ```
 
 ---
@@ -281,30 +281,30 @@ fully validated. Flip to `true` to enable automatic agent tier elevation.
 
 stateDiagram-v2
 
-    [*] --> ok : failure_rate < THRESHOLD(10.0)
+ [*] --> ok : failure_rate < THRESHOLD(10.0)
 
-    ok --> degraded : failure_rate >= THRESHOLD(10.0)
+ ok --> degraded : failure_rate >= THRESHOLD(10.0)
 
-    degraded --> critical : failure_rate >= 2×THRESHOLD(20.0)
+ degraded --> critical : failure_rate >= 2×THRESHOLD(20.0)
 
-    critical --> degraded : failure_rate < 2×THRESHOLD
+ critical --> degraded : failure_rate < 2×THRESHOLD
 
-    degraded --> ok : failure_rate < THRESHOLD
+ degraded --> ok : failure_rate < THRESHOLD
 
-    ok --> [*] : CODEX_CI_LAST_GREEN_SHA written
+ ok --> [*] : CODEX_CI_LAST_GREEN_SHA written
 
-    note right of ok
-        CODEX_CI_FAILURE_RATE = "<rate>:ok"
-        CODEX_CI_LAST_GREEN_SHA = HEAD_SHA
-    end note
-    note right of degraded
-        CODEX_CI_FAILURE_RATE = "<rate>:degraded"
-        Self-healing CI escalates
-    end note
-    note right of critical
-        CODEX_CI_FAILURE_RATE = "<rate>:critical"
-        Emergency response agent triggered
-    end note
+ note right of ok
+ CODEX_CI_FAILURE_RATE = "<rate>:ok"
+ CODEX_CI_LAST_GREEN_SHA = HEAD_SHA
+ end note
+ note right of degraded
+ CODEX_CI_FAILURE_RATE = "<rate>:degraded"
+ Self-healing CI escalates
+ end note
+ note right of critical
+ CODEX_CI_FAILURE_RATE = "<rate>:critical"
+ Emergency response agent triggered
+ end note
 ```
 
 ---
@@ -360,19 +360,19 @@ bash .codex/CODESPACES_VARIABLES_BOOTSTRAP.sh
 
 flowchart TD
 
-    RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --> ONCREATE["on-create.sh\napt_update_with_retry()"]
+ RETRY["CODESPACES_APT_UPDATE_RETRY\n= true"] --> ONCREATE["on-create.sh\napt_update_with_retry()"]
 
-    CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --> ONCREATE
+ CLEAN["CODESPACES_APT_CLEANUP_AGGRESSIVE\n= true"] --> ONCREATE
 
-    ONCREATE --> |repairs| APT["/var/lib/apt/lists/partial\n(recreated, chmod 0755)"]
+ ONCREATE --> |repairs| APT["/var/lib/apt/lists/partial\n(recreated, chmod 0755)"]
 
-    APT --> |update succeeds| INSTALL["apt-get install build-essential …"]
+ APT --> |update succeeds| INSTALL["apt-get install build-essential …"]
 
-    INSTALL --> |cleanup only on success| PRUNE["rm -rf /var/lib/apt/lists/*"]
+ INSTALL --> |cleanup only on success| PRUNE["rm -rf /var/lib/apt/lists/*"]
 
-    DBPATH["CODEX_DB_PATH / CODEX_SESSION_LOG_DIR"] --> DEVJSON["devcontainer.json containerEnv"]
+ DBPATH["CODEX_DB_PATH / CODEX_SESSION_LOG_DIR"] --> DEVJSON["devcontainer.json containerEnv"]
 
-    POOL["CODEX_SQLITE_POOL = 1"] --> DEVJSON
+ POOL["CODEX_SQLITE_POOL = 1"] --> DEVJSON
 ```
 
 ---
@@ -389,18 +389,18 @@ immediately after reading the current session number:
 
 ```yaml
 - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-  run: |
-    CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"
-    NEXT=$((CURRENT + 1))
-    gh api \
-      --method PATCH \
-      -H "Accept: application/vnd.github+json" \
-      /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
-      -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
-      -f value="$NEXT"
-    echo "Session number incremented: $CURRENT → $NEXT"
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ run: |
+ CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"
+ NEXT=$((CURRENT + 1))
+ gh api \
+ --method PATCH \
+ -H "Accept: application/vnd.github+json" \
+ /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
+ -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+ -f value="$NEXT"
+ echo "Session number incremented: $CURRENT $NEXT"
 ```
 
 ### Auto-Increment Flow
@@ -408,25 +408,25 @@ immediately after reading the current session number:
 ```mermaid
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF: N
 
-    WF'}}%%
+ WF'}}%%
 sequenceDiagram
-    participant PR as PR event
-    participant WF as chatops_copilot_trigger.yml
-    participant GH as GitHub Variables API
-    participant BRAIN as Cognitive Brain Session
+ participant PR as PR event
+ participant WF as chatops_copilot_trigger.yml
+ participant GH as GitHub Variables API
+ participant BRAIN as Cognitive Brain Session
 
-    PR->>WF: PR comment / @copilot trigger
-    WF->>GH: GET COGNITIVE_BRAIN_SESSION_NUMBER (current = N)
+ PR->>WF: PR comment / @copilot trigger
+ WF->>GH: GET COGNITIVE_BRAIN_SESSION_NUMBER (current = N)
 
-    GH-->>WF: N
-    WF->>GH: PATCH COGNITIVE_BRAIN_SESSION_NUMBER = N+1
+ GH-->>WF: N
+ WF->>GH: PATCH COGNITIVE_BRAIN_SESSION_NUMBER = N+1
 
-    GH-->>WF: 204 No Content
-    WF->>BRAIN: Inject session context with SESSION_NUMBER = N+1
+ GH-->>WF: 204 No Content
+ WF->>BRAIN: Inject session context with SESSION_NUMBER = N+1
 
-    BRAIN-->>PR: Session activated (number N+1)
+ BRAIN-->>PR: Session activated (number N+1)
 
-    Note over WF,GH: Requires CODEX_MASTER_KEY with\nvariables: read+write permission
+ Note over WF,GH: Requires CODEX_MASTER_KEY with\nvariables: read+write permission
 ```
 
 ---
@@ -443,38 +443,38 @@ The format spec `<float>:<status>` must be parsed consistently by all consumers.
 
 flowchart TD
 
-    TELEMETRY["telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total"] --> MONITOR
+ TELEMETRY["telemetry-collection.yml\nCollects run outcomes\nfailure_rate = failed/total"] --> MONITOR
 
-    MONITOR["ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"] --> |PATCH API| VAR["CODEX_CI_FAILURE_RATE\n= '11.0:degraded'"]
+ MONITOR["ci-health-monitor.yml\nStep: Update CODEX_CI_FAILURE_RATE"] --> |PATCH API| VAR["CODEX_CI_FAILURE_RATE\n= '11.0:degraded'"]
 
-    VAR --> |parsed by| ALERT["ci-health-alert-agent\nthreshold check vs\nCODEX_CI_FAILURE_THRESHOLD"]
+ VAR --> |parsed by| ALERT["ci-health-alert-agent\nthreshold check vs\nCODEX_CI_FAILURE_THRESHOLD"]
 
-    VAR --> |displayed in| BOOTSTRAP["copilot-agent-vars-bootstrap.yml\nSession context echo"]
+ VAR --> |displayed in| BOOTSTRAP["copilot-agent-vars-bootstrap.yml\nSession context echo"]
 
-    VAR --> |read by| SESSION["Copilot Coding Agent\nSession pre-flight summary"]
+ VAR --> |read by| SESSION["Copilot Coding Agent\nSession pre-flight summary"]
 
-    ALERT --> |rate >= threshold| ESCALATE["Self-Healing Escalation\nPost PR comment\niterative-self-healing-ci.yml"]
+ ALERT --> |rate >= threshold| ESCALATE["Self-Healing Escalation\nPost PR comment\niterative-self-healing-ci.yml"]
 
-    ALERT --> |rate < threshold| CLEAR["Status: ok\nCODEX_CI_LAST_GREEN_SHA updated"]
+ ALERT --> |rate < threshold| CLEAR["Status: ok\nCODEX_CI_LAST_GREEN_SHA updated"]
 
-    subgraph FORMAT["Format: &lt;float&gt;:&lt;status&gt;"]
-        F1["'5.2:ok'"]
-        F2["'11.0:degraded'"]
-        F3["'22.5:critical'"]
-    end
+ subgraph FORMAT["Format: &lt;float&gt;:&lt;status&gt;"]
+ F1["'5.2:ok'"]
+ F2["'11.0:degraded'"]
+ F3["'22.5:critical'"]
+ end
 ```
 
 ### Parser Reference (Bash)
 
 ```bash
 # Parse CODEX_CI_FAILURE_RATE in any workflow step
-RATE_RAW="${{ vars.CODEX_CI_FAILURE_RATE }}"          # e.g. "11.0:degraded"
-RATE_FLOAT="${RATE_RAW%%:*}"                           # "11.0"
-RATE_STATUS="${RATE_RAW##*:}"                          # "degraded"
-THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD }}"    # "10.0"
+RATE_RAW="${{ vars.CODEX_CI_FAILURE_RATE }}" # e.g. "11.0:degraded"
+RATE_FLOAT="${RATE_RAW%%:*}" # "11.0"
+RATE_STATUS="${RATE_RAW##*:}" # "degraded"
+THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD }}" # "10.0"
 
 if (( $(echo "$RATE_FLOAT >= $THRESHOLD" | bc -l) )); then
-  echo "::warning::CI failure rate ${RATE_FLOAT}% exceeds threshold ${THRESHOLD}%"
+ echo "::warning::CI failure rate ${RATE_FLOAT}% exceeds threshold ${THRESHOLD}%"
 fi
 ```
 
@@ -505,37 +505,37 @@ Shows which variables must exist before others can function correctly.
 
 graph LR
 
-    THRESHOLD["CODEX_CI_FAILURE_THRESHOLD"] --> |required by| RATE["CODEX_CI_FAILURE_RATE\n(parser)"]
+ THRESHOLD["CODEX_CI_FAILURE_THRESHOLD"] --> |required by| RATE["CODEX_CI_FAILURE_RATE\n(parser)"]
 
-    RATE --> |feeds| LAST_GREEN["CODEX_CI_LAST_GREEN_SHA\n(written when ok)"]
+ RATE --> |feeds| LAST_GREEN["CODEX_CI_LAST_GREEN_SHA\n(written when ok)"]
 
-    MAX_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"] --> |required by| MANIFEST_SCRIPT["generate_manifest.py\nsanitize_for_injection()"]
+ MAX_TOKENS["COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"] --> |required by| MANIFEST_SCRIPT["generate_manifest.py\nsanitize_for_injection()"]
 
-    LTM_DAYS["COGNITIVE_BRAIN_LTM_RETENTION_DAYS"] --> |required by| PRUNE_SCRIPT["prune_corpus.py"]
+ LTM_DAYS["COGNITIVE_BRAIN_LTM_RETENTION_DAYS"] --> |required by| PRUNE_SCRIPT["prune_corpus.py"]
 
-    MIN_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE"] --> |required by| BRAIN_IFACE["brain_interface.py\nquery_patterns()"]
+ MIN_CONF["COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE"] --> |required by| BRAIN_IFACE["brain_interface.py\nquery_patterns()"]
 
-    MEM_TIER["COGNITIVE_BRAIN_MEMORY_TIER"] --> BRAIN_IFACE
+ MEM_TIER["COGNITIVE_BRAIN_MEMORY_TIER"] --> BRAIN_IFACE
 
-    MANIFEST_SCRIPT --> |builds| INJECTION_PAYLOAD["Session injection payload\n<repository_memories>"]
+ MANIFEST_SCRIPT --> |builds| INJECTION_PAYLOAD["Session injection payload\n<repository_memories>"]
 
-    BRAIN_IFACE --> INJECTION_PAYLOAD
+ BRAIN_IFACE --> INJECTION_PAYLOAD
 
-    SESSION_NUM["COGNITIVE_BRAIN_SESSION_NUMBER"] --> |tags| INJECTION_PAYLOAD
+ SESSION_NUM["COGNITIVE_BRAIN_SESSION_NUMBER"] --> |tags| INJECTION_PAYLOAD
 
-    CLI_URL["COPILOT_CLI_BASE_URL"] --> |VITE_CLI_API_URL| FE["cognitive_app frontend"]
+ CLI_URL["COPILOT_CLI_BASE_URL"] --> |VITE_CLI_API_URL| FE["cognitive_app frontend"]
 
-    CLI_ENABLED["COPILOT_CLI_ENABLED"] --> |gates| SERVER_START["CLI server startup step"]
+ CLI_ENABLED["COPILOT_CLI_ENABLED"] --> |gates| SERVER_START["CLI server startup step"]
 
-    MAX_AUTON["COPILOT_AGENT_MAX_AUTONOMY_LEVEL"] --> |caps| E_TO_D["e-to-d-transition-gate.yml"]
+ MAX_AUTON["COPILOT_AGENT_MAX_AUTONOMY_LEVEL"] --> |caps| E_TO_D["e-to-d-transition-gate.yml"]
 
-    RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED"] --> |gates| SESSION_AGENT["session-log-retrieval-agent"]
+ RESTORE["COPILOT_AGENT_SESSION_RESTORE_ENABLED"] --> |gates| SESSION_AGENT["session-log-retrieval-agent"]
 
-    AUTO_PROMOTE["AUTO_PROMOTE_TIER_ENABLED"] --> |gates| PROMOTE_SCRIPT["auto_promote_tier.py"]
+ AUTO_PROMOTE["AUTO_PROMOTE_TIER_ENABLED"] --> |gates| PROMOTE_SCRIPT["auto_promote_tier.py"]
 
-    EMBED_REBUILD["EMBEDDING_INDEX_AUTO_REBUILD"] --> |gates| FAISS["embedding-index-rebuild.yml"]
+ EMBED_REBUILD["EMBEDDING_INDEX_AUTO_REBUILD"] --> |gates| FAISS["embedding-index-rebuild.yml"]
 
-    HANDOFF_TO["AGENT_HANDOFF_TIMEOUT_SECONDS"] --> |configures| HANDOFF["agent-handoff-gate.yml"]
+ HANDOFF_TO["AGENT_HANDOFF_TIMEOUT_SECONDS"] --> |configures| HANDOFF["agent-handoff-gate.yml"]
 ```
 
 ---

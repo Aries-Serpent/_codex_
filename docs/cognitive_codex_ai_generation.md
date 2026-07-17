@@ -21,14 +21,14 @@ This application now features **real AI-powered code generation** using the Spar
 
 ```
 User Input (Prompt)
-    ↓
+ 
 CodeGenerator Component
-    ↓
+ 
 Priority Chain:
-    1. Custom API (if VITE_CODEX_KEY configured)
-    2. Spark Runtime LLM (gpt-4o-mini) ← DEFAULT
-    3. Template-based Fallback (if LLM fails)
-    ↓
+ 1. Custom API (if VITE_CODEX_KEY configured)
+ 2. Spark Runtime LLM (gpt-4o-mini) DEFAULT
+ 3. Template-based Fallback (if LLM fails)
+ 
 Display Generated Code + Metrics
 ```
 
@@ -38,8 +38,8 @@ Display Generated Code + Metrics
 
 ```typescript
 export class SparkLLMClient {
-  async generateCode(request: CodexRequest): Promise<CodexResponse> {
-    const prompt = spark.llmPrompt`You are an expert code generation assistant...
+ async generateCode(request: CodexRequest): Promise<CodexResponse> {
+ const prompt = spark.llmPrompt`You are an expert code generation assistant...
 
 Generate ${language} code for: ${request.prompt}
 
@@ -49,14 +49,14 @@ Requirements:
 - Follow best practices
 - Make it production-ready`;
 
-    const generatedCode = await spark.llm(prompt, "gpt-4o-mini");
+ const generatedCode = await spark.llm(prompt, "gpt-4o-mini");
 
-    return {
-      code: generatedCode.trim(),
-      metadata: { k1_factor, coherence, cache_hit, processing_time_ms },
-      quantum_metrics: { superposition_states, entanglement_score }
-    };
-  }
+ return {
+ code: generatedCode.trim(),
+ metadata: { k1_factor, coherence, cache_hit, processing_time_ms },
+ quantum_metrics: { superposition_states, entanglement_score }
+ };
+ }
 }
 ```
 
@@ -68,8 +68,8 @@ const sparkClient = getSparkLLMClient();
 
 // Generate code
 const response = await sparkClient.generateCode({
-  prompt: userPrompt,
-  context: { language: 'python', tier: 'A' }
+ prompt: userPrompt,
+ context: { language: 'python', tier: 'A' }
 });
 
 // Response includes:
@@ -96,9 +96,9 @@ const response = await sparkClient.generateCode({
 #### Custom Backend Mode (Optional)
 
 1. User configures environment:
-   ```bash
-   export VITE_CODEX_KEY="my-api-key"
-   export VITE_CODEX_API="https://my-backend.com"
+ ```bash
+ export VITE_CODEX_KEY="my-api-key"
+ export VITE_CODEX_API="https://my-backend.com"
  ```
 2. Application attempts custom API first
 3. Falls back to Spark LLM if custom API fails
@@ -128,24 +128,24 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    """Generate JWT access token"""
-    to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+ """Generate JWT access token"""
+ to_encode = data.copy()
+ expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+ to_encode.update({"exp": expire})
+ return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @router.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    """Authenticate user and return JWT token"""
-    user = authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+ """Authenticate user and return JWT token"""
+ user = authenticate_user(form_data.username, form_data.password)
+ if not user:
+ raise HTTPException(
+ status_code=status.HTTP_401_UNAUTHORIZED,
+ detail="Incorrect username or password",
+ headers={"WWW-Authenticate": "Bearer"},
+ )
+ access_token = create_access_token(data={"sub": user.username})
+ return {"access_token": access_token, "token_type": "bearer"}
 ```
 
 **Characteristics:**
@@ -163,43 +163,43 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 import { useState, useEffect, useCallback } from 'react';
 
 export function useDebouncedSearch<T>(
-  searchFn: (query: string) => Promise<T[]>,
-  delay: number = 300
+ searchFn: (query: string) => Promise<T[]>,
+ delay: number = 300
 ) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<T[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+ const [query, setQuery] = useState('');
+ const [results, setResults] = useState<T[]>([]);
+ const [isLoading, setIsLoading] = useState(false);
+ const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      return;
-    }
+ useEffect(() => {
+ if (!query.trim()) {
+ setResults([]);
+ return;
+ }
 
-    const timerId = setTimeout(async () => {
-      setIsLoading(true);
-      setError(null);
+ const timerId = setTimeout(async () => {
+ setIsLoading(true);
+ setError(null);
 
-      try {
-        const data = await searchFn(query);
-        setResults(data);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Search failed'));
-        setResults([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, delay);
+ try {
+ const data = await searchFn(query);
+ setResults(data);
+ } catch (err) {
+ setError(err instanceof Error ? err : new Error('Search failed'));
+ setResults([]);
+ } finally {
+ setIsLoading(false);
+ }
+ }, delay);
 
-    return () => clearTimeout(timerId);
-  }, [query, searchFn, delay]);
+ return () => clearTimeout(timerId);
+ }, [query, searchFn, delay]);
 
-  const updateQuery = useCallback((newQuery: string) => {
-    setQuery(newQuery);
-  }, []);
+ const updateQuery = useCallback((newQuery: string) => {
+ setQuery(newQuery);
+ }, []);
 
-  return { query, updateQuery, results, isLoading, error };
+ return { query, updateQuery, results, isLoading, error };
 }
 ```
 
@@ -273,14 +273,14 @@ const client = new SparkLLMClient();
 
 // Generate Python code
 const pythonCode = await client.generateCode({
-  prompt: "Create a function to validate email addresses",
-  context: { language: 'python', tier: 'A' }
+ prompt: "Create a function to validate email addresses",
+ context: { language: 'python', tier: 'A' }
 });
 
 // Generate JavaScript code
 const jsCode = await client.generateCode({
-  prompt: "Write an async function to fetch user data",
-  context: { language: 'javascript', tier: 'B' }
+ prompt: "Write an async function to fetch user data",
+ context: { language: 'javascript', tier: 'B' }
 });
 
 // Check status

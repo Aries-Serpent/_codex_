@@ -20,14 +20,14 @@ running interactively in the browser or VS Code. Every configuration file,
 lifecycle script, and environment variable mirrors the Actions workflow exactly.
 
 ```
-GitHub Actions (CI)                  GitHub Codespace (interactive)
-─────────────────────────────────    ────────────────────────────────────────
-copilot-setup-steps.yml              .devcontainer/devcontainer.json
-  Phase 1+2: system deps        ≡      on-create.sh
-  Phase 3+4: pip install        ≡      update-content.sh
-  Phase 5+6: env vars + auth    ≡      post-create.sh
-  Phase 7:   start CLI server   ≡      post-start.sh
-  (attach)                      ≡      post-attach.sh  (banner)
+GitHub Actions (CI) GitHub Codespace (interactive)
+ 
+copilot-setup-steps.yml .devcontainer/devcontainer.json
+ Phase 1+2: system deps ≡ on-create.sh
+ Phase 3+4: pip install ≡ update-content.sh
+ Phase 5+6: env vars + auth ≡ post-create.sh
+ Phase 7: start CLI server ≡ post-start.sh
+ (attach) ≡ post-attach.sh (banner)
 ```
 
 ---
@@ -36,13 +36,13 @@ copilot-setup-steps.yml              .devcontainer/devcontainer.json
 
 ```
 .devcontainer/
-├── devcontainer.json              ← Master configuration
-└── scripts/
-    ├── on-create.sh               ← Phase 1+2: system deps (runs once)
-    ├── update-content.sh          ← Phase 3+4: pip install (re-runs on rebuild)
-    ├── post-create.sh             ← Phase 5+6: env vars + auth report (once)
-    ├── post-start.sh              ← Phase 7: start CLI API server (every start)
-    └── post-attach.sh             ← Banner + health check (every attach)
+ devcontainer.json Master configuration
+ scripts/
+ on-create.sh Phase 1+2: system deps (runs once)
+ update-content.sh Phase 3+4: pip install (re-runs on rebuild)
+ post-create.sh Phase 5+6: env vars + auth report (once)
+ post-start.sh Phase 7: start CLI API server (every start)
+ post-attach.sh Banner + health check (every attach)
 ```
 
 ---
@@ -75,43 +75,43 @@ Codespaces runs devcontainer lifecycle hooks in this exact order:
 
 ```
 Container pulled / built
-        │
-        ▼  ① onCreateCommand
-  on-create.sh
-  • apt-get system packages
-  • git lfs install --skip-smudge
-  • mkdir .codex/sessions, artifacts
-        │
-        ▼  ② updateContentCommand  (re-runs on branch switch)
-  update-content.sh
-  • pip install pytest, ruff, black, mypy, ...
-  • pip install -e .[dev]
-  • pip install fastapi uvicorn httpx cryptography
-  • npm ci  (if package.json)
-  • cargo build  (if Cargo.toml)
-  • pre-commit install
-        │
-        ▼  ③ postCreateCommand  (after first updateContent)
-  post-create.sh
-  • write ~/.codex_env  (all CODEX_* vars)
-  • auth token status report
-  • write .codex/codespace_auth_status.json
-  • load agent_context.json (repo variables)
-  • validate python / gh / ruff / imports
-        │
-        ▼  ④ postStartCommand  (every container start)
-  post-start.sh
-  • kill stale CLI API server
-  • nohup uvicorn ... :8765  (with auth token forwarding)
-  • retry health-check × 5
-  • verify GitHub App JWT generation
-        │
-        ▼  ⑤ postAttachCommand  (every terminal attach)
-  post-attach.sh
-  • print Copilot agent banner
-  • show service status
-  • show token status
-  • print quick-start commands
+ 
+ ① onCreateCommand
+ on-create.sh
+ • apt-get system packages
+ • git lfs install --skip-smudge
+ • mkdir .codex/sessions, artifacts
+ 
+ ② updateContentCommand (re-runs on branch switch)
+ update-content.sh
+ • pip install pytest, ruff, black, mypy, ...
+ • pip install -e .[dev]
+ • pip install fastapi uvicorn httpx cryptography
+ • npm ci (if package.json)
+ • cargo build (if Cargo.toml)
+ • pre-commit install
+ 
+ ③ postCreateCommand (after first updateContent)
+ post-create.sh
+ • write ~/.codex_env (all CODEX_* vars)
+ • auth token status report
+ • write .codex/codespace_auth_status.json
+ • load agent_context.json (repo variables)
+ • validate python / gh / ruff / imports
+ 
+ ④ postStartCommand (every container start)
+ post-start.sh
+ • kill stale CLI API server
+ • nohup uvicorn ... :8765 (with auth token forwarding)
+ • retry health-check × 5
+ • verify GitHub App JWT generation
+ 
+ ⑤ postAttachCommand (every terminal attach)
+ post-attach.sh
+ • print Copilot agent banner
+ • show service status
+ • show token status
+ • print quick-start commands
 ```
 
 ---
@@ -163,12 +163,12 @@ exactly.
 Both environments use the **same priority chain**:
 
 ```
-             GitHub Actions                 Codespace
-             ──────────────────             ─────────────────────
-1 (primary)  job env: CODEX_MASTER_KEY  ≡  Codespace secret → env var
-2 (backup)   job env: CODEX_BACKUP_KEY  ≡  Codespace secret → env var
-3 (alias)    AGENT_GITHUB_TOKEN          ≡  GITHUB_TOKEN (auto-provided)
-4 (fallback) GITHUB_TOKEN               ≡  GITHUB_TOKEN (auto-provided)
+ GitHub Actions Codespace
+ 
+1 (primary) job env: CODEX_MASTER_KEY ≡ Codespace secret env var
+2 (backup) job env: CODEX_BACKUP_KEY ≡ Codespace secret env var
+3 (alias) AGENT_GITHUB_TOKEN ≡ GITHUB_TOKEN (auto-provided)
+4 (fallback) GITHUB_TOKEN ≡ GITHUB_TOKEN (auto-provided)
 ```
 
 In Codespaces, `GITHUB_TOKEN` is **automatically provided** by GitHub with
@@ -190,12 +190,12 @@ curl -s http://localhost:8765/api/health
 
 # Use BrainClient (Python)
 from codex.agents.brain_client import BrainClient
-brain = BrainClient()            # auto-discovers CODEX_CLI_API_URL
-brain.is_available()             # True when server is up
+brain = BrainClient() # auto-discovers CODEX_CLI_API_URL
+brain.is_available() # True when server is up
 
-# Proxy a GitHub API call (auto-injects CODEX_MASTER_KEY → CODEX_BACKUP_KEY)
+# Proxy a GitHub API call (auto-injects CODEX_MASTER_KEY CODEX_BACKUP_KEY)
 resp = brain.proxy_request("GET",
-    "https://api.github.com/repos/Aries-Serpent/_codex_")
+ "https://api.github.com/repos/Aries-Serpent/_codex_")
 
 # Run a shell command
 result = brain.run_command("git log --oneline -5")
@@ -213,8 +213,8 @@ bash .devcontainer/scripts/post-start.sh
 
 # Or manually
 nohup uvicorn cognitive_app.src.server.cli_api_server:app \
-    --host 0.0.0.0 --port 8765 --log-level warning \
-    > .codex/cli_api_server.log 2>&1 &
+ --host 0.0.0.0 --port 8765 --log-level warning \
+ > .codex/cli_api_server.log 2>&1 &
 ```
 
 ---
@@ -225,30 +225,30 @@ nohup uvicorn cognitive_app.src.server.cli_api_server:app \
 import os
 from codex.auth.github_app import GitHubApp, GitHubAppConfig, _resolve_github_token
 
-# ── 1. Check token chain ────────────────────────────────────────────────────
+# 1. Check token chain 
 for val, name in _resolve_github_token():
-    status = "" if val else ""
-    print(f"  {status} {name}")
+ status = "" if val else ""
+ print(f" {status} {name}")
 
-# ── 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) ──────
+# 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) 
 cfg = GitHubAppConfig(
-    app_id=int(os.environ["_GITHUB_APP_ID"]),
-    private_key_pem=os.environ["_GITHUB_APP_PRIVATE_KEY"],
-    webhook_secret=os.environ.get("WEBHOOK_SECRET"),
+ app_id=int(os.environ["_GITHUB_APP_ID"]),
+ private_key_pem=os.environ["_GITHUB_APP_PRIVATE_KEY"],
+ webhook_secret=os.environ.get("WEBHOOK_SECRET"),
 )
 app = GitHubApp(cfg)
 jwt = app.generate_jwt()
 
-# ── 3. Get installation token ────────────────────────────────────────────────
+# 3. Get installation token 
 token = app.get_installation_token(
-    installation_id=int(os.environ["_GITHUB_APP_INSTALLATION_ID"]),
+ installation_id=int(os.environ["_GITHUB_APP_INSTALLATION_ID"]),
 )
-print(token.token)           # ghs_xxxx
-print(token.is_expired())    # False
+print(token.token) # ghs_xxxx
+print(token.is_expired()) # False
 
-# ── 4. PAT fallback (auto MASTER_KEY → BACKUP_KEY) ──────────────────────────
+# 4. PAT fallback (auto MASTER_KEY BACKUP_KEY) 
 data = app.pat_api_get(
-    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"
+ "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"
 )
 ```
 
@@ -264,8 +264,8 @@ verifier = WebhookVerifier(secret=os.environ["WEBHOOK_SECRET"])
 
 # Verify a payload (e.g., from a test script)
 payload = b'{"action":"opened","number":42}'
-sig = verifier.compute_signature(payload)      # "sha256=abc123..."
-assert verifier.verify(payload, sig) is True   # 
+sig = verifier.compute_signature(payload) # "sha256=abc123..."
+assert verifier.verify(payload, sig) is True # 
 
 # Forward to OODA loop via CLI server
 from codex.agents.brain_client import BrainClient
@@ -273,8 +273,8 @@ import json
 
 brain = BrainClient()
 result = brain.ooda_process(
-    input_data={"event": json.loads(payload), "event_type": "pull_request"},
-    context={"source": "webhook"},
+ input_data={"event": json.loads(payload), "event_type": "pull_request"},
+ context={"source": "webhook"},
 )
 ```
 
@@ -313,8 +313,8 @@ from the Codespace public URL when forwarded.
 
 ### Server not starting
 ```bash
-cat .codex/cli_api_server.log    # check startup errors
-bash .devcontainer/scripts/post-start.sh   # restart
+cat .codex/cli_api_server.log # check startup errors
+bash .devcontainer/scripts/post-start.sh # restart
 ```
 
 ### Token not available
@@ -323,20 +323,20 @@ bash .devcontainer/scripts/post-start.sh   # restart
 python3 -c "
 from codex.auth.github_app import _resolve_github_token
 for val, name in _resolve_github_token():
-    print(f'{\"\" if val else \"\"} {name}')
+ print(f'{\"\" if val else \"\"} {name}')
 "
-# If missing: Settings → Codespaces → Secrets → add the secret
+# If missing: Settings Codespaces Secrets add the secret
 ```
 
 ## Import errors
 ```bash
-bash .devcontainer/scripts/update-content.sh   # re-install deps
+bash .devcontainer/scripts/update-content.sh # re-install deps
 ```
 
 ### GitHub App JWT fails
 ```bash
 # Check _GITHUB_APP_PRIVATE_KEY is in PEM format
-echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE KEY-----" <!-- pragma: allowlist secret -->
+echo "$_GITHUB_APP_PRIVATE_KEY" | head -1 # should be "-----BEGIN RSA PRIVATE KEY-----" <!-- pragma: allowlist secret -->
 ```
 
 ---

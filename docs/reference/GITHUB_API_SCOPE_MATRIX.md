@@ -14,10 +14,10 @@
 GitHub API scopes follow a hierarchy from broad to narrow access:
 
 ```
-admin:*          → Most permissive; full control of resource category
-write:*          → Create, update, delete operations
-read:*           → Read-only access
-(unscoped)       → Specific narrow permissions
+admin:* Most permissive; full control of resource category
+write:* Create, update, delete operations
+read:* Read-only access
+(unscoped) Specific narrow permissions
 ```
 
 ---
@@ -306,8 +306,8 @@ read:*           → Read-only access
 
 ```json
 {
-  "message": "API rate limit exceeded",
-  "documentation_url": "https://docs.github.com/rest/overview/rate-limits-for-the-rest-api"
+ "message": "API rate limit exceeded",
+ "documentation_url": "https://docs.github.com/rest/overview/rate-limits-for-the-rest-api"
 }
 ```
 
@@ -320,8 +320,8 @@ read:*           → Read-only access
 
 ```json
 {
-  "message": "Bad credentials",
-  "documentation_url": "https://docs.github.com/rest"
+ "message": "Bad credentials",
+ "documentation_url": "https://docs.github.com/rest"
 }
 ```
 
@@ -336,13 +336,13 @@ read:*           → Read-only access
 CODEX_MASTER_KEY implementation uses:
 
 ```
-1. CODEX_MASTER_KEY    (repo + workflow + security_events + admin:org + ...)
-   ↓ (if not available)
-2. CODEX_BACKUP_KEY    (same scopes as CODEX_MASTER_KEY)
-   ↓ (if not available)
-3. GH_TOKEN            (user's personal token or gh CLI token)
-   ↓ (if not available)
-4. GITHUB_TOKEN        (installation token — limited scopes)
+1. CODEX_MASTER_KEY (repo + workflow + security_events + admin:org + ...)
+ (if not available)
+2. CODEX_BACKUP_KEY (same scopes as CODEX_MASTER_KEY)
+ (if not available)
+3. GH_TOKEN (user's personal token or gh CLI token)
+ (if not available)
+4. GITHUB_TOKEN (installation token — limited scopes)
 ```
 
 ---

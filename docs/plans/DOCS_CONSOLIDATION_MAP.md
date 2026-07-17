@@ -138,26 +138,26 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 ## Mermaid: Docs Lifecycle
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " New Doc Created\n(agent session)", "📌 Active Living Doc\n(updated each session)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " New Doc Created\n(agent session)", " Active Living Doc\n(updated each session)"'}}%%
 
 flowchart TD
-    NEW[" New Doc Created\n(agent session)"]
-    ACTIVE["📌 Active Living Doc\n(updated each session)"]
-    STALE[" Stale Completion Report\n(not updated in 30+ days)"]
-    ARCHIVE["🗄️ docs/plans/archive/\n(preserved, findable)"]
-    INDEX[" INDEX.md\nCentral catalogue"]
+ NEW[" New Doc Created\n(agent session)"]
+ ACTIVE[" Active Living Doc\n(updated each session)"]
+ STALE[" Stale Completion Report\n(not updated in 30+ days)"]
+ ARCHIVE[" docs/plans/archive/\n(preserved, findable)"]
+ INDEX[" INDEX.md\nCentral catalogue"]
 
-    NEW -->|"still relevant"| ACTIVE
+ NEW -->|"still relevant"| ACTIVE
 
-    NEW -->|"completion report"| STALE
+ NEW -->|"completion report"| STALE
 
-    ACTIVE -->|"session updates"| INDEX
+ ACTIVE -->|"session updates"| INDEX
 
-    STALE -->|"next consolidation session"| ARCHIVE
+ STALE -->|"next consolidation session"| ARCHIVE
 
-    ARCHIVE --> INDEX
+ ARCHIVE --> INDEX
 
-    style ACTIVE fill:#2d9c2d,color:#fff
-    style ARCHIVE fill:#888,color:#fff
-    style INDEX fill:#1a6aac,color:#fff
+ style ACTIVE fill:#2d9c2d,color:#fff
+ style ARCHIVE fill:#888,color:#fff
+ style INDEX fill:#1a6aac,color:#fff
 ```

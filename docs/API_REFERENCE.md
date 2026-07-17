@@ -522,7 +522,7 @@ manifest.save("data/train_manifest.json")
 
 # Verify integrity on resume
 if manifest.has_drift("data/train_manifest.json"):
- print("️ Dataset drift detected!")
+ print(" Dataset drift detected!")
  diff = manifest.verify("data/train_manifest.json")
  print(f"Modified: {len(diff['modified'])}")
  print(f"Missing: {len(diff['missing'])}")
@@ -857,7 +857,7 @@ results = monitor.monitor_all(
 )
 
 if monitor.has_critical_drift():
- print("️ Critical drift detected!")
+ print(" Critical drift detected!")
  monitor.save_alerts("drift_alerts.json")
  summary = monitor.get_drift_summary()
  print(f"Total alerts: {summary['total_alerts']}")

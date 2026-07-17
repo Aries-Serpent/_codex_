@@ -28,21 +28,21 @@
 ### Repository Structure
 ```
 _codex_/
-├── src/              # Core application code
-│   ├── codex/       # Ingestion pipeline (ingest→analyze→transform→verify)
-│   ├── rag/         # RAG pipelines & retrieval
-│   ├── verification/ # Chain-of-Verification (CoVe)
-│   ├── mcp/         # Model Context Protocol adapters
-│   └── tools/       # Tool registry
-├── agents/          # Autonomous agents (workflow, quantum, physics)
-├── scripts/         # Automation & utilities
-│   └── mcp/        # ChatGPT Project packaging system
-├── tests/           # 21,500+ test suite
-├── docs/            # Documentation hub
-│   ├── mcp/        # MCP packaging docs (93+ KB)
-│   ├── system/     # Cognitive brain (this file)
-│   └── capabilities/ # Capability guides
-└── .github/         # CI/CD workflows & automation
+ src/ # Core application code
+ codex/ # Ingestion pipeline (ingestanalyzetransformverify)
+ rag/ # RAG pipelines & retrieval
+ verification/ # Chain-of-Verification (CoVe)
+ mcp/ # Model Context Protocol adapters
+ tools/ # Tool registry
+ agents/ # Autonomous agents (workflow, quantum, physics)
+ scripts/ # Automation & utilities
+ mcp/ # ChatGPT Project packaging system
+ tests/ # 21,500+ test suite
+ docs/ # Documentation hub
+ mcp/ # MCP packaging docs (93+ KB)
+ system/ # Cognitive brain (this file)
+ capabilities/ # Capability guides
+ .github/ # CI/CD workflows & automation
 ```
 
 ---
@@ -54,7 +54,7 @@ _codex_/
 
 **Commands**:
 ```bash
-python -m codex.cli ingest <source>      # Ingest code (file/ZIP/Git)
+python -m codex.cli ingest <source> # Ingest code (file/ZIP/Git)
 python -m codex.cli analyze <snapshot-id> # Static + runtime analysis
 python -m codex.cli transform <snapshot-id> --tier A # Apply transformations
 python -m codex.cli verify <snapshot-id> # Behavior verification
@@ -81,32 +81,32 @@ python -m codex.cli verify <snapshot-id> # Behavior verification
 %%{init: {'accessibility': {'title': 'Flowchart showing unified-coverage-agent, unified-doc-agent'}}%%
 
 graph LR
-    subgraph "Unified Agents (canonical entry points)"
-        UC[unified-coverage-agent]
-        UD[unified-doc-agent]
-        US[unified-security-scanner]
-        UG[unified-governance-gate]
-        WM[workflow-management-agent]
-        CM[cache-management-agent]
-        SH[self-healing-orchestrator-agent]
-    end
-    subgraph "Deprecated → Merged"
+ subgraph "Unified Agents (canonical entry points)"
+ UC[unified-coverage-agent]
+ UD[unified-doc-agent]
+ US[unified-security-scanner]
+ UG[unified-governance-gate]
+ WM[workflow-management-agent]
+ CM[cache-management-agent]
+ SH[self-healing-orchestrator-agent]
+ end
+ subgraph "Deprecated Merged"
 
-        D1[coverage-gapfill / -maintenance / -roadmap / test-coverage-agent / -monitor] --> UC
+ D1[coverage-gapfill / -maintenance / -roadmap / test-coverage-agent / -monitor] --> UC
 
-        D2[documentation-quality-agent / documentation-consolidator] --> UD
+ D2[documentation-quality-agent / documentation-consolidator] --> UD
 
-        D3[secret-detection / dep-vuln-scanner / dep-sec-review / security-audit] --> US
+ D3[secret-detection / dep-vuln-scanner / dep-sec-review / security-audit] --> US
 
-        D4[ci-failure-resolution-agent] --> SH
+ D4[ci-failure-resolution-agent] --> SH
 
-        D5[ci-resilience-emergency-response-agent] --> CMR[ci-emergency-response-agent]
+ D5[ci-resilience-emergency-response-agent] --> CMR[ci-emergency-response-agent]
 
-        D6[cache-manager-integration] --> CM
-    end
-    UG --- WM
-    SH --- WM
-    CM --- WM
+ D6[cache-manager-integration] --> CM
+ end
+ UG --- WM
+ SH --- WM
+ CM --- WM
 ```
 
 ### 3. MCP Package System (`scripts/mcp/`)
@@ -114,8 +114,8 @@ graph LR
 
 **Commands**:
 ```bash
-./scripts/mcp/mcp-package --list              # List 9 topics
-./scripts/mcp/mcp-package --topic agents      # Package by topic
+./scripts/mcp/mcp-package --list # List 9 topics
+./scripts/mcp/mcp-package --topic agents # Package by topic
 ./scripts/mcp/mcp-package --custom "patterns" # Custom patterns
 ```
 
@@ -136,26 +136,26 @@ graph LR
 
 ### Code Ingestion
 ```
-External Source → Ingest → Static Analysis → Runtime Analysis →
-LLM Intent Inference → Transformation → Verification → PR Creation
+External Source Ingest Static Analysis Runtime Analysis 
+LLM Intent Inference Transformation Verification PR Creation
 ```
 
 ### agent workflow
 ```
-Request → WorkflowNavigator → agent Orchestration →
-Task Execution → Verification → State Persistence
+Request WorkflowNavigator agent Orchestration 
+Task Execution Verification State Persistence
 ```
 
 ### MCP Packaging
 ```
-Human Request → component Selection → File Flattening →
-Manifest Generation → ZIP Creation → ChatGPT Upload
+Human Request component Selection File Flattening 
+Manifest Generation ZIP Creation ChatGPT Upload
 ```
 
 ### CI/CD
 ```
-Git Push → Status Validation → Security Gates → Quality Gates →
-Test Execution → Cache Management → Artifact Generation
+Git Push Status Validation Security Gates Quality Gates 
+Test Execution Cache Management Artifact Generation
 ```
 
 ---
@@ -207,41 +207,41 @@ Test Execution → Cache Management → Artifact Generation
 %%{init: {'accessibility': {'title': 'Diagram showing CODEX_MASTER_KEY, CODEX_BACKUP_KEY'}}%%
 
 graph TB
-    subgraph "Org Secrets (13)"
-        OM[CODEX_MASTER_KEY]
-        OB[CODEX_BACKUP_KEY]
-        OA[CODEX_ADMIN_KEY]
-        OG[_GITHUB_APP_*]
-        OP[PYPI_TOKEN / NPM_TOKEN]
-        OH[HF_TOKEN / RAG_OPENAI_KEY]
-        OC[CODECOV_TOKEN]
-    end
-    subgraph "Repo Secrets (7)"
-        RS[OPENAI_API_KEY]
-        RW[CODEX_WEBHOOK_SECRET]
-        RG[CODEX_GHP_TOKEN_*]
-        RB[_CODEX_BOT_RUNNER]
-    end
-    subgraph "Repo Variables (76)"
-        RV1[agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
-        RV2[Copilot: COPILOT_AGENT_*, COPILOT_WEC_*]
-        RV3[Cognitive Brain: COGNITIVE_BRAIN_*]
-        RV4[CI/CD: CODEX_CI_*, CODEX_COVERAGE_THRESHOLD]
-        RV5[LLM/ML: CODEX_LLM_MODEL, WANDB_MODE]
-        RV6[Runtime: CODEX_SESSION_ID, CODEX_LOG_LEVEL]
-    end
-    subgraph "Env Variables (14) — Sandbox"
-        EV[CODEX_ENV_*versions, RUST_BACKTRACE, CARGO_TERM_COLOR]
-    end
-    subgraph "Env Secrets (3) — Sandbox"
-        ES[CODEX_RUNNER_TOKEN, CODEX_ENVIRONMENT_RUNNER]
-    end
+ subgraph "Org Secrets (13)"
+ OM[CODEX_MASTER_KEY]
+ OB[CODEX_BACKUP_KEY]
+ OA[CODEX_ADMIN_KEY]
+ OG[_GITHUB_APP_*]
+ OP[PYPI_TOKEN / NPM_TOKEN]
+ OH[HF_TOKEN / RAG_OPENAI_KEY]
+ OC[CODECOV_TOKEN]
+ end
+ subgraph "Repo Secrets (7)"
+ RS[OPENAI_API_KEY]
+ RW[CODEX_WEBHOOK_SECRET]
+ RG[CODEX_GHP_TOKEN_*]
+ RB[_CODEX_BOT_RUNNER]
+ end
+ subgraph "Repo Variables (76)"
+ RV1[agent/Autonomy: AGENT_KILL_SWITCH, AUTONOMY_*]
+ RV2[Copilot: COPILOT_AGENT_*, COPILOT_WEC_*]
+ RV3[Cognitive Brain: COGNITIVE_BRAIN_*]
+ RV4[CI/CD: CODEX_CI_*, CODEX_COVERAGE_THRESHOLD]
+ RV5[LLM/ML: CODEX_LLM_MODEL, WANDB_MODE]
+ RV6[Runtime: CODEX_SESSION_ID, CODEX_LOG_LEVEL]
+ end
+ subgraph "Env Variables (14) — Sandbox"
+ EV[CODEX_ENV_*versions, RUST_BACKTRACE, CARGO_TERM_COLOR]
+ end
+ subgraph "Env Secrets (3) — Sandbox"
+ ES[CODEX_RUNNER_TOKEN, CODEX_ENVIRONMENT_RUNNER]
+ end
 
-    OM --> |token_chain| RS
+ OM --> |token_chain| RS
 
-    OB --> |fallback| RS
+ OB --> |fallback| RS
 
-    RV2 --> |controls| EV
+ RV2 --> |controls| EV
 ```
 
 > **Diagram legend**: `token_chain` = primary token source for write operations; `fallback` = secondary token source used only when primary is unavailable (`CODEX_BACKUP_KEY` fills in when `CODEX_MASTER_KEY` is absent).

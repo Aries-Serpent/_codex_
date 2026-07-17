@@ -24,10 +24,10 @@ Yep — you can use **GitHub Copilot in the CLI** right in an Ubuntu 24.x termin
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-sudo apt update && sudo apt install -y gh  # or see cli.github.com for alternatives
+sudo apt update && sudo apt install -y gh # or see cli.github.com for alternatives
 
 # 2) Authenticate GitHub CLI
-gh auth login  # follow the prompts (HTTPS, "Login with a web browser")
+gh auth login # follow the prompts (HTTPS, "Login with a web browser")
 
 # 3) Install Copilot in the CLI
 gh extension install github/gh-copilot
@@ -51,8 +51,8 @@ echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc && source ~/.zshrc
 Now you can use:
 
 ```bash
-ghce "what does 'iptables -L' do?"   # explain
-ghcs "archive current dir to tar.gz excluding .git"  # suggest → choose Execute
+ghce "what does 'iptables -L' do?" # explain
+ghcs "archive current dir to tar.gz excluding .git" # suggest choose Execute
 ```text
 You can also change the default execution confirmation or analytics via:
 

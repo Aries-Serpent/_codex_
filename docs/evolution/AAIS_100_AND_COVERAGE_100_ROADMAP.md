@@ -82,29 +82,29 @@ The combined gap is **1.5 AAIS points** (98.5 100) and **28 coverage percentage 
 ### 1.2 ACE Layer Gaps — What Closes Each
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "L1 Aspirational\n96/100 → 100\nGap: -4", "L2 Global Strategy\n98/100 → 100\nGap: -2"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "L1 Aspirational\n96/100 100\nGap: -4", "L2 Global Strategy\n98/100 100\nGap: -2"'}}%%
 
 flowchart LR
-    subgraph "ACE Layer Gaps → Improvements"
-        L1["L1 Aspirational\n96/100 → 100\nGap: -4"]
-        L2["L2 Global Strategy\n98/100 → 100\nGap: -2"]
-        L3["L3 Agent Model\n97/100 → 100\nGap: -3"]
-        L4["L4 Executive Fn\n98/100 → 100\nGap: -2"]
-        L5["L5 Cognitive Ctrl\n97/100 → 100\nGap: -3"]
-        L6["L6 Task Prosecution\n96/100 → 100\nGap: -4"]
-    end
+ subgraph "ACE Layer Gaps Improvements"
+ L1["L1 Aspirational\n96/100 100\nGap: -4"]
+ L2["L2 Global Strategy\n98/100 100\nGap: -2"]
+ L3["L3 Agent Model\n97/100 100\nGap: -3"]
+ L4["L4 Executive Fn\n98/100 100\nGap: -2"]
+ L5["L5 Cognitive Ctrl\n97/100 100\nGap: -3"]
+ L6["L6 Task Prosecution\n96/100 100\nGap: -4"]
+ end
 
-    L1 --> F1["✦ L1 Ethics module\n  .codex/ethics/imperatives.yaml\n  Ethical reasoning engine\n  Moral decision audit log\n  Ref: ACE_L1_Aspiration (MIT)"]
+ L1 --> F1[" L1 Ethics module\n .codex/ethics/imperatives.yaml\n Ethical reasoning engine\n Moral decision audit log\n Ref: ACE_L1_Aspiration (MIT)"]
 
-    L2 --> F2["✦ OKR automation\n  Link objectives to measurable KRs\n  Automated tracking dashboard\n  Ref: fractalmind-ai/okr-manager-skill"]
+ L2 --> F2[" OKR automation\n Link objectives to measurable KRs\n Automated tracking dashboard\n Ref: fractalmind-ai/okr-manager-skill"]
 
-    L3 --> F3["✦ Live runtime telemetry\n  Dynamic capability catalog\n  Self-model updated from CI metrics\n  Ref: MSV Correctness Awareness ↑"]
+ L3 --> F3[" Live runtime telemetry\n Dynamic capability catalog\n Self-model updated from CI metrics\n Ref: MSV Correctness Awareness "]
 
-    L4 --> F4["✦ Auto task routing\n  Agent selection from task classifier\n  Remove manual @copilot invocation\n  Ref: AGENT_REGISTRY.yaml TaskRouter"]
+ L4 --> F4[" Auto task routing\n Agent selection from task classifier\n Remove manual @copilot invocation\n Ref: AGENT_REGISTRY.yaml TaskRouter"]
 
-    L5 --> F5["✦ Continuous control loop\n  Real-time task switching\n  Event-driven (not batch-per-PR)\n  Ref: CI telemetry → OODA loop"]
+ L5 --> F5[" Continuous control loop\n Real-time task switching\n Event-driven (not batch-per-PR)\n Ref: CI telemetry OODA loop"]
 
-    L6 --> F6["✦ Closed-loop feedback\n  Execution results → cognitive brain\n  Cross-session learning auto-trigger\n  Ref: report_completion() pipeline"]
+ L6 --> F6[" Closed-loop feedback\n Execution results cognitive brain\n Cross-session learning auto-trigger\n Ref: report_completion() pipeline"]
 ```
 
 #### L1: Aspirational Layer (96/100 — Gap -4)
@@ -217,21 +217,21 @@ flowchart LR
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title AAIS 98.5 → 100 Roadmap
-    dateFormat YYYY-MM-DD
-    section Phase A — Ethics & OKR (S+42)
-    L1 Ethics Module (imperatives.yaml + engine)  :a1, 2026-03-15, 5d
-    L2 OKR Automation (okr_tracker.py + dashboard) :a2, after a1, 4d
-    AAIS re-score → ~99.2                          :milestone, after a2, 0d
-    section Phase B — Live Telemetry (S+43)
-    L3 Runtime telemetry pipeline                  :b1, 2026-03-22, 4d
-    L6 report_completion() CI wiring               :b2, after b1, 3d
-    Pattern store FAISS semantic search            :b3, after b1, 3d
-    AAIS re-score → ~99.6                          :milestone, after b3, 0d
-    section Phase C — Continuous Control (S+44)
-    L4 Task classifier + auto-routing              :c1, 2026-03-28, 5d
-    L5 OODA webhook event loop                     :c2, after c1, 5d
-    AAIS re-score → ~100.0                         :milestone, after c2, 0d
+ title AAIS 98.5 100 Roadmap
+ dateFormat YYYY-MM-DD
+ section Phase A — Ethics & OKR (S+42)
+ L1 Ethics Module (imperatives.yaml + engine) :a1, 2026-03-15, 5d
+ L2 OKR Automation (okr_tracker.py + dashboard) :a2, after a1, 4d
+ AAIS re-score ~99.2 :milestone, after a2, 0d
+ section Phase B — Live Telemetry (S+43)
+ L3 Runtime telemetry pipeline :b1, 2026-03-22, 4d
+ L6 report_completion() CI wiring :b2, after b1, 3d
+ Pattern store FAISS semantic search :b3, after b1, 3d
+ AAIS re-score ~99.6 :milestone, after b3, 0d
+ section Phase C — Continuous Control (S+44)
+ L4 Task classifier + auto-routing :c1, 2026-03-28, 5d
+ L5 OODA webhook event loop :c2, after c1, 5d
+ AAIS re-score ~100.0 :milestone, after c2, 0d
 ```
 
 ---
@@ -263,17 +263,17 @@ gantt
 
 graph LR
 
-    C72["72%\n~1500 tests\nNow"] --> C80["80%\n+100 tests\nPhase 6\nRAG + ML Training\n+ CLI + Metrics"]
+ C72["72%\n~1500 tests\nNow"] --> C80["80%\n+100 tests\nPhase 6\nRAG + ML Training\n+ CLI + Metrics"]
 
-    C80 --> C85["85%\n+80 tests\nPhase 7\nIntegration\n+ E2E pipelines"]
+ C80 --> C85["85%\n+80 tests\nPhase 7\nIntegration\n+ E2E pipelines"]
 
-    C85 --> C90["90%\n+70 tests\nPhase 8\nPerf + Stress\n+ Concurrency"]
+ C85 --> C90["90%\n+70 tests\nPhase 8\nPerf + Stress\n+ Concurrency"]
 
-    C90 --> C95["95%\n+60 tests\nPhase 9\nEdge cases\n+ Corner cases"]
+ C90 --> C95["95%\n+60 tests\nPhase 9\nEdge cases\n+ Corner cases"]
 
-    C95 --> C98["98%\n+50 tests\nPhase 10\nCompleteness\n+ Documentation"]
+ C95 --> C98["98%\n+50 tests\nPhase 10\nCompleteness\n+ Documentation"]
 
-    C98 --> C100["100%\n+30 tests\nPhase 11\nFinal push\n+ Remove dead code"]
+ C98 --> C100["100%\n+30 tests\nPhase 11\nFinal push\n+ Remove dead code"]
 ```
 
 ---
@@ -358,12 +358,12 @@ Current mutation score: **96%** (4% surviving mutants)
 ```python
 # Example: boundary-value test that kills the '>=' vs '>' mutant
 @pytest.mark.parametrize("score,threshold,expect_match", [
-    (0.0, 0.0, True),   # exactly at threshold — must match
-    (0.0, 0.01, False), # just below — must NOT match
-    (1.0, 1.0, True),   # at ceiling
+ (0.0, 0.0, True), # exactly at threshold — must match
+ (0.0, 0.01, False), # just below — must NOT match
+ (1.0, 1.0, True), # at ceiling
 ])
 def test_match_score_threshold_boundary(score, threshold, expect_match):
-    ...
+ ...
 ```
 
 ---
@@ -374,14 +374,14 @@ Some paths are legitimately uncovered because they require specific conditions. 
 
 ```python
 # Platform-specific paths
-if sys.platform == "win32":  # pragma: no cover
-    ...
+if sys.platform == "win32": # pragma: no cover
+ ...
 
 # Truly unreachable defensive code
-raise RuntimeError("Should never reach here")  # pragma: no cover
+raise RuntimeError("Should never reach here") # pragma: no cover
 
 # Type-narrowing guards (mypy-only)
-assert isinstance(x, str)  # pragma: no cover
+assert isinstance(x, str) # pragma: no cover
 ```
 
 **Rule:** every `# pragma: no cover` must have an inline justification comment.
@@ -453,45 +453,45 @@ The goal of 100% coverage is **traceability and regression prevention**, not the
 %%{init: {'accessibility': {'title': 'Diagram showing "L1: Ethics Module\nimperatives.yaml\nMoral reasoning engine\n+0.4 AAIS pts", "L2: OKR Automation\nokr_tracker.py\n+0.3 AAIS pts"'}}%%
 
 graph TB
-    subgraph "AAIS 100 Requirements Map"
-        subgraph "ACE Layers — Remaining Gaps"
-            L1E["L1: Ethics Module\nimperatives.yaml\nMoral reasoning engine\n+0.4 AAIS pts"]
-            L2O["L2: OKR Automation\nokr_tracker.py\n+0.3 AAIS pts"]
-            L3T["L3: Live Telemetry\nDynamic capability catalog\n+0.6 AAIS pts"]
-            L4R["L4: Task Auto-Router\nFAISS + AGENT_REGISTRY\n+0.4 AAIS pts"]
-            L5C["L5: OODA Event Loop\nWebhook-driven control\n+0.6 AAIS pts"]
-            L6F["L6: Closed-Loop Feedback\nreport_completion() CI\n+0.6 AAIS pts"]
-        end
+ subgraph "AAIS 100 Requirements Map"
+ subgraph "ACE Layers — Remaining Gaps"
+ L1E["L1: Ethics Module\nimperatives.yaml\nMoral reasoning engine\n+0.4 AAIS pts"]
+ L2O["L2: OKR Automation\nokr_tracker.py\n+0.3 AAIS pts"]
+ L3T["L3: Live Telemetry\nDynamic capability catalog\n+0.6 AAIS pts"]
+ L4R["L4: Task Auto-Router\nFAISS + AGENT_REGISTRY\n+0.4 AAIS pts"]
+ L5C["L5: OODA Event Loop\nWebhook-driven control\n+0.6 AAIS pts"]
+ L6F["L6: Closed-Loop Feedback\nreport_completion() CI\n+0.6 AAIS pts"]
+ end
 
-        subgraph "MSV Dimensions — Remaining Gaps"
-            MSV1["Correctness Awareness\n96 → 100: 100% coverage\n+mutation 100%"]
-            MSV2["Experience Matching\n92 → 100: FAISS patterns\n11 → 50+ entries"]
-            MSV3["Adaptive Response\n94 → 100: OODA loop\nSystem 1/2 dual-process"]
-        end
+ subgraph "MSV Dimensions — Remaining Gaps"
+ MSV1["Correctness Awareness\n96 100: 100% coverage\n+mutation 100%"]
+ MSV2["Experience Matching\n92 100: FAISS patterns\n11 50+ entries"]
+ MSV3["Adaptive Response\n94 100: OODA loop\nSystem 1/2 dual-process"]
+ end
 
-        subgraph "Coverage 72% → 100%"
-            COV1["Phase 6: RAG + ML\n72% → 80%\n+100 tests"]
-            COV2["Phase 7-8: Integration\n80% → 90%\n+150 tests"]
-            COV3["Phase 9-11: Edge Cases\n90% → 100%\n+140 tests"]
-        end
-    end
+ subgraph "Coverage 72% 100%"
+ COV1["Phase 6: RAG + ML\n72% 80%\n+100 tests"]
+ COV2["Phase 7-8: Integration\n80% 90%\n+150 tests"]
+ COV3["Phase 9-11: Edge Cases\n90% 100%\n+140 tests"]
+ end
+ end
 
-    L3T --> MSV1
+ L3T --> MSV1
 
-    L6F --> MSV2
+ L6F --> MSV2
 
-    L5C --> MSV3
+ L5C --> MSV3
 
-    MSV1 --> COV1
+ MSV1 --> COV1
 
-    COV1 --> COV2 --> COV3
+ COV1 --> COV2 --> COV3
 
-    style L1E fill:#ff9999
-    style L5C fill:#ff9999
-    style L6F fill:#ff9999
-    style MSV2 fill:#ffcc99
-    style COV2 fill:#ffff99
-    style COV3 fill:#99ff99
+ style L1E fill:#ff9999
+ style L5C fill:#ff9999
+ style L6F fill:#ff9999
+ style MSV2 fill:#ffcc99
+ style COV2 fill:#ffff99
+ style COV3 fill:#99ff99
 ```
 
 ---

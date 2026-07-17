@@ -121,17 +121,17 @@ When a violation occurs:
 Fix [ALL/comprehensive] [category] issues: [specific fixes]
 
 - Fixed [N] new code review issues
-- Fixed [N] pre-existing issues  
+- Fixed [N] pre-existing issues 
 - Enhanced [feature] beyond requirements
 - Improved [metric] by [amount]
 
 Total: [N] issues resolved
-AI Agency Policy:  FULLY COMPLIANT
-Prime Directive:  Codebase measurably better
+AI Agency Policy: FULLY COMPLIANT
+Prime Directive: Codebase measurably better
 
 Detailed fixes:
-1. [File]: [Issue] → [Fix] → [Impact]
-2. [File]: [Issue] → [Fix] → [Impact]
+1. [File]: [Issue] [Fix] [Impact]
+2. [File]: [Issue] [Fix] [Impact]
 ...
 ```
 

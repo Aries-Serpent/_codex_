@@ -86,9 +86,9 @@ Open a text editor to document observations:
 
 ```
 Marker 1: "Session Context Pre-load"
-├─ WHERE: Step name in the job log
-├─ LOOK FOR: The step appears as a clickable/expandable section
-└─ MEANING:  Step started; YAML parsed successfully
+ WHERE: Step name in the job log
+ LOOK FOR: The step appears as a clickable/expandable section
+ MEANING: Step started; YAML parsed successfully
 ```
 
 **ACTION:** When you see "Session Context Pre-load" step, click to expand it.
@@ -103,22 +103,22 @@ Marker 1: "Session Context Pre-load"
 
 ```
 Marker 2: "::group::Session Context Pre-load"
-├─ WHERE: Inside expanded "Session Context Pre-load" step
-├─ LOOK FOR: This exact text as a log line
-├─ MEANING:  Block scalar executed; group started
-├─ RECORD: Note the timestamp this appeared
-└─ If missing after 5 min:  YAML parse failure
+ WHERE: Inside expanded "Session Context Pre-load" step
+ LOOK FOR: This exact text as a log line
+ MEANING: Block scalar executed; group started
+ RECORD: Note the timestamp this appeared
+ If missing after 5 min: YAML parse failure
 ```
 
 **ACTION:** Copy the timestamp when you see this marker.
 
 ```
 Marker 3: Python Script Output (OR Error)
-├─ LOOK FOR EITHER:
-│  ├─ Lines showing context being loaded (success case)
-│  └─ "️ session_preload.py failed (non-blocking)" (failure case)
-├─ MEANING:  Script is executing (either way)
-└─ RECORD: What output you see
+ LOOK FOR EITHER:
+ Lines showing context being loaded (success case)
+ " session_preload.py failed (non-blocking)" (failure case)
+ MEANING: Script is executing (either way)
+ RECORD: What output you see
 ```
 
 ---
@@ -131,11 +131,11 @@ Marker 3: Python Script Output (OR Error)
 
 ```
 Marker 4: "::endgroup::"
-├─ WHERE: End of the Session Context Pre-load step log
-├─ LOOK FOR: This exact text
-├─ MEANING:  Group closed; step logic completed
-├─ RECORD: Timestamp when you see this
-└─ If missing after 10 min: ️ Script hung (wait 2 more min)
+ WHERE: End of the Session Context Pre-load step log
+ LOOK FOR: This exact text
+ MEANING: Group closed; step logic completed
+ RECORD: Timestamp when you see this
+ If missing after 10 min: Script hung (wait 2 more min)
 ```
 
 **ACTION:** When you see `::endgroup::`, scroll up and review the entire group content to note:
@@ -143,7 +143,7 @@ Marker 4: "::endgroup::"
 ```
 Questions to answer:
 - Did the Python script produce output (success case)?
-- Did the fallback run ("️ failed" message)?
+- Did the fallback run (" failed" message)?
 - Are there any error messages?
 - How many lines of output in total?
 ```
@@ -158,11 +158,11 @@ Questions to answer:
 
 ```
 Marker 5: "Session Access Probe"
-├─ WHERE: As a new step in the job log
-├─ LOOK FOR: The step appears after Session Context Pre-load
-├─ MEANING:  Preload didn't hard-fail; workflow continued
-├─ RECORD: Did this step appear? When?
-└─ If NOT found after 15 min: ️ Preload may have blocked workflow
+ WHERE: As a new step in the job log
+ LOOK FOR: The step appears after Session Context Pre-load
+ MEANING: Preload didn't hard-fail; workflow continued
+ RECORD: Did this step appear? When?
+ If NOT found after 15 min: Preload may have blocked workflow
 ```
 
 **ACTION:** If you see Session Access Probe starting, Method D is working so far.
@@ -211,8 +211,8 @@ Marker 5: "Session Access Probe"
 1. **Record:** Screenshot the step log
 2. **Stop:** Job will likely fail soon
 3. **Check:** Validate YAML locally again
-   ```bash
-   yamllint .github/workflows/copilot-setup-steps.yml
+ ```bash
+ yamllint .github/workflows/copilot-setup-steps.yml
  ```
 4. **Fix:** Re-apply patch and re-push
 
@@ -235,8 +235,8 @@ Marker 5: "Session Access Probe"
  - The session_preload.py script has a bug or deadlock
  - This is NOT a Method D issue (YAML is fine)
  - Stop the job manually
-   ```bash
-   gh run cancel <RUN_ID>
+ ```bash
+ gh run cancel <RUN_ID>
  ```
 
 **Result:** Preload script needs debugging (separate from Method D validation)
@@ -254,8 +254,8 @@ Marker 5: "Session Access Probe"
 
 **Action:**
 1. **Check for critical errors in preload logs**
-   ```bash
-   grep -i "fatal\|error\|exception" <logs>
+ ```bash
+ grep -i "fatal\|error\|exception" <logs>
  ```
 2. **If error found:** This indicates a real problem in session_preload.py
  - Not a Method D syntax issue
@@ -303,8 +303,8 @@ Marker 5: "Session Access Probe"
 
 **Action:**
 1. **Document the agent's changes:**
-   ```bash
-   git show <agent-commit>:.github/workflows/copilot-setup-steps.yml | grep -A10 "Session Context Pre-load"
+ ```bash
+ git show <agent-commit>:.github/workflows/copilot-setup-steps.yml | grep -A10 "Session Context Pre-load"
  ```
 2. **Compare to Method D patch** — what changed?
  - Removed `::group::`?
@@ -356,7 +356,7 @@ grep -A50 "Session Context Pre-load" copilot-setup-steps.txt > preload_full.txt
 echo "=== Marker Check ==="
 grep "::group::Session Context Pre-load" copilot-setup-steps.txt && echo " Group start found" || echo " Group start missing"
 grep "::endgroup::" copilot-setup-steps.txt && echo " Group end found" || echo " Group end missing"
-grep "SESSION_PRELOAD_STATUS" copilot-setup-steps.txt && echo "ℹ️ Fallback status found" || echo "ℹ️ Fallback not used (preload succeeded)"
+grep "SESSION_PRELOAD_STATUS" copilot-setup-steps.txt && echo "ℹ Fallback status found" || echo "ℹ Fallback not used (preload succeeded)"
 grep "Session Access Probe" copilot-setup-steps.txt && echo " Next step ran" || echo " Next step didn't run"
 ```
 
@@ -365,7 +365,7 @@ grep "Session Access Probe" copilot-setup-steps.txt && echo " Next step ran" || 
 ```bash
 # Search for any errors in the preload section
 sed -n '/Session Context Pre-load/,/::endgroup::/p' copilot-setup-steps.txt | \
-  grep -i "error\|fail\|exception\|fatal" && echo "️ Errors found in preload" || echo " No errors in preload"
+ grep -i "error\|fail\|exception\|fatal" && echo " Errors found in preload" || echo " No errors in preload"
 ```
 
 ## Step 5: Verify Agent Didn't Break It
@@ -376,10 +376,10 @@ gh pr view <PR_NUM> --json commits -q '.commits[].oid' > commits.txt
 
 # For each Copilot commit, check if it modified the preload step
 while read COMMIT; do
-  if git show $COMMIT -- .github/workflows/copilot-setup-steps.yml | grep -q "Session Context Pre-load"; then
-    echo "Agent modified preload in commit $COMMIT"
-    git show $COMMIT -- .github/workflows/copilot-setup-steps.yml | grep -A10 "Session Context Pre-load"
-  fi
+ if git show $COMMIT -- .github/workflows/copilot-setup-steps.yml | grep -q "Session Context Pre-load"; then
+ echo "Agent modified preload in commit $COMMIT"
+ git show $COMMIT -- .github/workflows/copilot-setup-steps.yml | grep -A10 "Session Context Pre-load"
+ fi
 done < commits.txt
 ```
 
@@ -417,11 +417,11 @@ done < commits.txt
 
 | Minute | Marker | Status | Notes |
 |--------|--------|--------|-------|
-| 2–5 | Session Context Pre-load step visible |  /  | Appeared at [time] |
-| 3–7 | ::group::Session Context Pre-load |  /  | Appeared at [time] |
-| 5–10 | Script output or fallback |  /  | [Describe output] |
-| 7–10 | ::endgroup:: |  /  | Appeared at [time] |
-| 10–15 | Session Access Probe |  /  | Started at [time] |
+| 2–5 | Session Context Pre-load step visible | / | Appeared at [time] |
+| 3–7 | ::group::Session Context Pre-load | / | Appeared at [time] |
+| 5–10 | Script output or fallback | / | [Describe output] |
+| 7–10 | ::endgroup:: | / | Appeared at [time] |
+| 10–15 | Session Access Probe | / | Started at [time] |
 
 ## Post-Session Verification
 

@@ -80,8 +80,8 @@ gh auth token
 
 # Or create PAT via API (requires existing authentication)
 gh api -X POST /user/tokens \
-  -f note="_codex_ Master Key $(date +%Y-%m-%d)" \
-  -f scopes="repo,workflow,admin:org,security_events,write:packages"
+ -f note="_codex_ Master Key $(date +%Y-%m-%d)" \
+ -f scopes="repo,workflow,admin:org,security_events,write:packages"
 ```
 
 ---
@@ -104,8 +104,8 @@ export NEW_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" <!-- pragma: allowli
 
 # Update repository secret
 gh secret set CODEX_MASTER_KEY \
-  --repo Aries-Serpent/_codex_ \
-  --body "$NEW_TOKEN"
+ --repo Aries-Serpent/_codex_ \
+ --body "$NEW_TOKEN"
 
 # Verify secret was updated
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
@@ -121,8 +121,8 @@ gh auth status
 
 # Update repository secret
 gh secret set CODEX_MASTER_KEY \
-  --repo Aries-Serpent/_codex_ \
-  --body "$NEW_TOKEN"
+ --repo Aries-Serpent/_codex_ \
+ --body "$NEW_TOKEN"
 
 # Verify the update succeeded
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
@@ -158,9 +158,9 @@ token_expiry: "2027-01-26T00:00:00Z"
 ```yaml
 # Update token configuration
 github:
-  token_secret_name: CODEX_MASTER_KEY
-  token_last_rotated: "2026-01-26T19:00:00Z"
-  token_rotation_interval_days: 90
+ token_secret_name: CODEX_MASTER_KEY
+ token_last_rotated: "2026-01-26T19:00:00Z"
+ token_rotation_interval_days: 90
 ```
 
 ---
@@ -178,7 +178,7 @@ gh api /repos/Aries-Serpent/_codex_ | jq '.permissions'
 
 # Test security events access
 gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts \
-  -H "Accept: application/vnd.github+json" | jq '.[] | {number, state, rule_id}'
+ -H "Accept: application/vnd.github+json" | jq '.[] | {number, state, rule_id}'
 
 # Test workflow access
 gh api /repos/Aries-Serpent/_codex_/actions/workflows | jq '.workflows[] | {name, state, path}'
@@ -192,13 +192,13 @@ gh api /repos/Aries-Serpent/_codex_/actions/secrets | jq '.secrets[] | .name'
 ```bash
 # Validate token permissions
 python scripts/security/validate_token_permissions.py \
-  --token "$NEW_TOKEN" \
-  --required-scopes repo,workflow,security_events,admin:org
+ --token "$NEW_TOKEN" \
+ --required-scopes repo,workflow,security_events,admin:org
 
 # Test workflow trigger with new token
 gh workflow run phase34-codeql-alert-fetch.yml \
-  --field max_pages=1 \
-  --field severity_filter=all
+ --field max_pages=1 \
+ --field severity_filter=all
 
 # Check workflow run status
 gh run list --workflow=phase34-codeql-alert-fetch.yml --limit 1
@@ -226,8 +226,8 @@ gh run view --log | grep -i "permission\|403\|401\|unauthorized"
 ```bash
 # Update agent config with new token timestamp
 python scripts/autonomous_agent.py update-token-config \
-  --timestamp "2026-01-26T19:00:00Z" \
-  --expiry "2027-01-26T00:00:00Z"
+ --timestamp "2026-01-26T19:00:00Z" \
+ --expiry "2027-01-26T00:00:00Z"
 
 # Restart agent services (if running)
 python scripts/autonomous_agent.py restart --safe-mode
@@ -238,8 +238,8 @@ python scripts/autonomous_agent.py restart --safe-mode
 ```bash
 # Update cognitive brain token awareness
 python scripts/cognitive/update_token_state.py \
-  --status active \
-  --last-refreshed "2026-01-26T19:00:00Z"
+ --status active \
+ --last-refreshed "2026-01-26T19:00:00Z"
 
 # Verify cognitive brain can access GitHub API
 python scripts/cognitive/test_github_integration.py
@@ -253,10 +253,10 @@ Update agent configuration files in `.github/agents/`:
 # In .github/agents/codeql-alert-resolution-agent.md
 ## Token Configuration
 
-**Token Secret**: `CODEX_MASTER_KEY`  
-**Last Refreshed**: 2026-01-26T19:00:00Z  
-**Expiry**: 2027-01-26T00:00:00Z  
-**Status**:  Active
+**Token Secret**: `CODEX_MASTER_KEY` 
+**Last Refreshed**: 2026-01-26T19:00:00Z 
+**Expiry**: 2027-01-26T00:00:00Z 
+**Status**: Active
 
 ## Verification
 
@@ -300,8 +300,8 @@ cat >> .github/workflows/README.md <<EOF
 
 All workflows requiring elevated permissions use the \`CODEX_MASTER_KEY\` secret.
 
-**Last Token Refresh**: 2026-01-26T19:00:00Z  
-**Token Expiry**: 2027-01-26T00:00:00Z  
+**Last Token Refresh**: 2026-01-26T19:00:00Z 
+**Token Expiry**: 2027-01-26T00:00:00Z 
 **Next Rotation**: 2026-04-26 (90 days)
 
 **Workflows Using CODEX_MASTER_KEY**:
@@ -321,8 +321,8 @@ EOF
 ```bash
 # Test Phase 34 workflow (primary use case)
 gh workflow run phase34-codeql-alert-fetch.yml \
-  --field max_pages=5 \
-  --field severity_filter=high
+ --field max_pages=5 \
+ --field severity_filter=high
 
 # Wait for completion
 sleep 60
@@ -343,9 +343,9 @@ gh issue list --label "phase-34" --limit 5
 
 # Test manual issue creation with token
 gh issue create \
-  --title "[Test] Token Verification $(date +%Y-%m-%d)" \
-  --body "Testing CODEX_MASTER_KEY after regeneration" \
-  --label "test,token-verification"
+ --title "[Test] Token Verification $(date +%Y-%m-%d)" \
+ --body "Testing CODEX_MASTER_KEY after regeneration" \
+ --label "test,token-verification"
 ```
 
 ### 7.3 Test Code Scanning Operations
@@ -353,12 +353,12 @@ gh issue create \
 ```bash
 # Fetch CodeQL alerts (requires security_events scope)
 python scripts/security/fetch_codeql_alerts.py \
-  --owner Aries-Serpent \
-  --repo _codex_ \
-  --state open \
-  --max-pages 1 \
-  --output-dir /tmp/test-alerts \
-  --verbose
+ --owner Aries-Serpent \
+ --repo _codex_ \
+ --state open \
+ --max-pages 1 \
+ --output-dir /tmp/test-alerts \
+ --verbose
 
 # Verify output
 cat /tmp/test-alerts/alert_summary.md
@@ -413,7 +413,7 @@ echo " Testing secrets access..."
 gh api /repos/Aries-Serpent/_codex_/actions/secrets > /dev/null
 
 echo ""
-echo "🎉 All permissions validated successfully!"
+echo " All permissions validated successfully!"
 echo "Token is properly configured."
 EOF
 
@@ -433,25 +433,25 @@ cat >> .codex/change_log.md <<EOF
 
 ## 2026-01-26T19:00:00Z - GitHub Token Rotated
 
-**Event**: CODEX_MASTER_KEY token regenerated and updated  
-**Trigger**: Scheduled rotation / Security update  
-**New Expiry**: 2027-01-26T00:00:00Z  
+**Event**: CODEX_MASTER_KEY token regenerated and updated 
+**Trigger**: Scheduled rotation / Security update 
+**New Expiry**: 2027-01-26T00:00:00Z 
 **Verified By**: @mbaetiong
 
 **Components Updated**:
--  Repository secret (CODEX_MASTER_KEY)
--  Configuration files (.codex/flags.json, .codex/flags.yml)
--  Autonomous agent config
--  Cognitive brain system
--  Documentation
--  Workflow integrations
+- Repository secret (CODEX_MASTER_KEY)
+- Configuration files (.codex/flags.json, .codex/flags.yml)
+- Autonomous agent config
+- Cognitive brain system
+- Documentation
+- Workflow integrations
 
 **Validation**:
--  GitHub API access confirmed
--  Workflow execution successful
--  Code scanning operations functional
--  Issue creation tested
--  All permission scopes verified
+- GitHub API access confirmed
+- Workflow execution successful
+- Code scanning operations functional
+- Issue creation tested
+- All permission scopes verified
 
 EOF
 ```
@@ -464,22 +464,22 @@ cat >> .codex/monitoring/token_expiry_check.py <<'EOF'
 import datetime
 
 def check_token_expiry():
-    """Check if token is approaching expiry."""
-    expiry = datetime.datetime(2027, 1, 26, 0, 0, 0, tzinfo=datetime.timezone.utc)
-    now = datetime.datetime.now(datetime.timezone.utc)
-    days_until_expiry = (expiry - now).days
+ """Check if token is approaching expiry."""
+ expiry = datetime.datetime(2027, 1, 26, 0, 0, 0, tzinfo=datetime.timezone.utc)
+ now = datetime.datetime.now(datetime.timezone.utc)
+ days_until_expiry = (expiry - now).days
 
-    if days_until_expiry <= 30:
-        print(f"️ WARNING: Token expires in {days_until_expiry} days!")
-        print(f"   Expiry Date: {expiry.isoformat()}")
-        print(f"   Action Required: Regenerate token before expiry")
-        return False
-    else:
-        print(f" Token valid for {days_until_expiry} days")
-        return True
+ if days_until_expiry <= 30:
+ print(f" WARNING: Token expires in {days_until_expiry} days!")
+ print(f" Expiry Date: {expiry.isoformat()}")
+ print(f" Action Required: Regenerate token before expiry")
+ return False
+ else:
+ print(f" Token valid for {days_until_expiry} days")
+ return True
 
 if __name__ == "__main__":
-    check_token_expiry()
+ check_token_expiry()
 EOF
 
 # Run check

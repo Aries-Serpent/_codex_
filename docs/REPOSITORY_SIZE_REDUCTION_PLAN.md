@@ -41,14 +41,14 @@
 
 ```
 misc/
-├── repo-owner-review/
-│   ├── README.md (explains this is for owner review/deletion)
-│   ├── archived-artifacts/
-│   │   ├── security-reports/
-│   │   ├── old-audit-runs/
-│   │   ├── validation-logs/
-│   │   └── deprecated-scripts/
-│   └── metadata.json (tracks what was moved and when)
+ repo-owner-review/
+ README.md (explains this is for owner review/deletion)
+ archived-artifacts/
+ security-reports/
+ old-audit-runs/
+ validation-logs/
+ deprecated-scripts/
+ metadata.json (tracks what was moved and when)
 ```
 
 ### 2. Files to Move to `misc/repo-owner-review/`

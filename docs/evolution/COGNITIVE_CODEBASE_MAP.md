@@ -15,60 +15,60 @@
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Aspirational (Ethics & Mission)", ".codex/guardrails.md"'}}%%
 
 graph TD
-    subgraph L1["L1: Aspirational (Ethics & Mission)"]
-        E1[".codex/guardrails.md"]
-        E2["CODEBASE_AGENCY_POLICY.md"]
-        E3["SECURITY.md"]
-    end
+ subgraph L1["L1: Aspirational (Ethics & Mission)"]
+ E1[".codex/guardrails.md"]
+ E2["CODEBASE_AGENCY_POLICY.md"]
+ E3["SECURITY.md"]
+ end
 
-    subgraph L2["L2: Global Strategy (Planning)"]
-        S1["docs/ROADMAP.md"]
-        S2["docs/evolution/"]
-        S3[".codex/plans/ (95 files)"]
-    end
+ subgraph L2["L2: Global Strategy (Planning)"]
+ S1["docs/ROADMAP.md"]
+ S2["docs/evolution/"]
+ S3[".codex/plans/ (95 files)"]
+ end
 
-    subgraph L3["L3: Agent Model (Self-Awareness)"]
-        M1["scripts/cognitive/"]
-        M2[".codex/cognitive_brain/"]
-        M3["src/codex/rag/"]
-    end
+ subgraph L3["L3: Agent Model (Self-Awareness)"]
+ M1["scripts/cognitive/"]
+ M2[".codex/cognitive_brain/"]
+ M3["src/codex/rag/"]
+ end
 
-    subgraph L4["L4: Executive Function (Planning)"]
-        X1[".github/agents/ (53+)"]
-        X2["scripts/autonomous_agent.py"]
-        X3[".github/workflows/ (49)"]
-    end
+ subgraph L4["L4: Executive Function (Planning)"]
+ X1[".github/agents/ (53+)"]
+ X2["scripts/autonomous_agent.py"]
+ X3[".github/workflows/ (49)"]
+ end
 
-    subgraph L5["L5: Cognitive Control (Adaptation)"]
-        C1["scripts/ci/auto_fix_common_issues.py"]
-        C2["scripts/validate_*.py"]
-        C3["src/cognitive_brain/quantum/"]
-    end
+ subgraph L5["L5: Cognitive Control (Adaptation)"]
+ C1["scripts/ci/auto_fix_common_issues.py"]
+ C2["scripts/validate_*.py"]
+ C3["src/cognitive_brain/quantum/"]
+ end
 
-    subgraph L6["L6: Task Prosecution (Execution)"]
-        T1["src/codex/ (core library)"]
-        T2["cognitive_app/ (dashboard)"]
-        T3["tests/ (39500+)"]
-    end
+ subgraph L6["L6: Task Prosecution (Execution)"]
+ T1["src/codex/ (core library)"]
+ T2["cognitive_app/ (dashboard)"]
+ T3["tests/ (39500+)"]
+ end
 
-    L1 -->|"Ethics flow down"| L2
+ L1 -->|"Ethics flow down"| L2
 
-    L2 -->|"Strategy→Plans"| L3
+ L2 -->|"StrategyPlans"| L3
 
-    L3 -->|"Self-model→Actions"| L4
+ L3 -->|"Self-modelActions"| L4
 
-    L4 -->|"Plans→Control"| L5
+ L4 -->|"PlansControl"| L5
 
-    L5 -->|"Decisions→Tasks"| L6
+ L5 -->|"DecisionsTasks"| L6
 
-    L6 -->|"Feedback up"| L3
+ L6 -->|"Feedback up"| L3
 
-    style L1 fill:#8b5cf6,color:#fff
-    style L2 fill:#3b82f6,color:#fff
-    style L3 fill:#06b6d4,color:#fff
-    style L4 fill:#10b981,color:#fff
-    style L5 fill:#f59e0b,color:#fff
-    style L6 fill:#ef4444,color:#fff
+ style L1 fill:#8b5cf6,color:#fff
+ style L2 fill:#3b82f6,color:#fff
+ style L3 fill:#06b6d4,color:#fff
+ style L4 fill:#10b981,color:#fff
+ style L5 fill:#f59e0b,color:#fff
+ style L6 fill:#ef4444,color:#fff
 ```
 
 ---
@@ -149,19 +149,19 @@ graph TD
 ```text
 Component Intuitiveness Distribution (N=35 components scored)
 
-97  ■ Evolution Center
-96  ■ Roadmap
-95  ■■■ RAG Pipeline, Cognitive Core, Cognitive Brain Data, Security Agents
-94  ■■■■ Codex Core, Doc Index, Plans, CI/CD Agents, Quantum Viz
-93  ■■■■■■ Cognitive Brain, Testing Agents, Config Agents, App Dashboard, Memory, Tests
-92  ■■■■ CI Cache, Doc Agents, Agent Panel, Workflows, Cognitive App Doc
-91  ■■■ Validation Scripts, RAG/ML Agents, Metrics Hook, Architecture, MkDocs
-90  ■■■ CLI, Repository Agents, Configuration, Aspirational (L1)
-89  ■ MCP
-88  ■■ Interpretability, Autonomous Agent
-86  ■ Space Traversal
+97 Evolution Center
+96 Roadmap
+95 RAG Pipeline, Cognitive Core, Cognitive Brain Data, Security Agents
+94 Codex Core, Doc Index, Plans, CI/CD Agents, Quantum Viz
+93 Cognitive Brain, Testing Agents, Config Agents, App Dashboard, Memory, Tests
+92 CI Cache, Doc Agents, Agent Panel, Workflows, Cognitive App Doc
+91 Validation Scripts, RAG/ML Agents, Metrics Hook, Architecture, MkDocs
+90 CLI, Repository Agents, Configuration, Aspirational (L1)
+89 MCP
+88 Interpretability, Autonomous Agent
+86 Space Traversal
 
-Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
+Mean: 92.4/100 | Median: 93/100 | Std Dev: 2.5
 ```
 
 ---
@@ -187,14 +187,14 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 ### Critical Patterns for AI Agents
 
 ```text
-Pattern                          Where                           Why
-─────────────────────────────────────────────────────────────────────────
-device='cpu' initialization      src/codex/rag/*.py              Prevents meta-tensor creation
-Hydra dual-path config          conf/ → configs/ fallback        Backward compatibility
-rfind("-") for cache keys       src/codex/ci/cache_manager.py    Preserves hyphenated components
---check (not --check-only)      scripts/validate_*.py            Correct validation flag
-Pre-commit auto-fix             scripts/ci/auto_fix_common_issues.py  Run before committing
-Windows-safe timestamps         codex.utils.path_utils           No colons in filenames
+Pattern Where Why
+
+device='cpu' initialization src/codex/rag/*.py Prevents meta-tensor creation
+Hydra dual-path config conf/ configs/ fallback Backward compatibility
+rfind("-") for cache keys src/codex/ci/cache_manager.py Preserves hyphenated components
+--check (not --check-only) scripts/validate_*.py Correct validation flag
+Pre-commit auto-fix scripts/ci/auto_fix_common_issues.py Run before committing
+Windows-safe timestamps codex.utils.path_utils No colons in filenames
 ```
 
 ---

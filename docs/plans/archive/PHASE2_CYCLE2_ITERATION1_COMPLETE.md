@@ -53,24 +53,24 @@ PhysicsOrchestrator = PhysicsInspiredOrchestrator
 ```python
 # agents/exceptions.py
 class PhysicsError(AgentError):
-    """Base exception for physics-related errors."""
-    pass
+ """Base exception for physics-related errors."""
+ pass
 
 class ValidationError(AgentValidationError):
-    """Raised when validation fails - alias for backward compatibility."""
-    pass
+ """Raised when validation fails - alias for backward compatibility."""
+ pass
 
 class ConvergenceError(PhysicsError):
-    """Raised when iterative physics calculations fail to converge."""
-    pass
+ """Raised when iterative physics calculations fail to converge."""
+ pass
 
 class InvariantViolationError(PhysicsError):
-    """Raised when physical invariants are violated."""
-    pass
+ """Raised when physical invariants are violated."""
+ pass
 
 class CausalityViolationError(PhysicsError):
-    """Raised when causality constraints are violated (e.g., v > c)."""
-    pass
+ """Raised when causality constraints are violated (e.g., v > c)."""
+ pass
 ```
 
 **Impact:** Tests can now import and use physics-specific exceptions.
@@ -96,22 +96,22 @@ PhysicsIntegration = HybridPhysicsOrchestrator
 # agents/physics_orchestrator.py
 @property
 def num_agents(self) -> int:
-    """Alias for num_particles (backward compatibility)."""
-    return self.num_particles
+ """Alias for num_particles (backward compatibility)."""
+ return self.num_particles
 
 def optimize(self, *args, **kwargs) -> Dict[str, Any]:
-    """Alias for run_optimization (backward compatibility)."""
-    return self.run_optimization(*args, **kwargs)
+ """Alias for run_optimization (backward compatibility)."""
+ return self.run_optimization(*args, **kwargs)
 
 def run_optimization(
-    self,
-    fitness_function: callable = None,
-    objective_function: callable = None,  # Alias
-    bounds: List[Tuple[float, float]] = None,
-    max_iterations: int = 50
+ self,
+ fitness_function: callable = None,
+ objective_function: callable = None, # Alias
+ bounds: List[Tuple[float, float]] = None,
+ max_iterations: int = 50
 ) -> Dict[str, Any]:
-    func = fitness_function or objective_function
-    # ...
+ func = fitness_function or objective_function
+ # ...
 ```
 
 **Impact:** Tests using old API can now call swarm methods successfully.
@@ -124,20 +124,20 @@ def run_optimization(
 ```python
 # HamiltonianEvolver
 def __init__(self, grid_size: int = 100):
-    self.grid_size = grid_size
-    self.trajectory: List[Tuple[float, float]] = []
-    self.hamiltonian_history: List[float] = []
+ self.grid_size = grid_size
+ self.trajectory: List[Tuple[float, float]] = []
+ self.hamiltonian_history: List[float] = []
 
 # QuantumOperator (dataclass)
 @dataclass
 class QuantumOperator:
-    dimension: int = 10
-    grid_size: Optional[int] = None  # Alias
+ dimension: int = 10
+ grid_size: Optional[int] = None # Alias
 
-    def __post_init__(self):
-        if self.grid_size is not None:
-            self.dimension = self.grid_size
-        self._build_operators()
+ def __post_init__(self):
+ if self.grid_size is not None:
+ self.dimension = self.grid_size
+ self._build_operators()
 ```
 
 **Impact:** Tests can instantiate these classes with `grid_size` parameter.
@@ -247,8 +247,8 @@ class QuantumOperator:
 **Pattern:**
 ```python
 def method(new_param=None, old_param=None):
-    value = new_param or old_param
-    # use value
+ value = new_param or old_param
+ # use value
 ```
 
 ### 3. Dataclass Parameters Need Special Handling
@@ -258,12 +258,12 @@ def method(new_param=None, old_param=None):
 ```python
 @dataclass
 class MyClass:
-    primary_param: int = 10
-    alias_param: Optional[int] = None
+ primary_param: int = 10
+ alias_param: Optional[int] = None
 
-    def __post_init__(self):
-        if self.alias_param is not None:
-            self.primary_param = self.alias_param
+ def __post_init__(self):
+ if self.alias_param is not None:
+ self.primary_param = self.alias_param
 ```
 
 ### 4. Skip Decorator Removal Must Be Selective
@@ -289,14 +289,14 @@ class MyClass:
 ### Test Activation Funnel
 ```
 Total Tests: 585
-├─ Passing: 412 (70.4%)
-├─ Skipped: 154 (26.3%)
-└─ Failing: 19 (3.2%)
+ Passing: 412 (70.4%)
+ Skipped: 154 (26.3%)
+ Failing: 19 (3.2%)
 
 Activation Progress:
-├─ Cycle 1: 354 passing, 231 skipped
-└─ Cycle 2 Iteration 1: 412 passing, 154 skipped (+58, -77)
-    └─ Next: ~431 passing, ~135 skipped (+19, -19)
+ Cycle 1: 354 passing, 231 skipped
+ Cycle 2 Iteration 1: 412 passing, 154 skipped (+58, -77)
+ Next: ~431 passing, ~135 skipped (+19, -19)
 ```
 
 ### Velocity Metrics

@@ -33,80 +33,80 @@
 ### Source Code Structure
 ```
 src/codex_ml/
-├── tokenization/
-│   ├── base.py                    # ByteLevelTokenizer (max_length validation)
-│   └── __init__.py
-├── reproducibility/
-│   ├── seed_manager.py            # SeedManager (PYTHONHASHSEED warning)
-│   └── __init__.py
-├── tracking/
-│   ├── writers.py                 # MLflow integration (_flatten_dict escaping)
-│   └── __init__.py
-├── config/
-│   ├── deprecation.py             # Legacy config warnings
-│   └── __init__.py
-└── ...
+ tokenization/
+ base.py # ByteLevelTokenizer (max_length validation)
+ __init__.py
+ reproducibility/
+ seed_manager.py # SeedManager (PYTHONHASHSEED warning)
+ __init__.py
+ tracking/
+ writers.py # MLflow integration (_flatten_dict escaping)
+ __init__.py
+ config/
+ deprecation.py # Legacy config warnings
+ __init__.py
+ ...
 ```
 
 ### Test Structure
 ```
 tests/
-├── tokenization/
-│   └── test_base.py               # Tokenizer validation tests
-├── reproducibility/
-│   └── test_seed_manager.py       # Seed manager tests
-├── tracking/
-│   └── test_enhanced_writers.py   # MLflow writer tests (tmp_path fixture)
-├── config/
-│   └── test_deprecation.py        # Deprecation warning tests
-└── ...
+ tokenization/
+ test_base.py # Tokenizer validation tests
+ reproducibility/
+ test_seed_manager.py # Seed manager tests
+ tracking/
+ test_enhanced_writers.py # MLflow writer tests (tmp_path fixture)
+ config/
+ test_deprecation.py # Deprecation warning tests
+ ...
 ```
 
 ### Audit Pipeline Files
 ```
 .copilot-space/
-└── workflow.yaml                  # Pipeline configuration (v0.2.1)
+ workflow.yaml # Pipeline configuration (v0.2.1)
 
 scripts/space_traversal/
-├── audit_runner.py                # Main orchestrator (S1-S7)
-├── detectors/
-│   ├── ml_serving.py              # ML serving detector
-│   ├── status_reporting.py        # Status reporting detector
-│   ├── archival_bundling.py       # Archival detector
-│   └── ...                        # 36 more detectors
-└── templates/
-    └── audit/
-        └── capability_matrix.md.j2 # Report template
+ audit_runner.py # Main orchestrator (S1-S7)
+ detectors/
+ ml_serving.py # ML serving detector
+ status_reporting.py # Status reporting detector
+ archival_bundling.py # Archival detector
+ ... # 36 more detectors
+ templates/
+ audit/
+ capability_matrix.md.j2 # Report template
 
 audit_artifacts/
-├── context_index.json             # S1 output: file inventory
-├── facets.json                    # S2 output: domain clusters
-├── capabilities_raw.json          # S3 output: detected capabilities
-├── capabilities_scored.json       # S4 output: scored capabilities
-├── gaps.json                      # S5 output: low-maturity items
-└── _scoring_warnings.json         # Validation warnings
+ context_index.json # S1 output: file inventory
+ facets.json # S2 output: domain clusters
+ capabilities_raw.json # S3 output: detected capabilities
+ capabilities_scored.json # S4 output: scored capabilities
+ gaps.json # S5 output: low-maturity items
+ _scoring_warnings.json # Validation warnings
 
 reports/
-├── capability_matrix_<ts>.md      # S6 output: human-readable
-├── capability_matrix_<ts>.json    # S6 output: machine-readable
-└── codex_status_update_<date>.md  # S6 output: daily status
+ capability_matrix_<ts>.md # S6 output: human-readable
+ capability_matrix_<ts>.json # S6 output: machine-readable
+ codex_status_update_<date>.md # S6 output: daily status
 
-audit_run_manifest.json            # S7 output: integrity manifest
+audit_run_manifest.json # S7 output: integrity manifest
 ```
 
 ### Documentation Structure
 ```
 docs/
-├── SPACE_TRAVERSAL_GUIDE.md       # Complete audit pipeline guide
-├── DUPLICATE_DETECTION.md         # Duplicate detection system
-├── QUALITY_GATES.md               # Quality gate documentation
-├── CLI.md                         # CLI usage guide
-├── INFERENCE_SERVING_GUIDE.md     # Inference serving guide
-├── api/                           # API reference (auto-generated)
-├── architecture/                  # Architecture diagrams
-└── diagrams/
-    ├── audit_pipeline_v0.2.1.mmd  # Audit pipeline flowchart
-    └── architecture.mmd           # System architecture
+ SPACE_TRAVERSAL_GUIDE.md # Complete audit pipeline guide
+ DUPLICATE_DETECTION.md # Duplicate detection system
+ QUALITY_GATES.md # Quality gate documentation
+ CLI.md # CLI usage guide
+ INFERENCE_SERVING_GUIDE.md # Inference serving guide
+ api/ # API reference (auto-generated)
+ architecture/ # Architecture diagrams
+ diagrams/
+ audit_pipeline_v0.2.1.mmd # Audit pipeline flowchart
+ architecture.mmd # System architecture
 ```
 
 ## Update Cycles
@@ -141,46 +141,46 @@ docs/
 ### Verification Chain (PR #2449)
 ```
 status_update_2025-12-09.md
-    ├── references → src/codex_ml/tokenization/base.py (lines 62-66)
-    ├── references → src/codex_ml/reproducibility/seed_manager.py (lines 107-115)
-    ├── references → tests/tracking/test_enhanced_writers.py (lines 142-162)
-    └── references → tests/config/test_deprecation.py (multiple test cases)
+ references src/codex_ml/tokenization/base.py (lines 62-66)
+ references src/codex_ml/reproducibility/seed_manager.py (lines 107-115)
+ references tests/tracking/test_enhanced_writers.py (lines 142-162)
+ references tests/config/test_deprecation.py (multiple test cases)
 ```
 
 ### Audit Pipeline Chain
 ```
 .copilot-space/workflow.yaml (config)
-    ↓
+ 
 scripts/space_traversal/audit_runner.py (orchestrator)
-    ↓
+ 
 audit_artifacts/*.json (stage outputs S1-S5)
-    ↓
+ 
 templates/audit/capability_matrix.md.j2 (template)
-    ↓
+ 
 reports/capability_matrix_<ts>.md (rendered report)
-    ↓
+ 
 audit_run_manifest.json (integrity manifest)
 ```
 
 ### Configuration Validation Chain
 ```
 configs/*.yaml (Hydra configs)
-    ↓
+ 
 tools/validate_configs.py (validator)
-    ↓
+ 
 noxfile.py (config_validation session)
-    ↓
+ 
 CI/CD (automated check)
 ```
 
 ### Test Execution Chain
 ```
 pytest.ini (configuration)
-    ↓
+ 
 tests/**/*.py (test suites)
-    ↓
+ 
 noxfile.py (test session)
-    ↓
+ 
 CI/CD (GitHub Actions)
 ```
 
@@ -286,30 +286,30 @@ ls -1 reports/capability_matrix_*.md
 
 ```
 pyproject.toml
-    ├── defines → console_scripts (CLI entry points)
-    ├── defines → dependencies (runtime requirements)
-    └── defines → optional-dependencies (extras)
+ defines console_scripts (CLI entry points)
+ defines dependencies (runtime requirements)
+ defines optional-dependencies (extras)
 
 noxfile.py
-    ├── uses → pyproject.toml (version info)
-    ├── defines → test sessions
-    ├── defines → lint sessions
-    └── defines → build sessions
+ uses pyproject.toml (version info)
+ defines test sessions
+ defines lint sessions
+ defines build sessions
 
 .pre-commit-config.yaml
-    ├── uses → pyproject.toml (hooks config)
-    └── defines → pre-commit hooks
+ uses pyproject.toml (hooks config)
+ defines pre-commit hooks
 
 .copilot-space/workflow.yaml
-    ├── defines → audit weights
-    ├── defines → capability thresholds
-    └── defines → detector overrides
+ defines audit weights
+ defines capability thresholds
+ defines detector overrides
 
 scripts/space_traversal/audit_runner.py
-    ├── reads → .copilot-space/workflow.yaml
-    ├── reads → scripts/space_traversal/detectors/*.py
-    ├── writes → audit_artifacts/*.json
-    └── writes → audit_run_manifest.json
+ reads .copilot-space/workflow.yaml
+ reads scripts/space_traversal/detectors/*.py
+ writes audit_artifacts/*.json
+ writes audit_run_manifest.json
 ```
 
 ## Build Artifacts

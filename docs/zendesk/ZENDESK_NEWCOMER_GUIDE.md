@@ -69,11 +69,11 @@ Instead of making changes in the Zendesk Admin UI:
 ### The Snapshot-Diff-Plan-Apply Cycle
 
 ```text
-Current State (Zendesk) ──┐
-                          │
-                          ├──► Diff ──► Plan ──► Apply ──► New State
-                          │
-Desired State (JSON) ─────┘
+Current State (Zendesk) 
+ 
+ Diff Plan Apply New State
+ 
+Desired State (JSON) 
 ```text
 ### Environments
 
@@ -111,31 +111,31 @@ Every operation generates evidence:
  environment-scoped variables, so set credentials for each environment you
  plan to manage:
 
-   ```bash
-   ZENDESK_DEV_SUBDOMAIN=your-dev-subdomain
-   ZENDESK_DEV_EMAIL=admin@example.com
-   ZENDESK_DEV_TOKEN=your-dev-token
-   ZENDESK_STAGING_SUBDOMAIN=your-staging-subdomain
-   ZENDESK_STAGING_EMAIL=admin@example.com
-   ZENDESK_STAGING_TOKEN=your-staging-token
-   ZENDESK_PROD_SUBDOMAIN=your-prod-subdomain
-   ZENDESK_PROD_EMAIL=admin@example.com
-   ZENDESK_PROD_TOKEN=your-prod-token
+ ```bash
+ ZENDESK_DEV_SUBDOMAIN=your-dev-subdomain
+ ZENDESK_DEV_EMAIL=admin@example.com
+ ZENDESK_DEV_TOKEN=your-dev-token
+ ZENDESK_STAGING_SUBDOMAIN=your-staging-subdomain
+ ZENDESK_STAGING_EMAIL=admin@example.com
+ ZENDESK_STAGING_TOKEN=your-staging-token
+ ZENDESK_PROD_SUBDOMAIN=your-prod-subdomain
+ ZENDESK_PROD_EMAIL=admin@example.com
+ ZENDESK_PROD_TOKEN=your-prod-token
  ```
 
 2. **Verify connectivity**:
-   ```bash
-   codex zendesk snapshot --env=dev --dry-run
+ ```bash
+ codex zendesk snapshot --env=dev --dry-run
  ```
 
 3. **Create directory structure**:
-   ```bash
-   mkdir -p configs/desired/zendesk
-   mkdir -p snapshot/dev
-   mkdir -p snapshot/staging
-   mkdir -p snapshot/prod
-   mkdir -p diffs
-   mkdir -p plans
+ ```bash
+ mkdir -p configs/desired/zendesk
+ mkdir -p snapshot/dev
+ mkdir -p snapshot/staging
+ mkdir -p snapshot/prod
+ mkdir -p diffs
+ mkdir -p plans
  ```
 
 ### First Snapshot
@@ -175,37 +175,37 @@ Create `configs/desired/zendesk/triggers.json`:
 
 ```json
 {
-  "triggers": [
-    {
-      "title": "Auto-assign high priority tickets",
-      "active": true,
-      "position": 1,
-      "conditions": {
-        "all": [
-          {
-            "field": "status",
-            "operator": "is",
-            "value": "new"
-          },
-          {
-            "field": "priority",
-            "operator": "is",
-            "value": "high"
-          }
-        ]
-      },
-      "actions": [
-        {
-          "field": "group_id",
-          "value": "TIER_2_GROUP_ID"
-        },
-        {
-          "field": "status",
-          "value": "open"
-        }
-      ]
-    }
-  ]
+ "triggers": [
+ {
+ "title": "Auto-assign high priority tickets",
+ "active": true,
+ "position": 1,
+ "conditions": {
+ "all": [
+ {
+ "field": "status",
+ "operator": "is",
+ "value": "new"
+ },
+ {
+ "field": "priority",
+ "operator": "is",
+ "value": "high"
+ }
+ ]
+ },
+ "actions": [
+ {
+ "field": "group_id",
+ "value": "TIER_2_GROUP_ID"
+ },
+ {
+ "field": "status",
+ "value": "open"
+ }
+ ]
+ }
+ ]
 }
 ```text
 
@@ -213,9 +213,9 @@ Create `configs/desired/zendesk/triggers.json`:
 
 ```bash
 codex zendesk diff triggers \
-  --desired-file configs/desired/zendesk/triggers.json \
-  --current-file snapshot/dev/latest/triggers.json \
-  --output diffs/triggers_diff.json
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_diff.json
 ```text
 
 Review `diffs/triggers_diff.json` to see what will change.
@@ -224,8 +224,8 @@ Review `diffs/triggers_diff.json` to see what will change.
 
 ```bash
 codex zendesk plan triggers \
-  --diff-file diffs/triggers_diff.json \
-  --output plans/triggers_plan.json
+ --diff-file diffs/triggers_diff.json \
+ --output plans/triggers_plan.json
 ```text
 
 The plan is a validated, executable set of changes.
@@ -235,14 +235,14 @@ The plan is a validated, executable set of changes.
 ```bash
 # Dry run first
 codex zendesk apply triggers \
-  plans/triggers_plan.json \
-  --env=dev \
-  --dry-run
+ plans/triggers_plan.json \
+ --env=dev \
+ --dry-run
 
 # Apply for real
 codex zendesk apply triggers \
-  plans/triggers_plan.json \
-  --env=dev
+ plans/triggers_plan.json \
+ --env=dev
 ```text
 
 ## Step 6: Verify and Monitor
@@ -266,27 +266,27 @@ Use task sequences for repeatable workflows:
 # scripts/task_sequences/update_triggers.yaml
 name: Update Triggers Workflow
 tasks:
-  - name: Snapshot current state
-    command: codex zendesk snapshot --env=dev
+ - name: Snapshot current state
+ command: codex zendesk snapshot --env=dev
 
-  - name: Generate diff
-    command: codex zendesk diff triggers
-      --desired-file configs/desired/zendesk/triggers.json
-      --current-file snapshot/dev/latest/triggers.json
-      --output diffs/triggers_diff.json
+ - name: Generate diff
+ command: codex zendesk diff triggers
+ --desired-file configs/desired/zendesk/triggers.json
+ --current-file snapshot/dev/latest/triggers.json
+ --output diffs/triggers_diff.json
 
-  - name: Create plan
-    command: codex zendesk plan triggers
-      --diff-file diffs/triggers_diff.json
-      --output plans/triggers_plan.json
+ - name: Create plan
+ command: codex zendesk plan triggers
+ --diff-file diffs/triggers_diff.json
+ --output plans/triggers_plan.json
 
-  - name: Apply changes
-    command: codex zendesk apply triggers
-      plans/triggers_plan.json
-      --env=dev
+ - name: Apply changes
+ command: codex zendesk apply triggers
+ plans/triggers_plan.json
+ --env=dev
 
-  - name: Verify
-    command: codex zendesk snapshot --env=dev
+ - name: Verify
+ command: codex zendesk snapshot --env=dev
 ```text
 
 Execute with:
@@ -302,28 +302,28 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
 ```json
 {
-  "title": "Notify on-call for critical issues",
-  "active": true,
-  "conditions": {
-    "all": [
-      {
-        "field": "priority",
-        "operator": "is",
-        "value": "urgent"
-      },
-      {
-        "field": "type",
-        "operator": "is",
-        "value": "incident"
-      }
-    ]
-  },
-  "actions": [
-    {
-      "field": "notification_webhook",
-      "value": ["oncall_webhook_id"]
-    }
-  ]
+ "title": "Notify on-call for critical issues",
+ "active": true,
+ "conditions": {
+ "all": [
+ {
+ "field": "priority",
+ "operator": "is",
+ "value": "urgent"
+ },
+ {
+ "field": "type",
+ "operator": "is",
+ "value": "incident"
+ }
+ ]
+ },
+ "actions": [
+ {
+ "field": "notification_webhook",
+ "value": ["oncall_webhook_id"]
+ }
+ ]
 }
 ```text
 
@@ -333,33 +333,33 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
 ```json
 {
-  "title": "Tier 1 Queue - Unassigned",
-  "active": true,
-  "conditions": {
-    "all": [
-      {
-        "field": "status",
-        "operator": "less_than",
-        "value": "solved"
-      },
-      {
-        "field": "assignee_id",
-        "operator": "is",
-        "value": "null"
-      },
-      {
-        "field": "group_id",
-        "operator": "is",
-        "value": "TIER_1_GROUP_ID"
-      }
-    ],
-    "any": []
-  },
-  "execution": {
-    "group_by": "priority",
-    "sort_by": "created_at",
-    "sort_order": "asc"
-  }
+ "title": "Tier 1 Queue - Unassigned",
+ "active": true,
+ "conditions": {
+ "all": [
+ {
+ "field": "status",
+ "operator": "less_than",
+ "value": "solved"
+ },
+ {
+ "field": "assignee_id",
+ "operator": "is",
+ "value": "null"
+ },
+ {
+ "field": "group_id",
+ "operator": "is",
+ "value": "TIER_1_GROUP_ID"
+ }
+ ],
+ "any": []
+ },
+ "execution": {
+ "group_by": "priority",
+ "sort_by": "created_at",
+ "sort_order": "asc"
+ }
 }
 ```text
 
@@ -369,22 +369,22 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
 ```json
 {
-  "title": "Resolved - Thank you",
-  "active": true,
-  "actions": [
-    {
-      "field": "status",
-      "value": "solved"
-    },
-    {
-      "field": "comment_value",
-      "value": "Thank you for contacting support. This issue has been resolved. Please don't hesitate to reach out if you have any other questions."
-    },
-    {
-      "field": "comment_mode_is_public",
-      "value": true
-    }
-  ]
+ "title": "Resolved - Thank you",
+ "active": true,
+ "actions": [
+ {
+ "field": "status",
+ "value": "solved"
+ },
+ {
+ "field": "comment_value",
+ "value": "Thank you for contacting support. This issue has been resolved. Please don't hesitate to reach out if you have any other questions."
+ },
+ {
+ "field": "comment_mode_is_public",
+ "value": true
+ }
+ ]
 }
 ```text
 
@@ -394,19 +394,19 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
 ```json
 {
-  "type": "tagger",
-  "title": "Product",
-  "description": "Which product is this ticket about?",
-  "custom_field_options": [
-    {"name": "Product A", "value": "product_a"},
-    {"name": "Product B", "value": "product_b"},
-    {"name": "Product C", "value": "product_c"}
-  ],
-  "required_in_portal": false,
-  "visible_in_portal": true,
-  "editable_in_portal": true,
-  "required": false,
-  "tag": "product"
+ "type": "tagger",
+ "title": "Product",
+ "description": "Which product is this ticket about?",
+ "custom_field_options": [
+ {"name": "Product A", "value": "product_a"},
+ {"name": "Product B", "value": "product_b"},
+ {"name": "Product C", "value": "product_c"}
+ ],
+ "required_in_portal": false,
+ "visible_in_portal": true,
+ "editable_in_portal": true,
+ "required": false,
+ "tag": "product"
 }
 ```text
 
@@ -416,15 +416,15 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 
 ```json
 {
-  "name": "PagerDuty Incident Webhook",
-  "endpoint": "https://events.pagerduty.com/v2/enqueue",
-  "http_method": "POST",
-  "request_format": "json",
-  "status": "active",
-  "custom_headers": {
-    "Authorization": "ENV:PAGERDUTY_TOKEN",
-    "Content-Type": "application/json"
-  }
+ "name": "PagerDuty Incident Webhook",
+ "endpoint": "https://events.pagerduty.com/v2/enqueue",
+ "http_method": "POST",
+ "request_format": "json",
+ "status": "active",
+ "custom_headers": {
+ "Authorization": "ENV:PAGERDUTY_TOKEN",
+ "Content-Type": "application/json"
+ }
 }
 ```text
 
@@ -435,119 +435,119 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
 ### Task 1: Add a New Trigger
 
 1. **Get current triggers**:
-   ```bash
-   codex zendesk snapshot --env=dev --objects triggers
+ ```bash
+ codex zendesk snapshot --env=dev --objects triggers
  ```
 
 2. **Edit desired state**:
-   ```bash
-   # Add new trigger to configs/desired/zendesk/triggers.json
+ ```bash
+ # Add new trigger to configs/desired/zendesk/triggers.json
  ```
 
 3. **Preview changes**:
-   ```bash
-   codex zendesk diff triggers \
-     --desired-file configs/desired/zendesk/triggers.json \
-     --current-file snapshot/dev/latest/triggers.json \
-     --output diffs/triggers_diff.json
+ ```bash
+ codex zendesk diff triggers \
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_diff.json
 
-   # Review the diff
-   cat diffs/triggers_diff.json | jq
+ # Review the diff
+ cat diffs/triggers_diff.json | jq
  ```
 
 4. **Apply**:
-   ```bash
-   codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
-   codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ ```bash
+ codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
+ codex zendesk apply triggers plans/triggers_plan.json --env=dev
  ```
 
 ### Task 2: Update Multiple Macros
 
 1. **Snapshot**:
-   ```bash
-   codex zendesk snapshot --env=dev --objects macros
+ ```bash
+ codex zendesk snapshot --env=dev --objects macros
  ```
 
 2. **Bulk edit** `configs/desired/zendesk/macros.json`
 
 3. **Validate syntax**:
-   ```bash
-   cat configs/desired/zendesk/macros.json | jq . > /dev/null
+ ```bash
+ cat configs/desired/zendesk/macros.json | jq . > /dev/null
  ```
 
 4. **Diff and apply**:
-   ```bash
-   codex zendesk diff macros \
-     --desired-file configs/desired/zendesk/macros.json \
-     --current-file snapshot/dev/latest/macros.json \
-     --output diffs/macros_diff.json
+ ```bash
+ codex zendesk diff macros \
+ --desired-file configs/desired/zendesk/macros.json \
+ --current-file snapshot/dev/latest/macros.json \
+ --output diffs/macros_diff.json
 
-   codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
-   codex zendesk apply macros plans/macros_plan.json --env=dev
+ codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
+ codex zendesk apply macros plans/macros_plan.json --env=dev
  ```
 
 ### Task 3: Promote Configuration from Dev to Prod
 
 1. **Test in dev**:
-   ```bash
-   # Apply and verify in dev first
-   codex zendesk apply triggers plans/triggers_plan.json --env=dev
-   codex zendesk metrics
+ ```bash
+ # Apply and verify in dev first
+ codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ codex zendesk metrics
  ```
 
 2. **Snapshot prod**:
-   ```bash
-   codex zendesk snapshot --env=prod
+ ```bash
+ codex zendesk snapshot --env=prod
  ```
 
 3. **Generate prod plan**:
-   ```bash
-   codex zendesk diff triggers \
-     --desired-file configs/desired/zendesk/triggers.json \
-     --current-file snapshot/prod/latest/triggers.json \
-     --output diffs/triggers_prod_diff.json
+ ```bash
+ codex zendesk diff triggers \
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/prod/latest/triggers.json \
+ --output diffs/triggers_prod_diff.json
 
-   codex zendesk plan triggers \
-     --diff-file diffs/triggers_prod_diff.json \
-     --output plans/triggers_prod_plan.json
+ codex zendesk plan triggers \
+ --diff-file diffs/triggers_prod_diff.json \
+ --output plans/triggers_prod_plan.json
  ```
 
 4. **Review and apply to prod**:
-   ```bash
-   # Careful review!
-   cat plans/triggers_prod_plan.json | jq
+ ```bash
+ # Careful review!
+ cat plans/triggers_prod_plan.json | jq
 
-   # Dry run
-   codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod --dry-run
+ # Dry run
+ codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod --dry-run
 
-   # Apply
-   codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod
+ # Apply
+ codex zendesk apply triggers plans/triggers_prod_plan.json --env=prod
  ```
 
 ### Task 4: Rollback Changes
 
 1. **Use previous snapshot**:
-   ```bash
-   # List available snapshots
-   ls -la snapshot/dev/
+ ```bash
+ # List available snapshots
+ ls -la snapshot/dev/
 
-   # Use older snapshot as "desired" state
-   codex zendesk diff triggers \
-     --desired-file snapshot/dev/2024-01-15_10-30-00/triggers.json \
-     --current-file snapshot/dev/latest/triggers.json \
-     --output diffs/rollback_diff.json
+ # Use older snapshot as "desired" state
+ codex zendesk diff triggers \
+ --desired-file snapshot/dev/2024-01-15_10-30-00/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/rollback_diff.json
  ```
 
 2. **Generate rollback plan**:
-   ```bash
-   codex zendesk plan triggers \
-     --diff-file diffs/rollback_diff.json \
-     --output plans/rollback_plan.json
+ ```bash
+ codex zendesk plan triggers \
+ --diff-file diffs/rollback_diff.json \
+ --output plans/rollback_plan.json
  ```
 
 3. **Apply rollback**:
-   ```bash
-   codex zendesk apply triggers plans/rollback_plan.json --env=dev
+ ```bash
+ codex zendesk apply triggers plans/rollback_plan.json --env=dev
  ```
 
 ### Task 5: Bulk Import Macros
@@ -561,30 +561,30 @@ import csv
 
 macros = []
 with open('macros.csv', 'r') as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-        macros.append({
-            "title": row['title'],
-            "active": True,
-            "actions": [
-                {"field": "status", "value": row['status']},
-                {"field": "comment_value", "value": row['comment']}
-            ]
-        })
+ reader = csv.DictReader(f)
+ for row in reader:
+ macros.append({
+ "title": row['title'],
+ "active": True,
+ "actions": [
+ {"field": "status", "value": row['status']},
+ {"field": "comment_value", "value": row['comment']}
+ ]
+ })
 
 with open('configs/desired/zendesk/macros.json', 'w') as f:
-    json.dump({"macros": macros}, f, indent=2)
+ json.dump({"macros": macros}, f, indent=2)
 ```
 
 3. **Apply standard workflow**:
-   ```bash
-   codex zendesk snapshot --env=dev --objects macros
-   codex zendesk diff macros \
-     --desired-file configs/desired/zendesk/macros.json \
-     --current-file snapshot/dev/latest/macros.json \
-     --output diffs/macros_diff.json
-   codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
-   codex zendesk apply macros plans/macros_plan.json --env=dev
+ ```bash
+ codex zendesk snapshot --env=dev --objects macros
+ codex zendesk diff macros \
+ --desired-file configs/desired/zendesk/macros.json \
+ --current-file snapshot/dev/latest/macros.json \
+ --output diffs/macros_diff.json
+ codex zendesk plan macros --diff-file diffs/macros_diff.json --output plans/macros_plan.json
+ codex zendesk apply macros plans/macros_plan.json --env=dev
  ```
 
 ## Monitoring and Metrics
@@ -644,7 +644,7 @@ prometheus_metrics = metrics.export_prometheus()
 **Solution**:
 ```bash
 # Configure rate limiting
-export ZENDESK_RATE_LIMIT_DELAY=1.5  # seconds between requests
+export ZENDESK_RATE_LIMIT_DELAY=1.5 # seconds between requests
 export ZENDESK_MAX_RETRIES=5
 
 # Apply with rate limiting
@@ -662,8 +662,8 @@ jq . configs/desired/zendesk/triggers.json
 
 # Validate against schema (if available)
 python tools/schema_validate.py \
-  --data configs/desired/zendesk/triggers.json \
-  --schema schemas/zendesk_triggers.schema.json
+ --data configs/desired/zendesk/triggers.json \
+ --schema schemas/zendesk_triggers.schema.json
 ```text
 
 ## Issue 3: Missing Group/Schedule IDs
@@ -712,9 +712,9 @@ codex zendesk snapshot --env=dev
 
 # Generate new diff from current state
 codex zendesk diff triggers \
-  --desired-file configs/desired/zendesk/triggers.json \
-  --current-file snapshot/dev/latest/triggers.json \
-  --output diffs/triggers_recovery_diff.json
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_recovery_diff.json
 
 # Apply remaining changes
 codex zendesk plan triggers --diff-file diffs/triggers_recovery_diff.json --output plans/recovery_plan.json
@@ -810,20 +810,20 @@ Build complex workflows with task sequences:
 # scripts/task_sequences/monthly_config_update.yaml
 name: Monthly Configuration Update
 tasks:
-  - name: Snapshot all environments
-    parallel:
-      - codex zendesk snapshot --env=dev
-      - codex zendesk snapshot --env=staging
-      - codex zendesk snapshot --env=prod
+ - name: Snapshot all environments
+ parallel:
+ - codex zendesk snapshot --env=dev
+ - codex zendesk snapshot --env=staging
+ - codex zendesk snapshot --env=prod
 
-  - name: Update triggers
-    sequence:
-      - codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/dev/latest/triggers.json --output diffs/triggers_diff.json
-      - codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
-      - codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ - name: Update triggers
+ sequence:
+ - codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/dev/latest/triggers.json --output diffs/triggers_diff.json
+ - codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
+ - codex zendesk apply triggers plans/triggers_plan.json --env=dev
 
-  - name: Verify changes
-    command: codex zendesk metrics --since today
+ - name: Verify changes
+ command: codex zendesk metrics --since today
 ```text
 
 ## Integration with CI/CD
@@ -834,30 +834,30 @@ While _codex_ is designed for local-first workflows, you can integrate with CI/C
 # .github/workflows/zendesk-deploy.yml (example only, not active)
 name: Deploy Zendesk Config
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'configs/desired/zendesk/**'
+ push:
+ branches: [main]
+ paths:
+ - 'configs/desired/zendesk/**'
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install codex
-        run: pip install -e .
-      - name: Deploy to staging
-        env:
-          ZENDESK_API_TOKEN: ${{ secrets.ZENDESK_STAGING_TOKEN }}
-        run: |
-          codex zendesk snapshot --env=staging
-          codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/staging/latest/triggers.json --output diffs/triggers_diff.json
-          codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
-          codex zendesk apply triggers plans/triggers_plan.json --env=staging
+ deploy:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ - name: Setup Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.10'
+ - name: Install codex
+ run: pip install -e .
+ - name: Deploy to staging
+ env:
+ ZENDESK_API_TOKEN: ${{ secrets.ZENDESK_STAGING_TOKEN }}
+ run: |
+ codex zendesk snapshot --env=staging
+ codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/staging/latest/triggers.json --output diffs/triggers_diff.json
+ codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
+ codex zendesk apply triggers plans/triggers_plan.json --env=staging
 ```text
 
 ## ML-Assisted Configuration
@@ -867,15 +867,15 @@ Optionally use ML to suggest optimizations:
 ```bash
 # Train macro suggestion model
 codex-train \
-  data.train_path=data/zendesk_tickets.jsonl \
-  data.task=macro_suggestion \
-  training.output_dir=artifacts/zendesk_macro_model
+ data.train_path=data/zendesk_tickets.jsonl \
+ data.task=macro_suggestion \
+ training.output_dir=artifacts/zendesk_macro_model
 
 # Generate macro suggestions
 codex-infer \
-  --model artifacts/zendesk_macro_model \
-  --input data/recent_tickets.jsonl \
-  --output suggestions/macros.json
+ --model artifacts/zendesk_macro_model \
+ --input data/recent_tickets.jsonl \
+ --output suggestions/macros.json
 ```text
 
 See [docs/runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md) for ML integration details.
@@ -909,24 +909,24 @@ import json
 from pathlib import Path
 
 def update_all_triggers(desired_file, update_fn):
-    """Apply update function to all triggers."""
-    with open(desired_file) as f:
-        config = json.load(f)
+ """Apply update function to all triggers."""
+ with open(desired_file) as f:
+ config = json.load(f)
 
-    for trigger in config.get('triggers', []):
-        update_fn(trigger)
+ for trigger in config.get('triggers', []):
+ update_fn(trigger)
 
-    with open(desired_file, 'w') as f:
-        json.dump(config, f, indent=2)
+ with open(desired_file, 'w') as f:
+ json.dump(config, f, indent=2)
 
 def add_tag_action(trigger):
-    """Add tag action to all triggers."""
-    if 'actions' not in trigger:
-        trigger['actions'] = []
-    trigger['actions'].append({
-        'field': 'current_tags',
-        'value': 'automated_trigger'
-    })
+ """Add tag action to all triggers."""
+ if 'actions' not in trigger:
+ trigger['actions'] = []
+ trigger['actions'].append({
+ 'field': 'current_tags',
+ 'value': 'automated_trigger'
+ })
 
 update_all_triggers('configs/desired/zendesk/triggers.json', add_tag_action)
 ```text

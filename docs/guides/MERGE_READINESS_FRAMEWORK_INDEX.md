@@ -37,13 +37,13 @@ from scripts.ci.pr_description_helper import build_pr_description_with_wec
 progress_checklist = "## Progress\n- [x] Phase 1 complete"
 example_pr_number = 4662
 pr_description = build_pr_description_with_wec(
-    checklist_text=progress_checklist,
-    pr_number=example_pr_number,
-    repo_owner="Aries-Serpent",
-    repo_name="_codex_",
-    session_id="S_12345",
-    turn_number=1,
-    merge_readiness_score=85,
+ checklist_text=progress_checklist,
+ pr_number=example_pr_number,
+ repo_owner="Aries-Serpent",
+ repo_name="_codex_",
+ session_id="S_12345",
+ turn_number=1,
+ merge_readiness_score=85,
 )
 
 print(pr_description)
@@ -54,15 +54,15 @@ print(pr_description)
 from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 pr_description = build_pr_description_with_wec(
-    checklist_text=progress_checklist,
-    pr_number=4662,
-    session_id="S_12345",
-    merge_readiness_score=85
+ checklist_text=progress_checklist,
+ pr_number=4662,
+ session_id="S_12345",
+ merge_readiness_score=85
 )
 
 engine_tools_report_progress(
-    prDescription=pr_description,
-    commitMessage="Progress update"
+ prDescription=pr_description,
+ commitMessage="Progress update"
 )
 ```
 
@@ -77,30 +77,30 @@ engine_tools_report_progress(
 **Structure:**
 ```json
 {
-  "session_metadata": {
-    "session_id": null,
-    "created_at": null,
-    "updated_at": null,
-    "pr_number": null,
-    "branch": null
-  },
-  "body_hash_baseline": null,
-  "body_hash_current": null,
-  "last_maintainer_selections": {
-    "pre-merge-validation.yml": true,
-    "comment-review-gate.yml": true,
-    ...
-  },
-  "wec_state_history": [
-    {
-      "timestamp": "2026-06-25T15:50:00Z",
-      "source": "report_progress",
-      "wec_state": {...},
-      "body_hash": "sha256hash...",
-      "merge_readiness_score": 85
-    }
-  ],
-  "merge_readiness_scores": [...]
+ "session_metadata": {
+ "session_id": null,
+ "created_at": null,
+ "updated_at": null,
+ "pr_number": null,
+ "branch": null
+ },
+ "body_hash_baseline": null,
+ "body_hash_current": null,
+ "last_maintainer_selections": {
+ "pre-merge-validation.yml": true,
+ "comment-review-gate.yml": true,
+ ...
+ },
+ "wec_state_history": [
+ {
+ "timestamp": "2026-06-25T15:50:00Z",
+ "source": "report_progress",
+ "wec_state": {...},
+ "body_hash": "sha256hash...",
+ "merge_readiness_score": 85
+ }
+ ],
+ "merge_readiness_scores": [...]
 }
 ```
 
@@ -205,41 +205,41 @@ Turn 3 (Gates 3–10): Security checks, final verification Score: 100/100
 ## Integration Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│        PR Merge Readiness Framework (v0.2.1)               │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                ┌─────────────┼─────────────┐
-                │             │             │
-        ┌──────▼─────────┐   │       ┌─────▼──────────┐
-        │  Phase 1: Body ◄───┼───────►Agent            │
-        │ Preparation    │   │       │Integration     │
-        │                │   │       │Guide           │
-        └────────────────┘   │       └────────────────┘
-                             │
-        ┌──────────────────┐ │ ┌──────────────────────┐
-        │  Phase 2:        ◄─┼─►  pr_description_    │
-        │  10-Gate Model   │ │    helper.py          │
-        │  (Validation)    │ │                       │
-        └──────────────────┘ │ └──────────────────────┘
-                             │
-        ┌──────────────────┐ │ ┌──────────────────────┐
-        │  Phase 3:        ◄─┼─►  .codex/             │
-        │  WEC Management  │ │    wec_state.json     │
-        │  Protocol        │ │    (State Tracking)   │
-        └──────────────────┘ │ └──────────────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │   Validation    │
-                    │   Checklist     │
-                    └─────────────────┘
+
+ PR Merge Readiness Framework (v0.2.1) 
+
+ 
+ 
+ 
+ 
+ Phase 1: Body Agent 
+ Preparation Integration 
+ Guide 
+ 
+ 
+ 
+ Phase 2: pr_description_ 
+ 10-Gate Model helper.py 
+ (Validation) 
+ 
+ 
+ 
+ Phase 3: .codex/ 
+ WEC Management wec_state.json 
+ Protocol (State Tracking) 
+ 
+ 
+ 
+ Validation 
+ Checklist 
+ 
 
 External Integration Points:
-├─ session_wrapup_autofix.py  (WEC parsing + building)
-├─ pre-merge-validation.yml   (CI gate execution)
-├─ workflow-execution-gate.yml (WEC change detection)
-├─ AAIS_V4_FRAMEWORK.md       (Scoring reference)
-└─ WEC_PR_BODY_CONFLICTS.md   (WEC preservation rules)
+ session_wrapup_autofix.py (WEC parsing + building)
+ pre-merge-validation.yml (CI gate execution)
+ workflow-execution-gate.yml (WEC change detection)
+ AAIS_V4_FRAMEWORK.md (Scoring reference)
+ WEC_PR_BODY_CONFLICTS.md (WEC preservation rules)
 ```
 
 ---
@@ -256,24 +256,24 @@ from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 ```python
 # Create progress checklist
-progress = """##  Session Progress
+progress = """## Session Progress
 - [x] Phase 1 complete
 - [x] Phase 2 in progress
 - [ ] Phase 3 pending"""
 
 # Build PR description WITH preserved WEC
 pr_description = build_pr_description_with_wec(
-    checklist_text=progress,
-    pr_number=PR_NUMBER,
-    session_id=SESSION_ID,
-    turn_number=TURN,
-    merge_readiness_score=SCORE
+ checklist_text=progress,
+ pr_number=PR_NUMBER,
+ session_id=SESSION_ID,
+ turn_number=TURN,
+ merge_readiness_score=SCORE
 )
 
 # Push to PR
 engine_tools_report_progress(
-    prDescription=pr_description,
-    commitMessage="Session update"
+ prDescription=pr_description,
+ commitMessage="Session update"
 )
 ```
 

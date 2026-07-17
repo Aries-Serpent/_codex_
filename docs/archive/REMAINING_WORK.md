@@ -41,7 +41,7 @@ All P1 bugs fixed and all components from Iterations 1-3 implemented. This docum
 **Action Items:**
 ```bash
 # Generate coverage report
-nox -s tests  # Runs pytest with coverage
+nox -s tests # Runs pytest with coverage
 # Or manually:
 pytest --cov=src/codex_ml --cov=src/codex --cov-report=xml --cov-report=html --cov-report=term-missing
 
@@ -99,8 +99,8 @@ nox -s validate-configs
 
 # Or manually:
 python tools/validate_experiments.py \
-  --schema configs/schemas/experiments.schema.json \
-  --paths configs/experiments/
+ --schema configs/schemas/experiments.schema.json \
+ --paths configs/experiments/
 
 # Verify validation passes
 # Check that schema files are excluded
@@ -208,12 +208,12 @@ mypy src/
 **Required Artifacts:**
 ```text
 artifacts/
-├── coverage.xml              # From pytest-cov
-├── htmlcov/                  # Coverage HTML report
-├── security_report.json      # From nox -s security
-├── validation_logs.txt       # From nox -s validate-configs
-├── env_snapshot.json         # Environment details
-└── docs/                     # API docs (if SKIP_OPTIONAL=1)
+ coverage.xml # From pytest-cov
+ htmlcov/ # Coverage HTML report
+ security_report.json # From nox -s security
+ validation_logs.txt # From nox -s validate-configs
+ env_snapshot.json # Environment details
+ docs/ # API docs (if SKIP_OPTIONAL=1)
 ```text
 
 **Acceptance:**

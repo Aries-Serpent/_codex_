@@ -76,22 +76,22 @@ The Codex platform is organized into the following architectural layers, each wi
 ### 5-Layer Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│  CLI / Apps Layer                       │ ← User Interface (CLI, Web, Desktop)
-│  (cli/, apps/)                          │
-├─────────────────────────────────────────┤
-│  Services Layer                         │ ← APIs, Backend Services
-│  (src/services/)                        │
-├─────────────────────────────────────────┤
-│  ML Core Layer                          │ ← Models, ML Infrastructure
-│  (src/codex_ml/)                        │
-├─────────────────────────────────────────┤
-│  Training Layer                         │ ← Training Pipelines
-│  (training/, src/training/)             │
-├─────────────────────────────────────────┤
-│  Domain Layer                           │ ← Core Business Logic
-│  (src/codex/)                           │
-└─────────────────────────────────────────┘
+
+ CLI / Apps Layer User Interface (CLI, Web, Desktop)
+ (cli/, apps/) 
+
+ Services Layer APIs, Backend Services
+ (src/services/) 
+
+ ML Core Layer Models, ML Infrastructure
+ (src/codex_ml/) 
+
+ Training Layer Training Pipelines
+ (training/, src/training/) 
+
+ Domain Layer Core Business Logic
+ (src/codex/) 
+
 ```
 
 ### Component Relationships
@@ -99,46 +99,46 @@ The Codex platform is organized into the following architectural layers, each wi
 ```mermaid
 flowchart TB
 
-    subgraph Users["👥 Users"]
-        Dev[Developers]
-        Agent[AI Agents]
-        CI[CI/CD Systems]
-    end
+ subgraph Users[" Users"]
+ Dev[Developers]
+ Agent[AI Agents]
+ CI[CI/CD Systems]
+ end
 
-    subgraph Core["🔷 Codex Core"]
-        CLI[CLI Interface]
-        Logging[Session Logger]
-        Config[Configuration]
-        State[State Management]
-    end
+ subgraph Core[" Codex Core"]
+ CLI[CLI Interface]
+ Logging[Session Logger]
+ Config[Configuration]
+ State[State Management]
+ end
 
-    subgraph Services[" Services Layer"]
-        API[REST APIs]
-        Auth[Authentication]
-        Validation[Input Validation]
-    end
+ subgraph Services[" Services Layer"]
+ API[REST APIs]
+ Auth[Authentication]
+ Validation[Input Validation]
+ end
 
-    subgraph ML[" ML Core"]
-        Models[Pre-trained Models]
-        Inference[Inference Engine]
-        Embeddings[Embeddings]
-    end
+ subgraph ML[" ML Core"]
+ Models[Pre-trained Models]
+ Inference[Inference Engine]
+ Embeddings[Embeddings]
+ end
 
-    subgraph Training[" Training"]
-        DataLoader[Data Loading]
-        Pipeline[Training Pipeline]
-        Eval[Evaluation]
-    end
+ subgraph Training[" Training"]
+ DataLoader[Data Loading]
+ Pipeline[Training Pipeline]
+ Eval[Evaluation]
+ end
 
-    Users -->|interact| Core
+ Users -->|interact| Core
 
-    Core -->|call| Services
+ Core -->|call| Services
 
-    Services -->|use| ML
+ Services -->|use| ML
 
-    ML -->|train| Training
+ ML -->|train| Training
 
-    Training -->|validate| Eval
+ Training -->|validate| Eval
 ```
 
 ---
@@ -158,17 +158,17 @@ flowchart TB
 
 ```
 Repository Root
-├── pyproject.toml (Project metadata)
-├── .codex/ (Codex-specific configuration)
-│   ├── agent_context.json
-│   ├── DOMAIN_OWNERSHIP.md
-│   └── CODEBASE_AGENCY_POLICY.md
-├── .github/agents/ (Agent definitions)
-│   ├── AGENT_REGISTRY.yaml
-│   └── agent-configs/
-└── config/ (App configuration)
-    ├── hydra/
-    └── app_config.yaml
+ pyproject.toml (Project metadata)
+ .codex/ (Codex-specific configuration)
+ agent_context.json
+ DOMAIN_OWNERSHIP.md
+ CODEBASE_AGENCY_POLICY.md
+ .github/agents/ (Agent definitions)
+ AGENT_REGISTRY.yaml
+ agent-configs/
+ config/ (App configuration)
+ hydra/
+ app_config.yaml
 ```
 
 ---
@@ -181,44 +181,44 @@ Repository Root
 
 ```
 Developer Machine
-├── Python 3.11+ Virtual Environment
-├── Source Code (git clone)
-├── Local Database (SQLite)
-└── Model Cache (disk storage)
+ Python 3.11+ Virtual Environment
+ Source Code (git clone)
+ Local Database (SQLite)
+ Model Cache (disk storage)
 ```
 
 #### Docker
 
 ```
 Docker Image
-├── Python 3.11+ Base Image
-├── Source Code (COPY)
-├── Dependencies (pip install)
-├── Model Cache (volume mount)
-└── Entrypoint (CLI/App)
+ Python 3.11+ Base Image
+ Source Code (COPY)
+ Dependencies (pip install)
+ Model Cache (volume mount)
+ Entrypoint (CLI/App)
 ```
 
 #### Kubernetes
 
 ```
 K8s Cluster
-├── Deployment (App Pods)
-├── Service (Load Balancing)
-├── ConfigMap (Configuration)
-├── Secret (Credentials)
-├── PVC (Model Storage)
-└── HPA (Auto-scaling)
+ Deployment (App Pods)
+ Service (Load Balancing)
+ ConfigMap (Configuration)
+ Secret (Credentials)
+ PVC (Model Storage)
+ HPA (Auto-scaling)
 ```
 
 #### Cloud Deployment
 
 ```
 Cloud Platform (AWS/GCP/Azure)
-├── Managed Container Service
-├── Database Service (RDS/Cloud SQL)
-├── Object Storage (S3/GCS/Blob)
-├── Secrets Manager
-└── Monitoring Service
+ Managed Container Service
+ Database Service (RDS/Cloud SQL)
+ Object Storage (S3/GCS/Blob)
+ Secrets Manager
+ Monitoring Service
 ```
 
 ---
@@ -254,18 +254,18 @@ Cloud Platform (AWS/GCP/Azure)
 
 ```
 Application
-├── Business Metrics
-│   ├── User signups
-│   ├── Model accuracy
-│   └── API response times
-├── System Metrics
-│   ├── CPU usage
-│   ├── Memory usage
-│   └── Disk I/O
-└── Application Metrics
-    ├── Error rates
-    ├── Latency distribution
-    └── Cache hit rates
+ Business Metrics
+ User signups
+ Model accuracy
+ API response times
+ System Metrics
+ CPU usage
+ Memory usage
+ Disk I/O
+ Application Metrics
+ Error rates
+ Latency distribution
+ Cache hit rates
 ```
 
 ### Observability Stack
@@ -290,16 +290,16 @@ Application
 
 ```
  FORBIDDEN:
-  - src/codex/ → src/codex_ml/ or training/
-  - src/codex_ml/ → training/
-  - src/services/ → cli/ or apps/
-  - tests/ → src/codex/ (circular imports)
+ - src/codex/ src/codex_ml/ or training/
+ - src/codex_ml/ training/
+ - src/services/ cli/ or apps/
+ - tests/ src/codex/ (circular imports)
 
  ALLOWED:
-  - CLI/Apps → All layers (top-level access)
-  - Services → ML Core, Domain, stdlib
-  - ML Core → Domain, stdlib, third-party
-  - Domain → stdlib, third-party only
+ - CLI/Apps All layers (top-level access)
+ - Services ML Core, Domain, stdlib
+ - ML Core Domain, stdlib, third-party
+ - Domain stdlib, third-party only
 ```
 
 ### Enforcement Mechanism
@@ -319,24 +319,24 @@ Ownership map tracked in `.codex/DOMAIN_OWNERSHIP.md`:
 
 ```
 Domain 1 (D1): Architecture & Layer Boundaries
-  ├── Owner: code-analysis-agent
-  ├── Reference: docs/architecture/ARCHITECTURE_LAYERS.md
-  └── Enforcement: import-linter.yml
+ Owner: code-analysis-agent
+ Reference: docs/architecture/ARCHITECTURE_LAYERS.md
+ Enforcement: import-linter.yml
 
 Domain 2 (D2): Security & Compliance
-  ├── Owner: security-review-agent
-  ├── Reference: docs/security/SECURITY_ARCHITECTURE.md
-  └── Enforcement: GitHub Advanced Security
+ Owner: security-review-agent
+ Reference: docs/security/SECURITY_ARCHITECTURE.md
+ Enforcement: GitHub Advanced Security
 
 Domain 3 (D3): Testing & Quality
-  ├── Owner: ci-testing-agent
-  ├── Reference: docs/testing/
-  └── Enforcement: pytest + coverage gates
+ Owner: ci-testing-agent
+ Reference: docs/testing/
+ Enforcement: pytest + coverage gates
 
 Domain 4 (D4): Agent & Orchestration
-  ├── Owner: orchestrator-agent
-  ├── Reference: agents/AGENT_CONSOLIDATION_MATRIX.md
-  └── Enforcement: agent registry validation
+ Owner: orchestrator-agent
+ Reference: agents/AGENT_CONSOLIDATION_MATRIX.md
+ Enforcement: agent registry validation
 ```
 
 ### Policy Framework

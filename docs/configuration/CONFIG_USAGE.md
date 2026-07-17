@@ -22,7 +22,7 @@ from codex.utils.config_loader import load_config
 cfg = load_config("base", config_dir="conf/model")
 
 # Access config values
-print(cfg.model.name)  # or cfg["model"]["name"]
+print(cfg.model.name) # or cfg["model"]["name"]
 ```
 
 ## With Overrides
@@ -30,13 +30,13 @@ print(cfg.model.name)  # or cfg["model"]["name"]
 ```python
 # Override specific values
 cfg = load_config(
-    "base",
-    config_dir="conf/training",
-    overrides=[
-        "training.epochs=10",
-        "training.device=cuda",
-        "training.batch_size=16"
-    ]
+ "base",
+ config_dir="conf/training",
+ overrides=[
+ "training.epochs=10",
+ "training.device=cuda",
+ "training.batch_size=16"
+ ]
 )
 ```
 
@@ -48,23 +48,23 @@ cfg = load_config(
 
 ```
 conf/
-├── errors/           # Error definitions
-│   └── defaults.yaml
-├── model/            # Model configurations
-│   ├── base.yaml
-│   ├── toy.yaml
-│   └── offline/
-├── training/         # Training configurations
-│   ├── base.yaml
-│   ├── continual/
-│   └── offline/
-├── evaluation/       # Evaluation configurations
-│   ├── base.yaml
-│   └── reasoning/
-└── data/             # Data configurations
-    ├── base.yaml
-    ├── tiny.yaml
-    └── offline/
+ errors/ # Error definitions
+ defaults.yaml
+ model/ # Model configurations
+ base.yaml
+ toy.yaml
+ offline/
+ training/ # Training configurations
+ base.yaml
+ continual/
+ offline/
+ evaluation/ # Evaluation configurations
+ base.yaml
+ reasoning/
+ data/ # Data configurations
+ base.yaml
+ tiny.yaml
+ offline/
 ```
 
 ---
@@ -87,8 +87,8 @@ cfg = load_config("legacy_config", config_dir="conf/model", allow_fallback=True)
 ```yaml
 # conf/training/base.yaml
 training:
-  epochs: 10
-  max_epochs: ${training.epochs}  # Reference same value
+ epochs: 10
+ max_epochs: ${training.epochs} # Reference same value
 
 # Backward compatibility
 epochs: ${training.epochs}
@@ -101,13 +101,13 @@ epochs: ${training.epochs}
 ```yaml
 # conf/experiment/my_experiment.yaml
 defaults:
-  - /model: base
-  - /training: base
-  - /data: tiny
+ - /model: base
+ - /training: base
+ - /data: tiny
 
 # Override specific values
 training:
-  epochs: 20
+ epochs: 20
 ```
 
 **Use Case:** Compose experiments from reusable components
@@ -120,11 +120,11 @@ from codex.utils.config_loader import get_loader, MissingConfigException
 loader = get_loader()
 
 try:
-    cfg = loader.load_config("nonexistent", allow_fallback=False)
+ cfg = loader.load_config("nonexistent", allow_fallback=False)
 except MissingConfigException as e:
-    # Get structured error
-    error = loader.get_error("config_errors", "missing_config")
-    print(error.format(file=e.missing_cfg_file))
+ # Get structured error
+ error = loader.get_error("config_errors", "missing_config")
+ print(error.format(file=e.missing_cfg_file))
 ```
 
 **Use Case:** Graceful error handling with structured messages
@@ -149,13 +149,13 @@ data_cfg = load_config("tiny", config_dir="conf/data")
 
 # Override for specific run
 train_cfg = load_config(
-    "base",
-    config_dir="conf/training",
-    overrides=[
-        f"training.output_dir=runs/experiment_{run_id}",
-        "training.epochs=50",
-        "training.device=cuda"
-    ]
+ "base",
+ config_dir="conf/training",
+ overrides=[
+ f"training.output_dir=runs/experiment_{run_id}",
+ "training.epochs=50",
+ "training.device=cuda"
+ ]
 )
 ```
 
@@ -172,9 +172,9 @@ reasoning_cfg = load_config("base", config_dir="conf/evaluation/reasoning")
 
 # Override metrics
 eval_cfg = load_config(
-    "base",
-    config_dir="conf/evaluation",
-    overrides=["metrics.use_weighted_accuracy=true"]
+ "base",
+ config_dir="conf/evaluation",
+ overrides=["metrics.use_weighted_accuracy=true"]
 )
 ```
 
@@ -200,9 +200,9 @@ print(exp_cfg.data.train_path)
 
 ```python
 overrides = [
-    "key=value",
-    "nested.key=value",
-    "training.epochs=10"
+ "key=value",
+ "nested.key=value",
+ "training.epochs=10"
 ]
 ```
 
@@ -210,10 +210,10 @@ overrides = [
 
 ```python
 overrides = [
-    "list_key=[1,2,3]",
-    "dict_key={a: 1, b: 2}",
-    "bool_key=true",
-    "float_key=0.001"
+ "list_key=[1,2,3]",
+ "dict_key={a: 1, b: 2}",
+ "bool_key=true",
+ "float_key=0.001"
 ]
 ```
 
@@ -221,8 +221,8 @@ overrides = [
 
 ```python
 overrides = [
-    "training.output_dir=runs/${model.name}",
-    "training.checkpoint_dir=${training.output_dir}/checkpoints"
+ "training.output_dir=runs/${model.name}",
+ "training.checkpoint_dir=${training.output_dir}/checkpoints"
 ]
 ```
 
@@ -239,17 +239,17 @@ cfg = load_config("base", config_dir="conf/model")
 ```
 
 2. **Leverage Hydra interpolation for DRY**
-   ```yaml
-   training:
-     epochs: 10
-     max_epochs: ${training.epochs}
+ ```yaml
+ training:
+ epochs: 10
+ max_epochs: ${training.epochs}
  ```
 
 3. **Organize configs by logical groups**
-   ```
-   conf/model/     # Model-specific
-   conf/training/  # Training-specific
-   conf/data/      # Data-specific
+ ```
+ conf/model/ # Model-specific
+ conf/training/ # Training-specific
+ conf/data/ # Data-specific
  ```
 
 4. **Use overrides for run-specific changes**
@@ -260,9 +260,9 @@ cfg = load_config("base", overrides=["training.seed=42"])
 5. **Handle errors gracefully**
 ```text
 try:
-    cfg = load_config("config", allow_fallback=False)
+ cfg = load_config("config", allow_fallback=False)
 except MissingConfigException:
-    # Handle missing config
+ # Handle missing config
 ```
 
 ### DON'T
@@ -271,35 +271,35 @@ except MissingConfigException:
 ```python
 # Bad
 with open("configs/training/base.yaml") as f:
-    cfg = yaml.safe_load(f)
+ cfg = yaml.safe_load(f)
 
 # Good
 cfg = load_config("base", config_dir="conf/training")
 ```
 
 2. **Don't duplicate config values**
-   ```yaml
-   # Bad
-   training:
-     epochs: 10
-   max_epochs: 10  # Duplication!
+ ```yaml
+ # Bad
+ training:
+ epochs: 10
+ max_epochs: 10 # Duplication!
 
-   # Good
-   training:
-     epochs: 10
-   max_epochs: ${training.epochs}
+ # Good
+ training:
+ epochs: 10
+ max_epochs: ${training.epochs}
  ```
 
 3. **Don't skip error handling**
 ```python
 # Bad
-cfg = load_config("config")  # May fail silently
+cfg = load_config("config") # May fail silently
 
 # Good
 try:
-    cfg = load_config("config", allow_fallback=False)
+ cfg = load_config("config", allow_fallback=False)
 except MissingConfigException as e:
-    logger.error(f"Config not found: {e.missing_cfg_file}")
+ logger.error(f"Config not found: {e.missing_cfg_file}")
 ```
 
 ---
@@ -312,7 +312,7 @@ except MissingConfigException as e:
 import yaml
 
 with open("configs/training/base.yaml") as f:
-    config = yaml.safe_load(f)
+ config = yaml.safe_load(f)
 
 epochs = config["training"]["epochs"]
 ```
@@ -356,9 +356,9 @@ loader = ConfigLoader()
 # Build overrides dynamically
 overrides = []
 if use_gpu:
-    overrides.append("training.device=cuda")
+ overrides.append("training.device=cuda")
 if debug_mode:
-    overrides.append("training.epochs=1")
+ overrides.append("training.epochs=1")
 
 cfg = loader.load_config("base", config_dir="conf/training", overrides=overrides)
 ```
@@ -373,9 +373,9 @@ loader = get_loader()
 # Get specific error definition
 error = loader.get_error("config_errors", "missing_config")
 if error:
-    print(f"Code: {error.code}")
-    print(f"Message: {error.message}")
-    print(f"Resolution: {error.resolution}")
+ print(f"Code: {error.code}")
+ print(f"Message: {error.message}")
+ print(f"Resolution: {error.resolution}")
 ```
 
 ---
@@ -389,33 +389,33 @@ import pytest
 from codex.utils.config_loader import load_config
 
 def test_training_config():
-    cfg = load_config("base", config_dir="conf/training")
+ cfg = load_config("base", config_dir="conf/training")
 
-    assert cfg is not None
-    assert "training" in cfg
-    assert cfg.training.epochs > 0
+ assert cfg is not None
+ assert "training" in cfg
+ assert cfg.training.epochs > 0
 
 def test_config_overrides():
-    cfg = load_config(
-        "base",
-        config_dir="conf/training",
-        overrides=["training.epochs=5"]
-    )
+ cfg = load_config(
+ "base",
+ config_dir="conf/training",
+ overrides=["training.epochs=5"]
+ )
 
-    assert cfg.training.epochs == 5
+ assert cfg.training.epochs == 5
 ```
 
 ### In Integration Tests
 
 ```python
 def test_training_pipeline_with_config():
-    cfg = load_config("base", config_dir="conf/training")
+ cfg = load_config("base", config_dir="conf/training")
 
-    # Use config in training
-    trainer = Trainer(config=cfg)
-    results = trainer.train()
+ # Use config in training
+ trainer = Trainer(config=cfg)
+ results = trainer.train()
 
-    assert results.epochs_completed == cfg.training.epochs
+ assert results.epochs_completed == cfg.training.epochs
 ```
 
 ---

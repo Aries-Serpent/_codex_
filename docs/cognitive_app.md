@@ -73,12 +73,12 @@ The application is designed to connect to a FastAPI backend:
 
 ```
 services/api/
-├── main.py # FastAPI app
-├── cognitive_api.py # Quantum decision endpoints
-├── agents_api.py # Agent orchestration
-├── memory_api.py # Memory management
-├── code_api.py # Code analysis
-└── websocket_manager.py # Real-time updates
+ main.py # FastAPI app
+ cognitive_api.py # Quantum decision endpoints
+ agents_api.py # Agent orchestration
+ memory_api.py # Memory management
+ code_api.py # Code analysis
+ websocket_manager.py # Real-time updates
 ```
 
 **Current Status:** Frontend uses mock API client for development. Backend implementation pending.

@@ -76,23 +76,23 @@
 
 ```
 docs/plans/
-├── README.md                                    # This file
-├── archive/                                     # Completed plans (33 files)
-│   ├── PHASE*_COMPLETE*.md                     # Completed phase reports
-│   └── ...
-├── [Active Plans]                              # Current initiatives
-├── COVERAGE_IMPROVEMENT_ROADMAP.md
-├── MSP_Audit_Gap_Remediation_Plan_of_Action.md
-├── COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md
-├── COPILOT_SESSION_HANDOFF_DESIGN.md
-├── copilot-workflow-agent/                     # Copilot workflow agent
-│   ├── README.md
-│   ├── 00-PLANSET.md
-│   ├── 01-BATCHSET.md
-│   ├── 02-PATCHSET.md
-│   ├── 08-CHECKPOINTS.md
-│   └── 09-CONTINUATION-PROMPTS.md
-└── [other plans]
+ README.md # This file
+ archive/ # Completed plans (33 files)
+ PHASE*_COMPLETE*.md # Completed phase reports
+ ...
+ [Active Plans] # Current initiatives
+ COVERAGE_IMPROVEMENT_ROADMAP.md
+ MSP_Audit_Gap_Remediation_Plan_of_Action.md
+ COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md
+ COPILOT_SESSION_HANDOFF_DESIGN.md
+ copilot-workflow-agent/ # Copilot workflow agent
+ README.md
+ 00-PLANSET.md
+ 01-BATCHSET.md
+ 02-PATCHSET.md
+ 08-CHECKPOINTS.md
+ 09-CONTINUATION-PROMPTS.md
+ [other plans]
 ```
 
 ---
@@ -213,9 +213,9 @@ Example: Link to `./plans/archive/PHASE_1_PLAN.md`
 ## Plan Lifecycle
 
 ```
-Create → Active → In Progress → Complete → Archive
-         ↑                           ↑
-         └──── Review & Update ─────┘
+Create Active In Progress Complete Archive
+ 
+ Review & Update 
 ```
 
 1. **Create**: New plan identified

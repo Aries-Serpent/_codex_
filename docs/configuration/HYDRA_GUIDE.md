@@ -17,45 +17,45 @@ Document deterministic, offline-friendly configuration practices compatible with
 ## Directory Layout (Suggested)
 ```text
 configs/
-├── base.yaml
-├── experiment.yaml
-└── env/
-    ├── dev.yaml
-    └── prod.yaml
+ base.yaml
+ experiment.yaml
+ env/
+ dev.yaml
+ prod.yaml
 ```text
 
 ## Base Config Example
 ```yaml
 # configs/base/base.yaml
 trainer:
-  seed: 123
-  batch_size: 32
-  deterministic: true
+ seed: 123
+ batch_size: 32
+ deterministic: true
 
 logging:
-  level: INFO
-  format: ndjson
+ level: INFO
+ format: ndjson
 
 paths:
-  data_dir: data/
-  artifacts_dir: artifacts/
+ data_dir: data/
+ artifacts_dir: artifacts/
 ```text
 
 ## Experiment Overrides
 ```yaml
 # configs/experimental/experiment.yaml
 trainer:
-  batch_size: 64
+ batch_size: 64
 
 logging:
-  level: DEBUG
+ level: DEBUG
 ```text
 
 ## Environment Overrides (Optional)
 ```yaml
 # configs/base/environment/dev.yaml
 paths:
-  data_dir: data/dev/
+ data_dir: data/dev/
 ```text
 
 ## Composition Order
@@ -98,16 +98,16 @@ from pathlib import Path
 import yaml
 
 def load_yaml(p: Path) -> dict:
-    return yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else {}
+ return yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 def merge(a: dict, b: dict) -> dict:
-    out = dict(a)
-    for k, v in b.items():
-        if isinstance(v, dict) and isinstance(out.get(k), dict):
-            out[k] = merge(out[k], v)
-        else:
-            out[k] = v
-    return out
+ out = dict(a)
+ for k, v in b.items():
+ if isinstance(v, dict) and isinstance(out.get(k), dict):
+ out[k] = merge(out[k], v)
+ else:
+ out[k] = v
+ return out
 
 base = load_yaml(Path("configs/base/base.yaml"))
 env_cfg = load_yaml(Path("configs/base/environment/dev.yaml"))
@@ -157,11 +157,11 @@ python train.py
 import os
 
 def apply_env_overrides(cfg: dict) -> dict:
-    new = dict(cfg)
-    if "TRAINER_SEED" in os.environ:
-        new.setdefault("trainer", {})
-        new["trainer"]["seed"] = int(os.environ["TRAINER_SEED"])
-    return new
+ new = dict(cfg)
+ if "TRAINER_SEED" in os.environ:
+ new.setdefault("trainer", {})
+ new["trainer"]["seed"] = int(os.environ["TRAINER_SEED"])
+ return new
 ```text
 
 ## Testing Guidance

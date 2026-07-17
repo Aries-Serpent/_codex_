@@ -161,15 +161,15 @@ New vector-stores entry requires cross-reference validation against actual codeb
 **Current State:**
 ```json
 {
-  "id": "vector-stores",
-  "zero_components": [
-    "functionality",
-    "safeguards"
-  ],
-  "primary_deficit": {
-    "component": "functionality",
-    "value": 0.0
-  }
+ "id": "vector-stores",
+ "zero_components": [
+ "functionality",
+ "safeguards"
+ ],
+ "primary_deficit": {
+ "component": "functionality",
+ "value": 0.0
+ }
 }
 ```text
 
@@ -240,13 +240,13 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 
 ---
 
-#### ~~ERR-2151-005: Tokenization Cache Invalidation~~  FIXED
+#### ~~ERR-2151-005: Tokenization Cache Invalidation~~ FIXED
 
-**Component:** Tokenization Cache Handler  
-**Severity:** LOW  
+**Component:** Tokenization Cache Handler 
+**Severity:** LOW 
 **Status:** ~~RESOLVED - Implementation Complete~~
 
-~~**Description:**~~  
+~~**Description:**~~ 
 ~~Cache handler gaps - Missing TTL configuration and cache invalidation strategy.~~
 
 **Implementation Complete:**
@@ -263,10 +263,10 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 
 #### ERR-2151-006: Training Pipeline Integration
 
-**Component:** Training Pipeline  
+**Component:** Training Pipeline 
 **Severity:** MEDIUM
 
-**Description:**  
+**Description:** 
 Pipeline sequencing undefined - Distributed workflow dependencies unclear.
 
 **Root Cause:**
@@ -329,23 +329,23 @@ class TrainingPipeline:
 
 ---
 
-## ~~ERR-2151-007: Data Migration Compatibility~~  FIXED
+## ~~ERR-2151-007: Data Migration Compatibility~~ FIXED
 
-**Component:** Data Management  
-**Severity:** MEDIUM  
+**Component:** Data Management 
+**Severity:** MEDIUM 
 **Status:** ~~RESOLVED - Implementation Complete~~
 
-~~**Description:**~~  
+~~**Description:**~~ 
 ~~Backward compatibility broken - Legacy assignment mappings removed without migration path.~~
 
 **Implementation Complete:**
 - ~~ Created `src/codex_ml/data/migration.py` with `AssignmentMappingMigration` class~~
-- ~~ Implemented v1→v2 migration: `migrate_v1_to_v2()`~~
-- ~~ Implemented v2→v3 migration: `migrate_v2_to_v3()`~~
+- ~~ Implemented v1v2 migration: `migrate_v1_to_v2()`~~
+- ~~ Implemented v2v3 migration: `migrate_v2_to_v3()`~~
 - ~~ Added `load_assignment_mappings()` with auto-migration support~~
 - ~~ Deprecation warnings for legacy formats (v1, v2)~~
 - ~~ Created CLI tool `src/codex_ml/cli/migrate_data.py`~~
-- ~~ Support for auto-detect version, explicit migrations, and two-step v1→v3~~
+- ~~ Support for auto-detect version, explicit migrations, and two-step v1v3~~
 - ~~ Full type hints and comprehensive docstrings~~
 
 ---
@@ -354,53 +354,53 @@ class TrainingPipeline:
 
 #### Duplicate Code Detection
 
-**Total Instances:** 3  
-**Total Lines:** 72  
+**Total Instances:** 3 
+**Total Lines:** 72 
 **Locations:** checkpoint/, training/
 
 **Details:**
 
 1. **Checkpoint state management** (28 lines duplicated)
-   - File 1: `src/training/checkpoint_manager.py:45-72`
-   - File 2: `src/codex_ml/training/checkpoints.py:120-147`
-   - **Action:** Extract to shared utility function
+ - File 1: `src/training/checkpoint_manager.py:45-72`
+ - File 2: `src/codex_ml/training/checkpoints.py:120-147`
+ - **Action:** Extract to shared utility function
 
 2. **Training loop boilerplate** (24 lines duplicated)
-   - File 1: `src/training/engine_hf_trainer.py:210-233`
-   - File 2: `src/codex_ml/training/functional_training.py:156-179`
-   - **Action:** Create base training loop class
+ - File 1: `src/training/engine_hf_trainer.py:210-233`
+ - File 2: `src/codex_ml/training/functional_training.py:156-179`
+ - **Action:** Create base training loop class
 
 3. **Dataset preprocessing** (20 lines duplicated)
-   - File 1: `src/training/data_utils.py:88-107`
-   - File 2: `src/codex_ml/data/jsonl_loader.py:45-64`
-   - **Action:** Move to `src/codex_ml/data/preprocessing.py`
+ - File 1: `src/training/data_utils.py:88-107`
+ - File 2: `src/codex_ml/data/jsonl_loader.py:45-64`
+ - **Action:** Move to `src/codex_ml/data/preprocessing.py`
 
 #### Missing Documentation
 
-**Total Files:** 5  
+**Total Files:** 5 
 **Severity:** MEDIUM
 
 Files lacking complete docstrings:
 
 1. `src/training/distributed_troubleshooting.py`
-   - Missing: Module docstring, 3 function docstrings
-   - Impact: Users cannot understand troubleshooting workflow
+ - Missing: Module docstring, 3 function docstrings
+ - Impact: Users cannot understand troubleshooting workflow
 
 2. `tools/data_drift_check.py`
-   - Missing: Module docstring, 2 class docstrings
-   - Impact: Data drift detection usage unclear
+ - Missing: Module docstring, 2 class docstrings
+ - Impact: Data drift detection usage unclear
 
 3. `tools/verification_tool.py`
-   - Missing: Complete function documentation
-   - Impact: Verification steps not documented
+ - Missing: Complete function documentation
+ - Impact: Verification steps not documented
 
 4. `src/training/functional_training.py`
-   - Missing: 4 function return type documentation
-   - Impact: API contract unclear
+ - Missing: 4 function return type documentation
+ - Impact: API contract unclear
 
 5. `tools/codex_workflow.py`
-   - Missing: Usage examples in docstrings
-   - Impact: Workflow integration unclear
+ - Missing: Usage examples in docstrings
+ - Impact: Workflow integration unclear
 
 **Required Action:**
 Add comprehensive documentation following Google style guide:
@@ -434,7 +434,7 @@ def function_name(param1: Type1, param2: Type2) -> ReturnType:
 
 #### Missing Type Hints
 
-**Total Locations:** 45 missing type annotations across 8 modules  
+**Total Locations:** 45 missing type annotations across 8 modules 
 **Severity:** MEDIUM
 
 **Breakdown by Module:**
@@ -486,7 +486,7 @@ def process_data(
 
 #### Unused Imports
 
-**Total Locations:** 4  
+**Total Locations:** 4 
 **Severity:** LOW
 
 1. `src/training/data_utils.py:3` - `from typing import Optional` (unused)
@@ -505,23 +505,23 @@ Run `ruff check --select F401` and remove unused imports
 
 | File | Current Coverage | Target | Status | Tests Needed |
 |------|------------------|--------|--------|--------------|
-| training/distributed_troubleshooting.py | 0% | 95%+ |  CRITICAL | ~25 tests |
-| tools/data_drift_check.py | 0% | 85%+ |  CRITICAL | ~15 tests |
-| tools/verification_tool.py | 0% | 85%+ |  CRITICAL | ~12 tests |
-| data/loader_enhanced.py | 45% | 90%+ | ️ NEEDS_WORK | ~10 tests |
+| training/distributed_troubleshooting.py | 0% | 95%+ | CRITICAL | ~25 tests |
+| tools/data_drift_check.py | 0% | 85%+ | CRITICAL | ~15 tests |
+| tools/verification_tool.py | 0% | 85%+ | CRITICAL | ~12 tests |
+| data/loader_enhanced.py | 45% | 90%+ | NEEDS_WORK | ~10 tests |
 
 #### Module Coverage Summary
 
 | Module | Current | Target | Status | Gap |
 |--------|---------|--------|--------|-----|
-| checkpoint | 92.1% | 95%+ | ️ NEEDS_WORK | -2.9% |
-| tokenization | 95.3% | 98%+ | ️ NEEDS_WORK | -2.7% |
-| training | 88.7% | 95%+ |  CRITICAL | -6.3% |
-| evaluation | 91.4% | 95%+ | ️ NEEDS_WORK | -3.6% |
+| checkpoint | 92.1% | 95%+ | NEEDS_WORK | -2.9% |
+| tokenization | 95.3% | 98%+ | NEEDS_WORK | -2.7% |
+| training | 88.7% | 95%+ | CRITICAL | -6.3% |
+| evaluation | 91.4% | 95%+ | NEEDS_WORK | -3.6% |
 
 #### Required Test Implementation
 
-**1. tests/training/test_distributed_troubleshooting.py** (NEW - 0 → 95%+)
+**1. tests/training/test_distributed_troubleshooting.py** (NEW - 0 95%+)
 
 ```python
 """Test suite for distributed training troubleshooting."""
@@ -561,7 +561,7 @@ class TestDistributedTroubleshooting:
  # Add 20+ more tests for full coverage
 ```text
 
-**2. tests/tools/test_data_drift_check.py** (NEW - 0 → 85%+)
+**2. tests/tools/test_data_drift_check.py** (NEW - 0 85%+)
 
 ```python
 """Test suite for data drift detection."""
@@ -594,7 +594,7 @@ class TestDataDriftCheck:
  # Add 10+ more tests for full coverage
 ```text
 
-**3. tests/tools/test_verification_tool.py** (NEW - 0 → 85%+)
+**3. tests/tools/test_verification_tool.py** (NEW - 0 85%+)
 
 ```python
 """Test suite for verification utilities."""
@@ -620,7 +620,7 @@ class TestVerificationTool:
  # Add 10+ more tests for full coverage
 ```text
 
-**4. tests/data/test_loader_enhanced.py** (ENHANCE - 45% → 90%+)
+**4. tests/data/test_loader_enhanced.py** (ENHANCE - 45% 90%+)
 
 ```python
 """Enhanced test suite for data loader."""
@@ -665,7 +665,7 @@ class TestLoaderEnhanced:
 
 ## High Priority Issues to Address
 
-### Issue 1: Data Migration Compatibility ️ CRITICAL
+### Issue 1: Data Migration Compatibility CRITICAL
 
 **Files Affected:**
 - `data/assignment_mappings_v1.json` (DELETED)
@@ -675,11 +675,11 @@ class TestLoaderEnhanced:
 Removal of legacy mapping files without backward compatibility layer will break existing workflows that reference these files.
 
 **Action Required:**
-1.  Create data migration utility (`src/codex_ml/data/migration.py`)
-2.  Add compatibility layer in data loader
-3.  Add deprecation warnings to legacy file access (PENDING)
-4.  Document migration path in CHANGELOG.md (PENDING)
-5.  Create migration CLI tool (PENDING)
+1. Create data migration utility (`src/codex_ml/data/migration.py`)
+2. Add compatibility layer in data loader
+3. Add deprecation warnings to legacy file access (PENDING)
+4. Document migration path in CHANGELOG.md (PENDING)
+5. Create migration CLI tool (PENDING)
 
 **Timeline:** Must complete before merge
 
@@ -687,7 +687,7 @@ Removal of legacy mapping files without backward compatibility layer will break 
 
 ---
 
-### Issue 2: Missing Test Coverage for New Modules ️ CRITICAL
+### Issue 2: Missing Test Coverage for New Modules CRITICAL
 
 **Files Affected:**
 - `training/distributed_troubleshooting.py` (0% coverage)
@@ -698,11 +698,11 @@ Removal of legacy mapping files without backward compatibility layer will break 
 Three new critical modules have 0% test coverage, creating significant risk for production deployment.
 
 **Action Required:**
-1.  Implement comprehensive unit test suite for `distributed_troubleshooting.py` (TARGET: 95%+ coverage, ~25 tests)
-2.  Implement test suite for `data_drift_check.py` (TARGET: 85%+ coverage, ~15 tests)
-3.  Implement test suite for `verification_tool.py` (TARGET: 85%+ coverage, ~12 tests)
-4.  Add integration tests for workflow scenarios
-5.  Configure coverage thresholds in `pytest.ini` or `.coveragerc`
+1. Implement comprehensive unit test suite for `distributed_troubleshooting.py` (TARGET: 95%+ coverage, ~25 tests)
+2. Implement test suite for `data_drift_check.py` (TARGET: 85%+ coverage, ~15 tests)
+3. Implement test suite for `verification_tool.py` (TARGET: 85%+ coverage, ~12 tests)
+4. Add integration tests for workflow scenarios
+5. Configure coverage thresholds in `pytest.ini` or `.coveragerc`
 
 **Timeline:** Must complete before merge
 
@@ -710,7 +710,7 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 
 ---
 
-### Issue 3: Type Safety Deficiencies ️ HIGH
+### Issue 3: Type Safety Deficiencies HIGH
 
 **Location:** 45 missing type hints across 8 files
 
@@ -726,19 +726,19 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 |----------|------|---------------|--------|--------|
 | ~~HIGH~~ | ~~`training/distributed_troubleshooting.py`~~ | ~~12~~ | ~~2-3 hours~~ | ~~N/A - File doesn't exist in codebase~~ |
 | ~~HIGH~~ | ~~`tools/data_drift_check.py`~~ | ~~8~~ | ~~1-2 hours~~ | ~~ COMPLETE - Already has full type hints~~ |
-| HIGH | `data/loader_enhanced.py` | 6 | 1 hour |  TODO - File not found, needs identification |
-| MEDIUM | `tools/verification_tool.py` | 7 | 1-2 Commits |  TODO - File doesn't exist |
-| MEDIUM | `training/data_utils.py` | 5 | 1 hour |  TODO |
+| HIGH | `data/loader_enhanced.py` | 6 | 1 hour | TODO - File not found, needs identification |
+| MEDIUM | `tools/verification_tool.py` | 7 | 1-2 Commits | TODO - File doesn't exist |
+| MEDIUM | `training/data_utils.py` | 5 | 1 hour | TODO |
 | ~~LOW~~ | ~~`tokenization/cache.py`~~ | ~~4~~ | ~~30 min~~ | ~~ COMPLETE - New file has full type hints~~ |
-| LOW | `checkpoint/manager.py` | 2 | 15 min |  TODO |
-| LOW | `tools/codex_workflow.py` | 1 | 10 min |  TODO |
+| LOW | `checkpoint/manager.py` | 2 | 15 min | TODO |
+| LOW | `tools/codex_workflow.py` | 1 | 10 min | TODO |
 
 **Action Required:**
 1. ~~ Add type hints to all function signatures~~ (Complete for new modules)
 2. ~~ Add type hints to class attributes~~ (Complete for new modules)
 3. ~~ Import necessary typing modules (Dict, List, Optional, etc.)~~ (Complete for new modules)
-4.  Run `mypy` to validate type correctness
-5.  Update CI to enforce type hint coverage
+4. Run `mypy` to validate type correctness
+5. Update CI to enforce type hint coverage
 
 **Timeline:** Should complete before merge
 
@@ -746,38 +746,38 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 
 ---
 
-### Issue 4: Documentation Gaps ️ MEDIUM (PARTIALLY COMPLETE)
+### Issue 4: Documentation Gaps MEDIUM (PARTIALLY COMPLETE)
 
 **Missing Elements:**
-- ~~3 files without module docstrings~~ → 3 files still need docstrings (new modules complete)
-- ~~12 functions lacking complete documentation~~ → Some complete, others remain
-- ~~5 utilities without usage examples~~ → New modules have examples, others remain
+- ~~3 files without module docstrings~~ 3 files still need docstrings (new modules complete)
+- ~~12 functions lacking complete documentation~~ Some complete, others remain
+- ~~5 utilities without usage examples~~ New modules have examples, others remain
 - 8 functions missing return type documentation
 
 **Files Requiring Documentation:**
 
-1. **`src/training/distributed_troubleshooting.py`**  File doesn't exist in codebase
-   - Missing: Module docstring
-   - Missing: 3 function docstrings
-   - Missing: Usage examples
+1. **`src/training/distributed_troubleshooting.py`** File doesn't exist in codebase
+ - Missing: Module docstring
+ - Missing: 3 function docstrings
+ - Missing: Usage examples
 
-2. ~~**`tools/data_drift_check.py`**~~  COMPLETE
-   - ~~Missing: Module docstring~~  Has comprehensive module docstring
-   - ~~Missing: 2 class docstrings~~  Functions have full docstrings
-   - ~~Missing: Method documentation~~  All parameters documented
+2. ~~**`tools/data_drift_check.py`**~~ COMPLETE
+ - ~~Missing: Module docstring~~ Has comprehensive module docstring
+ - ~~Missing: 2 class docstrings~~ Functions have full docstrings
+ - ~~Missing: Method documentation~~ All parameters documented
 
-3. **`tools/verification_tool.py`**  File doesn't exist
-   - Missing: Complete function documentation
-   - Missing: Parameter descriptions
-   - Missing: Return value documentation
+3. **`tools/verification_tool.py`** File doesn't exist
+ - Missing: Complete function documentation
+ - Missing: Parameter descriptions
+ - Missing: Return value documentation
 
 4. **`src/training/functional_training.py`**
-   - Missing: 4 function return type documentation
-   - Missing: Examples section
+ - Missing: 4 function return type documentation
+ - Missing: Examples section
 
 5. **`tools/codex_workflow.py`**
-   - Missing: Usage examples in docstrings
-   - Missing: Integration documentation
+ - Missing: Usage examples in docstrings
+ - Missing: Integration documentation
 
 **NEW MODULES - COMPLETE:** 
 - ~~`src/codex_ml/data/migration.py`~~ - Full Google-style docstrings with examples
@@ -790,7 +790,7 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 2. ~~ Add module-level docstrings with overview and examples~~ (Complete for new modules)
 3. ~~ Add function/method docstrings with Args/Returns/Raises~~ (Complete for new modules)
 4. ~~ Add usage examples to key functions~~ (Complete for new modules)
-5.  Generate API documentation with `sphinx` or `mkdocs`
+5. Generate API documentation with `sphinx` or `mkdocs`
 
 **Timeline:** Should complete before merge
 
@@ -798,7 +798,7 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 
 ---
 
-### Issue 5: Code Complexity Issues ️ MEDIUM
+### Issue 5: Code Complexity Issues MEDIUM
 
 **High Complexity Functions Identified:**
 
@@ -810,7 +810,7 @@ Three new critical modules have 0% test coverage, creating significant risk for 
 
 **Action Required:**
 
-**1. Refactor `troubleshoot_training()` (Complexity 14 → ≤10)**
+**1. Refactor `troubleshoot_training()` (Complexity 14 ≤10)**
 
 Before:
 ```text
@@ -844,11 +844,11 @@ def troubleshoot_training(rank, world_size, model, optimizer):
  return TroubleshootingResult(results)
 ```text
 
-**2. Refactor `load_and_validate()` (Complexity 11 → ≤10)**
+**2. Refactor `load_and_validate()` (Complexity 11 ≤10)**
 
 Extract validation logic into separate functions.
 
-**3. Refactor `check_drift()` (Complexity 12 → ≤10)**
+**3. Refactor `check_drift()` (Complexity 12 ≤10)**
 
 Split statistical tests into separate methods.
 
@@ -872,7 +872,7 @@ Split statistical tests into separate methods.
 
 ### Optimization Recommendations
 
-**1. Cache Handler Initialization (145ms → <100ms)**
+**1. Cache Handler Initialization (145ms <100ms)**
 
 ```python
 # Current: Lazy loading creates initialization overhead
@@ -900,7 +900,7 @@ class CacheHandler:
  return self._config
 ```text
 
-**2. Data Loader First Load (2.3s → <2.0s)**
+**2. Data Loader First Load (2.3s <2.0s)**
 
 ```python
 # Optimization: Parallelize file reading and preprocessing
@@ -913,7 +913,7 @@ def load_and_validate(paths):
  return results
 ```text
 
-**3. Validation Tool Execution (1.2s → <1.0s)**
+**3. Validation Tool Execution (1.2s <1.0s)**
 
 ```python
 # Optimization: Cache validation results
@@ -938,11 +938,11 @@ Failed: 28 (2.2%)
 Skipped: 21 (1.7%)
 ```text
 
-**NEW:  Added comprehensive test suite for data_drift_check.py** (15 tests, 85%+ coverage achieved)
+**NEW: Added comprehensive test suite for data_drift_check.py** (15 tests, 85%+ coverage achieved)
 
 ### Failing Test Suites
 
-**1. ~~training/test_distributed_troubleshooting.py: 12 failures~~**  File doesn't exist - aspirational
+**1. ~~training/test_distributed_troubleshooting.py: 12 failures~~** File doesn't exist - aspirational
 ```text
 N/A - Module src/training/distributed_troubleshooting.py doesn't exist in codebase
 ```text
@@ -950,7 +950,7 @@ N/A - Module src/training/distributed_troubleshooting.py doesn't exist in codeba
 **Root Cause:** Module not implemented yet
 **Action:** Need to determine if this module should be created or is misdocumented
 
-**2. ~~tools/test_data_drift_check.py: 8 failures~~**  FIXED - Now passing (15 tests)
+**2. ~~tools/test_data_drift_check.py: 8 failures~~** FIXED - Now passing (15 tests)
 ```text
  All 15 tests passing
 - test_drift_score_no_drift
@@ -1000,10 +1000,10 @@ FAILED test_load_and_validate_large_file - MemoryError
 ### Linting Results
 
 ```text
-Total Issues:  34
-Errors:        0
-Warnings:      12 (primarily type hints)
-Info:          22
+Total Issues: 34
+Errors: 0
+Warnings: 12 (primarily type hints)
+Info: 22
 ```text
 
 **Warning Breakdown:**
@@ -1039,25 +1039,25 @@ ruff check --output-format=grouped
 ```python
 # Current
 def load_and_validate(path):
-    with open(path) as f:  # No path validation
-        data = json.load(f)
+ with open(path) as f: # No path validation
+ data = json.load(f)
 
 # Recommended
 def load_and_validate(path: Path):
-    # Validate path
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {path}")
+ # Validate path
+ if not path.exists():
+ raise FileNotFoundError(f"File not found: {path}")
 
-    if not path.is_file():
-        raise ValueError(f"Path is not a file: {path}")
+ if not path.is_file():
+ raise ValueError(f"Path is not a file: {path}")
 
-    # Prevent path traversal
-    resolved = path.resolve()
-    if not str(resolved).startswith(str(ALLOWED_DATA_DIR)):
-        raise SecurityError(f"Path outside allowed directory: {path}")
+ # Prevent path traversal
+ resolved = path.resolve()
+ if not str(resolved).startswith(str(ALLOWED_DATA_DIR)):
+ raise SecurityError(f"Path outside allowed directory: {path}")
 
-    with open(resolved) as f:
-        data = json.load(f)
+ with open(resolved) as f:
+ data = json.load(f)
 ```text
 
 **2. Error Message Sanitization (LOW severity)**
@@ -1068,12 +1068,12 @@ def load_and_validate(path: Path):
 ```text
 # Current
 except Exception as e:
-    print(f"Error loading {file_path}: {e}")
+ print(f"Error loading {file_path}: {e}")
 
 # Recommended
 except Exception as e:
-    logger.error("Error loading data file", exc_info=True)
-    # Don't print full path in production
+ logger.error("Error loading data file", exc_info=True)
+ # Don't print full path in production
 ```text
 
 **3. Configuration Path Validation (LOW severity)**
@@ -1086,13 +1086,13 @@ except Exception as e:
 from pathlib import Path
 
 def load_config(config_path: Path):
-    if not config_path.suffix in ['.yaml', '.yml', '.json']:
-        raise ValueError("Invalid config file type")
+ if not config_path.suffix in ['.yaml', '.yml', '.json']:
+ raise ValueError("Invalid config file type")
 
-    if not config_path.exists():
-        raise FileNotFoundError(f"Config not found")
+ if not config_path.exists():
+ raise FileNotFoundError(f"Config not found")
 
-    # Load config
+ # Load config
 ```text
 
 ---
@@ -1294,18 +1294,18 @@ This PR represents significant progress but requires critical fixes before merge
 ### Appendix A: Complete Test Coverage Report
 
 ```text
-Module                                    Stmts   Miss  Cover
+Module Stmts Miss Cover
 ---------------------------------------------------------------
-src/training/distributed_troubleshooting    127    127     0%
-tools/data_drift_check                       95     95     0%
-tools/verification_tool                      78     78     0%
-src/data/loader_enhanced                    156     86    45%
-src/training/checkpoint_manager             234     18   92.1%
-src/tokenization/cache                      145      7   95.3%
-src/training/functional_training            412     47   88.7%
-src/evaluation/metrics                      183     16   91.4%
+src/training/distributed_troubleshooting 127 127 0%
+tools/data_drift_check 95 95 0%
+tools/verification_tool 78 78 0%
+src/data/loader_enhanced 156 86 45%
+src/training/checkpoint_manager 234 18 92.1%
+src/tokenization/cache 145 7 95.3%
+src/training/functional_training 412 47 88.7%
+src/evaluation/metrics 183 16 91.4%
 ---------------------------------------------------------------
-TOTAL                                      1430    474   66.9%
+TOTAL 1430 474 66.9%
 ```text
 
 ### Appendix B: Detailed Linting Report
@@ -1314,50 +1314,50 @@ TOTAL                                      1430    474   66.9%
 ruff check --output-format=grouped
 
 Warnings (12):
-  F401: Unused import
-    - src/training/data_utils.py:3
-    - tools/data_drift_check.py:8
-    - src/data/loader_enhanced.py:12
-    - tools/verification_tool.py:5
+ F401: Unused import
+ - src/training/data_utils.py:3
+ - tools/data_drift_check.py:8
+ - src/data/loader_enhanced.py:12
+ - tools/verification_tool.py:5
 
-  D103: Missing docstring in public function
-    - src/training/distributed_troubleshooting.py:45
-    - src/training/distributed_troubleshooting.py:78
-    - src/training/distributed_troubleshooting.py:112
+ D103: Missing docstring in public function
+ - src/training/distributed_troubleshooting.py:45
+ - src/training/distributed_troubleshooting.py:78
+ - src/training/distributed_troubleshooting.py:112
 
-  ANN001: Missing type annotation for function argument
-    - [45 locations - see Issue 3]
+ ANN001: Missing type annotation for function argument
+ - [45 locations - see Issue 3]
 
 Info (22):
-  E501: Line too long (>100 characters)
-    - src/training/functional_training.py:156
-    - src/data/loader_enhanced.py:89
-    - tools/data_drift_check.py:145
+ E501: Line too long (>100 characters)
+ - src/training/functional_training.py:156
+ - src/data/loader_enhanced.py:89
+ - tools/data_drift_check.py:145
 ```text
 
 ### Appendix C: Performance Profiling Results
 
 ```text
 Cache Handler Initialization:
-  Total time: 145ms
-  Breakdown:
-    - Config loading: 85ms (58%)
-    - Cache index building: 45ms (31%)
-    - Metadata parsing: 15ms (11%)
+ Total time: 145ms
+ Breakdown:
+ - Config loading: 85ms (58%)
+ - Cache index building: 45ms (31%)
+ - Metadata parsing: 15ms (11%)
 
 Data Loader First Load:
-  Total time: 2.3s
-  Breakdown:
-    - File I/O: 1.2s (52%)
-    - JSON parsing: 0.7s (30%)
-    - Validation: 0.4s (18%)
+ Total time: 2.3s
+ Breakdown:
+ - File I/O: 1.2s (52%)
+ - JSON parsing: 0.7s (30%)
+ - Validation: 0.4s (18%)
 
 Validation Tool Execution:
-  Total time: 1.2s
-  Breakdown:
-    - Schema loading: 0.5s (42%)
-    - Validation logic: 0.5s (42%)
-    - Report generation: 0.2s (16%)
+ Total time: 1.2s
+ Breakdown:
+ - Schema loading: 0.5s (42%)
+ - Validation logic: 0.5s (42%)
+ - Report generation: 0.2s (16%)
 ```text
 
 ---

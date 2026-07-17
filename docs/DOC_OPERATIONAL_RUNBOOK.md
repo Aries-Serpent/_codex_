@@ -30,44 +30,44 @@
 
 ```
 docs/
-├── index.md # Home/entry point
-├── README_ROOT.md # Main README
-├── getting-started.md # Quick start
-│
-├── api/ # API Documentation (537 files)
-│ ├── index.md # API overview
-│ ├── INDEX.md # Full API index
-│ └── [537 files organized by topic]
-│
-├── cognitive_brain/ # Cognitive Brain & AI (385 files)
-│ ├── index.md # Overview
-│ ├── INDEX.md # Full index
-│ └── [385 files organized by component]
-│
-├── architecture/ # Architecture (185 files)
-│ ├── index.md
-│ ├── INDEX.md
-│ └── [185 files]
-│
-├── ci/ # CI/CD & Workflows (175 files)
-│ ├── INDEX.md
-│ └── [175 files]
-│
-├── deployment/ # Deployment & Ops (107 files)
-│ ├── DEPLOYMENT_GUIDE.md
-│ ├── INDEX.md
-│ └── [105 files]
-│
-├── safety/ # Security & Safety (33 files)
-├── database/ # Database & Storage (8 files)
-├── evolution/ # Evolution & History
-├── phase-9/ # Phase documentation
-├── tokens/ # Token management # pragma: allowlist secret
-├── training/ # Training guides
-├── logging/ # Logging & Troubleshooting
-├── troubleshooting/ # Error resolution
-│
-└── [Other organized files]
+ index.md # Home/entry point
+ README_ROOT.md # Main README
+ getting-started.md # Quick start
+
+ api/ # API Documentation (537 files)
+ index.md # API overview
+ INDEX.md # Full API index
+ [537 files organized by topic]
+
+ cognitive_brain/ # Cognitive Brain & AI (385 files)
+ index.md # Overview
+ INDEX.md # Full index
+ [385 files organized by component]
+
+ architecture/ # Architecture (185 files)
+ index.md
+ INDEX.md
+ [185 files]
+
+ ci/ # CI/CD & Workflows (175 files)
+ INDEX.md
+ [175 files]
+
+ deployment/ # Deployment & Ops (107 files)
+ DEPLOYMENT_GUIDE.md
+ INDEX.md
+ [105 files]
+
+ safety/ # Security & Safety (33 files)
+ database/ # Database & Storage (8 files)
+ evolution/ # Evolution & History
+ phase-9/ # Phase documentation
+ tokens/ # Token management # pragma: allowlist secret
+ training/ # Training guides
+ logging/ # Logging & Troubleshooting
+ troubleshooting/ # Error resolution
+
+ [Other organized files]
 ```
 
 ### Category Structure
@@ -100,8 +100,8 @@ Each category with 50+ files should have:
 
 **Expected Result**:
 ```
-✅ Broken Links: 0
-✅ Status: PASS
+ Broken Links: 0
+ Status: PASS
 ```
 
 ---
@@ -152,7 +152,7 @@ Category: architecture/ (performance subcategory)
 Action:
  1. Move to docs/architecture/ADVANCED_CACHING_STRATEGY.md
  2. Add to docs/architecture/INDEX.md
- 3. Link in mkdocs.yml under Architecture → Performance
+ 3. Link in mkdocs.yml under Architecture Performance
 ```
 
 ---
@@ -238,7 +238,7 @@ Action:
 3. Create redirect in old location (if public):
  ```markdown
  # Moved
- This file has been moved to [new location](../new/path.md).
+ This file has been moved to <!-- TODO: Update link: new location -->.
  ```
 4. Verify links: `python3 scripts/doc_health_monitor.py --check-links`
 5. Update INDEX.md files
@@ -272,7 +272,7 @@ python3 -c "
 import json
 report = json.load(open('docs/.doc-health-report.json'))
 for link in report['checks']['link_validation'].get('broken_links', []):
- print(f\"{link['file']} → {link['link']}\")
+ print(f\"{link['file']} {link['link']}\")
 "
 
 # Fix: Edit file and correct link
@@ -462,7 +462,7 @@ jobs:
  - name: Comment on PR
  if: failure()
  run: |
- echo "⚠️ Documentation validation failed"
+ echo " Documentation validation failed"
  python3 scripts/doc_health_monitor.py --check-links
 ```
 

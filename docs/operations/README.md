@@ -20,12 +20,12 @@
 
 ```
 docs/operations/
-├── README.md                    # This file
-├── [runbooks]                   # Standard procedures
-├── [change management]          # Change control
-├── [release management]         # Release procedures
-├── [security operations]        # Security procedures
-└── [compliance]                 # Compliance procedures
+ README.md # This file
+ [runbooks] # Standard procedures
+ [change management] # Change control
+ [release management] # Release procedures
+ [security operations] # Security procedures
+ [compliance] # Compliance procedures
 ```
 
 ---

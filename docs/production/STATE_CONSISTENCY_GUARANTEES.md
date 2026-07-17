@@ -37,9 +37,9 @@
 **Guarantees**:
 ```
  If transaction T = {INSERT row1, INSERT row2}:
-   - Both row1 AND row2 appear, OR
-   - Neither row1 NOR row2 appear
-   - Never just one of them
+ - Both row1 AND row2 appear, OR
+ - Neither row1 NOR row2 appear
+ - Never just one of them
 ```
 
 **Test Coverage**:
@@ -55,8 +55,8 @@
 #### Primary Keys
 ```sql
 CREATE TABLE users (
-    id TEXT PRIMARY KEY,
-    ...
+ id TEXT PRIMARY KEY,
+ ...
 );
 ```
 **Guarantee**: No two rows with same ID can exist.
@@ -71,18 +71,18 @@ ALTER TABLE users ADD CONSTRAINT uc_username UNIQUE (username);
 #### Foreign Keys
 ```sql
 CREATE TABLE item (
-    artifact_id TEXT NOT NULL REFERENCES artifact(id),
-    ...
+ artifact_id TEXT NOT NULL REFERENCES artifact(id),
+ ...
 );
-PRAGMA foreign_keys=ON;  -- Enforced
+PRAGMA foreign_keys=ON; -- Enforced
 ```
 **Guarantee**: Cannot insert item with non-existent artifact_id.
 
 #### Check Constraints
 ```sql
 CREATE TABLE item (
-    kind TEXT NOT NULL CHECK (kind IN ('code','doc','asset')),
-    ...
+ kind TEXT NOT NULL CHECK (kind IN ('code','doc','asset')),
+ ...
 );
 ```
 **Guarantee**: Only valid kind values can be inserted.
@@ -145,21 +145,21 @@ Failure recovery:
 SQLite supports **SERIALIZABLE** isolation (strictest level):
 
 ```
-Level             Read Uncommitted | Read Committed | Repeatable Read | Serializable
-                  (Not in SQLite)   | (Not in SQLite) | (Not in SQLite) |  ENFORCED
+Level Read Uncommitted | Read Committed | Repeatable Read | Serializable
+ (Not in SQLite) | (Not in SQLite) | (Not in SQLite) | ENFORCED
 
-Dirty reads        Not possible
-Non-repeatable     Not possible
-Phantom reads      Not possible
-Lost updates       Not possible
+Dirty reads Not possible
+Non-repeatable Not possible
+Phantom reads Not possible
+Lost updates Not possible
 ```
 
 ### Implementation: Snapshot Isolation (WAL) vs Serializable (RLock)
 
 #### Snapshot Isolation (WAL-enabled databases)
 ```
-Writer→ Acquires EXCLUSIVE lock → Writes → Releases lock
-Reader→ Sees consistent snapshot → No lock → Continue
+Writer Acquires EXCLUSIVE lock Writes Releases lock
+Reader Sees consistent snapshot No lock Continue
 
 Property: Readers never see uncommitted changes
 Guarantee: Write skew impossible due to single writer at a time
@@ -180,13 +180,13 @@ Guarantee: Strongest isolation possible
 
 ```python
 # Single statement = implicit transaction
-conn.execute("INSERT INTO users ...")  # Auto-commit after execute
+conn.execute("INSERT INTO users ...") # Auto-commit after execute
 
 # Explicit transaction (multiple statements)
 conn.execute("BEGIN")
 conn.execute("INSERT INTO users ...")
 conn.execute("INSERT INTO users_history ...")
-conn.commit()  # All-or-nothing
+conn.commit() # All-or-nothing
 ```
 
 ## Transaction Boundaries
@@ -210,14 +210,14 @@ conn.commit()  # All-or-nothing
 **Example**:
 ```python
 try:
-    conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
-                 ("alice", "alice@example.com"))
-    conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
-                 ("alice", "alice2@example.com"))  # Duplicate
-    conn.commit()  # Never reached
+ conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
+ ("alice", "alice@example.com"))
+ conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
+ ("alice", "alice2@example.com")) # Duplicate
+ conn.commit() # Never reached
 except sqlite3.IntegrityError:
-    conn.rollback()  # First insert also rolled back
-    # Both users NOT inserted
+ conn.rollback() # First insert also rolled back
+ # Both users NOT inserted
 ```
 
 ---
@@ -229,8 +229,8 @@ except sqlite3.IntegrityError:
 #### session_events Table
 ```
 State transitions:
-[ empty ] → INSERT → [ event_1 ]
-[ event_1 ] → INSERT → [ event_1, event_2 ]
+[ empty ] INSERT [ event_1 ]
+[ event_1 ] INSERT [ event_1, event_2 ]
 (append-only, no updates)
 
 Invalid transitions:
@@ -241,10 +241,10 @@ Invalid transitions:
 #### users Table
 ```
 State transitions:
-[ absent ] → CREATE → [ active ]
-[ active ] → UPDATE is_active=0 → [ inactive ]
-[ inactive ] → UPDATE is_active=1 → [ active ]
-[ * ] → UPDATE roles → [ * with new roles ]
+[ absent ] CREATE [ active ]
+[ active ] UPDATE is_active=0 [ inactive ]
+[ inactive ] UPDATE is_active=1 [ active ]
+[ * ] UPDATE roles [ * with new roles ]
 
 Invalid states:
  Duplicate username (UNIQUE constraint)
@@ -256,9 +256,9 @@ Invalid states:
 #### archive items Table
 ```
 State transitions:
-[ absent ] → INSERT → [ archived ]
-[ archived ] → UPDATE restored_at → [ restored ]
-[ restored ] → DELETE (TTL) → [ absent ]
+[ absent ] INSERT [ archived ]
+[ archived ] UPDATE restored_at [ restored ]
+[ restored ] DELETE (TTL) [ absent ]
 
 Invalid states:
  Invalid kind (CHECK constraint)
@@ -277,7 +277,7 @@ Test: tests/auth/test_sqlite_user_repository.py::test_create_duplicate_username_
 
 **Invariant 2**: Archive items reference existing artifacts
 ```
-Proof: FOREIGN KEY constraint on item.artifact_id → artifact.id
+Proof: FOREIGN KEY constraint on item.artifact_id artifact.id
 Enforcement: PRAGMA foreign_keys=ON
 Test: Can only insert item with existing artifact_id
 ```
@@ -300,9 +300,9 @@ Result: No race conditions, all creates atomic
 1. BEGIN TRANSACTION
 2. INSERT user "alice"
 3. COMMIT starts:
-   3a. Write to WAL
-   3b. Fsync WAL ← PROCESS CRASHES HERE
-   3c. Release lock
+ 3a. Write to WAL
+ 3b. Fsync WAL PROCESS CRASHES HERE
+ 3c. Release lock
 ```
 
 **Recovery**:
@@ -320,7 +320,7 @@ Result: Durable (safe)
 ```
 1. BEGIN TRANSACTION
 2. INSERT 1000 records
-3. WAL write fills disk ← ERROR
+3. WAL write fills disk ERROR
 ```
 
 **Recovery**:
@@ -353,12 +353,12 @@ sqlite3 codex_users.db "PRAGMA integrity_check;"
 #### session_logs.db (WAL, High Read Concurrency)
 ```
 Writer thread:
-  conn.execute("INSERT INTO session_events ...")
-  conn.commit()
+ conn.execute("INSERT INTO session_events ...")
+ conn.commit()
 
 Reader thread (concurrent):
-  events = conn.execute("SELECT * FROM session_events WHERE ...").fetchall()
-  # Sees consistent snapshot, doesn't wait for writer
+ events = conn.execute("SELECT * FROM session_events WHERE ...").fetchall()
+ # Sees consistent snapshot, doesn't wait for writer
 
 Result: Readers never block (high throughput)
 ```
@@ -368,15 +368,15 @@ Result: Readers never block (high throughput)
 #### users.db (RLock, Serializable)
 ```
 Writer thread:
-  with lock:
-    conn.execute("INSERT INTO users ...")
-    conn.commit()
-  # Lock released
+ with lock:
+ conn.execute("INSERT INTO users ...")
+ conn.commit()
+ # Lock released
 
 Reader thread (concurrent):
-  with lock:
-    users = conn.execute("SELECT * FROM users").fetchall()
-  # Must wait for writer's lock
+ with lock:
+ users = conn.execute("SELECT * FROM users").fetchall()
+ # Must wait for writer's lock
 
 Result: Serializable, but lower read concurrency than WAL
 Trade-off: Acceptable for low-volume users table
@@ -386,8 +386,8 @@ Trade-off: Acceptable for low-volume users table
 
 #### All Databases
 ```
-Writer1: Acquires EXCLUSIVE lock → Writes → Releases
-Writer2: Waits for lock → Acquires EXCLUSIVE lock → Writes → Releases
+Writer1: Acquires EXCLUSIVE lock Writes Releases
+Writer2: Waits for lock Acquires EXCLUSIVE lock Writes Releases
 
 Result: Writes always serialized (no concurrent writes)
 Benefit: No write conflicts, lost updates impossible
@@ -447,8 +447,8 @@ Enforcement: Database constraint + test coverage
 **Invariant 3**: archive.item.artifact_id always references valid artifact
 ```sql
 CREATE TABLE item (
-    artifact_id TEXT NOT NULL REFERENCES artifact(id),
-    ...
+ artifact_id TEXT NOT NULL REFERENCES artifact(id),
+ ...
 );
 PRAGMA foreign_keys=ON;
 Enforcement: Foreign key constraint + test coverage
@@ -457,12 +457,12 @@ Enforcement: Foreign key constraint + test coverage
 **Invariant 4**: No concurrent updates to users table
 ```text
 class SQLiteUserRepository:
-    def __init__(self):
-        self._lock = threading.RLock()
+ def __init__(self):
+ self._lock = threading.RLock()
 
-    def update(self, user_id, user):
-        with self._lock:  # Serialize all updates
-            # Update logic
+ def update(self, user_id, user):
+ with self._lock: # Serialize all updates
+ # Update logic
 ```
 
 ---
@@ -492,28 +492,28 @@ class SQLiteUserRepository:
 
 ```
  GUARANTEE 1: ACID Compliance
-   Every transaction is Atomic, Consistent, Isolated, Durable
+ Every transaction is Atomic, Consistent, Isolated, Durable
 
  GUARANTEE 2: Constraint Enforcement
-   All declared constraints enforced at database level
+ All declared constraints enforced at database level
 
  GUARANTEE 3: Isolation
-   Concurrent transactions see consistent snapshots
+ Concurrent transactions see consistent snapshots
 
  GUARANTEE 4: Durability
-   Committed data survives any failure before commit acknowledgment
+ Committed data survives any failure before commit acknowledgment
 
  GUARANTEE 5: Atomicity
-   Partial transactions impossible (all-or-nothing)
+ Partial transactions impossible (all-or-nothing)
 
  GUARANTEE 6: No Lost Updates
-   Write serialization prevents lost updates (writes never concurrent)
+ Write serialization prevents lost updates (writes never concurrent)
 
  GUARANTEE 7: Referential Integrity
-   Foreign key constraints prevent orphaned records
+ Foreign key constraints prevent orphaned records
 
  GUARANTEE 8: Immutable Logs
-   Session events cannot be modified or deleted (append-only)
+ Session events cannot be modified or deleted (append-only)
 ```
 
 ---

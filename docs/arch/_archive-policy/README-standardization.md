@@ -52,56 +52,56 @@ python -m codex.cli archive migrate-evidence-to-v2
 
 ```text
 src/codex/archive/
-├── standardization.py      # Core standardization manager
-├── sigstore_client.py      # Keyless signing integration
-├── evidence_schema.py      # Schema versioning & validation
+ standardization.py # Core standardization manager
+ sigstore_client.py # Keyless signing integration
+ evidence_schema.py # Schema versioning & validation
 
 schemas/
-├── archive_evidence_schema_v1.json  # Legacy format
-├── archive_evidence_schema_v2.json  # Standardized format
+ archive_evidence_schema_v1.json # Legacy format
+ archive_evidence_schema_v2.json # Standardized format
 
 db/migrations/
-├── sqlite/002_add_standardization.sql
-├── postgres/002_add_standardization.sql
-└── mariadb/002_add_standardization.sql
+ sqlite/002_add_standardization.sql
+ postgres/002_add_standardization.sql
+ mariadb/002_add_standardization.sql
 
 tests/archive/
-└── test_standardization.py  # 10+ comprehensive tests
+ test_standardization.py # 10+ comprehensive tests
 
 docs/arch/
-├── adr-2025-11-02-archive-sigstore-integration.md
-├── adr-2025-11-03-evidence-schema-versioning.md
-└── _archive-policy/
-    └── standardization-framework.md
+ adr-2025-11-02-archive-sigstore-integration.md
+ adr-2025-11-03-evidence-schema-versioning.md
+ _archive-policy/
+ standardization-framework.md
 ```text
 ## Example: Enhanced Evidence Record
 
 ### Before (v1)
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442..."
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442..."
 }
 ```text
 
 ### After (v2)
 ```json
 {
-  "ts": "2025-11-02T19:44:00Z",
-  "action": "ARCHIVE",
-  "actor": "marc",
-  "tombstone": "d3e8729-...",
-  "sha256": "e3b0c442...",
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "slsa_level": "L3",
-    "signature": "MOCK_SIG_abc123...",
-    "issuer": "https://token.actions.githubusercontent.com",
-    "signed_at": "2025-11-02T19:44:01Z"
-  }
+ "ts": "2025-11-02T19:44:00Z",
+ "action": "ARCHIVE",
+ "actor": "marc",
+ "tombstone": "d3e8729-...",
+ "sha256": "e3b0c442...",
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "slsa_level": "L3",
+ "signature": "MOCK_SIG_abc123...",
+ "issuer": "https://token.actions.githubusercontent.com",
+ "signed_at": "2025-11-02T19:44:01Z"
+ }
 }
 ```text
 
@@ -125,33 +125,33 @@ name: Archive with Standardization
 on: [push]
 
 jobs:
-  archive:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # ← REQUIRED for Sigstore
-      contents: read
+ archive:
+ runs-on: ubuntu-latest
+ permissions:
+ id-token: write # REQUIRED for Sigstore
+ contents: read
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+ - name: Set up Python
+ uses: actions/setup-python@v4
+ with:
+ python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install -e .
-          pip install jsonschema
+ - name: Install dependencies
+ run: |
+ pip install -e .
+ pip install jsonschema
 
-      - name: Archive with standardization
-        env:
-          CODEX_STANDARDIZATION_ENABLED: "true"
-          CODEX_ENABLE_SIGNING: "true"
-        run: |
-          python -m codex.cli archive store _codex_ file.py \
-            --reason "cleanup" \
-            --by "${{ github.actor }}"
+ - name: Archive with standardization
+ env:
+ CODEX_STANDARDIZATION_ENABLED: "true"
+ CODEX_ENABLE_SIGNING: "true"
+ run: |
+ python -m codex.cli archive store _codex_ file.py \
+ --reason "cleanup" \
+ --by "${{ github.actor }}"
 ```text
 
 ## Troubleshooting

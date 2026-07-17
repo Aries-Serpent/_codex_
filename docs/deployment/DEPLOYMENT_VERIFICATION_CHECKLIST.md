@@ -10,48 +10,48 @@
 
 ### 1.1 Site Configuration
 - [ ] **site_url correct**: `https://aries-serpent.github.io/_codex_/`
-  ```bash
-  grep "site_url:" mkdocs.yml
+ ```bash
+ grep "site_url:" mkdocs.yml
  ```
 - [ ] **site_name defined**: `Codex Docs v0.2.1`
-  ```bash
-  grep "site_name:" mkdocs.yml
+ ```bash
+ grep "site_name:" mkdocs.yml
  ```
 - [ ] **repo_url correct**: `https://github.com/Aries-Serpent/_codex_`
-  ```bash
-  grep "repo_url:" mkdocs.yml
+ ```bash
+ grep "repo_url:" mkdocs.yml
  ```
 - [ ] **docs_dir exists**: `docs/`
-  ```bash
-  test -d docs && echo "✅ docs/ exists"
+ ```bash
+ test -d docs && echo " docs/ exists"
  ```
 
 ### 1.2 Theme Configuration
 - [ ] **Theme set to Material**: `material`
-  ```bash
-  grep "name: material" mkdocs.yml
+ ```bash
+ grep "name: material" mkdocs.yml
  ```
 - [ ] **12 navigation features enabled**
-  ```bash
-  grep -A 12 "features:" mkdocs.yml | wc -l
+ ```bash
+ grep -A 12 "features:" mkdocs.yml | wc -l
  ```
 - [ ] **Logo configured**: `material/book-open-page-variant`
-  ```bash
-  grep "logo:" mkdocs.yml
+ ```bash
+ grep "logo:" mkdocs.yml
  ```
 
 ### 1.3 Plugin Configuration
 - [ ] **Material Search plugin enabled**
-  ```bash
-  grep "material/search" mkdocs.yml
+ ```bash
+ grep "material/search" mkdocs.yml
  ```
 - [ ] **Mermaid2 plugin enabled**: Version 10.4.0
-  ```bash
-  grep -A 1 "mermaid2:" mkdocs.yml
+ ```bash
+ grep -A 1 "mermaid2:" mkdocs.yml
  ```
 - [ ] **No plugin errors on build**
-  ```bash
-  mkdocs build 2>&1 | grep -i "plugin" | grep -i error || echo "✅ No plugin errors"
+ ```bash
+ mkdocs build 2>&1 | grep -i "plugin" | grep -i error || echo " No plugin errors"
  ```
 
 ### 1.4 Markdown Extensions
@@ -75,31 +75,31 @@ grep -E "admonition|tables|toc|pymdownx" mkdocs.yml | wc -l
 
 ### 2.1 Documentation Structure
 - [ ] **Total docs files**: ~1947 markdown files
-  ```bash
-  find docs -name "*.md" | wc -l
+ ```bash
+ find docs -name "*.md" | wc -l
  ```
 - [ ] **No broken reference in docs**
-  ```bash
-  find docs -name "*.md" -exec grep -l "\\[.*\\]" {} \; | wc -l
-  # Count files with links
+ ```bash
+ find docs -name "*.md" -exec grep -l "\\[.*\\]" {} \; | wc -l
+ # Count files with links
  ```
 - [ ] **docs/ directory not empty**: Multiple subdirectories present
-  ```bash
-  ls -d docs/*/ | wc -l
+ ```bash
+ ls -d docs/*/ | wc -l
  ```
 
 ### 2.2 Navigation Configuration
 - [ ] **Navigation entries count**: 100+ entries
-  ```bash
-  python3 -c "import yaml; nav = yaml.safe_load(open('mkdocs.yml'))['nav']; print(len([i for i in nav]))"
+ ```bash
+ python3 -c "import yaml; nav = yaml.safe_load(open('mkdocs.yml'))['nav']; print(len([i for i in nav]))"
  ```
 - [ ] **Home page exists**: `docs/index.md`
-  ```bash
-  test -f docs/index.md && echo "✅ Homepage exists"
+ ```bash
+ test -f docs/index.md && echo " Homepage exists"
  ```
 - [ ] **README exists**: `docs/README_ROOT.md`
-  ```bash
-  test -f docs/README_ROOT.md && echo "✅ README exists"
+ ```bash
+ test -f docs/README_ROOT.md && echo " README exists"
  ```
 
 ### 2.3 Required Documentation Pages
@@ -111,14 +111,14 @@ grep -E "admonition|tables|toc|pymdownx" mkdocs.yml | wc -l
 
 **Verify**:
 ```bash
-test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created"
+test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo " New guide created"
 ```
 
 ### 2.4 Excluded Files Check
 - [ ] **Template files excluded**: files in `docs/templates/` are excluded by design
 - [ ] **Exclusion configured correctly**: `exclude_docs` in mkdocs.yml
-  ```bash
-  grep -A 2 "exclude_docs:" mkdocs.yml
+ ```bash
+ grep -A 2 "exclude_docs:" mkdocs.yml
  ```
 - [ ] **Expected exclusions**: README.md, _config.yml, _layouts/
 
@@ -128,54 +128,54 @@ test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created
 
 ### 3.1 Environment Setup
 - [ ] **Python 3.12+ installed**: `python --version`
-  ```bash
-  python --version | grep -E "3\.(12|13|14)"
+ ```bash
+ python --version | grep -E "3\.(12|13|14)"
  ```
 - [ ] **MkDocs installed**: `mkdocs --version`
-  ```bash
-  mkdocs --version
+ ```bash
+ mkdocs --version
  ```
 - [ ] **MkDocs Material installed**: Visible in `pip list`
-  ```bash
-  pip list | grep mkdocs
+ ```bash
+ pip list | grep mkdocs
  ```
 - [ ] **Mermaid2 plugin installed**
-  ```bash
-  pip show mkdocs-mermaid2-plugin | grep "Version"
+ ```bash
+ pip show mkdocs-mermaid2-plugin | grep "Version"
  ```
 
 ### 3.2 Local Build Test
 - [ ] **Build completes without errors**
-  ```bash
-  mkdocs build 2>&1 | grep -i "✅"
+ ```bash
+ mkdocs build 2>&1 | grep -i ""
  ```
 - [ ] **site/ directory created**: Output files generated
-  ```bash
-  test -d site && echo "✅ site/ directory created"
+ ```bash
+ test -d site && echo " site/ directory created"
  ```
 - [ ] **index.html generated**: Homepage present
-  ```bash
-  test -f site/index.html && echo "✅ Homepage generated"
+ ```bash
+ test -f site/index.html && echo " Homepage generated"
  ```
 - [ ] **Search index created**: Full-text search data
-  ```bash
-  test -f site/search/search_index.json && echo "✅ Search index created"
+ ```bash
+ test -f site/search/search_index.json && echo " Search index created"
  ```
 - [ ] **No broken links in output**: Validate references
-  ```bash
-  find site -name "*.html" | wc -l
-  # Should match number of docs
+ ```bash
+ find site -name "*.html" | wc -l
+ # Should match number of docs
  ```
 
 ### 3.3 Development Server Test
 - [ ] **Server starts successfully**
-  ```bash
-  timeout 5 mkdocs serve 2>&1 | grep -E "127.0.0.1:8000"
+ ```bash
+ timeout 5 mkdocs serve 2>&1 | grep -E "127.0.0.1:8000"
  ```
 - [ ] **Accessible at 127.0.0.1:8000**: HTTP 200 response
-  ```bash
-  curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000
-  # Expected: 200
+ ```bash
+ curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000
+ # Expected: 200
  ```
 - [ ] **Hot reload functional**: Changes reflected without restart
  - Edit a .md file
@@ -195,34 +195,34 @@ test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created
 
 ### 4.1 Workflow Configuration
 - [ ] **Workflow file exists**: `.github/workflows/pages-mkdocs.yml`
-  ```bash
-  test -f .github/workflows/pages-mkdocs.yml && echo "✅ Workflow exists"
+ ```bash
+ test -f .github/workflows/pages-mkdocs.yml && echo " Workflow exists"
  ```
 - [ ] **Trigger on push to main with doc changes**
-  ```bash
-  grep -A 3 "push:" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep -A 3 "push:" .github/workflows/pages-mkdocs.yml
  ```
 - [ ] **Trigger on manual dispatch**
-  ```bash
-  grep "workflow_dispatch:" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep "workflow_dispatch:" .github/workflows/pages-mkdocs.yml
  ```
 - [ ] **Concurrency configured**: Prevent simultaneous deployments
-  ```bash
-  grep -A 2 "concurrency:" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep -A 2 "concurrency:" .github/workflows/pages-mkdocs.yml
  ```
 
 ### 4.2 Workflow Jobs
 - [ ] **Build job configured**: Ubuntu latest runner, timeout 60m
-  ```bash
-  grep -A 3 "build:" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep -A 3 "build:" .github/workflows/pages-mkdocs.yml
  ```
 - [ ] **Deploy job configured**: Wait for build completion
-  ```bash
-  grep -A 3 "deploy:" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep -A 3 "deploy:" .github/workflows/pages-mkdocs.yml
  ```
 - [ ] **Health check step included**: Verify deployed site
-  ```bash
-  grep "health_check" .github/workflows/pages-mkdocs.yml
+ ```bash
+ grep "health_check" .github/workflows/pages-mkdocs.yml
  ```
 
 ### 4.3 Build Steps
@@ -247,17 +247,17 @@ test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created
 
 ### 5.1 Kubernetes Deployment (deploy/deploy.sh)
 - [ ] **File exists and is executable**
-  ```bash
-  test -x deploy/deploy.sh && echo "✅ deploy.sh is executable"
+ ```bash
+ test -x deploy/deploy.sh && echo " deploy.sh is executable"
  ```
 - [ ] **Syntax valid**: No shell errors
-  ```bash
-  bash -n deploy/deploy.sh && echo "✅ Syntax valid"
+ ```bash
+ bash -n deploy/deploy.sh && echo " Syntax valid"
  ```
 - [ ] **Documentation present**: Comments and help text
-  ```bash
-  grep -c "^#" deploy/deploy.sh
-  # Should be >50 lines of documentation
+ ```bash
+ grep -c "^#" deploy/deploy.sh
+ # Should be >50 lines of documentation
  ```
 - [ ] **Key functions present**:
  - [ ] `check_prerequisites()`
@@ -284,8 +284,8 @@ test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created
 ### 5.4 Python Pipeline (deploy/deploy_codex_pipeline.py)
 - [ ] **File exists**: `deploy/deploy_codex_pipeline.py`
 - [ ] **No syntax errors**
-  ```bash
-  python3 -m py_compile deploy/deploy_codex_pipeline.py
+ ```bash
+ python3 -m py_compile deploy/deploy_codex_pipeline.py
  ```
 - [ ] **Documented**: Includes docstrings and comments
 
@@ -328,9 +328,9 @@ test -f docs/deployment/LOCAL_DEPLOYMENT_GUIDE.md && echo "✅ New guide created
 python3 << 'EOF'
 import yaml
 with open('mkdocs.yml', 'r') as f:
-    config = yaml.safe_load(f)
+ config = yaml.safe_load(f)
 nav = config.get('nav', [])
-print(f"✅ Navigation entries: {len(nav)} main sections")
+print(f" Navigation entries: {len(nav)} main sections")
 EOF
 ```
 

@@ -46,10 +46,10 @@ This is the primary security policy document covering:
 
 **Development Security:**
 ```python
-#  DO: Use parametrized queries
+# DO: Use parametrized queries
 user = db.query(User).filter(User.id == user_id).first()
 
-#  DON'T: String concatenation (SQL injection risk)
+# DON'T: String concatenation (SQL injection risk)
 user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 ```
 
@@ -110,29 +110,29 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 ```
 1. DETECT & ASSESS
-   ├─ Identify incident severity
-   ├─ Determine affected systems
-   └─ Estimate impact
+ Identify incident severity
+ Determine affected systems
+ Estimate impact
 
 2. CONTAIN
-   ├─ Isolate affected systems
-   ├─ Prevent lateral movement
-   └─ Preserve evidence
+ Isolate affected systems
+ Prevent lateral movement
+ Preserve evidence
 
 3. INVESTIGATE
-   ├─ Root cause analysis
-   ├─ Timeline reconstruction
-   └─ Scope determination
+ Root cause analysis
+ Timeline reconstruction
+ Scope determination
 
 4. REMEDIATE
-   ├─ Apply fixes
-   ├─ Verify effectiveness
-   └─ Deploy to production
+ Apply fixes
+ Verify effectiveness
+ Deploy to production
 
 5. COMMUNICATE
-   ├─ Notify affected users
-   ├─ Post incident review
-   └─ Update security policies
+ Notify affected users
+ Post incident review
+ Update security policies
 ```
 
 **Incident Classification:**
@@ -150,7 +150,7 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 **Encryption in Transit:**
 ```python
-#  Use HTTPS/TLS for all external communication
+# Use HTTPS/TLS for all external communication
 import ssl
 
 context = ssl.create_default_context()
@@ -159,7 +159,7 @@ context = ssl.create_default_context()
 
 **Encryption at Rest:**
 ```python
-#  Encrypt sensitive data before storing
+# Encrypt sensitive data before storing
 from cryptography.fernet import Fernet
 
 cipher = Fernet(key)
@@ -214,17 +214,17 @@ pre-commit install
 
 ```
 CVE Discovered
-     ↓
+ 
 Assess Impact & Severity
-     ↓
-Patch Available? ────→ No ──→ Workaround / Upgrade
-     ↓ Yes
+ 
+Patch Available? No Workaround / Upgrade
+ Yes
 Test Patch
-     ↓
+ 
 Deploy to Staging
-     ↓
+ 
 Production Deployment
-     ↓
+ 
 Verify Fix
 ```
 

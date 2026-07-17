@@ -59,17 +59,17 @@ Implement an **interactive TUI (Terminal UI) mode** for the MCP (Model Context P
 
 ```
 src/mcp/
-├── __init__.py             # Public API: InteractiveSession, FileSelector, SizePreview
-├── interactive.py          # TUI entry point; orchestrates selector + preview
-├── file_selector.py        # Tree-based file picker (rich/curses)
-├── size_preview.py         # Real-time byte + token size estimation
-└── session_injector.py     # Injects selected files into Copilot context
+ __init__.py # Public API: InteractiveSession, FileSelector, SizePreview
+ interactive.py # TUI entry point; orchestrates selector + preview
+ file_selector.py # Tree-based file picker (rich/curses)
+ size_preview.py # Real-time byte + token size estimation
+ session_injector.py # Injects selected files into Copilot context
 
 tests/mcp/
-├── __init__.py
-├── test_interactive.py     # Unit tests for InteractiveSession
-├── test_file_selector.py   # Unit tests for FileSelector
-└── test_size_preview.py    # Unit tests for SizePreview
+ __init__.py
+ test_interactive.py # Unit tests for InteractiveSession
+ test_file_selector.py # Unit tests for FileSelector
+ test_size_preview.py # Unit tests for SizePreview
 ```
 
 ### Key Interfaces
@@ -77,32 +77,32 @@ tests/mcp/
 ```python
 # src/mcp/interactive.py
 class InteractiveSession:
-    """Orchestrates the TUI file selector + real-time size preview."""
+ """Orchestrates the TUI file selector + real-time size preview."""
 
-    def __init__(self, root_dir: Path, max_tokens: int = 4096): ...
-    def run(self) -> list[Path]:
-        """Launch TUI, return list of selected file paths."""
-    def inject_into_context(self, files: list[Path]) -> dict[str, str]:
-        """Load file contents for Copilot session injection."""
+ def __init__(self, root_dir: Path, max_tokens: int = 4096): ...
+ def run(self) -> list[Path]:
+ """Launch TUI, return list of selected file paths."""
+ def inject_into_context(self, files: list[Path]) -> dict[str, str]:
+ """Load file contents for Copilot session injection."""
 
 # src/mcp/file_selector.py
 class FileSelector:
-    """Tree-based interactive file picker."""
+ """Tree-based interactive file picker."""
 
-    def __init__(self, root: Path, max_depth: int = 5): ...
-    def render(self) -> None: ...
-    def toggle(self, path: Path) -> None: ...
-    def get_selected(self) -> list[Path]: ...
+ def __init__(self, root: Path, max_depth: int = 5): ...
+ def render(self) -> None: ...
+ def toggle(self, path: Path) -> None: ...
+ def get_selected(self) -> list[Path]: ...
 
 # src/mcp/size_preview.py
 class SizePreview:
-    """Real-time byte + approximate token count for selected files."""
+ """Real-time byte + approximate token count for selected files."""
 
-    def __init__(self, token_model: str = "cl100k_base"): ...
-    def update(self, files: list[Path]) -> dict[str, int]:
-        """Returns {'bytes': N, 'tokens': N, 'files': N}"""
-    def format_summary(self, stats: dict[str, int]) -> str:
-        """Returns formatted string like '42 files · 128 KB · ~3,200 tokens'"""
+ def __init__(self, token_model: str = "cl100k_base"): ...
+ def update(self, files: list[Path]) -> dict[str, int]:
+ """Returns {'bytes': N, 'tokens': N, 'files': N}"""
+ def format_summary(self, stats: dict[str, int]) -> str:
+ """Returns formatted string like '42 files · 128 KB · ~3,200 tokens'"""
 ```
 
 ---

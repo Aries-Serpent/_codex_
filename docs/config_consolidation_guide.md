@@ -12,35 +12,35 @@ This guide documents the unified configuration structure for the Codex ML projec
 
 ```
 configs/
-├── __init__.py              # Package marker
-├── README.md                # Configuration overview
-├── CONFIGURATION_STRUCTURE.md  # This file
-├── base/                    # Base configurations (defaults)
-│   ├── training.yaml
-│   ├── model.yaml
-│   ├── data.yaml
-│   ├── tracking.yaml
-│   ├── validation.yaml
-│   ├── reproducibility.yaml
-│   └── ... (other base configs)
-├── production/              # Production overrides
-│   ├── tracking.yaml
-│   ├── features.yaml
-│   ├── data_validation.yaml
-│   ├── evaluation.yaml
-│   ├── training.yaml
-│   └── monitoring.yaml
-├── development/             # Development overrides
-│   ├── minimal_train.yaml
-│   ├── minimal_eval.yaml
-│   └── minimal.yaml
-├── experiments/             # Experiment-specific configs
-│   ├── default.yaml
-│   ├── sweep.yaml
-│   └── basic.yaml
-├── hydra/                   # Hydra-specific configs
-│   └── config.yaml          # Main Hydra configuration
-└── ... (other config directories)
+ __init__.py # Package marker
+ README.md # Configuration overview
+ CONFIGURATION_STRUCTURE.md # This file
+ base/ # Base configurations (defaults)
+ training.yaml
+ model.yaml
+ data.yaml
+ tracking.yaml
+ validation.yaml
+ reproducibility.yaml
+ ... (other base configs)
+ production/ # Production overrides
+ tracking.yaml
+ features.yaml
+ data_validation.yaml
+ evaluation.yaml
+ training.yaml
+ monitoring.yaml
+ development/ # Development overrides
+ minimal_train.yaml
+ minimal_eval.yaml
+ minimal.yaml
+ experiments/ # Experiment-specific configs
+ default.yaml
+ sweep.yaml
+ basic.yaml
+ hydra/ # Hydra-specific configs
+ config.yaml # Main Hydra configuration
+ ... (other config directories)
 ```
 
 ## Unified Configuration Access
@@ -117,12 +117,12 @@ python scripts/migrate_configs.py --execute
 ```yaml
 # configs/base/training.yaml
 defaults:
-  - _self_
+ - _self_
 
 training:
-  epochs: 10
-  batch_size: 32
-  learning_rate: 1e-4
+ epochs: 10
+ batch_size: 32
+ learning_rate: 1e-4
 ```
 
 ## 3. Use Composition
@@ -130,12 +130,12 @@ training:
 ```yaml
 # configs/hydra/config.yaml
 defaults:
-  - base/training
-  - base/model
-  - base/data
-  - _self_
+ - base/training
+ - base/model
+ - base/data
+ - _self_
 
-env: development  # Override via CLI: env=production
+env: development # Override via CLI: env=production
 ```
 
 ## 4. Document Your Configs
@@ -144,9 +144,9 @@ Add comments explaining non-obvious parameters:
 
 ```yaml
 training:
-  epochs: 10  # Number of training epochs
-  batch_size: 32  # Batch size per GPU
-  gradient_accumulation_steps: 4  # Effective batch = 32 * 4 = 128
+ epochs: 10 # Number of training epochs
+ batch_size: 32 # Batch size per GPU
+ gradient_accumulation_steps: 4 # Effective batch = 32 * 4 = 128
 ```
 
 ## Hydra Integration
@@ -162,11 +162,11 @@ The Hydra configuration is set up to search for configs in:
 
 ```yaml
 hydra:
-  run:
-    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  sweep:
-    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
+ run:
+ dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+ sweep:
+ dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+ subdir: ${hydra.job.num}
 ```
 
 ## Troubleshooting
@@ -176,11 +176,11 @@ hydra:
 **Solution**: Ensure you're referencing configs relative to the `configs/` directory:
 
 ```python
-#  Wrong
+# Wrong
 get_config("training.yaml")
 
-#  Correct
-get_config("base/training")  # No .yaml extension needed
+# Correct
+get_config("base/training") # No .yaml extension needed
 ```
 
 ## Issue: "Hydra initialization error"
@@ -196,10 +196,10 @@ pip install hydra-core omegaconf
 **Solution**: Use proper Hydra override syntax:
 
 ```bash
-#  Wrong
+# Wrong
 python train.py --epochs=100
 
-#  Correct
+# Correct
 python train.py training.epochs=100
 ```
 

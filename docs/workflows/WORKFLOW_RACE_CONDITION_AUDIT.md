@@ -50,43 +50,43 @@ Additionally, `iterative-self-healing-ci` has **no marker-based dedup at all** o
 %%{init: {'accessibility': {'title': 'Flowchart showing git push / PR update, auto-fix-common-issues.yml'}}%%
 
 flowchart TD
-    subgraph "Trigger Sources"
-        PUSH[git push / PR update]
-    end
+ subgraph "Trigger Sources"
+ PUSH[git push / PR update]
+ end
 
-    subgraph "Simultaneous Firer Group (T+0s to T+10s)"
-        WF1[auto-fix-common-issues.yml]
-        WF2[auto-fix-pr-check.yml]
-        WF3[resilient_validation.yml]
-        WF4[validate.yml]
-        WF5[pre-merge-validation.yml]
-        WF6[agent-auth-delegation.yml]
-        WF7[iterative-self-healing-ci.yml]
-    end
+ subgraph "Simultaneous Firer Group (T+0s to T+10s)"
+ WF1[auto-fix-common-issues.yml]
+ WF2[auto-fix-pr-check.yml]
+ WF3[resilient_validation.yml]
+ WF4[validate.yml]
+ WF5[pre-merge-validation.yml]
+ WF6[agent-auth-delegation.yml]
+ WF7[iterative-self-healing-ci.yml]
+ end
 
-    subgraph "Race Condition: GitHub Comments API"
-        C1[Comment attempt #1]
-        C2[Comment attempt #2]
-        C3[Comment attempt #3 ... #7]
-        STORM[💥 Comment Storm — 7 duplicates]
-    end
+ subgraph "Race Condition: GitHub Comments API"
+ C1[Comment attempt #1]
+ C2[Comment attempt #2]
+ C3[Comment attempt #3 ... #7]
+ STORM[ Comment Storm — 7 duplicates]
+ end
 
-    subgraph "Fix Applied (S227)"
+ subgraph "Fix Applied (S227)"
 
-        MK[Per-PR marker\n'<!-- ci-rescue:{pr_number} -->']
-        CG[Concurrency group\n'ci-rescue-comment-{PR_NUMBER}']
-        DD[30-min dedup window]
-    end
+ MK[Per-PR marker\n'<!-- ci-rescue:{pr_number} -->']
+ CG[Concurrency group\n'ci-rescue-comment-{PR_NUMBER}']
+ DD[30-min dedup window]
+ end
 
-    PUSH --> WF1 & WF2 & WF3 & WF4 & WF5 & WF6 & WF7
+ PUSH --> WF1 & WF2 & WF3 & WF4 & WF5 & WF6 & WF7
 
-    WF1 & WF2 & WF3 --> C1 & C2 & C3 --> STORM
+ WF1 & WF2 & WF3 --> C1 & C2 & C3 --> STORM
 
-    STORM -.->|S227 fix| MK
+ STORM -.->|S227 fix| MK
 
-    MK --> CG
+ MK --> CG
 
-    CG --> DD
+ CG --> DD
 ```
 
 ### 1.2 Fix Architecture Diagram (Post-S227)
@@ -95,20 +95,20 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Flowchart showing git push, All N workflows fire'}}%%
 
 flowchart LR
-    subgraph "Post-Fix Flow (S227 F-01 to F-13)"
+ subgraph "Post-Fix Flow (S227 F-01 to F-13)"
 
-        PUSH2[git push] --> WFN[All N workflows fire]
+ PUSH2[git push] --> WFN[All N workflows fire]
 
-        WFN --> CHK{Marker present?\n'ci-rescue:{PR}'}
+ WFN --> CHK{Marker present?\n'ci-rescue:{PR}'}
 
-        CHK -->|yes + <30min| SKIP[Skip — dedup guard]
+ CHK -->|yes + <30min| SKIP[Skip — dedup guard]
 
-        CHK -->|no / >30min| POST[Post rescue comment]
+ CHK -->|no / >30min| POST[Post rescue comment]
 
-        POST --> UPS[Upsert marker in comment]
+ POST --> UPS[Upsert marker in comment]
 
-        UPS --> CONC[Concurrency group serialises\nnext run]
-    end
+ UPS --> CONC[Concurrency group serialises\nnext run]
+ end
 ```
 
 ---
@@ -132,10 +132,10 @@ For each workflow the following sections were extracted and analysed:
 **Trigger:**
 ```yaml
 on:
-  workflow_run:
-    workflows: ["*"]   # ← fires on completion of EVERY other workflow
-    types: [completed]
-  workflow_dispatch: ...
+ workflow_run:
+ workflows: ["*"] # fires on completion of EVERY other workflow
+ types: [completed]
+ workflow_dispatch: ...
 ```
 
 **Concurrency (workflow-level):**
@@ -146,20 +146,20 @@ on:
 **Job-level `if` guards (triage job):**
 ```yaml
 if: >
-  github.event_name == 'workflow_dispatch' ||
-  (
-    github.event.workflow_run.conclusion == 'failure' &&
-    github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
-    github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
-    # ... 6 more exclusions
-  )
+ github.event_name == 'workflow_dispatch' ||
+ (
+ github.event.workflow_run.conclusion == 'failure' &&
+ github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
+ github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
+ # ... 6 more exclusions
+ )
 ```
 
 **PROBLEM — `escalate` job (lines 490–560): NO MARKER**
 ```bash
 # Posts via gh pr comment every time — no check for existing comment
 gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
-  --body-file /tmp/escalation_body.txt
+ --body-file /tmp/escalation_body.txt
 ```
 
 **PROBLEM — `copilot-escalation` job (lines 663–756): NO MARKER**
@@ -184,15 +184,15 @@ gh pr comment "${PR_NUMBER}" --repo Aries-Serpent/_codex_ --body "${BODY}"
 **Trigger:**
 ```yaml
 on:
-  issues:
-    types: [opened, reopened]
+ issues:
+ types: [opened, reopened]
 ```
 
 **Concurrency:**
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+ group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true
 ```
 
 **Job `if` condition:**
@@ -223,14 +223,14 @@ await github.rest.issues.createComment({ ... body: triageBody });
 **Trigger:**
 ```yaml
 on:
-  workflow_dispatch: ...
-  pull_request:
-    paths:
-      - 'tests/**/*.py'
-      - 'src/**/*.py'
-      - '.github/workflows/*.yml'
-      - 'pyproject.toml'
-      - 'noxfile.py'
+ workflow_dispatch: ...
+ pull_request:
+ paths:
+ - 'tests/**/*.py'
+ - 'src/**/*.py'
+ - '.github/workflows/*.yml'
+ - 'pyproject.toml'
+ - 'noxfile.py'
 ```
 
 **Concurrency:** None (missing)
@@ -251,21 +251,21 @@ on:
 **Trigger:**
 ```yaml
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'src/**/*.py'
-      - 'tests/**/*.py'
-      - '.github/workflows/*.yml'
-      - 'pyproject.toml'
-      - 'noxfile.py'
+ pull_request:
+ types: [opened, synchronize, reopened]
+ paths:
+ - 'src/**/*.py'
+ - 'tests/**/*.py'
+ - '.github/workflows/*.yml'
+ - 'pyproject.toml'
+ - 'noxfile.py'
 ```
 
 **Concurrency:**
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+ group: ${{ github.workflow }}-${{ github.ref }}
+ cancel-in-progress: true
 ```
 
 **Comment dedup:** Uses `<!-- auto-fix-ci-check-{sha_short} -->` per-SHA marker
@@ -286,12 +286,12 @@ Both workflows fire on `push` to a PR matching `.github/workflows/*.yml`. When b
 ```yaml
 # No concurrency block at workflow or job level
 permissions:
-  contents: read
-  pull-requests: write
+ contents: read
+ pull-requests: write
 jobs:
-  estimate: ...
-  gate: ...
-  post-proposal: ...  # ← 6 callers can post-proposal simultaneously
+ estimate: ...
+ gate: ...
+ post-proposal: ... # 6 callers can post-proposal simultaneously
 ```
 
 **Comment logic:** Uses `<!-- cost-gate-proposals-v2 -->` master marker + per-workflow `<!-- cp-start:{slug} -->` sections
@@ -317,30 +317,30 @@ The 4-attempt linear retry handles sequential retries within one run but cannot 
 **Trigger:**
 ```yaml
 on:
-  push:
-    branches: ["0D_base_"]          # ← fires on EVERY push, not just PRs
-  workflow_dispatch: ...
-  issue_comment:
-    types: [created]
-  workflow_run:
-    workflows: ["Copilot coding agent"]
-    types: [completed]
+ push:
+ branches: ["0D_base_"] # fires on EVERY push, not just PRs
+ workflow_dispatch: ...
+ issue_comment:
+ types: [created]
+ workflow_run:
+ workflows: ["Copilot coding agent"]
+ types: [completed]
 ```
 
 **Concurrency:**
 ```yaml
 concurrency:
-  group: agent-checkin-${{ github.event.issue.number || github.event.workflow_run.id || github.sha }}
-  cancel-in-progress: false    # ← intentional: serialise, don't cancel
+ group: agent-checkin-${{ github.event.issue.number || github.event.workflow_run.id || github.sha }}
+ cancel-in-progress: false # intentional: serialise, don't cancel
 ```
 
 **Job `if` conditions:**
 ```yaml
 if: |
-  (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-  !contains(github.event.head_commit.message, '[skip ci]') &&
-  !startsWith(github.event.head_commit.message, 'chore(auth):') &&
-  !startsWith(github.event.head_commit.message, 'chore(d00):')
+ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+ !contains(github.event.head_commit.message, '[skip ci]') &&
+ !startsWith(github.event.head_commit.message, 'chore(auth):') &&
+ !startsWith(github.event.head_commit.message, 'chore(d00):')
 ```
 
 **PROBLEM — Fires on every push including bot-only commits:**
@@ -360,22 +360,22 @@ Even with `[skip ci]` / `chore(auth)` / `chore(d00)` guards, commits from `copil
 **Trigger:**
 ```yaml
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-  pull_request_review:
-    types: [submitted]
+ pull_request:
+ types: [opened, synchronize, reopened, ready_for_review]
+ pull_request_review:
+ types: [submitted]
 ```
 
 **Concurrency:**
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true    # ← cancels previous run on new push 
+ group: ${{ github.workflow }}-${{ github.ref }}
+ cancel-in-progress: true # cancels previous run on new push 
 ```
 
 **Job condition:**
 ```yaml
-if: github.event.pull_request.draft == false    # 
+if: github.event.pull_request.draft == false # 
 ```
 
 **Comment dedup:** `<!-- ci-rescue-rca:{sha_short} -->` per-SHA marker + full pagination upsert
@@ -389,20 +389,20 @@ if: github.event.pull_request.draft == false    #
 **Trigger:**
 ```yaml
 on:
-  pull_request:
-    paths:
-      - 'docs/**'
-      - 'tests/**'
-      - '.codex/**'
-      - 'src/**'
-      - 'scripts/**'
+ pull_request:
+ paths:
+ - 'docs/**'
+ - 'tests/**'
+ - '.codex/**'
+ - 'src/**'
+ - 'scripts/**'
 ```
 
 **Concurrency:**
 ```yaml
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true    # 
+ group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true # 
 ```
 
 **Comment dedup:** `<!-- ci-rescue-rca:${shaShort} -->` per-SHA + `github.paginate()` upsert
@@ -418,21 +418,21 @@ The following matrix shows which workflows fire on the same event and therefore 
 
 ```
 Event: push to 0D_base_ PR branch
-─────────────────────────────────────────────────────────────────
-Workflow                       Trigger         Posts Comment?  Marker Type
-─────────────────────────────────────────────────────────────────
-pre-merge-validation           pull_request    YES (rescue)    per-SHA ️
-resilient_validation           pull_request    YES (rescue)    per-SHA ️
-auto-fix-common-issues         pull_request    YES (rescue)    per-SHA ️
-auto-fix-pr-check              pull_request    YES (rescue)    per-SHA ️
-validate.yml                   pull_request    YES (rescue)    per-SHA ️
-agent-auth-delegation          pull_request    YES (checklist) per-PR 
-actionlint-audit               pull_request    YES (rescue)    per-SHA ️
-reference-integrity            pull_request    YES (gate fail) no marker 
-─────────────────────────────────────────────────────────────────
+
+Workflow Trigger Posts Comment? Marker Type
+
+pre-merge-validation pull_request YES (rescue) per-SHA 
+resilient_validation pull_request YES (rescue) per-SHA 
+auto-fix-common-issues pull_request YES (rescue) per-SHA 
+auto-fix-pr-check pull_request YES (rescue) per-SHA 
+validate.yml pull_request YES (rescue) per-SHA 
+agent-auth-delegation pull_request YES (checklist) per-PR 
+actionlint-audit pull_request YES (rescue) per-SHA 
+reference-integrity pull_request YES (gate fail) no marker 
+
 THEN: iterative-self-healing-ci fires on EACH of the above failing
-  → fires 7–8 times → posts 7–8 escalation comments with NO marker
-─────────────────────────────────────────────────────────────────
+ fires 7–8 times posts 7–8 escalation comments with NO marker
+
 Total potential comments from one push: 8 (rescue) + 7 (escalation) = 15
 ```
 
@@ -501,21 +501,21 @@ After implementing all fixes, verify the following for each affected workflow:
 ```bash
 # F-01, F-02: Marker present in both escalation jobs
 grep -n 'iterative-self-healing-escalate\|copilot-escalation' \
-  .github/workflows/iterative-self-healing-ci.yml
+ .github/workflows/iterative-self-healing-ci.yml
 
 # F-03: Concurrency block in iterative-self-healing-ci
 grep -A2 'concurrency:' .github/workflows/iterative-self-healing-ci.yml | head -20
 
 # F-04, F-05: Triage job filter + marker
 grep -n 'ci-failure\|ai-triage-summary\|user.type' \
-  .github/workflows/copilot-issue-triage.yml
+ .github/workflows/copilot-issue-triage.yml
 
 # F-08, F-09: cost-gate concurrency + exponential back-off
 grep -n 'cost-gate-pr\|Math.pow\|Math.random' .github/workflows/cost-gate.yml
 
 # F-10: copilot-agent-checkin bot-commit filter
 grep -n 'triggering_actor\|chore(sync)\|fix(docs)' \
-  .github/workflows/copilot-agent-checkin.yml
+ .github/workflows/copilot-agent-checkin.yml
 
 # F-11: Per-PR rescue marker everywhere
 grep -rn 'ci-rescue-rca:' .github/workflows/ | grep -v 'ci-rescue:' | wc -l

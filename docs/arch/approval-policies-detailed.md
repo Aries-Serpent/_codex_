@@ -43,21 +43,21 @@ The approval system provides a human-in-the-loop gate for sensitive operations, 
 ### Approval Workflow States
 
 ```
-                    ┌─────────────┐
-                    │ PENDING (5m)│
-                    └──────┬──────┘
-                           │
-           ┌───────────────┼───────────────┐
-           │               │               │
-      ┌────▼─────┐   ┌─────▼──────┐  ┌────▼─────┐
-      │ APPROVED  │   │ REJECTED   │  │ EXPIRED  │
-      └──────────┘   └────────────┘  └──────────┘
-           │               │              │
-           └───────────────┼──────────────┘
-                           │
-                    ┌──────▼────────┐
-                    │ ARCHIVED (90d)│
-                    └───────────────┘
+ 
+ PENDING (5m)
+ 
+ 
+ 
+ 
+ 
+ APPROVED REJECTED EXPIRED 
+ 
+ 
+ 
+ 
+ 
+ ARCHIVED (90d)
+ 
 ```
 
 ---
@@ -82,11 +82,11 @@ The approval system provides a human-in-the-loop gate for sensitive operations, 
 **Example:**
 ```python
 request = ApprovalRequest(
-    request_id="req-789",
-    policy_code="AGENT_DEPLOY_PROD",
-    status=ApprovalStatus.PENDING,
-    created_at=1720000000,
-    expires_at=1720000300  # 5 minutes later
+ request_id="req-789",
+ policy_code="AGENT_DEPLOY_PROD",
+ status=ApprovalStatus.PENDING,
+ created_at=1720000000,
+ expires_at=1720000300 # 5 minutes later
 )
 ```
 
@@ -108,16 +108,16 @@ request = ApprovalRequest(
 ```python
 request.status = ApprovalStatus.APPROVED
 request.decisions = [
-    ApprovalDecision(
-        approver="alice",
-        decision="approved",
-        reason="Reviewed and validated"
-    ),
-    ApprovalDecision(
-        approver="bob",
-        decision="approved",
-        reason="Security assessment passed"
-    )
+ ApprovalDecision(
+ approver="alice",
+ decision="approved",
+ reason="Reviewed and validated"
+ ),
+ ApprovalDecision(
+ approver="bob",
+ decision="approved",
+ reason="Security assessment passed"
+ )
 ]
 ```
 
@@ -143,11 +143,11 @@ request.decisions = [
 ```python
 request.status = ApprovalStatus.REJECTED
 request.decisions = [
-    ApprovalDecision(
-        approver="charlie",
-        decision="rejected",
-        reason="ML model has not been validated against Q3 security requirements"
-    )
+ ApprovalDecision(
+ approver="charlie",
+ decision="rejected",
+ reason="ML model has not been validated against Q3 security requirements"
+ )
 ]
 ```
 
@@ -182,11 +182,11 @@ request.escalation_count = 1
 If approval decision is not made within the SLA window, the request automatically escalates to the next level of authority:
 
 ```
-Level 1 (Primary)  ──4 hours──→  Level 2 (Secondary)  ──4 hours──→  Level 3 (Senior)
-                     (escalate)                          (escalate)
-                                                          
+Level 1 (Primary) 4 hours Level 2 (Secondary) 4 hours Level 3 (Senior)
+ (escalate) (escalate)
+ 
 If Level 3 doesn't respond:
-   → Auto-approve (quorum unavailable)
+ Auto-approve (quorum unavailable)
 ```
 
 ### Level 1: Primary Owner (4 hours)
@@ -201,11 +201,11 @@ If Level 3 doesn't respond:
 **Example SLA Definition:**
 ```python
 SLAPolicy(
-    policy_code="AGENT_DEPLOY_PROD",
-    l1_sla_hours=4.0,
-    l2_sla_hours=4.0,
-    owner_sla_hours=4.0,
-    max_escalations=2
+ policy_code="AGENT_DEPLOY_PROD",
+ l1_sla_hours=4.0,
+ l2_sla_hours=4.0,
+ owner_sla_hours=4.0,
+ max_escalations=2
 )
 ```
 
@@ -223,9 +223,9 @@ SLAPolicy(
 **Escalation Trigger:**
 ```python
 if time.time() > request.sla_deadline:
-    request.escalation_count += 1
-    request.current_approver_id = "level2_approver"
-    request.sla_deadline = time.time() + 4 * 3600
+ request.escalation_count += 1
+ request.current_approver_id = "level2_approver"
+ request.sla_deadline = time.time() + 4 * 3600
 ```
 
 ### Level 3: Senior Authority (4 hours)
@@ -242,10 +242,10 @@ if time.time() > request.sla_deadline:
 **Auto-Approval Logic:**
 ```python
 if time.time() > request.sla_deadline and request.escalation_count >= 2:
-    # Auto-approve due to quorum unavailable
-    request.status = ApprovalStatus.APPROVED
-    request.auto_approved = True
-    request.escalation_count = 3
+ # Auto-approve due to quorum unavailable
+ request.status = ApprovalStatus.APPROVED
+ request.auto_approved = True
+ request.escalation_count = 3
 ```
 
 ### Special SLAs
@@ -262,10 +262,10 @@ Operations that cannot be undone require immediate approval:
 **Policy:**
 ```python
 SLAPolicy(
-    policy_code="DESTRUCTIVE_OPERATION",
-    l1_sla_hours=0.0,  # Immediate approval required
-    is_destructive=True,
-    requires_system_admin=True
+ policy_code="DESTRUCTIVE_OPERATION",
+ l1_sla_hours=0.0, # Immediate approval required
+ is_destructive=True,
+ requires_system_admin=True
 )
 ```
 
@@ -280,10 +280,10 @@ During active incidents, approval SLA is expedited:
 **Policy:**
 ```python
 SLAPolicy(
-    policy_code="INCIDENT_RESPONSE",
-    incident_sla_minutes=30.0,
-    is_incident_related=True,
-    max_escalations=1
+ policy_code="INCIDENT_RESPONSE",
+ incident_sla_minutes=30.0,
+ is_incident_related=True,
+ max_escalations=1
 )
 ```
 
@@ -305,28 +305,28 @@ SLAPolicy(
 **Policy Definition:**
 ```python
 APPROVAL_POLICY_MATRIX = {
-    "AGENT_DEPLOY_DEV": {
-        "require_rbac_approval": True,
-        "auto_approve_if_privileged": True,
-        "required_roles": [CodexRole.AGENT_OPERATOR],
-        "sla_hours": 4,
-        "max_escalations": 0,
-        "environment": "development"
-    }
+ "AGENT_DEPLOY_DEV": {
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": True,
+ "required_roles": [CodexRole.AGENT_OPERATOR],
+ "sla_hours": 4,
+ "max_escalations": 0,
+ "environment": "development"
+ }
 }
 ```
 
 **Workflow:**
 ```
 Requester submits request
-    ↓
+ 
 [Check: Does requester have agent_operator role?]
-    ├─ YES → Auto-approve, proceed with deployment
-    └─ NO  → Request agent_operator approval
-                ↓
-            [Wait up to 4 hours]
-                ↓
-            [Timeout: Request expires]
+ YES Auto-approve, proceed with deployment
+ NO Request agent_operator approval
+ 
+ [Wait up to 4 hours]
+ 
+ [Timeout: Request expires]
 ```
 
 ### AGENT_DEPLOY_STAGING
@@ -343,12 +343,12 @@ Requester submits request
 **Policy Definition:**
 ```python
 "AGENT_DEPLOY_STAGING": {
-    "require_rbac_approval": True,
-    "auto_approve_if_privileged": False,
-    "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.AGENT_OPERATOR],
-    "sla_hours": 4,
-    "max_escalations": 2,
-    "environment": "staging"
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": False,
+ "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.AGENT_OPERATOR],
+ "sla_hours": 4,
+ "max_escalations": 2,
+ "environment": "staging"
 }
 ```
 
@@ -367,32 +367,32 @@ Requester submits request
 **Policy Definition:**
 ```python
 "AGENT_DEPLOY_PROD": {
-    "require_rbac_approval": True,
-    "auto_approve_if_privileged": False,
-    "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.CI_OPERATOR],
-    "sla_hours": 4,
-    "max_escalations": 2,
-    "environment": "production",
-    "sequential_approval": True,
-    "requires_all_approvers": True,
-    "risk_level": "high"
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": False,
+ "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.CI_OPERATOR],
+ "sla_hours": 4,
+ "max_escalations": 2,
+ "environment": "production",
+ "sequential_approval": True,
+ "requires_all_approvers": True,
+ "risk_level": "high"
 }
 ```
 
 **Workflow:**
 ```
 agent_operator submits deployment request
-    ↓
+ 
 [Requires 2 approvals: security_reviewer + ci_operator]
-    ├─ security_reviewer reviews code/model (4h SLA)
-    │   ├─ Approved → Continue
-    │   ├─ Rejected → Deployment blocked
-    │   └─ Timeout → Escalate to L2 security reviewer
-    │
-    └─ ci_operator reviews infrastructure (4h SLA in parallel)
-        ├─ Approved → Both approved, proceed
-        ├─ Rejected → Deployment blocked
-        └─ Timeout → Escalate to L2 infra reviewer
+ security_reviewer reviews code/model (4h SLA)
+ Approved Continue
+ Rejected Deployment blocked
+ Timeout Escalate to L2 security reviewer
+ 
+ ci_operator reviews infrastructure (4h SLA in parallel)
+ Approved Both approved, proceed
+ Rejected Deployment blocked
+ Timeout Escalate to L2 infra reviewer
 ```
 
 ### SECRET_ROTATE
@@ -409,13 +409,13 @@ agent_operator submits deployment request
 **Policy Definition:**
 ```python
 "SECRET_ROTATE": {
-    "require_rbac_approval": True,
-    "auto_approve_if_privileged": False,
-    "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.SYSTEM_ADMIN],
-    "sla_hours": 2,
-    "max_escalations": 1,
-    "is_destructive": False,  # But time-sensitive
-    "requires_all_approvers": True
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": False,
+ "required_roles": [CodexRole.SECURITY_REVIEWER, CodexRole.SYSTEM_ADMIN],
+ "sla_hours": 2,
+ "max_escalations": 1,
+ "is_destructive": False, # But time-sensitive
+ "requires_all_approvers": True
 }
 ```
 
@@ -436,18 +436,18 @@ agent_operator submits deployment request
 **Policy Definition:**
 ```python
 "CODE_REVIEW_SECURITY": {
-    "require_rbac_approval": True,
-    "auto_approve_if_privileged": False,
-    "required_roles": [CodexRole.SECURITY_REVIEWER],
-    "sla_hours": 24,
-    "max_escalations": 1,
-    "risk_areas": [
-        "authentication",
-        "authorization",
-        "cryptography",
-        "secrets",
-        "data validation"
-    ]
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": False,
+ "required_roles": [CodexRole.SECURITY_REVIEWER],
+ "sla_hours": 24,
+ "max_escalations": 1,
+ "risk_areas": [
+ "authentication",
+ "authorization",
+ "cryptography",
+ "secrets",
+ "data validation"
+ ]
 }
 ```
 
@@ -463,12 +463,12 @@ agent_operator submits deployment request
 **Policy Definition:**
 ```python
 "WORKFLOW_CHANGE": {
-    "require_rbac_approval": True,
-    "auto_approve_if_privileged": False,
-    "required_roles": [CodexRole.CI_OPERATOR],
-    "conditional_roles": [CodexRole.SECURITY_REVIEWER],  # If security-related
-    "sla_hours": 4,
-    "max_escalations": 1
+ "require_rbac_approval": True,
+ "auto_approve_if_privileged": False,
+ "required_roles": [CodexRole.CI_OPERATOR],
+ "conditional_roles": [CodexRole.SECURITY_REVIEWER], # If security-related
+ "sla_hours": 4,
+ "max_escalations": 1
 }
 ```
 
@@ -485,9 +485,9 @@ Auto-approval is triggered when ALL of these conditions are met:
 ```python
 # Check if requester has all required approval roles
 def check_rbac_auto_approval(requester_roles, policy):
-    required_roles = set(policy["required_roles"])
-    has_all_roles = required_roles.issubset(set(requester_roles))
-    return has_all_roles
+ required_roles = set(policy["required_roles"])
+ has_all_roles = required_roles.issubset(set(requester_roles))
+ return has_all_roles
 ```
 
 #### Condition 2: Policy Allows Auto-Approval
@@ -495,14 +495,14 @@ def check_rbac_auto_approval(requester_roles, policy):
 ```python
 # Check policy configuration
 def policy_allows_auto_approval(policy):
-    return policy.get("auto_approve_if_privileged", False)
+ return policy.get("auto_approve_if_privileged", False)
 ```
 
 #### Condition 3: Not a Destructive Operation
 
 ```python
 def is_safe_for_auto_approval(policy):
-    return not policy.get("is_destructive", False)
+ return not policy.get("is_destructive", False)
 ```
 
 ### Auto-Approval Examples
@@ -511,45 +511,45 @@ def is_safe_for_auto_approval(policy):
 
 ```python
 request = ApprovalRequest(
-    policy_code="AGENT_DEPLOY_DEV",
-    requester_id="alice",
-    requester_roles=[CodexRole.AGENT_OPERATOR],
-    resource_id="agent_dev_v1"
+ policy_code="AGENT_DEPLOY_DEV",
+ requester_id="alice",
+ requester_roles=[CodexRole.AGENT_OPERATOR],
+ resource_id="agent_dev_v1"
 )
 
 # Policy allows auto-approval if requester has agent_operator
 if all([
-    CodexRole.AGENT_OPERATOR in request.requester_roles,
-    POLICIES["AGENT_DEPLOY_DEV"]["auto_approve_if_privileged"],
-    not POLICIES["AGENT_DEPLOY_DEV"]["is_destructive"]
+ CodexRole.AGENT_OPERATOR in request.requester_roles,
+ POLICIES["AGENT_DEPLOY_DEV"]["auto_approve_if_privileged"],
+ not POLICIES["AGENT_DEPLOY_DEV"]["is_destructive"]
 ]):
-    request.status = ApprovalStatus.APPROVED
-    request.auto_approved = True
-    # Proceed immediately
+ request.status = ApprovalStatus.APPROVED
+ request.auto_approved = True
+ # Proceed immediately
 ```
 
 #### Example 2: Agent Operator with RBAC Privilege
 
 ```python
 request = ApprovalRequest(
-    policy_code="AGENT_DEPLOY_PROD",
-    requester_id="bob",
-    requester_roles=[
-        CodexRole.AGENT_OPERATOR,
-        CodexRole.SECURITY_REVIEWER,
-        CodexRole.CI_OPERATOR
-    ]
+ policy_code="AGENT_DEPLOY_PROD",
+ requester_id="bob",
+ requester_roles=[
+ CodexRole.AGENT_OPERATOR,
+ CodexRole.SECURITY_REVIEWER,
+ CodexRole.CI_OPERATOR
+ ]
 )
 
 # Policy requires both security_reviewer + ci_operator
 if all([
-    CodexRole.SECURITY_REVIEWER in request.requester_roles,
-    CodexRole.CI_OPERATOR in request.requester_roles,
-    POLICIES["AGENT_DEPLOY_PROD"]["auto_approve_if_privileged"],
+ CodexRole.SECURITY_REVIEWER in request.requester_roles,
+ CodexRole.CI_OPERATOR in request.requester_roles,
+ POLICIES["AGENT_DEPLOY_PROD"]["auto_approve_if_privileged"],
 ]):
-    request.status = ApprovalStatus.APPROVED
-    request.auto_approved = True
-    # Proceed immediately (rare case - usually blocked by "not auto_approve_if_privileged")
+ request.status = ApprovalStatus.APPROVED
+ request.auto_approved = True
+ # Proceed immediately (rare case - usually blocked by "not auto_approve_if_privileged")
 ```
 
 ### Auto-Approval Audit
@@ -561,14 +561,14 @@ AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE = "AUTO_APPROVAL_RBAC_PRIVILEGE"
 
 # Logged as
 {
-    "timestamp": 1720000000,
-    "request_id": "req-xyz",
-    "audit_code": AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE,
-    "requester_id": "alice",
-    "roles": ["agent_operator"],
-    "policy": "AGENT_DEPLOY_DEV",
-    "auto_approved": True,
-    "reason": "Requester has required agent_operator role"
+ "timestamp": 1720000000,
+ "request_id": "req-xyz",
+ "audit_code": AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE,
+ "requester_id": "alice",
+ "roles": ["agent_operator"],
+ "policy": "AGENT_DEPLOY_DEV",
+ "auto_approved": True,
+ "reason": "Requester has required agent_operator role"
 }
 ```
 
@@ -581,27 +581,27 @@ AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE = "AUTO_APPROVAL_RBAC_PRIVILEGE"
 ```mermaid
 graph TD
 
-    A["Approval Request<br/>policy_code: AGENT_DEPLOY_DEV<br/>5-minute SLA"] --> B{"Requester has<br/>agent_operator<br/>role?"}
-    
-    B -->|Yes| C[" Auto-Approve<br/>status: APPROVED"]
+ A["Approval Request<br/>policy_code: AGENT_DEPLOY_DEV<br/>5-minute SLA"] --> B{"Requester has<br/>agent_operator<br/>role?"}
+ 
+ B -->|Yes| C[" Auto-Approve<br/>status: APPROVED"]
 
-    B -->|No| D["Require Approval<br/>status: PENDING<br/>Start 5-minute SLA"]
-    
-    D --> E{"approver<br/>responds?"}
+ B -->|No| D["Require Approval<br/>status: PENDING<br/>Start 5-minute SLA"]
+ 
+ D --> E{"approver<br/>responds?"}
 
-    E -->|Approved| F[" Approved<br/>status: APPROVED"]
+ E -->|Approved| F[" Approved<br/>status: APPROVED"]
 
-    E -->|Rejected| G[" Rejected<br/>status: REJECTED"]
+ E -->|Rejected| G[" Rejected<br/>status: REJECTED"]
 
-    E -->|No Response| H[" Expired<br/>status: EXPIRED<br/>Request expires"]
-    
-    C --> I["Proceed"]
+ E -->|No Response| H[" Expired<br/>status: EXPIRED<br/>Request expires"]
+ 
+ C --> I["Proceed"]
 
-    F --> I
+ F --> I
 
-    G --> J["Block"]
+ G --> J["Block"]
 
-    H --> J
+ H --> J
 ```
 
 ### Multi-Level Escalation
@@ -609,53 +609,53 @@ graph TD
 ```mermaid
 graph TD
 
-    A["Request Submitted<br/>SLA: 4 hours"] --> B["Level 1 Approver<br/>(Primary Owner)"]
-    
-    B --> C{"L1 Response?"}
+ A["Request Submitted<br/>SLA: 4 hours"] --> B["Level 1 Approver<br/>(Primary Owner)"]
+ 
+ B --> C{"L1 Response?"}
 
-    C -->|Approved| D[" L1 Approved"]
+ C -->|Approved| D[" L1 Approved"]
 
-    C -->|Rejected| E[" Rejected"]
+ C -->|Rejected| E[" Rejected"]
 
-    C -->|No Response| F["L1 SLA Elapsed"]
-    
-    D --> G["Continue"]
+ C -->|No Response| F["L1 SLA Elapsed"]
+ 
+ D --> G["Continue"]
 
-    E --> H["Block"]
+ E --> H["Block"]
 
-    F --> I["Escalate to L2"]
-    
-    I --> J["Level 2 Approver<br/>(Secondary)<br/>SLA: 4 hours"]
+ F --> I["Escalate to L2"]
+ 
+ I --> J["Level 2 Approver<br/>(Secondary)<br/>SLA: 4 hours"]
 
-    J --> K{"L2 Response?"}
-    
-    K -->|Approved| L[" L2 Approved"]
+ J --> K{"L2 Response?"}
+ 
+ K -->|Approved| L[" L2 Approved"]
 
-    K -->|Rejected| M[" Rejected"]
+ K -->|Rejected| M[" Rejected"]
 
-    K -->|No Response| N["L2 SLA Elapsed"]
-    
-    L --> O["Continue"]
+ K -->|No Response| N["L2 SLA Elapsed"]
+ 
+ L --> O["Continue"]
 
-    M --> H
+ M --> H
 
-    N --> P["Escalate to L3"]
-    
-    P --> Q["Level 3 Approver<br/>(Senior Authority)<br/>SLA: 4 hours"]
+ N --> P["Escalate to L3"]
+ 
+ P --> Q["Level 3 Approver<br/>(Senior Authority)<br/>SLA: 4 hours"]
 
-    Q --> R{"L3 Response?"}
-    
-    R -->|Approved| S[" L3 Approved"]
+ Q --> R{"L3 Response?"}
+ 
+ R -->|Approved| S[" L3 Approved"]
 
-    R -->|Rejected| T[" Rejected"]
+ R -->|Rejected| T[" Rejected"]
 
-    R -->|No Response| U["Auto-Approve<br/>Quorum Unavailable"]
-    
-    S --> V["Proceed"]
+ R -->|No Response| U["Auto-Approve<br/>Quorum Unavailable"]
+ 
+ S --> V["Proceed"]
 
-    T --> H
+ T --> H
 
-    U --> V
+ U --> V
 ```
 
 ### Incident Mode Escalation
@@ -663,37 +663,37 @@ graph TD
 ```mermaid
 graph TD
 
-    A["Incident Mode Active"] --> B["Request Submitted<br/>30-minute SLA"]
-    
-    B --> C["Level 1 Approver<br/>(Primary)"]
+ A["Incident Mode Active"] --> B["Request Submitted<br/>30-minute SLA"]
+ 
+ B --> C["Level 1 Approver<br/>(Primary)"]
 
-    C --> D{"L1 Response<br/>30 min SLA?"}
-    
-    D -->|Approved| E[" Approved"]
+ C --> D{"L1 Response<br/>30 min SLA?"}
+ 
+ D -->|Approved| E[" Approved"]
 
-    D -->|Rejected| F[" Rejected"]
+ D -->|Rejected| F[" Rejected"]
 
-    D -->|No Response| G["Skip L2<br/>Go to L3"]
-    
-    E --> H["Proceed"]
+ D -->|No Response| G["Skip L2<br/>Go to L3"]
+ 
+ E --> H["Proceed"]
 
-    F --> I["Block"]
+ F --> I["Block"]
 
-    G --> J["Level 3 Approver<br/>(Senior Authority)<br/>30-minute SLA"]
-    
-    J --> K{"L3 Response?"}
+ G --> J["Level 3 Approver<br/>(Senior Authority)<br/>30-minute SLA"]
+ 
+ J --> K{"L3 Response?"}
 
-    K -->|Approved| L[" Approved"]
+ K -->|Approved| L[" Approved"]
 
-    K -->|Rejected| M[" Rejected"]
+ K -->|Rejected| M[" Rejected"]
 
-    K -->|No Response| N["Auto-Approve<br/>Incident Override"]
-    
-    L --> H
+ K -->|No Response| N["Auto-Approve<br/>Incident Override"]
+ 
+ L --> H
 
-    M --> I
+ M --> I
 
-    N --> H
+ N --> H
 ```
 
 ---
@@ -705,14 +705,14 @@ graph TD
 ```python
 # Define a new approval policy
 policy = {
-    "policy_code": "CUSTOM_OPERATION",
-    "required_roles": [CodexRole.AGENT_OPERATOR, CodexRole.SECURITY_REVIEWER],
-    "sla_hours": 4,
-    "max_escalations": 2,
-    "auto_approve_if_privileged": False,
-    "is_destructive": False,
-    "sequential_approval": False,
-    "requires_all_approvers": True
+ "policy_code": "CUSTOM_OPERATION",
+ "required_roles": [CodexRole.AGENT_OPERATOR, CodexRole.SECURITY_REVIEWER],
+ "sla_hours": 4,
+ "max_escalations": 2,
+ "auto_approve_if_privileged": False,
+ "is_destructive": False,
+ "sequential_approval": False,
+ "requires_all_approvers": True
 }
 
 APPROVAL_POLICY_MATRIX["CUSTOM_OPERATION"] = policy
@@ -726,10 +726,10 @@ from codex.governance.approval_service import ApprovalService
 service = ApprovalService()
 
 request = service.submit_approval(
-    policy_code="CUSTOM_OPERATION",
-    requester_id="alice",
-    resource_id="resource_001",
-    context={"change_type": "update", "risk_level": "medium"}
+ policy_code="CUSTOM_OPERATION",
+ requester_id="alice",
+ resource_id="resource_001",
+ context={"change_type": "update", "risk_level": "medium"}
 )
 
 print(f"Request {request.request_id} created")
@@ -742,11 +742,11 @@ print(f"Expires: {request.expires_at}")
 ```python
 # Check if request was auto-approved
 if request.auto_approved:
-    print("Request auto-approved (requester has required roles)")
-    # Proceed immediately
+ print("Request auto-approved (requester has required roles)")
+ # Proceed immediately
 else:
-    print(f"Awaiting approval from: {request.pending_approvers}")
-    # Wait or poll for approvals
+ print(f"Awaiting approval from: {request.pending_approvers}")
+ # Wait or poll for approvals
 ```
 
 ### Step 4: Add Decision
@@ -755,11 +755,11 @@ else:
 from codex.governance.approval_service import ApprovalDecision
 
 decision = ApprovalDecision(
-    approver_id="bob",
-    approver_name="Bob Chen",
-    decision="approved",
-    reason="Change validated against security requirements",
-    authority_level=1  # L1 approver
+ approver_id="bob",
+ approver_name="Bob Chen",
+ decision="approved",
+ reason="Change validated against security requirements",
+ authority_level=1 # L1 approver
 )
 
 service.add_decision(request.request_id, decision)
@@ -767,7 +767,7 @@ service.add_decision(request.request_id, decision)
 # Check if approved now
 updated = service.get_request(request.request_id)
 if updated.status == "approved":
-    print("Approved! Proceeding with action...")
+ print("Approved! Proceeding with action...")
 ```
 
 ### Step 5: Handle Escalation
@@ -775,13 +775,13 @@ if updated.status == "approved":
 ```python
 # Check if request has escalated
 if request.escalation_count > 0:
-    print(f"Request escalated {request.escalation_count} times")
-    
+ print(f"Request escalated {request.escalation_count} times")
+ 
 # Check if request expired
 if request.status == "expired":
-    print("Request expired without approval")
-    # Option 1: Resubmit
-    # Option 2: Escalate manually
+ print("Request expired without approval")
+ # Option 1: Resubmit
+ # Option 2: Escalate manually
 ```
 
 ---

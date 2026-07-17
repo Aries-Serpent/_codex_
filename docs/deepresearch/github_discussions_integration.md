@@ -68,32 +68,32 @@ subcommands that close the remaining gaps:
 ### 3.1 Existing CLI (`python -m codex.github.mcp_poster`)
 
 ```
-post-comment               Post a PR comment
-set-variable               Create/update a repo variable
-create-discussion          Create a new GitHub Discussion
-create-branch              Create a branch ref
-create-pr                  Open a pull request
-merge-branch               Server-side merge
-retrieve-patterns          Print recent CB patterns as Markdown
-commit-files               Push file changes via Git Data API
-add-discussion-comment     [NEW] Add comment to existing Discussion
-upsert-discussion-comment  [NEW] Add-or-update by marker
-post-ci-pattern-summary    [NEW] Upsert CI pattern summary to Discussion
-post-continuation          [NEW] Post tokenized continuation chain  # pragma: allowlist secret
+post-comment Post a PR comment
+set-variable Create/update a repo variable
+create-discussion Create a new GitHub Discussion
+create-branch Create a branch ref
+create-pr Open a pull request
+merge-branch Server-side merge
+retrieve-patterns Print recent CB patterns as Markdown
+commit-files Push file changes via Git Data API
+add-discussion-comment [NEW] Add comment to existing Discussion
+upsert-discussion-comment [NEW] Add-or-update by marker
+post-ci-pattern-summary [NEW] Upsert CI pattern summary to Discussion
+post-continuation [NEW] Post tokenized continuation chain # pragma: allowlist secret
 ```
 
 ### 3.2 New Script CLI (`python scripts/cognitive/continuation_chain.py`)
 
 ```
---db PATH                  SQLite pattern DB path
---manifest PATH            CODEX_MANIFEST.json path
---session-id STR           Session ID (overrides env vars)
---sha STR                  Git SHA (overrides env vars)
---output PATH              Write to file instead of stdout
---post-to-discussion       Post to GitHub Discussions
---repo OWNER/REPO          GitHub repo (default: Aries-Serpent/_codex_)
---discussion-number INT    Target discussion number (default: 3673)
---upsert                   Upsert by session marker (prevents duplicate comments)
+--db PATH SQLite pattern DB path
+--manifest PATH CODEX_MANIFEST.json path
+--session-id STR Session ID (overrides env vars)
+--sha STR Git SHA (overrides env vars)
+--output PATH Write to file instead of stdout
+--post-to-discussion Post to GitHub Discussions
+--repo OWNER/REPO GitHub repo (default: Aries-Serpent/_codex_)
+--discussion-number INT Target discussion number (default: 3673)
+--upsert Upsert by session marker (prevents duplicate comments)
 ```
 
 ### 3.3 Recommended CLI Design Patterns for Copilot Agents
@@ -105,10 +105,10 @@ systematic gaps identified in this research:
 
 ```bash
 python -m codex.github.mcp_poster upsert-discussion-comment \
-  --repo Aries-Serpent/_codex_ \
-  --number 3673 \
-  --body-file /tmp/brain_status.md \
-  --marker "<!-- brain-status:$(git rev-parse --short HEAD) -->"
+ --repo Aries-Serpent/_codex_ \
+ --number 3673 \
+ --body-file /tmp/brain_status.md \
+ --marker "<!-- brain-status:$(git rev-parse --short HEAD) -->"
 ```
 
 **Purpose:** Idempotent sync of any markdown document to a Discussion comment.
@@ -120,9 +120,9 @@ existing comment.
 
 ```bash
 python scripts/cognitive/continuation_chain.py \
-  --post-to-discussion \
-  --discussion-number 3673 \
-  --upsert
+ --post-to-discussion \
+ --discussion-number 3673 \
+ --upsert
 ```
 
 **Purpose:** A single `continuation_chain.py` invocation reads all live state
@@ -133,9 +133,9 @@ thread can resume context without accessing any other file.
 
 ```bash
 python -m codex.github.mcp_poster post-continuation \
-  --repo Aries-Serpent/_codex_ \
-  --number 3673 \
-  --body-file /tmp/chain.md
+ --repo Aries-Serpent/_codex_ \
+ --number 3673 \
+ --body-file /tmp/chain.md
 ```
 
 **Purpose:** Posts a continuation chain that begins with `@copilot continue
@@ -146,10 +146,10 @@ the structured handoff prompt.
 
 ```bash
 python -m codex.github.mcp_poster post-ci-pattern-summary \
-  --repo Aries-Serpent/_codex_ \
-  --number 3673 \
-  --body-file /tmp/patterns.md \
-  --session-id "run-$GITHUB_RUN_ID"
+ --repo Aries-Serpent/_codex_ \
+ --number 3673 \
+ --body-file /tmp/patterns.md \
+ --session-id "run-$GITHUB_RUN_ID"
 ```
 
 **Purpose:** CI-triggered, idempotent. Each workflow run upserts the CI
@@ -160,10 +160,10 @@ pattern table, keeping discussion #3673 always showing the latest state.
 ```python
 # Proposed API (Phase 8 P3):
 poster.find_discussion_comments_by_marker(
-    repo="Aries-Serpent/_codex_",
-    discussion_number=3673,
-    marker="<!-- codex-continuation-chain:",
-    max_results=10,
+ repo="Aries-Serpent/_codex_",
+ discussion_number=3673,
+ marker="<!-- codex-continuation-chain:",
+ max_results=10,
 )
 ```
 
@@ -174,11 +174,11 @@ a Discussion thread to reconstruct project history.
 
 ```bash
 python scripts/cognitive/discussion_digest.py \
-  --repo Aries-Serpent/_codex_ \
-  --discussion-number 3673 \
-  --marker "<!-- codex-continuation-chain:" \
-  --last-n 5 \
-  --output /tmp/digest.md
+ --repo Aries-Serpent/_codex_ \
+ --discussion-number 3673 \
+ --marker "<!-- codex-continuation-chain:" \
+ --last-n 5 \
+ --output /tmp/digest.md
 ```
 
 **Purpose:** Scan the last N continuation-chain comments in a Discussion,
@@ -190,36 +190,36 @@ onboarding a new agent session with accumulated context.
 ## 4. Hardened Posting Architecture
 
 ```
-                    ┌─────────────────────────────────────────────┐
-                    │         GitHub Actions Workflow              │
-                    │  post-ci-status-to-discussion.yml           │
-                    │  (triggers on push to 0D_base_/copilot/**)  │
-                    └───────────────┬─────────────────────────────┘
-                                    │
-                    ┌───────────────▼─────────────────────────────┐
-                    │   continuation_chain.py                      │
-                    │   Reads:                                     │
-                    │   • CODEX_MANIFEST.json (ci_patterns)        │
-                    │   • pattern_recorder.py (high_rec, cross_pr) │
-                    │   • COGNITIVE_BRAIN_STATUS_*.md              │
-                    │   Outputs: tokenized Markdown chain          │  # pragma: allowlist secret
-                    └───────────────┬─────────────────────────────┘
-                                    │
-               ┌────────────────────▼────────────────────────────┐
-               │             mcp_poster.py                        │
-               │                                                  │
-               │  post_continuation_chain()  ──────────────────► │
-               │  post_ci_pattern_summary()  ──────────────────► │──► Discussion #3673
-               │  upsert_discussion_comment()  ────────────────► │
-               │  add_discussion_comment()  ────────────────────► │
-               └────────────────────┬────────────────────────────┘
-                                    │
-                    ┌───────────────▼─────────────────────────────┐
-                    │        GitHub GraphQL API                    │
-                    │  addDiscussionComment mutation               │
-                    │  updateDiscussionComment mutation            │
-                    │  discussion(number: N) { comments }         │
-                    └─────────────────────────────────────────────┘
+ 
+ GitHub Actions Workflow 
+ post-ci-status-to-discussion.yml 
+ (triggers on push to 0D_base_/copilot/**) 
+ 
+ 
+ 
+ continuation_chain.py 
+ Reads: 
+ • CODEX_MANIFEST.json (ci_patterns) 
+ • pattern_recorder.py (high_rec, cross_pr) 
+ • COGNITIVE_BRAIN_STATUS_*.md 
+ Outputs: tokenized Markdown chain # pragma: allowlist secret
+ 
+ 
+ 
+ mcp_poster.py 
+ 
+ post_continuation_chain() 
+ post_ci_pattern_summary() Discussion #3673
+ upsert_discussion_comment() 
+ add_discussion_comment() 
+ 
+ 
+ 
+ GitHub GraphQL API 
+ addDiscussionComment mutation 
+ updateDiscussionComment mutation 
+ discussion(number: N) { comments } 
+ 
 ```
 
 ---
@@ -243,11 +243,11 @@ invisible in rendered Markdown but machine-parseable:
 
 ```markdown
 <!-- TOKEN:META -->
-────────────────────────────────────────────────────────────
+
 **Session:** `run-23519039857`
 **SHA:** `ffaa534`
 **Generated:** `2026-03-25T01:30:00Z`
-────────────────────────────────────────────────────────────
+
 
 <!-- TOKEN:PHASE -->
 ...current phase completion state...
@@ -319,7 +319,7 @@ enabled.
 
 ```bash
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  "https://api.github.com/repos/${{ github.repository }}/discussions")
+ "https://api.github.com/repos/${{ github.repository }}/discussions")
 if [ "$STATUS" = "200" ]; then echo "Discussions enabled"; fi
 ```
 

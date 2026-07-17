@@ -59,7 +59,7 @@ with \( \alpha, \beta, \gamma \in [0,1], \alpha+\beta+\gamma=1 \).
 - T (Trace quality): `<0..1>`
 - D (Docs parity): `<0..1>`
 - Weights: α=`<0..1>`, β=`<0..1>`, γ=`<0..1>`
-- **R = <computed>** → **Recommendation:** `[Block | Proceed]`
+- **R = <computed>** **Recommendation:** `[Block | Proceed]`
 
 ## 7) Artifacts
 - `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/report.md`

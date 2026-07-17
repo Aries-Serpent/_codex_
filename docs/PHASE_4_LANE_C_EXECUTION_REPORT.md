@@ -43,17 +43,17 @@ Phase 4 Lane C (Steps 5-6) has been successfully completed. Security hardening v
 **Example SBOM Entry:**
 ```json
 {
-  "name": "hydra-core",
-  "purl": "pkg:pypi/hydra-core@1.3.2",
-  "type": "library",
-  "version": "1.3.2",
-  "licenses": [
-    {
-      "license": {
-        "name": "Apache-2.0"
-      }
-    }
-  ]
+ "name": "hydra-core",
+ "purl": "pkg:pypi/hydra-core@1.3.2",
+ "type": "library",
+ "version": "1.3.2",
+ "licenses": [
+ {
+ "license": {
+ "name": "Apache-2.0"
+ }
+ }
+ ]
 }
 ```
 
@@ -164,20 +164,20 @@ Medium: 0
 **Example K8s Security Config:**
 ```yaml
 securityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop:
-      - ALL
-  allowPrivilegeEscalation: false
+ runAsNonRoot: true
+ runAsUser: 1000
+ readOnlyRootFilesystem: true
+ capabilities:
+ drop:
+ - ALL
+ allowPrivilegeEscalation: false
 resources:
-  limits:
-    memory: "512Mi"
-    cpu: "500m"
-  requests:
-    memory: "256Mi"
-    cpu: "250m"
+ limits:
+ memory: "512Mi"
+ cpu: "500m"
+ requests:
+ memory: "256Mi"
+ cpu: "250m"
 ```
 
 ### 5.5 Secrets Handling Verification
@@ -214,10 +214,10 @@ Baseline scan: .secrets.baseline (maintained)
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/gitleaks/gitleaks
-  rev: v0.2.1
-  hooks:
-    - id: gitleaks
-      stages: [commit]
+ rev: v0.2.1
+ hooks:
+ - id: gitleaks
+ stages: [commit]
 ```
 
 ### 5.6 Supply Chain Integrity Validation
@@ -310,34 +310,34 @@ python -c "import codex; print(f'Codex version: {codex.__version__}')"
 ```mermaid
 graph TB
 
-    Client["Client Application"]
-    API["API Server (FastAPI)"]
-    CB["Cognitive Brain"]
-    ML["ML Infrastructure"]
-    Cache["Multi-Layer Cache"]
-    Storage["Data Storage"]
-    
-    Client -->|REST| API
+ Client["Client Application"]
+ API["API Server (FastAPI)"]
+ CB["Cognitive Brain"]
+ ML["ML Infrastructure"]
+ Cache["Multi-Layer Cache"]
+ Storage["Data Storage"]
+ 
+ Client -->|REST| API
 
-    API -->|Query| CB
+ API -->|Query| CB
 
-    CB -->|Inference| ML
+ CB -->|Inference| ML
 
-    ML -->|Cache Hit| Cache
+ ML -->|Cache Hit| Cache
 
-    Cache -->|Persist| Storage
+ Cache -->|Persist| Storage
 ```
 
 **Module Organization:**
 ```
 src/codex/
-├── cognitive_brain/      # 21 specialized APIs
-├── core/                 # 10 core utilities
-├── ml/                   # 25 ML infrastructure modules
-├── api/                  # FastAPI server
-├── cli/                  # Command-line interface
-├── utils/                # Shared utilities
-└── logging/              # Observability
+ cognitive_brain/ # 21 specialized APIs
+ core/ # 10 core utilities
+ ml/ # 25 ML infrastructure modules
+ api/ # FastAPI server
+ cli/ # Command-line interface
+ utils/ # Shared utilities
+ logging/ # Observability
 ```
 
 ### 6.3 Deployment Guide
@@ -395,7 +395,7 @@ from codex.cognitive_brain import IntelligenceScorer
 scorer = IntelligenceScorer()
 decision = {"action": "deploy", "confidence": 0.95}
 score = scorer.score_decision(decision)
-print(f"Intelligence Score: {score}")  # Output: 0.85-0.95 range
+print(f"Intelligence Score: {score}") # Output: 0.85-0.95 range
 ```
 
 **Example 2: ML Fine-Tuning**
@@ -416,15 +416,15 @@ from codex.ml import InferencePipeline
 pipeline = InferencePipeline("bert-base-uncased")
 texts = ["Example text 1", "Example text 2"]
 results = pipeline(texts, batch_size=32)
-print(results)  # List of predictions
+print(results) # List of predictions
 ```
 
 **Example 4: API Integration (cURL)**
 ```bash
 # Score endpoint
 curl -X POST http://localhost:8000/api/score \
-  -H "Content-Type: application/json" \
-  -d '{"data": {"action": "deploy"}}'
+ -H "Content-Type: application/json" \
+ -d '{"data": {"action": "deploy"}}'
 
 # Response
 {"score": 0.89, "confidence": 0.95}
@@ -458,17 +458,17 @@ curl -X POST http://localhost:8000/api/score -d '{...}'
 from codex.ml import CachedInferencePipeline
 
 pipeline = CachedInferencePipeline(
-    model="bert-base",
-    cache_layers={
-        "http": True,          # HTTP 304 responses
-        "model": True,         # Model output cache
-        "data": True,          # Embedding cache
-        "compute": True        # Intermediate results
-    },
-    ttl_seconds=3600
+ model="bert-base",
+ cache_layers={
+ "http": True, # HTTP 304 responses
+ "model": True, # Model output cache
+ "data": True, # Embedding cache
+ "compute": True # Intermediate results
+ },
+ ttl_seconds=3600
 )
 
-results = pipeline(texts)  # Hits cache on repeated inputs
+results = pipeline(texts) # Hits cache on repeated inputs
 ```
 
 **Batch Inference Tuning:**
@@ -476,9 +476,9 @@ results = pipeline(texts)  # Hits cache on repeated inputs
 # Benchmark different batch sizes
 batch_sizes = [1, 8, 16, 32, 64]
 for bs in batch_sizes:
-    latency = pipeline(texts, batch_size=bs).latency
-    throughput = len(texts) / latency
-    print(f"Batch size {bs}: {throughput:.0f} samples/sec")
+ latency = pipeline(texts, batch_size=bs).latency
+ throughput = len(texts) / latency
+ print(f"Batch size {bs}: {throughput:.0f} samples/sec")
 ```
 
 **Performance Metrics:**
@@ -581,9 +581,9 @@ results = pipeline(texts, batch_size=32)
 ```python
 # OLD: Manual configuration
 cfg = {
-    "model": "bert-base",
-    "batch_size": 32,
-    "device": "cuda"
+ "model": "bert-base",
+ "batch_size": 32,
+ "device": "cuda"
 }
 pipeline = Pipeline(cfg)
 
@@ -604,9 +604,9 @@ batch_size: 16
 model: bert-base
 batch_size: 32
 cache:
-  enabled: true
-  ttl_seconds: 3600
-  layers: [http, model, data, compute]
+ enabled: true
+ ttl_seconds: 3600
+ layers: [http, model, data, compute]
 ```
 
 **Breaking Changes Summary:**

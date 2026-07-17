@@ -88,14 +88,14 @@ codex zendesk snapshot --env=dev
 
 # Generate diff
 codex zendesk diff triggers \
-  --desired-file configs/desired/zendesk/triggers.json \
-  --current-file snapshot/dev/latest/triggers.json \
-  --output diffs/triggers_diff.json
+ --desired-file configs/desired/zendesk/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_diff.json
 
 # Plan changes
 codex zendesk plan triggers \
-  --diff-file diffs/triggers_diff.json \
-  --output plans/triggers_plan.json
+ --diff-file diffs/triggers_diff.json \
+ --output plans/triggers_plan.json
 
 # Apply changes
 codex zendesk apply triggers plans/triggers_plan.json --env=dev
@@ -113,10 +113,10 @@ codex-task-sequence --sequence scripts/task_sequences/zendesk_first_cycle.yaml
 cat > my_workflow.yaml <<EOF
 name: My Zendesk Workflow
 tasks:
-  - name: Snapshot
-    command: codex zendesk snapshot --env=dev
-  - name: Apply triggers
-    command: codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ - name: Snapshot
+ command: codex zendesk snapshot --env=dev
+ - name: Apply triggers
+ command: codex zendesk apply triggers plans/triggers_plan.json --env=dev
 EOF
 
 codex-task-sequence --sequence my_workflow.yaml
@@ -127,12 +127,12 @@ codex-task-sequence --sequence my_workflow.yaml
 ### Directory Structure
 ```text
 configs/desired/zendesk/
-├── triggers.json          # Automated actions
-├── views.json             # Agent queues
-├── macros.json            # Common responses
-├── ticket_fields.json     # Custom fields
-├── ticket_forms.json      # Submission forms
-└── webhooks.json          # External integrations
+ triggers.json # Automated actions
+ views.json # Agent queues
+ macros.json # Common responses
+ ticket_fields.json # Custom fields
+ ticket_forms.json # Submission forms
+ webhooks.json # External integrations
 ```text
 ### Example Files
 See detailed examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md):
@@ -201,15 +201,15 @@ Legend: Full support | Partial support | Not yet supported
 ### Recommended Structure
 ```text
 my-zendesk-config/
-├── .env                           # Credentials (gitignored)
-├── configs/desired/zendesk/       # Desired state
-├── snapshot/                      # Current state snapshots
-│   ├── dev/
-│   ├── staging/
-│   └── prod/
-├── diffs/                         # Generated diffs
-├── plans/                         # Generated plans
-└── scripts/task_sequences/        # Automation workflows
+ .env # Credentials (gitignored)
+ configs/desired/zendesk/ # Desired state
+ snapshot/ # Current state snapshots
+ dev/
+ staging/
+ prod/
+ diffs/ # Generated diffs
+ plans/ # Generated plans
+ scripts/task_sequences/ # Automation workflows
 ```text
 ### Environment Variables
 ```bash
@@ -225,9 +225,9 @@ ZENDESK_PROD_EMAIL=admin@example.com
 ZENDESK_PROD_TOKEN=your-prod-token
 
 # Optional
-ZENDESK_RATE_LIMIT_DELAY=1.5      # Seconds between requests
-ZENDESK_MAX_RETRIES=5              # Max retry attempts
-CODEX_LOG_LEVEL=INFO              # DEBUG for verbose output
+ZENDESK_RATE_LIMIT_DELAY=1.5 # Seconds between requests
+ZENDESK_MAX_RETRIES=5 # Max retry attempts
+CODEX_LOG_LEVEL=INFO # DEBUG for verbose output
 ```text
 
 ## CLI Reference
@@ -239,18 +239,18 @@ codex zendesk snapshot --env=<env> [--objects <types>] [--dry-run]
 
 # Diff operations
 codex zendesk diff <object_type> \
-  --desired-file <path> \
-  --current-file <path> \
-  --output <path>
+ --desired-file <path> \
+ --current-file <path> \
+ --output <path>
 
 # Plan operations
 codex zendesk plan <object_type> \
-  --diff-file <path> \
-  --output <path>
+ --diff-file <path> \
+ --output <path>
 
 # Apply operations
 codex zendesk apply <object_type> <plan_file> \
-  --env=<env> [--dry-run] [--rate-limit]
+ --env=<env> [--dry-run] [--rate-limit]
 
 # Utility commands
 codex zendesk metrics [--since <date>] [--format <json|text>]
@@ -293,17 +293,17 @@ gh pr create --title "Add priority triggers" --body "Adds auto-assignment based 
 ```bash
 # Export metrics to Prometheus
 codex zendesk metrics --format json | \
-  python -m codex.zendesk.monitoring.prometheus_exporter
+ python -m codex.zendesk.monitoring.prometheus_exporter
 
 # Set up alerts
 cat > alerts.yaml <<EOF
 alerts:
-  - name: ZendeskApplyFailure
-    condition: apply_success_rate < 0.95
-    action: notify_on_call
-  - name: ZendeskRateLimitHigh
-    condition: rate_limit_retries > 0.05
-    action: notify_ops
+ - name: ZendeskApplyFailure
+ condition: apply_success_rate < 0.95
+ action: notify_on_call
+ - name: ZendeskRateLimitHigh
+ condition: rate_limit_retries > 0.05
+ action: notify_ops
 EOF
 ```text
 

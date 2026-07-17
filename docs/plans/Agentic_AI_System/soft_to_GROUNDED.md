@@ -233,42 +233,42 @@ for `AGENT_REGISTRY.yaml` in `Aries-Serpent/_codex_` is:
 # Validated by: cognitive-preflight REQ-9
 
 schema_version: "1.0"
-generated_at: "2026-03-02T00:00:00Z"  # auto-updated by generate_manifest.py
+generated_at: "2026-03-02T00:00:00Z" # auto-updated by generate_manifest.py
 total_agents: 193
 
 agents:
-  - name: "cognitive-brain-cli-agent"
-    description: "CLI/API agent for Cognitive Brain Console operations"
-    version: "1.0.0"
-    owner: "mbaetiong"
-    role: "specialist"                   # specialist | utility | orchestrator
-    autonomy_model: "E"                  # E (current) | D_CAPABLE (unlocked by e-to-d-transition-gate)
-    enforcement_tier: "GROUNDED"         # GROUNDED | PARTIAL | SOFT
-    consolidation_priority: false        # true = top-20 by activation frequency
-    activation_frequency_rank: 1         # from Phase 0 frequency analysis
-    primary_workflow: ".github/workflows/agent-auth-delegation.yml"
-    handoff_protocol: "structured"       # none | soft | structured
-    accepts_handoff_from:
-      - "orchestrator"
-      - "ci-health-alert-agent"
-    capability_tags:
-      - "cli"
-      - "api"
-      - "cognitive-brain"
-    dependencies:
-      - "copilot-setup-steps.yml"
-      - "cognitive-preflight"
-    policy_compliance:
-      tier1_gates: ["REQ-3", "REQ-4", "REQ-5", "REQ-6"]
-      tier2_annotations: ["REQ-1", "REQ-7"]
-    endpoints:
-      - type: "fastapi"
-        url: "http://localhost:8765"
-    tags:
-      - "production"
-      - "cognitive"
+ - name: "cognitive-brain-cli-agent"
+ description: "CLI/API agent for Cognitive Brain Console operations"
+ version: "1.0.0"
+ owner: "mbaetiong"
+ role: "specialist" # specialist | utility | orchestrator
+ autonomy_model: "E" # E (current) | D_CAPABLE (unlocked by e-to-d-transition-gate)
+ enforcement_tier: "GROUNDED" # GROUNDED | PARTIAL | SOFT
+ consolidation_priority: false # true = top-20 by activation frequency
+ activation_frequency_rank: 1 # from Phase 0 frequency analysis
+ primary_workflow: ".github/workflows/agent-auth-delegation.yml"
+ handoff_protocol: "structured" # none | soft | structured
+ accepts_handoff_from:
+ - "orchestrator"
+ - "ci-health-alert-agent"
+ capability_tags:
+ - "cli"
+ - "api"
+ - "cognitive-brain"
+ dependencies:
+ - "copilot-setup-steps.yml"
+ - "cognitive-preflight"
+ policy_compliance:
+ tier1_gates: ["REQ-3", "REQ-4", "REQ-5", "REQ-6"]
+ tier2_annotations: ["REQ-1", "REQ-7"]
+ endpoints:
+ - type: "fastapi"
+ url: "http://localhost:8765"
+ tags:
+ - "production"
+ - "cognitive"
 
-  # ... 192 more agents following same schema
+ # ... 192 more agents following same schema
 ```
 
 ## Key Schema Fields Validated by Research
@@ -293,21 +293,21 @@ the registry YAML becomes the dynamic input to workflow matrix jobs:
 # Pattern: Read AGENT_REGISTRY.yaml as GitHub Actions matrix input
 # Used in: agent-auth-delegation.yml, e-to-d-transition-gate.yml
 jobs:
-  audit-agents:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        agent: ${{ fromJson(steps.load-registry.outputs.agents) }}
-    steps:
-      - name: Load registry
-        id: load-registry
-        run: |
-          python3 -c "
-          import yaml, json
-          with open('AGENT_REGISTRY.yaml') as f:
-            reg = yaml.safe_load(f)
-          print('agents=' + json.dumps(reg['agents']))
-          " >> $GITHUB_OUTPUT
+ audit-agents:
+ runs-on: ubuntu-latest
+ strategy:
+ matrix:
+ agent: ${{ fromJson(steps.load-registry.outputs.agents) }}
+ steps:
+ - name: Load registry
+ id: load-registry
+ run: |
+ python3 -c "
+ import yaml, json
+ with open('AGENT_REGISTRY.yaml') as f:
+ reg = yaml.safe_load(f)
+ print('agents=' + json.dumps(reg['agents']))
+ " >> $GITHUB_OUTPUT
 ```
 
 ## Governance Trend (2024–2025)
@@ -378,21 +378,21 @@ conftest test CODEX_MANIFEST.json --policy .codex/policies/
 package agent_registry
 
 deny[msg] {
-  agent := input.agents[_]
-  not agent.enforcement_tier
-  msg := sprintf("Agent '%v' missing enforcement_tier field", [agent.name])
+ agent := input.agents[_]
+ not agent.enforcement_tier
+ msg := sprintf("Agent '%v' missing enforcement_tier field", [agent.name])
 }
 
 deny[msg] {
-  agent := input.agents[_]
-  not agent.primary_workflow
-  msg := sprintf("Agent '%v' missing primary_workflow field", [agent.name])
+ agent := input.agents[_]
+ not agent.primary_workflow
+ msg := sprintf("Agent '%v' missing primary_workflow field", [agent.name])
 }
 
 warn[msg] {
-  agent := input.agents[_]
-  agent.enforcement_tier == "SOFT"
-  msg := sprintf("Agent '%v' is SOFT — consider promotion to PARTIAL or GROUNDED", [agent.name])
+ agent := input.agents[_]
+ agent.enforcement_tier == "SOFT"
+ msg := sprintf("Agent '%v' is SOFT — consider promotion to PARTIAL or GROUNDED", [agent.name])
 }
 ```
 
@@ -439,64 +439,64 @@ and A2A protocol fields:
 
 ```json name=AgentHandoffManifest_v1.1_schema.json
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/Aries-Serpent/_codex_/schemas/AgentHandoffManifest/v1.1",
-  "title": "AgentHandoffManifest",
-  "description": "Structured handoff between _codex_ agents. Validates at agent-handoff-gate.yml.",
-  "type": "object",
-  "required": [
-    "schema_version",
-    "handoff_id",
-    "delegating_agent",
-    "receiving_agent",
-    "task_id",
-    "handoff_timestamp",
-    "operating_model"
-  ],
-  "properties": {
-    "schema_version":     { "type": "string", "const": "1.1" },
-    "handoff_id":         { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
-    "delegating_agent":   { "type": "string" },
-    "receiving_agent":    { "type": "string" },
-    "task_id":            { "type": "string" },
-    "handoff_timestamp":  { "type": "string", "format": "date-time" },
-    "operating_model":    { "type": "string", "enum": ["E", "D"] },
-    "delegation_trace": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["from", "to", "timestamp"],
-        "properties": {
-          "from":      { "type": "string" },
-          "to":        { "type": "string" },
-          "timestamp": { "type": "string", "format": "date-time" }
-        }
-      }
-    },
-    "context_snapshot": {
-      "type": "object",
-      "properties": {
-        "files_in_scope":          { "type": "array", "items": { "type": "string" } },
-        "open_checklist_items":    { "type": "array", "items": { "type": "string" } },
-        "current_enforcement_tier":{ "type": "string", "enum": ["GROUNDED","PARTIAL","SOFT"] },
-        "pr_number":               { "type": "integer" },
-        "relevant_prior_context":  { "type": "array", "items": { "type": "string" } }
-      }
-    },
-    "policy_compliance": {
-      "type": "object",
-      "properties": {
-        "tier1_gates_passed": { "type": "array", "items": { "type": "string" } },
-        "tier2_annotations":  { "type": "array", "items": { "type": "string" } },
-        "violation_count":    { "type": "integer", "minimum": 0 }
-      }
-    },
-    "checklist_items": {
-      "type": "array",
-      "items": { "type": "string" }
-    }
-  },
-  "additionalProperties": true
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "https://github.com/Aries-Serpent/_codex_/schemas/AgentHandoffManifest/v1.1",
+ "title": "AgentHandoffManifest",
+ "description": "Structured handoff between _codex_ agents. Validates at agent-handoff-gate.yml.",
+ "type": "object",
+ "required": [
+ "schema_version",
+ "handoff_id",
+ "delegating_agent",
+ "receiving_agent",
+ "task_id",
+ "handoff_timestamp",
+ "operating_model"
+ ],
+ "properties": {
+ "schema_version": { "type": "string", "const": "1.1" },
+ "handoff_id": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+ "delegating_agent": { "type": "string" },
+ "receiving_agent": { "type": "string" },
+ "task_id": { "type": "string" },
+ "handoff_timestamp": { "type": "string", "format": "date-time" },
+ "operating_model": { "type": "string", "enum": ["E", "D"] },
+ "delegation_trace": {
+ "type": "array",
+ "items": {
+ "type": "object",
+ "required": ["from", "to", "timestamp"],
+ "properties": {
+ "from": { "type": "string" },
+ "to": { "type": "string" },
+ "timestamp": { "type": "string", "format": "date-time" }
+ }
+ }
+ },
+ "context_snapshot": {
+ "type": "object",
+ "properties": {
+ "files_in_scope": { "type": "array", "items": { "type": "string" } },
+ "open_checklist_items": { "type": "array", "items": { "type": "string" } },
+ "current_enforcement_tier":{ "type": "string", "enum": ["GROUNDED","PARTIAL","SOFT"] },
+ "pr_number": { "type": "integer" },
+ "relevant_prior_context": { "type": "array", "items": { "type": "string" } }
+ }
+ },
+ "policy_compliance": {
+ "type": "object",
+ "properties": {
+ "tier1_gates_passed": { "type": "array", "items": { "type": "string" } },
+ "tier2_annotations": { "type": "array", "items": { "type": "string" } },
+ "violation_count": { "type": "integer", "minimum": 0 }
+ }
+ },
+ "checklist_items": {
+ "type": "array",
+ "items": { "type": "string" }
+ }
+ },
+ "additionalProperties": true
 }
 ```
 
@@ -564,9 +564,9 @@ the Phase 3 use case:
 scripts/ci/build_embeddings.py
 Phase 3 — Unified Agent Memory Corpus: embedding index builder
 Sources: .codex/docs/, .github/agents/, src/codex/cognitive/, AGENT_REGISTRY.yaml
-Model:   all-MiniLM-L6-v2 (offline, Apache 2.0)
-Output:  .codex/embeddings/codex_index.faiss
-         .codex/embeddings/codex_index_meta.json
+Model: all-MiniLM-L6-v2 (offline, Apache 2.0)
+Output: .codex/embeddings/codex_index.faiss
+ .codex/embeddings/codex_index_meta.json
 """
 
 from __future__ import annotations
@@ -583,72 +583,72 @@ from sentence_transformers import SentenceTransformer
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 EMBED_DIR = REPO_ROOT / ".codex" / "embeddings"
 INDEX_PATH = EMBED_DIR / "codex_index.faiss"
-META_PATH  = EMBED_DIR / "codex_index_meta.json"
+META_PATH = EMBED_DIR / "codex_index_meta.json"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
 SOURCES = [
-    REPO_ROOT / ".codex" / "docs",
-    REPO_ROOT / ".github" / "agents",
-    REPO_ROOT / "src" / "codex" / "cognitive",
-    REPO_ROOT / "AGENT_REGISTRY.yaml",
+ REPO_ROOT / ".codex" / "docs",
+ REPO_ROOT / ".github" / "agents",
+ REPO_ROOT / "src" / "codex" / "cognitive",
+ REPO_ROOT / "AGENT_REGISTRY.yaml",
 ]
 
 @dataclass
 class Chunk:
-    source_path: str
-    chunk_index: int
-    text: str
+ source_path: str
+ chunk_index: int
+ text: str
 
 def chunk_file(path: pathlib.Path, chunk_size: int = 512) -> List[Chunk]:
-    """Split file text into overlapping chunks."""
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    words = text.split()
-    chunks = []
-    for i in range(0, len(words), chunk_size - 64):  # 64-word overlap
-        chunk_text = " ".join(words[i : i + chunk_size])
-        chunks.append(Chunk(str(path.relative_to(REPO_ROOT)), len(chunks), chunk_text))
-    return chunks
+ """Split file text into overlapping chunks."""
+ text = path.read_text(encoding="utf-8", errors="ignore")
+ words = text.split()
+ chunks = []
+ for i in range(0, len(words), chunk_size - 64): # 64-word overlap
+ chunk_text = " ".join(words[i : i + chunk_size])
+ chunks.append(Chunk(str(path.relative_to(REPO_ROOT)), len(chunks), chunk_text))
+ return chunks
 
 def collect_chunks() -> List[Chunk]:
-    all_chunks: List[Chunk] = []
-    for source in SOURCES:
-        if source.is_file():
-            all_chunks.extend(chunk_file(source))
-        elif source.is_dir():
-            for ext in ("*.md", "*.yaml", "*.yml", "*.py"):
-                for f in source.rglob(ext):
-                    all_chunks.extend(chunk_file(f))
-    return all_chunks
+ all_chunks: List[Chunk] = []
+ for source in SOURCES:
+ if source.is_file():
+ all_chunks.extend(chunk_file(source))
+ elif source.is_dir():
+ for ext in ("*.md", "*.yaml", "*.yml", "*.py"):
+ for f in source.rglob(ext):
+ all_chunks.extend(chunk_file(f))
+ return all_chunks
 
 def build_index(chunks: List[Chunk]) -> None:
-    EMBED_DIR.mkdir(parents=True, exist_ok=True)
-    print(f"Loading model: {MODEL_NAME}")
-    model = SentenceTransformer(MODEL_NAME)
+ EMBED_DIR.mkdir(parents=True, exist_ok=True)
+ print(f"Loading model: {MODEL_NAME}")
+ model = SentenceTransformer(MODEL_NAME)
 
-    texts = [c.text for c in chunks]
-    print(f"Encoding {len(texts)} chunks...")
-    t0 = time.time()
-    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
-    print(f"Encoded in {time.time() - t0:.1f}s")
+ texts = [c.text for c in chunks]
+ print(f"Encoding {len(texts)} chunks...")
+ t0 = time.time()
+ embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+ print(f"Encoded in {time.time() - t0:.1f}s")
 
-    dim = embeddings.shape[1]
-    index = faiss.IndexFlatL2(dim)
-    index.add(embeddings.astype(np.float32))
-    faiss.write_index(index, str(INDEX_PATH))
+ dim = embeddings.shape[1]
+ index = faiss.IndexFlatL2(dim)
+ index.add(embeddings.astype(np.float32))
+ faiss.write_index(index, str(INDEX_PATH))
 
-    meta = {
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "model": MODEL_NAME,
-        "dim": dim,
-        "chunk_count": len(chunks),
-        "chunks": [asdict(c) for c in chunks],
-    }
-    META_PATH.write_text(json.dumps(meta, indent=2))
-    print(f"Index written: {INDEX_PATH} ({len(chunks)} chunks, dim={dim})")
+ meta = {
+ "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+ "model": MODEL_NAME,
+ "dim": dim,
+ "chunk_count": len(chunks),
+ "chunks": [asdict(c) for c in chunks],
+ }
+ META_PATH.write_text(json.dumps(meta, indent=2))
+ print(f"Index written: {INDEX_PATH} ({len(chunks)} chunks, dim={dim})")
 
 if __name__ == "__main__":
-    chunks = collect_chunks()
-    build_index(chunks)
+ chunks = collect_chunks()
+ build_index(chunks)
 ```
 
 ### Validated `query_corpus` Pattern (Phase 3)
@@ -665,36 +665,36 @@ import json, sqlite3, pathlib
 import faiss, numpy as np
 from sentence_transformers import SentenceTransformer
 
-REPO_ROOT  = pathlib.Path(__file__).resolve().parents[3]
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
 INDEX_PATH = REPO_ROOT / ".codex" / "embeddings" / "codex_index.faiss"
-META_PATH  = REPO_ROOT / ".codex" / "embeddings" / "codex_index_meta.json"
-DB_PATH    = REPO_ROOT / ".codex" / "codex_corpus.db"
+META_PATH = REPO_ROOT / ".codex" / "embeddings" / "codex_index_meta.json"
+DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
 def query(query_text: str, top_k: int = 5) -> list[dict]:
-    model = SentenceTransformer(MODEL_NAME)
-    meta  = json.loads(META_PATH.read_text())
-    index = faiss.read_index(str(INDEX_PATH))
+ model = SentenceTransformer(MODEL_NAME)
+ meta = json.loads(META_PATH.read_text())
+ index = faiss.read_index(str(INDEX_PATH))
 
-    q_vec = model.encode([query_text], convert_to_numpy=True).astype(np.float32)
-    D, I  = index.search(q_vec, top_k)
+ q_vec = model.encode([query_text], convert_to_numpy=True).astype(np.float32)
+ D, I = index.search(q_vec, top_k)
 
-    results = []
-    for rank, (dist, idx) in enumerate(zip(D[0], I[0])):
-        chunk = meta["chunks"][idx]
-        results.append({
-            "rank": rank + 1,
-            "score": float(1 / (1 + dist)),   # normalize L2 to 0-1
-            "source": chunk["source_path"],
-            "text_preview": chunk["text"][:200],
-        })
-    return results
+ results = []
+ for rank, (dist, idx) in enumerate(zip(D[0], I[0])):
+ chunk = meta["chunks"][idx]
+ results.append({
+ "rank": rank + 1,
+ "score": float(1 / (1 + dist)), # normalize L2 to 0-1
+ "source": chunk["source_path"],
+ "text_preview": chunk["text"][:200],
+ })
+ return results
 
 if __name__ == "__main__":
-    import sys
-    q_text = " ".join(sys.argv[1:]) or "grounded enforcement policy violation"
-    for r in query(q_text):
-        print(f"[{r['rank']}] {r['score']:.3f} | {r['source']}\n    {r['text_preview']}\n")
+ import sys
+ q_text = " ".join(sys.argv[1:]) or "grounded enforcement policy violation"
+ for r in query(q_text):
+ print(f"[{r['rank']}] {r['score']:.3f} | {r['source']}\n {r['text_preview']}\n")
 ```
 
 ### Incremental Corpus Update Pattern (Phase 3 — Nightly)
@@ -709,44 +709,44 @@ Research from the offline semantic search engine reference
 name: Embedding Index Rebuild
 
 on:
-  schedule:
-    - cron: '0 2 * * *'   # 2 AM UTC nightly
-  workflow_dispatch:       # manual trigger for testing
+ schedule:
+ - cron: '0 2 * * *' # 2 AM UTC nightly
+ workflow_dispatch: # manual trigger for testing
 
 concurrency:
-  group: embedding-index-rebuild
-  cancel-in-progress: true
+ group: embedding-index-rebuild
+ cancel-in-progress: true
 
 jobs:
-  rebuild:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+ rebuild:
+ runs-on: ubuntu-latest
+ timeout-minutes: 15
+ steps:
+ - uses: actions/checkout@v4
+ with:
+ fetch-depth: 1
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
+ - uses: actions/setup-python@v5
+ with:
+ python-version: "3.11"
+ cache: "pip"
 
-      - name: Install embedding dependencies
-        run: pip install sentence-transformers faiss-cpu numpy
+ - name: Install embedding dependencies
+ run: pip install sentence-transformers faiss-cpu numpy
 
-      - name: Rebuild embedding index
-        run: python scripts/ci/build_embeddings.py
+ - name: Rebuild embedding index
+ run: python scripts/ci/build_embeddings.py
 
-      - name: Commit updated index metadata
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Only commit the meta JSON (index binary is git-ignored)
-          git add .codex/embeddings/codex_index_meta.json
-          git diff --staged --quiet || git commit -m "chore: rebuild embedding index [skip ci]"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ - name: Commit updated index metadata
+ run: |
+ git config user.name "github-actions[bot]"
+ git config user.email "github-actions[bot]@users.noreply.github.com"
+ # Only commit the meta JSON (index binary is git-ignored)
+ git add .codex/embeddings/codex_index_meta.json
+ git diff --staged --quiet || git commit -m "chore: rebuild embedding index [skip ci]"
+ git push
+ env:
+ GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
 ```
 
 ## Memory Corpus Architecture Decision
@@ -759,19 +759,19 @@ confirms the **SQLite + FAISS hybrid** is the right architecture for Phase 3:
 
 ```
 QUERY
-  │
-  ├──► FAISS semantic search (policy docs, agent defs, code)
-  │         └── top-5 by cosine similarity
-  │
-  └──► SQLite keyword search (session logs, violation history)
-            └── top-5 by recency + keyword match
-                │
-                ▼
-         COMBINED RESULTS
-         ranked by score + recency
-                │
-                ▼
-    relevant_prior_context[] injected into agent_context.json
+ 
+ FAISS semantic search (policy docs, agent defs, code)
+ top-5 by cosine similarity
+ 
+ SQLite keyword search (session logs, violation history)
+ top-5 by recency + keyword match
+ 
+ 
+ COMBINED RESULTS
+ ranked by score + recency
+ 
+ 
+ relevant_prior_context[] injected into agent_context.json
 ```
 
 ---
@@ -905,33 +905,33 @@ agent decomposes tasks and delegates to top-20 specialists from Phase 2.
 ### ED Transition: FSM State Diagram
 
 ```
-          ┌─────────────────────────────────────────┐
-          │         OPERATING MODEL FSM              │
-          │                                          │
-    ┌─────▼──────┐   All 5 conditions met   ┌───────▼──────┐
-    │            │ ──────────────────────► │              │
-    │  Model E   │                         │ Model D_READY │
-    │ (current)  │ ◄────────────────────── │  (validated) │
-    │            │   Any condition fails    │              │
-    └────────────┘                         └──────┬───────┘
-                                                  │
-                                    CODEX_AGENT_AUTONOMY_LEVEL
-                                    = D_CAPABLE (repo variable)
-                                                  │
-                                           ┌──────▼───────┐
-                                           │   Model D    │
-                                           │ (Orchestrator│
-                                           │  Active)     │
-                                           └──────┬───────┘
-                                                  │
-                                    violation_count > threshold
-                                    OR condition regression
-                                                  │
-                                           ┌──────▼───────┐
-                                           │  D_SUSPENDED │
-                                           │ (auto-reverts│
-                                           │    to E)     │
-                                           └──────────────┘
+ 
+ OPERATING MODEL FSM 
+ 
+ All 5 conditions met 
+ 
+ Model E Model D_READY 
+ (current) (validated) 
+ Any condition fails 
+ 
+ 
+ CODEX_AGENT_AUTONOMY_LEVEL
+ = D_CAPABLE (repo variable)
+ 
+ 
+ Model D 
+ (Orchestrator
+ Active) 
+ 
+ 
+ violation_count > threshold
+ OR condition regression
+ 
+ 
+ D_SUSPENDED 
+ (auto-reverts
+ to E) 
+ 
 ```
 
 ### Validated `e-to-d-transition-gate.yml` Conditions
@@ -941,90 +941,90 @@ criteria** for safe orchestrator activation:
 
 ```yaml name=e_to_d_transition_gate_pattern.yaml
 # .github/workflows/e-to-d-transition-gate.yml
-# Phase 4: E→D Transition Readiness Gate
+# Phase 4: ED Transition Readiness Gate
 # Canary: Tier-2 readiness score first; Tier-1 block after 2-sprint observation
-name: E→D Transition Readiness Gate
+name: ED Transition Readiness Gate
 
 on:
-  pull_request:
-  workflow_dispatch:
+ pull_request:
+ workflow_dispatch:
 
 concurrency:
-  group: e-to-d-transition-gate-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+ group: e-to-d-transition-gate-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true
 
 jobs:
-  transition-readiness:
-    name: " E→D Transition Readiness Check"
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      readiness_score: ${{ steps.check.outputs.score }}
-      model_capable:   ${{ steps.check.outputs.capable }}
+ transition-readiness:
+ name: " ED Transition Readiness Check"
+ runs-on: ubuntu-latest
+ timeout-minutes: 10
+ outputs:
+ readiness_score: ${{ steps.check.outputs.score }}
+ model_capable: ${{ steps.check.outputs.capable }}
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+ steps:
+ - uses: actions/checkout@v4
+ with:
+ fetch-depth: 0
 
-      - name: Check 5 transition conditions
-        id: check
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY }}
-          script: |
-            const fs = require('fs');
-            const conditions = [];
+ - name: Check 5 transition conditions
+ id: check
+ uses: actions/github-script@v7
+ with:
+ github-token: ${{ secrets.CODEX_MASTER_KEY }}
+ script: |
+ const fs = require('fs');
+ const conditions = [];
 
-            // C1: AGENT_REGISTRY.yaml covers 100% active agents
-            const registry = fs.existsSync('AGENT_REGISTRY.yaml');
-            conditions.push({ id: 'C1', label: 'AGENT_REGISTRY.yaml present', pass: registry });
+ // C1: AGENT_REGISTRY.yaml covers 100% active agents
+ const registry = fs.existsSync('AGENT_REGISTRY.yaml');
+ conditions.push({ id: 'C1', label: 'AGENT_REGISTRY.yaml present', pass: registry });
 
-            // C2: CODEX_MANIFEST.json valid + current (<24h)
-            let manifestOk = false;
-            if (fs.existsSync('CODEX_MANIFEST.json')) {
-              const m = JSON.parse(fs.readFileSync('CODEX_MANIFEST.json', 'utf8'));
-              const age = Date.now() - new Date(m.generated_at).getTime();
-              manifestOk = age < 24 * 60 * 60 * 1000;
-            }
-            conditions.push({ id: 'C2', label: 'CODEX_MANIFEST.json current (<24h)', pass: manifestOk });
+ // C2: CODEX_MANIFEST.json valid + current (<24h)
+ let manifestOk = false;
+ if (fs.existsSync('CODEX_MANIFEST.json')) {
+ const m = JSON.parse(fs.readFileSync('CODEX_MANIFEST.json', 'utf8'));
+ const age = Date.now() - new Date(m.generated_at).getTime();
+ manifestOk = age < 24 * 60 * 60 * 1000;
+ }
+ conditions.push({ id: 'C2', label: 'CODEX_MANIFEST.json current (<24h)', pass: manifestOk });
 
-            // C3: Tier-3 policy count <= 2
-            // (checked via GROUNDED_VS_SOFT_ENFORCEMENT.md parse)
-            const gvsDoc = fs.existsSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md')
-              ? fs.readFileSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md', 'utf8')
-              : '';
-            const softCount = (gvsDoc.match(/ \*\*SOFT\*\*/g) || []).length;
-            conditions.push({ id: 'C3', label: `Tier-3 count ≤2 (current: ${softCount})`, pass: softCount <= 2 });
+ // C3: Tier-3 policy count <= 2
+ // (checked via GROUNDED_VS_SOFT_ENFORCEMENT.md parse)
+ const gvsDoc = fs.existsSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md')
+ ? fs.readFileSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md', 'utf8')
+ : '';
+ const softCount = (gvsDoc.match(/ \*\*SOFT\*\*/g) || []).length;
+ conditions.push({ id: 'C3', label: `Tier-3 count ≤2 (current: ${softCount})`, pass: softCount <= 2 });
 
-            // C4: agent-handoff-gate.yml exists (Phase 2 complete)
-            const handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');
-            conditions.push({ id: 'C4', label: 'agent-handoff-gate.yml deployed', pass: handoffGate });
+ // C4: agent-handoff-gate.yml exists (Phase 2 complete)
+ const handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');
+ conditions.push({ id: 'C4', label: 'agent-handoff-gate.yml deployed', pass: handoffGate });
 
-            // C5: GROUNDED gate count >= 8 Tier-1 gates
-            const tier1Count = (gvsDoc.match(/ \*\*GROUNDED\*\*/g) || []).length;
-            conditions.push({ id: 'C5', label: `Tier-1 gates ≥8 (current: ${tier1Count})`, pass: tier1Count >= 8 });
+ // C5: GROUNDED gate count >= 8 Tier-1 gates
+ const tier1Count = (gvsDoc.match(/ \*\*GROUNDED\*\*/g) || []).length;
+ conditions.push({ id: 'C5', label: `Tier-1 gates ≥8 (current: ${tier1Count})`, pass: tier1Count >= 8 });
 
-            const score = conditions.filter(c => c.pass).length;
-            const capable = score === 5;
+ const score = conditions.filter(c => c.pass).length;
+ const capable = score === 5;
 
-            // Post readiness summary as job annotation
-            let summary = `##  E→D Transition Readiness: ${score}/5\n\n`;
-            summary += `| ID | Condition | Status |\n|----|-----------|---------|\n`;
-            for (const c of conditions) {
-              summary += `| ${c.id} | ${c.label} | ${c.pass ? '' : ''} |\n`;
-            }
-            summary += `\n**Operating Model:** ${capable ? ' D_CAPABLE' : ' E (continue building)'}\n`;
-            await core.summary.addRaw(summary).write();
+ // Post readiness summary as job annotation
+ let summary = `## ED Transition Readiness: ${score}/5\n\n`;
+ summary += `| ID | Condition | Status |\n|----|-----------|---------|\n`;
+ for (const c of conditions) {
+ summary += `| ${c.id} | ${c.label} | ${c.pass ? '' : ''} |\n`;
+ }
+ summary += `\n**Operating Model:** ${capable ? ' D_CAPABLE' : ' E (continue building)'}\n`;
+ await core.summary.addRaw(summary).write();
 
-            core.setOutput('score', score.toString());
-            core.setOutput('capable', capable.toString());
+ core.setOutput('score', score.toString());
+ core.setOutput('capable', capable.toString());
 
-            // CANARY (Tier-2): warn only for first 2 sprints
-            // PROMOTE TO TIER-1: change to core.setFailed() after observation period
-            if (!capable) {
-              core.warning(`E→D transition not ready: ${score}/5 conditions met`);
-            }
+ // CANARY (Tier-2): warn only for first 2 sprints
+ // PROMOTE TO TIER-1: change to core.setFailed() after observation period
+ if (!capable) {
+ core.warning(`ED transition not ready: ${score}/5 conditions met`);
+ }
 ```
 
 ## Dynamic Routing for OrchestratorSpecialist Selection (Phase 4)
@@ -1043,22 +1043,22 @@ Uses Phase 3 FAISS index for capability matching
 from codex.logging.query_corpus import query
 
 def select_specialist(task_description: str) -> str:
-    """
-    Dynamically route task to best-matching specialist agent
-    using semantic similarity over capability_tags in AGENT_REGISTRY
-    """
-    results = query(
-        query_text=f"agent capable of: {task_description}",
-        top_k=3
-    )
-    # Filter to agents only (not docs/code chunks)
-    agent_results = [
-        r for r in results
-        if "agents/" in r["source"] or "AGENT_REGISTRY" in r["source"]
-    ]
-    if not agent_results:
-        return "cognitive-brain-cli-agent"  # safe default
-    return agent_results[0]["source"].split("/")[-1].replace(".md", "")
+ """
+ Dynamically route task to best-matching specialist agent
+ using semantic similarity over capability_tags in AGENT_REGISTRY
+ """
+ results = query(
+ query_text=f"agent capable of: {task_description}",
+ top_k=3
+ )
+ # Filter to agents only (not docs/code chunks)
+ agent_results = [
+ r for r in results
+ if "agents/" in r["source"] or "AGENT_REGISTRY" in r["source"]
+ ]
+ if not agent_results:
+ return "cognitive-brain-cli-agent" # safe default
+ return agent_results[0]["source"].split("/")[-1].replace(".md", "")
 ```
 
 ---
@@ -1104,23 +1104,23 @@ validates the **git diff documentation update** pattern used in Phase 5's
 # Pattern validated by: Continue CLI doc-writing agent approach
 
 - name: Auto-update GROUNDED_VS_SOFT_ENFORCEMENT.md enforcement table
-  if: github.ref == 'refs/heads/main'
-  run: |
-    python3 scripts/ci/generate_manifest.py --update-enforcement-doc
-    # generate_manifest.py reads:
-    #   - AGENT_REGISTRY.yaml (for tier counts)
-    #   - .github/workflows/ (for new REQ-N gates)
-    #   - SQLite agent_sessions (for violation recurrence rates)
-    # Writes:
-    #   - Updated tier table rows in GROUNDED_VS_SOFT_ENFORCEMENT.md
-    #   - Updated reliability chart bar values
-    #   - Updated enforcement_kpis{} in CODEX_MANIFEST.json
-    git add .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md CODEX_MANIFEST.json
-    git diff --staged --quiet || \
-      git commit -m "chore(enforcement): auto-update tier table and KPI manifest [skip ci]"
-    git push
-  env:
-    GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ if: github.ref == 'refs/heads/main'
+ run: |
+ python3 scripts/ci/generate_manifest.py --update-enforcement-doc
+ # generate_manifest.py reads:
+ # - AGENT_REGISTRY.yaml (for tier counts)
+ # - .github/workflows/ (for new REQ-N gates)
+ # - SQLite agent_sessions (for violation recurrence rates)
+ # Writes:
+ # - Updated tier table rows in GROUNDED_VS_SOFT_ENFORCEMENT.md
+ # - Updated reliability chart bar values
+ # - Updated enforcement_kpis{} in CODEX_MANIFEST.json
+ git add .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md CODEX_MANIFEST.json
+ git diff --staged --quiet || \
+ git commit -m "chore(enforcement): auto-update tier table and KPI manifest [skip ci]"
+ git push
+ env:
+ GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
 ```
 
 ## Self-Healing Enforcement Gap Loop (Phase 5 Full Architecture)
@@ -1129,39 +1129,39 @@ Combining all research sources, the validated Phase 5 self-healing loop is:
 
 ```
 ci-health-monitor.yml (every 6h)
-         │
-         ▼
-  Query SQLite agent_sessions
-  for Tier-3 violations > 1 in 30d
-         │
-         ├── No violations → post KPI dashboard comment (Tier-2 injection)
-         │
-         └── Violation found →
-               auto_promote_tier.py (dry-run)
-                    │
-                    ▼
-              Generate REQ-N YAML stub
-              + test case template
-                    │
-                    ▼
-              Create GitHub Issue:
-              "🔺 ENFORCEMENT GAP: <policy>"
-              Body contains:
-              - Violation count + sessions
-              - Draft cognitive-preflight REQ-N step
-              - Canary promotion path (Tier-2 first)
-              - Acceptance criteria checklist
-                    │
-                    ▼
-              Human reviews + opens PR
-              (no autonomous merge — dry-run only)
-                    │
-                    ▼
-              2-sprint canary observation
-                    │
-                    ▼
-              Tier-2 → Tier-1 promotion
-              (manual PR, gate verified)
+ 
+ 
+ Query SQLite agent_sessions
+ for Tier-3 violations > 1 in 30d
+ 
+ No violations post KPI dashboard comment (Tier-2 injection)
+ 
+ Violation found 
+ auto_promote_tier.py (dry-run)
+ 
+ 
+ Generate REQ-N YAML stub
+ + test case template
+ 
+ 
+ Create GitHub Issue:
+ " ENFORCEMENT GAP: <policy>"
+ Body contains:
+ - Violation count + sessions
+ - Draft cognitive-preflight REQ-N step
+ - Canary promotion path (Tier-2 first)
+ - Acceptance criteria checklist
+ 
+ 
+ Human reviews + opens PR
+ (no autonomous merge — dry-run only)
+ 
+ 
+ 2-sprint canary observation
+ 
+ 
+ Tier-2 Tier-1 promotion
+ (manual PR, gate verified)
 ```
 
 ### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)
@@ -1180,41 +1180,41 @@ Source data: SQLite agent_sessions table
 import pathlib, sqlite3, re, datetime
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-REPORT    = REPO_ROOT / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
-DB_PATH   = REPO_ROOT / ".codex/codex_corpus.db"
+REPORT = REPO_ROOT / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+DB_PATH = REPO_ROOT / ".codex/codex_corpus.db"
 
 def get_next_w_number(report_text: str) -> int:
-    matches = re.findall(r'\| W-(\d+) \|', report_text)
-    return max((int(m) for m in matches), default=0) + 1
+ matches = re.findall(r'\| W-(\d+) \|', report_text)
+ return max((int(m) for m in matches), default=0) + 1
 
 def append_session_entry(session_id: str) -> None:
-    conn = sqlite3.connect(DB_PATH)
-    row  = conn.execute(
-        "SELECT agent_id, pr_number, start_time, end_time, "
-        "violation_count, tier_at_close, handoff_count, summary_posted "
-        "FROM agent_sessions WHERE session_id = ?",
-        (session_id,)
-    ).fetchone()
-    conn.close()
-    if not row:
-        return
+ conn = sqlite3.connect(DB_PATH)
+ row = conn.execute(
+ "SELECT agent_id, pr_number, start_time, end_time, "
+ "violation_count, tier_at_close, handoff_count, summary_posted "
+ "FROM agent_sessions WHERE session_id = ?",
+ (session_id,)
+ ).fetchone()
+ conn.close()
+ if not row:
+ return
 
-    agent_id, pr_num, start, end, violations, tier, handoffs, summary = row
-    report_text = REPORT.read_text(encoding="utf-8")
-    w_num = get_next_w_number(report_text)
+ agent_id, pr_num, start, end, violations, tier, handoffs, summary = row
+ report_text = REPORT.read_text(encoding="utf-8")
+ w_num = get_next_w_number(report_text)
 
-    entry = (
-        f"| W-{w_num:03d} | Session {session_id[:8]} — Agent: {agent_id} | "
-        f"PR #{pr_num} | Tier: {tier} | "
-        f"Violations: {violations} | Handoffs: {handoffs} | "
-        f"Summary posted: {'' if summary else ''} | "
-        f" Auto-appended ({datetime.date.today()}) |\n"
-    )
+ entry = (
+ f"| W-{w_num:03d} | Session {session_id[:8]} — Agent: {agent_id} | "
+ f"PR #{pr_num} | Tier: {tier} | "
+ f"Violations: {violations} | Handoffs: {handoffs} | "
+ f"Summary posted: {'' if summary else ''} | "
+ f" Auto-appended ({datetime.date.today()}) |\n"
+ )
 
-    # Insert before last --- separator
-    updated = report_text.rsplit("---", 1)
-    REPORT.write_text(updated[0] + entry + "---" + updated[1], encoding="utf-8")
-    print(f"Appended W-{w_num:03d} for session {session_id[:8]}")
+ # Insert before last --- separator
+ updated = report_text.rsplit("---", 1)
+ REPORT.write_text(updated[0] + entry + "---" + updated[1], encoding="utf-8")
+ print(f"Appended W-{w_num:03d} for session {session_id[:8]}")
 ```
 
 ---
@@ -1253,109 +1253,109 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-WF_DIR    = REPO_ROOT / ".github" / "workflows"
-OUT_FILE  = REPO_ROOT / "docs" / "audits" / "WORKFLOW_COMPLIANCE_MATRIX.md"
+WF_DIR = REPO_ROOT / ".github" / "workflows"
+OUT_FILE = REPO_ROOT / "docs" / "audits" / "WORKFLOW_COMPLIANCE_MATRIX.md"
 
 @dataclass
 class WorkflowAudit:
-    name: str
-    path: str
-    has_concurrency: bool = False
-    has_timeout: bool = False
-    has_cascade_risk: bool = False   # workflow_run: ["*"] without self-exclusion
-    has_base_ref_fetch: bool = False # cross-branch diff with explicit fetch
-    enforcement_tier: str = "SOFT"   # GROUNDED | PARTIAL | SOFT
-    notes: list[str] = field(default_factory=list)
+ name: str
+ path: str
+ has_concurrency: bool = False
+ has_timeout: bool = False
+ has_cascade_risk: bool = False # workflow_run: ["*"] without self-exclusion
+ has_base_ref_fetch: bool = False # cross-branch diff with explicit fetch
+ enforcement_tier: str = "SOFT" # GROUNDED | PARTIAL | SOFT
+ notes: list[str] = field(default_factory=list)
 
 def audit_workflow(path: pathlib.Path) -> WorkflowAudit:
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    try:
-        wf = yaml.safe_load(text)
-    except yaml.YAMLError as e:
-        return WorkflowAudit(path.stem, str(path), notes=[f"YAML parse error: {e}"])
+ text = path.read_text(encoding="utf-8", errors="ignore")
+ try:
+ wf = yaml.safe_load(text)
+ except yaml.YAMLError as e:
+ return WorkflowAudit(path.stem, str(path), notes=[f"YAML parse error: {e}"])
 
-    audit = WorkflowAudit(name=path.stem, path=str(path.relative_to(REPO_ROOT)))
+ audit = WorkflowAudit(name=path.stem, path=str(path.relative_to(REPO_ROOT)))
 
-    # Check concurrency
-    if "concurrency" in (wf or {}):
-        audit.has_concurrency = True
+ # Check concurrency
+ if "concurrency" in (wf or {}):
+ audit.has_concurrency = True
 
-    # Check timeout on all jobs
-    jobs = (wf or {}).get("jobs", {})
-    if jobs and all("timeout-minutes" in j for j in jobs.values()):
-        audit.has_timeout = True
+ # Check timeout on all jobs
+ jobs = (wf or {}).get("jobs", {})
+ if jobs and all("timeout-minutes" in j for j in jobs.values()):
+ audit.has_timeout = True
 
-    # Check cascade risk: workflow_run wildcard without self-exclusion
-    on_triggers = (wf or {}).get("on", {})
-    if isinstance(on_triggers, dict):
-        wf_run = on_triggers.get("workflow_run", {})
-        if isinstance(wf_run, dict):
-            workflows = wf_run.get("workflows", [])
-            if "*" in workflows:
-                # Check for self-exclusion if:
-                has_exclusion = any(
-                    "github.event.workflow_run.name !=" in str(j.get("if", ""))
-                    for j in jobs.values()
-                )
-                audit.has_cascade_risk = not has_exclusion
+ # Check cascade risk: workflow_run wildcard without self-exclusion
+ on_triggers = (wf or {}).get("on", {})
+ if isinstance(on_triggers, dict):
+ wf_run = on_triggers.get("workflow_run", {})
+ if isinstance(wf_run, dict):
+ workflows = wf_run.get("workflows", [])
+ if "*" in workflows:
+ # Check for self-exclusion if:
+ has_exclusion = any(
+ "github.event.workflow_run.name !=" in str(j.get("if", ""))
+ for j in jobs.values()
+ )
+ audit.has_cascade_risk = not has_exclusion
 
-    # Check base-ref fetch for cross-branch diffs
-    if "base_ref" in text or "github.base_ref" in text:
-        if "git fetch origin" in text:
-            audit.has_base_ref_fetch = True
-        else:
-            audit.notes.append("️ Cross-branch diff without explicit base-ref fetch")
+ # Check base-ref fetch for cross-branch diffs
+ if "base_ref" in text or "github.base_ref" in text:
+ if "git fetch origin" in text:
+ audit.has_base_ref_fetch = True
+ else:
+ audit.notes.append(" Cross-branch diff without explicit base-ref fetch")
 
-    # Classify enforcement tier
-    if "cognitive-preflight" in text or "exit 1" in text:
-        audit.enforcement_tier = "GROUNDED"
-    elif "::warning::" in text or "createComment" in text:
-        audit.enforcement_tier = "PARTIAL"
+ # Classify enforcement tier
+ if "cognitive-preflight" in text or "exit 1" in text:
+ audit.enforcement_tier = "GROUNDED"
+ elif "::warning::" in text or "createComment" in text:
+ audit.enforcement_tier = "PARTIAL"
 
-    return audit
+ return audit
 
 def generate_matrix() -> None:
-    audits = [audit_workflow(p) for p in sorted(WF_DIR.glob("*.yml"))]
+ audits = [audit_workflow(p) for p in sorted(WF_DIR.glob("*.yml"))]
 
-    lines = [
-        "# Workflow Compliance Matrix",
-        f"> Generated: Phase 0 audit | {len(audits)} workflows scanned\n",
-        "| Workflow | Concurrency | Timeout | Cascade Risk | Base-Ref Fetch | Enforcement Tier | Notes |",
-        "|----------|:-----------:|:-------:|:------------:|:--------------:|:----------------:|-------|",
-    ]
-    for a in audits:
-        lines.append(
-            f"| `{a.name}` "
-            f"| {'' if a.has_concurrency else ''} "
-            f"| {'' if a.has_timeout else ''} "
-            f"| {'️' if a.has_cascade_risk else ''} "
-            f"| {'' if a.has_base_ref_fetch else 'N/A'} "
-            f"| {a.enforcement_tier} "
-            f"| {'; '.join(a.notes) or '—'} |"
-        )
+ lines = [
+ "# Workflow Compliance Matrix",
+ f"> Generated: Phase 0 audit | {len(audits)} workflows scanned\n",
+ "| Workflow | Concurrency | Timeout | Cascade Risk | Base-Ref Fetch | Enforcement Tier | Notes |",
+ "|----------|:-----------:|:-------:|:------------:|:--------------:|:----------------:|-------|",
+ ]
+ for a in audits:
+ lines.append(
+ f"| `{a.name}` "
+ f"| {'' if a.has_concurrency else ''} "
+ f"| {'' if a.has_timeout else ''} "
+ f"| {'' if a.has_cascade_risk else ''} "
+ f"| {'' if a.has_base_ref_fetch else 'N/A'} "
+ f"| {a.enforcement_tier} "
+ f"| {'; '.join(a.notes) or '—'} |"
+ )
 
-    # KPI summary
-    grounded = sum(1 for a in audits if a.enforcement_tier == "GROUNDED")
-    partial  = sum(1 for a in audits if a.enforcement_tier == "PARTIAL")
-    soft     = sum(1 for a in audits if a.enforcement_tier == "SOFT")
-    cascade  = sum(1 for a in audits if a.has_cascade_risk)
-    lines += [
-        "\n## KPI Summary",
-        f"| KPI | Count |", f"|-----|-------|",
-        f"| GROUNDED workflows | {grounded} |",
-        f"| PARTIAL workflows  | {partial} |",
-        f"| SOFT workflows     | {soft} |",
-        f"| Cascade risk       | {cascade} |",
-        f"| Missing concurrency | {sum(1 for a in audits if not a.has_concurrency)} |",
-        f"| Missing timeout    | {sum(1 for a in audits if not a.has_timeout)} |",
-    ]
+ # KPI summary
+ grounded = sum(1 for a in audits if a.enforcement_tier == "GROUNDED")
+ partial = sum(1 for a in audits if a.enforcement_tier == "PARTIAL")
+ soft = sum(1 for a in audits if a.enforcement_tier == "SOFT")
+ cascade = sum(1 for a in audits if a.has_cascade_risk)
+ lines += [
+ "\n## KPI Summary",
+ f"| KPI | Count |", f"|-----|-------|",
+ f"| GROUNDED workflows | {grounded} |",
+ f"| PARTIAL workflows | {partial} |",
+ f"| SOFT workflows | {soft} |",
+ f"| Cascade risk | {cascade} |",
+ f"| Missing concurrency | {sum(1 for a in audits if not a.has_concurrency)} |",
+ f"| Missing timeout | {sum(1 for a in audits if not a.has_timeout)} |",
+ ]
 
-    OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    OUT_FILE.write_text("\n".join(lines) + "\n")
-    print(f"Matrix written: {OUT_FILE} ({len(audits)} workflows)")
+ OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+ OUT_FILE.write_text("\n".join(lines) + "\n")
+ print(f"Matrix written: {OUT_FILE} ({len(audits)} workflows)")
 
 if __name__ == "__main__":
-    generate_matrix()
+ generate_matrix()
 ```
 
 ### Semgrep Custom Rules for Soft Enforcement Detection (Phase 0)
@@ -1365,88 +1365,88 @@ if __name__ == "__main__":
 # Phase 0: Detect soft enforcement patterns in workflow YAML files
 # Run: semgrep --config .codex/policies/semgrep/ .github/workflows/
 rules:
-  - id: store-memory-no-gate
-    patterns:
-      - pattern: |
-          store_memory(...)
-    message: >
-      store_memory call detected without a corresponding CI gate.
-      This is Tier-3 (soft) enforcement. Consider promoting to Tier-1
-      (exit 1 in cognitive-preflight) if this policy has been violated before.
-    languages: [python]
-    severity: WARNING
-    metadata:
-      enforcement_tier: Tier-3
-      promotion_path: cognitive-preflight REQ-N
+ - id: store-memory-no-gate
+ patterns:
+ - pattern: |
+ store_memory(...)
+ message: >
+ store_memory call detected without a corresponding CI gate.
+ This is Tier-3 (soft) enforcement. Consider promoting to Tier-1
+ (exit 1 in cognitive-preflight) if this policy has been violated before.
+ languages: [python]
+ severity: WARNING
+ metadata:
+ enforcement_tier: Tier-3
+ promotion_path: cognitive-preflight REQ-N
 
-  - id: policy-md-no-hook
-    patterns:
-      - pattern-regex: "CODEBASE_AGENCY_POLICY\\.md"
-    message: >
-      Reference to CODEBASE_AGENCY_POLICY.md without associated CI hook.
-      Policy documents without structural gates are Tier-3 (soft).
-    languages: [generic]
-    severity: WARNING
+ - id: policy-md-no-hook
+ patterns:
+ - pattern-regex: "CODEBASE_AGENCY_POLICY\\.md"
+ message: >
+ Reference to CODEBASE_AGENCY_POLICY.md without associated CI hook.
+ Policy documents without structural gates are Tier-3 (soft).
+ languages: [generic]
+ severity: WARNING
 
-  - id: missing-concurrency-workflow
-    patterns:
-      - pattern-regex: "^on:"
-      - pattern-not-regex: "concurrency:"
-    message: >
-      Workflow missing concurrency group. Add:
-      concurrency:
-        group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-        cancel-in-progress: true
-    languages: [yaml]
-    severity: ERROR
+ - id: missing-concurrency-workflow
+ patterns:
+ - pattern-regex: "^on:"
+ - pattern-not-regex: "concurrency:"
+ message: >
+ Workflow missing concurrency group. Add:
+ concurrency:
+ group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true
+ languages: [yaml]
+ severity: ERROR
 ```
 
 ## actionlint Integration (Phase 0 Workflow Audit)
 
 ```yaml name=actionlint_ci_integration.yaml
 # .github/workflows/actionlint-audit.yml
-# Phase 0 → Phase 6: Continuous workflow compliance linting
+# Phase 0 Phase 6: Continuous workflow compliance linting
 name: Workflow Compliance Audit (actionlint)
 
 on:
-  pull_request:
-    paths: [".github/workflows/**"]
-  push:
-    branches: [main]
-    paths: [".github/workflows/**"]
+ pull_request:
+ paths: [".github/workflows/**"]
+ push:
+ branches: [main]
+ paths: [".github/workflows/**"]
 
 concurrency:
-  group: actionlint-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+ group: actionlint-${{ github.head_ref || github.ref }}
+ cancel-in-progress: true
 
 jobs:
-  lint-workflows:
-    name: " actionlint — Workflow Compliance"
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
+ lint-workflows:
+ name: " actionlint — Workflow Compliance"
+ runs-on: ubuntu-latest
+ timeout-minutes: 10
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Install actionlint
-        run: |
-          LATEST=$(curl -s https://api.github.com/repos/rhysd/actionlint/releases/latest \
-            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
-          curl -fsSL "https://github.com/rhysd/actionlint/releases/download/${LATEST}/actionlint_${LATEST#v}_linux_amd64.tar.gz" \
-            | tar xz actionlint
-          sudo mv actionlint /usr/local/bin/
+ - name: Install actionlint
+ run: |
+ LATEST=$(curl -s https://api.github.com/repos/rhysd/actionlint/releases/latest \
+ | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
+ curl -fsSL "https://github.com/rhysd/actionlint/releases/download/${LATEST}/actionlint_${LATEST#v}_linux_amd64.tar.gz" \
+ | tar xz actionlint
+ sudo mv actionlint /usr/local/bin/
 
-      - name: Run actionlint on all workflows
-        run: |
-          actionlint -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}' \
-            .github/workflows/*.yml | tee actionlint_results.txt
-          # Fail on errors (exit 1 = Tier-1 hard gate for workflow syntax)
-          grep -q "::error" actionlint_results.txt && exit 1 || exit 0
+ - name: Run actionlint on all workflows
+ run: |
+ actionlint -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}' \
+ .github/workflows/*.yml | tee actionlint_results.txt
+ # Fail on errors (exit 1 = Tier-1 hard gate for workflow syntax)
+ grep -q "::error" actionlint_results.txt && exit 1 || exit 0
 
-      - name: Post summary
-        if: always()
-        run: |
-          echo "##  actionlint Results" >> $GITHUB_STEP_SUMMARY
-          cat actionlint_results.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+ - name: Post summary
+ if: always()
+ run: |
+ echo "## actionlint Results" >> $GITHUB_STEP_SUMMARY
+ cat actionlint_results.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
 ```
 
 ---
@@ -1493,50 +1493,50 @@ from typing import Any
 # Allowlist of fields that can be injected into agent_context.json
 # Anything outside this list is stripped before injection
 SAFE_INJECTION_FIELDS = {
-    "agents",           # registry references only — no executable content
-    "workflows",        # names and tiers only — no YAML content
-    "policies",         # file paths only — no file content
-    "enforcement_kpis", # numeric KPIs only
-    "operating_model",  # E or D string only
-    "generated_at",     # ISO timestamp only
-    "schema_version",   # version string only
+ "agents", # registry references only — no executable content
+ "workflows", # names and tiers only — no YAML content
+ "policies", # file paths only — no file content
+ "enforcement_kpis", # numeric KPIs only
+ "operating_model", # E or D string only
+ "generated_at", # ISO timestamp only
+ "schema_version", # version string only
 }
 
 # Patterns that MUST NOT appear in injected manifest fields
 INJECTION_BLOCKLIST = [
-    r"<script",         # XSS
-    r"eval\(",          # code injection
-    r"exec\(",          # shell injection
-    r"__import__",      # Python import injection
-    r"os\.system",      # shell command
-    r"\$\{.*\}",        # shell variable expansion
-    r"<!--.*-->",       # HTML comment injection
+ r"<script", # XSS
+ r"eval\(", # code injection
+ r"exec\(", # shell injection
+ r"__import__", # Python import injection
+ r"os\.system", # shell command
+ r"\$\{.*\}", # shell variable expansion
+ r"<!--.*-->", # HTML comment injection
 ]
 
 def sanitize_for_injection(manifest: dict[str, Any]) -> dict[str, Any]:
-    """Strip non-allowlisted fields and scan for injection patterns."""
-    safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
-    safe_str = json.dumps(safe)
-    for pattern in INJECTION_BLOCKLIST:
-        if re.search(pattern, safe_str, re.IGNORECASE):
-            raise ValueError(f"Injection pattern detected in manifest: {pattern}")
-    return safe
+ """Strip non-allowlisted fields and scan for injection patterns."""
+ safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
+ safe_str = json.dumps(safe)
+ for pattern in INJECTION_BLOCKLIST:
+ if re.search(pattern, safe_str, re.IGNORECASE):
+ raise ValueError(f"Injection pattern detected in manifest: {pattern}")
+ return safe
 
 def add_integrity_hash(manifest: dict[str, Any]) -> dict[str, Any]:
-    """Add SHA-256 integrity hash for manifest tamper detection."""
-    content = json.dumps(manifest, sort_keys=True, separators=(",", ":"))
-    manifest["integrity_sha256"] = hashlib.sha256(content.encode()).hexdigest()
-    return manifest
+ """Add SHA-256 integrity hash for manifest tamper detection."""
+ content = json.dumps(manifest, sort_keys=True, separators=(",", ":"))
+ manifest["integrity_sha256"] = hashlib.sha256(content.encode()).hexdigest()
+ return manifest
 
 def verify_integrity(manifest_path: pathlib.Path) -> bool:
-    """Verify manifest has not been tampered with since generation."""
-    data = json.loads(manifest_path.read_text())
-    stored_hash = data.pop("integrity_sha256", None)
-    if not stored_hash:
-        return False
-    content = json.dumps(data, sort_keys=True, separators=(",", ":"))
-    computed = hashlib.sha256(content.encode()).hexdigest()
-    return computed == stored_hash
+ """Verify manifest has not been tampered with since generation."""
+ data = json.loads(manifest_path.read_text())
+ stored_hash = data.pop("integrity_sha256", None)
+ if not stored_hash:
+ return False
+ content = json.dumps(data, sort_keys=True, separators=(",", ":"))
+ computed = hashlib.sha256(content.encode()).hexdigest()
+ return computed == stored_hash
 ```
 
 ## Security Controls Added to Plan (All Phases)
@@ -1557,27 +1557,27 @@ These controls must be retrofitted into Phases 1–5:
 
 ```yaml name=req9_security_gate_addition.yaml
 # Addition to cognitive-preflight: REQ-9 with integrity check
-- name: "REQ-9: CODEX_MANIFEST.json integrity verification (Tier-2 → Tier-1)"
-  run: |
-    python3 - <<'PYEOF'
-    # NOTE: heredoc safe here — not inside run: | block, using python3 - pattern
-    import sys, pathlib
-    sys.path.insert(0, str(pathlib.Path('.').resolve()))
-    from scripts.ci.generate_manifest import verify_integrity
-    import pathlib
+- name: "REQ-9: CODEX_MANIFEST.json integrity verification (Tier-2 Tier-1)"
+ run: |
+ python3 - <<'PYEOF'
+ # NOTE: heredoc safe here — not inside run: | block, using python3 - pattern
+ import sys, pathlib
+ sys.path.insert(0, str(pathlib.Path('.').resolve()))
+ from scripts.ci.generate_manifest import verify_integrity
+ import pathlib
 
-    manifest = pathlib.Path('CODEX_MANIFEST.json')
-    if not manifest.exists():
-      print("::warning::CODEX_MANIFEST.json absent — run generate_manifest.py")
-      # Tier-2 first (canary); change to sys.exit(1) after 2-sprint observation
-      sys.exit(0)
+ manifest = pathlib.Path('CODEX_MANIFEST.json')
+ if not manifest.exists():
+ print("::warning::CODEX_MANIFEST.json absent — run generate_manifest.py")
+ # Tier-2 first (canary); change to sys.exit(1) after 2-sprint observation
+ sys.exit(0)
 
-    if not verify_integrity(manifest):
-      print("::error::CODEX_MANIFEST.json integrity check FAILED — possible tampering")
-      sys.exit(1)   # Tier-1: tampered manifest is an immediate hard block
+ if not verify_integrity(manifest):
+ print("::error::CODEX_MANIFEST.json integrity check FAILED — possible tampering")
+ sys.exit(1) # Tier-1: tampered manifest is an immediate hard block
 
-    print(" CODEX_MANIFEST.json integrity verified")
-    PYEOF
+ print(" CODEX_MANIFEST.json integrity verified")
+ PYEOF
 ```
 
 ---
@@ -1679,21 +1679,21 @@ These controls must be retrofitted into Phases 1–5:
 ### How All Domains Connect: The Full Build Sequence
 
 ```
-CHUNK 1 RESEARCH                    CHUNK 2 RESEARCH
-──────────────────                  ──────────────────
-Domain 1: Agent Registry   ─────►  Phase 1: AGENT_REGISTRY.yaml
-Domain 2: Policy-as-Code   ─────►  All Phases: cognitive-preflight REQ-N
-Domain 3: Handoff Protocol ─────►  Phase 2: AgentHandoffManifest + gate
-Domain 4: FAISS + SQLite   ─────►  Phase 3: build_embeddings.py + query_corpus
+CHUNK 1 RESEARCH CHUNK 2 RESEARCH
+ 
+Domain 1: Agent Registry Phase 1: AGENT_REGISTRY.yaml
+Domain 2: Policy-as-Code All Phases: cognitive-preflight REQ-N
+Domain 3: Handoff Protocol Phase 2: AgentHandoffManifest + gate
+Domain 4: FAISS + SQLite Phase 3: build_embeddings.py + query_corpus
 
-Domain 5: Tiered Autonomy  ─────►  Phase 4: e-to-d-transition-gate.yml
-Domain 6: Self-Healing CI  ─────►  Phase 5: ci-health-monitor extension
-Domain 7: Monorepo Governance ──►  Phase 0: workflow_compliance_scan.py
-Domain 8: Security Hardening ───►  ALL Phases: manifest integrity + injection controls
-                    │
-                    ▼
-         CHUNK 3: Connected file map
-         + Phase 0 agent-ready checklist
+Domain 5: Tiered Autonomy Phase 4: e-to-d-transition-gate.yml
+Domain 6: Self-Healing CI Phase 5: ci-health-monitor extension
+Domain 7: Monorepo Governance Phase 0: workflow_compliance_scan.py
+Domain 8: Security Hardening ALL Phases: manifest integrity + injection controls
+ 
+ 
+ CHUNK 3: Connected file map
+ + Phase 0 agent-ready checklist
 ```
 
 ---
@@ -1706,54 +1706,54 @@ exact repo path, and the research-validated pattern it implements.
 
 ```
 PHASE 0 — Baseline Audit
-├── scripts/ci/workflow_compliance_scan.py       [D7] Workflow compliance matrix
-├── scripts/ci/agent_frequency_audit.py          [D1] Top-20 activation frequency
-├── docs/audits/AGENTIC_BASELINE_AUDIT_v2.md     [D7] Gap report (human-written)
-├── docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md    [D7] Auto-generated by scan script
-└── docs/architecture/E_TO_D_TRANSITION_MAP.md  [D5] Mermaid state diagram
+ scripts/ci/workflow_compliance_scan.py [D7] Workflow compliance matrix
+ scripts/ci/agent_frequency_audit.py [D1] Top-20 activation frequency
+ docs/audits/AGENTIC_BASELINE_AUDIT_v2.md [D7] Gap report (human-written)
+ docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md [D7] Auto-generated by scan script
+ docs/architecture/E_TO_D_TRANSITION_MAP.md [D5] Mermaid state diagram
 
 PHASE 1 — Agent Registry & Discovery
-├── AGENT_REGISTRY.yaml                          [D1] 193 agents, Microsoft AgentSchema
-├── CODEX_MANIFEST.json                          [D1,D8] Root discovery index + integrity hash
-├── scripts/ci/generate_manifest.py              [D1,D8] Deterministic + sanitize_for_injection
-├── .codex/schemas/AgentRegistrySchema.json      [D1] JSON Schema for registry validation
-├── .codex/schemas/CodexManifestSchema.json      [D1] JSON Schema for manifest validation
-└── [cognitive-preflight] REQ-9 step             [D2] Canary Tier-2 → Tier-1
+ AGENT_REGISTRY.yaml [D1] 193 agents, Microsoft AgentSchema
+ CODEX_MANIFEST.json [D1,D8] Root discovery index + integrity hash
+ scripts/ci/generate_manifest.py [D1,D8] Deterministic + sanitize_for_injection
+ .codex/schemas/AgentRegistrySchema.json [D1] JSON Schema for registry validation
+ .codex/schemas/CodexManifestSchema.json [D1] JSON Schema for manifest validation
+ [cognitive-preflight] REQ-9 step [D2] Canary Tier-2 Tier-1
 
 PHASE 2 — Handoff Protocol + Top-20 Consolidation
-├── .codex/schemas/AgentHandoffManifest_v1.1.json [D3] Full JSON Schema
-├── scripts/ci/validate_handoff_manifest.py       [D3] jsonschema validation
-├── .github/workflows/agent-handoff-gate.yml      [D3] Canary Tier-2 → Tier-1
-├── .github/agents/ [top-20 updated]              [D1,D3] Structured handoff emission
-└── AGENT_REGISTRY.yaml [top-20 updated]          [D1] consolidation_priority flags
+ .codex/schemas/AgentHandoffManifest_v1.1.json [D3] Full JSON Schema
+ scripts/ci/validate_handoff_manifest.py [D3] jsonschema validation
+ .github/workflows/agent-handoff-gate.yml [D3] Canary Tier-2 Tier-1
+ .github/agents/ [top-20 updated] [D1,D3] Structured handoff emission
+ AGENT_REGISTRY.yaml [top-20 updated] [D1] consolidation_priority flags
 
 PHASE 3 — Unified Agent Memory Corpus
-├── scripts/ci/build_embeddings.py               [D4] FAISS index builder
-├── scripts/ci/query_corpus.py → module          [D4] Semantic + SQLite hybrid query
-├── scripts/ci/prune_corpus.py                   [D4] 90-day retention
-├── .github/workflows/embedding-index-rebuild.yml [D4] Nightly 2AM UTC
-├── .codex/embeddings/codex_index_meta.json      [D4] Git-tracked metadata only
-├── .codex/codex_corpus.db [git-ignored]         [D4] SQLite session + telemetry
-└── [cognitive-preflight] REQ-10 step            [D4] Canary Tier-2 corpus health
+ scripts/ci/build_embeddings.py [D4] FAISS index builder
+ scripts/ci/query_corpus.py module [D4] Semantic + SQLite hybrid query
+ scripts/ci/prune_corpus.py [D4] 90-day retention
+ .github/workflows/embedding-index-rebuild.yml [D4] Nightly 2AM UTC
+ .codex/embeddings/codex_index_meta.json [D4] Git-tracked metadata only
+ .codex/codex_corpus.db [git-ignored] [D4] SQLite session + telemetry
+ [cognitive-preflight] REQ-10 step [D4] Canary Tier-2 corpus health
 
-PHASE 4 — E→D Transition Gate System
-├── .github/agents/orchestrator-agent.md         [D5] Orchestrator definition
-├── .github/workflows/e-to-d-transition-gate.yml [D5] 5-condition readiness FSM
-├── scripts/ci/orchestrator_routing.py           [D5] FAISS → capability_tags routing
-├── AGENT_REGISTRY.yaml [all 193 role-tagged]    [D5] role + autonomy_model fields
-└── [cognitive-preflight] operating_model step   [D5] Tier-2 model status injection
+PHASE 4 — ED Transition Gate System
+ .github/agents/orchestrator-agent.md [D5] Orchestrator definition
+ .github/workflows/e-to-d-transition-gate.yml [D5] 5-condition readiness FSM
+ scripts/ci/orchestrator_routing.py [D5] FAISS capability_tags routing
+ AGENT_REGISTRY.yaml [all 193 role-tagged] [D5] role + autonomy_model fields
+ [cognitive-preflight] operating_model step [D5] Tier-2 model status injection
 
 PHASE 5 — Self-Healing & Auto-Documentation
-├── scripts/ci/auto_promote_tier.py              [D6] Dry-run REQ-N stub generator
-├── scripts/ci/auto_append_accountability.py     [D6] W-NNN auto-append to report
-├── [ci-health-monitor.yml extended]             [D6] Gap scan + KPI dashboard
-└── [generate_manifest.py extended]              [D6] Auto-update enforcement doc
+ scripts/ci/auto_promote_tier.py [D6] Dry-run REQ-N stub generator
+ scripts/ci/auto_append_accountability.py [D6] W-NNN auto-append to report
+ [ci-health-monitor.yml extended] [D6] Gap scan + KPI dashboard
+ [generate_manifest.py extended] [D6] Auto-update enforcement doc
 
 PHASE 6 — Hardening & Guide
-├── docs/AGENTIC_REPO_SYSTEM_GUIDE.md            [All] Canonical operating guide
-├── docs/audits/AGENTIC_FINAL_KPI_REPORT.md      [D7] Phase 0 repeat + delta
-├── .github/workflows/actionlint-audit.yml       [D7] Permanent workflow linting
-└── .codex/policies/semgrep/soft_enforcement.yaml [D7] Soft pattern detection rules
+ docs/AGENTIC_REPO_SYSTEM_GUIDE.md [All] Canonical operating guide
+ docs/audits/AGENTIC_FINAL_KPI_REPORT.md [D7] Phase 0 repeat + delta
+ .github/workflows/actionlint-audit.yml [D7] Permanent workflow linting
+ .codex/policies/semgrep/soft_enforcement.yaml [D7] Soft pattern detection rules
 ```
 
 ---
@@ -1768,12 +1768,12 @@ for `CODEX_MANIFEST.json` and enforcement KPI tracking.
 """
 scripts/ci/generate_manifest.py
 The central manifest generator for Aries-Serpent/_codex_
-Connects: Phase 0 audit → Phase 1 registry → Phase 3 corpus → Phase 5 auto-docs
+Connects: Phase 0 audit Phase 1 registry Phase 3 corpus Phase 5 auto-docs
 
 Usage:
-  python scripts/ci/generate_manifest.py
-  python scripts/ci/generate_manifest.py --update-enforcement-doc
-  python scripts/ci/generate_manifest.py --verify-integrity
+ python scripts/ci/generate_manifest.py
+ python scripts/ci/generate_manifest.py --update-enforcement-doc
+ python scripts/ci/generate_manifest.py --verify-integrity
 """
 from __future__ import annotations
 import argparse
@@ -1786,196 +1786,196 @@ import time
 import yaml
 from typing import Any
 
-REPO_ROOT    = pathlib.Path(__file__).resolve().parents[2]
-REGISTRY     = REPO_ROOT / "AGENT_REGISTRY.yaml"
-MANIFEST     = REPO_ROOT / "CODEX_MANIFEST.json"
-GVS_DOC      = REPO_ROOT / ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md"
-WF_DIR       = REPO_ROOT / ".github/workflows"
-AGENTS_DIR   = REPO_ROOT / ".github/agents"
-DB_PATH      = REPO_ROOT / ".codex/codex_corpus.db"
-EMBED_META   = REPO_ROOT / ".codex/embeddings/codex_index_meta.json"
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+REGISTRY = REPO_ROOT / "AGENT_REGISTRY.yaml"
+MANIFEST = REPO_ROOT / "CODEX_MANIFEST.json"
+GVS_DOC = REPO_ROOT / ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md"
+WF_DIR = REPO_ROOT / ".github/workflows"
+AGENTS_DIR = REPO_ROOT / ".github/agents"
+DB_PATH = REPO_ROOT / ".codex/codex_corpus.db"
+EMBED_META = REPO_ROOT / ".codex/embeddings/codex_index_meta.json"
 
-# ── Security: fields safe for agent_context.json injection ──────────────────
+# Security: fields safe for agent_context.json injection 
 SAFE_INJECTION_FIELDS = {
-    "agents", "workflows", "policies",
-    "enforcement_kpis", "operating_model",
-    "generated_at", "schema_version",
+ "agents", "workflows", "policies",
+ "enforcement_kpis", "operating_model",
+ "generated_at", "schema_version",
 }
 
 INJECTION_BLOCKLIST = [
-    r"<script", r"eval\(", r"exec\(", r"__import__",
-    r"os\.system", r"\$\{.*?\}", r"<!--",
+ r"<script", r"eval\(", r"exec\(", r"__import__",
+ r"os\.system", r"\$\{.*?\}", r"<!--",
 ]
 
-# ── KPI extraction from GROUNDED_VS_SOFT_ENFORCEMENT.md ─────────────────────
+# KPI extraction from GROUNDED_VS_SOFT_ENFORCEMENT.md 
 def extract_enforcement_kpis() -> dict[str, int]:
-    if not GVS_DOC.exists():
-        return {}
-    text = GVS_DOC.read_text(encoding="utf-8")
-    return {
-        "tier1_count":  len(re.findall(r" \*\*GROUNDED\*\*", text)),
-        "tier2_count":  len(re.findall(r" \*\*(PARTIAL|TIER-2)\*\*", text)),
-        "tier3_count":  len(re.findall(r" \*\*SOFT\*\*", text)),
-        "ungatable":    2,  # confirmed permanent
-    }
+ if not GVS_DOC.exists():
+ return {}
+ text = GVS_DOC.read_text(encoding="utf-8")
+ return {
+ "tier1_count": len(re.findall(r" \*\*GROUNDED\*\*", text)),
+ "tier2_count": len(re.findall(r" \*\*(PARTIAL|TIER-2)\*\*", text)),
+ "tier3_count": len(re.findall(r" \*\*SOFT\*\*", text)),
+ "ungatable": 2, # confirmed permanent
+ }
 
-# ── Violation rate from SQLite ───────────────────────────────────────────────
+# Violation rate from SQLite 
 def get_violation_rate_30d() -> float:
-    if not DB_PATH.exists():
-        return 0.0
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        rows = conn.execute(
-            "SELECT COUNT(*), SUM(violation_count) FROM agent_sessions "
-            "WHERE start_time > datetime('now', '-30 days')"
-        ).fetchone()
-        conn.close()
-        sessions, violations = rows
-        return round(violations / sessions, 2) if sessions else 0.0
-    except Exception:
-        return 0.0
+ if not DB_PATH.exists():
+ return 0.0
+ try:
+ conn = sqlite3.connect(DB_PATH)
+ rows = conn.execute(
+ "SELECT COUNT(*), SUM(violation_count) FROM agent_sessions "
+ "WHERE start_time > datetime('now', '-30 days')"
+ ).fetchone()
+ conn.close()
+ sessions, violations = rows
+ return round(violations / sessions, 2) if sessions else 0.0
+ except Exception:
+ return 0.0
 
-# ── Workflow index ────────────────────────────────────────────────────────────
+# Workflow index 
 def index_workflows() -> list[dict]:
-    workflows = []
-    for wf_path in sorted(WF_DIR.glob("*.yml")):
-        text = wf_path.read_text(encoding="utf-8", errors="ignore")
-        tier = (
-            "GROUNDED" if ("exit 1" in text or "cognitive-preflight" in text)
-            else "PARTIAL" if ("::warning::" in text or "createComment" in text)
-            else "SOFT"
-        )
-        workflows.append({
-            "name": wf_path.stem,
-            "path": str(wf_path.relative_to(REPO_ROOT)),
-            "enforcement_tier": tier,
-            "has_concurrency": "concurrency:" in text,
-            "has_timeout": "timeout-minutes:" in text,
-        })
-    return workflows
+ workflows = []
+ for wf_path in sorted(WF_DIR.glob("*.yml")):
+ text = wf_path.read_text(encoding="utf-8", errors="ignore")
+ tier = (
+ "GROUNDED" if ("exit 1" in text or "cognitive-preflight" in text)
+ else "PARTIAL" if ("::warning::" in text or "createComment" in text)
+ else "SOFT"
+ )
+ workflows.append({
+ "name": wf_path.stem,
+ "path": str(wf_path.relative_to(REPO_ROOT)),
+ "enforcement_tier": tier,
+ "has_concurrency": "concurrency:" in text,
+ "has_timeout": "timeout-minutes:" in text,
+ })
+ return workflows
 
-# ── Agent registry loader ────────────────────────────────────────────────────
+# Agent registry loader 
 def load_registry() -> list[dict]:
-    if not REGISTRY.exists():
-        return []
-    data = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
-    return data.get("agents", [])
+ if not REGISTRY.exists():
+ return []
+ data = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+ return data.get("agents", [])
 
-# ── E→D operating model status ──────────────────────────────────────────────
+# ED operating model status 
 def get_operating_model_status() -> dict[str, Any]:
-    agents = load_registry()
-    d_capable = sum(1 for a in agents if a.get("autonomy_model") == "D_CAPABLE")
-    return {
-        "current":        "E",
-        "target":         "D",
-        "d_capable_agents": d_capable,
-        "transition_active": d_capable > 0,
-    }
+ agents = load_registry()
+ d_capable = sum(1 for a in agents if a.get("autonomy_model") == "D_CAPABLE")
+ return {
+ "current": "E",
+ "target": "D",
+ "d_capable_agents": d_capable,
+ "transition_active": d_capable > 0,
+ }
 
-# ── Security: sanitize manifest before injection ─────────���───────────────────
+# Security: sanitize manifest before injection ���
 def sanitize_for_injection(manifest: dict[str, Any]) -> dict[str, Any]:
-    safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
-    safe_str = json.dumps(safe)
-    for pattern in INJECTION_BLOCKLIST:
-        if re.search(pattern, safe_str, re.IGNORECASE):
-            raise ValueError(f"Injection pattern blocked: {pattern}")
-    return safe
+ safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
+ safe_str = json.dumps(safe)
+ for pattern in INJECTION_BLOCKLIST:
+ if re.search(pattern, safe_str, re.IGNORECASE):
+ raise ValueError(f"Injection pattern blocked: {pattern}")
+ return safe
 
 def add_integrity_hash(manifest: dict[str, Any]) -> dict[str, Any]:
-    m = {k: v for k, v in manifest.items() if k != "integrity_sha256"}
-    content = json.dumps(m, sort_keys=True, separators=(",", ":"))
-    manifest["integrity_sha256"] = hashlib.sha256(content.encode()).hexdigest()
-    return manifest
+ m = {k: v for k, v in manifest.items() if k != "integrity_sha256"}
+ content = json.dumps(m, sort_keys=True, separators=(",", ":"))
+ manifest["integrity_sha256"] = hashlib.sha256(content.encode()).hexdigest()
+ return manifest
 
 def verify_integrity(path: pathlib.Path) -> bool:
-    data   = json.loads(path.read_text(encoding="utf-8"))
-    stored = data.pop("integrity_sha256", None)
-    if not stored:
-        return False
-    content  = json.dumps(data, sort_keys=True, separators=(",", ":"))
-    computed = hashlib.sha256(content.encode()).hexdigest()
-    return computed == stored
+ data = json.loads(path.read_text(encoding="utf-8"))
+ stored = data.pop("integrity_sha256", None)
+ if not stored:
+ return False
+ content = json.dumps(data, sort_keys=True, separators=(",", ":"))
+ computed = hashlib.sha256(content.encode()).hexdigest()
+ return computed == stored
 
-# ── Enforcement doc auto-update ──────────────────────────────────────────────
+# Enforcement doc auto-update 
 def update_enforcement_doc(kpis: dict[str, int]) -> None:
-    if not GVS_DOC.exists():
-        return
-    text = GVS_DOC.read_text(encoding="utf-8")
-    # Update reliability chart bar values from KPI counts
-    # (pattern: bar [9, 9, 7, 8, 5, 5, 9, 1, 5, 9, 6])
-    new_bar = (
-        f"    bar [{min(9+kpis.get('tier1_count',0)//2,10)}, "
-        f"{kpis.get('tier1_count',9)}, "
-        f"7, 8, 5, 5, "
-        f"{min(9+kpis.get('tier1_count',0)//3,10)}, "
-        f"1, 5, "
-        f"{min(9+kpis.get('tier1_count',0)//2,10)}, 6]"
-    )
-    updated = re.sub(r"    bar \[[\d, ]+\]", new_bar, text, count=1)
-    GVS_DOC.write_text(updated, encoding="utf-8")
-    print(f"Updated enforcement doc reliability chart")
+ if not GVS_DOC.exists():
+ return
+ text = GVS_DOC.read_text(encoding="utf-8")
+ # Update reliability chart bar values from KPI counts
+ # (pattern: bar [9, 9, 7, 8, 5, 5, 9, 1, 5, 9, 6])
+ new_bar = (
+ f" bar [{min(9+kpis.get('tier1_count',0)//2,10)}, "
+ f"{kpis.get('tier1_count',9)}, "
+ f"7, 8, 5, 5, "
+ f"{min(9+kpis.get('tier1_count',0)//3,10)}, "
+ f"1, 5, "
+ f"{min(9+kpis.get('tier1_count',0)//2,10)}, 6]"
+ )
+ updated = re.sub(r" bar \[[\d, ]+\]", new_bar, text, count=1)
+ GVS_DOC.write_text(updated, encoding="utf-8")
+ print(f"Updated enforcement doc reliability chart")
 
-# ── Main manifest generation ─────────────────────────────────────────────────
+# Main manifest generation 
 def generate() -> dict[str, Any]:
-    kpis      = extract_enforcement_kpis()
-    workflows = index_workflows()
-    agents    = load_registry()
+ kpis = extract_enforcement_kpis()
+ workflows = index_workflows()
+ agents = load_registry()
 
-    manifest = {
-        "schema_version":   "1.0",
-        "generated_at":     time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "agents": [
-            {"name": a["name"], "role": a.get("role","specialist"),
-             "enforcement_tier": a.get("enforcement_tier","SOFT"),
-             "autonomy_model": a.get("autonomy_model","E")}
-            for a in agents
-        ],
-        "workflows": [
-            {"name": w["name"], "enforcement_tier": w["enforcement_tier"],
-             "has_concurrency": w["has_concurrency"]}
-            for w in workflows
-        ],
-        "policies": [
-            {"path": str(p.relative_to(REPO_ROOT)), "type": "enforcement"}
-            for p in sorted(REPO_ROOT.glob(".codex/docs/*.md"))
-        ],
-        "datasets": {
-            "session_db":     str(DB_PATH.relative_to(REPO_ROOT)),
-            "embedding_meta": str(EMBED_META.relative_to(REPO_ROOT))
-                              if EMBED_META.exists() else None,
-        },
-        "enforcement_kpis":   kpis,
-        "operating_model":    get_operating_model_status(),
-        "violation_rate_30d": get_violation_rate_30d(),
-    }
+ manifest = {
+ "schema_version": "1.0",
+ "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+ "agents": [
+ {"name": a["name"], "role": a.get("role","specialist"),
+ "enforcement_tier": a.get("enforcement_tier","SOFT"),
+ "autonomy_model": a.get("autonomy_model","E")}
+ for a in agents
+ ],
+ "workflows": [
+ {"name": w["name"], "enforcement_tier": w["enforcement_tier"],
+ "has_concurrency": w["has_concurrency"]}
+ for w in workflows
+ ],
+ "policies": [
+ {"path": str(p.relative_to(REPO_ROOT)), "type": "enforcement"}
+ for p in sorted(REPO_ROOT.glob(".codex/docs/*.md"))
+ ],
+ "datasets": {
+ "session_db": str(DB_PATH.relative_to(REPO_ROOT)),
+ "embedding_meta": str(EMBED_META.relative_to(REPO_ROOT))
+ if EMBED_META.exists() else None,
+ },
+ "enforcement_kpis": kpis,
+ "operating_model": get_operating_model_status(),
+ "violation_rate_30d": get_violation_rate_30d(),
+ }
 
-    manifest = add_integrity_hash(manifest)
-    MANIFEST.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    print(f"Manifest written: {MANIFEST} "
-          f"({len(agents)} agents, {len(workflows)} workflows)")
-    return manifest
+ manifest = add_integrity_hash(manifest)
+ MANIFEST.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+ print(f"Manifest written: {MANIFEST} "
+ f"({len(agents)} agents, {len(workflows)} workflows)")
+ return manifest
 
-# ── CLI ───────────────────────────────────────────────────────────────────────
+# CLI 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--update-enforcement-doc", action="store_true")
-    ap.add_argument("--verify-integrity",       action="store_true")
-    ap.add_argument("--dump-safe-injection",    action="store_true")
-    args = ap.parse_args()
+ ap = argparse.ArgumentParser()
+ ap.add_argument("--update-enforcement-doc", action="store_true")
+ ap.add_argument("--verify-integrity", action="store_true")
+ ap.add_argument("--dump-safe-injection", action="store_true")
+ args = ap.parse_args()
 
-    if args.verify_integrity:
-        ok = verify_integrity(MANIFEST)
-        print(" Integrity OK" if ok else " Integrity FAILED")
-        raise SystemExit(0 if ok else 1)
+ if args.verify_integrity:
+ ok = verify_integrity(MANIFEST)
+ print(" Integrity OK" if ok else " Integrity FAILED")
+ raise SystemExit(0 if ok else 1)
 
-    manifest = generate()
+ manifest = generate()
 
-    if args.update_enforcement_doc:
-        update_enforcement_doc(manifest["enforcement_kpis"])
+ if args.update_enforcement_doc:
+ update_enforcement_doc(manifest["enforcement_kpis"])
 
-    if args.dump_safe_injection:
-        safe = sanitize_for_injection(manifest)
-        print(json.dumps(safe, indent=2))
+ if args.dump_safe_injection:
+ safe = sanitize_for_injection(manifest)
+ print(json.dumps(safe, indent=2))
 ```
 
 ---
@@ -1994,65 +1994,65 @@ Called by: top-20 specialist agents before delegating to another agent
 """
 from __future__ import annotations
 import json, uuid, datetime
-from scripts.ci.query_corpus import query          # Phase 3
-from scripts.ci.validate_handoff_manifest import validate  # Phase 2
+from scripts.ci.query_corpus import query # Phase 3
+from scripts.ci.validate_handoff_manifest import validate # Phase 2
 
 def build_handoff_manifest(
-    delegating_agent:  str,
-    receiving_agent:   str,
-    task_id:           str,
-    open_checklist:    list[str],
-    files_in_scope:    list[str],
-    tier1_gates_passed: list[str],
-    violation_count:   int = 0,
-    operating_model:   str = "E",
-    prior_delegation_trace: list[dict] | None = None,
+ delegating_agent: str,
+ receiving_agent: str,
+ task_id: str,
+ open_checklist: list[str],
+ files_in_scope: list[str],
+ tier1_gates_passed: list[str],
+ violation_count: int = 0,
+ operating_model: str = "E",
+ prior_delegation_trace: list[dict] | None = None,
 ) -> dict:
-    """
-    Build a validated AgentHandoffManifest v1.1
-    Automatically populates relevant_prior_context via Phase 3 query_corpus
-    """
-    # Phase 3: get relevant prior context for the receiving agent
-    task_desc = f"agent {receiving_agent} task {task_id}: {' '.join(open_checklist[:3])}"
-    prior_ctx = [
-        r["text_preview"][:300]   # max 300 chars per snippet — injection safety
-        for r in query(task_desc, top_k=3)
-    ]
+ """
+ Build a validated AgentHandoffManifest v1.1
+ Automatically populates relevant_prior_context via Phase 3 query_corpus
+ """
+ # Phase 3: get relevant prior context for the receiving agent
+ task_desc = f"agent {receiving_agent} task {task_id}: {' '.join(open_checklist[:3])}"
+ prior_ctx = [
+ r["text_preview"][:300] # max 300 chars per snippet — injection safety
+ for r in query(task_desc, top_k=3)
+ ]
 
-    manifest = {
-        "schema_version":    "1.1",
-        "handoff_id":        str(uuid.uuid4()),
-        "delegating_agent":  delegating_agent,
-        "receiving_agent":   receiving_agent,
-        "task_id":           task_id,
-        "handoff_timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-        "operating_model":   operating_model,
-        "delegation_trace":  (prior_delegation_trace or []) + [{
-            "from":      delegating_agent,
-            "to":        receiving_agent,
-            "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-        }],
-        "context_snapshot": {
-            "files_in_scope":             files_in_scope,
-            "open_checklist_items":       open_checklist,
-            "current_enforcement_tier":   "GROUNDED",
-            "task_id":                    task_id,
-            "relevant_prior_context":     prior_ctx,  # Phase 3 output
-        },
-        "policy_compliance": {
-            "tier1_gates_passed": tier1_gates_passed,
-            "tier2_annotations":  ["REQ-1", "REQ-7"],
-            "violation_count":    violation_count,
-        },
-        "checklist_items": open_checklist,
-    }
+ manifest = {
+ "schema_version": "1.1",
+ "handoff_id": str(uuid.uuid4()),
+ "delegating_agent": delegating_agent,
+ "receiving_agent": receiving_agent,
+ "task_id": task_id,
+ "handoff_timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+ "operating_model": operating_model,
+ "delegation_trace": (prior_delegation_trace or []) + [{
+ "from": delegating_agent,
+ "to": receiving_agent,
+ "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+ }],
+ "context_snapshot": {
+ "files_in_scope": files_in_scope,
+ "open_checklist_items": open_checklist,
+ "current_enforcement_tier": "GROUNDED",
+ "task_id": task_id,
+ "relevant_prior_context": prior_ctx, # Phase 3 output
+ },
+ "policy_compliance": {
+ "tier1_gates_passed": tier1_gates_passed,
+ "tier2_annotations": ["REQ-1", "REQ-7"],
+ "violation_count": violation_count,
+ },
+ "checklist_items": open_checklist,
+ }
 
-    # Phase 2: validate before emitting
-    errors = validate(manifest)
-    if errors:
-        raise ValueError(f"Handoff manifest validation failed: {errors}")
+ # Phase 2: validate before emitting
+ errors = validate(manifest)
+ if errors:
+ raise ValueError(f"Handoff manifest validation failed: {errors}")
 
-    return manifest
+ return manifest
 ```
 
 ---
@@ -2072,39 +2072,39 @@ from __future__ import annotations
 import json, pathlib, subprocess
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-MANIFEST  = REPO_ROOT / "CODEX_MANIFEST.json"
-VIOLATION_THRESHOLD = 0.3   # >30% sessions with violations → suspend D-model
+MANIFEST = REPO_ROOT / "CODEX_MANIFEST.json"
+VIOLATION_THRESHOLD = 0.3 # >30% sessions with violations suspend D-model
 
 def check_and_demote() -> bool:
-    """
-    Returns True if D-model was suspended (demotion occurred).
-    Phase 5 self-healing: reads violation rate → updates repo variable.
-    """
-    manifest = json.loads(MANIFEST.read_text())
-    rate     = manifest.get("violation_rate_30d", 0.0)
-    model    = manifest.get("operating_model", {})
+ """
+ Returns True if D-model was suspended (demotion occurred).
+ Phase 5 self-healing: reads violation rate updates repo variable.
+ """
+ manifest = json.loads(MANIFEST.read_text())
+ rate = manifest.get("violation_rate_30d", 0.0)
+ model = manifest.get("operating_model", {})
 
-    if model.get("transition_active") and rate > VIOLATION_THRESHOLD:
-        print(f"️  Violation rate {rate:.0%} > threshold {VIOLATION_THRESHOLD:.0%}")
-        print(" Suspending D-model — reverting to E (safe state)")
+ if model.get("transition_active") and rate > VIOLATION_THRESHOLD:
+ print(f" Violation rate {rate:.0%} > threshold {VIOLATION_THRESHOLD:.0%}")
+ print(" Suspending D-model — reverting to E (safe state)")
 
-        # Update CODEX_AGENT_AUTONOMY_LEVEL repo variable via pending_var_updates.json
-        pvu_path = REPO_ROOT / ".codex/pending_var_updates.json"
-        updates  = json.loads(pvu_path.read_text()) if pvu_path.exists() else {}
-        updates["CODEX_AGENT_AUTONOMY_LEVEL"] = "E"
-        updates["D_MODEL_SUSPENDED_REASON"]   = (
-            f"Violation rate {rate:.0%} exceeded threshold on "
-            f"{__import__('datetime').date.today()}"
-        )
-        pvu_path.write_text(json.dumps(updates, indent=2))
-        print("Written pending_var_updates.json — apply with @agent-var-writer apply")
-        return True
+ # Update CODEX_AGENT_AUTONOMY_LEVEL repo variable via pending_var_updates.json
+ pvu_path = REPO_ROOT / ".codex/pending_var_updates.json"
+ updates = json.loads(pvu_path.read_text()) if pvu_path.exists() else {}
+ updates["CODEX_AGENT_AUTONOMY_LEVEL"] = "E"
+ updates["D_MODEL_SUSPENDED_REASON"] = (
+ f"Violation rate {rate:.0%} exceeded threshold on "
+ f"{__import__('datetime').date.today()}"
+ )
+ pvu_path.write_text(json.dumps(updates, indent=2))
+ print("Written pending_var_updates.json — apply with @agent-var-writer apply")
+ return True
 
-    print(f" Violation rate {rate:.0%} within threshold — D-model status unchanged")
-    return False
+ print(f" Violation rate {rate:.0%} within threshold — D-model status unchanged")
+ return False
 
 if __name__ == "__main__":
-    check_and_demote()
+ check_and_demote()
 ```
 
 ---
@@ -2141,18 +2141,18 @@ a single consolidated risk register:
 # Phase 1+ security hardening per Domain 8 research
 
 # Manifest and registry: only mbaetiong can approve changes
-/AGENT_REGISTRY.yaml              @mbaetiong
-/CODEX_MANIFEST.json              @mbaetiong
-/.codex/schemas/                  @mbaetiong
+/AGENT_REGISTRY.yaml @mbaetiong
+/CODEX_MANIFEST.json @mbaetiong
+/.codex/schemas/ @mbaetiong
 
 # Agent definitions: all new agents require owner review
-/.github/agents/                  @mbaetiong
+/.github/agents/ @mbaetiong
 
 # Enforcement chain: only owner can modify gates
-/.github/workflows/agent-auth-delegation.yml   @mbaetiong
-/.github/workflows/agent-handoff-gate.yml      @mbaetiong
-/.github/workflows/e-to-d-transition-gate.yml  @mbaetiong
-/.github/workflows/cognitive-preflight/        @mbaetiong
+/.github/workflows/agent-auth-delegation.yml @mbaetiong
+/.github/workflows/agent-handoff-gate.yml @mbaetiong
+/.github/workflows/e-to-d-transition-gate.yml @mbaetiong
+/.github/workflows/cognitive-preflight/ @mbaetiong
 ```
 
 ---
@@ -2282,78 +2282,78 @@ command to execute.
 
 ## Task 1 — Workflow Compliance Scan
 - [ ] 1.1 Create `scripts/ci/workflow_compliance_scan.py` using the
-        pattern from `GROUNDED_DEEP_RESEARCH_CHUNK_2.md` Section Domain 7
+ pattern from `GROUNDED_DEEP_RESEARCH_CHUNK_2.md` Section Domain 7
 - [ ] 1.2 Run: `python scripts/ci/workflow_compliance_scan.py`
-        → verify `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` generated
+ verify `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` generated
 - [ ] 1.3 Confirm matrix covers all `.github/workflows/*.yml` files
 - [ ] 1.4 Note KPI baseline counts:
-        - GROUNDED workflows: ___
-        - PARTIAL workflows:  ___
-        - SOFT workflows:     ___
-        - Cascade risk count: ___
-        - Missing concurrency: ___
-        - Missing timeout:    ___
+ - GROUNDED workflows: ___
+ - PARTIAL workflows: ___
+ - SOFT workflows: ___
+ - Cascade risk count: ___
+ - Missing concurrency: ___
+ - Missing timeout: ___
 - [ ] 1.5 Commit: `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` +
-        `scripts/ci/workflow_compliance_scan.py`
-        Message: `feat(phase-0): workflow compliance matrix [Phase 0 Task 1]`
+ `scripts/ci/workflow_compliance_scan.py`
+ Message: `feat(phase-0): workflow compliance matrix [Phase 0 Task 1]`
 
 ---
 
 ## Task 2 — Agent Activation Frequency Analysis
 - [ ] 2.1 Create `scripts/ci/agent_frequency_audit.py`:
-        - Scan `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
-          for agent name mentions (W-NNN rows)
-        - Scan `.github/workflows/` YAML for agent name references
-        - Scan `.codex/` session files for agent mentions
-        - Output: sorted frequency table, top-20 flagged
+ - Scan `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
+ for agent name mentions (W-NNN rows)
+ - Scan `.github/workflows/` YAML for agent name references
+ - Scan `.codex/` session files for agent mentions
+ - Output: sorted frequency table, top-20 flagged
 - [ ] 2.2 Run: `python scripts/ci/agent_frequency_audit.py`
-        → verify output includes all 193 agents ranked by frequency
+ verify output includes all 193 agents ranked by frequency
 - [ ] 2.3 Record top-20 list in `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-        under section "## Top-20 Agents by Activation Frequency"
+ under section "## Top-20 Agents by Activation Frequency"
 - [ ] 2.4 Commit: `scripts/ci/agent_frequency_audit.py` +
-        initial `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-        Message: `feat(phase-0): agent frequency audit script [Phase 0 Task 2]`
+ initial `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
+ Message: `feat(phase-0): agent frequency audit script [Phase 0 Task 2]`
 
 ---
 
 ## Task 3 — Full Enforcement Gap Audit
 - [ ] 3.1 Read all 193 agent definitions in `.github/agents/`
 - [ ] 3.2 For each agent, classify:
-        - `enforcement_tier`: GROUNDED / PARTIAL / SOFT
-          (GROUNDED = references a workflow gate;
-           PARTIAL = references a workflow but no hard stop;
-           SOFT = markdown instructions only)
-        - `handoff_protocol`: none / soft / structured
-          (structured = emits JSON manifest; soft = text only; none = no handoff)
-        - `has_dependency_declared`: true/false
+ - `enforcement_tier`: GROUNDED / PARTIAL / SOFT
+ (GROUNDED = references a workflow gate;
+ PARTIAL = references a workflow but no hard stop;
+ SOFT = markdown instructions only)
+ - `handoff_protocol`: none / soft / structured
+ (structured = emits JSON manifest; soft = text only; none = no handoff)
+ - `has_dependency_declared`: true/false
 - [ ] 3.3 Record classification in `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-        under "## Agent Enforcement Classification"
+ under "## Agent Enforcement Classification"
 - [ ] 3.4 Count: agents with enforcement_tier=SOFT and handoff_protocol=none
-        → these are the priority candidates for Phase 2 grounding
-- [ ] 3.5 Identify E→D transition gaps:
-        - Which agents currently have no `accepts_handoff_from` declared?
-        - Which agents reference other agents but via soft (text) delegation only?
+ these are the priority candidates for Phase 2 grounding
+- [ ] 3.5 Identify ED transition gaps:
+ - Which agents currently have no `accepts_handoff_from` declared?
+ - Which agents reference other agents but via soft (text) delegation only?
 - [ ] 3.6 Commit updated `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-        Message: `feat(phase-0): agent enforcement gap classification [Phase 0 Task 3]`
+ Message: `feat(phase-0): agent enforcement gap classification [Phase 0 Task 3]`
 
 ---
 
-## Task 4 — E→D Transition Map
+## Task 4 — ED Transition Map
 - [ ] 4.1 Create `docs/architecture/E_TO_D_TRANSITION_MAP.md` with:
-        - Current state: "Model E — operating"
-        - Target state: "Model D — orchestrator→specialist"
-        - 5 transition conditions (from plan Phase 4)
-        - Mermaid FSM state diagram (from CHUNK 2 Domain 5)
-        - Per-phase: which condition each phase satisfies
-          (Phase 1→C1+C2, Phase 2→C4, Phase 3+5→C3, Phase 5→C5)
+ - Current state: "Model E — operating"
+ - Target state: "Model D — orchestratorspecialist"
+ - 5 transition conditions (from plan Phase 4)
+ - Mermaid FSM state diagram (from CHUNK 2 Domain 5)
+ - Per-phase: which condition each phase satisfies
+ (Phase 1C1+C2, Phase 2C4, Phase 3+5C3, Phase 5C5)
 - [ ] 4.2 Commit: `docs/architecture/E_TO_D_TRANSITION_MAP.md`
-        Message: `docs(phase-0): E→D transition architecture map [Phase 0 Task 4]`
+ Message: `docs(phase-0): ED transition architecture map [Phase 0 Task 4]`
 
 ---
 
 ## Task 5 — KPI Baseline Document
 - [ ] 5.1 Complete `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` with
-        all sections filled:
+ all sections filled:
  ```
  ## KPI Baselines (Phase 0)
  | KPI | Baseline Value | Target |
@@ -2366,24 +2366,24 @@ command to execute.
  | Agents with enforcement_tier=GROUNDED | ___ | 193 |
  | ED transition conditions met | 0/5 | 5/5 |
  | Cascade risk workflows | ___ | 0 |
-        ```
+ ```
 - [ ] 5.2 Commit final `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-        Message: `docs(phase-0): KPI baseline complete [Phase 0 Task 5]`
+ Message: `docs(phase-0): KPI baseline complete [Phase 0 Task 5]`
 
 ---
 
 ## Task 6 — Accountability Report + CHANGELOG Update (MANDATORY)
 - [ ] 6.1 Add W-NNN entries to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
-        for all Phase 0 work items:
-        - W-NNN | workflow_compliance_scan.py created — Phase 0 Task 1
-        - W-NNN | agent_frequency_audit.py created — Phase 0 Task 2
-        - W-NNN | AGENTIC_BASELINE_AUDIT_v2.md — full gap audit — Phase 0 Task 3
-        - W-NNN | E_TO_D_TRANSITION_MAP.md — architecture map — Phase 0 Task 4
-        - W-NNN | KPI baselines recorded — Phase 0 Task 5
+ for all Phase 0 work items:
+ - W-NNN | workflow_compliance_scan.py created — Phase 0 Task 1
+ - W-NNN | agent_frequency_audit.py created — Phase 0 Task 2
+ - W-NNN | AGENTIC_BASELINE_AUDIT_v2.md — full gap audit — Phase 0 Task 3
+ - W-NNN | E_TO_D_TRANSITION_MAP.md — architecture map — Phase 0 Task 4
+ - W-NNN | KPI baselines recorded — Phase 0 Task 5
 - [ ] 6.2 Add `[Unreleased] — Phase 0` entry to `CHANGELOG.md`
-        with all files created/modified
+ with all files created/modified
 - [ ] 6.3 Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
-        Message: `docs(phase-0): accountability report + changelog [Phase 0 complete]`
+ Message: `docs(phase-0): accountability report + changelog [Phase 0 complete]`
 
 ---
 
@@ -2470,95 +2470,95 @@ All of the following must be true before Phase 1 begins:
 ---
 
 ## Pre-Flight (MANDATORY)
-- [ ] P1.0.1  Verify Phase 0 gate: all 9 completion conditions confirmed
-- [ ] P1.0.2  Read `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
-              — note exact agent count, top-20 list, KPI baselines
-- [ ] P1.0.3  Read `docs/architecture/E_TO_D_TRANSITION_MAP.md`
-              — confirm transition condition mapping per phase
-- [ ] P1.0.4  Read `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md`
-              — note GROUNDED/PARTIAL/SOFT workflow counts
-- [ ] P1.0.5  Confirm REQ-1–REQ-8 still passing on current HEAD
+- [ ] P1.0.1 Verify Phase 0 gate: all 9 completion conditions confirmed
+- [ ] P1.0.2 Read `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md`
+ — note exact agent count, top-20 list, KPI baselines
+- [ ] P1.0.3 Read `docs/architecture/E_TO_D_TRANSITION_MAP.md`
+ — confirm transition condition mapping per phase
+- [ ] P1.0.4 Read `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md`
+ — note GROUNDED/PARTIAL/SOFT workflow counts
+- [ ] P1.0.5 Confirm REQ-1–REQ-8 still passing on current HEAD
 
 ---
 
 ## Task 1 — JSON Schema Definitions
 
-- [ ] 1.1  Create `.codex/schemas/` directory if absent
-- [ ] 1.2  Create `.codex/schemas/AgentRegistrySchema.json`:
-           Required fields per agent entry:
-           `name`, `role`, `enforcement_tier`, `primary_workflow`,
-           `autonomy_model`, `handoff_protocol`, `activation_frequency_rank`
-           Optional: `capability_tags`, `dependencies`, `accepts_handoff_from`,
-           `consolidation_priority`, `endpoints`, `owner`, `version`, `tags`
-           Use `additionalProperties: true` for forward compatibility
-- [ ] 1.3  Create `.codex/schemas/CodexManifestSchema.json`:
-           Required top-level sections:
-           `schema_version`, `generated_at`, `agents`, `workflows`,
-           `policies`, `datasets`, `enforcement_kpis`, `operating_model`,
-           `integrity_sha256`
-- [ ] 1.4  Validate both schemas are valid JSON Schema draft-07
-- [ ] 1.5  Commit: `.codex/schemas/` directory with both schema files
-           Message: `feat(phase-1): JSON Schema definitions for registry + manifest`
+- [ ] 1.1 Create `.codex/schemas/` directory if absent
+- [ ] 1.2 Create `.codex/schemas/AgentRegistrySchema.json`:
+ Required fields per agent entry:
+ `name`, `role`, `enforcement_tier`, `primary_workflow`,
+ `autonomy_model`, `handoff_protocol`, `activation_frequency_rank`
+ Optional: `capability_tags`, `dependencies`, `accepts_handoff_from`,
+ `consolidation_priority`, `endpoints`, `owner`, `version`, `tags`
+ Use `additionalProperties: true` for forward compatibility
+- [ ] 1.3 Create `.codex/schemas/CodexManifestSchema.json`:
+ Required top-level sections:
+ `schema_version`, `generated_at`, `agents`, `workflows`,
+ `policies`, `datasets`, `enforcement_kpis`, `operating_model`,
+ `integrity_sha256`
+- [ ] 1.4 Validate both schemas are valid JSON Schema draft-07
+- [ ] 1.5 Commit: `.codex/schemas/` directory with both schema files
+ Message: `feat(phase-1): JSON Schema definitions for registry + manifest`
 
 ---
 
 ## Task 2 — generate_manifest.py (Central Script)
 
-- [ ] 2.1  Create `scripts/ci/generate_manifest.py` using the full
-           skeleton from `GROUNDED_DEEP_RESEARCH_CHUNK_3.md` Section 1
-           Confirm all functions present:
-           - `extract_enforcement_kpis()`
-           - `get_violation_rate_30d()`
-           - `index_workflows()`
-           - `load_registry()`
-           - `get_operating_model_status()`
-           - `sanitize_for_injection()`      ← Domain 8 security
-           - `add_integrity_hash()`          ← Domain 8 security
-           - `verify_integrity()`            ← Domain 8 security
-           - `update_enforcement_doc()`      ← Phase 5 bridge
-           - `generate()`                   ← main entry point
-- [ ] 2.2  Run `python scripts/ci/generate_manifest.py` on current repo state
-           → verify `CODEX_MANIFEST.json` generated with:
-           - Correct agent count (from AGENT_REGISTRY.yaml or 0 if not yet created)
-           - Correct workflow count (should match `.github/workflows/*.yml` count)
-           - `integrity_sha256` field present
-           - `operating_model.current = "E"`
-           - `operating_model.target = "D"`
-- [ ] 2.3  Run `python scripts/ci/generate_manifest.py --verify-integrity`
-           → confirm exits 0 (integrity valid)
-- [ ] 2.4  Run 3 consecutive times — confirm identical output (determinism test)
-- [ ] 2.5  Run `python scripts/ci/generate_manifest.py --dump-safe-injection`
-           → confirm only `SAFE_INJECTION_FIELDS` present in output
-           → confirm no injection patterns slip through
-- [ ] 2.6  Commit: `scripts/ci/generate_manifest.py` + `CODEX_MANIFEST.json`
-           Message: `feat(phase-1): generate_manifest.py + initial CODEX_MANIFEST.json`
+- [ ] 2.1 Create `scripts/ci/generate_manifest.py` using the full
+ skeleton from `GROUNDED_DEEP_RESEARCH_CHUNK_3.md` Section 1
+ Confirm all functions present:
+ - `extract_enforcement_kpis()`
+ - `get_violation_rate_30d()`
+ - `index_workflows()`
+ - `load_registry()`
+ - `get_operating_model_status()`
+ - `sanitize_for_injection()` Domain 8 security
+ - `add_integrity_hash()` Domain 8 security
+ - `verify_integrity()` Domain 8 security
+ - `update_enforcement_doc()` Phase 5 bridge
+ - `generate()` main entry point
+- [ ] 2.2 Run `python scripts/ci/generate_manifest.py` on current repo state
+ verify `CODEX_MANIFEST.json` generated with:
+ - Correct agent count (from AGENT_REGISTRY.yaml or 0 if not yet created)
+ - Correct workflow count (should match `.github/workflows/*.yml` count)
+ - `integrity_sha256` field present
+ - `operating_model.current = "E"`
+ - `operating_model.target = "D"`
+- [ ] 2.3 Run `python scripts/ci/generate_manifest.py --verify-integrity`
+ confirm exits 0 (integrity valid)
+- [ ] 2.4 Run 3 consecutive times — confirm identical output (determinism test)
+- [ ] 2.5 Run `python scripts/ci/generate_manifest.py --dump-safe-injection`
+ confirm only `SAFE_INJECTION_FIELDS` present in output
+ confirm no injection patterns slip through
+- [ ] 2.6 Commit: `scripts/ci/generate_manifest.py` + `CODEX_MANIFEST.json`
+ Message: `feat(phase-1): generate_manifest.py + initial CODEX_MANIFEST.json`
 
 ---
 
 ## Task 3 — AGENT_REGISTRY.yaml (All 193 Agents)
 
-- [ ] 3.1  Create `AGENT_REGISTRY.yaml` header:
+- [ ] 3.1 Create `AGENT_REGISTRY.yaml` header:
  ```yaml
  schema_version: "1.0"
  generated_at: "<ISO timestamp>"
  total_agents: 193
  agents: []
-           ```
-- [ ] 3.2  For each agent in `.github/agents/` (all 193):
-           Add registry entry with fields populated from:
-           - Phase 0 frequency audit → `activation_frequency_rank`
-           - Phase 0 enforcement classification → `enforcement_tier`
-           - Phase 0 handoff audit → `handoff_protocol`
-           - Agent `.md` file content → `capability_tags`, `description`
-           - Phase 0 top-20 list → `consolidation_priority: true/false`
-           Minimum required fields per entry (schema-validated):
-           `name`, `role`, `enforcement_tier`, `primary_workflow`,
-           `autonomy_model: "E"`, `handoff_protocol`, `activation_frequency_rank`
-- [ ] 3.3  Top-20 agents (by Phase 0 frequency rank):
-           - Set `consolidation_priority: true`
-           - Set `role` carefully: orchestrator/specialist/worker/utility
-           - Declare `accepts_handoff_from: []` even if empty for now
-- [ ] 3.4  Validate registry against `AgentRegistrySchema.json`:
+ ```
+- [ ] 3.2 For each agent in `.github/agents/` (all 193):
+ Add registry entry with fields populated from:
+ - Phase 0 frequency audit `activation_frequency_rank`
+ - Phase 0 enforcement classification `enforcement_tier`
+ - Phase 0 handoff audit `handoff_protocol`
+ - Agent `.md` file content `capability_tags`, `description`
+ - Phase 0 top-20 list `consolidation_priority: true/false`
+ Minimum required fields per entry (schema-validated):
+ `name`, `role`, `enforcement_tier`, `primary_workflow`,
+ `autonomy_model: "E"`, `handoff_protocol`, `activation_frequency_rank`
+- [ ] 3.3 Top-20 agents (by Phase 0 frequency rank):
+ - Set `consolidation_priority: true`
+ - Set `role` carefully: orchestrator/specialist/worker/utility
+ - Declare `accepts_handoff_from: []` even if empty for now
+- [ ] 3.4 Validate registry against `AgentRegistrySchema.json`:
  ```bash
  python3 -c "
  import yaml, json, jsonschema
@@ -2568,21 +2568,21 @@ All of the following must be true before Phase 1 begins:
  jsonschema.validate(agent, schema['properties']['agents']['items'])
  print(' All', len(data['agents']), 'agents valid')
  "
-           ```
-- [ ] 3.5  Confirm `total_agents` field matches actual agent count in list
-- [ ] 3.6  Commit: `AGENT_REGISTRY.yaml`
-           Message: `feat(phase-1): AGENT_REGISTRY.yaml — all 193 agents registered`
+ ```
+- [ ] 3.5 Confirm `total_agents` field matches actual agent count in list
+- [ ] 3.6 Commit: `AGENT_REGISTRY.yaml`
+ Message: `feat(phase-1): AGENT_REGISTRY.yaml — all 193 agents registered`
 
 ---
 
 ## Task 4 — Regenerate Manifest with Full Registry
 
-- [ ] 4.1  Re-run `python scripts/ci/generate_manifest.py`
-           → verify `CODEX_MANIFEST.json` now shows:
-           - `agents` array length = 193
-           - `enforcement_kpis` populated from `GROUNDED_VS_SOFT_ENFORCEMENT.md`
-           - `operating_model.d_capable_agents = 0` (none promoted yet)
-- [ ] 4.2  Validate manifest against `CodexManifestSchema.json`:
+- [ ] 4.1 Re-run `python scripts/ci/generate_manifest.py`
+ verify `CODEX_MANIFEST.json` now shows:
+ - `agents` array length = 193
+ - `enforcement_kpis` populated from `GROUNDED_VS_SOFT_ENFORCEMENT.md`
+ - `operating_model.d_capable_agents = 0` (none promoted yet)
+- [ ] 4.2 Validate manifest against `CodexManifestSchema.json`:
  ```bash
  python3 -c "
  import json, jsonschema
@@ -2591,16 +2591,16 @@ All of the following must be true before Phase 1 begins:
  jsonschema.validate(data, schema)
  print(' CODEX_MANIFEST.json valid')
  "
-           ```
-- [ ] 4.3  Commit updated `CODEX_MANIFEST.json`
-           Message: `feat(phase-1): CODEX_MANIFEST.json — full registry + KPIs`
+ ```
+- [ ] 4.3 Commit updated `CODEX_MANIFEST.json`
+ Message: `feat(phase-1): CODEX_MANIFEST.json — full registry + KPIs`
 
 ---
 
 ## Task 5 — REQ-9 Gate (Canary Tier-2)
 
-- [ ] 5.1  Add REQ-9 step to `cognitive-preflight` job in
-           `agent-auth-delegation.yml` — insert after REQ-8:
+- [ ] 5.1 Add REQ-9 step to `cognitive-preflight` job in
+ `agent-auth-delegation.yml` — insert after REQ-8:
  ```yaml
  - name: "REQ-9: CODEX_MANIFEST.json integrity (Canary Tier-2)"
  id: req9
@@ -2610,25 +2610,25 @@ All of the following must be true before Phase 1 begins:
  || echo "::warning::CODEX_MANIFEST.json integrity check failed"
  # NOTE: using ::warning:: (Tier-2 canary)
  # Promote to exit 1 (Tier-1) after 2-sprint observation
-           ```
-- [ ] 5.2  Verify `cognitive-preflight` YAML parses correctly:
+ ```
+- [ ] 5.2 Verify `cognitive-preflight` YAML parses correctly:
  ```bash
  python3 -c "import yaml; yaml.safe_load(open(
  '.github/workflows/agent-auth-delegation.yml'))"
  echo " YAML valid"
-           ```
-- [ ] 5.3  Create test: intentionally corrupt `CODEX_MANIFEST.json`
-           integrity hash → confirm REQ-9 emits `::warning::`
-           → restore correct manifest → confirm REQ-9 passes
-- [ ] 5.4  Commit: `agent-auth-delegation.yml` with REQ-9 added
-           Message: `feat(phase-1): REQ-9 CODEX_MANIFEST integrity gate (Tier-2 canary)`
+ ```
+- [ ] 5.3 Create test: intentionally corrupt `CODEX_MANIFEST.json`
+ integrity hash confirm REQ-9 emits `::warning::`
+ restore correct manifest confirm REQ-9 passes
+- [ ] 5.4 Commit: `agent-auth-delegation.yml` with REQ-9 added
+ Message: `feat(phase-1): REQ-9 CODEX_MANIFEST integrity gate (Tier-2 canary)`
 
 ---
 
 ## Task 6 — copilot-agent-vars-bootstrap.yml Extension
 
-- [ ] 6.1  Add manifest injection step to
-           `copilot-agent-vars-bootstrap.yml`:
+- [ ] 6.1 Add manifest injection step to
+ `copilot-agent-vars-bootstrap.yml`:
  ```yaml
  - name: "Inject CODEX_MANIFEST safe fields into agent_context.json"
  run: |
@@ -2645,43 +2645,43 @@ All of the following must be true before Phase 1 begins:
  json.dumps(ctx, indent=2))
  print(' agent_context.json updated with safe manifest fields')
  "
-           ```
-- [ ] 6.2  Verify `agent_context.json` contains `codex_manifest` key after step runs
-- [ ] 6.3  Verify `codex_manifest` contains only `SAFE_INJECTION_FIELDS`
-           (no raw file content, no executable snippets)
-- [ ] 6.4  Commit: `copilot-agent-vars-bootstrap.yml`
-           Message: `feat(phase-1): inject safe manifest fields into agent_context.json`
+ ```
+- [ ] 6.2 Verify `agent_context.json` contains `codex_manifest` key after step runs
+- [ ] 6.3 Verify `codex_manifest` contains only `SAFE_INJECTION_FIELDS`
+ (no raw file content, no executable snippets)
+- [ ] 6.4 Commit: `copilot-agent-vars-bootstrap.yml`
+ Message: `feat(phase-1): inject safe manifest fields into agent_context.json`
 
 ---
 
 ## Task 7 — CODEOWNERS Security (Domain 8 Hardening)
 
-- [ ] 7.1  Add Phase 1 security entries to `.github/CODEOWNERS`:
+- [ ] 7.1 Add Phase 1 security entries to `.github/CODEOWNERS`:
  ```
  /AGENT_REGISTRY.yaml @mbaetiong
  /CODEX_MANIFEST.json @mbaetiong
  /.codex/schemas/ @mbaetiong
  /.github/agents/ @mbaetiong
-           ```
-- [ ] 7.2  Verify `CODEOWNERS` syntax is valid (no trailing spaces, correct format)
-- [ ] 7.3  Commit: `.github/CODEOWNERS`
-           Message: `security(phase-1): CODEOWNERS protection for registry + manifest`
+ ```
+- [ ] 7.2 Verify `CODEOWNERS` syntax is valid (no trailing spaces, correct format)
+- [ ] 7.3 Commit: `.github/CODEOWNERS`
+ Message: `security(phase-1): CODEOWNERS protection for registry + manifest`
 
 ---
 
 ## Task 8 — Accountability Report + CHANGELOG Update (MANDATORY)
 
-- [ ] 8.1  Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
-           - W-NNN | `.codex/schemas/` — AgentRegistrySchema + CodexManifestSchema
-           - W-NNN | `scripts/ci/generate_manifest.py` — central manifest script
-           - W-NNN | `AGENT_REGISTRY.yaml` — all 193 agents registered
-           - W-NNN | `CODEX_MANIFEST.json` — initial generation with integrity hash
-           - W-NNN | REQ-9 — CODEX_MANIFEST integrity gate (Tier-2 canary)
-           - W-NNN | `copilot-agent-vars-bootstrap.yml` — safe manifest injection
-           - W-NNN | `.github/CODEOWNERS` — Phase 1 security entries
-- [ ] 8.2  Add `[Unreleased] — Phase 1` entry to `CHANGELOG.md`
-- [ ] 8.3  Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
-           Message: `docs(phase-1): accountability report + changelog [Phase 1 complete]`
+- [ ] 8.1 Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
+ - W-NNN | `.codex/schemas/` — AgentRegistrySchema + CodexManifestSchema
+ - W-NNN | `scripts/ci/generate_manifest.py` — central manifest script
+ - W-NNN | `AGENT_REGISTRY.yaml` — all 193 agents registered
+ - W-NNN | `CODEX_MANIFEST.json` — initial generation with integrity hash
+ - W-NNN | REQ-9 — CODEX_MANIFEST integrity gate (Tier-2 canary)
+ - W-NNN | `copilot-agent-vars-bootstrap.yml` — safe manifest injection
+ - W-NNN | `.github/CODEOWNERS` — Phase 1 security entries
+- [ ] 8.2 Add `[Unreleased] — Phase 1` entry to `CHANGELOG.md`
+- [ ] 8.3 Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
+ Message: `docs(phase-1): accountability report + changelog [Phase 1 complete]`
 
 ---
 
@@ -2721,32 +2721,32 @@ All of the following must be true before Phase 2 begins:
 ---
 
 ## Pre-Flight (MANDATORY)
-- [ ] P2.0.1  Verify Phase 1 gate: all 11 completion conditions confirmed
-- [ ] P2.0.2  Read `AGENT_REGISTRY.yaml` — note top-20 agents
-              (`consolidation_priority: true`) and their current
-              `handoff_protocol` values
-- [ ] P2.0.3  Read `CODEX_MANIFEST.json` — confirm integrity valid:
-              `python scripts/ci/generate_manifest.py --verify-integrity`
-- [ ] P2.0.4  Read `.codex/schemas/AgentRegistrySchema.json` and
-              `AgentHandoffManifest_v1.1.json` (to be created in Task 1)
-- [ ] P2.0.5  Confirm REQ-1–REQ-9 all passing on current HEAD
+- [ ] P2.0.1 Verify Phase 1 gate: all 11 completion conditions confirmed
+- [ ] P2.0.2 Read `AGENT_REGISTRY.yaml` — note top-20 agents
+ (`consolidation_priority: true`) and their current
+ `handoff_protocol` values
+- [ ] P2.0.3 Read `CODEX_MANIFEST.json` — confirm integrity valid:
+ `python scripts/ci/generate_manifest.py --verify-integrity`
+- [ ] P2.0.4 Read `.codex/schemas/AgentRegistrySchema.json` and
+ `AgentHandoffManifest_v1.1.json` (to be created in Task 1)
+- [ ] P2.0.5 Confirm REQ-1–REQ-9 all passing on current HEAD
 
 ---
 
 ## Task 1 — AgentHandoffManifest Schema
 
-- [ ] 1.1  Create `.codex/schemas/AgentHandoffManifest_v1.1.json`
-           using the full schema from `GROUNDED_DEEP_RESEARCH_CHUNK_1.md`
-           Domain 3 section
-           Required fields (7):
-           `schema_version`, `handoff_id`, `delegating_agent`,
-           `receiving_agent`, `task_id`, `handoff_timestamp`,
-           `operating_model`
-           Optional (schema-defined, not required):
-           `delegation_trace`, `context_snapshot`,
-           `policy_compliance`, `checklist_items`
-           `additionalProperties: true` — forward compatible
-- [ ] 1.2  Validate schema is valid JSON Schema draft-07:
+- [ ] 1.1 Create `.codex/schemas/AgentHandoffManifest_v1.1.json`
+ using the full schema from `GROUNDED_DEEP_RESEARCH_CHUNK_1.md`
+ Domain 3 section
+ Required fields (7):
+ `schema_version`, `handoff_id`, `delegating_agent`,
+ `receiving_agent`, `task_id`, `handoff_timestamp`,
+ `operating_model`
+ Optional (schema-defined, not required):
+ `delegation_trace`, `context_snapshot`,
+ `policy_compliance`, `checklist_items`
+ `additionalProperties: true` — forward compatible
+- [ ] 1.2 Validate schema is valid JSON Schema draft-07:
  ```bash
  python3 -c "
  import json, jsonschema
@@ -2755,17 +2755,17 @@ All of the following must be true before Phase 2 begins:
  jsonschema.Draft7Validator.check_schema(schema)
  print(' AgentHandoffManifest schema valid')
  "
-           ```
-- [ ] 1.3  Add schema path to `CODEX_MANIFEST.json` `policies[]` section
-           via `generate_manifest.py` re-run
-- [ ] 1.4  Commit: `.codex/schemas/AgentHandoffManifest_v1.1.json`
-           Message: `feat(phase-2): AgentHandoffManifest v1.1 JSON Schema`
+ ```
+- [ ] 1.3 Add schema path to `CODEX_MANIFEST.json` `policies[]` section
+ via `generate_manifest.py` re-run
+- [ ] 1.4 Commit: `.codex/schemas/AgentHandoffManifest_v1.1.json`
+ Message: `feat(phase-2): AgentHandoffManifest v1.1 JSON Schema`
 
 ---
 
 ## Task 2 — validate_handoff_manifest.py
 
-- [ ] 2.1  Create `scripts/ci/validate_handoff_manifest.py`:
+- [ ] 2.1 Create `scripts/ci/validate_handoff_manifest.py`:
 ```python
 """
 Validate an AgentHandoffManifest JSON payload against v1.1 schema.
@@ -2796,16 +2796,16 @@ if __name__ == "__main__":
  sys.exit(1)
  print(" Handoff manifest valid")
 ```
-- [ ] 2.2  Create a test valid manifest `tests/fixtures/valid_handoff.json`
-           covering all 7 required fields + delegation_trace
-- [ ] 2.3  Create a test invalid manifest `tests/fixtures/invalid_handoff.json`
-           (missing `receiving_agent` field)
-- [ ] 2.4  Run both through validator — confirm:
-           valid → exits 0 | invalid → exits 1 with error message
-- [ ] 2.5  Commit: `scripts/ci/validate_handoff_manifest.py` +
-           `tests/fixtures/valid_handoff.json` +
-           `tests/fixtures/invalid_handoff.json`
-           Message: `feat(phase-2): validate_handoff_manifest.py + test fixtures`
+- [ ] 2.2 Create a test valid manifest `tests/fixtures/valid_handoff.json`
+ covering all 7 required fields + delegation_trace
+- [ ] 2.3 Create a test invalid manifest `tests/fixtures/invalid_handoff.json`
+ (missing `receiving_agent` field)
+- [ ] 2.4 Run both through validator — confirm:
+ valid exits 0 | invalid exits 1 with error message
+- [ ] 2.5 Commit: `scripts/ci/validate_handoff_manifest.py` +
+ `tests/fixtures/valid_handoff.json` +
+ `tests/fixtures/invalid_handoff.json`
+ Message: `feat(phase-2): validate_handoff_manifest.py + test fixtures`
 
 ---
 
@@ -2814,55 +2814,55 @@ if __name__ == "__main__":
 > NOTE: This file references Phase 3's `query_corpus` module.
 > Create a stub if Phase 3 is not yet complete.
 
-- [ ] 3.1  Create `scripts/ci/handoff_context_population.py`
-           using the pattern from `GROUNDED_DEEP_RESEARCH_CHUNK_3.md`
-           Section 1 "Phase 2+3 bridge"
-- [ ] 3.2  If Phase 3 not yet complete: add a stub `query_corpus`:
+- [ ] 3.1 Create `scripts/ci/handoff_context_population.py`
+ using the pattern from `GROUNDED_DEEP_RESEARCH_CHUNK_3.md`
+ Section 1 "Phase 2+3 bridge"
+- [ ] 3.2 If Phase 3 not yet complete: add a stub `query_corpus`:
 ```python
 # Stub until Phase 3 build_embeddings.py is complete
 def query(query_text: str, top_k: int = 5) -> list[dict]:
  return [] # returns empty — no prior context yet
 ```
-- [ ] 3.3  Verify `build_handoff_manifest()` function:
-           - Calls `query()` for prior context (or returns empty list via stub)
-           - Calls `validate()` before returning
-           - Raises `ValueError` on invalid manifest
-           - `handoff_id` is a valid UUID v4
-           - `handoff_timestamp` is ISO 8601 UTC
-- [ ] 3.4  Commit: `scripts/ci/handoff_context_population.py`
-           Message: `feat(phase-2): handoff_context_population.py (Phase 2+3 bridge)`
+- [ ] 3.3 Verify `build_handoff_manifest()` function:
+ - Calls `query()` for prior context (or returns empty list via stub)
+ - Calls `validate()` before returning
+ - Raises `ValueError` on invalid manifest
+ - `handoff_id` is a valid UUID v4
+ - `handoff_timestamp` is ISO 8601 UTC
+- [ ] 3.4 Commit: `scripts/ci/handoff_context_population.py`
+ Message: `feat(phase-2): handoff_context_population.py (Phase 2+3 bridge)`
 
 ---
 
 ## Task 4 — agent-handoff-gate.yml (Canary Tier-2)
 
-- [ ] 4.1  Create `.github/workflows/agent-handoff-gate.yml`
-           using the workflow pattern from
-           `GROUNDED_DEEP_RESEARCH_CHUNK_2.md` Domain 5 section
-           Key steps:
-           1. Trigger: `issue_comment` containing `AGENT_HANDOFF:`
-           2. Parse JSON manifest from comment body
-           3. Run `validate_handoff_manifest.py` on parsed manifest
-           4. Post structured PR comment (Tier-2 present-tense injection)
-              using template from Chunk 1 Domain 3
-           5. **Canary**: `::warning::` on invalid (NOT `exit 1` yet)
-           6. Add `# TODO: Promote to exit 1 after 2-sprint observation`
-              comment in workflow YAML
-- [ ] 4.2  Validate workflow YAML parses:
+- [ ] 4.1 Create `.github/workflows/agent-handoff-gate.yml`
+ using the workflow pattern from
+ `GROUNDED_DEEP_RESEARCH_CHUNK_2.md` Domain 5 section
+ Key steps:
+ 1. Trigger: `issue_comment` containing `AGENT_HANDOFF:`
+ 2. Parse JSON manifest from comment body
+ 3. Run `validate_handoff_manifest.py` on parsed manifest
+ 4. Post structured PR comment (Tier-2 present-tense injection)
+ using template from Chunk 1 Domain 3
+ 5. **Canary**: `::warning::` on invalid (NOT `exit 1` yet)
+ 6. Add `# TODO: Promote to exit 1 after 2-sprint observation`
+ comment in workflow YAML
+- [ ] 4.2 Validate workflow YAML parses:
  ```bash
  python3 -c "import yaml; yaml.safe_load(open(
  '.github/workflows/agent-handoff-gate.yml'))"
  echo " Workflow YAML valid"
-           ```
-- [ ] 4.3  Add to `CODEX_MANIFEST.json` workflows array
-           via `generate_manifest.py` re-run
-- [ ] 4.4  Add CODEOWNERS entry:
-           `/.github/workflows/agent-handoff-gate.yml  @mbaetiong`
-- [ ] 4.5  Test: Post a PR comment containing `AGENT_HANDOFF:`
-           with valid JSON → confirm workflow triggers + posts handoff comment
-- [ ] 4.6  Test: Post with invalid JSON → confirm `::warning::` fires
-- [ ] 4.7  Commit: `.github/workflows/agent-handoff-gate.yml`
-           Message: `feat(phase-2): agent-handoff-gate.yml (Tier-2 canary)`
+ ```
+- [ ] 4.3 Add to `CODEX_MANIFEST.json` workflows array
+ via `generate_manifest.py` re-run
+- [ ] 4.4 Add CODEOWNERS entry:
+ `/.github/workflows/agent-handoff-gate.yml @mbaetiong`
+- [ ] 4.5 Test: Post a PR comment containing `AGENT_HANDOFF:`
+ with valid JSON confirm workflow triggers + posts handoff comment
+- [ ] 4.6 Test: Post with invalid JSON confirm `::warning::` fires
+- [ ] 4.7 Commit: `.github/workflows/agent-handoff-gate.yml`
+ Message: `feat(phase-2): agent-handoff-gate.yml (Tier-2 canary)`
 
 ---
 
@@ -2872,10 +2872,10 @@ def query(query_text: str, top_k: int = 5) -> list[dict]:
 > in `AGENT_REGISTRY.yaml`. Work in batches of 5.
 
 ### Batch A — Agents Rank 1–5 (highest frequency)
-- [ ] 5A.1  For each agent:
-           a) Read `.github/agents/<name>.md`
-           b) Identify current handoff behavior (text delegation vs. structured)
-           c) Add `AGENT_HANDOFF:` emission instruction to agent definition:
+- [ ] 5A.1 For each agent:
+ a) Read `.github/agents/<name>.md`
+ b) Identify current handoff behavior (text delegation vs. structured)
+ c) Add `AGENT_HANDOFF:` emission instruction to agent definition:
  ```markdown
  ## Handoff Protocol
  When delegating to another agent, emit an AGENT_HANDOFF comment
@@ -2883,73 +2883,73 @@ def query(query_text: str, top_k: int = 5) -> list[dict]:
  - delegating_agent: "<this agent name>"
  - receiving_agent: "<target agent name>"
  - Include current open checklist items in checklist_items[]
-              ```
-           d) Update `AGENT_REGISTRY.yaml` entry:
-              `handoff_protocol: "structured"`
-           e) Identify if this agent overlaps with another top-20 agent
-              → if overlap: add `aliases: [<other_agent_name>]` to registry
-              (alias-first — no structural merge yet)
-- [ ] 5A.2  After all 5 agents updated: run `generate_manifest.py`
-            → confirm 5 agents now show `handoff_protocol: structured`
-- [ ] 5A.3  Commit Batch A: updated agent `.md` files + `AGENT_REGISTRY.yaml`
-            Message: `feat(phase-2): top-20 handoff protocol — batch A (rank 1–5)`
+ ```
+ d) Update `AGENT_REGISTRY.yaml` entry:
+ `handoff_protocol: "structured"`
+ e) Identify if this agent overlaps with another top-20 agent
+ if overlap: add `aliases: [<other_agent_name>]` to registry
+ (alias-first — no structural merge yet)
+- [ ] 5A.2 After all 5 agents updated: run `generate_manifest.py`
+ confirm 5 agents now show `handoff_protocol: structured`
+- [ ] 5A.3 Commit Batch A: updated agent `.md` files + `AGENT_REGISTRY.yaml`
+ Message: `feat(phase-2): top-20 handoff protocol — batch A (rank 1–5)`
 
 ### Batch B — Agents Rank 6–10
-- [ ] 5B.1  Repeat 5A.1 steps for agents rank 6–10
-- [ ] 5B.2  Re-run `generate_manifest.py` — confirm 10 structured agents
-- [ ] 5B.3  Commit Batch B
-            Message: `feat(phase-2): top-20 handoff protocol — batch B (rank 6–10)`
+- [ ] 5B.1 Repeat 5A.1 steps for agents rank 6–10
+- [ ] 5B.2 Re-run `generate_manifest.py` — confirm 10 structured agents
+- [ ] 5B.3 Commit Batch B
+ Message: `feat(phase-2): top-20 handoff protocol — batch B (rank 6–10)`
 
 ### Batch C — Agents Rank 11–15
-- [ ] 5C.1  Repeat for agents rank 11–15
-- [ ] 5C.2  Consolidation check: across batches A+B+C, identify ≥2 consolidation
-            pairs (same capability, different names) → add `aliases:` to registry
-- [ ] 5C.3  Commit Batch C
-            Message: `feat(phase-2): top-20 handoff protocol — batch C (rank 11–15)`
+- [ ] 5C.1 Repeat for agents rank 11–15
+- [ ] 5C.2 Consolidation check: across batches A+B+C, identify ≥2 consolidation
+ pairs (same capability, different names) add `aliases:` to registry
+- [ ] 5C.3 Commit Batch C
+ Message: `feat(phase-2): top-20 handoff protocol — batch C (rank 11–15)`
 
 ### Batch D — Agents Rank 16–20
-- [ ] 5D.1  Repeat for agents rank 16–20
-- [ ] 5D.2  Final consolidation sweep: confirm ≥2 alias pairs documented
-- [ ] 5D.3  Commit Batch D
-            Message: `feat(phase-2): top-20 handoff protocol — batch D (rank 16–20)`
+- [ ] 5D.1 Repeat for agents rank 16–20
+- [ ] 5D.2 Final consolidation sweep: confirm ≥2 alias pairs documented
+- [ ] 5D.3 Commit Batch D
+ Message: `feat(phase-2): top-20 handoff protocol — batch D (rank 16–20)`
 
 ---
 
 ## Task 6 — End-to-End Integration Test
 
-- [ ] 6.1  Simulate a full top-20 agent handoff:
-           a) Invoke `build_handoff_manifest()` for top-ranked agent
-              delegating to second-ranked agent
-           b) Confirm manifest is valid (validate exits 0)
-           c) Post manifest as `AGENT_HANDOFF: <json>` comment on a test PR
-           d) Confirm `agent-handoff-gate.yml` triggers
-           e) Confirm structured handoff comment posted to PR
-           f) Confirm `::warning::` does NOT fire (valid manifest)
-- [ ] 6.2  Simulate invalid handoff:
-           a) Post manifest missing `receiving_agent` field
-           b) Confirm `::warning::` fires
-           c) Confirm rejection comment posted with error details
-- [ ] 6.3  Document test results in
-           `docs/audits/PHASE_2_INTEGRATION_TEST_RESULTS.md`
+- [ ] 6.1 Simulate a full top-20 agent handoff:
+ a) Invoke `build_handoff_manifest()` for top-ranked agent
+ delegating to second-ranked agent
+ b) Confirm manifest is valid (validate exits 0)
+ c) Post manifest as `AGENT_HANDOFF: <json>` comment on a test PR
+ d) Confirm `agent-handoff-gate.yml` triggers
+ e) Confirm structured handoff comment posted to PR
+ f) Confirm `::warning::` does NOT fire (valid manifest)
+- [ ] 6.2 Simulate invalid handoff:
+ a) Post manifest missing `receiving_agent` field
+ b) Confirm `::warning::` fires
+ c) Confirm rejection comment posted with error details
+- [ ] 6.3 Document test results in
+ `docs/audits/PHASE_2_INTEGRATION_TEST_RESULTS.md`
 
 ---
 
 ## Task 7 — Accountability Report + CHANGELOG Update (MANDATORY)
 
-- [ ] 7.1  Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
-           - W-NNN | AgentHandoffManifest v1.1 schema created
-           - W-NNN | `validate_handoff_manifest.py` + fixtures
-           - W-NNN | `handoff_context_population.py` (Phase 2+3 bridge)
-           - W-NNN | `agent-handoff-gate.yml` (Tier-2 canary)
-           - W-NNN | Top-20 Batch A (agents rank 1–5) grounded
-           - W-NNN | Top-20 Batch B (agents rank 6–10) grounded
-           - W-NNN | Top-20 Batch C (agents rank 11–15) grounded
-           - W-NNN | Top-20 Batch D (agents rank 16–20) grounded
-           - W-NNN | ≥2 consolidation aliases documented in registry
-           - W-NNN | End-to-end integration test results documented
-- [ ] 7.2  Add `[Unreleased] — Phase 2` entry to `CHANGELOG.md`
-- [ ] 7.3  Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
-           Message: `docs(phase-2): accountability report + changelog [Phase 2 complete]`
+- [ ] 7.1 Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
+ - W-NNN | AgentHandoffManifest v1.1 schema created
+ - W-NNN | `validate_handoff_manifest.py` + fixtures
+ - W-NNN | `handoff_context_population.py` (Phase 2+3 bridge)
+ - W-NNN | `agent-handoff-gate.yml` (Tier-2 canary)
+ - W-NNN | Top-20 Batch A (agents rank 1–5) grounded
+ - W-NNN | Top-20 Batch B (agents rank 6–10) grounded
+ - W-NNN | Top-20 Batch C (agents rank 11–15) grounded
+ - W-NNN | Top-20 Batch D (agents rank 16–20) grounded
+ - W-NNN | ≥2 consolidation aliases documented in registry
+ - W-NNN | End-to-end integration test results documented
+- [ ] 7.2 Add `[Unreleased] — Phase 2` entry to `CHANGELOG.md`
+- [ ] 7.3 Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
+ Message: `docs(phase-2): accountability report + changelog [Phase 2 complete]`
 
 ---
 
@@ -2988,7 +2988,7 @@ All of the following must be true before Phase 4 begins
 
 ---
 
-## 🧭 Extended Notation
+## Extended Notation
 
 | Symbol | Meaning |
 |--------|---------|
@@ -3008,9 +3008,9 @@ All of the following must be true before Phase 4 begins
 
 ---
 
-## 20.  E→D Transition — Finite State Machine
+## 20. ED Transition — Finite State Machine
 
-The E→D operating model transition is a **discrete FSM** with 4 states:
+The ED operating model transition is a **discrete FSM** with 4 states:
 
 $$
 \mathcal{F}: \mathcal{M} \times \mathcal{R} \rightarrow \mathcal{M}'
@@ -3021,10 +3021,10 @@ State transition function:
 $$
 \mathcal{M}' =
 \begin{cases}
-D\_READY   & \text{if } \mathcal{M} = E \wedge \mathcal{R} = 5 \\
-D          & \text{if } \mathcal{M} = D\_READY \wedge \text{AUTONOMY\_MODEL} = D\_CAPABLE \\
+D\_READY & \text{if } \mathcal{M} = E \wedge \mathcal{R} = 5 \\
+D & \text{if } \mathcal{M} = D\_READY \wedge \text{AUTONOMY\_MODEL} = D\_CAPABLE \\
 D\_SUSPENDED & \text{if } \mathcal{M} = D \wedge \sigma > \theta \\
-E          & \text{if } \mathcal{M} = D\_SUSPENDED \vee \text{emergency lockdown}
+E & \text{if } \mathcal{M} = D\_SUSPENDED \vee \text{emergency lockdown}
 \end{cases}
 $$
 
@@ -3043,7 +3043,7 @@ $$
 
 ---
 
-## 21. 🏗️ Tiered Role Taxonomy — Potential Energy Ladder
+## 21. Tiered Role Taxonomy — Potential Energy Ladder
 
 Agent roles map to discrete **potential energy levels**
 $U_r$ on a role ladder:
@@ -3054,7 +3054,7 @@ U_r =
 4U_0 & r = \text{orchestrator} \quad \text{(highest energy — most constrained)} \\
 3U_0 & r = \text{specialist} \\
 2U_0 & r = \text{worker} \\
-U_0  & r = \text{utility} \quad \text{(lowest energy — least constrained)}
+U_0 & r = \text{utility} \quad \text{(lowest energy — least constrained)}
 \end{cases}
 $$
 
@@ -3064,7 +3064,7 @@ $$
 \Delta U_{r \rightarrow r+1} = U_{r+1} - U_r = U_0
 $$
 
-An agent **cannot skip levels** — no direct utility→orchestrator promotion:
+An agent **cannot skip levels** — no direct utilityorchestrator promotion:
 
 $$
 \Delta U_{\text{utility} \rightarrow \text{orchestrator}} = 3U_0 \gg \Delta U_{\text{single step}}
@@ -3072,7 +3072,7 @@ $$
 
 ---
 
-## 22.  Semantic Capability Routing — Vector Field Projection
+## 22. Semantic Capability Routing — Vector Field Projection
 
 Orchestrator selects specialist via **vector projection** onto capability space:
 
@@ -3093,7 +3093,7 @@ $$
 
 ---
 
-## 23.  Agent-to-Agent Handoff — Information Conservation Law
+## 23. Agent-to-Agent Handoff — Information Conservation Law
 
 Each handoff must **conserve task information** — no context is lost
 in the delegation chain. Modeled as a **Noether conservation law**:
@@ -3111,12 +3111,12 @@ $$
 $$
 
 **Manifest validation** ensures the conservation law holds:
-- Missing required fields → $\mathcal{I}$ not conserved → validation `exit 1`
-- All required fields present → $\mathcal{I}$ conserved → handoff proceeds
+- Missing required fields $\mathcal{I}$ not conserved validation `exit 1`
+- All required fields present $\mathcal{I}$ conserved handoff proceeds
 
 ---
 
-## 24.  Self-Healing CI — Thermodynamic Repair Cycle
+## 24. Self-Healing CI — Thermodynamic Repair Cycle
 
 The Phase 5 self-healing loop is modeled as a
 **thermodynamic repair cycle** (Carnot-analog):
@@ -3158,7 +3158,7 @@ $$
 
 ---
 
-## 25.  Auto-Documentation — Gradient Descent on Documentation Debt
+## 25. Auto-Documentation — Gradient Descent on Documentation Debt
 
 Documentation debt $\mathcal{D}$ is minimized by Phase 5's
 auto-update hooks:
@@ -3174,7 +3174,7 @@ $$
 \mathcal{D}(t+1) = \mathcal{D}(t) - \alpha \nabla_f \mathcal{D}
 $$
 
-Where $\alpha$ = learning rate (one merge → one doc update step).
+Where $\alpha$ = learning rate (one merge one doc update step).
 
 **With perfect auto-documentation** ($\alpha = 1$, no lag):
 
@@ -3188,7 +3188,7 @@ $\mathcal{D}$ grows monotonically with each merge.
 
 ---
 
-## 26.  Monorepo Compliance Audit — Coverage Integral
+## 26. Monorepo Compliance Audit — Coverage Integral
 
 Phase 0's `workflow_compliance_scan.py` computes
 **audit coverage** $\mathcal{A}$ as a surface integral
@@ -3221,7 +3221,7 @@ $$
 
 ---
 
-## 27.  Context Injection Attack Surface — Electromagnetic Analogy
+## 27. Context Injection Attack Surface — Electromagnetic Analogy
 
 The security risk from `CODEX_MANIFEST.json` injection
 is modeled as an **electromagnetic field exposure**:
@@ -3261,7 +3261,7 @@ $$
 
 ---
 
-## 28. 🧮 Master Security-Enforcement Field Equation (Extended)
+## 28. Master Security-Enforcement Field Equation (Extended)
 
 Extending Formula 19 from `GROUNDED_VS_SOFT_ENFORCEMENT_Physics.md`
 with the new Domain 8 security term:
@@ -3290,7 +3290,7 @@ $$
 This gives three simultaneous requirements:
 1. Promote Tier-3 policies faster than violations accumulate
 2. Minimize injection attack surface via allowlist + integrity hash
-3. Satisfy all 5 E→D transition conditions before D-model activation
+3. Satisfy all 5 ED transition conditions before D-model activation
 
 ---
 
@@ -3298,7 +3298,7 @@ This gives three simultaneous requirements:
 
 | Formula | Domain | Concept | Key Result |
 |---------|--------|---------|------------|
-| 20 | D5 | E→D FSM transition | $P(D\_READY) = \mathbb{1}[\mathcal{R}=5]$ |
+| 20 | D5 | ED FSM transition | $P(D\_READY) = \mathbb{1}[\mathcal{R}=5]$ |
 | 21 | D5 | Role energy ladder | No level-skipping: $\Delta U = U_0$ per step |
 | 22 | D5 | Semantic routing | $\text{specialist}^* = \arg\max \cos(\vec{v},\vec{c}_j)$ |
 | 23 | D3 | Handoff conservation | $d\mathcal{I}_{\text{task}}/dt = 0$ |
@@ -3316,7 +3316,7 @@ This gives three simultaneous requirements:
 All sources across all 4 chunks, organized by domain. 52 sources total.
 
 ```markdown name=GROUNDED_DEEP_RESEARCH_BIBLIOGRAPHY.md
-# Deep Research Bibliography — Soft → GROUNDED Conversion
+# Deep Research Bibliography — Soft GROUNDED Conversion
 > Generated: 2026-03-02 | Author: mbaetiong | All 4 chunks consolidated
 > Total sources: 52
 
@@ -3438,15 +3438,15 @@ All sources across all 4 chunks, organized by domain. 52 sources total.
 
 | Domain | Sources | Phases Covered | Confidence |
 |--------|---------|----------------|-----------|
-| D1: Agent Registry | 9 | Phase 1 |  High |
-| D2: Policy-as-Code | 8 | All phases |  High |
-| D3: Handoff Protocol | 5 | Phase 2 |  High |
-| D4: FAISS+SQLite | 9 | Phase 3 |  High |
-| D5: Tiered Autonomy | 8 | Phase 4 |  High |
-| D6: Self-Healing CI | 8 | Phase 5 |  High |
-| D7: Monorepo Governance | 5 | Phase 0, 6 |  High |
-| D8: Security | 4 | All phases | ️ Critical |
-| **Total** | **56** | **All 7 phases** |  |
+| D1: Agent Registry | 9 | Phase 1 | High |
+| D2: Policy-as-Code | 8 | All phases | High |
+| D3: Handoff Protocol | 5 | Phase 2 | High |
+| D4: FAISS+SQLite | 9 | Phase 3 | High |
+| D5: Tiered Autonomy | 8 | Phase 4 | High |
+| D6: Self-Healing CI | 8 | Phase 5 | High |
+| D7: Monorepo Governance | 5 | Phase 0, 6 | High |
+| D8: Security | 4 | All phases | Critical |
+| **Total** | **56** | **All 7 phases** | |
 
 ---
 *Author: mbaetiong | Generated: 2026-03-02 | All 4 Deep Research Chunks*

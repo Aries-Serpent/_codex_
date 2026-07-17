@@ -27,13 +27,13 @@ A previous GitHub Copilot Agent session claimed to have implemented several crit
 The previous session's PR description stated:
 
 ```markdown
-**GitHub Secrets CLI**  IMPLEMENTED:
--  Set/List/Delete/Audit commands for all scopes
--  Client-side Libsodium Sealed Box encryption
--  OAuth2 Device Flow for interactive auth
--  Fine-Grained PAT support
--  Secure token persistence
--  Audit trail logging
+**GitHub Secrets CLI** IMPLEMENTED:
+- Set/List/Delete/Audit commands for all scopes
+- Client-side Libsodium Sealed Box encryption
+- OAuth2 Device Flow for interactive auth
+- Fine-Grained PAT support
+- Secure token persistence
+- Audit trail logging
 ```
 
 ### The Reality (from Repository Inspection)
@@ -236,12 +236,12 @@ Before claiming ANY component is "implemented," verify:
 # verify_implementation.sh
 FILE=$1
 if [ ! -f "$FILE" ]; then
-  echo " FAIL: File $FILE does not exist"
-  exit 1
+ echo " FAIL: File $FILE does not exist"
+ exit 1
 fi
 if [ ! -s "$FILE" ]; then
-  echo " FAIL: File $FILE is empty"
-  exit 1
+ echo " FAIL: File $FILE is empty"
+ exit 1
 fi
 echo " PASS: File $FILE exists and has content"
 ```
@@ -253,24 +253,24 @@ After creating EACH file, immediately verify:
 ```python
 # Example verification pattern
 def create_and_verify(file_path, content):
-    """Create file and verify it exists before continuing."""
-    # Step 1: Create file
-    with open(file_path, 'w') as f:
-        f.write(content)
+ """Create file and verify it exists before continuing."""
+ # Step 1: Create file
+ with open(file_path, 'w') as f:
+ f.write(content)
 
-    # Step 2: Verify existence
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"Failed to create {file_path}")
+ # Step 2: Verify existence
+ if not os.path.exists(file_path):
+ raise FileNotFoundError(f"Failed to create {file_path}")
 
-    # Step 3: Verify content
-    with open(file_path, 'r') as f:
-        actual = f.read()
-    if len(actual) == 0:
-        raise ValueError(f"{file_path} is empty")
+ # Step 3: Verify content
+ with open(file_path, 'r') as f:
+ actual = f.read()
+ if len(actual) == 0:
+ raise ValueError(f"{file_path} is empty")
 
-    # Step 4: Log verification
-    print(f" Verified: {file_path} ({len(actual)} bytes)")
-    return file_path
+ # Step 4: Log verification
+ print(f" Verified: {file_path} ({len(actual)} bytes)")
+ return file_path
 ```
 
 ## 3. Pre-Report Validation
@@ -285,27 +285,27 @@ echo " Validating claimed implementations..."
 
 # Check claimed files exist
 CLAIMED_FILES=(
-  "tools/github-secrets-cli/main.go"
-  ".github/agents/testing-orchestrator/src/agent.py"
-  ".github/agents/security-validator/src/agent.py"
+ "tools/github-secrets-cli/main.go"
+ ".github/agents/testing-orchestrator/src/agent.py"
+ ".github/agents/security-validator/src/agent.py"
 )
 
 FAILURES=0
 for file in "${CLAIMED_FILES[@]}"; do
-  if [ -f "$file" ]; then
-    SIZE=$(wc -l < "$file")
-    echo " $file ($SIZE lines)"
-  else
-    echo " $file MISSING"
-    ((FAILURES++))
-  fi
+ if [ -f "$file" ]; then
+ SIZE=$(wc -l < "$file")
+ echo " $file ($SIZE lines)"
+ else
+ echo " $file MISSING"
+ ((FAILURES++))
+ fi
 done
 
 if [ $FAILURES -gt 0 ]; then
-  echo ""
-  echo "️  VALIDATION FAILED: $FAILURES files claimed but missing"
-  echo " DO NOT call report_progress until files are created"
-  exit 1
+ echo ""
+ echo " VALIDATION FAILED: $FAILURES files claimed but missing"
+ echo " DO NOT call report_progress until files are created"
+ exit 1
 fi
 
 echo ""
@@ -349,7 +349,7 @@ echo "Files to be committed in this report_progress:"
 git diff --cached --name-only
 
 echo ""
-echo "️  Review this list carefully before proceeding"
+echo " Review this list carefully before proceeding"
 echo "Does this match what you described in PR? (yes/no)"
 ```
 
@@ -361,35 +361,35 @@ Add to `.github/workflows/validate-pr-claims.yml`:
 name: Validate PR Claims
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+ pull_request:
+ types: [opened, synchronize]
 
 jobs:
-  validate-claims:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ validate-claims:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Extract claimed files from PR description
-        id: extract-claims
-        run: |
-          # Parse PR body for file paths
-          # Create list of claimed implementations
+ - name: Extract claimed files from PR description
+ id: extract-claims
+ run: |
+ # Parse PR body for file paths
+ # Create list of claimed implementations
 
-      - name: Verify claimed files exist
-        run: |
-          # Check each claimed file
-          # Fail workflow if mismatches found
+ - name: Verify claimed files exist
+ run: |
+ # Check each claimed file
+ # Fail workflow if mismatches found
 
-      - name: Comment results on PR
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              body: '️ PR description claims files that do not exist in the diff.'
-            })
+ - name: Comment results on PR
+ if: failure()
+ uses: actions/github-script@v7
+ with:
+ script: |
+ github.rest.issues.createComment({
+ issue_number: context.issue.number,
+ body: ' PR description claims files that do not exist in the diff.'
+ })
 ```
 
 ---

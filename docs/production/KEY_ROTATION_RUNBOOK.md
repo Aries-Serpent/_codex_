@@ -40,28 +40,28 @@ echo " Pre-rotation environment check..."
 
 # 1. Check staging operational
 if ! ./scripts/health_check.sh --environment staging; then
-    echo " Staging not healthy"
-    exit 1
+ echo " Staging not healthy"
+ exit 1
 fi
 
 # 2. Verify backup key valid
 if ! openssl enc -d -aes-256-cbc \
-    -in .codex/key-archive/backup_key.enc \
-    -k "$BACKUP_KEY_PASS" > /dev/null 2>&1; then
-    echo " Backup key compromised or invalid"
-    exit 1
+ -in .codex/key-archive/backup_key.enc \
+ -k "$BACKUP_KEY_PASS" > /dev/null 2>&1; then
+ echo " Backup key compromised or invalid"
+ exit 1
 fi
 
 # 3. Check monitoring systems
 if ! curl -s https://monitoring.example.com/health > /dev/null; then
-    echo " Monitoring system unreachable"
-    exit 1
+ echo " Monitoring system unreachable"
+ exit 1
 fi
 
 # 4. Verify incident response readiness
 if ! python3 scripts/verify_incident_response_readiness.py; then
-    echo " Incident response team not ready"
-    exit 1
+ echo " Incident response team not ready"
+ exit 1
 fi
 
 echo " Pre-rotation checks passed"
@@ -76,9 +76,9 @@ echo " Pre-rotation checks passed"
 **Step 1a: Generate new key**
 ```bash
 #!/bin/bash
-set -e  # Exit on error
+set -e # Exit on error
 
-echo "🔑 Step 1a: Generating new CODEX_MASTER_KEY"
+echo " Step 1a: Generating new CODEX_MASTER_KEY"
 echo "============================================="
 
 # Generate key
@@ -86,15 +86,15 @@ NEW_KEY=$(openssl rand -base64 32)
 
 # Verify generation
 if [ -z "$NEW_KEY" ]; then
-    echo " Failed to generate key"
-    exit 1
+ echo " Failed to generate key"
+ exit 1
 fi
 
 # Save temporarily (in memory only, not to disk)
 export NEW_KEY
 
 echo " Key generated successfully"
-echo "   Key length: $(echo -n "$NEW_KEY" | wc -c) characters"
+echo " Key length: $(echo -n "$NEW_KEY" | wc -c) characters"
 ```
 
 **Step 1b: Validate key format**
@@ -106,28 +106,28 @@ import sys
 
 new_key = os.getenv("NEW_KEY")
 if not new_key:
-    print(" NEW_KEY not set")
-    sys.exit(1)
+ print(" NEW_KEY not set")
+ sys.exit(1)
 
 try:
-    decoded = base64.b64decode(new_key)
-    if len(decoded) != 32:
-        print(f" Key must be 32 bytes, got {len(decoded)}")
-        sys.exit(1)
+ decoded = base64.b64decode(new_key)
+ if len(decoded) != 32:
+ print(f" Key must be 32 bytes, got {len(decoded)}")
+ sys.exit(1)
 
-    # Additional validation
-    if not all(isinstance(b, int) for b in decoded):
-        print(" Invalid byte sequence")
-        sys.exit(1)
+ # Additional validation
+ if not all(isinstance(b, int) for b in decoded):
+ print(" Invalid byte sequence")
+ sys.exit(1)
 
-    print(" Key validation passed")
-    print(f"   Format: Valid base64")
-    print(f"   Length: {len(decoded)} bytes")
-    print(f"   Entropy: Good")
+ print(" Key validation passed")
+ print(f" Format: Valid base64")
+ print(f" Length: {len(decoded)} bytes")
+ print(f" Entropy: Good")
 
 except Exception as e:
-    print(f" Validation failed: {e}")
-    sys.exit(1)
+ print(f" Validation failed: {e}")
+ sys.exit(1)
 ```
 
 **Step 1c: Obtain approvals**
@@ -154,16 +154,16 @@ REQ
 
 # Wait for approvals (in real scenario, use approval system)
 echo " Waiting for 2 approvals..."
-echo "   (In production: Use GitHub PR approval or formal request system)"
+echo " (In production: Use GitHub PR approval or formal request system)"
 
 # Simulate approval collection
 APPROVALS=0
 while [ $APPROVALS -lt 2 ]; do
-    read -p "Approval $((APPROVALS+1))/2: [y]es/[n]o? " response
-    if [ "$response" = "y" ]; then
-        APPROVALS=$((APPROVALS + 1))
-        echo " Approval $APPROVALS/2 received"
-    fi
+ read -p "Approval $((APPROVALS+1))/2: [y]es/[n]o? " response
+ if [ "$response" = "y" ]; then
+ APPROVALS=$((APPROVALS + 1))
+ echo " Approval $APPROVALS/2 received"
+ fi
 done
 
 echo " All required approvals obtained"
@@ -179,11 +179,11 @@ echo "=============================================="
 
 # Set staged key
 gh secret set CODEX_MASTER_KEY_STAGED --body "$NEW_KEY" \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 
 if [ $? -ne 0 ]; then
-    echo " Failed to set staged secret"
-    exit 1
+ echo " Failed to set staged secret"
+ exit 1
 fi
 
 echo " Staged key deployed"
@@ -198,22 +198,22 @@ echo " Secret propagated to GitHub infrastructure"
 **Step 2b: Run staging validation tests**
 ```bash
 #!/bin/bash
-echo "🧪 Step 2b: Running staging validation tests"
+echo " Step 2b: Running staging validation tests"
 echo "=============================================="
 
 # Run comprehensive test suite
 python -m pytest tests/security/test_key_rotation.py \
-  -v \
-  --environment=staging \
-  --new-key="$NEW_KEY" \
-  --timeout=300
+ -v \
+ --environment=staging \
+ --new-key="$NEW_KEY" \
+ --timeout=300
 
 if [ $? -ne 0 ]; then
-    echo " Staging tests failed"
-    echo " Attempting automatic rollback..."
-    gh secret set CODEX_MASTER_KEY_STAGED --body "$PREVIOUS_KEY" \
-      --repo Aries-Serpent/_codex_
-    exit 1
+ echo " Staging tests failed"
+ echo " Attempting automatic rollback..."
+ gh secret set CODEX_MASTER_KEY_STAGED --body "$PREVIOUS_KEY" \
+ --repo Aries-Serpent/_codex_
+ exit 1
 fi
 
 echo " All staging tests passed"
@@ -222,16 +222,16 @@ echo " All staging tests passed"
 **Step 2c: Health check**
 ```bash
 #!/bin/bash
-echo "🏥 Step 2c: Staging environment health check"
+echo " Step 2c: Staging environment health check"
 echo "=============================================="
 
 ./scripts/health_check.sh --environment staging \
-  --timeout 60 \
-  --checks critical
+ --timeout 60 \
+ --checks critical
 
 if [ $? -ne 0 ]; then
-    echo " Staging health check failed"
-    exit 1
+ echo " Staging health check failed"
+ exit 1
 fi
 
 echo " Staging environment healthy"
@@ -247,7 +247,7 @@ echo " Staging environment healthy"
 echo " Step 3a: Creating rotation audit entry"
 
 OLD_KEY_HASH=$(gh secret list --repo Aries-Serpent/_codex_ 2>/dev/null | \
-  grep CODEX_MASTER_KEY | cut -d' ' -f1)
+ grep CODEX_MASTER_KEY | cut -d' ' -f1)
 
 cat >> .codex/key-archive/rotation-log.txt << LOG
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] ROTATION_START
@@ -270,16 +270,16 @@ echo " Step 3b: Notifying production teams"
 
 # Slack notification
 curl -X POST "$SLACK_WEBHOOK" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "text": " CODEX_MASTER_KEY rotation starting in 5 minutes",
-    "channel": "#devops",
-    "attachments": [{
-      "color": "warning",
-      "title": "Key Rotation: Production Cutover",
-      "text": "Expected duration: 5 minutes\nMonitor: grafana.example.com"
-    }]
-  }'
+ -H 'Content-Type: application/json' \
+ -d '{
+ "text": " CODEX_MASTER_KEY rotation starting in 5 minutes",
+ "channel": "#devops",
+ "attachments": [{
+ "color": "warning",
+ "title": "Key Rotation: Production Cutover",
+ "text": "Expected duration: 5 minutes\nMonitor: grafana.example.com"
+ }]
+ }'
 
 echo " Notifications sent"
 ```
@@ -287,7 +287,7 @@ echo " Notifications sent"
 **Step 3c: Monitor systems (5-minute stabilization)**
 ```bash
 #!/bin/bash
-echo "⏱️  Step 3c: 5-minute stabilization period"
+echo " Step 3c: 5-minute stabilization period"
 echo "=============================================="
 
 # Monitor metrics during this period
@@ -299,19 +299,19 @@ from datetime import datetime, timedelta
 end_time = datetime.utcnow() + timedelta(minutes=5)
 
 while datetime.utcnow() < end_time:
-    # Check services
-    result = subprocess.run(
-        ["./scripts/health_check.sh", "--environment", "staging"],
-        capture_output=True
-    )
+ # Check services
+ result = subprocess.run(
+ ["./scripts/health_check.sh", "--environment", "staging"],
+ capture_output=True
+ )
 
-    if result.returncode != 0:
-        print(f"️  Warning: Staging health degraded")
-        # Continue monitoring but don't fail
+ if result.returncode != 0:
+ print(f" Warning: Staging health degraded")
+ # Continue monitoring but don't fail
 
-    # Show metrics
-    print(f" {datetime.utcnow().isoformat()}: Staging operational")
-    time.sleep(30)
+ # Show metrics
+ print(f" {datetime.utcnow().isoformat()}: Staging operational")
+ time.sleep(30)
 
 print(" Stabilization period complete")
 PYTHON
@@ -320,45 +320,45 @@ PYTHON
 **Step 3d: ACTIVATE - Set production key (CRITICAL)**
 ```bash
 #!/bin/bash
-set -e  # Critical: fail on any error
+set -e # Critical: fail on any error
 
 echo " Step 3d: ACTIVATING new CODEX_MASTER_KEY (CRITICAL POINT)"
 echo "================================================================"
-echo "️  WARNING: This action activates the new key in production"
-echo "️  Ensure all teams notified and monitoring active"
+echo " WARNING: This action activates the new key in production"
+echo " Ensure all teams notified and monitoring active"
 echo ""
 
 # Final sanity checks
 if [ -z "$NEW_KEY" ]; then
-    echo " ERROR: NEW_KEY not set - cannot proceed"
-    exit 1
+ echo " ERROR: NEW_KEY not set - cannot proceed"
+ exit 1
 fi
 
 if [ -z "$PREVIOUS_KEY" ]; then
-    echo " ERROR: PREVIOUS_KEY not set - cannot proceed"
-    exit 1
+ echo " ERROR: PREVIOUS_KEY not set - cannot proceed"
+ exit 1
 fi
 
 # Activate new key
 echo " Setting CODEX_MASTER_KEY to new value..."
 gh secret set CODEX_MASTER_KEY --body "$NEW_KEY" \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 
 if [ $? -ne 0 ]; then
-    echo " CRITICAL ERROR: Failed to set CODEX_MASTER_KEY"
-    echo " EMERGENCY ROLLBACK INITIATED"
+ echo " CRITICAL ERROR: Failed to set CODEX_MASTER_KEY"
+ echo " EMERGENCY ROLLBACK INITIATED"
 
-    # Automatic rollback
-    gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
-      --repo Aries-Serpent/_codex_
+ # Automatic rollback
+ gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
+ --repo Aries-Serpent/_codex_
 
-    # Alert security team
-    curl -X POST "$SLACK_WEBHOOK" -d '{
-      "text": " KEY ROTATION FAILED - ROLLBACK SUCCESSFUL",
-      "channel": "#security"
-    }'
+ # Alert security team
+ curl -X POST "$SLACK_WEBHOOK" -d '{
+ "text": " KEY ROTATION FAILED - ROLLBACK SUCCESSFUL",
+ "channel": "#security"
+ }'
 
-    exit 1
+ exit 1
 fi
 
 echo " CODEX_MASTER_KEY activated in production"
@@ -376,11 +376,11 @@ sleep 10
 ./scripts/verify_key_active.sh
 
 if [ $? -ne 0 ]; then
-    echo " Key verification failed"
-    echo " Attempting rollback..."
-    gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
-      --repo Aries-Serpent/_codex_
-    exit 1
+ echo " Key verification failed"
+ echo " Attempting rollback..."
+ gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
+ --repo Aries-Serpent/_codex_
+ exit 1
 fi
 
 echo " New CODEX_MASTER_KEY verified as active"
@@ -395,8 +395,8 @@ echo " Step 4a: Production validation"
 echo "=================================="
 
 ./scripts/health_check.sh --environment production \
-  --checks all \
-  --timeout 120
+ --checks all \
+ --timeout 120
 
 echo " Production validation passed"
 ```
@@ -408,11 +408,11 @@ echo " Step 4b: Audit log verification"
 
 # Verify rotation logged
 if ! grep -q "ROTATION_START" .codex/key-archive/rotation-log.txt; then
-    echo "️  Warning: Rotation not logged"
+ echo " Warning: Rotation not logged"
 fi
 
 if ! grep -q "key_active: true" .codex/key-archive/rotation-log.txt; then
-    echo "️  Warning: Activation status not logged"
+ echo " Warning: Activation status not logged"
 fi
 
 echo " Audit logs verified"
@@ -424,10 +424,10 @@ echo " Audit logs verified"
 echo " Step 4c: Notifying team of success"
 
 curl -X POST "$SLACK_WEBHOOK" \
-  -d '{
-    "text": " CODEX_MASTER_KEY rotation SUCCESSFUL",
-    "channel": "#devops"
-  }'
+ -d '{
+ "text": " CODEX_MASTER_KEY rotation SUCCESSFUL",
+ "channel": "#devops"
+ }'
 
 echo " Success notification sent"
 ```
@@ -463,18 +463,18 @@ echo "==============================="
 
 # Rollback to previous key
 gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
-  --repo Aries-Serpent/_codex_
+ --repo Aries-Serpent/_codex_
 
 echo " Rollback key set"
 
 # Verify rollback
 sleep 10
 if ./scripts/verify_key_active.sh; then
-    echo " ROLLBACK SUCCESSFUL - Previous key now active"
+ echo " ROLLBACK SUCCESSFUL - Previous key now active"
 else
-    echo " ROLLBACK VERIFICATION FAILED"
-    echo " ESCALATE TO SECURITY LEAD IMMEDIATELY"
-    exit 1
+ echo " ROLLBACK VERIFICATION FAILED"
+ echo " ESCALATE TO SECURITY LEAD IMMEDIATELY"
+ exit 1
 fi
 
 # Log incident

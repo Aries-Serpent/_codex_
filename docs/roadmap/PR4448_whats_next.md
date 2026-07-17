@@ -286,71 +286,71 @@
 ```
 @copilot CTEP Mode: ON
 
-##  Post-merge sprint: `main` · Cognitive Brain Phase 7 + Batch 6 Security Rescan
+## Post-merge sprint: `main` · Cognitive Brain Phase 7 + Batch 6 Security Rescan
 
 ### Context
-- PR #4455 merged  (branch: copilot/update-roadmap-timeline-notation → 0D_base_ → main)
+- PR #4455 merged (branch: copilot/update-roadmap-timeline-notation 0D_base_ main)
 - Security planset: .codex/plans/security-remediation-planset.md
-  - Batches 1–6  complete (bandit --configfile .bandit = 0; raw = 328)
-  - Batch 5: CVE-2025-69872 (diskcache) + CVE-2024-35515 (sqlitedict) — accepted risk, no fix versions
-- Cognitive Brain: Phases 0–6  complete (see .codex/plans/cognitive_brain_phase_implementation.md)
-  - Phase 7  PENDING: comprehensive testing + validation for Phase 6 monitoring integration components
+ - Batches 1–6 complete (bandit --configfile .bandit = 0; raw = 328)
+ - Batch 5: CVE-2025-69872 (diskcache) + CVE-2024-35515 (sqlitedict) — accepted risk, no fix versions
+- Cognitive Brain: Phases 0–6 complete (see .codex/plans/cognitive_brain_phase_implementation.md)
+ - Phase 7 PENDING: comprehensive testing + validation for Phase 6 monitoring integration components
 
 ### STEP 1 — Pre-merge gate on main (post-merge verification)
-  python scripts/ci/sync_tracked_files.py --check       → must be 
-  python -m ruff check src/ tests/ scripts/             → must be 0 issues
-  python scripts/ci/mypy_baseline.py --require-baseline → must be  PASS
-  python -m pytest tests/ -x --timeout=60 -q           → must be 0 failures
+ python scripts/ci/sync_tracked_files.py --check must be 
+ python -m ruff check src/ tests/ scripts/ must be 0 issues
+ python scripts/ci/mypy_baseline.py --require-baseline must be PASS
+ python -m pytest tests/ -x --timeout=60 -q must be 0 failures
 
 ### STEP 2 — Security Batch 6: fresh post-merge rescan
-  a. Dispatch: security-scanning-suite.yml on main
-  b. Download artifacts: dependency-scan-results, sbom-reports
-  c. Verify:
-     - pip-audit actionable CVEs = 0
-       (diskcache CVE-2025-69872 + sqlitedict CVE-2024-35515 remain — no fix; accepted)
-     - bandit --configfile .bandit = 0 issues
-     - raw bandit ≈ 328 (B101=226, B603=48, B404=36, B607=18 — all suppressed)
-  d. Update §Current State in .codex/plans/security-remediation-planset.md with
-     confirmed post-merge artifact SHAs + counts
+ a. Dispatch: security-scanning-suite.yml on main
+ b. Download artifacts: dependency-scan-results, sbom-reports
+ c. Verify:
+ - pip-audit actionable CVEs = 0
+ (diskcache CVE-2025-69872 + sqlitedict CVE-2024-35515 remain — no fix; accepted)
+ - bandit --configfile .bandit = 0 issues
+ - raw bandit ≈ 328 (B101=226, B603=48, B404=36, B607=18 — all suppressed)
+ d. Update §Current State in .codex/plans/security-remediation-planset.md with
+ confirmed post-merge artifact SHAs + counts
 
 ### STEP 3 — Cognitive Brain Phase 7: testing & validation
-  Scope: .codex/plans/cognitive_brain_phase_implementation.md §Phase 7
-  Components to test (from Phase 6 delivery):
-  a. scripts/cognitive/sensors/monitoring_sensor.py
-     → Unit tests: health metrics, failure detection, action recommendation, export interface
-  b. scripts/cognitive/actions/monitoring_actions.py
-     → Unit tests: action proposer (confidence ≥ 0.8 threshold), risk classification,
-       execution engine (dry-run mode), safety checks
-  c. scripts/cognitive/self_healing_validation.py
-     → Unit tests: outcome validation, confidence adjustment (+0.05 success / -0.1 failure),
-       historical learning (last 10 actions), adaptive thresholds
-  d. Integration test: Monitoring Sensor → Cognitive Brain → Action Proposer → Validator pipeline
-  e. Security review: ruff + CodeQL on new test files
-  f. Mark Phase 7  COMPLETE in the planset once all tests pass
+ Scope: .codex/plans/cognitive_brain_phase_implementation.md §Phase 7
+ Components to test (from Phase 6 delivery):
+ a. scripts/cognitive/sensors/monitoring_sensor.py
+ Unit tests: health metrics, failure detection, action recommendation, export interface
+ b. scripts/cognitive/actions/monitoring_actions.py
+ Unit tests: action proposer (confidence ≥ 0.8 threshold), risk classification,
+ execution engine (dry-run mode), safety checks
+ c. scripts/cognitive/self_healing_validation.py
+ Unit tests: outcome validation, confidence adjustment (+0.05 success / -0.1 failure),
+ historical learning (last 10 actions), adaptive thresholds
+ d. Integration test: Monitoring Sensor Cognitive Brain Action Proposer Validator pipeline
+ e. Security review: ruff + CodeQL on new test files
+ f. Mark Phase 7 COMPLETE in the planset once all tests pass
 
 ### STEP 4 — CodeQL alert count (recount post-merge)
-  list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open")
-  → Target: 0 (was ~0 after S1003; recount confirms clean state)
-  → If > 0: fix before close
+ list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open")
+ Target: 0 (was ~0 after S1003; recount confirms clean state)
+ If > 0: fix before close
 
 ### STEP 5 — PDA entry + session wrap-up
-  python scripts/ci/session_wrapup_autofix.py --pr-number <new_pr_number>
-  → Updates CHANGELOG, ACCOUNTABILITY, PDA entry for today
-  → Confirm Pattern 25 + Pattern 30 both green
+ python scripts/ci/session_wrapup_autofix.py --pr-number <new_pr_number>
+ Updates CHANGELOG, ACCOUNTABILITY, PDA entry for today
+ Confirm Pattern 25 + Pattern 30 both green
 
 ### Load before starting
-  .codex/CODEBASE_AGENCY_POLICY.md
-  .codex/plans/security-remediation-planset.md
-  .codex/plans/cognitive_brain_phase_implementation.md
-  docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
-  tail -5 .codex/aftermath/pda_iterations.jsonl
+ .codex/CODEBASE_AGENCY_POLICY.md
+ .codex/plans/security-remediation-planset.md
+ .codex/plans/cognitive_brain_phase_implementation.md
+ docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
+ tail -5 .codex/aftermath/pda_iterations.jsonl
 
 ### Success criteria
-  - [ ] All pre-merge gate commands: 
-  - [ ] Batch 6 artifacts ingested + planset updated
-  - [ ] Phase 7 tests written + passing (coverage ≥ 80% on Phase 6 files)
-  - [ ] CodeQL open alert count confirmed ≤ 0
-  - [ ] Pattern 25 + 30: CHANGELOG + PDA entry committed
+ - [ ] All pre-merge gate commands: 
+ - [ ] Batch 6 artifacts ingested + planset updated
+ - [ ] Phase 7 tests written + passing (coverage ≥ 80% on Phase 6 files)
+ - [ ] CodeQL open alert count confirmed ≤ 0
+ - [ ] Pattern 25 + 30: CHANGELOG + PDA entry committed
 ```
 
 ---
@@ -471,14 +471,14 @@
 ```
 @copilot CTEP Mode: ON
 
-1. list_code_scanning_alerts(state="open") → count
-   If < 25 → merge PR #4454
-   If ≥ 25 → fix residual py/unused-local-variable + actions/unpinned-tag → recount
+1. list_code_scanning_alerts(state="open") count
+ If < 25 merge PR #4454
+ If ≥ 25 fix residual py/unused-local-variable + actions/unpinned-tag recount
 2. Run: python scripts/ci/session_wrapup_autofix.py --pr-number 4454
 3. Merge PR #4454 into main
-4. Open new PR: 0D_base_ → main (post-merge sprint)
-   Follow security-remediation-planset.md Batch 5 + 6
-   Target: 0 open CodeQL alerts
+4. Open new PR: 0D_base_ main (post-merge sprint)
+ Follow security-remediation-planset.md Batch 5 + 6
+ Target: 0 open CodeQL alerts
 ```
 
 ### Code-Review Threads
@@ -601,40 +601,40 @@
 ```
 @copilot CTEP Mode: ON
 
-##  Goal: Get PR #4450 CodeQL alert count from ~55 → < 25 → then → 0
+## Goal: Get PR #4450 CodeQL alert count from ~55 < 25 then 0
 
 ### Context
-- PR: #4450 · Branch: 0D_base_ → main
-- Merge Readiness: 99/100  — blocked only on alert count (target < 25, then 0)
-- Alert trajectory: 127 → 120 → 59 → 55 (current estimate)
+- PR: #4450 · Branch: 0D_base_ main
+- Merge Readiness: 99/100 — blocked only on alert count (target < 25, then 0)
+- Alert trajectory: 127 120 59 55 (current estimate)
 - CodeQL alerts fixed this sprint: ~72 (bulk RUF059, permissions, SHA-pinning,
-  actionlint, create-github-app-token SHA, Protocol ..., unused tuple unpacks)
+ actionlint, create-github-app-token SHA, Protocol ..., unused tuple unpacks)
 
 ### Phase 1: Confirm current alert count (< 25 gate)
 STEP 1: Use GitHub MCP list_code_scanning_alerts (state=open, repo=_codex_)
-        → Count total open alerts across python + javascript
-        → If count < 25: proceed to Phase 2 (merge)
-        → If count ≥ 25: fix remaining alerts (see STEP 2)
+ Count total open alerts across python + javascript
+ If count < 25: proceed to Phase 2 (merge)
+ If count ≥ 25: fix remaining alerts (see STEP 2)
 
 ### Phase 2: Fix remaining known alert types (if count ≥ 25)
-STEP 2a. consolidated-pr-status.yml: actions/github-script@v9 → pin to real SHA
-         (run: gh api /repos/actions/github-script/git/refs/tags/v9 to get SHA)
-STEP 2b. .github/actions/doc-test-scribe-action/action.yml:201 → fix syntax error
+STEP 2a. consolidated-pr-status.yml: actions/github-script@v9 pin to real SHA
+ (run: gh api /repos/actions/github-script/git/refs/tags/v9 to get SHA)
+STEP 2b. .github/actions/doc-test-scribe-action/action.yml:201 fix syntax error
 STEP 2c. forward-sync-autogen.yml: actions/untrusted-checkout ×2
-         → Add `ref: ${{ github.sha }}` to checkout step (restrict to base-branch code)
+ Add `ref: ${{ github.sha }}` to checkout step (restrict to base-branch code)
 STEP 2d. Any residual py/unused-local-variable remaining after prior sweeps
 STEP 2e. Any residual py/ineffectual-statement remaining
 
 ### Phase 3: Pre-merge validation
-STEP 3:  python scripts/ci/sync_tracked_files.py --check  → must be clean
-         python -m ruff check src/ tests/                  → must be 0 issues
-         python scripts/ci/mypy_baseline.py --require-baseline → must PASS
-         actionlint .github/workflows/*.yml                → must be 0 errors
+STEP 3: python scripts/ci/sync_tracked_files.py --check must be clean
+ python -m ruff check src/ tests/ must be 0 issues
+ python scripts/ci/mypy_baseline.py --require-baseline must PASS
+ actionlint .github/workflows/*.yml must be 0 errors
 
 ### Phase 4: Continue to 0 alerts (post-merge sprint)
-STEP 4:  After merge, immediately open new PR for remaining alerts (B101, B603, B404)
-         Follow .codex/plans/security-remediation-planset.md Batch 5/6 plan
-         Target: 0 open CodeQL security alerts within 2 sessions
+STEP 4: After merge, immediately open new PR for remaining alerts (B101, B603, B404)
+ Follow .codex/plans/security-remediation-planset.md Batch 5/6 plan
+ Target: 0 open CodeQL security alerts within 2 sessions
 
 Load: .codex/CODEBASE_AGENCY_POLICY.md before starting
 Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediation-planset.md
@@ -687,48 +687,48 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
 ```
 @copilot CTEP Mode: ON
 
-##  PR #4450: Drive CodeQL alerts ~55 → <25 → MERGE → then → 0
+## PR #4450: Drive CodeQL alerts ~55 <25 MERGE then 0
 
 ### Context
-- PR: #4450 · Branch: 0D_base_ → main
+- PR: #4450 · Branch: 0D_base_ main
 - PR title: "Merge 0D_base_ to main once Security and Quality Alerts are less than 25 total
-  with Prompt to continue to 0"
-- CI score: 99/100  — only alert-count gate remains
+ with Prompt to continue to 0"
+- CI score: 99/100 — only alert-count gate remains
 - Estimated open alerts: ~55 (target <25 to merge, then 0 post-merge)
 - Last CodeQL fixes landed: commits 0d78bc5, 78bbaae, 4cf0a76, ad5b904, 591eb66, 18ac31d
 
 ### PHASE 1 — Confirm current alert count
-  Use GitHub MCP: list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open")
-  → Count all open alerts across python + javascript scanners
-  → If total < 25 → skip to Phase 3 (merge)
-  → If total ≥ 25 → execute Phase 2
+ Use GitHub MCP: list_code_scanning_alerts(owner="Aries-Serpent", repo="_codex_", state="open")
+ Count all open alerts across python + javascript scanners
+ If total < 25 skip to Phase 3 (merge)
+ If total ≥ 25 execute Phase 2
 
 ### PHASE 2 — Fix residuals to get below 25
-  a. Pin `actions/github-script@v9` in .github/workflows/examples/mcp-cache-warm.yml:142
-     SHA = 3a2844b7e9c422d3c10d287c895573f7108da1b3  (v9, from .github/copilot-prompts/active/PR-4427-codeql-remediation.md)
-  b. Sweep for any remaining py/unused-local-variable not caught by prior RUF059 passes
-     → run: python -m ruff check tests/ --select RUF059 --unsafe-fixes
-  c. Check for any py/ineffectual-statement or py/uninitialized-local-variable remaining
-  d. Re-check: list_code_scanning_alerts → confirm count < 25 before proceeding
+ a. Pin `actions/github-script@v9` in .github/workflows/examples/mcp-cache-warm.yml:142
+ SHA = 3a2844b7e9c422d3c10d287c895573f7108da1b3 (v9, from .github/copilot-prompts/active/PR-4427-codeql-remediation.md)
+ b. Sweep for any remaining py/unused-local-variable not caught by prior RUF059 passes
+ run: python -m ruff check tests/ --select RUF059 --unsafe-fixes
+ c. Check for any py/ineffectual-statement or py/uninitialized-local-variable remaining
+ d. Re-check: list_code_scanning_alerts confirm count < 25 before proceeding
 
 ### PHASE 3 — Pre-merge validation (required before every merge attempt)
-  python scripts/ci/sync_tracked_files.py --check         → must be  clean
-  python -m ruff check src/ tests/                        → must be  0 issues
-  python scripts/ci/mypy_baseline.py --require-baseline   → must be  PASS
-  python scripts/ci/auto_fix_common_issues.py --check-only → must be  no issues
-  Update CHANGELOG.md ### Fixed entry + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25)
-  Push → confirm all CI checks green → MERGE
+ python scripts/ci/sync_tracked_files.py --check must be clean
+ python -m ruff check src/ tests/ must be 0 issues
+ python scripts/ci/mypy_baseline.py --require-baseline must be PASS
+ python scripts/ci/auto_fix_common_issues.py --check-only must be no issues
+ Update CHANGELOG.md ### Fixed entry + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25)
+ Push confirm all CI checks green MERGE
 
 ### PHASE 4 — Post-merge: drive to 0 alerts
-  After merging #4450, open a new PR from 0D_base_ to main with:
-  - Follow .codex/plans/security-remediation-planset.md Batch 5 + Batch 6
-  - Batch 5: CVE monitor (diskcache + sqlitedict — no fix versions; document accepted risk)
-  - Batch 6: post-merge bandit rescan (B101/B603/B404/B607 are globally suppressed — confirm 0)
-  - Any remaining CodeQL alerts from the new scan after merge
+ After merging #4450, open a new PR from 0D_base_ to main with:
+ - Follow .codex/plans/security-remediation-planset.md Batch 5 + Batch 6
+ - Batch 5: CVE monitor (diskcache + sqlitedict — no fix versions; document accepted risk)
+ - Batch 6: post-merge bandit rescan (B101/B603/B404/B607 are globally suppressed — confirm 0)
+ - Any remaining CodeQL alerts from the new scan after merge
 
 Load first: .codex/CODEBASE_AGENCY_POLICY.md
-Reference:  docs/roadmap/PR4448_whats_next.md
-            .codex/plans/security-remediation-planset.md
+Reference: docs/roadmap/PR4448_whats_next.md
+ .codex/plans/security-remediation-planset.md
 ```
 
 ---

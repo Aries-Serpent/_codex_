@@ -85,11 +85,11 @@ Both files contain a guarded OTel import inside a `try:` block:
 
 ```python
 try:
-    sys.path.insert(0, str(ROOT / "src"))
-    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score
-    _OTEL_AVAILABLE = True
+ sys.path.insert(0, str(ROOT / "src"))
+ from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score
+ _OTEL_AVAILABLE = True
 except Exception:
-    _OTEL_AVAILABLE = False
+ _OTEL_AVAILABLE = False
 ```
 
 `ruff --select I` (isort mode) flagged the import block as out of canonical order.
@@ -133,7 +133,7 @@ ruff check --select I scripts/ci/aais_v4_scorer.py scripts/ci/pr_comment_consoli
 ```python
 # scripts/ci/mypy_baseline.py logic:
 if current_count > stored_baseline:
-    sys.exit(1)  # regression
+ sys.exit(1) # regression
 ```
 
 The codebase had 282 type errors, so `282 > 0` gate failed.
@@ -145,7 +145,7 @@ The baseline was accidentally zeroed in a previous session.
 bash scripts/ci/ci_triage_repro.sh --check 3
 # or directly:
 cat .mypy_baseline
-python scripts/ci/mypy_baseline.py  # shows current count
+python scripts/ci/mypy_baseline.py # shows current count
 ```
 
 ## Fix
@@ -196,8 +196,8 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 ## Fix
 
 ```bash
-python scripts/ci/auto_fix_common_issues.py        # apply all fixable patterns
-python scripts/ci/auto_fix_common_issues.py --pattern 1  # apply one pattern
+python scripts/ci/auto_fix_common_issues.py # apply all fixable patterns
+python scripts/ci/auto_fix_common_issues.py --pattern 1 # apply one pattern
 ```
 
 ### Verification
@@ -226,7 +226,7 @@ The workflow embeds a base64-encoded Python script to extract metrics from
 # BUGGY — constructs the string '"failed_runs"' (with embedded quotes):
 print(f'FAILED_RUNS={s.get(chr(34)+"failed_runs"+chr(34),0)}')
 # chr(34) == '"', so this calls: s.get('"failed_runs"', 0)
-# The actual JSON key is 'failed_runs' (no quotes) → always returns 0
+# The actual JSON key is 'failed_runs' (no quotes) always returns 0
 ```
 
 `failure_rate` used plain `'failure_rate'` (single-quote string) and worked
@@ -277,12 +277,12 @@ Expected output:
 ```
 === BUGGY ===
 FAILURE_RATE=11.7
-FAILED_RUNS=0          ← always 0 (wrong key)
-TOTAL_RUNS=0           ← always 0 (wrong key)
+FAILED_RUNS=0 always 0 (wrong key)
+TOTAL_RUNS=0 always 0 (wrong key)
 === FIXED ===
 FAILURE_RATE=11.7
-FAILED_RUNS=21         ← correct
-TOTAL_RUNS=180         ← correct
+FAILED_RUNS=21 correct
+TOTAL_RUNS=180 correct
 ```
 
 ## Fix
@@ -294,14 +294,14 @@ python3 -c "
 import base64
 script = '''import json,sys
 try:
-    d=json.load(open(\'/tmp/telemetry_report.json\'))
-    s=d.get(\'summary\',{})
-    rate=s.get(\'failure_rate\',0)
-    print(f\'FAILURE_RATE={rate*100:.1f}\')
-    print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')
-    print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')
+ d=json.load(open(\'/tmp/telemetry_report.json\'))
+ s=d.get(\'summary\',{})
+ rate=s.get(\'failure_rate\',0)
+ print(f\'FAILURE_RATE={rate*100:.1f}\')
+ print(f\'FAILED_RUNS={s.get(\"failed_runs\",0)}\')
+ print(f\'TOTAL_RUNS={s.get(\"total_runs\",0)}\')
 except Exception:
-    print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')
+ print(\'FAILURE_RATE=0\');print(\'FAILED_RUNS=0\');print(\'TOTAL_RUNS=0\')
 '''
 print(base64.b64encode(script.encode()).decode())
 "
@@ -312,7 +312,7 @@ print(base64.b64encode(script.encode()).decode())
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 5
-# Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7%  TOTAL_RUNS=180  FAILED_RUNS=21"
+# Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7% TOTAL_RUNS=180 FAILED_RUNS=21"
 ```
 
 ---
@@ -381,8 +381,8 @@ bash scripts/ci/ci_triage_repro.sh --check 6
 `### Fixed (S145 — ... — PR #3606)` section that referenced `PR #3613`:
 
 ```markdown
-### Fixed (S145 — 2026-03-17 — PR #3606 CI triage)          ← header: #3606
-- Auto-fix: session_wrapup_autofix.py updated ... for PR #3613  ← bullet: #3613
+### Fixed (S145 — 2026-03-17 — PR #3606 CI triage) header: #3606
+- Auto-fix: session_wrapup_autofix.py updated ... for PR #3613 bullet: #3613
 ```
 
 This breaks traceability: a reader cannot determine which PR the section belongs to.

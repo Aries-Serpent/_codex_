@@ -370,21 +370,21 @@ This document outlines the key threats to the Codex platform and the mitigations
 
 ```
 Severity
-   ↑
-   │
-   │ Unauthorized  │ Privilege    │ Malicious    │ Secret       │ SQL
-   │ Access        │ Escalation   │ Deployment   │ Exposure     │ Injection
-   │ CRITICAL      │ CRITICAL     │ CRITICAL     │ CRITICAL     │ CRITICAL
-   │
-   │ Data Exfil    │ Approval     │ Token        │
-   │ HIGH          │ HIGH         │ HIGH         │
-   │
-   │ DDoS          │ 3rd-Party    │
-   │ MEDIUM        │ MEDIUM       │
-   │
-   └──────────────────────────────────────────────────
-     LOW       MEDIUM       HIGH       CRITICAL
-     ← Likelihood →
+ 
+ 
+ Unauthorized Privilege Malicious Secret SQL
+ Access Escalation Deployment Exposure Injection
+ CRITICAL CRITICAL CRITICAL CRITICAL CRITICAL
+ 
+ Data Exfil Approval Token 
+ HIGH HIGH HIGH 
+ 
+ DDoS 3rd-Party 
+ MEDIUM MEDIUM 
+ 
+ 
+ LOW MEDIUM HIGH CRITICAL
+ Likelihood 
 ```
 
 ### Priority Mitigations (Phase 12)
@@ -417,30 +417,30 @@ Severity
 
 ```yaml
 Security Alerts:
-  - FailedLoginAttempts:
-      condition: "failed_logins > 3 in 5 minutes"
-      severity: "high"
-      action: "block_user_temporarily"
-  
-  - UnusualTokenUsage:
-      condition: "token_used_from_new_geo_location"
-      severity: "medium"
-      action: "require_mfa_verification"
-  
-  - ApprovalWorkflowTamper:
-      condition: "invalid_jwt_signature_on_approval"
-      severity: "critical"
-      action: "page_security_team"
-  
-  - SecretExposure:
-      condition: "secret_pattern_matched_in_repo"
-      severity: "critical"
-      action: "block_commit_automatically"
-  
-  - RateLimitViolation:
-      condition: "requests > 100/minute from single_ip"
-      severity: "medium"
-      action: "rate_limit_and_alert"
+ - FailedLoginAttempts:
+ condition: "failed_logins > 3 in 5 minutes"
+ severity: "high"
+ action: "block_user_temporarily"
+ 
+ - UnusualTokenUsage:
+ condition: "token_used_from_new_geo_location"
+ severity: "medium"
+ action: "require_mfa_verification"
+ 
+ - ApprovalWorkflowTamper:
+ condition: "invalid_jwt_signature_on_approval"
+ severity: "critical"
+ action: "page_security_team"
+ 
+ - SecretExposure:
+ condition: "secret_pattern_matched_in_repo"
+ severity: "critical"
+ action: "block_commit_automatically"
+ 
+ - RateLimitViolation:
+ condition: "requests > 100/minute from single_ip"
+ severity: "medium"
+ action: "rate_limit_and_alert"
 ```
 
 ### Incident Response Playbooks
@@ -470,28 +470,28 @@ Security Alerts:
 
 ```python
 def incident_post_mortem(incident_id: str):
-    """Analyze incident for lessons learned."""
-    
-    # Gather audit logs
-    events = audit_logs.query({
-        "incident_id": incident_id
-    }).sort("timestamp")
-    
-    # Timeline reconstruction
-    print("Incident Timeline:")
-    for event in events:
-        print(f"  {event['timestamp']}: {event['event_type']}")
-    
-    # Root cause analysis
-    root_causes = analyze_root_causes(events)
-    print(f"Root Causes: {root_causes}")
-    
-    # Preventive measures
-    measures = recommend_preventive_measures(root_causes)
-    print(f"Preventive Measures: {measures}")
-    
-    # Action items
-    create_tracking_issues(measures)
+ """Analyze incident for lessons learned."""
+ 
+ # Gather audit logs
+ events = audit_logs.query({
+ "incident_id": incident_id
+ }).sort("timestamp")
+ 
+ # Timeline reconstruction
+ print("Incident Timeline:")
+ for event in events:
+ print(f" {event['timestamp']}: {event['event_type']}")
+ 
+ # Root cause analysis
+ root_causes = analyze_root_causes(events)
+ print(f"Root Causes: {root_causes}")
+ 
+ # Preventive measures
+ measures = recommend_preventive_measures(root_causes)
+ print(f"Preventive Measures: {measures}")
+ 
+ # Action items
+ create_tracking_issues(measures)
 ```
 
 ---

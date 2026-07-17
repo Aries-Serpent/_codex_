@@ -54,10 +54,10 @@ from mcp.server.server import MCPJSONRPCServer
 
 server = MCPJSONRPCServer(config)
 response = server.handle_request({
-    "jsonrpc": "2.0",
-    "method": "listTools",
-    "params": {},
-    "id": 1
+ "jsonrpc": "2.0",
+ "method": "listTools",
+ "params": {},
+ "id": 1
 })
 ```
 
@@ -76,8 +76,8 @@ response = server.handle_request({
 from pydantic import BaseModel
 
 class ToolParams(BaseModel):
-    name: str
-    count: int = 1
+ name: str
+ count: int = 1
 
 # Automatic validation
 params = ToolParams(name="test", count=5)
@@ -100,9 +100,9 @@ from mcp.registry import MCPToolRegistry
 
 registry = MCPToolRegistry()
 registry.register_tool(
-    name="example",
-    handler=lambda x: f"Result: {x}",
-    metadata={"version": "1.0.0"}
+ name="example",
+ handler=lambda x: f"Result: {x}",
+ metadata={"version": "1.0.0"}
 )
 ```
 
@@ -123,9 +123,9 @@ registry.register_tool(
 from mcp.errors import ValidationError
 
 try:
-    result = execute_tool("unknown", {})
+ result = execute_tool("unknown", {})
 except ValidationError as e:
-    print(f"Validation failed: {e}")
+ print(f"Validation failed: {e}")
 ```
 
 ---
@@ -142,13 +142,13 @@ except ValidationError as e:
 **Configuration**:
 ```json
 {
-  "security": {
-    "api_keys": ["hashed-key-1", "hashed-key-2"],
-    "roles": {
-      "admin": ["*"],
-      "user": ["read", "execute"]
-    }
-  }
+ "security": {
+ "api_keys": ["hashed-key-1", "hashed-key-2"],
+ "roles": {
+ "admin": ["*"],
+ "user": ["read", "execute"]
+ }
+ }
 }
 ```
 
@@ -165,8 +165,8 @@ except ValidationError as e:
 from mcp.versioning import negotiate_version
 
 version = negotiate_version(
-    client_versions=["1.1", "1.0"],
-    server_versions=["1.2", "1.1", "1.0"]
+ client_versions=["1.1", "1.0"],
+ server_versions=["1.2", "1.1", "1.0"]
 )
 # Returns: "1.1" (highest common version)
 ```
@@ -184,11 +184,11 @@ version = negotiate_version(
 **Configuration**:
 ```json
 {
-  "rate_limit": {
-    "requests_per_minute": 60,
-    "burst_size": 10,
-    "enforcement": "strict"
-  }
+ "rate_limit": {
+ "requests_per_minute": 60,
+ "burst_size": 10,
+ "enforcement": "strict"
+ }
 }
 ```
 
@@ -198,9 +198,9 @@ from mcp.rate_limit import RateLimiter
 
 limiter = RateLimiter(requests_per_minute=60)
 if limiter.allow_request(principal="user-123"):
-    execute_tool()
+ execute_tool()
 else:
-    raise RateLimitExceeded()
+ raise RateLimitExceeded()
 ```
 
 ---
@@ -217,12 +217,12 @@ else:
 **Log Format**:
 ```json
 {
-  "timestamp": "2026-01-23T11:45:00Z",
-  "level": "INFO",
-  "event": "tool_invoked",
-  "tool": "example",
-  "principal": "user-123",
-  "duration_ms": 12.5
+ "timestamp": "2026-01-23T11:45:00Z",
+ "level": "INFO",
+ "event": "tool_invoked",
+ "tool": "example",
+ "principal": "user-123",
+ "duration_ms": 12.5
 }
 ```
 
@@ -261,7 +261,7 @@ result = context.execute_tool("tool", {"param": "value"})
 from mcp.server.server import MCPJSONRPCServer
 
 server = MCPJSONRPCServer(config, registry=registry)
-server.start()  # Async server on configured port
+server.start() # Async server on configured port
 ```
 
 ---
@@ -306,31 +306,31 @@ MCP tools integrated into development:
 
 graph TB
 
-    A[Client] -->|JSON-RPC| B[FastAPI Server]
+ A[Client] -->|JSON-RPC| B[FastAPI Server]
 
-    B --> C[MCPJSONRPCServer]
+ B --> C[MCPJSONRPCServer]
 
-    C --> D[Authentication]
+ C --> D[Authentication]
 
-    C --> E[Rate Limiting]
+ C --> E[Rate Limiting]
 
-    C --> F[Tool Registry]
+ C --> F[Tool Registry]
 
-    F --> G[Tool Handler]
+ F --> G[Tool Handler]
 
-    G --> H[Result]
+ G --> H[Result]
 
-    C --> I[Audit Logging]
+ C --> I[Audit Logging]
 
-    subgraph Security Layer
-    D
-    E
-    end
+ subgraph Security Layer
+ D
+ E
+ end
 
-    subgraph Execution Layer
-    F
-    G
-    end
+ subgraph Execution Layer
+ F
+ G
+ end
 ```
 
 ---
@@ -473,7 +473,7 @@ graph TB
 
 ### Path (Implementation Journey)
 ```
-Requirements → Design → Implementation → Testing → Audit → Production → Monitoring
+Requirements Design Implementation Testing Audit Production Monitoring
 ```
 
 ### Fields (Development Energy)

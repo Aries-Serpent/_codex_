@@ -28,8 +28,8 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 ### Create GitHub App
 
 1. **Navigate to GitHub Settings**
-   ```
-   https://github.com/settings/apps/new
+ ```
+ https://github.com/settings/apps/new
  ```
 
 2. **Fill in App Details:**
@@ -38,24 +38,24 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
  - **Homepage URL:** `https://github.com/Aries-Serpent/_codex_`
  - **Webhook URL:** `https://PLACEHOLDER` (update after deployment)
  - **Webhook Secret:** Generate with:
-     ```bash
-     python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+ ```bash
+ python3 -c "import secrets; print(secrets.token_urlsafe(32))"
  ```
 
 3. **Set Permissions:**
-   ```
-   Repository permissions:
-   - Contents: Read-only
-   - Pull requests: Read & write
-   - Issues: Read & write
-   - Checks: Read & write
-   - Metadata: Read-only
+ ```
+ Repository permissions:
+ - Contents: Read-only
+ - Pull requests: Read & write
+ - Issues: Read & write
+ - Checks: Read & write
+ - Metadata: Read-only
 
-   Subscribe to events:
-   - Pull request
-   - Pull request review
-   - Pull request review comment
-   - Issue comment
+ Subscribe to events:
+ - Pull request
+ - Pull request review
+ - Pull request review comment
+ - Issue comment
  ```
 
 4. **Create App**
@@ -72,15 +72,15 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 ```bash
 # Development environment
 aws secretsmanager create-secret \
-    --name github-app-private-key-dev \
-    --description "GitHub App private key for Codex Reviewer (dev)" \
-    --secret-string file://path/to/your-app-name.YYYY-MM-DD.private-key.pem \
-    --region us-east-1
+ --name github-app-private-key-dev \
+ --description "GitHub App private key for Codex Reviewer (dev)" \
+ --secret-string file://path/to/your-app-name.YYYY-MM-DD.private-key.pem \
+ --region us-east-1
 
 # Verify storage
 aws secretsmanager describe-secret \
-    --secret-id github-app-private-key-dev \
-    --region us-east-1
+ --secret-id github-app-private-key-dev \
+ --region us-east-1
 
 # Expected output shows ARN and creation date
 ```
@@ -92,13 +92,13 @@ While we pass these as environment variables, you can also store in Secrets Mana
 ```bash
 # Create composite secret (optional)
 aws secretsmanager create-secret \
-    --name github-app-config-dev \
-    --description "GitHub App configuration" \
-    --secret-string '{
-        "app_id": "123456",
-        "webhook_secret": "your-webhook-secret-here" <!-- pragma: allowlist secret -->
-    }' \
-    --region us-east-1
+ --name github-app-config-dev \
+ --description "GitHub App configuration" \
+ --secret-string '{
+ "app_id": "123456",
+ "webhook_secret": "your-webhook-secret-here" <!-- pragma: allowlist secret -->
+ }' \
+ --region us-east-1
 ```
 
 ---
@@ -111,12 +111,12 @@ aws secretsmanager create-secret \
 # Export required variables
 export TF_VAR_github_app_id="123456"
 export TF_VAR_github_webhook_secret="your-webhook-secret-from-step-1" <!-- pragma: allowlist secret -->
-export AWS_PROFILE="default"  # or your AWS profile name
+export AWS_PROFILE="default" # or your AWS profile name
 export AWS_REGION="us-east-1"
 
 # Verify they're set
 echo "App ID: ${TF_VAR_github_app_id}"
-echo "Webhook Secret: ${TF_VAR_github_webhook_secret:0:10}..."  # Show first 10 chars
+echo "Webhook Secret: ${TF_VAR_github_webhook_secret:0:10}..." # Show first 10 chars
 echo "AWS Profile: ${AWS_PROFILE}"
 echo "AWS Region: ${AWS_REGION}"
 ```
@@ -131,7 +131,7 @@ export TF_VAR_github_app_id="123456"
 export TF_VAR_github_webhook_secret="your-secret-here" <!-- pragma: allowlist secret -->
 
 # Reload
-source ~/.bashrc  # or source ~/.zshrc
+source ~/.bashrc # or source ~/.zshrc
 ```
 
 ---
@@ -169,8 +169,8 @@ echo "New webhook secret: ${NEW_SECRET}"
 # Update in GitHub App settings
 # Update in AWS Secrets Manager
 aws secretsmanager update-secret \
-    --secret-id github-app-config-dev \
-    --secret-string "{\"app_id\": \"123456\", \"webhook_secret\": \"${NEW_SECRET}\"}"
+ --secret-id github-app-config-dev \
+ --secret-string "{\"app_id\": \"123456\", \"webhook_secret\": \"${NEW_SECRET}\"}"
 
 # Update environment variable
 export TF_VAR_github_webhook_secret="${NEW_SECRET}"
@@ -189,8 +189,8 @@ cd .github/agents/deploy/scripts
 # 3. Update Secrets Manager
 
 aws secretsmanager update-secret \
-    --secret-id github-app-private-key-dev \
-    --secret-string file://new-private-key.pem
+ --secret-id github-app-private-key-dev \
+ --secret-string file://new-private-key.pem
 
 # No redeployment needed - Lambda reads from Secrets Manager at runtime
 ```
@@ -209,34 +209,34 @@ echo "=== Secret Verification ==="
 errors=0
 
 if [[ -z "${TF_VAR_github_app_id}" ]]; then
-    echo " TF_VAR_github_app_id not set"
-    ((errors++))
+ echo " TF_VAR_github_app_id not set"
+ ((errors++))
 else
-    echo " TF_VAR_github_app_id set"
+ echo " TF_VAR_github_app_id set"
 fi
 
 if [[ -z "${TF_VAR_github_webhook_secret}" ]]; then
-    echo " TF_VAR_github_webhook_secret not set"
-    ((errors++))
+ echo " TF_VAR_github_webhook_secret not set"
+ ((errors++))
 else
-    echo " TF_VAR_github_webhook_secret set"
+ echo " TF_VAR_github_webhook_secret set"
 fi
 
 if aws secretsmanager describe-secret --secret-id github-app-private-key-dev &>/dev/null; then
-    echo " Private key exists in Secrets Manager"
+ echo " Private key exists in Secrets Manager"
 else
-    echo " Private key NOT found in Secrets Manager"
-    ((errors++))
+ echo " Private key NOT found in Secrets Manager"
+ ((errors++))
 fi
 
 if [[ $errors -eq 0 ]]; then
-    echo ""
-    echo " All secrets configured correctly"
-    exit 0
+ echo ""
+ echo " All secrets configured correctly"
+ exit 0
 else
-    echo ""
-    echo " ${errors} error(s) found - fix before deploying"
-    exit 1
+ echo ""
+ echo " ${errors} error(s) found - fix before deploying"
+ exit 1
 fi
 VERIFY
 ```
@@ -246,9 +246,9 @@ VERIFY
 ```bash
 # Verify Lambda can access secrets
 aws lambda invoke \
-    --function-name codex-reviewer-agent-dev \
-    --payload '{"test": "secret_access"}' \
-    /tmp/response.json
+ --function-name codex-reviewer-agent-dev \
+ --payload '{"test": "secret_access"}' \
+ /tmp/response.json
 
 # Check response
 cat /tmp/response.json
@@ -266,14 +266,14 @@ aws secretsmanager list-secrets --region us-east-1
 
 # Check specific secret
 aws secretsmanager get-secret-value \
-    --secret-id github-app-private-key-dev \
-    --region us-east-1
+ --secret-id github-app-private-key-dev \
+ --region us-east-1
 
 # If not found, recreate:
 aws secretsmanager create-secret \
-    --name github-app-private-key-dev \
-    --secret-string file://private-key.pem \
-    --region us-east-1
+ --name github-app-private-key-dev \
+ --secret-string file://private-key.pem \
+ --region us-east-1
 ```
 
 ## Error: "Access denied"
@@ -281,8 +281,8 @@ aws secretsmanager create-secret \
 ```bash
 # Check IAM permissions
 aws iam get-role-policy \
-    --role-name codex-reviewer-lambda-role-dev \
-    --policy-name codex-reviewer-lambda-policy
+ --role-name codex-reviewer-lambda-role-dev \
+ --policy-name codex-reviewer-lambda-policy
 
 # Verify policy includes:
 # - secretsmanager:GetSecretValue
@@ -296,7 +296,7 @@ aws iam get-role-policy \
 head -n 1 private-key.pem
 # Should show: -----BEGIN RSA PRIVATE KEY----- <!-- pragma: allowlist secret -->
 
-# Convert if needed (OpenSSH format → PEM)
+# Convert if needed (OpenSSH format PEM)
 ssh-keygen -p -m PEM -f private-key.pem
 ```
 
@@ -344,24 +344,24 @@ aws secretsmanager create-secret --name github-app-private-key-prod --secret-str
 
 **Environment Variables:**
 ```bash
-TF_VAR_github_app_id          # GitHub App ID
-TF_VAR_github_webhook_secret  # Webhook secret
-AWS_PROFILE                   # AWS profile name
-AWS_REGION                    # AWS region
+TF_VAR_github_app_id # GitHub App ID
+TF_VAR_github_webhook_secret # Webhook secret
+AWS_PROFILE # AWS profile name
+AWS_REGION # AWS region
 ```
 
 **AWS Secrets:**
 ```
-github-app-private-key-dev     # Dev private key
+github-app-private-key-dev # Dev private key
 github-app-private-key-staging # Staging private key
-github-app-private-key-prod    # Prod private key
+github-app-private-key-prod # Prod private key
 ```
 
 **Files (NEVER commit):**
 ```
-*.pem                          # Private keys
-.env                           # Environment variables
-terraform.tfstate              # Terraform state (use S3 backend)
+*.pem # Private keys
+.env # Environment variables
+terraform.tfstate # Terraform state (use S3 backend)
 ```
 
 ---
@@ -442,7 +442,7 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 ### Path (Information Flow)
 ```
-Input → Validation → Processing → Output → Verification
+Input Validation Processing Output Verification
 ```
 
 ### Fields (State Management)
@@ -494,7 +494,7 @@ Input → Validation → Processing → Output → Verification
 
 ### Energy Flow
 ```
-Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporting [20%]
+Input Processing [20%] Core Execution [40%] Validation [20%] Reporting [20%]
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z
@@ -588,9 +588,9 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 ```yaml
 agent_type: secrets-configuration-guide
 prompt: |
-  Execute standard operation with default parameters
-  Target: <target>
-  Mode: <mode>
+ Execute standard operation with default parameters
+ Target: <target>
+ Mode: <mode>
 ```
 
 ### Advanced Usage
@@ -598,14 +598,14 @@ prompt: |
 ```yaml
 agent_type: secrets-configuration-guide
 prompt: |
-  Execute with custom configuration:
-  - Parameter 1: value1
-  - Parameter 2: value2
-  - Options: [option_a, option_b]
+ Execute with custom configuration:
+ - Parameter 1: value1
+ - Parameter 2: value2
+ - Options: [option_a, option_b]
 
-  Validation requirements:
-  - Requirement 1
-  - Requirement 2
+ Validation requirements:
+ - Requirement 1
+ - Requirement 2
 ```
 
 ### Common Patterns
@@ -635,15 +635,15 @@ prompt: |
 
 graph LR
 
-    A[Trigger] --> B[Agent Activation]
+ A[Trigger] --> B[Agent Activation]
 
-    B --> C[Execution]
+ B --> C[Execution]
 
-    C --> D[Validation]
+ C --> D[Validation]
 
-    D --> E[Reporting]
+ D --> E[Reporting]
 
-    E --> F[Next Stage]
+ E --> F[Next Stage]
 ```
 
 ### Integration Points
@@ -682,12 +682,12 @@ task agent_type="secrets-configuration-guide" description="<description>" prompt
 
 ```yaml
 - name: Activate secrets-configuration-guide
-  uses: ./.github/actions/agent-runner
-  with:
-    agent: secrets-configuration-guide
-    parameters: |
-      target: ${{ github.workspace }}
-      mode: full
+ uses: ./.github/actions/agent-runner
+ with:
+ agent: secrets-configuration-guide
+ parameters: |
+ target: ${{ github.workspace }}
+ mode: full
 ```
 
 ### Programmatic Invocation
@@ -696,9 +696,9 @@ task agent_type="secrets-configuration-guide" description="<description>" prompt
 from agent_framework import invoke_agent
 
 result = invoke_agent(
-    agent_type="secrets-configuration-guide",
-    prompt="Execute operation",
-    context={"target": "path/to/target"}
+ agent_type="secrets-configuration-guide",
+ prompt="Execute operation",
+ context={"target": "path/to/target"}
 )
 ```
 
@@ -741,21 +741,21 @@ requests>=2.31.0
 
 ```json
 {
-  "status": "success|failure|partial",
-  "timestamp": "2026-01-23T19:45:00Z",
-  "agent": "agent-name",
-  "execution_time": "3.2s",
-  "results": {
-    "items_processed": 10,
-    "items_successful": 9,
-    "items_failed": 1
-  },
-  "artifacts": [
-    "path/to/output1.json",
-    "path/to/output2.txt"
-  ],
-  "errors": [],
-  "warnings": []
+ "status": "success|failure|partial",
+ "timestamp": "2026-01-23T19:45:00Z",
+ "agent": "agent-name",
+ "execution_time": "3.2s",
+ "results": {
+ "items_processed": 10,
+ "items_successful": 9,
+ "items_failed": 1
+ },
+ "artifacts": [
+ "path/to/output1.json",
+ "path/to/output2.txt"
+ ],
+ "errors": [],
+ "warnings": []
 }
 ```
 
@@ -764,8 +764,8 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**:  Success  
-**Timestamp**: 2026-01-23T19:45:00Z  
+**Status**: Success 
+**Timestamp**: 2026-01-23T19:45:00Z 
 **Duration**: 3.2s
 
 ## Summary
@@ -842,19 +842,19 @@ requests>=2.31.0
 **Pattern 1: Graceful Degradation**
 ```python
 try:
-    full_operation()
+ full_operation()
 except NonCriticalError:
-    limited_operation()
-    log_warning()
+ limited_operation()
+ log_warning()
 ```
 
 **Pattern 2: Checkpoint Resume**
 ```python
 checkpoint = load_checkpoint()
 if checkpoint:
-    resume_from(checkpoint)
+ resume_from(checkpoint)
 else:
-    start_fresh()
+ start_fresh()
 ```
 
 **Last Updated**: 2026-01-23T19:45:00Z

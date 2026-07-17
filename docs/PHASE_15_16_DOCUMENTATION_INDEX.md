@@ -41,38 +41,38 @@
 
 ```
 docs/
-├── ARCHITECTURE_PHASE_15_16.md System architecture & design
-├── API_REFERENCE_PHASE_15_16.md 11 API endpoints with examples
-├── PATTERN_LIBRARY_GUIDE.md 40+ patterns + CI/CD integration
-├── PATTERN_LIBRARY_INDEX.md Searchable pattern index
-│
-├── architecture/ 
-│ └── ARCHITECTURE_CONSOLIDATED.md 
-│
-├── api/
-│ ├── API_MASTER_REFERENCE.md
-│ ├── python-api-reference.md
-│ ├── brain-api-reference.md
-│ ├── session-api-reference.md
-│ └── CURL_EXAMPLES.md
-│
-├── cognitive_brain/
-│ ├── COGNITIVE_APP_CONNECTION_GUIDE.md
-│ ├── CUSTOM_AGENT_COORDINATION_WORKFLOWS.md
-│ └── OPERATIONAL_GUIDELINES.md
-│
-├── agent/
-│ ├── CUSTOM_AGENT_INTERACTION_PROTOCOL.md
-│ ├── CUSTOM_AGENT_SELECTION_FRAMEWORK.md
-│ └── OPERATIONAL_GUIDELINES.md
-│
-├── guides/
-│ ├── GETTING_STARTED_API_CONSUMER.md
-│ ├── INTEGRATION_EXAMPLES.md
-│ └── ERROR_HANDLING.md
-│
-└── accountability/
- └── AGENT_ACCOUNTABILITY_REPORT.md
+ ARCHITECTURE_PHASE_15_16.md System architecture & design
+ API_REFERENCE_PHASE_15_16.md 11 API endpoints with examples
+ PATTERN_LIBRARY_GUIDE.md 40+ patterns + CI/CD integration
+ PATTERN_LIBRARY_INDEX.md Searchable pattern index
+
+ architecture/ 
+ ARCHITECTURE_CONSOLIDATED.md 
+
+ api/
+ API_MASTER_REFERENCE.md
+ python-api-reference.md
+ brain-api-reference.md
+ session-api-reference.md
+ CURL_EXAMPLES.md
+
+ cognitive_brain/
+ COGNITIVE_APP_CONNECTION_GUIDE.md
+ CUSTOM_AGENT_COORDINATION_WORKFLOWS.md
+ OPERATIONAL_GUIDELINES.md
+
+ agent/
+ CUSTOM_AGENT_INTERACTION_PROTOCOL.md
+ CUSTOM_AGENT_SELECTION_FRAMEWORK.md
+ OPERATIONAL_GUIDELINES.md
+
+ guides/
+ GETTING_STARTED_API_CONSUMER.md
+ INTEGRATION_EXAMPLES.md
+ ERROR_HANDLING.md
+
+ accountability/
+ AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ---
@@ -271,7 +271,7 @@ docs/
 1. Analyze dependencies between jobs
 2. Search patterns: /api/memory/retrieve?pattern_type=parallel&min_confidence=0.85
 3. Apply: "Parallelization of Sequential Jobs"
-4. Expected improvement: 25 min → 8 min (68%)
+4. Expected improvement: 25 min 8 min (68%)
 5. Verify: Get /api/workflows/status
 ```
 

@@ -46,13 +46,13 @@ python scripts/validate_python_version.py
 
  .python-version: 3.12.10
  pyproject.toml: requires-python = ">=3.12,<3.13"
-ℹ️  runtime.txt not found (optional)
+ℹ runtime.txt not found (optional)
  Current Python: 3.12.10
 
 ============================================================
  All checks passed (4/4)
 
-🎉 Python 3.12 version configuration is valid!
+ Python 3.12 version configuration is valid!
 ```
 
 ---

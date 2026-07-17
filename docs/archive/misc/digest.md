@@ -262,19 +262,19 @@
 
 ```
 src/
-├── cognitive_brain/    # Cognitive architecture ABCs
-├── bridge_manager.py   # Secure IPC bridge
-├── bridge_types.py     # Typed message formats
-├── codex_init.py       # Configuration loader
-└── workflow_refactor.py # CI/CD utilities
+ cognitive_brain/ # Cognitive architecture ABCs
+ bridge_manager.py # Secure IPC bridge
+ bridge_types.py # Typed message formats
+ codex_init.py # Configuration loader
+ workflow_refactor.py # CI/CD utilities
 
 agents/
-├── cognitive_adapter.py # Legacy agent adapter
-├── agent_memory.py     # Agent memory system
-└── [35+ agent modules]
+ cognitive_adapter.py # Legacy agent adapter
+ agent_memory.py # Agent memory system
+ [35+ agent modules]
 
 cognitive_app/
-└── src/orchestrator.py # OODA Loop orchestrator
+ src/orchestrator.py # OODA Loop orchestrator
 ```
 
 **Digest Size:** 8715 chars

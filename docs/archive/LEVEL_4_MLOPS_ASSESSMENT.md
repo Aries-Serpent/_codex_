@@ -109,21 +109,21 @@ Data ingestion, feature pipelines, training, evaluation, packaging, and deployme
 ```text
 # Automated training pipeline
 src/codex_ml/training/continuous_learning.py
-  - ContinuousLearningPipeline class
-  - Automated data → train → validate → deploy flow
-  - Model registry integration
+ - ContinuousLearningPipeline class
+ - Automated data train validate deploy flow
+ - Model registry integration
 
 # Orchestration
 cli/train_codex.py
-  - Command-line interface
-  - Config-driven execution
-  - Reproducible training
+ - Command-line interface
+ - Config-driven execution
+ - Reproducible training
 
 # CI/CD (Local)
 noxfile.py
-  - Automated testing (70% coverage gate)
-  - Security scanning
-  - Determinism validation
+ - Automated testing (70% coverage gate)
+ - Security scanning
+ - Determinism validation
 ```
 
 **Score:** 95/100
@@ -191,25 +191,25 @@ Centralized monitoring for model performance, data drift, latency, errors, and r
 ```text
 # Prometheus metrics
 src/codex_ml/monitoring/metrics.py:
-  - request_count (counter)
-  - request_duration (histogram)
-  - error_rate (counter)
-  - active_models (gauge)
+ - request_count (counter)
+ - request_duration (histogram)
+ - error_rate (counter)
+ - active_models (gauge)
 
 # Health probes
 src/codex_ml/serving/health.py:
-  - /health (liveness)
-  - /ready (readiness)
-  - /health/model (model-specific)
-  - /metrics (Prometheus export)
+ - /health (liveness)
+ - /ready (readiness)
+ - /health/model (model-specific)
+ - /metrics (Prometheus export)
 
 # Drift monitoring with alerts
 src/codex_ml/monitoring/drift_detection.py:
-  class DriftAlert:
-    drift_type: str
-    severity: str  # low, medium, high, critical
-    message: str
-    details: Dict[str, Any]
+ class DriftAlert:
+ drift_type: str
+ severity: str # low, medium, high, critical
+ message: str
+ details: Dict[str, Any]
 ```
 
 **Score:** 100/100
@@ -242,34 +242,34 @@ Version control for code, data, models. Unit/integration/regression tests. CI/CD
 ```text
 # Version control
 src/codex_ml/utils/repro.py:
-  class DatasetManifest:
-    def generate_manifest(self) -> Dict[str, str]:
-      # SHA256 for each file
-      return {file: sha256_hash for file in files}
+ class DatasetManifest:
+ def generate_manifest(self) -> Dict[str, str]:
+ # SHA256 for each file
+ return {file: sha256_hash for file in files}
 
 src/codex_ml/training/continuous_learning.py:
-  class ModelRegistry:
-    def save_version(self, model, version, metadata)
+ class ModelRegistry:
+ def save_version(self, model, version, metadata)
 
 # A/B testing
 src/codex_ml/training/ab_testing.py:
-  class ABTestManager:
-    def create_experiment(name, model_a, model_b)
-    def statistical_significance_test()
-    def gradual_rollout(steps=5)  # 10% → 25% → 50% → 75% → 100%
+ class ABTestManager:
+ def create_experiment(name, model_a, model_b)
+ def statistical_significance_test()
+ def gradual_rollout(steps=5) # 10% 25% 50% 75% 100%
 
 # Automated rollback
 src/codex_ml/training/continuous_learning.py:
-  def rollback_to_version(version):
-    # Restore previous model
-    # Verify health
-    # Update serving
+ def rollback_to_version(version):
+ # Restore previous model
+ # Verify health
+ # Update serving
 
 # Testing
 tests/:
-  - 115+ comprehensive tests
-  - Coverage: 72% (exceeds 70% gate)
-  - Deterministic: seed fixture enforced
+ - 115+ comprehensive tests
+ - Coverage: 72% (exceeds 70% gate)
+ - Deterministic: seed fixture enforced
 ```
 
 **Score:** 100/100
@@ -298,25 +298,25 @@ DS, DE, and SWE collaborate on shared pipeline. System not dependent on "heroic"
 ```text
 # Self-service training (no DS heroics needed)
 $ python cli/train_codex.py \
-    --config configs/training.yaml \
-    --seed 42 \
-    --output checkpoints/
+ --config configs/training.yaml \
+ --seed 42 \
+ --output checkpoints/
 
 # Config-driven (DE can manage data)
 configs/data.yaml:
-  dataset:
-    path: /data/training
-    validation_split: 0.1
-  preprocessing:
-    tokenizer: gpt2
-    max_length: 512
+ dataset:
+ path: /data/training
+ validation_split: 0.1
+ preprocessing:
+ tokenizer: gpt2
+ max_length: 512
 
 # Extensibility (SWE can add features)
 src/codex_ml/plugins/plugin_registry.py:
-  @register_plugin
-  class CustomMetricsPlugin(Plugin):
-    def execute(self, predictions, labels):
-      return {"custom_score": compute_score()}
+ @register_plugin
+ class CustomMetricsPlugin(Plugin):
+ def execute(self, predictions, labels):
+ return {"custom_score": compute_score()}
 ```
 
 **Score:** 90/100
@@ -347,35 +347,35 @@ Audit trails, policy checks (fairness, PII, regulatory) codified as pipeline gat
 ```text
 # Audit trails
 src/codex_ml/training/continuous_learning.py:
-  class ModelRegistry:
-    def save_version(self, model, version, metadata):
-      metadata = {
-        "timestamp": datetime.now(),
-        "commit_sha": get_git_commit(),
-        "dataset_hash": dataset_manifest.hash,
-        "config": training_config,
-        "metrics": validation_metrics,
-      }
+ class ModelRegistry:
+ def save_version(self, model, version, metadata):
+ metadata = {
+ "timestamp": datetime.now(),
+ "commit_sha": get_git_commit(),
+ "dataset_hash": dataset_manifest.hash,
+ "config": training_config,
+ "metrics": validation_metrics,
+ }
 
 # PII detection
 src/codex_ml/safety/prompt_sanitizer.py:
-  OWASP_TOP_10_PATTERNS = [
-    r"<script.*?>.*?</script>",  # XSS
-    r"(?:--|#|/\*).*?(?:\n|$)",  # SQL injection
-    # ... 13 more patterns
-  ]
+ OWASP_TOP_10_PATTERNS = [
+ r"<script.*?>.*?</script>", # XSS
+ r"(?:--|#|/\*).*?(?:\n|$)", # SQL injection
+ # ... 13 more patterns
+ ]
 
 # Security scanning
 .github/workflows/security.yml:
-  - Bandit (code security)
-  - pip-audit (dependency vulnerabilities)
-  - detect-secrets (credential leaks)
+ - Bandit (code security)
+ - pip-audit (dependency vulnerabilities)
+ - detect-secrets (credential leaks)
 
 # SBOM
 scripts/generate_sbom.py:
-  # CycloneDX format
-  # Full dependency tree
-  # License information
+ # CycloneDX format
+ # Full dependency tree
+ # License information
 ```
 
 **Score:** 85/100
@@ -462,11 +462,11 @@ scripts/generate_sbom.py:
 ```python
 # src/codex_ml/plugins/fairness_checker.py
 class FairnessCheckerPlugin(Plugin):
-    def execute(self, predictions, sensitive_attributes):
-        # Demographic parity
-        # Equal opportunity
-        # Calibration checks
-        return fairness_metrics
+ def execute(self, predictions, sensitive_attributes):
+ # Demographic parity
+ # Equal opportunity
+ # Calibration checks
+ return fairness_metrics
 ```
 
 2. Integrate with A/B testing:
@@ -497,12 +497,12 @@ class FairnessCheckerPlugin(Plugin):
 ```text
 # src/codex_ml/governance/compliance_gates.py
 class ComplianceGate:
-    def __init__(self, policy: str):
-        self.policy = policy  # "GDPR", "HIPAA", "SOC2"
+ def __init__(self, policy: str):
+ self.policy = policy # "GDPR", "HIPAA", "SOC2"
 
-    def validate(self, model, data, deployment):
-        # Policy-specific checks
-        # Return compliance report
+ def validate(self, model, data, deployment):
+ # Policy-specific checks
+ # Return compliance report
 ```
 
 2. Add policy templates:
@@ -557,10 +557,10 @@ class ComplianceGate:
 ## Implementation Timeline
 
 ```
-Pre-commit 1-4:   Phase 1 - Operational Runbooks
-Pre-commit 5-8:   Phase 2 - Fairness & Bias Checks
-Pre-commit 9-12:   Phase 3 - Regulatory Compliance Gates
-Pre-commit 13-16:   Phase 4 - Advanced Dashboards (Optional)
+Pre-commit 1-4: Phase 1 - Operational Runbooks
+Pre-commit 5-8: Phase 2 - Fairness & Bias Checks
+Pre-commit 9-12: Phase 3 - Regulatory Compliance Gates
+Pre-commit 13-16: Phase 4 - Advanced Dashboards (Optional)
 
 Total Time: 6-8 phases for complete Level 4+ implementation
 ```

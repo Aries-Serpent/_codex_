@@ -245,33 +245,33 @@
 
 graph TD
 
-    A[Feature Identification] --> B[Requirements Definition]
+ A[Feature Identification] --> B[Requirements Definition]
 
-    B --> C[Implementation Design]
+ B --> C[Implementation Design]
 
-    C --> D[Prototype Development]
+ C --> D[Prototype Development]
 
-    D --> E[Unit Testing]
+ D --> E[Unit Testing]
 
-    E --> F[Integration Testing]
+ E --> F[Integration Testing]
 
-    F --> G[Documentation]
+ F --> G[Documentation]
 
-    G --> H[Beta Release]
+ G --> H[Beta Release]
 
-    H --> I[User Feedback]
+ H --> I[User Feedback]
 
-    I --> J{Meets Success Criteria?}
+ I --> J{Meets Success Criteria?}
 
-    J -->|Yes| K[Production Release]
+ J -->|Yes| K[Production Release]
 
-    J -->|No| L[Refinement]
+ J -->|No| L[Refinement]
 
-    L --> D
+ L --> D
 
-    K --> M[Adoption Monitoring]
+ K --> M[Adoption Monitoring]
 
-    M --> N[Continuous Improvement]
+ M --> N[Continuous Improvement]
 ```
 
 ### Fields (Feature Maturity States)
@@ -462,20 +462,20 @@ Add `--estimate` flag to predict package size before creation, enabling users to
 
 ```text
 def estimate_size(self, topic: str = None, custom: str = None) -> Dict[str, Any]:
-    """Estimate package size without creating it"""
-    # 1. Use select_components.py to get file list
-    # 2. Sum file sizes with os.path.getsize()
-    # 3. Add ~10% overhead for manifest, README, index
-    # 4. Return dict with total_size_mb, file_count, warnings
-    pass
+ """Estimate package size without creating it"""
+ # 1. Use select_components.py to get file list
+ # 2. Sum file sizes with os.path.getsize()
+ # 3. Add ~10% overhead for manifest, README, index
+ # 4. Return dict with total_size_mb, file_count, warnings
+ pass
 
 def package(self, ..., estimate_only: bool = False):
-    """Add estimate_only parameter"""
-    if estimate_only:
-        result = self.estimate_size(topic, custom)
-        self.print_estimate(result)
-        return 0
-    # ... existing packaging logic
+ """Add estimate_only parameter"""
+ if estimate_only:
+ result = self.estimate_size(topic, custom)
+ self.print_estimate(result)
+ return 0
+ # ... existing packaging logic
 ```
 
 **CLI Changes**:
@@ -519,22 +519,22 @@ Add `--exclude` parameter to filter out unwanted files from selection, complemen
 
 ```python
 def expand_globs(patterns: List[str], base_dir: Path,
-                 exclude_patterns: List[str] = None) -> Set[Path]:
-    """Add exclude_patterns parameter"""
-    matched_files = set()
+ exclude_patterns: List[str] = None) -> Set[Path]:
+ """Add exclude_patterns parameter"""
+ matched_files = set()
 
-    # ... existing inclusion logic ...
+ # ... existing inclusion logic ...
 
-    if exclude_patterns:
-        excluded = set()
-        for ex_pattern in exclude_patterns:
-            for path in base_dir.glob(ex_pattern):
-                if path.is_file():
-                    excluded.add(path.relative_to(base_dir))
+ if exclude_patterns:
+ excluded = set()
+ for ex_pattern in exclude_patterns:
+ for path in base_dir.glob(ex_pattern):
+ if path.is_file():
+ excluded.add(path.relative_to(base_dir))
 
-        matched_files = matched_files - excluded
+ matched_files = matched_files - excluded
 
-    return matched_files
+ return matched_files
 ```
 
 **CLI Changes** (`mcp-package`):
@@ -581,30 +581,30 @@ Automatically detect and resolve duplicate flat names (e.g., `src/foo.py` and `t
 ```bash
 # Enhanced flatten_filename function
 flatten_filename() {
-    local path="$1"
-    local base_name=$(echo "$path" | sed 's|/|__|g')
+ local path="$1"
+ local base_name=$(echo "$path" | sed 's|/|__|g')
 
-    # Check if name exists in tracking file
-    if grep -q "^${base_name}$" "$WORK_DIR/.flat_names"; then
-        # Compute short hash of full path
-        local hash=$(echo "$path" | sha256sum | cut -c1-4)
-        base_name="${base_name%.*}_${hash}.${base_name##*.}"
-    fi
+ # Check if name exists in tracking file
+ if grep -q "^${base_name}$" "$WORK_DIR/.flat_names"; then
+ # Compute short hash of full path
+ local hash=$(echo "$path" | sha256sum | cut -c1-4)
+ base_name="${base_name%.*}_${hash}.${base_name##*.}"
+ fi
 
-    # Track this name
-    echo "$base_name" >> "$WORK_DIR/.flat_names"
-    echo "$base_name"
+ # Track this name
+ echo "$base_name" >> "$WORK_DIR/.flat_names"
+ echo "$base_name"
 }
 ```
 
 **Manifest Enhancement**:
 ```json
 {
-  "flat_name": "tests__utils_a3f2.py",
-  "original_path": "tests/utils.py",
-  "duplicate_resolved": true,
-  "conflict_with": "src__utils.py",
-  "resolution_method": "hash_suffix"
+ "flat_name": "tests__utils_a3f2.py",
+ "original_path": "tests/utils.py",
+ "duplicate_resolved": true,
+ "conflict_with": "src__utils.py",
+ "resolution_method": "hash_suffix"
 }
 ```
 
@@ -631,8 +631,8 @@ Compare two packages to see what changed (added, removed, modified files).
 ```bash
 # Compare two versions
 ./scripts/mcp/package_diff.py \
-  package_agents_2025-12-01.zip \
-  package_agents_2025-12-30.zip
+ package_agents_2025-12-01.zip \
+ package_agents_2025-12-30.zip
 
 # Output:
 # Added: 5 files
@@ -656,44 +656,44 @@ import zipfile
 from typing import Dict, List, Tuple
 
 def load_manifest(zip_path: str) -> Dict:
-    """Extract manifest from zip"""
-    with zipfile.ZipFile(zip_path) as zf:
-        manifest_data = zf.read('manifest.json')
-        return json.loads(manifest_data)
+ """Extract manifest from zip"""
+ with zipfile.ZipFile(zip_path) as zf:
+ manifest_data = zf.read('manifest.json')
+ return json.loads(manifest_data)
 
 def diff_packages(pkg1_path: str, pkg2_path: str) -> Dict:
-    """Compare two package manifests"""
-    m1 = load_manifest(pkg1_path)
-    m2 = load_manifest(pkg2_path)
+ """Compare two package manifests"""
+ m1 = load_manifest(pkg1_path)
+ m2 = load_manifest(pkg2_path)
 
-    files1 = {f['original_path']: f for f in m1['files']}
-    files2 = {f['original_path']: f for f in m2['files']}
+ files1 = {f['original_path']: f for f in m1['files']}
+ files2 = {f['original_path']: f for f in m2['files']}
 
-    added = set(files2.keys()) - set(files1.keys())
-    removed = set(files1.keys()) - set(files2.keys())
-    common = set(files1.keys()) & set(files2.keys())
+ added = set(files2.keys()) - set(files1.keys())
+ removed = set(files1.keys()) - set(files2.keys())
+ common = set(files1.keys()) & set(files2.keys())
 
-    modified = []
-    for path in common:
-        if files1[path]['sha256'] != files2[path]['sha256']:
-            modified.append(path)
+ modified = []
+ for path in common:
+ if files1[path]['sha256'] != files2[path]['sha256']:
+ modified.append(path)
 
-    return {
-        'added': sorted(added),
-        'removed': sorted(removed),
-        'modified': sorted(modified),
-        'unchanged': len(common) - len(modified)
-    }
+ return {
+ 'added': sorted(added),
+ 'removed': sorted(removed),
+ 'modified': sorted(modified),
+ 'unchanged': len(common) - len(modified)
+ }
 
 def print_diff(diff: Dict, verbose: bool = False):
-    """Print formatted diff"""
-    # Color-coded output with stats
-    pass
+ """Print formatted diff"""
+ # Color-coded output with stats
+ pass
 
 if __name__ == '__main__':
-    # CLI argument parsing
-    # Run diff and display results
-    pass
+ # CLI argument parsing
+ # Run diff and display results
+ pass
 ```
 
 **CLI**:
@@ -729,10 +729,10 @@ Combine multiple packages into one, resolving conflicts intelligently.
 ```bash
 # Merge agent and testing packages
 ./scripts/mcp/package_merge.py \
-  agents_package.zip \
-  testing_package.zip \
-  --output combined_agents_testing.zip \
-  --conflict-strategy newest
+ agents_package.zip \
+ testing_package.zip \
+ --output combined_agents_testing.zip \
+ --conflict-strategy newest
 
 # Conflict strategies:
 # newest: Keep file with latest timestamp
@@ -751,41 +751,41 @@ from typing import List, Dict
 import zipfile
 
 def merge_packages(package_paths: List[str],
-                   conflict_strategy: str = 'newest') -> Dict:
-    """Merge multiple packages into one"""
-    merged_files = {}
+ conflict_strategy: str = 'newest') -> Dict:
+ """Merge multiple packages into one"""
+ merged_files = {}
 
-    for pkg_path in package_paths:
-        manifest = load_manifest(pkg_path)
+ for pkg_path in package_paths:
+ manifest = load_manifest(pkg_path)
 
-        for file_info in manifest['files']:
-            orig_path = file_info['original_path']
+ for file_info in manifest['files']:
+ orig_path = file_info['original_path']
 
-            if orig_path in merged_files:
-                # Conflict! Apply strategy
-                merged_files[orig_path] = resolve_conflict(
-                    merged_files[orig_path],
-                    file_info,
-                    conflict_strategy
-                )
-            else:
-                merged_files[orig_path] = file_info
+ if orig_path in merged_files:
+ # Conflict! Apply strategy
+ merged_files[orig_path] = resolve_conflict(
+ merged_files[orig_path],
+ file_info,
+ conflict_strategy
+ )
+ else:
+ merged_files[orig_path] = file_info
 
-    return merged_files
+ return merged_files
 
 def resolve_conflict(existing: Dict, new: Dict, strategy: str) -> Dict:
-    """Apply conflict resolution strategy"""
-    if strategy == 'newest':
-        # Compare generated_at or file modification time
-        pass
-    elif strategy == 'largest':
-        return existing if existing['size_bytes'] > new['size_bytes'] else new
-    elif strategy == 'manual':
-        # Interactive prompt
-        pass
-    elif strategy == 'rename':
-        # Keep both with _v1, _v2 suffixes
-        pass
+ """Apply conflict resolution strategy"""
+ if strategy == 'newest':
+ # Compare generated_at or file modification time
+ pass
+ elif strategy == 'largest':
+ return existing if existing['size_bytes'] > new['size_bytes'] else new
+ elif strategy == 'manual':
+ # Interactive prompt
+ pass
+ elif strategy == 'rename':
+ # Keep both with _v1, _v2 suffixes
+ pass
 ```
 
 **CLI**:
@@ -818,21 +818,21 @@ Interactive file selection UI with tree view, real-time size preview, and dynami
 ./scripts/mcp/mcp-package --interactive
 
 # UI:
-# ┌─ MCP Package Builder (Interactive) ─────────────────┐
-# │ Select files to package:                           │
-# │                                                     │
-# │ [ ] agents/                            (15 MB)     │
-# │   [x] workflow_navigator.py            (29 KB)     │
-# │   [ ] quantum_game_theory.py           (46 KB)     │
-# │   [x] physics_orchestrator.py          (127 KB)    │
-# │ [x] tests/                             (5 MB)      │
-# │   [x] agents/                          (3 MB)      │
-# │     [x] test_workflow*.py              (2.5 MB)    │
-# │                                                     │
-# │ Selected: 156 files (4.2 MB)                       │
-# │                                                     │
-# │ [Create Package] [Cancel]                          │
-# └─────────────────────────────────────────────────────┘
+# MCP Package Builder (Interactive) 
+# Select files to package: 
+# 
+# [ ] agents/ (15 MB) 
+# [x] workflow_navigator.py (29 KB) 
+# [ ] quantum_game_theory.py (46 KB) 
+# [x] physics_orchestrator.py (127 KB) 
+# [x] tests/ (5 MB) 
+# [x] agents/ (3 MB) 
+# [x] test_workflow*.py (2.5 MB) 
+# 
+# Selected: 156 files (4.2 MB) 
+# 
+# [Create Package] [Cancel] 
+# 
 ```
 
 ## Implementation Details
@@ -849,22 +849,22 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 def interactive_mode(self):
-    """Launch interactive package builder"""
-    console = Console()
+ """Launch interactive package builder"""
+ console = Console()
 
-    # Build file tree
-    tree = self.build_file_tree()
+ # Build file tree
+ tree = self.build_file_tree()
 
-    # Display with checkboxes
-    selected = self.show_tree_selector(tree)
+ # Display with checkboxes
+ selected = self.show_tree_selector(tree)
 
-    # Show summary
-    size_estimate = self.estimate_selected(selected)
-    console.print(f"Selected: {len(selected)} files ({size_estimate} MB)")
+ # Show summary
+ size_estimate = self.estimate_selected(selected)
+ console.print(f"Selected: {len(selected)} files ({size_estimate} MB)")
 
-    # Confirm
-    if Confirm.ask("Create package?"):
-        self.package_selected_files(selected)
+ # Confirm
+ if Confirm.ask("Create package?"):
+ self.package_selected_files(selected)
 ```
 
 **Features**:
@@ -924,32 +924,32 @@ from collections import Counter
 from typing import Dict, List
 
 def analyze_recent_commits(since: str = "1 iteration") -> Dict[str, int]:
-    """Analyze git log for file change patterns"""
-    cmd = f"git log --since='{since}' --name-only --pretty=format:"
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+ """Analyze git log for file change patterns"""
+ cmd = f"git log --since='{since}' --name-only --pretty=format:"
+ result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
-    files = [f for f in result.stdout.split('\n') if f.strip()]
+ files = [f for f in result.stdout.split('\n') if f.strip()]
 
-    # Map files to topics
-    topic_counts = Counter()
-    for file_path in files:
-        topic = map_file_to_topic(file_path)
-        if topic:
-            topic_counts[topic] += 1
+ # Map files to topics
+ topic_counts = Counter()
+ for file_path in files:
+ topic = map_file_to_topic(file_path)
+ if topic:
+ topic_counts[topic] += 1
 
-    return dict(topic_counts.most_common())
+ return dict(topic_counts.most_common())
 
 def map_file_to_topic(file_path: str) -> str:
-    """Map file path to topic using topics.json patterns"""
-    # Load topics.json
-    # Check which topic patterns match this file
-    # Return best match
-    pass
+ """Map file path to topic using topics.json patterns"""
+ # Load topics.json
+ # Check which topic patterns match this file
+ # Return best match
+ pass
 
 def recommend_packages(topic_scores: Dict[str, int],
-                       threshold: int = 5) -> List[str]:
-    """Recommend topics that exceed threshold"""
-    return [t for t, count in topic_scores.items() if count >= threshold]
+ threshold: int = 5) -> List[str]:
+ """Recommend topics that exceed threshold"""
+ return [t for t, count in topic_scores.items() if count >= threshold]
 ```
 
 **Integration**:

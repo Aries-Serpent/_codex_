@@ -29,33 +29,33 @@ from PR #3483. Each section has:
 ## Setup Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing  Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
 
 flowchart TD
 
-    START([ Start]) --> PREREQ{Prerequisites\nmet?}
+ START([ Start]) --> PREREQ{Prerequisites\nmet?}
 
-    PREREQ -->|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
+ PREREQ -->|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
 
-    FIX_PREREQ --> PREREQ
+ FIX_PREREQ --> PREREQ
 
-    PREREQ -->|Yes| CHOICE{Setup method?}
+ PREREQ -->|Yes| CHOICE{Setup method?}
 
-    CHOICE -->|Fast — CLI| BATCH["§1 Batch CLI\n~5 minutes"]
+ CHOICE -->|Fast — CLI| BATCH["§1 Batch CLI\n~5 minutes"]
 
-    CHOICE -->|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
+ CHOICE -->|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
 
-    BATCH --> VERIFY["§3 Verify\nAll 13 variables present"]
+ BATCH --> VERIFY["§3 Verify\nAll 13 variables present"]
 
-    UI_METHOD --> VERIFY
+ UI_METHOD --> VERIFY
 
-    VERIFY --> DONE([ Complete])
+ VERIFY --> DONE([ Complete])
 
-    style START fill:#22c55e,color:#fff
-    style DONE fill:#22c55e,color:#fff
-    style PREREQ fill:#f59e0b,color:#fff
-    style BATCH fill:#3b82f6,color:#fff
-    style UI_METHOD fill:#8b5cf6,color:#fff
+ style START fill:#22c55e,color:#fff
+ style DONE fill:#22c55e,color:#fff
+ style PREREQ fill:#f59e0b,color:#fff
+ style BATCH fill:#3b82f6,color:#fff
+ style UI_METHOD fill:#8b5cf6,color:#fff
 ```
 
 ---
@@ -78,50 +78,50 @@ Before starting, confirm all prerequisites:
 Copy and paste the entire block below into your terminal. It creates all 13 new variables in one pass using the GitHub CLI.
 
 ```bash
-# ── Aries-Serpent/_codex_ repository variable setup ──────────────────────────
+# Aries-Serpent/_codex_ repository variable setup 
 # Source: PR #3483 #issuecomment-3988416714
 # Run from any directory — uses gh CLI (must be authenticated)
 
 REPO="Aries-Serpent/_codex_"
 
 create_var() {
-  local name="$1" value="$2"
-  if gh variable set "$name" --body "$value" --repo "$REPO" 2>/dev/null; then
-    echo "  $name = $value"
-  else
-    echo "  FAILED: $name"
-  fi
+ local name="$1" value="$2"
+ if gh variable set "$name" --body "$value" --repo "$REPO" 2>/dev/null; then
+ echo " $name = $value"
+ else
+ echo " FAILED: $name"
+ fi
 }
 
-echo "──────────────────────────────────────────────────"
+echo ""
 echo "Creating Cognitive Brain variables…"
-echo "──────────────────────────────────────────────────"
-create_var "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS"    "32000"
-create_var "COGNITIVE_BRAIN_LTM_RETENTION_DAYS"    "90"
+echo ""
+create_var "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS" "32000"
+create_var "COGNITIVE_BRAIN_LTM_RETENTION_DAYS" "90"
 create_var "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE" "0.75"
-create_var "COGNITIVE_BRAIN_MEMORY_TIER"            "both"
+create_var "COGNITIVE_BRAIN_MEMORY_TIER" "both"
 
-echo "──────────────────────────────────────────────────"
+echo ""
 echo "Creating Copilot CLI variables…"
-echo "──────────────────────────────────────────────────"
-create_var "COPILOT_CLI_BASE_URL"                   "http://localhost:8765"
-create_var "COPILOT_CLI_ENABLED"                    "true"
-create_var "COPILOT_AGENT_SESSION_RESTORE_ENABLED"  "true"
-create_var "COPILOT_AGENT_MAX_AUTONOMY_LEVEL"       "E"
+echo ""
+create_var "COPILOT_CLI_BASE_URL" "http://localhost:8765"
+create_var "COPILOT_CLI_ENABLED" "true"
+create_var "COPILOT_AGENT_SESSION_RESTORE_ENABLED" "true"
+create_var "COPILOT_AGENT_MAX_AUTONOMY_LEVEL" "E"
 
-echo "──────────────────────────────────────────────────"
+echo ""
 echo "Creating CI/CD health variables…"
-echo "──────────────────────────────────────────────────"
-create_var "CODEX_CI_FAILURE_THRESHOLD"             "10.0"
-create_var "CODEX_CI_LAST_GREEN_SHA"                ""
-create_var "AGENT_HANDOFF_TIMEOUT_SECONDS"          "120"
-create_var "EMBEDDING_INDEX_AUTO_REBUILD"           "true"
-create_var "AUTO_PROMOTE_TIER_ENABLED"              "false"
+echo ""
+create_var "CODEX_CI_FAILURE_THRESHOLD" "10.0"
+create_var "CODEX_CI_LAST_GREEN_SHA" ""
+create_var "AGENT_HANDOFF_TIMEOUT_SECONDS" "120"
+create_var "EMBEDDING_INDEX_AUTO_REBUILD" "true"
+create_var "AUTO_PROMOTE_TIER_ENABLED" "false"
 
-echo "──────────────────────────────────────────────────"
+echo ""
 echo "Done. Verify at:"
 echo "https://github.com/Aries-Serpent/_codex_/settings/variables/actions"
-echo "──────────────────────────────────────────────────"
+echo ""
 ```
 
 **After running**, check all 13 lines show . If any show , see [§4 Troubleshooting](#4-troubleshooting).
@@ -151,23 +151,23 @@ You should see the existing variables list. You will click **New repository vari
 %%{init: {'accessibility': {'title': 'Mind Map'}}%%
 
 mindmap
-  root((Variables\nto Create))
-    Cognitive Brain
-      COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
-      COGNITIVE_BRAIN_LTM_RETENTION_DAYS
-      COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE
-      COGNITIVE_BRAIN_MEMORY_TIER
-    Copilot CLI
-      COPILOT_CLI_BASE_URL
-      COPILOT_CLI_ENABLED
-      COPILOT_AGENT_SESSION_RESTORE_ENABLED
-      COPILOT_AGENT_MAX_AUTONOMY_LEVEL
-    CI/CD Health
-      CODEX_CI_FAILURE_THRESHOLD
-      CODEX_CI_LAST_GREEN_SHA
-      AGENT_HANDOFF_TIMEOUT_SECONDS
-      EMBEDDING_INDEX_AUTO_REBUILD
-      AUTO_PROMOTE_TIER_ENABLED
+ root((Variables\nto Create))
+ Cognitive Brain
+ COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
+ COGNITIVE_BRAIN_LTM_RETENTION_DAYS
+ COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE
+ COGNITIVE_BRAIN_MEMORY_TIER
+ Copilot CLI
+ COPILOT_CLI_BASE_URL
+ COPILOT_CLI_ENABLED
+ COPILOT_AGENT_SESSION_RESTORE_ENABLED
+ COPILOT_AGENT_MAX_AUTONOMY_LEVEL
+ CI/CD Health
+ CODEX_CI_FAILURE_THRESHOLD
+ CODEX_CI_LAST_GREEN_SHA
+ AGENT_HANDOFF_TIMEOUT_SECONDS
+ EMBEDDING_INDEX_AUTO_REBUILD
+ AUTO_PROMOTE_TIER_ENABLED
 ```
 
 ---
@@ -504,19 +504,19 @@ gh variable list --repo Aries-Serpent/_codex_ | sort
 Expected output includes (among existing variables):
 
 ```
-AGENT_HANDOFF_TIMEOUT_SECONDS        120
-AUTO_PROMOTE_TIER_ENABLED            false
-CODEX_CI_FAILURE_THRESHOLD           10.0
-CODEX_CI_LAST_GREEN_SHA              (empty or a SHA)
-COGNITIVE_BRAIN_LTM_RETENTION_DAYS   90
-COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS   32000
-COGNITIVE_BRAIN_MEMORY_TIER          both
-COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE  0.75
-COPILOT_AGENT_MAX_AUTONOMY_LEVEL     E
-COPILOT_AGENT_SESSION_RESTORE_ENABLED  true
-COPILOT_CLI_BASE_URL                 http://localhost:8765
-COPILOT_CLI_ENABLED                  true
-EMBEDDING_INDEX_AUTO_REBUILD         true
+AGENT_HANDOFF_TIMEOUT_SECONDS 120
+AUTO_PROMOTE_TIER_ENABLED false
+CODEX_CI_FAILURE_THRESHOLD 10.0
+CODEX_CI_LAST_GREEN_SHA (empty or a SHA)
+COGNITIVE_BRAIN_LTM_RETENTION_DAYS 90
+COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS 32000
+COGNITIVE_BRAIN_MEMORY_TIER both
+COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE 0.75
+COPILOT_AGENT_MAX_AUTONOMY_LEVEL E
+COPILOT_AGENT_SESSION_RESTORE_ENABLED true
+COPILOT_CLI_BASE_URL http://localhost:8765
+COPILOT_CLI_ENABLED true
+EMBEDDING_INDEX_AUTO_REBUILD true
 ```
 
 ## Verify via GitHub UI
@@ -583,9 +583,9 @@ repository variable. To use it in a CI build:
 
 ```yaml
 - name: Build cognitive_app
-  env:
-    VITE_CLI_API_URL: ${{ vars.COPILOT_CLI_BASE_URL }}
-  run: cd cognitive_app && npm run build
+ env:
+ VITE_CLI_API_URL: ${{ vars.COPILOT_CLI_BASE_URL }}
+ run: cd cognitive_app && npm run build
 ```
 
 ---
@@ -596,21 +596,21 @@ repository variable. To use it in a CI build:
 %%{init: {'accessibility': {'title': 'Timeline'}}%%
 
 timeline
-    title Variable Setup Impact Timeline
-    section Immediately
-        CODEX_CI_FAILURE_THRESHOLD available : ci-health-monitor.yml can compare against it
-        EMBEDDING_INDEX_AUTO_REBUILD=true : FAISS index rebuilt on next registry push
-        COPILOT_CLI_ENABLED=true : CLI startup step unblocked in copilot-setup-steps.yml
-    section Next @copilot trigger
-        COGNITIVE_BRAIN_SESSION_NUMBER increments : if workflow step wired per Implementation Guide §6
-        Session context includes MAX_CONTEXT_TOKENS : once generate_manifest.py wired
-    section Next CI run
-        CODEX_CI_LAST_GREEN_SHA written : on first fully green run after variable creation
-        CI failure rate compared vs threshold : degraded/ok/critical status updated automatically
-    section After code wiring (PRs)
-        generate_manifest.py uses MAX_CONTEXT_TOKENS : context injection ceiling externalised
-        prune_corpus.py uses LTM_RETENTION_DAYS : retention policy externalised
-        agent-handoff-gate.yml uses HANDOFF_TIMEOUT : timeout externalised
+ title Variable Setup Impact Timeline
+ section Immediately
+ CODEX_CI_FAILURE_THRESHOLD available : ci-health-monitor.yml can compare against it
+ EMBEDDING_INDEX_AUTO_REBUILD=true : FAISS index rebuilt on next registry push
+ COPILOT_CLI_ENABLED=true : CLI startup step unblocked in copilot-setup-steps.yml
+ section Next @copilot trigger
+ COGNITIVE_BRAIN_SESSION_NUMBER increments : if workflow step wired per Implementation Guide §6
+ Session context includes MAX_CONTEXT_TOKENS : once generate_manifest.py wired
+ section Next CI run
+ CODEX_CI_LAST_GREEN_SHA written : on first fully green run after variable creation
+ CI failure rate compared vs threshold : degraded/ok/critical status updated automatically
+ section After code wiring (PRs)
+ generate_manifest.py uses MAX_CONTEXT_TOKENS : context injection ceiling externalised
+ prune_corpus.py uses LTM_RETENTION_DAYS : retention policy externalised
+ agent-handoff-gate.yml uses HANDOFF_TIMEOUT : timeout externalised
 ```
 
 ---

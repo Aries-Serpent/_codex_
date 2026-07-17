@@ -24,13 +24,13 @@ This guide documents the CI/CD optimization strategies implemented for the _code
 
 ```yaml
 - uses: actions/cache@v4
-  with:
-    path: |
-      ~/.cache/pip
-      .pytest_cache
-    key: ${{ runner.os }}-pytest-${{ hashFiles('**/pyproject.toml') }}
-    restore-keys: |
-      ${{ runner.os }}-pytest-
+ with:
+ path: |
+ ~/.cache/pip
+ .pytest_cache
+ key: ${{ runner.os }}-pytest-${{ hashFiles('**/pyproject.toml') }}
+ restore-keys: |
+ ${{ runner.os }}-pytest-
 ```text
 
 **Benefits**:
@@ -49,9 +49,9 @@ This guide documents the CI/CD optimization strategies implemented for the _code
 
 ```yaml
 strategy:
-  fail-fast: false
-  matrix:
-    test-group: [config, unit, integration]
+ fail-fast: false
+ matrix:
+ test-group: [config, unit, integration]
 ```text
 
 **Benefits**:
@@ -69,10 +69,10 @@ strategy:
 **Job Dependencies**:
 ```text
 validate-imports (2min)
-  ├─> test-core (parallel, 3min)
-  ├─> test-smoke (parallel, 1min)
-  ├─> lint-check (parallel, 1min)
-  └─> modernization-scan (parallel, 2min)
+ > test-core (parallel, 3min)
+ > test-smoke (parallel, 1min)
+ > lint-check (parallel, 1min)
+ > modernization-scan (parallel, 2min)
 ```text
 
 **Total Time**: max(3, 1, 1, 2) + 2 = **5 minutes** (worst case)
@@ -83,12 +83,12 @@ All jobs have explicit timeouts to prevent hanging:
 
 ```yaml
 jobs:
-  validate-imports:
-    timeout-minutes: 5
-  test-core:
-    timeout-minutes: 5
-  test-smoke:
-    timeout-minutes: 3
+ validate-imports:
+ timeout-minutes: 5
+ test-core:
+ timeout-minutes: 5
+ test-smoke:
+ timeout-minutes: 3
 ```text
 
 **Benefits**:
@@ -191,8 +191,8 @@ key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/requirements*.txt') }}
 
 # Add restore-keys for partial matches
 restore-keys: |
-  ${{ runner.os }}-deps-v1-
-  ${{ runner.os }}-deps-
+ ${{ runner.os }}-deps-v1-
+ ${{ runner.os }}-deps-
 ```text
 
 ## Flaky Tests
@@ -217,11 +217,11 @@ Run jobs only when relevant files change:
 
 ```yaml
 on:
-  push:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - '!**/*.md'  # Exclude markdown
+ push:
+ paths:
+ - 'src/**'
+ - 'tests/**'
+ - '!**/*.md' # Exclude markdown
 ```text
 
 ### Artifact Caching
@@ -230,13 +230,13 @@ Cache build artifacts between jobs:
 
 ```yaml
 - uses: actions/upload-artifact@v4
-  with:
-    name: dist
-    path: dist/
+ with:
+ name: dist
+ path: dist/
 
 - uses: actions/download-artifact@v4
-  with:
-    name: dist
+ with:
+ name: dist
 ```text
 
 ### Docker Layer Caching
@@ -245,9 +245,9 @@ For Docker-based workflows:
 
 ```yaml
 - uses: docker/build-push-action@v5
-  with:
-    cache-from: type=gha
-    cache-to: type=gha,mode=max
+ with:
+ cache-from: type=gha
+ cache-to: type=gha,mode=max
 ```text
 
 ## Future Improvements

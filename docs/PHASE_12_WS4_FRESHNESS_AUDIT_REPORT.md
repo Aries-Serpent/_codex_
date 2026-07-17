@@ -39,15 +39,15 @@
 **File Distribution:**
 ```
 docs/
-├── Root docs (markdown)        142 files
-├── API documentation           46 files
-├── Configuration guides        38 files
-├── Architecture docs           34 files
-├── Security documentation      28 files
-├── Developer guides            42 files
-├── Admin documentation         24 files
-└── Miscellaneous              516 files
-────────────────────────────────────────────
+ Root docs (markdown) 142 files
+ API documentation 46 files
+ Configuration guides 38 files
+ Architecture docs 34 files
+ Security documentation 28 files
+ Developer guides 42 files
+ Admin documentation 24 files
+ Miscellaneous 516 files
+
 TOTAL: 1,870 markdown files
 ```
 
@@ -69,9 +69,9 @@ TOTAL: 1,870 markdown files
 **Files with Stale Markers:**
 
 ```
-TODO markers:        65 files
-FIXME markers:       11 files
-DEPRECATED pattern:  97 files
+TODO markers: 65 files
+FIXME markers: 11 files
+DEPRECATED pattern: 97 files
 Outdated references: 28 files
 ```
 
@@ -269,10 +269,10 @@ from pathlib import Path
 
 links = extract_external_links("docs/")
 for link in links:
-    if not is_template(link) and not is_localhost(link):
-        response = requests.head(link, timeout=5)
-        if response.status_code != 200:
-            report_broken_link(link)
+ if not is_template(link) and not is_localhost(link):
+ response = requests.head(link, timeout=5)
+ if response.status_code != 200:
+ report_broken_link(link)
 ```
 
 #### Procedure D: Version Sync Protocol
@@ -308,8 +308,8 @@ version: vX.Y.Z
 status: active|archived|draft
 review_cycle: quarterly|biannual|annual
 related_modules:
-  - src/codex/module_name
-  - scripts/script_name
+ - src/codex/module_name
+ - scripts/script_name
 ---
 ```
 
@@ -348,23 +348,23 @@ related_modules:
 ```yaml
 # .github/workflows/doc-freshness.yml
 name: Documentation Freshness Check
-on: [pull_request, schedule: ['0 0 * * 0']]  # Weekly on Sunday
+on: [pull_request, schedule: ['0 0 * * 0']] # Weekly on Sunday
 
 jobs:
-  freshness:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Freshness Audit
-        run: |
-          python tools/freshness_audit.py
-          python tools/validate_code_examples.py
-          python tools/link_validator.py
-      - name: Report Results
-        if: failure()
-        run: |
-          gh issue create --title " Doc Freshness Alert" \
-            --body "See workflow logs for details"
+ freshness:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
+ - name: Freshness Audit
+ run: |
+ python tools/freshness_audit.py
+ python tools/validate_code_examples.py
+ python tools/link_validator.py
+ - name: Report Results
+ if: failure()
+ run: |
+ gh issue create --title " Doc Freshness Alert" \
+ --body "See workflow logs for details"
 ```
 
 ---

@@ -44,55 +44,55 @@ The Codex platform is a distributed, microservices-based system for managing AI 
 ### System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Client Layer                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Web Console  │  │ CLI Tool     │  │ API Client   │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-           │                    │                  │
-           └────────────────────┼──────────────────┘
-                                │
-                   HTTPS / TLS 1.3
-                                │
-┌─────────────────────────────────────────────────────────────┐
-│                  API Gateway Layer                          │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │ Load Balancer (AWS ELB / Google LB)                  │  │
-│  │ - SSL/TLS termination                               │  │
-│  │ - Rate limiting                                     │  │
-│  │ - DDoS protection (CDN)                             │  │
-│  └──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-           │
-           │ REST API / gRPC
-           │
-┌─────────────────────────────────────────────────────────────┐
-│               Authentication & Authorization                │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │ OAuth 2.0 Gateway                                    │  │
-│  │ - GitHub OAuth integration                          │  │
-│  │ - MFA provider                                      │  │
-│  │ - Token management                                  │  │
-│  └──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-           │
-┌─────────────────────────────────────────────────────────────┐
-│              Microservices Layer                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Agent Service│  │ Workflow Svc │  │  RBAC Svc    │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │Approval Svc  │  │  Audit Svc   │  │ Secrets Svc  │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
-           │
-           ├─────────┬─────────┬──────────┐
-           │         │         │          │
-┌──────────▼─┐ ┌──────▼────┐ ┌▼────────┐ ┌▼──────────┐
-│   SQLite   │ │ PostgreSQL│ │  Redis  │ │   S3/GCS  │
-│ (metadata) │ │  (audit)  │ │(cache)  │ │ (archive) │
-└────────────┘ └───────────┘ └─────────┘ └───────────┘
+
+ Client Layer 
+ 
+ Web Console CLI Tool API Client 
+ 
+
+ 
+ 
+ 
+ HTTPS / TLS 1.3
+ 
+
+ API Gateway Layer 
+ 
+ Load Balancer (AWS ELB / Google LB) 
+ - SSL/TLS termination 
+ - Rate limiting 
+ - DDoS protection (CDN) 
+ 
+
+ 
+ REST API / gRPC
+ 
+
+ Authentication & Authorization 
+ 
+ OAuth 2.0 Gateway 
+ - GitHub OAuth integration 
+ - MFA provider 
+ - Token management 
+ 
+
+ 
+
+ Microservices Layer 
+ 
+ Agent Service Workflow Svc RBAC Svc 
+ 
+ 
+ Approval Svc Audit Svc Secrets Svc 
+ 
+
+ 
+ 
+ 
+ 
+ SQLite PostgreSQL Redis S3/GCS 
+ (metadata) (audit) (cache) (archive) 
+ 
 ```
 
 ### Architectural Layers
@@ -126,14 +126,14 @@ The Codex platform is a distributed, microservices-based system for managing AI 
 
 **API Endpoints:**
 ```
-GET    /api/v1/agents                    # List agents
-POST   /api/v1/agents                    # Create agent
-GET    /api/v1/agents/{id}               # Get agent
-PUT    /api/v1/agents/{id}               # Update agent
-DELETE /api/v1/agents/{id}               # Delete agent
-POST   /api/v1/agents/{id}/execute       # Execute agent
-GET    /api/v1/agents/{id}/versions      # List versions
-POST   /api/v1/agents/{id}/rollback      # Rollback version
+GET /api/v1/agents # List agents
+POST /api/v1/agents # Create agent
+GET /api/v1/agents/{id} # Get agent
+PUT /api/v1/agents/{id} # Update agent
+DELETE /api/v1/agents/{id} # Delete agent
+POST /api/v1/agents/{id}/execute # Execute agent
+GET /api/v1/agents/{id}/versions # List versions
+POST /api/v1/agents/{id}/rollback # Rollback version
 ```
 
 #### Workflow Service
@@ -232,26 +232,26 @@ POST   /api/v1/agents/{id}/rollback      # Rollback version
 
 ```
 User Login
-    ↓
+ 
 [GitHub OAuth Flow]
-    ├─ Redirect to GitHub
-    ├─ User grants permission
-    └─ GitHub redirects with code
-    ↓
+ Redirect to GitHub
+ User grants permission
+ GitHub redirects with code
+ 
 [Exchange Code for Tokens]
-    ├─ OAuth Manager validates code
-    ├─ GitHub returns access token
-    └─ Codex creates session
-    ↓
+ OAuth Manager validates code
+ GitHub returns access token
+ Codex creates session
+ 
 [MFA (if enabled)]
-    ├─ User enters TOTP code
-    └─ MFA Provider validates
-    ↓
+ User enters TOTP code
+ MFA Provider validates
+ 
 [Token Issuance]
-    ├─ Access Token (15 min)
-    ├─ Refresh Token (30 days)
-    └─ Session Token (24 hours)
-    ↓
+ Access Token (15 min)
+ Refresh Token (30 days)
+ Session Token (24 hours)
+ 
 User Authenticated
 ```
 
@@ -259,30 +259,30 @@ User Authenticated
 
 ```
 API Request
-    ↓
+ 
 [Extract Token from Header]
-    ├─ Authorization: ******
-    └─ Validate signature (RS256)
-    ↓
+ Authorization: ******
+ Validate signature (RS256)
+ 
 [Load User from Token]
-    ├─ Get user_id
-    ├─ Get roles
-    └─ Get scopes
-    ↓
+ Get user_id
+ Get roles
+ Get scopes
+ 
 [Check RBAC]
-    ├─ RBAC Service validates permission
-    ├─ (role, action, resource) → permission matrix
-    └─ If denied: return 403
-    ↓
+ RBAC Service validates permission
+ (role, action, resource) permission matrix
+ If denied: return 403
+ 
 [Check Scopes]
-    ├─ Token scopes match required scope?
-    └─ If denied: return 403
-    ↓
+ Token scopes match required scope?
+ If denied: return 403
+ 
 [Audit Log]
-    ├─ Record access attempt
-    ├─ Include user, resource, result
-    └─ Forward to Audit Service
-    ↓
+ Record access attempt
+ Include user, resource, result
+ Forward to Audit Service
+ 
 Request Proceeds / Request Denied
 ```
 
@@ -290,38 +290,38 @@ Request Proceeds / Request Denied
 
 ```
 Sensitive Operation Requested
-    ↓
+ 
 [Create Approval Request]
-    ├─ Policy Code: AGENT_DEPLOY_PROD
-    ├─ Requester: alice@company.com
-    ├─ Resource: agent_prod_001
-    └─ Context: {agent_name, version, risk_level}
-    ↓
+ Policy Code: AGENT_DEPLOY_PROD
+ Requester: alice@company.com
+ Resource: agent_prod_001
+ Context: {agent_name, version, risk_level}
+ 
 [Check RBAC Auto-Approval]
-    ├─ Requester has required role?
-    ├─ Policy allows auto-approval?
-    ├─ Operation is destructive?
-    └─ If all yes: AUTO-APPROVED → proceed
-    └─ If any no: PENDING → wait for approval
-    ↓
+ Requester has required role?
+ Policy allows auto-approval?
+ Operation is destructive?
+ If all yes: AUTO-APPROVED proceed
+ If any no: PENDING wait for approval
+ 
 [Get Approvers]
-    ├─ Policy defines required roles
-    ├─ RBAC lists users with roles
-    └─ Notify approvers
-    ↓
+ Policy defines required roles
+ RBAC lists users with roles
+ Notify approvers
+ 
 [Wait for Decisions]
-    ├─ SLA: 4 hours
-    ├─ Approver submits decision (approve/reject)
-    └─ Audit logs decision
-    ↓
+ SLA: 4 hours
+ Approver submits decision (approve/reject)
+ Audit logs decision
+ 
 [Check Quorum]
-    ├─ All required approvers approved?
-    ├─ Status: APPROVED → proceed
-    ├─ Any rejected?
-    ├─ Status: REJECTED → blocked
-    └─ SLA expired?
-    └─ Escalate to L2 approvers
-    ↓
+ All required approvers approved?
+ Status: APPROVED proceed
+ Any rejected?
+ Status: REJECTED blocked
+ SLA expired?
+ Escalate to L2 approvers
+ 
 Operation Proceeds / Blocked
 ```
 
@@ -332,56 +332,56 @@ Operation Proceeds / Blocked
 ### Infrastructure Topology
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                  Internet                                │
-└──────────────────────────────────────────────────────────┘
-                         │
-                    [CDN / WAF]
-                    CloudFront/Akamai
-                         │
-┌──────────────────────────────────────────────────────────┐
-│             AWS Region / Google Cloud Region             │
-├──────────────────────────────────────────────────────────┤
-│  Load Balancer (NLB / LB)                                │
-│  - Port 443 (HTTPS)                                      │
-│  - Health checks to backend                             │
-│  - Auto-scaling                                         │
-└──────────────────────────────────────────────────────────┘
-                         │
-        ┌────────────────┼────────────────┐
-        │                │                │
-┌───────▼───────┐ ┌──────▼──────┐ ┌──────▼──────┐
-│ K8s Cluster   │ │ K8s Cluster │ │ K8s Cluster │
-│ Zone A (us-a) │ │ Zone B (us-b)│ │ Zone C (us-c)│
-├───────────────┤ ├─────────────┤ ├─────────────┤
-│ Pods:         │ │ Pods:       │ │ Pods:       │
-│ - API Svc     │ │ - API Svc   │ │ - API Svc   │
-│ - Agent Svc   │ │ - Agent Svc │ │ - Agent Svc │
-│ - Auth Svc    │ │ - Auth Svc  │ │ - Auth Svc  │
-│ - Audit Svc   │ │ - Audit Svc │ │ - Audit Svc │
-└───────┬───────┘ └──────┬──────┘ └──────┬──────┘
-        │                │                │
-        └────────────────┼────────────────┘
-                         │
-        ┌────────────────┼────────────────┐
-        │                │                │
-┌───────▼────────┐ ┌────▼────────┐ ┌────▼─────┐
-│ PostgreSQL     │ │ SQLite      │ │ Redis    │
-│ (RDS)          │ │ (Local)     │ │(Elasticache)
-│ - Agents       │ │ - RBAC      │ │ - Cache  │
-│ - Workflows    │ │ - Approval  │ │ - Sessions
-│ - Audit Logs   │ │             │ │ - Tokens
-└────────────────┘ └─────────────┘ └──────────┘
 
-        ┌────────────────┬────────────────┐
-        │                │
-┌───────▼──────────┐ ┌──▼────────────────┐
-│ S3 / GCS         │ │ Secrets Manager    │
-│ (Object Storage) │ │ (KMS Encryption)   │
-│ - Agent Code     │ │ - Master Keys      │
-│ - Agent Logs     │ │ - API Keys         │
-│ - Archived Audit │ │ - DB Passwords     │
-└──────────────────┘ └────────────────────┘
+ Internet 
+
+ 
+ [CDN / WAF]
+ CloudFront/Akamai
+ 
+
+ AWS Region / Google Cloud Region 
+
+ Load Balancer (NLB / LB) 
+ - Port 443 (HTTPS) 
+ - Health checks to backend 
+ - Auto-scaling 
+
+ 
+ 
+ 
+ 
+ K8s Cluster K8s Cluster K8s Cluster 
+ Zone A (us-a) Zone B (us-b) Zone C (us-c)
+ 
+ Pods: Pods: Pods: 
+ - API Svc - API Svc - API Svc 
+ - Agent Svc - Agent Svc - Agent Svc 
+ - Auth Svc - Auth Svc - Auth Svc 
+ - Audit Svc - Audit Svc - Audit Svc 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ PostgreSQL SQLite Redis 
+ (RDS) (Local) (Elasticache)
+ - Agents - RBAC - Cache 
+ - Workflows - Approval - Sessions
+ - Audit Logs - Tokens
+ 
+
+ 
+ 
+ 
+ S3 / GCS Secrets Manager 
+ (Object Storage) (KMS Encryption) 
+ - Agent Code - Master Keys 
+ - Agent Logs - API Keys 
+ - Archived Audit - DB Passwords 
+ 
 ```
 
 ### Service Deployment

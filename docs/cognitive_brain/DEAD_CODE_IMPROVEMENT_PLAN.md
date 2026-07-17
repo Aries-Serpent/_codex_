@@ -172,47 +172,47 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 | P3 | Observability | Emit OTEL span for `pr_comment_consolidator.py` upsert latency | Agent | Backlog |
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening  COMPLETE", "PatternCompressor /health "'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening COMPLETE", "PatternCompressor /health "'}}%%
 
 flowchart TD
-    subgraph P4["Phase 4 — Production Hardening  COMPLETE"]
-        P4A["PatternCompressor /health "]
-        P4B["BrainClient health diagnostics "]
-        P4C["Redis RAG cache backend "]
-        P4D["Redis feast backend "]
-        P4E["CrossEncoderReranker "]
-        P4F["OTel coherence gauge "]
-        P4G["test_loop.py dummy→real "]
-        P4H["dev-key hardening "]
-        P4I["PS-06 KMeans sharding "]
-        P4J["capability_detectors 25 tests "]
-    end
+ subgraph P4["Phase 4 — Production Hardening COMPLETE"]
+ P4A["PatternCompressor /health "]
+ P4B["BrainClient health diagnostics "]
+ P4C["Redis RAG cache backend "]
+ P4D["Redis feast backend "]
+ P4E["CrossEncoderReranker "]
+ P4F["OTel coherence gauge "]
+ P4G["test_loop.py dummyreal "]
+ P4H["dev-key hardening "]
+ P4I["PS-06 KMeans sharding "]
+ P4J["capability_detectors 25 tests "]
+ end
 
-    subgraph P5["Phase 5 — CI Robustness  ACTIVE"]
-        P5A["Fence-opener bypass prevention  S138"]
-        P5B["PRECOMMIT_FILES post-sync augment  S138"]
-        P5C["Template-literal indentation fix  S138"]
-        P5D["9 bot-comment upsert types  S136-S137"]
-        P5E["Logging import ordering  S138"]
-        P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail "]
-        P5G["slow-test marker audit "]
-        P5H["session-analysis post-merge scan "]
-    end
+ subgraph P5["Phase 5 — CI Robustness ACTIVE"]
+ P5A["Fence-opener bypass prevention S138"]
+ P5B["PRECOMMIT_FILES post-sync augment S138"]
+ P5C["Template-literal indentation fix S138"]
+ P5D["9 bot-comment upsert types S136-S137"]
+ P5E["Logging import ordering S138"]
+ P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail "]
+ P5G["slow-test marker audit "]
+ P5H["session-analysis post-merge scan "]
+ end
 
-    subgraph P6["Phase 6 — Observability 🔮 PLANNED"]
-        P6A["Workflow timing histogram"]
-        P6B["OTEL span — upsert latency"]
-        P6C["Cognitive Brain dashboard v2"]
-        P6D["Token rotation e2e (admin)"]
-    end
+ subgraph P6["Phase 6 — Observability PLANNED"]
+ P6A["Workflow timing histogram"]
+ P6B["OTEL span — upsert latency"]
+ P6C["Cognitive Brain dashboard v2"]
+ P6D["Token rotation e2e (admin)"]
+ end
 
-    P4 --> P5
+ P4 --> P5
 
-    P5 --> P6
+ P5 --> P6
 
-    style P4 fill:#22c55e,color:#fff
-    style P5 fill:#3b82f6,color:#fff
-    style P6 fill:#8b5cf6,color:#fff
+ style P4 fill:#22c55e,color:#fff
+ style P5 fill:#3b82f6,color:#fff
+ style P6 fill:#8b5cf6,color:#fff
 ```
 
 ---

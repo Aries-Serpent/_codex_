@@ -96,7 +96,7 @@ Implemented comprehensive security utilities:
 ```python
 logger.info(f" Secret '{secret_name}' set successfully via API")
 print(f" {secret}")
-print(f"🔑 Generated 256-bit key: {key[:8]}...{key[-8:]}")
+print(f" Generated 256-bit key: {key[:8]}...{key[-8:]}")
 ```
 
 **After**:
@@ -106,7 +106,7 @@ logger.info(f" Secret set successfully via API")
 # Security: Don't log secret names - CodeQL alert #3340, #3341
 print(f" Secret #{idx} configured")
 # Security: Don't log key values, even partial
-print(f"🔑 Generated 256-bit key successfully")
+print(f" Generated 256-bit key successfully")
 ```
 
 ## 3. Added Operational Visibility

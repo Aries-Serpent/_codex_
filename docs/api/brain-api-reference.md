@@ -30,11 +30,11 @@ Manages the lifecycle of session checkpoints, enabling recovery and state restor
 
 ```python
 class CheckpointManager:
-    """Manage session checkpoints and recovery.
-    
-    Handles checkpoint creation, listing, retrieval, and conditional checkpointing
-    based on task progress thresholds.
-    """
+ """Manage session checkpoints and recovery.
+ 
+ Handles checkpoint creation, listing, retrieval, and conditional checkpointing
+ based on task progress thresholds.
+ """
 ```
 
 **Key Methods**:
@@ -55,11 +55,11 @@ Create a new checkpoint for a session.
 **Example**:
 ```python
 checkpoint = manager.create_checkpoint(
-    session_id="sess-001",
-    agent_state={"progress": 0.5, "completed_tasks": [...]},
-    context={"repo": "...", "branch": "main"},
-    title="Data processing phase 1 complete",
-    metadata={"phase": 1, "records_processed": 50000}
+ session_id="sess-001",
+ agent_state={"progress": 0.5, "completed_tasks": [...]},
+ context={"repo": "...", "branch": "main"},
+ title="Data processing phase 1 complete",
+ metadata={"phase": 1, "records_processed": 50000}
 )
 ```
 
@@ -77,7 +77,7 @@ List all checkpoints for a session.
 ```python
 checkpoints = manager.list_checkpoints(session_id="sess-001")
 for cp in checkpoints:
-    print(f"{cp.title} - Created: {cp.created_at}")
+ print(f"{cp.title} - Created: {cp.created_at}")
 ```
 
 #### `get_checkpoint(checkpoint_id)`
@@ -93,8 +93,8 @@ Retrieve a specific checkpoint by ID.
 ```python
 checkpoint = manager.get_checkpoint(checkpoint_id="cp-12345")
 if checkpoint:
-    print(f"Checkpoint: {checkpoint.title}")
-    print(f"State: {checkpoint.agent_state}")
+ print(f"Checkpoint: {checkpoint.title}")
+ print(f"State: {checkpoint.agent_state}")
 ```
 
 #### `maybe_checkpoint(session_id, threshold=0.5)`
@@ -112,7 +112,7 @@ Conditionally create a checkpoint based on progress.
 # Create checkpoint if 80% through task
 checkpoint = manager.maybe_checkpoint(session_id="sess-001", threshold=0.8)
 if checkpoint:
-    print(f"Checkpoint created at {checkpoint.created_at}")
+ print(f"Checkpoint created at {checkpoint.created_at}")
 ```
 
 ---
@@ -123,11 +123,11 @@ Handles session recovery from checkpoints.
 
 ```python
 class SessionResume:
-    """Resume sessions from checkpoint state.
-    
-    Restores agent state, context, and execution state from checkpoints,
-    enabling stateful recovery and continuation.
-    """
+ """Resume sessions from checkpoint state.
+ 
+ Restores agent state, context, and execution state from checkpoints,
+ enabling stateful recovery and continuation.
+ """
 ```
 
 **Key Methods**:
@@ -147,11 +147,11 @@ resume = SessionResume()
 result = resume.resume_from_checkpoint(checkpoint_id="cp-12345")
 
 if result.success:
-    restored_state = result.agent_state
-    restored_context = result.context
-    print(f"Resumed at: {result.timestamp}")
+ restored_state = result.agent_state
+ restored_context = result.context
+ print(f"Resumed at: {result.timestamp}")
 else:
-    print(f"Resume failed: {result.error}")
+ print(f"Resume failed: {result.error}")
 ```
 
 #### `get_resume_result()`
@@ -168,11 +168,11 @@ Consolidates short-term memory (STM) to long-term memory (LTM) with pattern disc
 
 ```python
 class MemorySyncEngine:
-    """STM→LTM consolidation and pattern discovery.
-    
-    Automatically consolidates memory, discovers patterns, and tags
-    improvement areas for continuous learning.
-    """
+ """STMLTM consolidation and pattern discovery.
+ 
+ Automatically consolidates memory, discovers patterns, and tags
+ improvement areas for continuous learning.
+ """
 ```
 
 **Key Methods**:
@@ -203,9 +203,9 @@ Identify patterns in consolidated memory.
 ```python
 patterns = engine.discover_patterns()
 for pattern in patterns:
-    print(f"Pattern: {pattern.name}")
-    print(f"Type: {pattern.pattern_type}")
-    print(f"Frequency: {pattern.frequency}")
+ print(f"Pattern: {pattern.name}")
+ print(f"Type: {pattern.pattern_type}")
+ print(f"Frequency: {pattern.frequency}")
 ```
 
 #### `tag_improvement_areas()`
@@ -218,7 +218,7 @@ Auto-tag patterns with improvement areas.
 ```python
 improvement_tags = engine.tag_improvement_areas()
 for pattern_id, areas in improvement_tags.items():
-    print(f"{pattern_id}: {areas}")
+ print(f"{pattern_id}: {areas}")
 ```
 
 ---
@@ -229,11 +229,11 @@ Coordinates OODA (Observe, Orient, Decide, Act) loop execution.
 
 ```python
 class OODAOrchestrator:
-    """Orchestrate OODA loop execution.
-    
-    Manages the observe → orient → decide → act cycle with
-    decision caching and optimization.
-    """
+ """Orchestrate OODA loop execution.
+ 
+ Manages the observe orient decide act cycle with
+ decision caching and optimization.
+ """
 ```
 
 **Key Methods**:
@@ -253,13 +253,13 @@ Execute one complete OODA cycle.
 orchestrator = OODAOrchestrator()
 
 result = orchestrator.execute_cycle(
-    observation={"task_status": "in_progress", "progress": 0.5},
-    context={"session_id": "sess-001"}
+ observation={"task_status": "in_progress", "progress": 0.5},
+ context={"session_id": "sess-001"}
 )
 
 if result.success:
-    print(f"Decision: {result.decision}")
-    print(f"Actions: {result.actions}")
+ print(f"Decision: {result.decision}")
+ print(f"Actions: {result.actions}")
 ```
 
 ---
@@ -271,34 +271,34 @@ Complete API signatures for all public functions:
 ```python
 # Session & Checkpoint Management
 def create_checkpoint(
-    session_id: str,
-    agent_state: Dict[str, Any],
-    context: Dict[str, Any],
-    title: str,
-    metadata: Optional[Dict[str, Any]] = None
+ session_id: str,
+ agent_state: Dict[str, Any],
+ context: Dict[str, Any],
+ title: str,
+ metadata: Optional[Dict[str, Any]] = None
 ) -> Checkpoint: ...
 
 def list_checkpoints(
-    session_id: str,
-    limit: int = 50,
-    offset: int = 0
+ session_id: str,
+ limit: int = 50,
+ offset: int = 0
 ) -> List[Checkpoint]: ...
 
 def get_checkpoint(checkpoint_id: str) -> Optional[Checkpoint]: ...
 
 def maybe_checkpoint(
-    session_id: str,
-    threshold: float = 0.5
+ session_id: str,
+ threshold: float = 0.5
 ) -> Optional[Checkpoint]: ...
 
 def delete_checkpoint(
-    checkpoint_id: str,
-    audit_reason: Optional[str] = None
+ checkpoint_id: str,
+ audit_reason: Optional[str] = None
 ) -> bool: ...
 
 # Session Resume
 def resume_from_checkpoint(
-    checkpoint_id: str
+ checkpoint_id: str
 ) -> ResumeResult: ...
 
 # Memory Management
@@ -310,8 +310,8 @@ def tag_improvement_areas() -> Dict[str, List[str]]: ...
 
 # OODA Orchestration
 def execute_ooda_cycle(
-    observation: Dict[str, Any],
-    context: Dict[str, Any]
+ observation: Dict[str, Any],
+ context: Dict[str, Any]
 ) -> OODAResult: ...
 ```
 
@@ -326,22 +326,22 @@ from codex.brain import CheckpointManager, SessionResume, RetentionPolicy
 
 # Initialize checkpoint manager
 manager = CheckpointManager(
-    storage_path="/data/checkpoints",
-    retention_policy=RetentionPolicy(max_age_days=90)
+ storage_path="/data/checkpoints",
+ retention_policy=RetentionPolicy(max_age_days=90)
 )
 
 # Create checkpoint at milestone
 state = {
-    "progress": 0.5,
-    "completed_items": ["task1", "task2"],
-    "current_task": "task3"
+ "progress": 0.5,
+ "completed_items": ["task1", "task2"],
+ "current_task": "task3"
 }
 
 checkpoint = manager.create_checkpoint(
-    session_id="my-session",
-    agent_state=state,
-    context={"repo": "my-repo", "branch": "main"},
-    title="Milestone: 50% complete"
+ session_id="my-session",
+ agent_state=state,
+ context={"repo": "my-repo", "branch": "main"},
+ title="Milestone: 50% complete"
 )
 
 print(f"Created checkpoint: {checkpoint.id}")
@@ -351,8 +351,8 @@ resume = SessionResume()
 result = resume.resume_from_checkpoint(checkpoint_id=checkpoint.id)
 
 if result.success:
-    print("Session restored successfully")
-    print(f"Progress: {result.agent_state['progress']}")
+ print("Session restored successfully")
+ print(f"Progress: {result.agent_state['progress']}")
 ```
 
 ### Example 2: Conditional Checkpointing
@@ -364,17 +364,17 @@ manager = CheckpointManager()
 
 # Check every N iterations
 for i in range(1000):
-    # Do work...
-    current_progress = i / 1000
-    
-    # Create checkpoint at 25%, 50%, 75% milestones
-    checkpoint = manager.maybe_checkpoint(
-        session_id="long-task",
-        threshold=current_progress
-    )
-    
-    if checkpoint:
-        print(f"Checkpoint created at {current_progress*100:.0f}%")
+ # Do work...
+ current_progress = i / 1000
+ 
+ # Create checkpoint at 25%, 50%, 75% milestones
+ checkpoint = manager.maybe_checkpoint(
+ session_id="long-task",
+ threshold=current_progress
+ )
+ 
+ if checkpoint:
+ print(f"Checkpoint created at {current_progress*100:.0f}%")
 ```
 
 ### Example 3: Memory Consolidation
@@ -386,19 +386,19 @@ engine = MemorySyncEngine()
 
 # Consolidate STM to LTM
 metrics = engine.consolidate_memories()
-print(f"STM→LTM: {metrics.stm_entries_moved} entries")
+print(f"STMLTM: {metrics.stm_entries_moved} entries")
 print(f"Duplicates: {metrics.duplicates_detected}")
 
 # Discover patterns
 patterns = engine.discover_patterns()
 for pattern in patterns:
-    print(f"Pattern: {pattern.name} (frequency: {pattern.frequency})")
+ print(f"Pattern: {pattern.name} (frequency: {pattern.frequency})")
 
 # Tag with improvement areas
 tags = engine.tag_improvement_areas()
 for pattern_id, areas in tags.items():
-    if ImprovementArea.PERFORMANCE in areas:
-        print(f"Performance improvement opportunity: {pattern_id}")
+ if ImprovementArea.PERFORMANCE in areas:
+ print(f"Performance improvement opportunity: {pattern_id}")
 ```
 
 ### Example 4: OODA Loop
@@ -410,24 +410,24 @@ orchestrator = OODAOrchestrator()
 
 # Execute OODA cycle
 observation = {
-    "current_task": "code-review",
-    "queue_length": 5,
-    "recent_errors": []
+ "current_task": "code-review",
+ "queue_length": 5,
+ "recent_errors": []
 }
 
 result = orchestrator.execute_cycle(
-    observation=observation,
-    context={"session_id": "sess-001"}
+ observation=observation,
+ context={"session_id": "sess-001"}
 )
 
 if result.success:
-    print(f"Decision: {result.decision}")
-    for action in result.actions:
-        print(f"  - {action.type}: {action.details}")
-    
-    # Execute recommended actions
-    for action in result.actions:
-        execute_action(action)
+ print(f"Decision: {result.decision}")
+ for action in result.actions:
+ print(f" - {action.type}: {action.details}")
+ 
+ # Execute recommended actions
+ for action in result.actions:
+ execute_action(action)
 ```
 
 ---
@@ -437,71 +437,71 @@ if result.success:
 ### 1. Checkpoint Strategy
 
 ```python
-#  GOOD: Regular checkpoints with meaningful titles
+# GOOD: Regular checkpoints with meaningful titles
 def checkpoint_at_milestones(manager, session_id, phase):
-    manager.create_checkpoint(
-        session_id=session_id,
-        agent_state=get_current_state(),
-        context=get_context(),
-        title=f"Phase {phase} complete - Data validated",
-        metadata={"phase": phase, "checkpoint_type": "milestone"}
-    )
+ manager.create_checkpoint(
+ session_id=session_id,
+ agent_state=get_current_state(),
+ context=get_context(),
+ title=f"Phase {phase} complete - Data validated",
+ metadata={"phase": phase, "checkpoint_type": "milestone"}
+ )
 
-#  POOR: Vague, infrequent checkpoints
+# POOR: Vague, infrequent checkpoints
 def poor_checkpointing(manager, session_id):
-    manager.create_checkpoint(
-        session_id=session_id,
-        agent_state=state,
-        context=context,
-        title="Checkpoint"
-    )
+ manager.create_checkpoint(
+ session_id=session_id,
+ agent_state=state,
+ context=context,
+ title="Checkpoint"
+ )
 ```
 
 ### 2. Memory Management
 
 ```python
-#  GOOD: Regular consolidation with analysis
+# GOOD: Regular consolidation with analysis
 def manage_memory(engine, consolidation_interval=3600):
-    metrics = engine.consolidate_memories()
-    
-    if metrics.duplicates_detected > 100:
-        logger.warning(f"High duplication: {metrics.duplicates_detected}")
-    
-    patterns = engine.discover_patterns()
-    tags = engine.tag_improvement_areas()
-    
-    return {"metrics": metrics, "patterns": patterns, "tags": tags}
+ metrics = engine.consolidate_memories()
+ 
+ if metrics.duplicates_detected > 100:
+ logger.warning(f"High duplication: {metrics.duplicates_detected}")
+ 
+ patterns = engine.discover_patterns()
+ tags = engine.tag_improvement_areas()
+ 
+ return {"metrics": metrics, "patterns": patterns, "tags": tags}
 
-#  POOR: No consolidation or analysis
+# POOR: No consolidation or analysis
 def poor_memory_mgmt():
-    # Memory grows unbounded without consolidation
-    pass
+ # Memory grows unbounded without consolidation
+ pass
 ```
 
 ### 3. Error Recovery
 
 ```python
-#  GOOD: Graceful recovery with fallback
+# GOOD: Graceful recovery with fallback
 def safe_resume(session_id, fallback_checkpoint=None):
-    resume = SessionResume()
-    result = resume.resume_from_checkpoint(session_id)
-    
-    if not result.success:
-        logger.error(f"Resume failed: {result.error}")
-        
-        if fallback_checkpoint:
-            return resume_from_checkpoint(fallback_checkpoint)
-        else:
-            return None
-    
-    return result
+ resume = SessionResume()
+ result = resume.resume_from_checkpoint(session_id)
+ 
+ if not result.success:
+ logger.error(f"Resume failed: {result.error}")
+ 
+ if fallback_checkpoint:
+ return resume_from_checkpoint(fallback_checkpoint)
+ else:
+ return None
+ 
+ return result
 
-#  POOR: Crash on resume failure
+# POOR: Crash on resume failure
 def unsafe_resume(session_id):
-    resume = SessionResume()
-    result = resume.resume_from_checkpoint(session_id)
-    # Assumes result.success is always true
-    return result
+ resume = SessionResume()
+ result = resume.resume_from_checkpoint(session_id)
+ # Assumes result.success is always true
+ return result
 ```
 
 ---
@@ -513,35 +513,35 @@ def unsafe_resume(session_id):
 **CheckpointNotFound**:
 ```python
 try:
-    checkpoint = manager.get_checkpoint(cp_id)
+ checkpoint = manager.get_checkpoint(cp_id)
 except CheckpointNotFound:
-    print(f"Checkpoint {cp_id} not found")
-    # Fall back to latest checkpoint
-    checkpoints = manager.list_checkpoints(session_id, limit=1)
-    checkpoint = checkpoints[0] if checkpoints else None
+ print(f"Checkpoint {cp_id} not found")
+ # Fall back to latest checkpoint
+ checkpoints = manager.list_checkpoints(session_id, limit=1)
+ checkpoint = checkpoints[0] if checkpoints else None
 ```
 
 **ResumeFailed**:
 ```python
 try:
-    result = resume.resume_from_checkpoint(cp_id)
-    if not result.success:
-        raise ResumeFailed(result.error)
+ result = resume.resume_from_checkpoint(cp_id)
+ if not result.success:
+ raise ResumeFailed(result.error)
 except ResumeFailed as e:
-    logger.error(f"Could not resume: {e}")
-    # Create fresh session
-    initialize_new_session()
+ logger.error(f"Could not resume: {e}")
+ # Create fresh session
+ initialize_new_session()
 ```
 
 **ConsolidationFailed**:
 ```python
 try:
-    metrics = engine.consolidate_memories()
+ metrics = engine.consolidate_memories()
 except ConsolidationFailed as e:
-    logger.error(f"Memory consolidation failed: {e}")
-    # Retry with cleanup
-    engine.cleanup_corrupted_entries()
-    metrics = engine.consolidate_memories()
+ logger.error(f"Memory consolidation failed: {e}")
+ # Retry with cleanup
+ engine.cleanup_corrupted_entries()
+ metrics = engine.consolidate_memories()
 ```
 
 ---

@@ -39,87 +39,87 @@ This document provides comprehensive specifications for production-ready GitHub 
 %%{init: {'accessibility': {'title': 'Diagram showing Pull Request, Issue'}}%%
 
 graph TB
-    subgraph "GitHub Events"
-        PR[Pull Request]
-        Issue[Issue]
-        Push[Push Event]
-        Schedule[Scheduled Event]
-    end
+ subgraph "GitHub Events"
+ PR[Pull Request]
+ Issue[Issue]
+ Push[Push Event]
+ Schedule[Scheduled Event]
+ end
 
-    subgraph "Agent Orchestrator"
-        Dispatcher[Event Dispatcher]
-        Queue[Task Queue]
-        Priority[Priority Manager]
-    end
+ subgraph "Agent Orchestrator"
+ Dispatcher[Event Dispatcher]
+ Queue[Task Queue]
+ Priority[Priority Manager]
+ end
 
-    subgraph "Tier 1 Agents - GitHub Team"
-        Auth[Auth Manager]
-        Security[Security Enforcer]
-        Workflow[Workflow Optimizer]
-        Test[Test Orchestrator]
-        Deploy[Deployment Gatekeeper]
-    end
+ subgraph "Tier 1 Agents - GitHub Team"
+ Auth[Auth Manager]
+ Security[Security Enforcer]
+ Workflow[Workflow Optimizer]
+ Test[Test Orchestrator]
+ Deploy[Deployment Gatekeeper]
+ end
 
-    subgraph "Tier 2 Agents - Copilot Pro+"
-        CodeReview[Code Reviewer]
-        Architect[Architecture Analyzer]
-        Perf[Performance Optimizer]
-        Predict[Predictive Maintenance]
-    end
+ subgraph "Tier 2 Agents - Copilot Pro+"
+ CodeReview[Code Reviewer]
+ Architect[Architecture Analyzer]
+ Perf[Performance Optimizer]
+ Predict[Predictive Maintenance]
+ end
 
-    subgraph "Data Layer"
-        Metrics[Metrics Store]
-        Logs[Audit Logs]
-        State[Agent State]
-    end
+ subgraph "Data Layer"
+ Metrics[Metrics Store]
+ Logs[Audit Logs]
+ State[Agent State]
+ end
 
-    PR --> Dispatcher
+ PR --> Dispatcher
 
-    Issue --> Dispatcher
+ Issue --> Dispatcher
 
-    Push --> Dispatcher
+ Push --> Dispatcher
 
-    Schedule --> Dispatcher
+ Schedule --> Dispatcher
 
-    Dispatcher --> Queue
+ Dispatcher --> Queue
 
-    Queue --> Priority
+ Queue --> Priority
 
-    Priority --> Auth
+ Priority --> Auth
 
-    Priority --> Security
+ Priority --> Security
 
-    Priority --> Workflow
+ Priority --> Workflow
 
-    Priority --> Test
+ Priority --> Test
 
-    Priority --> Deploy
+ Priority --> Deploy
 
-    Priority --> CodeReview
+ Priority --> CodeReview
 
-    Priority --> Architect
+ Priority --> Architect
 
-    Priority --> Perf
+ Priority --> Perf
 
-    Priority --> Predict
+ Priority --> Predict
 
-    Auth --> Metrics
+ Auth --> Metrics
 
-    Security --> Logs
+ Security --> Logs
 
-    Workflow --> State
+ Workflow --> State
 
-    Test --> Metrics
+ Test --> Metrics
 
-    Deploy --> Logs
+ Deploy --> Logs
 
-    CodeReview --> Metrics
+ CodeReview --> Metrics
 
-    Architect --> State
+ Architect --> State
 
-    Perf --> Metrics
+ Perf --> Metrics
 
-    Predict --> Logs
+ Predict --> Logs
 ```
 
 ### Design Principles
@@ -196,25 +196,25 @@ graph TB
 
 graph LR
 
-    Schedule[Cron: Monthly] --> Agent[Auth Manager]
+ Schedule[Cron: Monthly] --> Agent[Auth Manager]
 
-    Manual[Manual Trigger] --> Agent
+ Manual[Manual Trigger] --> Agent
 
-    Agent --> CheckMFA[Check MFA Status]
+ Agent --> CheckMFA[Check MFA Status]
 
-    Agent --> RotateTokens[Rotate JWT Secrets]
+ Agent --> RotateTokens[Rotate JWT Secrets]
 
-    Agent --> SyncSecrets[Sync GitHub Secrets]
+ Agent --> SyncSecrets[Sync GitHub Secrets]
 
-    CheckMFA --> Report[Generate Report]
+ CheckMFA --> Report[Generate Report]
 
-    RotateTokens --> Report
+ RotateTokens --> Report
 
-    SyncSecrets --> Report
+ SyncSecrets --> Report
 
-    Report --> Issue[Create GitHub Issue]
+ Report --> Issue[Create GitHub Issue]
 
-    Report --> Metrics[Update Metrics]
+ Report --> Metrics[Update Metrics]
 ```
 
 **Configuration** (`config.yaml`):
@@ -224,35 +224,35 @@ version: 1.0.0
 tier: 1
 schedule: monthly
 triggers:
-  - schedule
-  - workflow_dispatch
+ - schedule
+ - workflow_dispatch
 permissions:
-  contents: read
-  issues: write
-  secrets: write
+ contents: read
+ issues: write
+ secrets: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-    - CODEX_MASTER_KEY
-    - TOKEN_SECRET_KEY
-  optional:
-    - COMPLIANCE_REPORT_KEY
+ required:
+ - GITHUB_TOKEN
+ - CODEX_MASTER_KEY
+ - TOKEN_SECRET_KEY
+ optional:
+ - COMPLIANCE_REPORT_KEY
 actions:
-  - name: check_mfa
-    description: Check MFA enrollment status
-    script: scripts/mfa_enrollment_automation.py
-  - name: rotate_tokens
-    description: Rotate JWT signing keys
-    script: scripts/rotate_jwt_secret.py
-  - name: sync_secrets
-    description: Sync secrets across repositories
-    script: scripts/github_secrets_sync.py
+ - name: check_mfa
+ description: Check MFA enrollment status
+ script: scripts/mfa_enrollment_automation.py
+ - name: rotate_tokens
+ description: Rotate JWT signing keys
+ script: scripts/rotate_jwt_secret.py
+ - name: sync_secrets
+ description: Sync secrets across repositories
+ script: scripts/github_secrets_sync.py
 outputs:
-  - type: issue
-    title: "Auth Compliance Report - {date}"
-    labels: ["compliance", "security", "automated"]
-  - type: metrics
-    destination: .codex/metrics/auth_compliance.json
+ - type: issue
+ title: "Auth Compliance Report - {date}"
+ labels: ["compliance", "security", "automated"]
+ - type: metrics
+ destination: .codex/metrics/auth_compliance.json
 ```
 
 **Usage**:
@@ -289,35 +289,35 @@ python .github/agents/github-auth-manager/agent.py --action rotate-tokens
 
 graph TD
 
-    Trigger[PR/Push Event] --> Agent[Security Enforcer]
+ Trigger[PR/Push Event] --> Agent[Security Enforcer]
 
-    Schedule[Daily Scan] --> Agent
+ Schedule[Daily Scan] --> Agent
 
-    Agent --> ScanRepo[Scan Repository]
+ Agent --> ScanRepo[Scan Repository]
 
-    ScanRepo --> CheckMFA[Verify MFA]
+ ScanRepo --> CheckMFA[Verify MFA]
 
-    ScanRepo --> CheckBranch[Check Branch Protection]
+ ScanRepo --> CheckBranch[Check Branch Protection]
 
-    ScanRepo --> CheckSecrets[Scan for Secrets]
+ ScanRepo --> CheckSecrets[Scan for Secrets]
 
-    CheckMFA --> Remediate{Auto-Remediate?}
+ CheckMFA --> Remediate{Auto-Remediate?}
 
-    CheckBranch --> Remediate
+ CheckBranch --> Remediate
 
-    CheckSecrets --> Remediate
+ CheckSecrets --> Remediate
 
-    Remediate -->|Yes| Fix[Apply Fix]
+ Remediate -->|Yes| Fix[Apply Fix]
 
-    Remediate -->|No| Alert[Create Alert]
+ Remediate -->|No| Alert[Create Alert]
 
-    Fix --> Report[Generate Report]
+ Fix --> Report[Generate Report]
 
-    Alert --> Report
+ Alert --> Report
 
-    Report --> Issue[GitHub Issue]
+ Report --> Issue[GitHub Issue]
 
-    Report --> Status[Security Badge]
+ Report --> Status[Security Badge]
 ```
 
 **Configuration** (`config.yaml`):
@@ -327,41 +327,41 @@ version: 1.0.0
 tier: 1
 schedule: daily
 triggers:
-  - pull_request
-  - push
-  - schedule
+ - pull_request
+ - push
+ - schedule
 permissions:
-  contents: write
-  issues: write
-  pull_requests: write
-  security_events: write
+ contents: write
+ issues: write
+ pull_requests: write
+ security_events: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-    - SECURITY_POLICY_LEVEL  # strict, moderate, permissive
-  optional:
-    - AUTO_REMEDIATE  # true/false
+ required:
+ - GITHUB_TOKEN
+ - SECURITY_POLICY_LEVEL # strict, moderate, permissive
+ optional:
+ - AUTO_REMEDIATE # true/false
 policies:
-  mfa_required: true
-  branch_protection: true
-  secret_scanning: true
-  dependency_review: true
-  code_scanning: true
+ mfa_required: true
+ branch_protection: true
+ secret_scanning: true
+ dependency_review: true
+ code_scanning: true
 auto_remediation:
-  enabled: true
-  actions:
-    - fix_branch_protection
-    - enable_secret_scanning
-    - update_security_policy
-  approval_required: false  # Set to true for production
+ enabled: true
+ actions:
+ - fix_branch_protection
+ - enable_secret_scanning
+ - update_security_policy
+ approval_required: false # Set to true for production
 outputs:
-  - type: issue
-    title: "Security Scan - {repo} - {date}"
-    labels: ["security", "automated"]
-  - type: badge
-    path: .github/badges/security-score.svg
-  - type: metrics
-    destination: .codex/metrics/security_metrics.json
+ - type: issue
+ title: "Security Scan - {repo} - {date}"
+ labels: ["security", "automated"]
+ - type: badge
+ path: .github/badges/security-score.svg
+ - type: metrics
+ destination: .codex/metrics/security_metrics.json
 ```
 
 **Usage**:
@@ -398,35 +398,35 @@ python .github/agents/github-security-enforcer/agent.py --auto-remediate
 
 graph TD
 
-    Trigger[Workflow Completion] --> Agent[Workflow Optimizer]
+ Trigger[Workflow Completion] --> Agent[Workflow Optimizer]
 
-    Schedule[Weekly Analysis] --> Agent
+ Schedule[Weekly Analysis] --> Agent
 
-    Agent --> Analyze[Analyze Performance]
+ Agent --> Analyze[Analyze Performance]
 
-    Analyze --> CacheOpt[Cache Optimization]
+ Analyze --> CacheOpt[Cache Optimization]
 
-    Analyze --> SecretOpt[Secret Management]
+ Analyze --> SecretOpt[Secret Management]
 
-    Analyze --> RateLimit[Rate Limit Check]
+ Analyze --> RateLimit[Rate Limit Check]
 
-    CacheOpt --> Recommend[Generate Recommendations]
+ CacheOpt --> Recommend[Generate Recommendations]
 
-    SecretOpt --> Recommend
+ SecretOpt --> Recommend
 
-    RateLimit --> Recommend
+ RateLimit --> Recommend
 
-    Recommend --> AutoApply{Auto-Apply?}
+ Recommend --> AutoApply{Auto-Apply?}
 
-    AutoApply -->|Yes| Implement[Apply Changes]
+ AutoApply -->|Yes| Implement[Apply Changes]
 
-    AutoApply -->|No| Report[Create Report]
+ AutoApply -->|No| Report[Create Report]
 
-    Implement --> Report
+ Implement --> Report
 
-    Report --> PR[Create PR]
+ Report --> PR[Create PR]
 
-    Report --> Metrics[Update Metrics]
+ Report --> Metrics[Update Metrics]
 ```
 
 **Configuration** (`config.yaml`):
@@ -436,29 +436,29 @@ version: 1.0.0
 tier: 1
 schedule: weekly
 triggers:
-  - workflow_run
-  - schedule
+ - workflow_run
+ - schedule
 permissions:
-  contents: write
-  actions: write
-  pull_requests: write
+ contents: write
+ actions: write
+ pull_requests: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-  optional:
-    - OPTIMIZATION_LEVEL  # aggressive, balanced, conservative
+ required:
+ - GITHUB_TOKEN
+ optional:
+ - OPTIMIZATION_LEVEL # aggressive, balanced, conservative
 optimization_targets:
-  - cache_hit_rate: ">80%"
-  - workflow_duration: "<10m"
-  - secret_rotation: "monthly" # pragma: allowlist secret
-  - api_rate_limit_usage: "<70%"
-auto_apply: false  # Requires PR review
+ - cache_hit_rate: ">80%"
+ - workflow_duration: "<10m"
+ - secret_rotation: "monthly" # pragma: allowlist secret
+ - api_rate_limit_usage: "<70%"
+auto_apply: false # Requires PR review
 outputs:
-  - type: pull_request
-    title: "Workflow Optimization - {date}"
-    labels: ["optimization", "automated"]
-  - type: metrics
-    destination: .codex/metrics/workflow_performance.json
+ - type: pull_request
+ title: "Workflow Optimization - {date}"
+ labels: ["optimization", "automated"]
+ - type: metrics
+ destination: .codex/metrics/workflow_performance.json
 ```
 
 **Usage**:
@@ -497,29 +497,29 @@ python .github/agents/github-workflow-optimizer/agent.py --optimize --create-pr
 
 graph TD
 
-    PR[Pull Request] --> Agent[Code Reviewer]
+ PR[Pull Request] --> Agent[Code Reviewer]
 
-    Agent --> Parse[Parse Code Changes]
+ Agent --> Parse[Parse Code Changes]
 
-    Parse --> Copilot[Copilot API]
+ Parse --> Copilot[Copilot API]
 
-    Copilot --> Security[Security Check]
+ Copilot --> Security[Security Check]
 
-    Copilot --> Style[Style Check]
+ Copilot --> Style[Style Check]
 
-    Copilot --> Performance[Performance Check]
+ Copilot --> Performance[Performance Check]
 
-    Security --> Suggest[Generate Suggestions]
+ Security --> Suggest[Generate Suggestions]
 
-    Style --> Suggest
+ Style --> Suggest
 
-    Performance --> Suggest
+ Performance --> Suggest
 
-    Suggest --> Review[Post Review]
+ Suggest --> Review[Post Review]
 
-    Review --> Comment[PR Comments]
+ Review --> Comment[PR Comments]
 
-    Review --> Status[Status Check]
+ Review --> Status[Status Check]
 ```
 
 **Requirements**:
@@ -534,34 +534,34 @@ version: 1.0.0
 tier: 2
 required_license: copilot-pro-plus
 triggers:
-  - pull_request_opened
-  - pull_request_synchronize
+ - pull_request_opened
+ - pull_request_synchronize
 permissions:
-  contents: read
-  pull_requests: write
-  checks: write
+ contents: read
+ pull_requests: write
+ checks: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-    - COPILOT_API_TOKEN
-  optional:
-    - REVIEW_STRICTNESS  # strict, moderate, lenient
+ required:
+ - GITHUB_TOKEN
+ - COPILOT_API_TOKEN
+ optional:
+ - REVIEW_STRICTNESS # strict, moderate, lenient
 analysis:
-  security: true
-  style: true
-  performance: true
-  best_practices: true
-  test_coverage: true
+ security: true
+ style: true
+ performance: true
+ best_practices: true
+ test_coverage: true
 thresholds:
-  max_issues: 10
-  min_coverage: 80
-  max_complexity: 15
+ max_issues: 10
+ min_coverage: 80
+ max_complexity: 15
 outputs:
-  - type: review
-    path: pull_request_review
-  - type: check
-    name: "AI Code Review"
-    conclusion: success|failure
+ - type: review
+ path: pull_request_review
+ - type: check
+ name: "AI Code Review"
+ conclusion: success|failure
 ```
 
 **Implementation Status**: Proposed for Phase 12
@@ -586,37 +586,37 @@ outputs:
 
 graph TD
 
-    Push[Push/PR Event] --> Agent[Test Orchestrator]
+ Push[Push/PR Event] --> Agent[Test Orchestrator]
 
-    Agent --> Detect[Detect Changes]
+ Agent --> Detect[Detect Changes]
 
-    Detect --> Select[Select Tests]
+ Detect --> Select[Select Tests]
 
-    Select --> Parallel[Parallel Execution]
+ Select --> Parallel[Parallel Execution]
 
-    Parallel --> Unit[Unit Tests]
+ Parallel --> Unit[Unit Tests]
 
-    Parallel --> Integration[Integration Tests]
+ Parallel --> Integration[Integration Tests]
 
-    Parallel --> E2E[E2E Tests]
+ Parallel --> E2E[E2E Tests]
 
-    Unit --> Aggregate[Aggregate Results]
+ Unit --> Aggregate[Aggregate Results]
 
-    Integration --> Aggregate
+ Integration --> Aggregate
 
-    E2E --> Aggregate
+ E2E --> Aggregate
 
-    Aggregate --> Flaky[Detect Flaky Tests]
+ Aggregate --> Flaky[Detect Flaky Tests]
 
-    Aggregate --> Coverage[Coverage Analysis]
+ Aggregate --> Coverage[Coverage Analysis]
 
-    Flaky --> Report[Generate Report]
+ Flaky --> Report[Generate Report]
 
-    Coverage --> Report
+ Coverage --> Report
 
-    Report --> Status[Status Check]
+ Report --> Status[Status Check]
 
-    Report --> Issue[Create Issue]
+ Report --> Issue[Create Issue]
 ```
 
 **Configuration** (`config.yaml`):
@@ -625,45 +625,45 @@ name: github-test-orchestrator
 version: 1.0.0
 tier: 1
 triggers:
-  - pull_request
-  - push
+ - pull_request
+ - push
 permissions:
-  contents: read
-  checks: write
-  issues: write
+ contents: read
+ checks: write
+ issues: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-  optional:
-    - TEST_PARALLELISM  # Number of parallel jobs
+ required:
+ - GITHUB_TOKEN
+ optional:
+ - TEST_PARALLELISM # Number of parallel jobs
 test_suites:
-  unit:
-    command: "pytest tests/unit"
-    timeout: 5m
-    required: true
-  integration:
-    command: "pytest tests/integration"
-    timeout: 15m
-    required: true
-  e2e:
-    command: "pytest tests/e2e"
-    timeout: 30m
-    required: false
+ unit:
+ command: "pytest tests/unit"
+ timeout: 5m
+ required: true
+ integration:
+ command: "pytest tests/integration"
+ timeout: 15m
+ required: true
+ e2e:
+ command: "pytest tests/e2e"
+ timeout: 30m
+ required: false
 flaky_detection:
-  enabled: true
-  retry_count: 3
-  failure_threshold: 0.2  # 20% failure rate
+ enabled: true
+ retry_count: 3
+ failure_threshold: 0.2 # 20% failure rate
 coverage:
-  minimum: 80
-  report_format: "html,json"
+ minimum: 80
+ report_format: "html,json"
 outputs:
-  - type: check
-    name: "Test Execution"
-  - type: issue
-    title: "Flaky Tests Detected - {date}"
-    labels: ["testing", "flaky", "automated"]
-  - type: coverage_report
-    path: coverage/index.html
+ - type: check
+ name: "Test Execution"
+ - type: issue
+ title: "Flaky Tests Detected - {date}"
+ labels: ["testing", "flaky", "automated"]
+ - type: coverage_report
+ path: coverage/index.html
 ```
 
 **Implementation Status**: Proposed for Phase 12
@@ -688,37 +688,37 @@ outputs:
 
 graph TD
 
-    Deploy[Deployment Request] --> Agent[Deployment Gatekeeper]
+ Deploy[Deployment Request] --> Agent[Deployment Gatekeeper]
 
-    Agent --> Security[Security Gate]
+ Agent --> Security[Security Gate]
 
-    Agent --> Quality[Quality Gate]
+ Agent --> Quality[Quality Gate]
 
-    Agent --> Performance[Performance Gate]
+ Agent --> Performance[Performance Gate]
 
-    Security --> Check{All Gates Pass?}
+ Security --> Check{All Gates Pass?}
 
-    Quality --> Check
+ Quality --> Check
 
-    Performance --> Check
+ Performance --> Check
 
-    Check -->|Yes| Approve[Approve Deployment]
+ Check -->|Yes| Approve[Approve Deployment]
 
-    Check -->|No| Reject[Reject Deployment]
+ Check -->|No| Reject[Reject Deployment]
 
-    Approve --> Monitor[Monitor Deployment]
+ Approve --> Monitor[Monitor Deployment]
 
-    Reject --> Notify[Notify Team]
+ Reject --> Notify[Notify Team]
 
-    Monitor --> Health{Health Check}
+ Monitor --> Health{Health Check}
 
-    Health -->|Fail| Rollback[Auto Rollback]
+ Health -->|Fail| Rollback[Auto Rollback]
 
-    Health -->|Pass| Success[Mark Success]
+ Health -->|Pass| Success[Mark Success]
 
-    Rollback --> Notify
+ Rollback --> Notify
 
-    Success --> Metrics[Update Metrics]
+ Success --> Metrics[Update Metrics]
 ```
 
 **Configuration** (`config.yaml`):
@@ -727,52 +727,52 @@ name: github-deployment-gatekeeper
 version: 1.0.0
 tier: 1
 triggers:
-  - deployment
-  - workflow_dispatch
+ - deployment
+ - workflow_dispatch
 permissions:
-  contents: read
-  deployments: write
-  checks: write
+ contents: read
+ deployments: write
+ checks: write
 environment_variables:
-  required:
-    - GITHUB_TOKEN
-    - DEPLOYMENT_ENV  # production, staging, dev
+ required:
+ - GITHUB_TOKEN
+ - DEPLOYMENT_ENV # production, staging, dev
 gates:
-  security:
-    enabled: true
-    max_alerts: 0
-    required_checks:
-      - codeql
-      - dependency_review
-  quality:
-    enabled: true
-    min_coverage: 80
-    max_complexity: 15
-    required_checks:
-      - tests
-      - linting
-  performance:
-    enabled: true
-    max_response_time: 2000  # ms
-    min_throughput: 1000  # req/s
+ security:
+ enabled: true
+ max_alerts: 0
+ required_checks:
+ - codeql
+ - dependency_review
+ quality:
+ enabled: true
+ min_coverage: 80
+ max_complexity: 15
+ required_checks:
+ - tests
+ - linting
+ performance:
+ enabled: true
+ max_response_time: 2000 # ms
+ min_throughput: 1000 # req/s
 rollback:
-  enabled: true
-  auto_rollback: true
-  health_check_interval: 60  # seconds
-  failure_threshold: 3
+ enabled: true
+ auto_rollback: true
+ health_check_interval: 60 # seconds
+ failure_threshold: 3
 monitoring:
-  duration: 300  # 5 minutes
-  metrics:
-    - error_rate
-    - response_time
-    - cpu_usage
-    - memory_usage
+ duration: 300 # 5 minutes
+ metrics:
+ - error_rate
+ - response_time
+ - cpu_usage
+ - memory_usage
 outputs:
-  - type: deployment_status
-    state: success|failure
-  - type: issue
-    title: "Deployment {env} - {status} - {date}"
-    labels: ["deployment", "automated"]
+ - type: deployment_status
+ state: success|failure
+ - type: issue
+ title: "Deployment {env} - {status} - {date}"
+ labels: ["deployment", "automated"]
 ```
 
 **Implementation Status**: Proposed for Phase 12
@@ -797,45 +797,45 @@ outputs:
 ### Setup Steps
 
 1. **Configure Secrets**:
-   ```bash
-   # Navigate to repository Settings → Secrets and variables → Actions
-   # Add required secrets:
-   gh secret set GITHUB_TOKEN --body "$YOUR_TOKEN"
-   gh secret set CODEX_MASTER_KEY --body "$YOUR_KEY"
-   gh secret set TOKEN_SECRET_KEY --body "$YOUR_SECRET"
+ ```bash
+ # Navigate to repository Settings Secrets and variables Actions
+ # Add required secrets:
+ gh secret set GITHUB_TOKEN --body "$YOUR_TOKEN"
+ gh secret set CODEX_MASTER_KEY --body "$YOUR_KEY"
+ gh secret set TOKEN_SECRET_KEY --body "$YOUR_SECRET"
  ```
 
 2. **Deploy Agent Code**:
-   ```bash
-   # All agents are in .github/agents/
-   # Ensure agent files are committed:
-   git add .github/agents/
-   git commit -m "Deploy GitHub Copilot agents"
-   git push
+ ```bash
+ # All agents are in .github/agents/
+ # Ensure agent files are committed:
+ git add .github/agents/
+ git commit -m "Deploy GitHub Copilot agents"
+ git push
  ```
 
 3. **Enable Workflows**:
-   ```bash
-   # Workflows in .github/workflows/ are auto-enabled
-   # Verify in repository Settings → Actions
+ ```bash
+ # Workflows in .github/workflows/ are auto-enabled
+ # Verify in repository Settings Actions
  ```
 
 4. **Test Agent**:
-   ```bash
-   # Manual trigger via GitHub UI:
-   # Actions → Select workflow → Run workflow
+ ```bash
+ # Manual trigger via GitHub UI:
+ # Actions Select workflow Run workflow
 
-   # Or via CLI:
-   gh workflow run auth-token-rotation.yml
+ # Or via CLI:
+ gh workflow run auth-token-rotation.yml
  ```
 
 5. **Monitor Execution**:
-   ```bash
-   # View recent workflow runs:
-   gh run list --workflow auth-token-rotation.yml
+ ```bash
+ # View recent workflow runs:
+ gh run list --workflow auth-token-rotation.yml
 
-   # View logs:
-   gh run view <run_id> --log
+ # View logs:
+ gh run view <run_id> --log
  ```
 
 ---
@@ -850,15 +850,15 @@ import pytest
 from github_auth_manager.agent import AuthManager
 
 def test_check_mfa():
-    manager = AuthManager()
-    result = manager.check_mfa("test-user")
-    assert result["mfa_enabled"] in [True, False]
+ manager = AuthManager()
+ result = manager.check_mfa("test-user")
+ assert result["mfa_enabled"] in [True, False]
 
 def test_rotate_tokens():
-    manager = AuthManager()
-    result = manager.rotate_tokens()
-    assert "new_key" in result
-    assert "backup_key" in result
+ manager = AuthManager()
+ result = manager.rotate_tokens()
+ assert "new_key" in result
+ assert "backup_key" in result
 ```
 
 ## Integration Testing
@@ -869,20 +869,20 @@ import pytest
 from github import Github
 
 def test_agent_end_to_end():
-    # Test full agent workflow
-    github = Github(os.getenv("GITHUB_TOKEN"))
-    repo = github.get_repo("org/repo")
+ # Test full agent workflow
+ github = Github(os.getenv("GITHUB_TOKEN"))
+ repo = github.get_repo("org/repo")
 
-    # Trigger agent
-    workflow = repo.get_workflow("auth-token-rotation.yml")
-    workflow.create_dispatch("main")
+ # Trigger agent
+ workflow = repo.get_workflow("auth-token-rotation.yml")
+ workflow.create_dispatch("main")
 
-    # Wait for completion
-    time.sleep(60)
+ # Wait for completion
+ time.sleep(60)
 
-    # Verify results
-    issues = repo.get_issues(labels=["compliance"])
-    assert len(list(issues)) > 0
+ # Verify results
+ issues = repo.get_issues(labels=["compliance"])
+ assert len(list(issues)) > 0
 ```
 
 ## Smoke Testing
@@ -954,8 +954,8 @@ gh run list --workflow auth-token-rotation.yml
 ```bash
 # 1. Create production PR
 gh pr create --base main --head staging \
-  --title "Deploy agents to production" \
-  --body "Agent deployment checklist: ..."
+ --title "Deploy agents to production" \
+ --body "Agent deployment checklist: ..."
 
 # 2. Review and merge PR
 gh pr merge --auto --squash
@@ -992,31 +992,31 @@ gh run watch
 # .github/workflows/agent-monitoring.yml
 name: Agent Monitoring
 on:
-  schedule:
-    - cron: '0 * * * *'  # Hourly
+ schedule:
+ - cron: '0 * * * *' # Hourly
 
 jobs:
-  monitor:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+ monitor:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Check agent health
-        run: |
-          python scripts/monitor_agents.py
+ - name: Check agent health
+ run: |
+ python scripts/monitor_agents.py
 
-      - name: Alert on failures
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '️ Agent Health Check Failed',
-              body: 'One or more agents are unhealthy. See logs for details.',
-              labels: ['alert', 'agents', 'monitoring']
-            });
+ - name: Alert on failures
+ if: failure()
+ uses: actions/github-script@v7
+ with:
+ script: |
+ github.rest.issues.create({
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ title: ' Agent Health Check Failed',
+ body: 'One or more agents are unhealthy. See logs for details.',
+ labels: ['alert', 'agents', 'monitoring']
+ });
 ```
 
 ## Maintenance Schedule
@@ -1083,14 +1083,14 @@ jobs:
 ```yaml
 # .github/agents/permissions.yaml
 roles:
-  agent_admin:
-    permissions:
-      - secrets:write
-      - workflows:write
-  agent_user:
-    permissions:
-      - workflows:run
-      - issues:read
+ agent_admin:
+ permissions:
+ - secrets:write
+ - workflows:write
+ agent_user:
+ permissions:
+ - workflows:run
+ - issues:read
 ```
 
 ---
@@ -1105,7 +1105,7 @@ roles:
 gh workflow view auth-token-rotation.yml
 
 # Check for disabled workflows
-# Settings → Actions → Check if workflows are enabled
+# Settings Actions Check if workflows are enabled
 ```
 
 **Secret Not Found**:
@@ -1120,7 +1120,7 @@ gh secret set MISSING_SECRET --body "value"
 **Permission Denied**:
 ```bash
 # Check workflow permissions
-# .github/workflows/workflow.yml → permissions section
+# .github/workflows/workflow.yml permissions section
 
 # Verify token has required scopes
 gh auth status

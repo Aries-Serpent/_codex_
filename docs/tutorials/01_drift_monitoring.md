@@ -35,7 +35,7 @@ drift early so you can trigger retraining before users are affected.
 ```python
 from codex_ml.monitoring.data_drift import DataDriftDetector
 
-# PSI > 0.2 or KL > 0.5 → drift flagged
+# PSI > 0.2 or KL > 0.5 drift flagged
 detector = DataDriftDetector(psi_threshold=0.2, kl_threshold=0.5)
 ```
 
@@ -59,23 +59,23 @@ normalised**, so you can pass raw counts or proportions.
 reference = [0.05, 0.20, 0.40, 0.25, 0.10]
 
 # Current week's production data
-current   = [0.03, 0.15, 0.35, 0.32, 0.15]  # older users, slight shift
+current = [0.03, 0.15, 0.35, 0.32, 0.15] # older users, slight shift
 ```
 
 ## Step 3: Run PSI and KL checks
 
 ```python
 psi_result = detector.detect_psi(reference, current, feature_name="age_bucket")
-kl_result  = detector.detect_kl(reference, current,  feature_name="age_bucket")
+kl_result = detector.detect_kl(reference, current, feature_name="age_bucket")
 
-print(f"PSI  score={psi_result.score:.4f}  drifted={psi_result.drifted}  severity={psi_result.severity}")
-print(f"KL   score={kl_result.score:.4f}   drifted={kl_result.drifted}   severity={kl_result.severity}")
+print(f"PSI score={psi_result.score:.4f} drifted={psi_result.drifted} severity={psi_result.severity}")
+print(f"KL score={kl_result.score:.4f} drifted={kl_result.drifted} severity={kl_result.severity}")
 ```
 
 Example output:
 ```
-PSI  score=0.0412  drifted=False  severity=none
-KL   score=0.0198  drifted=False  severity=none
+PSI score=0.0412 drifted=False severity=none
+KL score=0.0198 drifted=False severity=none
 ```
 
 ### Step 4: Interpret `DriftResult`
@@ -83,7 +83,7 @@ KL   score=0.0198  drifted=False  severity=none
 `detect_psi` and `detect_kl` both return a `DriftResult` dataclass:
 
 ```python
-from codex_ml.monitoring.data_drift import DriftResult  # already imported above
+from codex_ml.monitoring.data_drift import DriftResult # already imported above
 
 print(psi_result.to_dict())
 # {
@@ -111,15 +111,15 @@ In a training loop you can call `check_epoch` to run both checks at once:
 
 ```python
 results = detector.check_epoch(
-    reference=reference,
-    current=current,
-    epoch=12,
-    feature_name="age_bucket",
+ reference=reference,
+ current=current,
+ epoch=12,
+ feature_name="age_bucket",
 )
 
 # results is {"psi": DriftResult, "kl": DriftResult}
 if results["psi"].drifted or results["kl"].drifted:
-    print("Drift detected — consider retraining!")
+ print("Drift detected — consider retraining!")
 ```
 
 ---
@@ -132,8 +132,8 @@ if results["psi"].drifted or results["kl"].drifted:
 from codex_ml.monitoring.model_drift import ModelDriftDetector
 
 detector = ModelDriftDetector(
-    js_threshold=0.05,       # Jensen-Shannon divergence threshold
-    confidence_threshold=0.4 # flag epoch if mean confidence drops below this
+ js_threshold=0.05, # Jensen-Shannon divergence threshold
+ confidence_threshold=0.4 # flag epoch if mean confidence drops below this
 )
 ```
 
@@ -148,10 +148,10 @@ import random
 # Simulate reference prediction probabilities for a 3-class classifier
 # Each inner list is [p_class0, p_class1, p_class2] for one sample
 reference_probs = [
-    [0.80, 0.15, 0.05],
-    [0.10, 0.75, 0.15],
-    [0.05, 0.20, 0.75],
-    # ... more samples
+ [0.80, 0.15, 0.05],
+ [0.10, 0.75, 0.15],
+ [0.05, 0.20, 0.75],
+ # ... more samples
 ]
 
 detector.update_baseline(reference_probs)
@@ -162,15 +162,15 @@ detector.update_baseline(reference_probs)
 ```python
 # After a week of production traffic
 current_probs = [
-    [0.55, 0.30, 0.15],   # less confident — model is less certain
-    [0.30, 0.45, 0.25],
-    [0.20, 0.35, 0.45],
+ [0.55, 0.30, 0.15], # less confident — model is less certain
+ [0.30, 0.45, 0.25],
+ [0.20, 0.35, 0.45],
 ]
 
 result = detector.check(current_probs)
 
 print(f"Drift detected: {result.drift_detected}")
-print(f"JS divergence:  {result.js_divergence:.4f}")
+print(f"JS divergence: {result.js_divergence:.4f}")
 print(result.summary())
 ```
 
@@ -178,9 +178,9 @@ print(result.summary())
 
 ```python
 if result.drift_detected:
-    # Log to your alerting system, trigger a Slack notification, etc.
-    print(f"️  Model drift! JS={result.js_divergence:.4f}")
-    # → see Tutorial 03 to automate retraining from here
+ # Log to your alerting system, trigger a Slack notification, etc.
+ print(f" Model drift! JS={result.js_divergence:.4f}")
+ # see Tutorial 03 to automate retraining from here
 ```
 
 ---

@@ -42,7 +42,7 @@ y_{n+1} = b*x_n
 
 #### Lyapunov Exponent
 ```text
-λ = lim_{n→∞} (1/n) * Σ log|f'(x_i)|
+λ = lim_{n∞} (1/n) * Σ log|f'(x_i)|
 ```
 - **Positive**: Chaotic behavior
 - **Implementation**: `ChaoticAttractor.lyapunov_exponent()`
@@ -51,7 +51,7 @@ y_{n+1} = b*x_n
 
 #### Box-Counting Dimension
 ```text
-D = lim_{ε→0} log(N(ε)) / log(1/ε)
+D = lim_{ε0} log(N(ε)) / log(1/ε)
 ```
 - **N(ε)**: Number of boxes of size ε needed to cover the set
 - **Implementation**: Linear regression on log-log plot
@@ -127,7 +127,7 @@ neighborhood = field_magnitude[i-1:i+2, j-1:j+2].flatten()
 neighbors = np.delete(neighborhood, 4)
 # Check if center > all neighbors
 if (val > neighbors).all():
-    local_max[i, j] = True
+ local_max[i, j] = True
 ```
 - **Critical fix**: Must exclude center point from comparison
 - **Implementation**: `EMFieldRouter.prioritize_regions()`
@@ -153,14 +153,14 @@ if (val > neighbors).all():
 ```text
 expected_power = Σ amplitude_i²
 actual_power = mean(time_series²)
-interference_factor = actual_power / (expected_power + 1e-10)  # Epsilon prevents division by zero
+interference_factor = actual_power / (expected_power + 1e-10) # Epsilon prevents division by zero
 ```
 - **Critical fix**: Added epsilon to prevent division by zero
 - **Implementation**: `WavePropagator.measure_interference()`
 
 #### Wavelet Transform (Haar)
 ```python
-wavelet = [1, 1, ..., 1, -1, -1, ..., -1]  # scale times
+wavelet = [1, 1, ..., 1, -1, -1, ..., -1] # scale times
 coefficients = convolve(signal, wavelet)
 ```
 - **Implementation**: `WavePropagator.wavelet_transform()`
@@ -202,73 +202,73 @@ correction = -(distance / c) * γ
 ### Error Handling Pattern
 ```python
 try:
-    import numpy as np
-    NUMPY_AVAILABLE = True
+ import numpy as np
+ NUMPY_AVAILABLE = True
 except ImportError:
-    NUMPY_AVAILABLE = False
-    # Minimal stubs for type hints
-    class np:
-        ndarray = Any
+ NUMPY_AVAILABLE = False
+ # Minimal stubs for type hints
+ class np:
+ ndarray = Any
 
 # Later in code
 if not NUMPY_AVAILABLE:
-    raise ImportError("This feature requires numpy. Install with: pip install numpy")
+ raise ImportError("This feature requires numpy. Install with: pip install numpy")
 ```
 
 ## Logging Pattern
 ```python
 try:
-    from codex.logging.session_logger import log_message
-    LOGGING_AVAILABLE = True
+ from codex.logging.session_logger import log_message
+ LOGGING_AVAILABLE = True
 except ImportError:
-    LOGGING_AVAILABLE = False
-    def log_message(session_id, role, message, **kwargs):
-        print(f"[{role}] {message}")
+ LOGGING_AVAILABLE = False
+ def log_message(session_id, role, message, **kwargs):
+ print(f"[{role}] {message}")
 
 class MyOrchestrator:
-    def __init__(self, session_id: Optional[str] = None):
-        self.session_id = session_id or "default_session"
+ def __init__(self, session_id: Optional[str] = None):
+ self.session_id = session_id or "default_session"
 
-    def _log(self, role: str, message: str) -> None:
-        """Log a message using session logger."""
-        log_message(self.session_id, role, message)
+ def _log(self, role: str, message: str) -> None:
+ """Log a message using session logger."""
+ log_message(self.session_id, role, message)
 ```
 
 ### Safe File Export Pattern
 ```python
 def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict[str, str]:
-    import os
+ import os
 
-    # Ensure directory exists
-    try:
-        os.makedirs(output_dir, exist_ok=True)
-    except Exception as e:
-        raise RuntimeError(f"Failed to create directory: {e}")
+ # Ensure directory exists
+ try:
+ os.makedirs(output_dir, exist_ok=True)
+ except Exception as e:
+ raise RuntimeError(f"Failed to create directory: {e}")
 
-    # Check permissions
-    if not os.path.isdir(output_dir):
-        raise ValueError(f"Not a directory: {output_dir}")
-    if not os.access(output_dir, os.W_OK):
-        raise PermissionError(f"Directory not writable: {output_dir}")
+ # Check permissions
+ if not os.path.isdir(output_dir):
+ raise ValueError(f"Not a directory: {output_dir}")
+ if not os.access(output_dir, os.W_OK):
+ raise PermissionError(f"Directory not writable: {output_dir}")
 
-    # Export files
-    for component in components:
-        filepath = os.path.join(output_dir, component.name)
+ # Export files
+ for component in components:
+ filepath = os.path.join(output_dir, component.name)
 
-        # Check overwrite
-        if not overwrite and os.path.exists(filepath):
-            results[component.name] = f"Skipped (exists): {filepath}"
-            continue
+ # Check overwrite
+ if not overwrite and os.path.exists(filepath):
+ results[component.name] = f"Skipped (exists): {filepath}"
+ continue
 
-        # Write with error handling
-        try:
-            with open(filepath, 'w') as f:
-                f.write(component.code)
-            results[component.name] = filepath
-        except OSError as e:
-            results[component.name] = f"Failed: {e}"
+ # Write with error handling
+ try:
+ with open(filepath, 'w') as f:
+ f.write(component.code)
+ results[component.name] = filepath
+ except OSError as e:
+ results[component.name] = f"Failed: {e}"
 
-    return results
+ return results
 ```
 
 ---

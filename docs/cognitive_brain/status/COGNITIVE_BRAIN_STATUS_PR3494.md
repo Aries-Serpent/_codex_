@@ -34,23 +34,23 @@
 %%{init: {'accessibility': {'title': 'Diagram showing "PR #3494 Deliverables", " ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"'}}%%
 
 graph TB
-    subgraph PR3494["PR #3494 Deliverables"]
-        ADR[" ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]
-        DCAP[" ci-testing-agent\nautonomyModel: E → D_CAPABLE\nFirst D_CAPABLE agent in system"]
-        GUARD[" AUTO_PROMOTE_TIER_ENABLED guard\nauto_promote_tier.py write path added\nDefaults to disabled (Domain 8)"]
-        MAN[" CODEX_MANIFEST.json refreshed\nD_CAPABLE count: 0 → 1\nAge: fresh"]
-    end
+ subgraph PR3494["PR #3494 Deliverables"]
+ ADR[" ADR-20260303-first-d-capable-promotion.md\nD_CAPABLE criteria defined\nci-testing-agent selected (rank 1)"]
+ DCAP[" ci-testing-agent\nautonomyModel: E D_CAPABLE\nFirst D_CAPABLE agent in system"]
+ GUARD[" AUTO_PROMOTE_TIER_ENABLED guard\nauto_promote_tier.py write path added\nDefaults to disabled (Domain 8)"]
+ MAN[" CODEX_MANIFEST.json refreshed\nD_CAPABLE count: 0 1\nAge: fresh"]
+ end
 
-    subgraph AGENTS["Agent State"]
-        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
-        GATES["E→D Gate: 5/5  (unchanged)\nC2: MANIFEST fresh"]
-    end
+ subgraph AGENTS["Agent State"]
+ REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
+ GATES["ED Gate: 5/5 (unchanged)\nC2: MANIFEST fresh"]
+ end
 
-    PR3494 --> AGENTS
+ PR3494 --> AGENTS
 
-    DCAP --> REG
+ DCAP --> REG
 
-    MAN --> GATES
+ MAN --> GATES
 ```
 
 ---
@@ -79,10 +79,10 @@ graph TB
 ## Completed Objective Map
 
 ```
-PR #3492 (Merged) → P2.x All wiring complete  · P3.1 MIN_CONFIDENCE  · P3.2 SESSION_RESTORE 
-PR #3494 (This PR) → Priority 2: BEC = Becoming D_CAPABLE 
-                   → P3.3: AUTO_PROMOTE_TIER_ENABLED write path added 
-                   → W-098: _apply_promotion() write-path tests (15/15) 
+PR #3492 (Merged) P2.x All wiring complete · P3.1 MIN_CONFIDENCE · P3.2 SESSION_RESTORE 
+PR #3494 (This PR) Priority 2: BEC = Becoming D_CAPABLE 
+ P3.3: AUTO_PROMOTE_TIER_ENABLED write path added 
+ W-098: _apply_promotion() write-path tests (15/15) 
 ```
 
 ---

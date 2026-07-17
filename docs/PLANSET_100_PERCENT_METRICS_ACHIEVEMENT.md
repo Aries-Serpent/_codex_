@@ -191,7 +191,7 @@ Follow Rust documentation standards:
 Priority order:
 1. swarm_engine.rs - Core orchestration
 2. ffi_bridge.rs - Python-Rust interface
-3. task_manager.rs - Task handling  # pragma: allowlist secret
+3. task_manager.rs - Task handling # pragma: allowlist secret
 4. compression.rs - Data compression
 5. metrics.rs - Metrics collection
 6. telemetry.rs - Observability
@@ -242,8 +242,8 @@ Template for each workflow README:
 ## Permissions Required
 [List and explain each permission]
 
-## Secrets Used  # pragma: allowlist secret
-[List secrets with purpose and format]  # pragma: allowlist secret
+## Secrets Used # pragma: allowlist secret
+[List secrets with purpose and format] # pragma: allowlist secret
 
 ## Steps Overview
 [Numbered list of what each step does]
@@ -262,10 +262,10 @@ Template for each workflow README:
 
 Priority workflows:
 1. rust_swarm_ci.yml
-2. auth-token-rotation.yml  # pragma: allowlist secret
-3. auth-secret-rotation.yml  # pragma: allowlist secret
+2. auth-token-rotation.yml # pragma: allowlist secret
+3. auth-secret-rotation.yml # pragma: allowlist secret
 4. auth-compliance-report.yml
-5. phase10-automated-secrets-setup.yml  # pragma: allowlist secret
+5. phase10-automated-secrets-setup.yml # pragma: allowlist secret
 6. notebooklm-sync.yml
 
 Create workflow-specific documentation in .github/workflows/docs/
@@ -324,8 +324,8 @@ Last Updated: [date]
 Priority scripts:
 1. compliance_reporter.py
 2. mfa_enrollment_automation.py
-3. rotate_jwt_secret.py  # pragma: allowlist secret
-4. rotate_api_keys.py  # pragma: allowlist secret
+3. rotate_jwt_secret.py # pragma: allowlist secret
+4. rotate_api_keys.py # pragma: allowlist secret
 5. rotate_github_pat.py
 6. validate_auth_security.py
 
@@ -397,12 +397,12 @@ key: value # [Explanation of this specific setting]
 3. docs/architecture/AUTHENTICATION_SYSTEM.md
  - OAuth2 flow diagrams
  - MFA implementation
- - Token lifecycle  # pragma: allowlist secret
+ - Token lifecycle # pragma: allowlist secret
  - Security model
 
 4. docs/architecture/AUTOMATION_ARCHITECTURE.md
  - Workflow orchestration
- - Secret management  # pragma: allowlist secret
+ - Secret management # pragma: allowlist secret
  - Agent system
  - Monitoring and alerts
 
@@ -668,7 +668,7 @@ def setup_environment():
  subprocess.run([venv_python, "-m", "pip", "install", "-e", ".[dev,test]"], check=True)
 
  # 3. Install Rust dependencies
- print("\n🦀 Installing Rust dependencies...")
+ print("\n Installing Rust dependencies...")
  subprocess.run(["cargo", "fetch"], check=True)
 
  # 4. Setup pre-commit
@@ -727,8 +727,8 @@ Automated Test Data Generation
 
 Generates comprehensive test fixtures for:
 - User accounts
-- Authentication tokens  # pragma: allowlist secret
-- MFA secrets  # pragma: allowlist secret
+- Authentication tokens # pragma: allowlist secret
+- MFA secrets # pragma: allowlist secret
 - API keys
 - Compliance records
 """
@@ -1057,7 +1057,7 @@ jobs:
  github.rest.issues.create({
  owner: context.repo.owner,
  repo: context.repo.repo,
- title: '️ Performance Regression Detected',
+ title: ' Performance Regression Detected',
  body: 'Automated monitoring detected performance degradation.',
  labels: ['performance', 'automated-alert']
  });

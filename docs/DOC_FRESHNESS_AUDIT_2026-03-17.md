@@ -117,7 +117,7 @@ python3 scripts/ci/update_doc_freshness.py \
 ### Archive Notice Template
 
 ```markdown
-> **️ ARCHIVED PLAN** — This document was accurate as of its creation date.
+> ** ARCHIVED PLAN** — This document was accurate as of its creation date.
 > Current implementation may differ. See `docs/cognitive_brain/` and
 > `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 ```

@@ -583,10 +583,10 @@ Some things still need humans:
 
 ## Questions?
 
-- **"How strict should I be?"** → Focus on critical issues, suggest others
-- **"How long should reviews take?"** → 5-30 min for most PRs
-- **"What if I disagree?"** → Discuss respectfully, don't block without reason
-- **"How do I handle criticism?"** → View it as opportunity to learn
-- **"What if someone is rude?"** → Report to conduct@aries-serpent.dev
+- **"How strict should I be?"** Focus on critical issues, suggest others
+- **"How long should reviews take?"** 5-30 min for most PRs
+- **"What if I disagree?"** Discuss respectfully, don't block without reason
+- **"How do I handle criticism?"** View it as opportunity to learn
+- **"What if someone is rude?"** Report to conduct@aries-serpent.dev
 
 Happy reviewing! 

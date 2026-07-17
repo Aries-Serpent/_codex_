@@ -42,8 +42,8 @@ safe_message = sanitize_log_message(message)
 # Lines 151, 153, 155, 157: All use safe_message
 logger.info(f" Task completed: {safe_message}")
 logger.error(f" Task error: {safe_message}")
-logger.warning(f"️  Task warning: {safe_message}")
-logger.info(f"ℹ️  Task info: {safe_message}")
+logger.warning(f" Task warning: {safe_message}")
+logger.info(f"ℹ Task info: {safe_message}")
 ```
 
 **Status**: These are **stale alerts** pending CodeQL rescan. The taint flow is properly broken at line 138.
@@ -134,57 +134,57 @@ logger.info(f"ℹ️  Task info: {safe_message}")
 ### Prerequisites
 
 1. **GitHub OAuth App**:
-   ```bash
-   # Create at: https://github.com/settings/developers
-   # Set callback URL to: https://yourapp.com/callback
-   # Copy Client ID and Client Secret
+ ```bash
+ # Create at: https://github.com/settings/developers
+ # Set callback URL to: https://yourapp.com/callback
+ # Copy Client ID and Client Secret
  ```
 
 2. **Environment Configuration**:
-   ```bash
-   export GITHUB_CLIENT_ID="your_client_id"
-   export GITHUB_CLIENT_SECRET="your_client_secret" <!-- pragma: allowlist secret -->
-   export GITHUB_REDIRECT_URI="https://yourapp.com/callback"
-   export TOKEN_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(64))')"
-   export CODEX_ENV="production"
+ ```bash
+ export GITHUB_CLIENT_ID="your_client_id"
+ export GITHUB_CLIENT_SECRET="your_client_secret" <!-- pragma: allowlist secret -->
+ export GITHUB_REDIRECT_URI="https://yourapp.com/callback"
+ export TOKEN_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(64))')"
+ export CODEX_ENV="production"
  ```
 
 3. **Database Setup** (Replace in-memory storage):
-   ```sql
-   -- PostgreSQL schema
-   CREATE TABLE mfa_secrets (
-       user_id VARCHAR(255) PRIMARY KEY,
-       secret_encrypted BYTEA NOT NULL,
-       created_at TIMESTAMP DEFAULT NOW()
-   );
+ ```sql
+ -- PostgreSQL schema
+ CREATE TABLE mfa_secrets (
+ user_id VARCHAR(255) PRIMARY KEY,
+ secret_encrypted BYTEA NOT NULL,
+ created_at TIMESTAMP DEFAULT NOW()
+ );
 
-   CREATE TABLE backup_codes (
-       id SERIAL PRIMARY KEY,
-       user_id VARCHAR(255) NOT NULL,
-       code_hash VARCHAR(64) NOT NULL,
-       used BOOLEAN DEFAULT FALSE,
-       used_at TIMESTAMP
-   );
+ CREATE TABLE backup_codes (
+ id SERIAL PRIMARY KEY,
+ user_id VARCHAR(255) NOT NULL,
+ code_hash VARCHAR(64) NOT NULL,
+ used BOOLEAN DEFAULT FALSE,
+ used_at TIMESTAMP
+ );
 
-   CREATE TABLE sessions (
-       session_id VARCHAR(255) PRIMARY KEY,
-       user_id VARCHAR(255) NOT NULL,
-       mfa_verified BOOLEAN DEFAULT FALSE,
-       created_at TIMESTAMP DEFAULT NOW(),
-       last_activity TIMESTAMP DEFAULT NOW(),
-       ip_address VARCHAR(45),
-       user_agent TEXT
-   );
+ CREATE TABLE sessions (
+ session_id VARCHAR(255) PRIMARY KEY,
+ user_id VARCHAR(255) NOT NULL,
+ mfa_verified BOOLEAN DEFAULT FALSE,
+ created_at TIMESTAMP DEFAULT NOW(),
+ last_activity TIMESTAMP DEFAULT NOW(),
+ ip_address VARCHAR(45),
+ user_agent TEXT
+ );
  ```
 
 4. **Redis Setup** (Distributed sessions):
-   ```bash
-   # Install Redis
-   sudo apt-get install redis-server
+ ```bash
+ # Install Redis
+ sudo apt-get install redis-server
 
-   # Configure Redis
-   redis-cli config set maxmemory 256mb
-   redis-cli config set maxmemory-policy allkeys-lru
+ # Configure Redis
+ redis-cli config set maxmemory 256mb
+ redis-cli config set maxmemory-policy allkeys-lru
  ```
 
 ### Deployment Steps
@@ -196,8 +196,8 @@ from alembic import op
 import sqlalchemy as sa
 
 def upgrade():
-    # Create tables (see schema above)
-    pass
+ # Create tables (see schema above)
+ pass
 ```
 
 2. **Replace In-Memory Stores**:
@@ -215,31 +215,31 @@ SECRET_ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 ```
 
 4. **Deploy with Docker**:
-   ```dockerfile
-   FROM python:3.12-slim
-   WORKDIR /app
-   COPY . .
-   RUN pip install -e .
-   ENV CODEX_ENV=production
-   CMD ["gunicorn", "app:app", "--workers", "4"]
+ ```dockerfile
+ FROM python:3.12-slim
+ WORKDIR /app
+ COPY . .
+ RUN pip install -e .
+ ENV CODEX_ENV=production
+ CMD ["gunicorn", "app:app", "--workers", "4"]
  ```
 
 5. **Configure Load Balancer**:
-   ```nginx
-   upstream codex_auth {
-       server auth1:8000;
-       server auth2:8000;
-       server auth3:8000;
-   }
+ ```nginx
+ upstream codex_auth {
+ server auth1:8000;
+ server auth2:8000;
+ server auth3:8000;
+ }
 
-   server {
-       listen 443 ssl;
-       server_name auth.yourapp.com;
+ server {
+ listen 443 ssl;
+ server_name auth.yourapp.com;
 
-       location / {
-           proxy_pass http://codex_auth;
-       }
-   }
+ location / {
+ proxy_pass http://codex_auth;
+ }
+ }
  ```
 
 ---
@@ -265,19 +265,19 @@ SECRET_ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 
 graph TD
 
-    User[User Request] --> Agent[Auth Agent]
+ User[User Request] --> Agent[Auth Agent]
 
-    Agent --> OAuth[Create OAuth App]
+ Agent --> OAuth[Create OAuth App]
 
-    Agent --> MFA[Setup MFA]
+ Agent --> MFA[Setup MFA]
 
-    Agent --> Test[Validate Setup]
+ Agent --> Test[Validate Setup]
 
-    OAuth --> GitHub[GitHub API]
+ OAuth --> GitHub[GitHub API]
 
-    MFA --> User
+ MFA --> User
 
-    Test --> Report[Status Report]
+ Test --> Report[Status Report]
 ```
 
 ### 2. Security Audit Agent
@@ -299,21 +299,21 @@ graph TD
 
 graph TD
 
-    Schedule[Weekly Trigger] --> Agent[Security Agent]
+ Schedule[Weekly Trigger] --> Agent[Security Agent]
 
-    Agent --> Tests[Run 23 Security Tests]
+ Agent --> Tests[Run 23 Security Tests]
 
-    Agent --> CodeQL[Check CodeQL Alerts]
+ Agent --> CodeQL[Check CodeQL Alerts]
 
-    Agent --> Config[Validate Configs]
+ Agent --> Config[Validate Configs]
 
-    Tests --> Report[Security Report]
+ Tests --> Report[Security Report]
 
-    CodeQL --> Report
+ CodeQL --> Report
 
-    Config --> Report
+ Config --> Report
 
-    Report --> Slack[Alert Team]
+ Report --> Slack[Alert Team]
 ```
 
 ### 3. Token Rotation Agent
@@ -335,23 +335,23 @@ graph TD
 
 graph TD
 
-    Trigger[Monthly/Alert] --> Agent[Rotation Agent]
+ Trigger[Monthly/Alert] --> Agent[Rotation Agent]
 
-    Agent --> Backup[Backup Current Keys]
+ Agent --> Backup[Backup Current Keys]
 
-    Agent --> Generate[Generate New Keys]
+ Agent --> Generate[Generate New Keys]
 
-    Agent --> Deploy[Deploy New Keys]
+ Agent --> Deploy[Deploy New Keys]
 
-    Agent --> Revoke[Revoke Old Tokens]
+ Agent --> Revoke[Revoke Old Tokens]
 
-    Deploy --> Verify[Verify New Keys]
+ Deploy --> Verify[Verify New Keys]
 
-    Verify --> Success{Success?}
+ Verify --> Success{Success?}
 
-    Success -->|Yes| Done[Complete]
+ Success -->|Yes| Done[Complete]
 
-    Success -->|No| Rollback[Rollback]
+ Success -->|No| Rollback[Rollback]
 ```
 
 ---

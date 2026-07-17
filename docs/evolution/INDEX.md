@@ -55,25 +55,25 @@ This documentation center implements established patterns for cognitive AI agenc
 
 ```text
 docs/evolution/
-├── INDEX.md                        ← You are here
-├── EVOLUTION_TIMELINE.md           ← Phase-by-phase verified history
-├── PLANSET_REGISTRY.md             ← Queryable planset catalog
-├── COGNITIVE_EVOLUTION_TREE.md     ← Mermaid evolution diagrams
-├── AI_EMERGENCE_STORYBOARD.md      ← AI biographical storyline
-├── AI_AGENCY_INTUITIVENESS_SCORE_V3.md ← ACE-aligned scoring framework
-└── COGNITIVE_CODEBASE_MAP.md       ← Component-level intuitiveness map
+ INDEX.md You are here
+ EVOLUTION_TIMELINE.md Phase-by-phase verified history
+ PLANSET_REGISTRY.md Queryable planset catalog
+ COGNITIVE_EVOLUTION_TREE.md Mermaid evolution diagrams
+ AI_EMERGENCE_STORYBOARD.md AI biographical storyline
+ AI_AGENCY_INTUITIVENESS_SCORE_V3.md ACE-aligned scoring framework
+ COGNITIVE_CODEBASE_MAP.md Component-level intuitiveness map
 ```
 
 **Backing Data** (in `.codex/cognitive_brain/`):
 
 ```text
 .codex/cognitive_brain/
-├── ps01_status.md → ps10_status.md   ← Individual planset records
-├── ps07_10_roadmap.md                ← Implementation roadmap
-├── status/                           ← 31 versioned status snapshots
-├── patterns/                         ← Learned architectural patterns
-├── archive/                          ← Historical artifacts
-└── COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md ← Agent evolution tracking
+ ps01_status.md ps10_status.md Individual planset records
+ ps07_10_roadmap.md Implementation roadmap
+ status/ 31 versioned status snapshots
+ patterns/ Learned architectural patterns
+ archive/ Historical artifacts
+ COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md Agent evolution tracking
 ```
 
 ---

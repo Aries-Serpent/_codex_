@@ -19,9 +19,9 @@
 
 1. **Verify CI green** — check if Resilient Validation Suite (run 22203971518 on commit 756c152,
  then the follow-up commit with evaluator.py fix) passed:
-   ```bash
-   gh run view 22203971518 --job 64224708717  # slow
-   gh run view 22203971518 --job 64224708718  # quick
+ ```bash
+ gh run view 22203971518 --job 64224708717 # slow
+ gh run view 22203971518 --job 64224708718 # quick
  ```
 2. **Load memories**: Review stored facts for hf_pinning, CI false positives, conftest xfail
 3. **Check git status**: `git log --oneline -5 && git status --short`
@@ -68,7 +68,7 @@ grep -n "get_hf_revision\|revision=" src/codex_ml/eval/run_eval.py
 **Change**:
 ```toml
 # pyproject.toml
-requires-python = ">=3.12"  # Restore from ">=3.11,<3.13"
+requires-python = ">=3.12" # Restore from ">=3.11,<3.13"
 ```
 
 **Verification**:
@@ -91,13 +91,13 @@ PYTHONPATH=src pytest tests/ -v --timeout=300 -x -q 2>&1 | tail -20
 **Budget enforcement**: Add `_enforce_query_budget()` in `hook.py`:
 ```python
 def _enforce_query_budget(self) -> bool:
-    today = datetime.utcnow().date().isoformat()
-    count = self._daily_counts.get(today, 0)
-    if count >= self.query_budget_per_day:
-        logger.warning("Active learning query budget (%d/day) exceeded", self.query_budget_per_day)
-        return False
-    self._daily_counts[today] = count + 1
-    return True
+ today = datetime.utcnow().date().isoformat()
+ count = self._daily_counts.get(today, 0)
+ if count >= self.query_budget_per_day:
+ logger.warning("Active learning query budget (%d/day) exceeded", self.query_budget_per_day)
+ return False
+ self._daily_counts[today] = count + 1
+ return True
 ```
 
 **Tests**: Add `test_query_budget_enforced` in `tests/cognitive_brain/active_learning/`
@@ -111,8 +111,8 @@ def _enforce_query_budget(self) -> bool:
 
 ```bash
 PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
-  --multi-seed --scenarios 1000 --noise-rate 0.10 \
-  --save-json audit_artifacts/validation/noise_10percent_1000scenarios.json
+ --multi-seed --scenarios 1000 --noise-rate 0.10 \
+ --save-json audit_artifacts/validation/noise_10percent_1000scenarios.json
 ```
 
 ---
@@ -127,8 +127,8 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 ```python
 # In src/cognitive_brain/analytics/bayesian.py
 def update_cpds_em(corpus: list[dict], learning_rate: float = 0.1) -> None:
-    """Expectation-Maximization update of Conditional Probability Distributions."""
-    ...
+ """Expectation-Maximization update of Conditional Probability Distributions."""
+ ...
 ```
 
 ## Chain Prompting Integration Tests
@@ -139,12 +139,12 @@ def update_cpds_em(corpus: list[dict], learning_rate: float = 0.1) -> None:
 
 ```python
 def test_compliance_chain_prompting_workflow():
-    brain = CognitiveBrain.create(QuantumConfig())
-    # Step 1: Initial assessment
-    decision1 = brain.decide("review", {"score": 0.7, "risk": "medium"})
-    # Step 2: Follow-up with context
-    decision2 = brain.decide("escalation", {"prior_decision": decision1.decision}, session_id=decision1.session_id)
-    assert decision2.session_id == decision1.session_id  # Same session chain
+ brain = CognitiveBrain.create(QuantumConfig())
+ # Step 1: Initial assessment
+ decision1 = brain.decide("review", {"score": 0.7, "risk": "medium"})
+ # Step 2: Follow-up with context
+ decision2 = brain.decide("escalation", {"prior_decision": decision1.decision}, session_id=decision1.session_id)
+ assert decision2.session_id == decision1.session_id # Same session chain
 ```
 
 ---
@@ -154,8 +154,8 @@ def test_compliance_chain_prompting_workflow():
 ### hf_pinning.py priority order
 ```
 ensure_pinned_kwargs priority:
-1. Caller-supplied revision/commit_id in kwargs  ← evaluator.py WAS here (wrong)
-2. KNOWN_MODEL_REVISIONS (curated production pins)  ← evaluator.py NOW hits here 
+1. Caller-supplied revision/commit_id in kwargs evaluator.py WAS here (wrong)
+2. KNOWN_MODEL_REVISIONS (curated production pins) evaluator.py NOW hits here 
 3. Environment variables (HF_REVISION, etc.) — only for unknown models
 4. ValueError — remote models must have a pin
 ```
@@ -163,9 +163,9 @@ ensure_pinned_kwargs priority:
 ### Graceful degradation (confirmed )
 ```
 load_from_pretrained():
-  1. Try local cache (fast, offline) → local_files_only=True
-  2. Try network download → fallback
-  3. Raise HFModelUnavailableError → tests call pytest.skip()
+ 1. Try local cache (fast, offline) local_files_only=True
+ 2. Try network download fallback
+ 3. Raise HFModelUnavailableError tests call pytest.skip()
 ```
 
 ### CI false positive pattern

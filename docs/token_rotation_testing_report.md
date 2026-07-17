@@ -54,9 +54,9 @@
 
 **Command-Line Options**:
 ```bash
-python scripts/rotate_jwt_secret.py              # Rotate secret
-python scripts/rotate_jwt_secret.py --verify     # Verify rotation  
-python scripts/rotate_jwt_secret.py --rollback   # Rollback to backup
+python scripts/rotate_jwt_secret.py # Rotate secret
+python scripts/rotate_jwt_secret.py --verify # Verify rotation 
+python scripts/rotate_jwt_secret.py --rollback # Rollback to backup
 ```
 
 **Backup Location**: `.codex/secrets/backups/`
@@ -64,12 +64,12 @@ python scripts/rotate_jwt_secret.py --rollback   # Rollback to backup
 **CRITICAL BUG FOUND** :
 ```text
 # Line 74 - WRONG IMPORT
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2  # Does not exist!
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2 # Does not exist!
 
 # Line 101 - Usage
-kdf = PBKDF2(  # NameError when executed
-    algorithm=hashes.SHA256(),
-    ...
+kdf = PBKDF2( # NameError when executed
+ algorithm=hashes.SHA256(),
+ ...
 )
 ```
 
@@ -89,9 +89,9 @@ kdf = PBKDF2(  # NameError when executed
 
 **Command-Line Options**:
 ```bash
-python scripts/github_secrets_sync.py --backup          # Backup current secrets
-python scripts/github_secrets_sync.py --rotate          # Rotate secrets
-python scripts/github_secrets_sync.py --validate        # Validate configuration
+python scripts/github_secrets_sync.py --backup # Backup current secrets
+python scripts/github_secrets_sync.py --rotate # Rotate secrets
+python scripts/github_secrets_sync.py --validate # Validate configuration
 python scripts/github_secrets_sync.py --sync-downstream # Sync to dependent systems
 ```
 
@@ -163,25 +163,25 @@ The script was likely written against an older version or incorrect documentatio
 
 **Change 1** (Line 74):
 ```python
-#  BEFORE
+# BEFORE
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
 
-#  AFTER
+# AFTER
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 ```
 
 **Change 2** (Line 101):
 ```text
-#  BEFORE
+# BEFORE
 kdf = PBKDF2(
-    algorithm=hashes.SHA256(),
-    ...
+ algorithm=hashes.SHA256(),
+ ...
 )
 
-#  AFTER
+# AFTER
 kdf = PBKDF2HMAC(
-    algorithm=hashes.SHA256(),
-    ...
+ algorithm=hashes.SHA256(),
+ ...
 )
 ```
 
@@ -207,12 +207,12 @@ All three scripts now import successfully:
 
 ```text
 # Tested imports
-from github import Github                         OK
-from cryptography.fernet import Fernet           OK
-from cryptography.hazmat.primitives import hashes   OK
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC   OK (FIXED)
-from nacl import encoding, public                OK
-import requests                                   OK
+from github import Github OK
+from cryptography.fernet import Fernet OK
+from cryptography.hazmat.primitives import hashes OK
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC OK (FIXED)
+from nacl import encoding, public OK
+import requests OK
 ```
 
 ## Dependency Verification
@@ -288,7 +288,7 @@ export GITHUB_TOKEN="test-token-readonly"
 python3 scripts/rotate_jwt_secret.py --help
 
 # Expected: Help message displayed
-# Status:  PASS (after bug fix)
+# Status: PASS (after bug fix)
 ```
 
 ## Test 2: Secrets Sync Validation
@@ -297,18 +297,18 @@ python3 scripts/rotate_jwt_secret.py --help
 python3 scripts/github_secrets_sync.py --validate
 
 # Expected: Validation results or error about missing secrets
-# Status: ⏸️ REQUIRES GITHUB_TOKEN with repo scope (deferred to production)
+# Status: REQUIRES GITHUB_TOKEN with repo scope (deferred to production)
 ```
 
 ## Test 3: Automated Secrets Manager Verification
 ```bash
 # Verify a secret exists (read-only test)
 python3 scripts/phase10/automated_secrets_manager.py \
-  --action verify \
-  --name CODEX_MASTER_KEY
+ --action verify \
+ --name CODEX_MASTER_KEY
 
 # Expected: Success if secret exists, error if not
-# Status: ⏸️ REQUIRES valid GITHUB_TOKEN (deferred to production)
+# Status: REQUIRES valid GITHUB_TOKEN (deferred to production)
 ```
 
 ## Production Testing Workflow (WITH AUTHORIZATION)

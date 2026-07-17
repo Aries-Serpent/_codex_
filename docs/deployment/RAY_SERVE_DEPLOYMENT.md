@@ -26,8 +26,8 @@ app = FastAPI()
 @serve.deployment
 @serve.batch(max_batch_size=100, timeout_s=1)
 class Predictor:
-    async def predict(self, requests):
-        return [{"prediction": len(r)} for r in requests]
+ async def predict(self, requests):
+ return [{"prediction": len(r)} for r in requests]
 
 # Deploy
 serve.start()
@@ -48,53 +48,53 @@ curl http://localhost:8000/predict -X POST -d '{"text": "hello"}'
 ### Single-Node Deployment
 
 ```
-┌────────────────────────────────┐
-│       Your Application         │
-│  (FastAPI/Flask/Custom)        │
-└────────────────┬───────────────┘
-                 │
-                 ▼
-    ┌────────────────────────┐
-    │    Ray Head Node       │
-    │  ├─ Serve Controller   │
-    │  ├─ Autoscaler        │
-    │  └─ Dashboard (8265)   │
-    └────────────────────────┘
-                 │
-        ┌────────┴────────┐
-        ▼                 ▼
-    ┌────────┐        ┌────────┐
-    │ Worker │        │ Worker │
-    │  (8 GB)│        │  (8 GB)│
-    └────────┘        └────────┘
-    [Replicas:2]
+
+ Your Application 
+ (FastAPI/Flask/Custom) 
+
+ 
+ 
+ 
+ Ray Head Node 
+ Serve Controller 
+ Autoscaler 
+ Dashboard (8265) 
+ 
+ 
+ 
+ 
+ 
+ Worker Worker 
+ (8 GB) (8 GB)
+ 
+ [Replicas:2]
 ```
 
 ### Multi-Node Cluster Deployment (Production)
 
 ```
-┌──────────────────────────────────────────┐
-│         Kubernetes Cluster               │
-│                                          │
-│  ┌──────────────────────────────────┐   │
-│  │    Ray Head Pod                  │   │
-│  │  ├─ Serve Controller             │   │
-│  │  ├─ GCS (state store)            │   │
-│  │  └─ Dashboard                    │   │
-│  └──────────────────────────────────┘   │
-│                                          │
-│  ┌──────────────────────────────────┐   │
-│  │    Ray Worker Pods (N replicas)  │   │
-│  │  ├─ Replica 1 (replicated_model) │   │
-│  │  ├─ Replica 2 (replicated_model) │   │
-│  │  └─ Replica N (replicated_model) │   │
-│  └──────────────────────────────────┘   │
-│                                          │
-│  ┌──────────────────────────────────┐   │
-│  │    Ingress (Load Balancer)       │   │
-│  │  Port: 8000 (API)                │   │
-│  └──────────────────────────────────┘   │
-└──────────────────────────────────────────┘
+
+ Kubernetes Cluster 
+ 
+ 
+ Ray Head Pod 
+ Serve Controller 
+ GCS (state store) 
+ Dashboard 
+ 
+ 
+ 
+ Ray Worker Pods (N replicas) 
+ Replica 1 (replicated_model) 
+ Replica 2 (replicated_model) 
+ Replica N (replicated_model) 
+ 
+ 
+ 
+ Ingress (Load Balancer) 
+ Port: 8000 (API) 
+ 
+
 ```
 
 ---
@@ -135,81 +135,81 @@ docker run -p 8000:8000 -p 8265:8265 codex-ray-serve:latest
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ray-serve-config
+ name: ray-serve-config
 data:
-  app.py: |
-    from ray import serve
-    from fastapi import FastAPI
+ app.py: |
+ from ray import serve
+ from fastapi import FastAPI
 
-    app = FastAPI()
+ app = FastAPI()
 
-    @serve.deployment
-    class Predictor:
-        async def predict(self, request):
-            return {"prediction": "ok"}
+ @serve.deployment
+ class Predictor:
+ async def predict(self, request):
+ return {"prediction": "ok"}
 
-    serve.start()
-    serve.run(Predictor.bind())
+ serve.start()
+ serve.run(Predictor.bind())
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ray-head
+ name: ray-head
 spec:
-  selector:
-    matchLabels:
-      app: ray-head
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: ray-head
-    spec:
-      containers:
-      - name: ray-head
-        image: rayproject/ray:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 6379  # Redis
-        - containerPort: 8265  # Dashboard
-        - containerPort: 8000  # Serve API
-        env:
-        - name: RAY_REDIS_PASSWORD
-          value: "password"
-        resources:
-          requests:
-            cpu: "2"
-            memory: "4Gi"
-          limits:
-            cpu: "4"
-            memory: "8Gi"
-        volumeMounts:
-        - name: app-config
-          mountPath: /app
-      volumes:
-      - name: app-config
-        configMap:
-          name: ray-serve-config
+ selector:
+ matchLabels:
+ app: ray-head
+ replicas: 1
+ template:
+ metadata:
+ labels:
+ app: ray-head
+ spec:
+ containers:
+ - name: ray-head
+ image: rayproject/ray:latest
+ imagePullPolicy: IfNotPresent
+ ports:
+ - containerPort: 6379 # Redis
+ - containerPort: 8265 # Dashboard
+ - containerPort: 8000 # Serve API
+ env:
+ - name: RAY_REDIS_PASSWORD
+ value: "password"
+ resources:
+ requests:
+ cpu: "2"
+ memory: "4Gi"
+ limits:
+ cpu: "4"
+ memory: "8Gi"
+ volumeMounts:
+ - name: app-config
+ mountPath: /app
+ volumes:
+ - name: app-config
+ configMap:
+ name: ray-serve-config
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ray-serve
+ name: ray-serve
 spec:
-  selector:
-    app: ray-head
-  ports:
-  - protocol: TCP
-    port: 8000
-    targetPort: 8000
-    name: serve
-  - protocol: TCP
-    port: 8265
-    targetPort: 8265
-    name: dashboard
-  type: LoadBalancer
+ selector:
+ app: ray-head
+ ports:
+ - protocol: TCP
+ port: 8000
+ targetPort: 8000
+ name: serve
+ - protocol: TCP
+ port: 8265
+ targetPort: 8265
+ name: dashboard
+ type: LoadBalancer
 ```
 
 **Deploy to Kubernetes:**
@@ -227,49 +227,49 @@ max_workers: 10
 upscaling_speed: 1.0
 
 provider:
-  type: kubernetes
-  namespace: default
-  use_internal_ips: false
+ type: kubernetes
+ namespace: default
+ use_internal_ips: false
 
 auth:
-  ssh_user: ubuntu
-  ssh_private_key: ~/.ssh/ray_key
+ ssh_user: ubuntu
+ ssh_private_key: ~/.ssh/ray_key
 
 available_node_types:
-  ray_head:
-    min_workers: 1
-    max_workers: 1
-    resources: {"is_head": 1}
-    node_config:
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: ray-head
-      spec:
-        containers:
-        - name: ray
-          image: rayproject/ray:latest
-          resources:
-            requests:
-              cpu: "4"
-              memory: "16Gi"
+ ray_head:
+ min_workers: 1
+ max_workers: 1
+ resources: {"is_head": 1}
+ node_config:
+ apiVersion: v1
+ kind: Pod
+ metadata:
+ name: ray-head
+ spec:
+ containers:
+ - name: ray
+ image: rayproject/ray:latest
+ resources:
+ requests:
+ cpu: "4"
+ memory: "16Gi"
 
-  ray_worker:
-    min_workers: 2
-    max_workers: 8
-    node_config:
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: ray-worker
-      spec:
-        containers:
-        - name: ray
-          image: rayproject/ray:latest
-          resources:
-            requests:
-              cpu: "8"
-              memory: "32Gi"
+ ray_worker:
+ min_workers: 2
+ max_workers: 8
+ node_config:
+ apiVersion: v1
+ kind: Pod
+ metadata:
+ name: ray-worker
+ spec:
+ containers:
+ - name: ray
+ image: rayproject/ray:latest
+ resources:
+ requests:
+ cpu: "8"
+ memory: "32Gi"
 ```
 
 **Start cluster:**
@@ -293,39 +293,39 @@ import logging
 app = FastAPI()
 
 class PredictionRequest(BaseModel):
-    text: str
-    max_tokens: int = 100  # pragma: allowlist secret
+ text: str
+ max_tokens: int = 100 # pragma: allowlist secret
 
 @serve.deployment
 class TextPredictor:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("Initializing TextPredictor")
+ def __init__(self):
+ self.logger = logging.getLogger(__name__)
+ self.logger.info("Initializing TextPredictor")
 
-    @app.post("/predict")
-    async def predict(self, request: PredictionRequest):
-        self.logger.info(f"Predicting for: {request.text[:50]}...")
+ @app.post("/predict")
+ async def predict(self, request: PredictionRequest):
+ self.logger.info(f"Predicting for: {request.text[:50]}...")
 
-        # Your prediction logic here
-        result = {
-            "input": request.text,
-            "output": "generated text",
-            "tokens_used": 45  # pragma: allowlist secret
-        }
-        return result
+ # Your prediction logic here
+ result = {
+ "input": request.text,
+ "output": "generated text",
+ "tokens_used": 45 # pragma: allowlist secret
+ }
+ return result
 
 # Deploy
 if __name__ == "__main__":
-    serve.start()
-    handle = serve.run(TextPredictor.bind())
-    print("Service started at http://localhost:8000")
+ serve.start()
+ handle = serve.run(TextPredictor.bind())
+ print("Service started at http://localhost:8000")
 ```
 
 **Test:**
 ```bash
 curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Hello world", "max_tokens": 100}'
+ -H "Content-Type: application/json" \
+ -d '{"text": "Hello world", "max_tokens": 100}'
 ```
 
 ## Example 2: Multi-Model Deployment with Autoscaling
@@ -338,54 +338,54 @@ import asyncio
 app = FastAPI()
 
 @serve.deployment(
-    num_replicas=2,  # Start with 2 replicas
-    max_replicas=10,  # Scale up to 10
-    min_replicas=1,   # Scale down to 1
-    target_ongoing_requests=5  # Scale when > 5 requests
+ num_replicas=2, # Start with 2 replicas
+ max_replicas=10, # Scale up to 10
+ min_replicas=1, # Scale down to 1
+ target_ongoing_requests=5 # Scale when > 5 requests
 )
 class GPTModel:
-    def __init__(self, model_name: str = "gpt2"):
-        from transformers import AutoTokenizer, AutoModelForCausalLM  # pragma: allowlist secret
+ def __init__(self, model_name: str = "gpt2"):
+ from transformers import AutoTokenizer, AutoModelForCausalLM # pragma: allowlist secret
 
-        self.model_name = model_name
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)  # pragma: allowlist secret
-        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+ self.model_name = model_name
+ self.tokenizer = AutoTokenizer.from_pretrained(model_name) # pragma: allowlist secret
+ self.model = AutoModelForCausalLM.from_pretrained(model_name)
 
-    @app.post("/generate")
-    async def generate(self, prompt: str, max_tokens: int = 50):  # pragma: allowlist secret
-        inputs = self.tokenizer(prompt, return_tensors="pt")  # pragma: allowlist secret
-        outputs = self.model.generate(**inputs, max_length=max_tokens)  # pragma: allowlist secret
-        text = self.tokenizer.decode(outputs[0])  # pragma: allowlist secret
-        return {"generated_text": text}
+ @app.post("/generate")
+ async def generate(self, prompt: str, max_tokens: int = 50): # pragma: allowlist secret
+ inputs = self.tokenizer(prompt, return_tensors="pt") # pragma: allowlist secret
+ outputs = self.model.generate(**inputs, max_length=max_tokens) # pragma: allowlist secret
+ text = self.tokenizer.decode(outputs[0]) # pragma: allowlist secret
+ return {"generated_text": text}
 
 @serve.deployment(
-    num_replicas=1,
-    max_replicas=5
+ num_replicas=1,
+ max_replicas=5
 )
 class EmbeddingModel:
-    def __init__(self):
-        from transformers import AutoTokenizer, AutoModel  # pragma: allowlist secret
+ def __init__(self):
+ from transformers import AutoTokenizer, AutoModel # pragma: allowlist secret
 
-        self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")  # pragma: allowlist secret
-        self.model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+ self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2") # pragma: allowlist secret
+ self.model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
-    @app.post("/embed")
-    async def embed(self, text: str):
-        inputs = self.tokenizer(text, return_tensors="pt")  # pragma: allowlist secret
-        outputs = self.model(**inputs)
-        embedding = outputs.last_hidden_state[0][0].tolist()
-        return {"embedding": embedding}
+ @app.post("/embed")
+ async def embed(self, text: str):
+ inputs = self.tokenizer(text, return_tensors="pt") # pragma: allowlist secret
+ outputs = self.model(**inputs)
+ embedding = outputs.last_hidden_state[0][0].tolist()
+ return {"embedding": embedding}
 
 # Deploy both models
 if __name__ == "__main__":
-    serve.start()
+ serve.start()
 
-    gpt_handle = serve.run(GPTModel.bind())
-    embed_handle = serve.run(EmbeddingModel.bind())
+ gpt_handle = serve.run(GPTModel.bind())
+ embed_handle = serve.run(EmbeddingModel.bind())
 
-    print(" GPT Model deployed at /generate")
-    print(" Embedding Model deployed at /embed")
-    print(" Dashboard: http://localhost:8265")
+ print(" GPT Model deployed at /generate")
+ print(" Embedding Model deployed at /embed")
+ print(" Dashboard: http://localhost:8265")
 ```
 
 ## Example 3: Batch Processing
@@ -400,26 +400,26 @@ app = FastAPI()
 @serve.deployment
 @serve.batch(max_batch_size=32, timeout_s=2)
 class BatchPredictor:
-    async def __call__(self, requests):
-        # Batch process all requests together
-        results = []
-        for request in requests:
-            # Simulate processing
-            result = {
-                "input": request["text"],
-                "output": f"processed_{request['text']}"
-            }
-            results.append(result)
+ async def __call__(self, requests):
+ # Batch process all requests together
+ results = []
+ for request in requests:
+ # Simulate processing
+ result = {
+ "input": request["text"],
+ "output": f"processed_{request['text']}"
+ }
+ results.append(result)
 
-        return results
+ return results
 
 @app.post("/batch-predict")
 async def predict(request: dict):
-    return await BatchPredictor.remote(request)
+ return await BatchPredictor.remote(request)
 
 if __name__ == "__main__":
-    serve.start()
-    serve.run(BatchPredictor.bind())
+ serve.start()
+ serve.run(BatchPredictor.bind())
 ```
 
 ---
@@ -451,7 +451,7 @@ print(f"Replicas: {deployment_status.replica_states}")
 # View metrics
 metrics = serve.get_deployment("TextPredictor").list_replicas()
 for replica in metrics:
-    print(f"Replica {replica.id}: {replica.state}")
+ print(f"Replica {replica.id}: {replica.state}")
 ```
 
 ## Logging
@@ -465,12 +465,12 @@ logger.setLevel(logging.DEBUG)
 # In your deployment
 @serve.deployment
 class MyModel:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
+ def __init__(self):
+ self.logger = logging.getLogger(__name__)
 
-    async def __call__(self, request):
-        self.logger.info(f"Processing request: {request}")
-        return {"status": "ok"}
+ async def __call__(self, request):
+ self.logger.info(f"Processing request: {request}")
+ return {"status": "ok"}
 ```
 
 ---
@@ -482,34 +482,34 @@ class MyModel:
 ```python
 @serve.batch(max_batch_size=64, timeout_s=1)
 async def predict_batch(requests):
-    # Vectorized processing is more efficient
-    return [process(r) for r in requests]
+ # Vectorized processing is more efficient
+ return [process(r) for r in requests]
 ```
 
 ### Resource Allocation
 
 ```python
 @serve.deployment(
-    ray_actor_options={
-        "num_cpus": 2,
-        "num_gpus": 1,
-        "memory": 1_000_000_000  # 1 GB
-    }
+ ray_actor_options={
+ "num_cpus": 2,
+ "num_gpus": 1,
+ "memory": 1_000_000_000 # 1 GB
+ }
 )
 class GPUModel:
-    pass
+ pass
 ```
 
 ### Autoscaling Configuration
 
 ```python
 @serve.deployment(
-    num_replicas=2,
-    max_replicas=10,
-    target_ongoing_requests=5  # Scale when exceeding 5 concurrent
+ num_replicas=2,
+ max_replicas=10,
+ target_ongoing_requests=5 # Scale when exceeding 5 concurrent
 )
 class Model:
-    pass
+ pass
 ```
 
 ---

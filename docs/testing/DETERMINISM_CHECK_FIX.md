@@ -50,20 +50,20 @@ Added exit code 2 handling logic between the exit code 5 handler and the generic
 ```yaml
 # Handle exit code 2 (collection errors) when no tests with marker exist
 if [ "$EXIT1" = "2" ] && [ "$EXIT2" = "2" ]; then
-  # Check if both logs show "0 selected" (no tests matched the marker)
-  SELECTED1=$(grep -E "0 selected" determinism_pass1.log || echo "")
-  SELECTED2=$(grep -E "0 selected" determinism_pass2.log || echo "")
+ # Check if both logs show "0 selected" (no tests matched the marker)
+ SELECTED1=$(grep -E "0 selected" determinism_pass1.log || echo "")
+ SELECTED2=$(grep -E "0 selected" determinism_pass2.log || echo "")
 
-  # If both runs had collection errors but 0 tests selected, treat as "no tests"
-  if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
-    echo "️  Collection errors but no determinism tests selected (exit code 2)"
-    # ... informative summary ...
-    exit 0  # Success
-  fi
+ # If both runs had collection errors but 0 tests selected, treat as "no tests"
+ if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
+ echo " Collection errors but no determinism tests selected (exit code 2)"
+ # ... informative summary ...
+ exit 0 # Success
+ fi
 
-  # Otherwise, treat exit code 2 as a failure
-  echo " Collection errors during test execution (exit code 2)"
-  exit 1
+ # Otherwise, treat exit code 2 as a failure
+ echo " Collection errors during test execution (exit code 2)"
+ exit 1
 fi
 ```
 
@@ -82,7 +82,7 @@ Tested with simulated workflow logic:
 # Test scenario: Exit code 2, 0 selected
 EXIT1=2, EXIT2=2
 Log contains: "collected 13229 items / 118 errors / ... / 0 selected"
-Result:  Exit 0 (success)
+Result: Exit 0 (success)
 ```
 
 ## Impact
@@ -105,8 +105,8 @@ When implementing determinism tests in the future:
 ```python
 @pytest.mark.determinism
 def test_reproducible_behavior():
-    """Test that results are deterministic."""
-    # Your test here
+ """Test that results are deterministic."""
+ # Your test here
 ```
 
 2. **Expected workflow behavior:**
@@ -123,7 +123,7 @@ def test_reproducible_behavior():
 pytest tests/ -v -m determinism --tb=short
 
 # Check exit code
-echo $?  # Returns 2
+echo $? # Returns 2
 
 # Check for "0 selected" in output
 pytest tests/ -v -m determinism 2>&1 | grep "0 selected"

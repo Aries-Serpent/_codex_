@@ -42,52 +42,52 @@ The physics-inspired orchestration system provides AI Agents with deterministic,
 
 ```python
 from agents import (
-    # Core Orchestration
-    PhysicsInspiredOrchestrator,
-    ActionPath,
-    ActionType,
-    DecisionState,
-    ForceVector,
+ # Core Orchestration
+ PhysicsInspiredOrchestrator,
+ ActionPath,
+ ActionType,
+ DecisionState,
+ ForceVector,
 
-    # Import Migration
-    ImportMigrationOrchestrator,
-    ImportMigration,
+ # Import Migration
+ ImportMigrationOrchestrator,
+ ImportMigration,
 
-    # Advanced Patterns
-    DiffusionFlowModel,
-    FlowVector,
-    EnergyLandscape,
-    EnergyState,
-    SwarmIntelligence,
-    SwarmParticle,
-    TaskDecomposer,
-    SubTask,
-    ReflectionLoop,
+ # Advanced Patterns
+ DiffusionFlowModel,
+ FlowVector,
+ EnergyLandscape,
+ EnergyState,
+ SwarmIntelligence,
+ SwarmParticle,
+ TaskDecomposer,
+ SubTask,
+ ReflectionLoop,
 
-    # Quantum-Physics Integration (NEW)
-    QuantumPhysicsOrchestrator,
-    QuantumState,
-    QuantumWalkExplorer,
-    SuperpositionExplorer,
-    PINNValidator,
-    EntangledDependency,
+ # Quantum-Physics Integration (NEW)
+ QuantumPhysicsOrchestrator,
+ QuantumState,
+ QuantumWalkExplorer,
+ SuperpositionExplorer,
+ PINNValidator,
+ EntangledDependency,
 
-    # Game Theory
-    BlueRedTeamSimulator,
-    QuantumInspiredGameEngine,
-    ClassicalGameEngine,
+ # Game Theory
+ BlueRedTeamSimulator,
+ QuantumInspiredGameEngine,
+ ClassicalGameEngine,
 
-    # Self-Healing
-    SelfHealingEngine,
-    DetectedIssue,
+ # Self-Healing
+ SelfHealingEngine,
+ DetectedIssue,
 
-    # Mental Mapping
-    MentalMappingModel,
-    MentalNode,
+ # Mental Mapping
+ MentalMappingModel,
+ MentalNode,
 
-    # Workflow Navigation
-    WorkflowNavigator,
-    Workflow,
+ # Workflow Navigation
+ WorkflowNavigator,
+ Workflow,
 )
 ```
 
@@ -102,28 +102,28 @@ The main orchestrator implementing the **ASSESS DELIBERATE OPTIMIZE ACT** workfl
 #### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  PHYSICS-INSPIRED ORCHESTRATION              │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   ┌──────────┐    ┌─────────────┐    ┌──────────┐           │
-│   │  ASSESS  │───▶│  DELIBERATE │───▶│ OPTIMIZE │           │
-│   │          │    │             │    │          │           │
-│   │ • State  │    │ • Calculate │    │ • Select │           │
-│   │ • Forces │    │ • Rank      │    │ • Budget │           │
-│   │ • Fields │    │ • Score     │    │ • Filter │           │
-│   └──────────┘    └─────────────┘    └────┬─────┘           │
-│                                           │                  │
-│                                           ▼                  │
-│                                      ┌──────────┐           │
-│                                      │   ACT    │           │
-│                                      │          │           │
-│                                      │ • Execute│           │
-│                                      │ • Record │           │
-│                                      │ • Learn  │           │
-│                                      └──────────┘           │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ PHYSICS-INSPIRED ORCHESTRATION 
+
+ 
+ 
+ ASSESS DELIBERATE OPTIMIZE 
+ 
+ • State • Calculate • Select 
+ • Forces • Rank • Budget 
+ • Fields • Score • Filter 
+ 
+ 
+ 
+ 
+ ACT 
+ 
+ • Execute 
+ • Record 
+ • Learn 
+ 
+ 
+
 ```
 
 #### Usage
@@ -136,40 +136,40 @@ orchestrator = PhysicsInspiredOrchestrator()
 
 # Define current state
 state = DecisionState(
-    current_position="code_changes_made",
-    goal_position="code_reviewed_and_merged",
-    available_resources=0.8,
-    time_available=0.6,
-    current_velocity=0.7,
-    context={'files_changed': 4, 'tests_passing': True}
+ current_position="code_changes_made",
+ goal_position="code_reviewed_and_merged",
+ available_resources=0.8,
+ time_available=0.6,
+ current_velocity=0.7,
+ context={'files_changed': 4, 'tests_passing': True}
 )
 
 # Define possible actions
 actions = [
-    ActionPath(
-        action_type=ActionType.TEST,
-        description="Run comprehensive test suite",
-        potential_energy=30.0,
-        kinetic_energy=20.0,
-        friction=2.0,
-        momentum=7.0,
-        confidence=0.85,
-        risk=0.2,
-        impact=0.7,
-        urgency=0.6,
-    ),
-    ActionPath(
-        action_type=ActionType.AUDIT,
-        description="Run full audit pipeline",
-        potential_energy=40.0,
-        kinetic_energy=15.0,
-        friction=3.0,
-        momentum=5.0,
-        confidence=0.9,
-        risk=0.1,
-        impact=0.8,
-        urgency=0.5,
-    ),
+ ActionPath(
+ action_type=ActionType.TEST,
+ description="Run comprehensive test suite",
+ potential_energy=30.0,
+ kinetic_energy=20.0,
+ friction=2.0,
+ momentum=7.0,
+ confidence=0.85,
+ risk=0.2,
+ impact=0.7,
+ urgency=0.6,
+ ),
+ ActionPath(
+ action_type=ActionType.AUDIT,
+ description="Run full audit pipeline",
+ potential_energy=40.0,
+ kinetic_energy=15.0,
+ friction=3.0,
+ momentum=5.0,
+ confidence=0.9,
+ risk=0.1,
+ impact=0.8,
+ urgency=0.5,
+ ),
 ]
 
 # Run complete orchestration cycle
@@ -181,12 +181,12 @@ print(f"Decision: {result['action_taken']}")
 
 ```json
 {
-  "deliberation_time": 5.0,
-  "confidence_threshold": 0.6,
-  "energy_budget": 100.0,
-  "risk_tolerance": 0.5,
-  "momentum_weight": 0.3,
-  "friction_weight": 0.2
+ "deliberation_time": 5.0,
+ "confidence_threshold": 0.6,
+ "energy_budget": 100.0,
+ "risk_tolerance": 0.5,
+ "momentum_weight": 0.3,
+ "friction_weight": 0.2
 }
 ```
 
@@ -204,9 +204,9 @@ orchestrator = ImportMigrationOrchestrator()
 
 # Run complete migration cycle
 result = orchestrator.run_migration_cycle(
-    repo_root=Path("."),
-    energy_budget=500.0,
-    dry_run=True  # Set to False to execute
+ repo_root=Path("."),
+ energy_budget=500.0,
+ dry_run=True # Set to False to execute
 )
 
 print(f"Status: {result['status']}")
@@ -241,21 +241,21 @@ Flow-based navigation inspired by Poisson Flow Generative Models (PFGM).
 #### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    DIFFUSION FLOW MODEL                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│    Start Position                    Goal (Attractor)        │
-│         ●─────────────────────────────────▶●                │
-│              ↗                          ↗                    │
-│         Flow Lines              Potential Field              │
-│                                                              │
-│    Obstacles (Repulsors)                                     │
-│         ⊗        ⊗                                          │
-│                                                              │
-│    Equation: φ(r) = Σ q_i / |r - r_i|                       │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ DIFFUSION FLOW MODEL 
+
+ 
+ Start Position Goal (Attractor) 
+ 
+ 
+ Flow Lines Potential Field 
+ 
+ Obstacles (Repulsors) 
+ ⊗ ⊗ 
+ 
+ Equation: φ(r) = Σ q_i / |r - r_i| 
+ 
+
 ```
 
 #### Usage
@@ -272,15 +272,15 @@ flow_model.add_repulsor((0.3, 0.5), strength=1.0)
 
 # Simulate agent flow toward goal
 trajectory = flow_model.simulate_flow(
-    start_position=(0.1, 0.1),
-    steps=100,
-    dt=0.1
+ start_position=(0.1, 0.1),
+ steps=100,
+ dt=0.1
 )
 
 # Integration with mental mapping
 result = flow_model.integrate_with_mental_mapping(
-    problem_position=(0.1, 0.1),
-    goal_position=(0.8, 0.8)
+ problem_position=(0.1, 0.1),
+ goal_position=(0.8, 0.8)
 )
 print(f"Steps to goal: {result['steps_to_goal']}")
 print(f"Convergence distance: {result['convergence_distance']:.4f}")
@@ -293,23 +293,23 @@ Thermodynamic optimization using Gibbs distributions.
 ### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    ENERGY LANDSCAPE                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│    Energy                                                    │
-│      ▲                                                       │
-│      │    ╱╲                                                │
-│      │   ╱  ╲      ╱╲                                       │
-│      │  ╱    ╲    ╱  ╲                                      │
-│      │ ╱      ╲__╱    ╲___●  ← Minimum (Optimal)            │
-│      │╱                                                      │
-│      └──────────────────────────▶ Configuration             │
-│                                                              │
-│    Free Energy: F = E - T×S                                 │
-│    Gibbs: P_i = exp(-E_i/kT) / Z                           │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ ENERGY LANDSCAPE 
+
+ 
+ Energy 
+ 
+ 
+ 
+ 
+ __ ___ Minimum (Optimal) 
+ 
+ Configuration 
+ 
+ Free Energy: F = E - T×S 
+ Gibbs: P_i = exp(-E_i/kT) / Z 
+ 
+
 ```
 
 #### Usage
@@ -322,14 +322,14 @@ landscape = EnergyLandscape(temperature=1.0)
 
 # Add decision states
 landscape.add_state(EnergyState(
-    configuration={'action': 'deploy'},
-    energy=0.3,   # Low energy = favorable
-    entropy=0.1   # Low entropy = certain
+ configuration={'action': 'deploy'},
+ energy=0.3, # Low energy = favorable
+ entropy=0.1 # Low entropy = certain
 ))
 landscape.add_state(EnergyState(
-    configuration={'action': 'wait'},
-    energy=0.5,
-    entropy=0.3
+ configuration={'action': 'wait'},
+ energy=0.5,
+ entropy=0.3
 ))
 
 # Select state using Gibbs distribution
@@ -345,8 +345,8 @@ landscape.cool_system(cooling_rate=0.95)
 
 # Integration with self-appraisal
 result = landscape.integrate_with_self_appraisal(
-    decision_quality=0.8,
-    expected_confidence=0.7
+ decision_quality=0.8,
+ expected_confidence=0.7
 )
 ```
 
@@ -357,22 +357,22 @@ Particle swarm optimization for multi-agent coordination.
 ### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    SWARM INTELLIGENCE                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│    ●──▶        ●──▶                                         │
-│         ●──▶        Global Best ★                           │
-│    ●──▶     ●──▶                                            │
-│         ●──▶                                                 │
-│                                                              │
-│    Velocity Update:                                          │
-│    v = w×v + c1×r1×(pbest-x) + c2×r2×(gbest-x)             │
-│                                                              │
-│    Position Update:                                          │
-│    x = x + v                                                 │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ SWARM INTELLIGENCE 
+
+ 
+ 
+ Global Best 
+ 
+ 
+ 
+ Velocity Update: 
+ v = w×v + c1×r1×(pbest-x) + c2×r2×(gbest-x) 
+ 
+ Position Update: 
+ x = x + v 
+ 
+
 ```
 
 #### Usage
@@ -382,30 +382,30 @@ from agents import SwarmIntelligence
 
 # Create swarm
 swarm = SwarmIntelligence(
-    num_particles=10,
-    dimensions=2,
-    inertia=0.7,       # w: continue current direction
-    cognitive=1.5,     # c1: personal best attraction
-    social=1.5         # c2: global best attraction
+ num_particles=10,
+ dimensions=2,
+ inertia=0.7, # w: continue current direction
+ cognitive=1.5, # c1: personal best attraction
+ social=1.5 # c2: global best attraction
 )
 
 # Define fitness function
 def fitness(position):
-    return -sum((x - 0.5)**2 for x in position)
+ return -sum((x - 0.5)**2 for x in position)
 
 # Run optimization
 result = swarm.run_optimization(
-    fitness_function=fitness,
-    bounds=[(0, 1), (0, 1)],
-    max_iterations=50
+ fitness_function=fitness,
+ bounds=[(0, 1), (0, 1)],
+ max_iterations=50
 )
 print(f"Best position: {result['best_position']}")
 print(f"Converged: {result['converged']}")
 
 # Coordinate agents toward target
 new_positions = swarm.coordinate_agents(
-    agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)],
-    target_position=(0.8, 0.8)
+ agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)],
+ target_position=(0.8, 0.8)
 )
 ```
 
@@ -416,28 +416,28 @@ Parallel task decomposition with dependency management.
 ### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    TASK DECOMPOSITION                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│    Main Task                                                 │
-│        │                                                     │
-│        ▼                                                     │
-│    ┌───────────────────────────────────────┐                │
-│    │            Decompose                   │                │
-│    └───────────────────────────────────────┘                │
-│        │         │         │         │                       │
-│        ▼         ▼         ▼         ▼                       │
-│    ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                      │
-│    │Analyze│ │ Plan │ │Execute│ │Verify│                     │
-│    └───┬──┘ └───┬──┘ └───┬──┘ └──────┘                      │
-│        │        │        │                                   │
-│        └────────┴────────┘                                   │
-│                 │                                            │
-│                 ▼                                            │
-│            Aggregate                                         │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ TASK DECOMPOSITION 
+
+ 
+ Main Task 
+ 
+ 
+ 
+ Decompose 
+ 
+ 
+ 
+ 
+ Analyze Plan Execute Verify 
+ 
+ 
+ 
+ 
+ 
+ Aggregate 
+ 
+
 ```
 
 #### Usage
@@ -450,11 +450,11 @@ decomposer = TaskDecomposer(max_workers=4)
 
 # Define complex task
 task = ActionPath(
-    action_type=ActionType.DEPLOY,
-    description="Deploy new feature",
-    potential_energy=80.0,
-    impact=0.9,
-    urgency=0.7
+ action_type=ActionType.DEPLOY,
+ description="Deploy new feature",
+ potential_energy=80.0,
+ impact=0.9,
+ urgency=0.7
 )
 
 # Decompose using different strategies
@@ -481,30 +481,30 @@ PID-controlled feedback for continuous learning.
 ### Workflow Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    REFLECTION LOOP                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│    ┌──────────┐     ┌──────────┐     ┌──────────┐          │
-│    │ Decision │────▶│  Action  │────▶│ Outcome  │          │
-│    └──────────┘     └──────────┘     └────┬─────┘          │
-│         ▲                                  │                 │
-│         │                                  ▼                 │
-│         │                          ┌──────────────┐         │
-│         │                          │   Compare    │         │
-│         │                          │ Predicted vs │         │
-│         │                          │   Actual     │         │
-│         │                          └──────┬───────┘         │
-│         │                                 │                  │
-│         │         ┌───────────────────────┘                 │
-│         │         ▼                                          │
-│    ┌────┴─────────────┐                                     │
-│    │  PID Controller  │                                     │
-│    │                  │                                     │
-│    │ u = Kp×e + Ki×∫e + Kd×de/dt                           │
-│    └──────────────────┘                                     │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ REFLECTION LOOP 
+
+ 
+ 
+ Decision Action Outcome 
+ 
+ 
+ 
+ 
+ Compare 
+ Predicted vs 
+ Actual 
+ 
+ 
+ 
+ 
+ 
+ PID Controller 
+ 
+ u = Kp×e + Ki×∫e + Kd×de/dt 
+ 
+ 
+
 ```
 
 #### Usage
@@ -514,16 +514,16 @@ from agents import ReflectionLoop, PhysicsInspiredOrchestrator
 
 # Create feedback controller
 feedback = ReflectionLoop(
-    k_proportional=0.5,   # Immediate error response
-    k_integral=0.1,       # Accumulated error correction
-    k_derivative=0.05     # Rate of change response
+ k_proportional=0.5, # Immediate error response
+ k_integral=0.1, # Accumulated error correction
+ k_derivative=0.05 # Rate of change response
 )
 
 # Record decisions and outcomes
 result = feedback.record_decision(
-    decision={'action': 'deploy', 'confidence': 0.8},
-    predicted_outcome=0.8,
-    actual_outcome=0.7
+ decision={'action': 'deploy', 'confidence': 0.8},
+ predicted_outcome=0.8,
+ actual_outcome=0.7
 )
 print(f"Error: {result['error']:.3f}")
 print(f"Correction: {result['correction']:.3f}")
@@ -579,9 +579,9 @@ navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE', 'DOC_GEN'])
 
 # Get suggested workflows based on state
 suggestions = navigator.suggest_workflows({
-    'test_coverage': 65,
-    'open_issues': 15,
-    'recent_commits': True
+ 'test_coverage': 65,
+ 'open_issues': 15,
+ 'recent_commits': True
 })
 ```
 
@@ -620,9 +620,9 @@ from pathlib import Path
 
 orchestrator = ImportMigrationOrchestrator()
 result = orchestrator.run_migration_cycle(
-    repo_root=Path("."),
-    energy_budget=500.0,
-    dry_run=False
+ repo_root=Path("."),
+ energy_budget=500.0,
+ dry_run=False
 )
 ```
 
@@ -652,12 +652,12 @@ result = orchestrator.orchestrate(state, actions)
 
 ```python
 from agents import (
-    PhysicsInspiredOrchestrator,
-    DecisionState,
-    ActionPath,
-    ActionType,
-    MentalMappingModel,
-    ReflectionLoop
+ PhysicsInspiredOrchestrator,
+ DecisionState,
+ ActionPath,
+ ActionType,
+ MentalMappingModel,
+ ReflectionLoop
 )
 from pathlib import Path
 
@@ -668,39 +668,39 @@ feedback = ReflectionLoop()
 
 # 2. Define state
 state = DecisionState(
-    current_position="pr_submitted",
-    goal_position="pr_merged",
-    available_resources=0.8,
-    time_available=0.6,
-    current_velocity=0.7
+ current_position="pr_submitted",
+ goal_position="pr_merged",
+ available_resources=0.8,
+ time_available=0.6,
+ current_velocity=0.7
 )
 
 # 3. Think through problem
 problem_node, reasoning = mental_map.think_through_problem(
-    problem="PR has code review comments to address",
-    context={'pr_number': 2473}
+ problem="PR has code review comments to address",
+ context={'pr_number': 2473}
 )
 
 # 4. Define action paths
 actions = [
-    ActionPath(
-        action_type=ActionType.REFACTOR,
-        description="Address all review comments",
-        potential_energy=30.0,
-        momentum=7.0,
-        confidence=0.85,
-        risk=0.2,
-        impact=0.9
-    ),
-    ActionPath(
-        action_type=ActionType.DOCUMENT,
-        description="Update documentation only",
-        potential_energy=15.0,
-        momentum=8.0,
-        confidence=0.95,
-        risk=0.05,
-        impact=0.5
-    )
+ ActionPath(
+ action_type=ActionType.REFACTOR,
+ description="Address all review comments",
+ potential_energy=30.0,
+ momentum=7.0,
+ confidence=0.85,
+ risk=0.2,
+ impact=0.9
+ ),
+ ActionPath(
+ action_type=ActionType.DOCUMENT,
+ description="Update documentation only",
+ potential_energy=15.0,
+ momentum=8.0,
+ confidence=0.95,
+ risk=0.05,
+ impact=0.5
+ )
 ]
 
 # 5. Orchestrate decision
@@ -708,24 +708,24 @@ result = orchestrator.orchestrate(state, actions)
 
 # 6. Record in mental map
 decision_node = mental_map.make_decision(
-    decision_content=result['action_taken'],
-    problem_node_id=problem_node.node_id,
-    confidence=result.get('confidence', 0.5)
+ decision_content=result['action_taken'],
+ problem_node_id=problem_node.node_id,
+ confidence=result.get('confidence', 0.5)
 )
 
 # 7. After execution, record outcome
 outcome_node = mental_map.record_outcome(
-    decision_node_id=decision_node.node_id,
-    outcome_content="All comments addressed, PR approved",
-    success=True,
-    actual_impact=0.9
+ decision_node_id=decision_node.node_id,
+ outcome_content="All comments addressed, PR approved",
+ success=True,
+ actual_impact=0.9
 )
 
 # 8. Update feedback loop
 feedback_result = feedback.record_decision(
-    decision=result,
-    predicted_outcome=result.get('expected_impact', 0.8),
-    actual_outcome=0.9
+ decision=result,
+ predicted_outcome=result.get('expected_impact', 0.8),
+ actual_outcome=0.9
 )
 
 # 9. Apply learnings to orchestrator
@@ -739,10 +739,10 @@ mental_map.save_mental_map(Path('decision_history/pr_2473.json'))
 
 ```python
 from agents import (
-    DiffusionFlowModel,
-    EnergyLandscape,
-    EnergyState,
-    SwarmIntelligence
+ DiffusionFlowModel,
+ EnergyLandscape,
+ EnergyState,
+ SwarmIntelligence
 )
 
 # 1. Use flow model for initial navigation
@@ -751,22 +751,22 @@ flow.add_attractor((0.9, 0.9), strength=2.0)
 flow.add_repulsor((0.5, 0.5), strength=0.5)
 
 trajectory = flow.simulate_flow(
-    start_position=(0.1, 0.1),
-    steps=50
+ start_position=(0.1, 0.1),
+ steps=50
 )
 
 # 2. Use swarm to explore around trajectory endpoint
 swarm = SwarmIntelligence(num_particles=5, dimensions=2)
 
 def fitness(pos):
-    # Fitness increases closer to goal
-    return -((pos[0] - 0.9)**2 + (pos[1] - 0.9)**2)
+ # Fitness increases closer to goal
+ return -((pos[0] - 0.9)**2 + (pos[1] - 0.9)**2)
 
 result = swarm.run_optimization(
-    fitness_function=fitness,
-    bounds=[(trajectory[-1][0] - 0.2, trajectory[-1][0] + 0.2),
-            (trajectory[-1][1] - 0.2, trajectory[-1][1] + 0.2)],
-    max_iterations=30
+ fitness_function=fitness,
+ bounds=[(trajectory[-1][0] - 0.2, trajectory[-1][0] + 0.2),
+ (trajectory[-1][1] - 0.2, trajectory[-1][1] + 0.2)],
+ max_iterations=30
 )
 
 # 3. Use energy landscape for final decision
@@ -774,11 +774,11 @@ landscape = EnergyLandscape(temperature=0.5)
 
 candidates = [trajectory[-1], result['best_position']]
 for i, pos in enumerate(candidates):
-    landscape.add_state(EnergyState(
-        configuration={'position': pos, 'source': 'flow' if i == 0 else 'swarm'},
-        energy=1.0 - fitness(pos),
-        entropy=0.1 * i
-    ))
+ landscape.add_state(EnergyState(
+ configuration={'position': pos, 'source': 'flow' if i == 0 else 'swarm'},
+ energy=1.0 - fitness(pos),
+ entropy=0.1 * i
+ ))
 
 optimal = landscape.minimize_free_energy()
 print(f"Optimal decision: {optimal.configuration}")
@@ -831,21 +831,21 @@ from agents import PhysicsInspiredOrchestrator, DecisionState, ActionPath, Actio
 
 orchestrator = PhysicsInspiredOrchestrator()
 state = DecisionState(
-    current_position="start",
-    goal_position="end",
-    available_resources=0.8,
-    time_available=0.5,
-    current_velocity=0.6
+ current_position="start",
+ goal_position="end",
+ available_resources=0.8,
+ time_available=0.5,
+ current_velocity=0.6
 )
 
 result = orchestrator.orchestrate(state, [
-    ActionPath(
-        action_type=ActionType.OPTIMIZE,
-        description="Optimize path",
-        potential_energy=30.0,
-        confidence=0.8,
-        impact=0.7
-    )
+ ActionPath(
+ action_type=ActionType.OPTIMIZE,
+ description="Optimize path",
+ potential_energy=30.0,
+ confidence=0.8,
+ impact=0.7
+ )
 ])
 ```
 
@@ -856,8 +856,8 @@ from agents import ImportMigrationOrchestrator
 from pathlib import Path
 
 result = ImportMigrationOrchestrator().run_migration_cycle(
-    repo_root=Path("."),
-    dry_run=True
+ repo_root=Path("."),
+ dry_run=True
 )
 ```
 
@@ -877,7 +877,7 @@ from agents import SelfHealingEngine
 engine = SelfHealingEngine()
 issues = engine.scan_for_issues()
 for issue in issues:
-    engine.remediate(issue)
+ engine.remediate(issue)
 ```
 
 ---
@@ -934,8 +934,8 @@ from agents import QuantumOperator
 qop = QuantumOperator(dimension=5)
 
 # Apply creation operator (spawn task/allocate resource)
-state = [0.0, 1.0, 0.0, 0.0, 0.0]  # |1⟩ state
-created = qop.apply_creation(state)  # → √2|2⟩
+state = [0.0, 1.0, 0.0, 0.0, 0.0] # |1⟩ state
+created = qop.apply_creation(state) # √2|2⟩
 
 # Get occupation number (average resources)
 n = qop.get_occupation_number(state)
@@ -958,28 +958,28 @@ clc = ConservationLawChecker(tolerance=1e-6)
 
 # Check energy conservation
 result = clc.check_energy_conservation(
-    initial_state={'kinetic': 50, 'potential': 50},
-    final_state={'kinetic': 60, 'potential': 40}
+ initial_state={'kinetic': 50, 'potential': 50},
+ final_state={'kinetic': 60, 'potential': 40}
 )
-print(f"Conserved: {result['conserved']}")  # True
+print(f"Conserved: {result['conserved']}") # True
 
 # Check momentum conservation
 result = clc.check_momentum_conservation(
-    momenta=[(1.0, 0.0), (-1.0, 0.0)]  # Equal and opposite
+ momenta=[(1.0, 0.0), (-1.0, 0.0)] # Equal and opposite
 )
-print(f"Total momentum: {result['total_magnitude']}")  # ~0
+print(f"Total momentum: {result['total_magnitude']}") # ~0
 
 # Check probability conservation
 result = clc.check_probability_conservation([0.3, 0.3, 0.4])
-print(f"Probabilities sum to 1: {result['conserved']}")  # True
+print(f"Probabilities sum to 1: {result['conserved']}") # True
 
 # Check resource budget
 result = clc.check_resource_budget(
-    allocated={'cpu': 80, 'memory': 60},
-    consumed={'cpu': 50, 'memory': 40},
-    budget={'cpu': 100, 'memory': 100}
+ allocated={'cpu': 80, 'memory': 60},
+ consumed={'cpu': 50, 'memory': 40},
+ budget={'cpu': 100, 'memory': 100}
 )
-print(f"Within budget: {result['conserved']}")  # True
+print(f"Within budget: {result['conserved']}") # True
 ```
 
 ## PathIntegralCalculator
@@ -993,8 +993,8 @@ pic = PathIntegralCalculator(hbar=1.0)
 
 # Analyze multiple paths
 paths = [
-    [{'potential': 10, 'kinetic': 5}, {'potential': 5, 'kinetic': 10}],  # Direct
-    [{'potential': 8, 'kinetic': 7}, {'potential': 4, 'kinetic': 11}],   # Scenic
+ [{'potential': 10, 'kinetic': 5}, {'potential': 5, 'kinetic': 10}], # Direct
+ [{'potential': 8, 'kinetic': 7}, {'potential': 4, 'kinetic': 11}], # Scenic
 ]
 
 result = pic.analyze_paths(paths, ['direct', 'scenic'])
@@ -1004,8 +1004,8 @@ print(f"Quantum advantage: {result['quantum_advantage']}")
 
 # Analyze ActionPath objects
 action_paths = [
-    ActionPath(ActionType.AUDIT, "Security", potential_energy=30),
-    ActionPath(ActionType.TEST, "Coverage", potential_energy=20),
+ ActionPath(ActionType.AUDIT, "Security", potential_energy=30),
+ ActionPath(ActionType.TEST, "Coverage", potential_energy=20),
 ]
 result = pic.evaluate_decision_paths(action_paths)
 ```
@@ -1026,7 +1026,7 @@ print(f"Energy conserved: {he.hamiltonian_history[0] == he.hamiltonian_history[-
 # Find stable equilibrium points
 fixed_points = he.find_fixed_points()
 for fp in fixed_points:
-    print(f"  Position: {fp['q']}, Stable: {fp['stable']}")
+ print(f" Position: {fp['q']}, Stable: {fp['stable']}")
 
 # Analyze ActionPath dynamics
 path = ActionPath(ActionType.DEPLOY, "Production", potential_energy=50, momentum=5)
@@ -1049,10 +1049,10 @@ print(f"Active: {sum(1 for v in status.values() if v == 'active')}")
 
 # Run full physics analysis
 paths = [
-    ActionPath(ActionType.AUDIT, "Security", potential_energy=30, kinetic_energy=10,
-               impact=0.9, confidence=0.8, friction=2, momentum=6),
-    ActionPath(ActionType.TEST, "Coverage", potential_energy=20, kinetic_energy=15,
-               impact=0.7, confidence=0.9, friction=1, momentum=7),
+ ActionPath(ActionType.AUDIT, "Security", potential_energy=30, kinetic_energy=10,
+ impact=0.9, confidence=0.8, friction=2, momentum=6),
+ ActionPath(ActionType.TEST, "Coverage", potential_energy=20, kinetic_energy=15,
+ impact=0.7, confidence=0.9, friction=1, momentum=7),
 ]
 
 result = suite.full_analysis(paths)
@@ -1083,22 +1083,22 @@ This section documents the advanced quantum-physics integration patterns that br
 Uses discrete-time quantum walks for exploring decision spaces with quadratic speedup over classical random walks.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    QUANTUM WALK EXPLORATION                  │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   ┌───────┐     ┌──────────┐     ┌───────────┐             │
-│   │ COIN  │────▶│  SHIFT   │────▶│ INTERFERE │             │
-│   │  (H)  │     │  (S)     │     │           │             │
-│   └───────┘     └──────────┘     └───────────┘             │
-│       │                               │                     │
-│       │         O(√t) spread          │                     │
-│       └───────────────────────────────┘                     │
-│                                                              │
-│   Classical: O(t) spread                                     │
-│   Quantum:   O(√t) spread → Quadratic speedup               │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ QUANTUM WALK EXPLORATION 
+
+ 
+ 
+ COIN SHIFT INTERFERE 
+ (H) (S) 
+ 
+ 
+ O(√t) spread 
+ 
+ 
+ Classical: O(t) spread 
+ Quantum: O(√t) spread Quadratic speedup 
+ 
+
 ```
 
 #### Usage
@@ -1125,20 +1125,20 @@ print(f"Target probability: {result['target_probability']}")
 Explores multiple decision paths simultaneously using Grover-like amplitude amplification.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  SUPERPOSITION EXPLORATION                   │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Path A: ──|α₁|──┐                                         │
-│   Path B: ──|α₂|──├──▶ ORACLE ──▶ DIFFUSION ──▶ MEASURE    │
-│   Path C: ──|α₃|──┘      ↓           ↓            ↓         │
-│                      Amplify      Interfere     Collapse    │
-│                       good         cancel       to best     │
-│                       paths        bad paths                │
-│                                                              │
-│   Iterations: π/4 × √N for optimal amplification            │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ SUPERPOSITION EXPLORATION 
+
+ 
+ Path A: |α₁| 
+ Path B: |α₂| ORACLE DIFFUSION MEASURE 
+ Path C: |α₃| 
+ Amplify Interfere Collapse 
+ good cancel to best 
+ paths bad paths 
+ 
+ Iterations: π/4 × √N for optimal amplification 
+ 
+
 ```
 
 ### Usage
@@ -1148,12 +1148,12 @@ from agents import SuperpositionExplorer, ActionPath, ActionType
 
 # Create paths
 paths = [
-    ActionPath(ActionType.AUDIT, "Run security audit",
-               potential_energy=30, impact=0.9, confidence=0.8),
-    ActionPath(ActionType.TEST, "Add unit tests",
-               potential_energy=20, impact=0.7, confidence=0.9),
-    ActionPath(ActionType.REFACTOR, "Improve structure",
-               potential_energy=50, impact=0.6, confidence=0.7),
+ ActionPath(ActionType.AUDIT, "Run security audit",
+ potential_energy=30, impact=0.9, confidence=0.8),
+ ActionPath(ActionType.TEST, "Add unit tests",
+ potential_energy=20, impact=0.7, confidence=0.9),
+ ActionPath(ActionType.REFACTOR, "Improve structure",
+ potential_energy=50, impact=0.6, confidence=0.7),
 ]
 
 # Explore in superposition
@@ -1170,27 +1170,27 @@ print(f"Quantum speedup: {result['quantum_speedup']}")
 Validates decisions against physics-informed constraints, ensuring physically plausible outcomes.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    PINN VALIDATION                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Decision ──▶ ┌─────────────────────────────────┐          │
-│                │ CONSTRAINT RESIDUALS             │          │
-│                │                                  │          │
-│                │ • Energy conservation: R₁       │          │
-│                │ • Momentum alignment:  R₂       │          │
-│                │ • Friction bounds:     R₃       │          │
-│                └─────────────────────────────────┘          │
-│                            │                                 │
-│                            ▼                                 │
-│                   Physics Score = 1 - Σ(wᵢRᵢ)/Σwᵢ           │
-│                            │                                 │
-│                            ▼                                 │
-│                 ┌──────────┴──────────┐                     │
-│                 │                     │                     │
-│              Valid ≥0.6         Invalid <0.6                │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ PINN VALIDATION 
+
+ 
+ Decision 
+ CONSTRAINT RESIDUALS 
+ 
+ • Energy conservation: R₁ 
+ • Momentum alignment: R₂ 
+ • Friction bounds: R₃ 
+ 
+ 
+ 
+ Physics Score = 1 - Σ(wᵢRᵢ)/Σwᵢ 
+ 
+ 
+ 
+ 
+ Valid ≥0.6 Invalid <0.6 
+ 
+
 ```
 
 ### Usage
@@ -1200,10 +1200,10 @@ from agents import PINNValidator, ActionPath, ActionType
 
 # Create paths to validate
 paths = [
-    ActionPath(ActionType.DEPLOY, "Deploy to production",
-               potential_energy=80, friction=8, momentum=2),
-    ActionPath(ActionType.TEST, "Run integration tests",
-               potential_energy=20, friction=2, momentum=7),
+ ActionPath(ActionType.DEPLOY, "Deploy to production",
+ potential_energy=80, friction=8, momentum=2),
+ ActionPath(ActionType.TEST, "Run integration tests",
+ potential_energy=20, friction=2, momentum=7),
 ]
 
 # Validate against physics constraints
@@ -1211,9 +1211,9 @@ validator = PINNValidator()
 results = validator.validate_batch(paths)
 
 for result in results['results']:
-    print(f"{result['path_description']}: {result['physics_score']:.2f}")
-    print(f"  Valid: {result['valid']}")
-    print(f"  Recommendation: {result['recommendation']}")
+ print(f"{result['path_description']}: {result['physics_score']:.2f}")
+ print(f" Valid: {result['valid']}")
+ print(f" Recommendation: {result['recommendation']}")
 ```
 
 ## QuantumPhysicsOrchestrator
@@ -1221,23 +1221,23 @@ for result in results['results']:
 Unified orchestrator integrating all quantum and physics patterns.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│              QUANTUM-PHYSICS ORCHESTRATION                   │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   1. ASSESS         ──▶ Quantum walk exploration            │
-│         ↓                                                    │
-│   2. SUPERPOSE      ──▶ Put paths in superposition          │
-│         ↓                                                    │
-│   3. ENTANGLE       ──▶ Model decision dependencies         │
-│         ↓                                                    │
-│   4. VALIDATE       ──▶ PINN constraint checking            │
-│         ↓                                                    │
-│   5. OPTIMIZE       ──▶ Energy landscape + Grover           │
-│         ↓                                                    │
-│   6. MEASURE        ──▶ Collapse to optimal decision        │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+
+ QUANTUM-PHYSICS ORCHESTRATION 
+
+ 
+ 1. ASSESS Quantum walk exploration 
+ 
+ 2. SUPERPOSE Put paths in superposition 
+ 
+ 3. ENTANGLE Model decision dependencies 
+ 
+ 4. VALIDATE PINN constraint checking 
+ 
+ 5. OPTIMIZE Energy landscape + Grover 
+ 
+ 6. MEASURE Collapse to optimal decision 
+ 
+
 ```
 
 ### Usage
@@ -1250,15 +1250,15 @@ orchestrator = QuantumPhysicsOrchestrator()
 
 # Create decision paths
 paths = [
-    ActionPath(ActionType.AUDIT, "Security audit",
-               potential_energy=30, impact=0.9, confidence=0.85,
-               friction=3, momentum=6),
-    ActionPath(ActionType.REFACTOR, "Code cleanup",
-               potential_energy=40, impact=0.7, confidence=0.8,
-               friction=4, momentum=5),
-    ActionPath(ActionType.TEST, "Add coverage",
-               potential_energy=25, impact=0.8, confidence=0.9,
-               friction=2, momentum=7),
+ ActionPath(ActionType.AUDIT, "Security audit",
+ potential_energy=30, impact=0.9, confidence=0.85,
+ friction=3, momentum=6),
+ ActionPath(ActionType.REFACTOR, "Code cleanup",
+ potential_energy=40, impact=0.7, confidence=0.8,
+ friction=4, momentum=5),
+ ActionPath(ActionType.TEST, "Add coverage",
+ potential_energy=25, impact=0.8, confidence=0.9,
+ friction=2, momentum=7),
 ]
 
 # Run full quantum-physics orchestration
@@ -1278,10 +1278,10 @@ from agents import EntangledDependency
 
 # Create entanglement between two decisions
 entanglement = EntangledDependency(
-    decision_a="Deploy backend",
-    decision_b="Deploy frontend",
-    correlation=0.8,  # High positive correlation
-    strength=0.9
+ decision_a="Deploy backend",
+ decision_b="Deploy frontend",
+ correlation=0.8, # High positive correlation
+ strength=0.9
 )
 
 # Calculate joint probability

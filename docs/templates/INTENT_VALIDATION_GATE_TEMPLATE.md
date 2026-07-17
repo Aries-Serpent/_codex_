@@ -92,11 +92,11 @@ For each iteration, include:
 
 #### Iteration Header
 ```markdown
-### **Iteration N: [Name]** [Physics Symbol: ️️️]
+### **Iteration N: [Name]** [Physics Symbol: ]
 
 **Objective**: [Single sentence describing iteration goal]
 
-**Energy Level**:  ([1-5]/5)
+**Energy Level**: ([1-5]/5)
 ```
 
 #### Pre-commit Checkpoint
@@ -157,9 +157,9 @@ Tag each assumption with confidence marker:
 ```markdown
 ## Assumptions
 
--  Authentication is currently token-based and centralized in `src/auth/`
+- Authentication is currently token-based and centralized in `src/auth/`
 - ? Rate limiting is handled upstream by the API gateway
-- ️ Production and staging environments share the same database cluster
+- Production and staging environments share the same database cluster
 ```
 
 ---
@@ -179,24 +179,24 @@ For each question:
 
 1. **How strict is the backward compatibility requirement for the API?**
 
-   Context: This affects whether we can introduce breaking changes or must maintain full legacy support.
+ Context: This affects whether we can introduce breaking changes or must maintain full legacy support.
 
-   - A) No breaking changes at all; legacy clients must continue to function indefinitely
-   - B) No breaking changes now, but we can introduce a formal deprecation path
-   - C) Minor breaking changes are acceptable if documented
-   - D) Other (please specify)
+ - A) No breaking changes at all; legacy clients must continue to function indefinitely
+ - B) No breaking changes now, but we can introduce a formal deprecation path
+ - C) Minor breaking changes are acceptable if documented
+ - D) Other (please specify)
 
-   **Recommended:** B
+ **Recommended:** B
 
 2. **What is the iteration completion checkpoint strategy?**
 
-   Context: Defines how we validate each iteration before moving to the next.
+ Context: Defines how we validate each iteration before moving to the next.
 
-   - A) Full validation at each iteration boundary (comprehensive testing)
-   - B) Incremental validation with final comprehensive pass (faster iteration)
-   - C) Continuous validation throughout (highest confidence)
+ - A) Full validation at each iteration boundary (comprehensive testing)
+ - B) Incremental validation with final comprehensive pass (faster iteration)
+ - C) Continuous validation throughout (highest confidence)
 
-   **Recommended:** A
+ **Recommended:** A
 ```
 
 Design questions/options to enable responses like:
@@ -289,7 +289,7 @@ Explain how to **revert or recover** if something goes wrong during or after exe
 Structure by iteration:
 
 ```markdown
-##  Rollback / Fallback Plan
+## Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -306,13 +306,13 @@ Structure by iteration:
 **Iteration 3 Rollback**:
 - **Checkpoint**: After deployment
 - **Trigger**: Production incidents or monitoring alerts
-- **Action**: Feature flag disable → immediate revert → hotfix if needed
+- **Action**: Feature flag disable immediate revert hotfix if needed
 
 ### Emergency Recovery Paths
 
-- **If [Condition A]** → [Alternative approach A]
-- **If [Condition B]** → [Alternative approach B]
-- **If [Condition C]** → [Escalation path C]
+- **If [Condition A]** [Alternative approach A]
+- **If [Condition B]** [Alternative approach B]
+- **If [Condition C]** [Escalation path C]
 ```
 
 This section can be concise but must describe **practical, executable** rollback paths.
@@ -351,49 +351,49 @@ Structure the entire response using these sections and headings:
 
 ---
 
-##  Intent Validation
+## Intent Validation
 
 [2-3 sentence paragraph restating intent, objective, constraints, success criteria, and non-goals]
 
 ---
 
-##  Assumptions
+## Assumptions
 
--  [Confirmed assumption 1]
+- [Confirmed assumption 1]
 - ? [Uncertain assumption 2]
-- ️ [High-risk assumption 3]
+- [High-risk assumption 3]
 
 ---
 
-##  Open Questions
+## Open Questions
 
 1. **[Question 1 - Critical]**
 
-   Context: [1-2 sentences]
+ Context: [1-2 sentences]
 
-   - A) [Option A]
-   - B) [Option B]
-   - C) [Option C]
+ - A) [Option A]
+ - B) [Option B]
+ - C) [Option C]
 
-   **Recommended:** [Option]
+ **Recommended:** [Option]
 
 2. **[Question 2 - High Priority]**
 
-   [Similar structure]
+ [Similar structure]
 
 3. **[Question 3 - Medium Priority]**
 
-   [Similar structure]
+ [Similar structure]
 
 ---
 
-##  Phases of Action (Iteration-Based)
+## Phases of Action (Iteration-Based)
 
-### **Iteration 1: [Name]** ️
+### **Iteration 1: [Name]** 
 
 **Objective**: [Single sentence]
 
-**Energy Level**:  (5/5)
+**Energy Level**: (5/5)
 
 #### Pre-commit Checkpoint
 - [ ] [Prerequisite 1]
@@ -432,25 +432,25 @@ Structure the entire response using these sections and headings:
 
 ---
 
-### **Iteration 3: [Name]** ️
+### **Iteration 3: [Name]** 
 
 [Similar structure]
 
 ---
 
-## ⚛️ Physics Alignment
+## Physics Alignment
 
 | Principle | Application | Iteration |
 |-----------|-------------|-----------|
-| Path ️ | [Forward momentum description] | Iteration 1 |
-| Fields  | [Transformation flow description] | Iteration 2 |
-| Patterns ️ | [Observation/recognition description] | Iteration 3 |
-| Redundancy  | [Fallback alternatives description] | All Iterations |
-| Balance ️ | [Equilibrium maintenance description] | All Iterations |
+| Path | [Forward momentum description] | Iteration 1 |
+| Fields | [Transformation flow description] | Iteration 2 |
+| Patterns | [Observation/recognition description] | Iteration 3 |
+| Redundancy | [Fallback alternatives description] | All Iterations |
+| Balance | [Equilibrium maintenance description] | All Iterations |
 
 ---
 
-## ️ Risks and Mitigations
+## Risks and Mitigations
 
 | Risk | Severity | Mitigation | Iteration |
 |------|----------|------------|-----------|
@@ -460,7 +460,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 📦 Deliverables
+## Deliverables
 
 ### Iteration 1
 - [Deliverable 1]
@@ -476,7 +476,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-##  Acceptance Criteria
+## Acceptance Criteria
 
 - [ ] [Criterion 1: Quality threshold]
 - [ ] [Criterion 2: Operational constraint]
@@ -486,7 +486,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-##  Rollback / Fallback Plan
+## Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -502,24 +502,24 @@ Structure the entire response using these sections and headings:
 
 ### Emergency Recovery Paths
 
-- **If [Condition A]** → [Alternative A]
-- **If [Condition B]** → [Alternative B]
+- **If [Condition A]** [Alternative A]
+- **If [Condition B]** [Alternative B]
 
 ---
 
-##  Energy Distribution
+## Energy Distribution
 
 | Iteration | Energy | Rationale |
 |-----------|--------|-----------|
-| Iteration 1 |  | [Why high priority] |
-| Iteration 2 |  | [Why significant] |
-| Iteration 3 |  | [Why moderate] |
+| Iteration 1 | | [Why high priority] |
+| Iteration 2 | | [Why significant] |
+| Iteration 3 | | [Why moderate] |
 
 **Total Energy Investment**: [Sum]/20 units
 
 ---
 
-##  Next Step
+## Next Step
 
 Awaiting your approval or feedback on the plan above (including any adjustments to recommended options for Open Questions).
 

@@ -81,28 +81,28 @@ This document provides step-by-step procedures for responding to security incide
 
 ```
 DETECT INCIDENT
-  ├─ Alert triggered / Report received
-  ├─ Log initial information
-  └─ Acknowledge receipt
+ Alert triggered / Report received
+ Log initial information
+ Acknowledge receipt
 
 CLASSIFY
-  ├─ Severity level (P0-P3)
-  ├─ Category (Credential/Access/Breach/Performance/Supply Chain)
-  └─ Initial impact assessment
+ Severity level (P0-P3)
+ Category (Credential/Access/Breach/Performance/Supply Chain)
+ Initial impact assessment
 
 ASSEMBLE TEAM
-  ├─ Notify Incident Commander
-  ├─ Notify Security Lead
-  ├─ Notify Infrastructure Lead
-  └─ Create incident Slack channel: #incident-YYYY-MMDD-XXX
+ Notify Incident Commander
+ Notify Security Lead
+ Notify Infrastructure Lead
+ Create incident Slack channel: #incident-YYYY-MMDD-XXX
 
 CREATE INCIDENT LOG
-  ├─ Incident ID
-  ├─ Detection time
-  ├─ Severity
-  ├─ Category
-  ├─ Commander assigned
-  └─ Initial impact
+ Incident ID
+ Detection time
+ Severity
+ Category
+ Commander assigned
+ Initial impact
 ```
 
 **Incident Log Template**:
@@ -129,9 +129,9 @@ export INCIDENT_MODE=true
 
 # 2. Collect initial evidence
 python scripts/security/collect_incident_evidence.py \
-  --incident-id=$INCIDENT_ID \
-  --start-time="$INCIDENT_TIME" \
-  --preserve-logs=true
+ --incident-id=$INCIDENT_ID \
+ --start-time="$INCIDENT_TIME" \
+ --preserve-logs=true
 
 # 3. Review affected systems
 ./scripts/incident/affected_systems.sh
@@ -154,22 +154,22 @@ python scripts/security/collect_incident_evidence.py \
 **For Security Incidents**:
 ```
 CONTAIN THREAT
-  ├─ Isolate affected systems
-  ├─ Revoke compromised credentials
-  ├─ Block malicious IPs
-  ├─ Enable enhanced logging
-  ├─ Preserve evidence
-  └─ Activate backup systems
+ Isolate affected systems
+ Revoke compromised credentials
+ Block malicious IPs
+ Enable enhanced logging
+ Preserve evidence
+ Activate backup systems
 ```
 
 **For Performance Incidents**:
 ```
 STABILIZE SERVICE
-  ├─ Enable circuit breakers
-  ├─ Scale down non-critical services
-  ├─ Redirect traffic to healthy instances
-  ├─ Enable maintenance mode if needed
-  └─ Activate on-call for monitoring
+ Enable circuit breakers
+ Scale down non-critical services
+ Redirect traffic to healthy instances
+ Enable maintenance mode if needed
+ Activate on-call for monitoring
 ```
 
 ### Phase 4: Remediation
@@ -213,47 +213,47 @@ STABILIZE SERVICE
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ️ IMMEDIATE ACTIONS - Execute within 5 minutes
+# IMMEDIATE ACTIONS - Execute within 5 minutes
 
 # 1. IDENTIFY compromised credential
-CREDENTIAL_TYPE="github_oauth_token"  # or: api_key, jwt_key, db_password
+CREDENTIAL_TYPE="github_oauth_token" # or: api_key, jwt_key, db_password
 LAST_USAGE="2026-06-14T14:22:00Z"
 COMPROMISED_AT="2026-06-14T14:15:00Z"
 
 # 2. REVOKE compromised credential
 python scripts/security/revoke_credential.py \
-  --type=$CREDENTIAL_TYPE \
-  --emergency \
-  --immediate-effect
+ --type=$CREDENTIAL_TYPE \
+ --emergency \
+ --immediate-effect
 
-# Output:  Credential revoked, cache cleared
+# Output: Credential revoked, cache cleared
 
 # 3. ROTATE replacement credential
 python scripts/rotate_secret.py \
-  --secret=$CREDENTIAL_TYPE \
-  --emergency \
-  --notify-on-complete
+ --secret=$CREDENTIAL_TYPE \
+ --emergency \
+ --notify-on-complete
 
-# Output:  New credential active
+# Output: New credential active
 
 # 4. BLOCK suspicious IP/account
 if [ ! -z "$ATTACKER_IP" ]; then
-  python scripts/security/block_ip.py \
-    --ip=$ATTACKER_IP \
-    --duration=24h \
-    --reason="Credential compromise"
+ python scripts/security/block_ip.py \
+ --ip=$ATTACKER_IP \
+ --duration=24h \
+ --reason="Credential compromise"
 fi
 
 # 5. INVALIDATE active sessions
 python scripts/security/invalidate_sessions.py \
-  --reason="Credential compromise" \
-  --grace-period=60min
+ --reason="Credential compromise" \
+ --grace-period=60min
 
 # 6. NOTIFY team immediately
 python scripts/incident/notify_team.py \
-  --severity=P0 \
-  --channel=security \
-  --message="Credential compromised: $CREDENTIAL_TYPE, rotated and revoked"
+ --severity=P0 \
+ --channel=security \
+ --message="Credential compromised: $CREDENTIAL_TYPE, rotated and revoked"
 ```
 
 ## P1 Response (1-4 hours)
@@ -270,8 +270,8 @@ git log --all --oneline | grep -i "$CREDENTIAL"
 
 # 2. Analyze credential usage
 python scripts/security/analyze_credential_usage.py \
-  --credential-id=$COMPROMISED_CRED_ID \
-  --lookback=7days
+ --credential-id=$COMPROMISED_CRED_ID \
+ --lookback=7days
 
 # Review: All access made with this credential
 
@@ -283,12 +283,12 @@ python scripts/security/analyze_credential_usage.py \
 
 git log --since="$COMPROMISED_AT" --oneline
 github api repos/Aries-Serpent/_codex_/pulls \
-  --search="created:>$COMPROMISED_AT"
+ --search="created:>$COMPROMISED_AT"
 
 # 4. Identify affected systems/data
 python scripts/security/affected_systems_scan.py \
-  --credential=$CREDENTIAL_TYPE \
-  --since=$COMPROMISED_AT
+ --credential=$CREDENTIAL_TYPE \
+ --since=$COMPROMISED_AT
 
 # 5. Review access logs
 grep "$ATTACKER_IP\|$STOLEN_TOKEN" /var/log/auth.log
@@ -325,10 +325,10 @@ echo "Credential compromised for: $COMPROMISE_DURATION seconds"
 
 # 5. Monitor for reuse of same credential
 while true; do
-  python scripts/security/monitor_credential_usage.py \
-    --credential-id=$COMPROMISED_CRED_ID \
-    --alert-on-usage
-  sleep 60
+ python scripts/security/monitor_credential_usage.py \
+ --credential-id=$COMPROMISED_CRED_ID \
+ --alert-on-usage
+ sleep 60
 done
 ```
 
@@ -346,7 +346,7 @@ curl https://api.example.com/health
 
 # 3. Confirm credential rotation
 python scripts/rotate_secret.py --verify $CREDENTIAL_TYPE
-# Expected:  New credential active
+# Expected: New credential active
 
 # 4. Clear temporary security measures
 # - Remove IP block (after 24 hours)
@@ -396,7 +396,7 @@ echo "Credential compromise contained and remediated" >> incident.log
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ️ IMMEDIATE ACTIONS
+# IMMEDIATE ACTIONS
 
 # 1. IDENTIFY attacker
 ATTACKER_IP=$(grep "Failed password" /var/log/auth.log | tail -1 | awk '{print $NF}')
@@ -407,20 +407,20 @@ sudo iptables -A INPUT -s $ATTACKER_IP -j DROP
 # For production: Update WAF/firewall rules
 
 python scripts/security/block_ip.py \
-  --ip=$ATTACKER_IP \
-  --duration=24h \
-  --reason="Unauthorized access attempt"
+ --ip=$ATTACKER_IP \
+ --duration=24h \
+ --reason="Unauthorized access attempt"
 
 # 3. INVALIDATE compromised session
 python scripts/security/invalidate_session.py \
-  --ip=$ATTACKER_IP \
-  --reason="Unauthorized access"
+ --ip=$ATTACKER_IP \
+ --reason="Unauthorized access"
 
 # 4. LOCK potentially compromised account
 if [ ! -z "$COMPROMISED_USER" ]; then
-  python scripts/security/lock_account.py \
-    --username=$COMPROMISED_USER \
-    --require-password-reset
+ python scripts/security/lock_account.py \
+ --username=$COMPROMISED_USER \
+ --require-password-reset
 fi
 
 # 5. RESET MFA for affected user
@@ -439,7 +439,7 @@ grep "$ATTACKER_IP" /var/log/auth.log | head -100
 
 # 2. Check what was accessed
 curl -H "Authorization: ******" \
-  https://api.example.com/admin/users 2>&1 | grep -i error
+ https://api.example.com/admin/users 2>&1 | grep -i error
 # Check: What endpoints did attacker try?
 
 # 3. Determine if attacker got in
@@ -500,12 +500,12 @@ curl -H "Authorization: ******" \
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ️ IMMEDIATE ACTIONS
+# IMMEDIATE ACTIONS
 
 # 1. ISOLATE affected database
 python scripts/security/isolate_database.py \
-  --database=$DB_NAME \
-  --allow-current-connections-only
+ --database=$DB_NAME \
+ --allow-current-connections-only
 
 # 2. ENABLE immutable audit logging
 python scripts/security/enable_immutable_logging.py
@@ -525,8 +525,8 @@ slack-notify "#security" " P0 DATA BREACH: Scope being determined"
 
 # 6. BEGIN investigation
 python scripts/security/analyze_data_access.py \
-  --since="$BREACH_START_TIME" \
-  --generate-report
+ --since="$BREACH_START_TIME" \
+ --generate-report
 ```
 
 ## Investigation Phase
@@ -613,39 +613,39 @@ EOF
 ```bash
 # 1. DETECT root cause
 python scripts/incident/diagnose_degradation.py \
-  --metric="error_rate|latency|cpu|memory"
+ --metric="error_rate|latency|cpu|memory"
 
 # Output examples:
-#  Database connection pool exhausted (95/100)
-#  CPU spike due to runaway query
-#  Memory leak in cache layer
+# Database connection pool exhausted (95/100)
+# CPU spike due to runaway query
+# Memory leak in cache layer
 
 # 2. IMMEDIATE MITIGATION
 case "$ROOT_CAUSE" in
-  "db_connections_exhausted")
-    # Restart connection pool / scale read replicas
-    kubectl scale deployment codex-api --replicas=5
-    ;;
-  "memory_leak")
-    # Restart affected pods
-    kubectl rollout restart deployment/codex-api
-    ;;
-  "cpu_spike")
-    # Disable non-critical features / scale up
-    kubectl scale deployment codex-api --replicas=8
-    ;;
-  "external_dependency")
-    # Activate circuit breaker / failover
-    curl -X POST https://api.example.com/admin/circuit-breaker?state=open
-    ;;
+ "db_connections_exhausted")
+ # Restart connection pool / scale read replicas
+ kubectl scale deployment codex-api --replicas=5
+ ;;
+ "memory_leak")
+ # Restart affected pods
+ kubectl rollout restart deployment/codex-api
+ ;;
+ "cpu_spike")
+ # Disable non-critical features / scale up
+ kubectl scale deployment codex-api --replicas=8
+ ;;
+ "external_dependency")
+ # Activate circuit breaker / failover
+ curl -X POST https://api.example.com/admin/circuit-breaker?state=open
+ ;;
 esac
 
 # 3. MONITOR recovery
 python scripts/incident/monitor_recovery.py \
-  --target-metric="error_rate<1%" \
-  --timeout=5min
+ --target-metric="error_rate<1%" \
+ --timeout=5min
 
-# Output:  Service recovered
+# Output: Service recovered
 ```
 
 ## Investigation & Fix
@@ -657,8 +657,8 @@ python scripts/incident/monitor_recovery.py \
 # - Resource leak?
 # - Third-party issue?
 
-git log --since="1 hour ago" --oneline  # Recent changes?
-kubectl top nodes                       # Resource usage
+git log --since="1 hour ago" --oneline # Recent changes?
+kubectl top nodes # Resource usage
 kubectl logs deployment/codex-api --tail=100 | grep -i error
 
 # 2. Apply fix
@@ -673,8 +673,8 @@ kubectl scale deployment codex-api --replicas=10
 
 # 3. Monitor for regression
 while true; do
-  curl -f https://api.example.com/health || break
-  sleep 10
+ curl -f https://api.example.com/health || break
+ sleep 10
 done
 echo " Service stable"
 ```
@@ -699,13 +699,13 @@ pip-audit --format=json | jq '.vulnerabilities[]'
 
 # 2. QUARANTINE affected builds
 python scripts/security/quarantine_builds.py \
-  --dependency=$MALICIOUS_PKG \
-  --version=$VERSION
+ --dependency=$MALICIOUS_PKG \
+ --version=$VERSION
 
 # 3. REVOKE affected releases
 python scripts/security/revoke_release.py \
-  --package=$MALICIOUS_PKG \
-  --version=$VERSION
+ --package=$MALICIOUS_PKG \
+ --version=$VERSION
 
 # 4. SCAN for exploitation
 grep -r "from $MALICIOUS_PKG import" src/
@@ -713,8 +713,8 @@ grep -r "from $MALICIOUS_PKG import" src/
 
 # 5. BEGIN forensics
 python scripts/security/analyze_build_history.py \
-  --dependency=$MALICIOUS_PKG \
-  --generate-report
+ --dependency=$MALICIOUS_PKG \
+ --generate-report
 ```
 
 ---
@@ -739,19 +739,19 @@ Updates every 30 minutes in #incident-[id]
 **Escalation Path**:
 ```
 P0 (Critical):
-  0-15 min  → Incident Commander + On-call
-  15-30 min → Team Lead + Security Lead
-  30+ min   → CTO + Security Director
+ 0-15 min Incident Commander + On-call
+ 15-30 min Team Lead + Security Lead
+ 30+ min CTO + Security Director
 
 P1 (High):
-  0-1 hour  → Incident Commander
-  1+ hour   → Team Lead + Security Lead
+ 0-1 hour Incident Commander
+ 1+ hour Team Lead + Security Lead
 
 P2 (Medium):
-  0-4 hours → Incident Commander
+ 0-4 hours Incident Commander
 
 P3 (Low):
-  0-24 hours → Assigned engineer
+ 0-24 hours Assigned engineer
 ```
 
 ### External Communication

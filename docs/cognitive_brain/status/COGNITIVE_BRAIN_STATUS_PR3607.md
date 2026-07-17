@@ -30,41 +30,41 @@
 
 flowchart TD
 
-    PR["PR body submitted"] --> DL["check_deferral_language.scan()"]
+ PR["PR body submitted"] --> DL["check_deferral_language.scan()"]
 
-    subgraph DL["Deferral Scanner — S138 hardened"]
-        direction TB
-        L1["Line iteration"]
+ subgraph DL["Deferral Scanner — S138 hardened"]
+ direction TB
+ L1["Line iteration"]
 
-        L1 --> FO{"Fence opener\n(\`\`\` or ~~~)?"}
+ L1 --> FO{"Fence opener\n(\`\`\` or ~~~)?"}
 
-        FO -- yes --> BUF["fence_buffer.append(opener_line)\n⬆ NEW S138 fix"]
+ FO -- yes --> BUF["fence_buffer.append(opener_line)\n⬆ NEW S138 fix"]
 
-        FO -- no --> SCAN["lines_to_scan.append(line)"]
+ FO -- no --> SCAN["lines_to_scan.append(line)"]
 
-        BUF --> INSIDE["Scan inside-fence lines\nto fence_buffer"]
+ BUF --> INSIDE["Scan inside-fence lines\nto fence_buffer"]
 
-        INSIDE --> CLOSE{"Matching close?"}
+ INSIDE --> CLOSE{"Matching close?"}
 
-        CLOSE -- yes --> DISCARD["fence_buffer.clear()\n(real code — safe)"]
+ CLOSE -- yes --> DISCARD["fence_buffer.clear()\n(real code — safe)"]
 
-        CLOSE -- no / EOF --> BYPASS["lines_to_scan.extend(fence_buffer)\n(bypass prevention — scans opener too)"]
-    end
+ CLOSE -- no / EOF --> BYPASS["lines_to_scan.extend(fence_buffer)\n(bypass prevention — scans opener too)"]
+ end
 
-    SCAN --> REGEX["DEFERRAL_TRIGGERS regex"]
+ SCAN --> REGEX["DEFERRAL_TRIGGERS regex"]
 
-    BYPASS --> REGEX
+ BYPASS --> REGEX
 
-    REGEX --> EXEMPT{"Exempt?"}
+ REGEX --> EXEMPT{"Exempt?"}
 
-    EXEMPT -- yes --> PASS[" PASS"]
+ EXEMPT -- yes --> PASS[" PASS"]
 
-    EXEMPT -- no --> FAIL[" violation reported"]
+ EXEMPT -- no --> FAIL[" violation reported"]
 
-    style BUF fill:#ffd700,color:#000
-    style BYPASS fill:#f97316,color:#fff
-    style PASS fill:#22c55e,color:#fff
-    style FAIL fill:#ef4444,color:#fff
+ style BUF fill:#ffd700,color:#000
+ style BYPASS fill:#f97316,color:#fff
+ style PASS fill:#22c55e,color:#fff
+ style FAIL fill:#ef4444,color:#fff
 ```
 
 ---
@@ -75,23 +75,23 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing @'}}%%
 
 sequenceDiagram
-    participant SH as run_validation.sh
-    participant PC as PRECOMMIT_FILES[]
-    participant SYNC as doc_metrics_sync.py
-    participant GIT as git diff
-    participant PRE as pre-commit
+ participant SH as run_validation.sh
+ participant PC as PRECOMMIT_FILES[]
+ participant SYNC as doc_metrics_sync.py
+ participant GIT as git diff
+ participant PRE as pre-commit
 
-    SH->>PC: Build from HEAD tracked + untracked changes
-    SH->>SYNC: python scripts/tools/doc_metrics_sync.py --fix
-    Note over SYNC: May modify docs/ROADMAP.md,<br/>docs/CHANGELOG.md, etc.
+ SH->>PC: Build from HEAD tracked + untracked changes
+ SH->>SYNC: python scripts/tools/doc_metrics_sync.py --fix
+ Note over SYNC: May modify docs/ROADMAP.md,<br/>docs/CHANGELOG.md, etc.
 
-    SYNC-->>SH: exit 0 (or non-zero warning only)
-    SH->>GIT: git diff --name-only (detect sync-modified files)
+ SYNC-->>SH: exit 0 (or non-zero warning only)
+ SH->>GIT: git diff --name-only (detect sync-modified files)
 
-    GIT-->>SH: list of newly modified files
-    SH->>PC: Augment PRECOMMIT_FILES with new files (dedup via SEEN_FILES)
-    SH->>PRE: pre-commit run --files ${PRECOMMIT_FILES[@]}
-    Note over PRE: Now includes doc_metrics_sync-modified<br/>files — hooks see updated content
+ GIT-->>SH: list of newly modified files
+ SH->>PC: Augment PRECOMMIT_FILES with new files (dedup via SEEN_FILES)
+ SH->>PRE: pre-commit run --files ${PRECOMMIT_FILES[@]}
+ Note over PRE: Now includes doc_metrics_sync-modified<br/>files — hooks see updated content
 ```
 
 ---
@@ -120,71 +120,71 @@ All 9 PR bot comment marker types now have race-safe upsert:
 %%{init: {'accessibility': {'title': 'Diagram showing "Input Layer", "GitHub Events\n(PR, Push, Issue)"'}}%%
 
 graph TB
-    subgraph INPUT["Input Layer"]
-        GH["GitHub Events\n(PR, Push, Issue)"]
-        CI["CI Failures\n(Actions logs)"]
-        SEC["Security Alerts\n(CodeQL, Dependabot)"]
-    end
+ subgraph INPUT["Input Layer"]
+ GH["GitHub Events\n(PR, Push, Issue)"]
+ CI["CI Failures\n(Actions logs)"]
+ SEC["Security Alerts\n(CodeQL, Dependabot)"]
+ end
 
-    subgraph CB["Cognitive Brain Core (k₁=0.35)"]
-        PDA["PDA Loop\n(Perception→Decision→Action→Aftermath)"]
-        QS["Quantum Superposition\n(Coherence ≥ 0.7 gate)"]
-        PC["PatternCompressor\n(/health endpoint )"]
-        MEM["Memory: STM→LTM\n(SQLiteMemory)"]
-        PAT["Pattern Library\n(ci_failure_patterns.yaml)"]
-    end
+ subgraph CB["Cognitive Brain Core (k₁=0.35)"]
+ PDA["PDA Loop\n(PerceptionDecisionActionAftermath)"]
+ QS["Quantum Superposition\n(Coherence ≥ 0.7 gate)"]
+ PC["PatternCompressor\n(/health endpoint )"]
+ MEM["Memory: STMLTM\n(SQLiteMemory)"]
+ PAT["Pattern Library\n(ci_failure_patterns.yaml)"]
+ end
 
-    subgraph AGENTS["Agent Ecosystem (53+ agents)"]
-        DSCN["Deferral Scanner  S138\nFence-opener bypass fix"]
-        CMNT["PR Comment Consolidator  S137\nRace-safe upsert + dedup"]
-        RVAL["run_validation.sh  S138\nPRECOMMIT augmentation"]
-        AUTH["agent-auth-delegation\ncontents:write  S135"]
-        BRAI["Brain Client\n4-token chain"]
-    end
+ subgraph AGENTS["Agent Ecosystem (53+ agents)"]
+ DSCN["Deferral Scanner S138\nFence-opener bypass fix"]
+ CMNT["PR Comment Consolidator S137\nRace-safe upsert + dedup"]
+ RVAL["run_validation.sh S138\nPRECOMMIT augmentation"]
+ AUTH["agent-auth-delegation\ncontents:write S135"]
+ BRAI["Brain Client\n4-token chain"]
+ end
 
-    subgraph OUT["Output Layer"]
-        FIX["Fixed Code / CI"]
-        STAT["Status Comments\n(deduplicated)"]
-        LOGS["Audit Trail\n(session JSONL)"]
-    end
+ subgraph OUT["Output Layer"]
+ FIX["Fixed Code / CI"]
+ STAT["Status Comments\n(deduplicated)"]
+ LOGS["Audit Trail\n(session JSONL)"]
+ end
 
-    GH --> PDA
+ GH --> PDA
 
-    CI --> PDA
+ CI --> PDA
 
-    SEC --> PDA
+ SEC --> PDA
 
-    PDA --> QS
+ PDA --> QS
 
-    QS --> PC
+ QS --> PC
 
-    PC --> MEM
+ PC --> MEM
 
-    MEM --> PAT
+ MEM --> PAT
 
-    PAT --> AGENTS
+ PAT --> AGENTS
 
-    DSCN --> FIX
+ DSCN --> FIX
 
-    CMNT --> STAT
+ CMNT --> STAT
 
-    RVAL --> FIX
+ RVAL --> FIX
 
-    AUTH --> LOGS
+ AUTH --> LOGS
 
-    BRAI --> MEM
+ BRAI --> MEM
 
-    FIX --> OUT
+ FIX --> OUT
 
-    STAT --> OUT
+ STAT --> OUT
 
-    LOGS --> OUT
+ LOGS --> OUT
 
-    style CB fill:#8b5cf6,color:#fff
-    style DSCN fill:#22c55e,color:#fff
-    style CMNT fill:#22c55e,color:#fff
-    style RVAL fill:#22c55e,color:#fff
-    style AUTH fill:#22c55e,color:#fff
+ style CB fill:#8b5cf6,color:#fff
+ style DSCN fill:#22c55e,color:#fff
+ style CMNT fill:#22c55e,color:#fff
+ style RVAL fill:#22c55e,color:#fff
+ style AUTH fill:#22c55e,color:#fff
 ```
 
 ---
@@ -195,29 +195,29 @@ graph TB
 %%{init: {'accessibility': {'title': 'Diagram'}}%%
 
 gantt
-    title Cognitive Brain Phase Roadmap
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %d
+ title Cognitive Brain Phase Roadmap
+ dateFormat YYYY-MM-DD
+ axisFormat %b %d
 
-    section Phase 4 (Production Hardening)
-    PatternCompressor /health     :done, p4a, 2026-02-20, 2026-02-25
-    BrainClient health            :done, p4b, 2026-02-25, 2026-03-01
-    Redis RAG + Feast             :done, p4c, 2026-02-28, 2026-03-05
-    CrossEncoderReranker          :done, p4d, 2026-03-01, 2026-03-05
-    capability_detectors tests    :done, p4e, 2026-03-05, 2026-03-10
+ section Phase 4 (Production Hardening)
+ PatternCompressor /health :done, p4a, 2026-02-20, 2026-02-25
+ BrainClient health :done, p4b, 2026-02-25, 2026-03-01
+ Redis RAG + Feast :done, p4c, 2026-02-28, 2026-03-05
+ CrossEncoderReranker :done, p4d, 2026-03-01, 2026-03-05
+ capability_detectors tests :done, p4e, 2026-03-05, 2026-03-10
 
-    section Phase 5 (CI Robustness)
-    Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
-    Deferral fence-opener fix      :done, p5b, 2026-03-17, 2026-03-17
-    PRECOMMIT doc_metrics_sync     :done, p5c, 2026-03-17, 2026-03-17
-    Template indent fix            :done, p5d, 2026-03-17, 2026-03-17
-    STALE_BRANCH_DAYS guardrail    :active, p5e, 2026-03-18, 2026-03-20
-    slow-test marker audit         :p5f, 2026-03-20, 2026-03-22
+ section Phase 5 (CI Robustness)
+ Bot comment upsert all 9 types :done, p5a, 2026-03-12, 2026-03-16
+ Deferral fence-opener fix :done, p5b, 2026-03-17, 2026-03-17
+ PRECOMMIT doc_metrics_sync :done, p5c, 2026-03-17, 2026-03-17
+ Template indent fix :done, p5d, 2026-03-17, 2026-03-17
+ STALE_BRANCH_DAYS guardrail :active, p5e, 2026-03-18, 2026-03-20
+ slow-test marker audit :p5f, 2026-03-20, 2026-03-22
 
-    section Phase 6 (Observability)
-    OTEL workflow histogram        :p6a, 2026-03-22, 2026-03-28
-    CB dashboard v2                :p6b, 2026-03-25, 2026-04-01
-    Token rotation e2e (admin)     :p6c, 2026-04-01, 2026-04-07
+ section Phase 6 (Observability)
+ OTEL workflow histogram :p6a, 2026-03-22, 2026-03-28
+ CB dashboard v2 :p6b, 2026-03-25, 2026-04-01
+ Token rotation e2e (admin) :p6c, 2026-04-01, 2026-04-07
 ```
 
 ---

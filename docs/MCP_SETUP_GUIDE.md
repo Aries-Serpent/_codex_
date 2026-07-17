@@ -32,51 +32,51 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
  - **Linux:** `~/.config/Claude/claude_desktop_config.json`
 
 2. **Install Required Tools:**
-   ```bash
-   # Install Node.js (if not already installed)
-   # macOS
-   brew install node
+ ```bash
+ # Install Node.js (if not already installed)
+ # macOS
+ brew install node
 
-   # Linux (Ubuntu/Debian)
-   sudo apt install nodejs npm
+ # Linux (Ubuntu/Debian)
+ sudo apt install nodejs npm
 
-   # Windows
-   # Download from https://nodejs.org
+ # Windows
+ # Download from https://nodejs.org
  ```
 
 3. **Install MCP Servers:**
-   ```bash
-   # GitHub MCP Server (for repository access)
-   npm install -g @modelcontextprotocol/server-github
+ ```bash
+ # GitHub MCP Server (for repository access)
+ npm install -g @modelcontextprotocol/server-github
 
-   # Playwright MCP Server (for browser automation)
-   npm install -g @playwright/test
-   npx playwright install
+ # Playwright MCP Server (for browser automation)
+ npm install -g @playwright/test
+ npx playwright install
  ```
 
 4. **Configure Claude Desktop:**
 
  Edit `claude_desktop_config.json`:
-   ```json
-   {
-     "mcpServers": {
-       "github": {
-         "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-github"],
-         "env": {
-           "GITHUB_TOKEN": "your_github_personal_access_token_here"
-         }
-       },
-       "playwright": {
-         "command": "npx",
-         "args": ["-y", "@playwright/mcp-server"]
-       },
-       "bash": {
-         "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-bash"]
-       }
-     }
-   }
+ ```json
+ {
+ "mcpServers": {
+ "github": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-github"],
+ "env": {
+ "GITHUB_TOKEN": "your_github_personal_access_token_here"
+ }
+ },
+ "playwright": {
+ "command": "npx",
+ "args": ["-y", "@playwright/mcp-server"]
+ },
+ "bash": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-bash"]
+ }
+ }
+ }
  ```
 
 5. **Create GitHub Personal Access Token:**
@@ -102,8 +102,8 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
 7. **Verify Setup:**
 
  In Claude Desktop, ask:
-   ```
-   Can you list the workflows in the Aries-Serpent/_codex_ repository?
+ ```
+ Can you list the workflows in the Aries-Serpent/_codex_ repository?
  ```
 
  If configured correctly, Claude will use the GitHub MCP server to fetch workflow information.
@@ -118,40 +118,40 @@ For comprehensive development capabilities, use this full configuration:
 
 ```json
 {
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
-      }
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp-server"]
-    },
-    "bash": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-bash"],
-      "env": {
-        "ALLOWED_COMMANDS": "git,npm,python,pytest,pip,node,nox,ruff,black,mypy"
-      }
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
-      "env": {
-        "ALLOWED_DIRECTORIES": "/path/to/_codex_,/tmp"
-      }
-    },
-    "search": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
-      "env": {
-        "BRAVE_API_KEY": "optional_brave_search_api_key" <!-- pragma: allowlist secret -->
-      }
-    }
-  }
+ "mcpServers": {
+ "github": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-github"],
+ "env": {
+ "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+ }
+ },
+ "playwright": {
+ "command": "npx",
+ "args": ["-y", "@playwright/mcp-server"]
+ },
+ "bash": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-bash"],
+ "env": {
+ "ALLOWED_COMMANDS": "git,npm,python,pytest,pip,node,nox,ruff,black,mypy"
+ }
+ },
+ "filesystem": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+ "env": {
+ "ALLOWED_DIRECTORIES": "/path/to/_codex_,/tmp"
+ }
+ },
+ "search": {
+ "command": "npx",
+ "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+ "env": {
+ "BRAVE_API_KEY": "optional_brave_search_api_key" <!-- pragma: allowlist secret -->
+ }
+ }
+ }
 }
 ```
 
@@ -218,8 +218,8 @@ npm install -g @playwright/mcp-server
 2. Check token hasn't expired
 3. Ensure token is correctly pasted in config (no extra spaces)
 4. Test token manually:
-   ```bash
-   curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
+ ```bash
+ curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
  ```
 
 ### Issue: "Permission denied" for bash commands
@@ -297,17 +297,17 @@ Create a custom MCP server configuration for _codex_ development:
 
 ```json
 {
-  "mcpServers": {
-    "codex-dev": {
-      "command": "node",
-      "args": ["/path/to/_codex_/scripts/mcp-server.js"],
-      "env": {
-        "CODEX_ROOT": "/path/to/_codex_",
-        "PYTHON_VERSION": "3.11",
-        "VIRTUAL_ENV": "/path/to/_codex_/.venv"
-      }
-    }
-  }
+ "mcpServers": {
+ "codex-dev": {
+ "command": "node",
+ "args": ["/path/to/_codex_/scripts/mcp-server.js"],
+ "env": {
+ "CODEX_ROOT": "/path/to/_codex_",
+ "PYTHON_VERSION": "3.11",
+ "VIRTUAL_ENV": "/path/to/_codex_/.venv"
+ }
+ }
+ }
 }
 ```
 
@@ -338,9 +338,9 @@ Watch for MCP support in JetBrains IDEs.
 - [ ] Rotate GitHub personal access tokens
 - [ ] Review MCP server logs for unusual activity
 - [ ] Update MCP server packages:
-  ```bash
-  npm update -g @modelcontextprotocol/server-github
-  npm update -g @playwright/mcp-server
+ ```bash
+ npm update -g @modelcontextprotocol/server-github
+ npm update -g @playwright/mcp-server
  ```
 
 ### When Issues Arise
@@ -350,13 +350,13 @@ Watch for MCP support in JetBrains IDEs.
  - **Linux:** `~/.config/Claude/logs/`
 
 2. Verify MCP server versions:
-   ```bash
-   npm list -g | grep modelcontextprotocol
+ ```bash
+ npm list -g | grep modelcontextprotocol
  ```
 
 3. Test token validity:
-   ```bash
-   curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
+ ```bash
+ curl -H "Authorization: token YOUR_TOKEN" https://api.github.com/user
  ```
 
 ---
@@ -373,24 +373,24 @@ Watch for MCP support in JetBrains IDEs.
 ## Quick Reference Card
 
 ```
-┌─────────────────────────────────────────────────┐
-│ MCP Quick Reference                             │
-├─────────────────────────────────────────────────┤
-│ Config File Location (macOS):                   │
-│ ~/Library/Application Support/Claude/           │
-│   claude_desktop_config.json                    │
-│                                                  │
-│ Required Token Scopes:                          │  # pragma: allowlist secret
-│  repo                                          │
-│  workflow                                      │
-│  read:org                                      │
-│                                                  │
-│ Test Setup:                                     │
-│ "List workflows in Aries-Serpent/_codex_"      │
-│                                                  │
-│ Restart Required:                               │
-│ After any config changes                        │
-└─────────────────────────────────────────────────┘
+
+ MCP Quick Reference 
+
+ Config File Location (macOS): 
+ ~/Library/Application Support/Claude/ 
+ claude_desktop_config.json 
+ 
+ Required Token Scopes: # pragma: allowlist secret
+ repo 
+ workflow 
+ read:org 
+ 
+ Test Setup: 
+ "List workflows in Aries-Serpent/_codex_" 
+ 
+ Restart Required: 
+ After any config changes 
+
 ```
 
 ---

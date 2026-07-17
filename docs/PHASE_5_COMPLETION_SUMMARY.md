@@ -79,44 +79,44 @@ Phase 5 successfully transformed the repository structure from 60/100 to 100/100
 
 ```
 Categorized into:
-├── Historical Phases (30+ files, 500 KB) - Phase reports
-├── PR Reports (7 files, 200 KB) - PR-specific docs
-├── Validation & Analysis (5 files, 150 KB) - CI/CD analysis
-├── Session Reports (6 files, 100 KB) - Session summaries
-├── Prompts & Continuations (5 files, 80 KB) - Handoff docs
-├── Project Completion (3 files, 50 KB) - Verification
-├── Merged READMEs (3 files, 30 KB) - Historical versions
-├── Root Docs (22+ files, 600 KB) - Planning docs
-└── Misc (6+ files, 100 KB) - Supporting files
+ Historical Phases (30+ files, 500 KB) - Phase reports
+ PR Reports (7 files, 200 KB) - PR-specific docs
+ Validation & Analysis (5 files, 150 KB) - CI/CD analysis
+ Session Reports (6 files, 100 KB) - Session summaries
+ Prompts & Continuations (5 files, 80 KB) - Handoff docs
+ Project Completion (3 files, 50 KB) - Verification
+ Merged READMEs (3 files, 30 KB) - Historical versions
+ Root Docs (22+ files, 600 KB) - Planning docs
+ Misc (6+ files, 100 KB) - Supporting files
 ```
 
 ### Plans Organization (93 files)
 
 ```
 Active: 61 files
-├── Phase Planning - 5+ files
-├── Infrastructure - 3 files
-├── Testing & Quality - 3 files
-├── Compliance & Audit - 2 files
-├── AI & Agents - 5+ files
-└── Product & Features - Various
+ Phase Planning - 5+ files
+ Infrastructure - 3 files
+ Testing & Quality - 3 files
+ Compliance & Audit - 2 files
+ AI & Agents - 5+ files
+ Product & Features - Various
 
 Archived: 32 files
-└── In docs/plans/archive/
+ In docs/plans/archive/
 ```
 
 ### Configuration Consolidation
 
 ```
 Before:
-├── docs/config/ (2 files)
-├── docs/configs/ (2 files)
-└── docs/configuration/ (6 files)
+ docs/config/ (2 files)
+ docs/configs/ (2 files)
+ docs/configuration/ (6 files)
 
 After:
-├── docs/configuration/ (13 files - consolidated)
-├── docs/config/README.md (redirect)
-└── docs/configs/README.md (redirect)
+ docs/configuration/ (13 files - consolidated)
+ docs/config/README.md (redirect)
+ docs/configs/README.md (redirect)
 ```
 
 ### Directory READMEs
@@ -137,15 +137,15 @@ All directories now have comprehensive READMEs:
 
 ```
 From:
-├── docs/ARCHITECTURE.md (main)
-├── docs/ARCHITECTURE_BLUEPRINT.md (blueprint)
-├── docs/Architecture.md (small)
-└── docs/architecture/ (directory)
+ docs/ARCHITECTURE.md (main)
+ docs/ARCHITECTURE_BLUEPRINT.md (blueprint)
+ docs/Architecture.md (small)
+ docs/architecture/ (directory)
 
 To:
-├── docs/architecture/ARCHITECTURE_CONSOLIDATED.md (primary)
-├── docs/ARCHITECTURE_QUICK_REFERENCE.md (quick-ref)
-└── Redirects at old locations
+ docs/architecture/ARCHITECTURE_CONSOLIDATED.md (primary)
+ docs/ARCHITECTURE_QUICK_REFERENCE.md (quick-ref)
+ Redirects at old locations
 ```
 
 ---

@@ -54,19 +54,19 @@ from codex.rag.retriever import Retriever
 
 # Initialize retriever
 retriever = Retriever(
-    index_dir=".codex/tenants",
-    index_name="docs",
-    tenant_id="default"
+ index_dir=".codex/tenants",
+ index_name="docs",
+ tenant_id="default"
 )
 
 # Query
 results = retriever.query("How do I configure embeddings?", top_k=5)
 
 for result in results:
-    print(f"Score: {result['score']:.4f}")
-    print(f"File: {result['file']}")
-    print(f"Text: {result['text'][:200]}...")
-    print()
+ print(f"Score: {result['score']:.4f}")
+ print(f"File: {result['file']}")
+ print(f"Text: {result['text'][:200]}...")
+ print()
 ```
 
 ## Architecture
@@ -81,11 +81,11 @@ The indexer provides functions for building and persisting FAISS indices:
 from codex.rag.indexer import chunk_text
 
 chunks = chunk_text(
-    text="Your long document text...",
-    chunk_size=1000,  # characters
-    overlap=128       # overlap between chunks
+ text="Your long document text...",
+ chunk_size=1000, # characters
+ overlap=128 # overlap between chunks
 )
-# Returns: [(start_pos, end_pos, chunk_text), pass  # Implementation details]
+# Returns: [(start_pos, end_pos, chunk_text), pass # Implementation details]
 ```
 
 Features:
@@ -99,11 +99,11 @@ Features:
 from codex.rag.indexer import embed_chunks
 
 embeddings = embed_chunks(
-    chunks=chunks,
-    model_profile={
-        "model_name": "sentence-transformers/all-MiniLM-L6-v2",
-        "cache_dir": None
-    }
+ chunks=chunks,
+ model_profile={
+ "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+ "cache_dir": None
+ }
 )
 # Returns: numpy array of shape (num_chunks, embedding_dim)
 ```
@@ -114,12 +114,12 @@ embeddings = embed_chunks(
 from codex.rag.indexer import persist_index
 
 index_path = persist_index(
-    index_name="my_docs",
-    embeddings=embeddings,
-    chunks=chunks,
-    metadata={"source": "documentation"},
-    tenant_id="default",
-    index_dir=".codex/tenants"
+ index_name="my_docs",
+ embeddings=embeddings,
+ chunks=chunks,
+ metadata={"source": "documentation"},
+ tenant_id="default",
+ index_dir=".codex/tenants"
 )
 ```
 
@@ -137,11 +137,11 @@ from pathlib import Path
 files = list(Path("docs").rglob("*.md"))
 
 index_path = build_index_from_files(
-    files=files,
-    index_name="docs",
-    tenant_id="default",
-    chunk_size=1000,
-    overlap=128
+ files=files,
+ index_name="docs",
+ tenant_id="default",
+ chunk_size=1000,
+ overlap=128
 )
 ```
 
@@ -153,10 +153,10 @@ The retriever provides semantic search with provenance:
 from codex.rag.retriever import Retriever
 
 retriever = Retriever(
-    index_dir=".codex/tenants",
-    index_name="docs",
-    tenant_id="default",
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
+ index_dir=".codex/tenants",
+ index_name="docs",
+ tenant_id="default",
+ model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
 # Query with provenance
@@ -181,11 +181,11 @@ Query across multiple indices:
 from codex.rag.retriever import MultiIndexRetriever
 
 retriever = MultiIndexRetriever(
-    indices=[
-        {"index_name": "docs", "tenant_id": "default"},
-        {"index_name": "code", "tenant_id": "default"},
-    ],
-    index_dir=".codex/tenants"
+ indices=[
+ {"index_name": "docs", "tenant_id": "default"},
+ {"index_name": "code", "tenant_id": "default"},
+ ],
+ index_dir=".codex/tenants"
 )
 
 results = retriever.query("query", top_k=10)
@@ -202,8 +202,8 @@ Provides embedding provider abstraction with caching:
 from codex.rag.embeddings import LocalSentenceTransformerProvider
 
 provider = LocalSentenceTransformerProvider(
-    model_name="sentence-transformers/all-MiniLM-L6-v2",
-    cache_dir=None  # Uses HuggingFace default cache
+ model_name="sentence-transformers/all-MiniLM-L6-v2",
+ cache_dir=None # Uses HuggingFace default cache
 )
 
 embeddings = provider.encode(["text1", "text2"])
@@ -216,8 +216,8 @@ from codex.rag.embeddings import OpenAIEmbeddingProvider
 import os
 
 provider = OpenAIEmbeddingProvider(
-    model_name="text-embedding-3-small",
-    api_key=os.environ["OPENAI_API_KEY"]
+ model_name="text-embedding-3-small",
+ api_key=os.environ["OPENAI_API_KEY"]
 )
 
 embeddings = provider.encode(["text1", "text2"])
@@ -232,22 +232,22 @@ from codex.rag.embeddings import CachedEmbeddingProvider, LocalSentenceTransform
 
 base_provider = LocalSentenceTransformerProvider()
 cached_provider = CachedEmbeddingProvider(
-    provider=base_provider,
-    cache_dir=".codex/embeddings_cache"
+ provider=base_provider,
+ cache_dir=".codex/embeddings_cache"
 )
 
 # First call: cache miss, generates embeddings
 embeddings1 = cached_provider.encode(
-    texts=["text1", "text2"],
-    cache_key="my_docs",
-    metadata={"file_mtime": 1234567890}
+ texts=["text1", "text2"],
+ cache_key="my_docs",
+ metadata={"file_mtime": 1234567890}
 )
 
 # Second call: cache hit, loads from cache
 embeddings2 = cached_provider.encode(
-    texts=["text1", "text2"],
-    cache_key="my_docs",
-    metadata={"file_mtime": 1234567890}
+ texts=["text1", "text2"],
+ cache_key="my_docs",
+ metadata={"file_mtime": 1234567890}
 )
 
 # Check stats
@@ -264,16 +264,16 @@ from codex.rag.embeddings import create_embedding_provider
 
 # Local with caching (default)
 provider = create_embedding_provider(
-    provider_type="local",
-    use_cache=True,
-    cache_dir=".codex/embeddings_cache"
+ provider_type="local",
+ use_cache=True,
+ cache_dir=".codex/embeddings_cache"
 )
 
 # OpenAI with caching (if OPENAI_API_KEY is set)
 provider = create_embedding_provider(
-    provider_type="openai",
-    model_name="text-embedding-3-small",
-    use_cache=True
+ provider_type="openai",
+ model_name="text-embedding-3-small",
+ use_cache=True
 )
 ```
 
@@ -281,15 +281,15 @@ provider = create_embedding_provider(
 
 ```
 .codex/
-├── tenants/                    # Multi-tenant index storage
-│   └── {tenant_id}/           # Tenant-specific directory
-│       └── {index_name}/      # Named index
-│           ├── index.faiss    # FAISS index binary
-│           ├── chunks.json    # Chunk metadata
-│           └── metadata.json  # Index metadata
-└── embeddings_cache/          # Embedding cache
-    ├── {cache_key}.npz        # Cached embeddings
-    └── {cache_key}.meta.json  # Cache metadata
+ tenants/ # Multi-tenant index storage
+ {tenant_id}/ # Tenant-specific directory
+ {index_name}/ # Named index
+ index.faiss # FAISS index binary
+ chunks.json # Chunk metadata
+ metadata.json # Index metadata
+ embeddings_cache/ # Embedding cache
+ {cache_key}.npz # Cached embeddings
+ {cache_key}.meta.json # Cache metadata
 ```
 
 ## Configuration

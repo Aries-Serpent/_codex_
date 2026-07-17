@@ -189,29 +189,29 @@
 
 graph TD
 
-    A[Capability Identification] --> B[Component Gathering]
+ A[Capability Identification] --> B[Component Gathering]
 
-    B --> C[Package Creation]
+ B --> C[Package Creation]
 
-    C --> D[ChatGPT Upload]
+ C --> D[ChatGPT Upload]
 
-    D --> E[System Prompt Configuration]
+ D --> E[System Prompt Configuration]
 
-    E --> F[Learning Phase]
+ E --> F[Learning Phase]
 
-    F --> G[Comprehension Validation]
+ F --> G[Comprehension Validation]
 
-    G --> H[Application to New Problems]
+ G --> H[Application to New Problems]
 
-    H --> I[Pattern Replication Assessment]
+ H --> I[Pattern Replication Assessment]
 
-    I --> J{Transfer Success?}
+ I --> J{Transfer Success?}
 
-    J -->|Yes| K[Capability Operational]
+ J -->|Yes| K[Capability Operational]
 
-    J -->|No| L[Refine Package/Prompt]
+ J -->|No| L[Refine Package/Prompt]
 
-    L --> C
+ L --> C
 ```
 
 ### Fields (Knowledge State Evolution)
@@ -653,12 +653,12 @@ Define a new topic or use custom filters:
 **Option A: Add to topics.json**
 ```json
 {
-  "capability_name": [
-    "src/capability/**",
-    "agents/*capability*.py",
-    "tests/capability/**",
-    "docs/capability/**"
-  ]
+ "capability_name": [
+ "src/capability/**",
+ "agents/*capability*.py",
+ "tests/capability/**",
+ "docs/capability/**"
+ ]
 }
 ```
 
@@ -708,10 +708,10 @@ unzip -p package_capability_name_*.zip manifest.json | jq .
 1. Upload to ChatGPT Project
 2. Use system prompt from `docs/mcp/ChatGPT_Project_SYSTEM_PROMPT.md`
 3. Test ChatGPT's understanding:
-   ```
-   User: "Explain the [capability] methodology"
-   User: "Apply this methodology to [new problem]"
-   User: "What are the key patterns in this capability?"
+ ```
+ User: "Explain the [capability] methodology"
+ User: "Apply this methodology to [new problem]"
+ User: "What are the key patterns in this capability?"
  ```
 
 ---
@@ -722,16 +722,16 @@ unzip -p package_capability_name_*.zip manifest.json | jq .
 
 ```
 capability_package/
-├── manifest.json                           # Auto-generated
-├── README_dataset.md                       # Auto-generated
-├── index.md                                # Auto-generated
-├── src__capability__core.py                # Core implementation
-├── src__capability__utilities.py           # Support utilities
-├── tests__capability__test_core.py         # Unit tests
-├── tests__capability__test_integration.py  # Integration tests
-├── docs__capability__METHODOLOGY.md        # Methodology guide
-├── docs__capability__API.md                # API reference
-└── docs__capability__EXAMPLES.md           # Usage examples
+ manifest.json # Auto-generated
+ README_dataset.md # Auto-generated
+ index.md # Auto-generated
+ src__capability__core.py # Core implementation
+ src__capability__utilities.py # Support utilities
+ tests__capability__test_core.py # Unit tests
+ tests__capability__test_integration.py # Integration tests
+ docs__capability__METHODOLOGY.md # Methodology guide
+ docs__capability__API.md # API reference
+ docs__capability__EXAMPLES.md # Usage examples
 ```
 
 ### Required Components Checklist

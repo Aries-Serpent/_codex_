@@ -43,48 +43,48 @@
 
 ```
 COGNITIVE BRAIN — PHASE 4 PRODUCTION STATE
-═══════════════════════════════════════════
+
 
 React Frontend (cognitive_app/src/)
-├── App.tsx [8 tabs, CLI → XtermTerminal]
-├── hooks/
-│   ├── use-memory-system.ts      → VITE_CLI_API_URL :8765   P4.1
-│   ├── use-quantum-state.ts      → VITE_CLI_API_URL :8765   P4.1
-│   └── use-agent-orchestration.ts→ VITE_CLI_API_URL :8765   P4.1
-└── components/cli/
-    ├── XtermTerminal.tsx          [real PTY via /ws/cli]     P4.4
-    ├── CliTerminal.tsx            [legacy textarea]
-    └── ApiClient.tsx
+ App.tsx [8 tabs, CLI XtermTerminal]
+ hooks/
+ use-memory-system.ts VITE_CLI_API_URL :8765 P4.1
+ use-quantum-state.ts VITE_CLI_API_URL :8765 P4.1
+ use-agent-orchestration.ts VITE_CLI_API_URL :8765 P4.1
+ components/cli/
+ XtermTerminal.tsx [real PTY via /ws/cli] P4.4
+ CliTerminal.tsx [legacy textarea]
+ ApiClient.tsx
 
 FastAPI Server (cli_api_server.py :8765)
-├── /ws/cli              PTY WebSocket               PR #3421
-├── /api/cli/run         One-shot execution          PR #3421
-├── /api/cli/history     SQLite-backed history       PR #3421
-├── /api/ooda/process    CognitiveAppMain.process()  PR #3421 → SQLiteMemory P4.2
-├── /api/ooda/metrics    K1 factor                   PR #3421
-├── /api/memory/state    STM/LTM counts              P4.2 NEW
-├── /api/memory/search   Full-text STM+LTM           P4.2 NEW
-└── /api/request         HTTP proxy + GitHub auth    P4.3 NEW
+ /ws/cli PTY WebSocket PR #3421
+ /api/cli/run One-shot execution PR #3421
+ /api/cli/history SQLite-backed history PR #3421
+ /api/ooda/process CognitiveAppMain.process() PR #3421 SQLiteMemory P4.2
+ /api/ooda/metrics K1 factor PR #3421
+ /api/memory/state STM/LTM counts P4.2 NEW
+ /api/memory/search Full-text STM+LTM P4.2 NEW
+ /api/request HTTP proxy + GitHub auth P4.3 NEW
 
 SQLite (CODEX_DB_PATH)
-├── cli_history    [command runs]       PR #3421
-├── stm_entries    [short-term memory]  P4.2 NEW
-└── ltm_entries    [long-term memory]   P4.2 NEW
+ cli_history [command runs] PR #3421
+ stm_entries [short-term memory] P4.2 NEW
+ ltm_entries [long-term memory] P4.2 NEW
 
 Python Cognitive Layer
-├── SQLiteMemory(MemoryInterface)  P4.2 NEW
-├── OODAOrchestrator.execute()    auto-init with SQLiteMemory
-└── CognitiveAppMain.process()    unchanged
+ SQLiteMemory(MemoryInterface) P4.2 NEW
+ OODAOrchestrator.execute() auto-init with SQLiteMemory
+ CognitiveAppMain.process() unchanged
 
 CI / Telemetry
-├── collect_telemetry.py  [+3 classifiers: datetime-error, build-config, packaging]  P4.5
-├── ci-health-monitor.yml [CODEX_CI_FAILURE_RATE]  PR #3421
-└── agent-auth-delegation.yml [REQ-8 memory health gate]  P4.8
+ collect_telemetry.py [+3 classifiers: datetime-error, build-config, packaging] P4.5
+ ci-health-monitor.yml [CODEX_CI_FAILURE_RATE] PR #3421
+ agent-auth-delegation.yml [REQ-8 memory health gate] P4.8
 
 Agents (128 total)
-├── memory-sync-agent.md           v2.0 with diagram  P4.6
-├── telemetry-classifier-agent.md  v2.0 with diagram  P4.6
-└── cognitive-ooda-loop-agent.md   v2.0 Phase 4 wiring  P4.8 (updated)
+ memory-sync-agent.md v2.0 with diagram P4.6
+ telemetry-classifier-agent.md v2.0 with diagram P4.6
+ cognitive-ooda-loop-agent.md v2.0 Phase 4 wiring P4.8 (updated)
 ```
 
 ---

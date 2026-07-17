@@ -52,7 +52,7 @@ python scripts/fix_type_hints.py --directory scripts/ --fix
 **Test Results**:
 ```bash
 python3 -m py_compile scripts/fix_type_hints.py
-#  Syntax validated
+# Syntax validated
 ```
 
 ## Tool 2: redundant_code.py (289 lines)
@@ -74,7 +74,7 @@ python scripts/linters/redundant_code.py --directory scripts/ --fix --dry-run
 **Test Results**:
 ```bash
 python3 -m py_compile scripts/linters/redundant_code.py
-#  Syntax validated
+# Syntax validated
 ```
 
 ---
@@ -117,15 +117,15 @@ python scripts/convert_print_to_logger.py --directory scripts/ --fix
 **Required Structure**:
 ```
 implementation_completed/
-├── README.md (master index)
-├── automation_tools/
-│   ├── fix_type_hints_v0.2.1.md
-│   ├── redundant_code_detector_v0.2.1.md
-│   ├── review_response_helper_v0.2.1.md
-│   └── dependency_analyzer_v0.2.1.md
-├── metadata.json (versioning, scores)
-├── buildbook_template.md
-└── runbook_template.md
+ README.md (master index)
+ automation_tools/
+ fix_type_hints_v0.2.1.md
+ redundant_code_detector_v0.2.1.md
+ review_response_helper_v0.2.1.md
+ dependency_analyzer_v0.2.1.md
+ metadata.json (versioning, scores)
+ buildbook_template.md
+ runbook_template.md
 ```
 
 **README Table Format**:
@@ -143,18 +143,18 @@ implementation_completed/
 **Required Content**:
 ```json
 {
-  "pr_2462_review_response": {
-    "comments_addressed": 14,
-    "comments_total": 14,
-    "success_rate": 1.0,
-    "commits_generated": 10,
-    "files_modified": 10,
-    "automation_tools_created": 4,
-    "manual_interventions": 4,
-    "time_estimate_minutes": 120,
-    "reward_score": 0.82,
-    "phase": "complete"
-  }
+ "pr_2462_review_response": {
+ "comments_addressed": 14,
+ "comments_total": 14,
+ "success_rate": 1.0,
+ "commits_generated": 10,
+ "files_modified": 10,
+ "automation_tools_created": 4,
+ "manual_interventions": 4,
+ "time_estimate_minutes": 120,
+ "reward_score": 0.82,
+ "phase": "complete"
+ }
 }
 ```
 
@@ -176,10 +176,10 @@ from hypothesis.strategies import integers
 
 @given(sizes=lists(integers(min_value=0, max_value=10000000), min_size=1))
 def test_total_space_calculation(sizes):
-    total_bytes = sum(sizes)
-    total_mb = total_bytes / (1024 * 1024)
-    assert total_mb >= 0
-    assert f"{total_mb:.2f}MB" == calculate_total_space(sizes)
+ total_bytes = sum(sizes)
+ total_mb = total_bytes / (1024 * 1024)
+ assert total_mb >= 0
+ assert f"{total_mb:.2f}MB" == calculate_total_space(sizes)
 ```
 
 ### Task D: .pre-commit-config.yaml Updates
@@ -190,21 +190,21 @@ def test_total_space_calculation(sizes):
 **Required Hooks**:
 ```yaml
 - repo: local
-  hooks:
-    - id: fix-type-hints
-      name: Fix missing typing imports
-      entry: python scripts/fix_type_hints.py
-      language: python
-      types: [python]
-      pass_filenames: true
-      args: [--file, --dry-run]
+ hooks:
+ - id: fix-type-hints
+ name: Fix missing typing imports
+ entry: python scripts/fix_type_hints.py
+ language: python
+ types: [python]
+ pass_filenames: true
+ args: [--file, --dry-run]
 
-    - id: detect-redundant-code
-      name: Detect redundant code
-      entry: python scripts/linters/redundant_code.py
-      language: python
-      types: [python]
-      pass_filenames: true
+ - id: detect-redundant-code
+ name: Detect redundant code
+ entry: python scripts/linters/redundant_code.py
+ language: python
+ types: [python]
+ pass_filenames: true
 ```
 
 ### Task E: Build book & Runbook Templates
@@ -352,19 +352,19 @@ python3 -c "import json; data=json.load(open('misc/repo-owner-review/metadata.js
 **Calculation**:
 ```python
 metrics = {
-    "comments_resolved_rate": 1.0,      # 14/14 = 100%
-    "automation_created": 4,             # 4 tools
-    "manual_interventions": 4,           # 4 import fixes
-    "time_efficiency": 0.75,             # Target: 4 hours, Actual: 5.25 hours
-    "code_quality": 1.0,                 # All syntax passes
+ "comments_resolved_rate": 1.0, # 14/14 = 100%
+ "automation_created": 4, # 4 tools
+ "manual_interventions": 4, # 4 import fixes
+ "time_efficiency": 0.75, # Target: 4 hours, Actual: 5.25 hours
+ "code_quality": 1.0, # All syntax passes
 }
 
 reward = (
-    metrics["comments_resolved_rate"] * 0.30 +  # 0.30
-    min(1.0, metrics["automation_created"] / 4) * 0.25 +  # 0.25
-    max(0, 1 - metrics["manual_interventions"] / 12) * 0.20 +  # 0.13
-    metrics["time_efficiency"] * 0.15 +  # 0.11
-    metrics["code_quality"] * 0.10  # 0.10
+ metrics["comments_resolved_rate"] * 0.30 + # 0.30
+ min(1.0, metrics["automation_created"] / 4) * 0.25 + # 0.25
+ max(0, 1 - metrics["manual_interventions"] / 12) * 0.20 + # 0.13
+ metrics["time_efficiency"] * 0.15 + # 0.11
+ metrics["code_quality"] * 0.10 # 0.10
 )
 
 # Final: 0.30 + 0.25 + 0.13 + 0.11 + 0.10 = 0.89

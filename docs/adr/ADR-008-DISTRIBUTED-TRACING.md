@@ -45,19 +45,19 @@ Implement **distributed tracing** using **OpenTelemetry** with **Jaeger** as the
 Request: /api/v1/inference POST
 
 Trace:
-├─ trace_id: abc123def456
-├─ root_span: api.inference.POST (0-500ms)
-│  ├─ api.auth (5-10ms)
-│  ├─ span: rag.embed_query (50-100ms)
-│  │  └─ vectorstore.search (45-95ms)
-│  ├─ span: model.forward (200-380ms)
-│  │  ├─ model.encode (100-150ms)
-│  │  └─ model.decode (100-200ms)
-│  └─ span: api.serialize (5-10ms)
-└─ span_metrics:
-   ├─ total_duration: 500ms
-   ├─ bottleneck: model.forward (380ms, 76%)
-   └─ errors: 0
+ trace_id: abc123def456
+ root_span: api.inference.POST (0-500ms)
+ api.auth (5-10ms)
+ span: rag.embed_query (50-100ms)
+ vectorstore.search (45-95ms)
+ span: model.forward (200-380ms)
+ model.encode (100-150ms)
+ model.decode (100-200ms)
+ span: api.serialize (5-10ms)
+ span_metrics:
+ total_duration: 500ms
+ bottleneck: model.forward (380ms, 76%)
+ errors: 0
 ```
 
 ---
@@ -68,9 +68,9 @@ Trace:
 
 ```bash
 pip install opentelemetry-api opentelemetry-sdk \
-            opentelemetry-exporter-jaeger \
-            opentelemetry-instrumentation-fastapi \
-            opentelemetry-instrumentation-requests
+ opentelemetry-exporter-jaeger \
+ opentelemetry-instrumentation-fastapi \
+ opentelemetry-instrumentation-requests
 ```
 
 **Initialization:**
@@ -85,8 +85,8 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 
 # Configure Jaeger exporter
 jaeger_exporter = JaegerExporter(
-    agent_host_name="localhost",
-    agent_port=6831,
+ agent_host_name="localhost",
+ agent_port=6831,
 )
 
 # Set up tracing
@@ -106,18 +106,18 @@ tracer = trace.get_tracer(__name__)
 
 ```python
 def process_data(data):
-    with tracer.start_as_current_span("process_data") as span:
-        span.set_attribute("data.size", len(data))
-        
-        with tracer.start_as_current_span("validate") as validate_span:
-            validate_data(data)
-            validate_span.set_attribute("valid", True)
-        
-        with tracer.start_as_current_span("transform") as transform_span:
-            result = transform_data(data)
-            transform_span.set_attribute("output.size", len(result))
-        
-        return result
+ with tracer.start_as_current_span("process_data") as span:
+ span.set_attribute("data.size", len(data))
+ 
+ with tracer.start_as_current_span("validate") as validate_span:
+ validate_data(data)
+ validate_span.set_attribute("valid", True)
+ 
+ with tracer.start_as_current_span("transform") as transform_span:
+ result = transform_data(data)
+ transform_span.set_attribute("output.size", len(result))
+ 
+ return result
 ```
 
 ---
@@ -129,13 +129,13 @@ def process_data(data):
 ```yaml
 version: "3"
 services:
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "6831:6831/udp"  # Collector
-      - "16686:16686"     # UI (http://localhost:16686)
-    environment:
-      COLLECTOR_OTLP_ENABLED: "true"
+ jaeger:
+ image: jaegertracing/all-in-one:latest
+ ports:
+ - "6831:6831/udp" # Collector
+ - "16686:16686" # UI (http://localhost:16686)
+ environment:
+ COLLECTOR_OTLP_ENABLED: "true"
 ```
 
 **Kubernetes (production):**
@@ -144,23 +144,23 @@ services:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: jaeger-all-in-one
+ name: jaeger-all-in-one
 spec:
-  containers:
-  - name: jaeger
-    image: jaegertracing/all-in-one:latest
-    ports:
-    - containerPort: 6831
-      protocol: UDP
-    - containerPort: 16686
-      protocol: TCP
-    resources:
-      requests:
-        memory: "2Gi"
-        cpu: "1"
-      limits:
-        memory: "4Gi"
-        cpu: "2"
+ containers:
+ - name: jaeger
+ image: jaegertracing/all-in-one:latest
+ ports:
+ - containerPort: 6831
+ protocol: UDP
+ - containerPort: 16686
+ protocol: TCP
+ resources:
+ requests:
+ memory: "2Gi"
+ cpu: "1"
+ limits:
+ memory: "4Gi"
+ cpu: "2"
 ```
 
 ---
@@ -207,11 +207,11 @@ spec:
 
 **Recommended:**
 ```python
-sampler = TraceIdRatioBased(rate=0.1)  # 10% of requests
+sampler = TraceIdRatioBased(rate=0.1) # 10% of requests
 
 # For errors, always sample:
 if is_error:
-    sampler = TraceIdRatioBased(rate=1.0)
+ sampler = TraceIdRatioBased(rate=1.0)
 ```
 
 ---

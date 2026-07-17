@@ -31,17 +31,17 @@
 
 ```
 docs/configuration/
-├── README.md                            # This file
-├── INDEX.md                             # Full index
-├── HYDRA_GUIDE.md                       # Main guide
-├── hydra_quickstart.md                  # Quick start
-├── CONFIG_USAGE.md                      # Usage patterns
-├── ENVIRONMENT_VARIABLES.md             # Environment setup
-├── OmegaConf_Schema_configs.md            # Schema reference
-├── config_patterns_and_conventions_config.md   # Best practices
-├── MIGRATION_MAPPING.md                 # Migration guide
-├── HYDRA_MIGRATION_GUIDE.md             # Detailed migration
-└── TROUBLESHOOTING.md                   # FAQ & troubleshooting
+ README.md # This file
+ INDEX.md # Full index
+ HYDRA_GUIDE.md # Main guide
+ hydra_quickstart.md # Quick start
+ CONFIG_USAGE.md # Usage patterns
+ ENVIRONMENT_VARIABLES.md # Environment setup
+ OmegaConf_Schema_configs.md # Schema reference
+ config_patterns_and_conventions_config.md # Best practices
+ MIGRATION_MAPPING.md # Migration guide
+ HYDRA_MIGRATION_GUIDE.md # Detailed migration
+ TROUBLESHOOTING.md # FAQ & troubleshooting
 ```
 
 ---

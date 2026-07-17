@@ -39,23 +39,23 @@ Welcome to **_codex_**! This guide will help you understand the repository struc
 
 ```text
 _codex_/
-├── src/                    # Main source code
-│   ├── codex/             # Core codex modules
-│   ├── codex_ml/          # ML training and evaluation
-│   ├── codex_cli/         # CLI applications
-│   └── training/          # Training utilities
-├── docs/                   # Comprehensive documentation
-│   ├── runbooks/          # Operational runbooks
-│   ├── guides/            # How-to guides
-│   ├── templates/         # Reusable templates
-│   └── checklists/        # Verification checklists
-├── configs/               # Hydra configuration files
-├── tests/                 # Test suite
-├── cli/                   # CLI entry points
-├── tools/                 # Utility scripts
-├── scripts/               # Automation scripts
-├── examples/              # Example code and configs
-└── .codex/                # Local automation artifacts
+ src/ # Main source code
+ codex/ # Core codex modules
+ codex_ml/ # ML training and evaluation
+ codex_cli/ # CLI applications
+ training/ # Training utilities
+ docs/ # Comprehensive documentation
+ runbooks/ # Operational runbooks
+ guides/ # How-to guides
+ templates/ # Reusable templates
+ checklists/ # Verification checklists
+ configs/ # Hydra configuration files
+ tests/ # Test suite
+ cli/ # CLI entry points
+ tools/ # Utility scripts
+ scripts/ # Automation scripts
+ examples/ # Example code and configs
+ .codex/ # Local automation artifacts
 ```text
 
 ### Important Directories
@@ -81,58 +81,58 @@ _codex_/
 ### Installation
 
 1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Aries-Serpent/_codex_.git
-   cd _codex_
+ ```bash
+ git clone https://github.com/Aries-Serpent/_codex_.git
+ cd _codex_
  ```
 
 2. **Set up a virtual environment**:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+ ```bash
+ python -m venv .venv
+ source .venv/bin/activate # On Windows: .venv\Scripts\activate
  ```
 
 3. **Install dependencies**:
-   ```bash
-   # Option 1: Install with dev dependencies
-   pip install -e '.[dev]'
+ ```bash
+ # Option 1: Install with dev dependencies
+ pip install -e '.[dev]'
 
-   # Option 2: Install specific extras
-   pip install -e '.[ml,cli,logging]'
+ # Option 2: Install specific extras
+ pip install -e '.[ml,cli,logging]'
 
-   # Option 3: Minimal installation
-   pip install -e .
+ # Option 3: Minimal installation
+ pip install -e .
  ```
 
 4. **Verify installation**:
-   ```bash
-   codex --help
-   codex-train --help
-   codex-eval --help
+ ```bash
+ codex --help
+ codex-train --help
+ codex-eval --help
  ```
 
 ### First Steps
 
 1. **Explore the documentation**:
-   ```bash
-   # Serve docs locally
-   pip install -r docs/requirements.txt
-   mkdocs serve
+ ```bash
+ # Serve docs locally
+ pip install -r docs/requirements.txt
+ mkdocs serve
  ```
 
 2. **Run a quick training test**:
-   ```bash
-   codex-train experiment=debug training.max_epochs=1 \
-     training.batch_size=2 \
-     data.train_path=data/train.jsonl \
-     data.eval_path=data/eval.jsonl \
-     logging.mlflow_enable=false \
-     training.output_dir=artifacts/runs/quickstart
+ ```bash
+ codex-train experiment=debug training.max_epochs=1 \
+ training.batch_size=2 \
+ data.train_path=data/train.jsonl \
+ data.eval_path=data/eval.jsonl \
+ logging.mlflow_enable=false \
+ training.output_dir=artifacts/runs/quickstart
  ```
 
 3. **Check repository status**:
-   ```bash
-   codex-status-audit --skip-audit
+ ```bash
+ codex-status-audit --skip-audit
  ```
 
 ## Key Concepts
@@ -149,8 +149,8 @@ _codex_ uses [Hydra](https://hydra.cc/) for configuration management:
 **Example**:
 ```bash
 codex-train +reasoning=baseline \
-  curriculum.phase_schedule=starter \
-  training.max_steps=500
+ curriculum.phase_schedule=starter \
+ training.max_steps=500
 ```text
 
 ### 2. Plugin System
@@ -179,9 +179,9 @@ Session-based logging tracks all operations:
 
 **Useful commands**:
 ```bash
-python -m codex.logging.session_logger  # Record events
-python -m codex.logging.viewer          # View sessions
-python -m codex.logging.query_logs      # Search logs
+python -m codex.logging.session_logger # Record events
+python -m codex.logging.viewer # View sessions
+python -m codex.logging.query_logs # Search logs
 ```text
 
 ### 4. Checkpointing and Reproducibility
@@ -209,25 +209,25 @@ Local quality gates (no CI required):
 ```bash
 # Basic training
 codex-train \
-  training.max_epochs=3 \
-  training.batch_size=16 \
-  data.train_path=data/train.jsonl \
-  data.eval_path=data/eval.jsonl \
-  training.output_dir=artifacts/runs/my_model
+ training.max_epochs=3 \
+ training.batch_size=16 \
+ data.train_path=data/train.jsonl \
+ data.eval_path=data/eval.jsonl \
+ training.output_dir=artifacts/runs/my_model
 
 # Training with LoRA
 codex-train \
-  --lora-r 8 \
-  --lora-alpha 16 \
-  --lora-dropout 0.05 \
-  --precision bf16 \
-  training.output_dir=artifacts/runs/lora_model
+ --lora-r 8 \
+ --lora-alpha 16 \
+ --lora-dropout 0.05 \
+ --precision bf16 \
+ training.output_dir=artifacts/runs/lora_model
 
 # Training with reasoning templates
 codex-train +reasoning=baseline \
-  curriculum.phase_schedule=starter \
-  logging.reasoning_trace=true \
-  training.output_dir=artifacts/runs/reasoning
+ curriculum.phase_schedule=starter \
+ logging.reasoning_trace=true \
+ training.output_dir=artifacts/runs/reasoning
 ```text
 
 ## Evaluating a Model
@@ -235,14 +235,14 @@ codex-train +reasoning=baseline \
 ```bash
 # Basic evaluation
 codex-eval \
-  --config configs/evaluation/base.yaml \
-  --metrics-only
+ --config configs/evaluation/base.yaml \
+ --metrics-only
 
 # Reasoning evaluation
 codex evaluate \
-  --config configs/evaluation/reasoning.yaml \
-  --log-metrics .codex/metrics/reasoning.ndjson \
-  --run-id my-eval-run
+ --config configs/evaluation/reasoning.yaml \
+ --log-metrics .codex/metrics/reasoning.ndjson \
+ --run-id my-eval-run
 ```text
 
 ## Managing Configurations
@@ -272,7 +272,7 @@ pytest --cov=src/codex_ml tests/
 
 # Offline tests
 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
-  nox -s tests_offline
+ nox -s tests_offline
 ```text
 
 ## Pre-commit Checks
@@ -309,28 +309,28 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 ### Quick Zendesk workflow
 
 1. **Snapshot current state**:
-   ```bash
-   codex zendesk snapshot --env=dev
+ ```bash
+ codex zendesk snapshot --env=dev
  ```
 
 2. **Create desired state** in `configs/desired/zendesk/`
 
 3. **Generate diff**:
-   ```bash
-   codex zendesk diff triggers \
-     --desired-file configs/desired/triggers.json \
-     --current-file snapshot/dev/latest/triggers.json \
-     --output diffs/triggers_diff.json
+ ```bash
+ codex zendesk diff triggers \
+ --desired-file configs/desired/triggers.json \
+ --current-file snapshot/dev/latest/triggers.json \
+ --output diffs/triggers_diff.json
  ```
 
 4. **Apply changes**:
-   ```bash
-   codex zendesk apply triggers plans/triggers_plan.json --env=dev
+ ```bash
+ codex zendesk apply triggers plans/triggers_plan.json --env=dev
  ```
 
 5. **Verify**:
-   ```bash
-   codex zendesk metrics
+ ```bash
+ codex zendesk metrics
  ```
 
 ### Key Zendesk Resources
@@ -349,25 +349,25 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 **Primary test runner: pytest**
 ```bash
 # Quick test run
-pytest                           # Run all tests
-pytest -q                        # Quiet mode
-pytest -v                        # Verbose mode
+pytest # Run all tests
+pytest -q # Quiet mode
+pytest -v # Verbose mode
 
 # With coverage
 pytest --cov=src --cov-report=html --cov-report=term
-open htmlcov/index.html          # View coverage report
+open htmlcov/index.html # View coverage report
 
 # Specific test markers
-pytest -m smoke                  # Quick smoke tests
-pytest -m integration            # Integration tests
-pytest -m "not slow"             # Skip slow tests
-pytest -m ml                     # ML/tensor dependent tests
+pytest -m smoke # Quick smoke tests
+pytest -m integration # Integration tests
+pytest -m "not slow" # Skip slow tests
+pytest -m ml # ML/tensor dependent tests
 ```
 
 **Alternative: nox sessions**
 ```bash
-nox -s tests                     # Full test suite with coverage
-nox -s tests_min                 # Fast minimal tests
+nox -s tests # Full test suite with coverage
+nox -s tests_min # Fast minimal tests
 ```
 
 **CI/CD Testing:**
@@ -515,17 +515,17 @@ See `.github/copilot-instructions.md` for complete list.
 ### CLI Entry Points
 
 ```bash
-codex                    # Main CLI
-codex-train             # Training entry point
-codex-eval              # Evaluation entry point
-codex-ml                # ML CLI
-codex-cli               # Alternative CLI
-codex-generate          # Generation utilities
-codex-infer             # Inference
-codex-validate-config   # Config validation
-codex-list-plugins      # Plugin discovery
-codex-status-audit      # repository audit
-codex-task-sequence     # task automation
+codex # Main CLI
+codex-train # Training entry point
+codex-eval # Evaluation entry point
+codex-ml # ML CLI
+codex-cli # Alternative CLI
+codex-generate # Generation utilities
+codex-infer # Inference
+codex-validate-config # Config validation
+codex-list-plugins # Plugin discovery
+codex-status-audit # repository audit
+codex-task-sequence # task automation
 ```text
 
 ### Common Operations

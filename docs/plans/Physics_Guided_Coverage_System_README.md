@@ -218,20 +218,20 @@ $ python tools/coverage_physics_toolkit.py --mode validate
 ================================================================================
 PHYSICS REFERENCE TABLES VALIDATION
 ================================================================================
-TABLE1_TIME_CONSTRAINTS                        PASS
-TABLE2_IMPORT_MONITORING                       PASS
-TABLE3_MULTI_ORCHESTRATOR                      PASS
-TABLE4_COVERAGE_UPLIFT                         PASS
+TABLE1_TIME_CONSTRAINTS PASS
+TABLE2_IMPORT_MONITORING PASS
+TABLE3_MULTI_ORCHESTRATOR PASS
+TABLE4_COVERAGE_UPLIFT PASS
 
 ================================================================================
-Overall Status:  ALL TABLES VALIDATED
+Overall Status: ALL TABLES VALIDATED
 ================================================================================
 
 Strategy Count by Table:
-  Table1_TimeConstraints         3 strategies
-  Table2_ImportMonitoring        2 strategies
-  Table3_MultiOrchestrator       2 strategies
-  Table4_CoverageUplift          3 strategies
+ Table1_TimeConstraints 3 strategies
+ Table2_ImportMonitoring 2 strategies
+ Table3_MultiOrchestrator 2 strategies
+ Table4_CoverageUplift 3 strategies
 
 Total Strategies Loaded: 10
 ```
@@ -245,14 +245,14 @@ $ python tools/coverage_physics_toolkit.py --mode velocity
 COVERAGE VELOCITY ANALYSIS (Eq #49: J = Coverage/Runtime)
 ================================================================================
 
-Expected Total Gain:     14.80%
-Total Implementation:    43 minutes
-Coverage Velocity:       20.65% per hour
+Expected Total Gain: 14.80%
+Total Implementation: 43 minutes
+Coverage Velocity: 20.65% per hour
 
 Estimated Time to:
-  30% coverage:          0.1 hours (6 minutes)
-  50% coverage:          1.1 hours (66 minutes)
-  70% coverage:          2.1 hours (126 minutes)
+ 30% coverage: 0.1 hours (6 minutes)
+ 50% coverage: 1.1 hours (66 minutes)
+ 70% coverage: 2.1 hours (126 minutes)
 ```
 
 ---
@@ -263,19 +263,19 @@ Estimated Time to:
 
 ```
 docs/plans/
-├── Physics_Equations_Time_Constraints_Plan_Prompts.md      (Table 1, 62 equations)
-├── Physics_Equations_Monitor_Behavior_Plan_Prompts.md      (Table 2, 62 equations)
-├── Physics_Equations_Multi_Orchestrator_Patterns.md        (Table 3, 60 equations)
-├── Physics_Equations_Coverage_Uplift_Paths.md              (Table 4, 53 equations)
-├── Coverage_Physics_Toolkit_UserGuide.md                   (User guide)
-└── Physics_Guided_Coverage_System_README.md                (This file)
+ Physics_Equations_Time_Constraints_Plan_Prompts.md (Table 1, 62 equations)
+ Physics_Equations_Monitor_Behavior_Plan_Prompts.md (Table 2, 62 equations)
+ Physics_Equations_Multi_Orchestrator_Patterns.md (Table 3, 60 equations)
+ Physics_Equations_Coverage_Uplift_Paths.md (Table 4, 53 equations)
+ Coverage_Physics_Toolkit_UserGuide.md (User guide)
+ Physics_Guided_Coverage_System_README.md (This file)
 ```
 
 ### Tools
 
 ```
 tools/
-└── coverage_physics_toolkit.py                              (Main toolkit)
+ coverage_physics_toolkit.py (Main toolkit)
 ```
 
 ---

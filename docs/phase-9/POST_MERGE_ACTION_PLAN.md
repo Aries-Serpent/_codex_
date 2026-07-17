@@ -37,8 +37,8 @@ Update live documentation after merge validation:
 # 1. Refresh GitHub Pages with Phase 9 final status
 # Trigger workflow: post-merge-doc-alignment-agent
 gh workflow run post-merge-doc-alignment.yml \
-  --repo Aries-Serpent/_codex_ \
-  --ref main
+ --repo Aries-Serpent/_codex_ \
+ --ref main
 
 # 2. Verify docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md is current
 # (Will be auto-updated by workflow)
@@ -60,7 +60,7 @@ nox -s tests
 
 # 3. Run security scanning
 # CodeQL scans auto-trigger on main push
-# Monitor: Actions → CodeQL scans
+# Monitor: Actions CodeQL scans
 
 # 4. Validate all workflows have correct syntax
 python scripts/ci/validate_copilot_setup_steps.py
@@ -135,25 +135,25 @@ Continue Phase 8/9 deployment coordination:
 **Immediate (after validation):**
 ```
 Task 1: @copilot-task unified-coverage-agent
-  Verify test coverage on all new Phase documentation code
+ Verify test coverage on all new Phase documentation code
 
 Task 2: @copilot-task unified-doc-agent
-  Synchronize all Phase consolidated docs with GitHub Pages
+ Synchronize all Phase consolidated docs with GitHub Pages
 
 Task 3: @copilot-task unified-security-scanner
-  Run security scan on all merged code
+ Run security scan on all merged code
 ```
 
 **Phase 9 Continuation (per coordination dashboard):**
 ```
 Task 4: @copilot-task orchestrator-agent
-  Route remaining Phase 9 tasks to specialized agents
+ Route remaining Phase 9 tasks to specialized agents
 
 Task 5: @copilot-task ci-auto-healer-agent
-  Validate CI auto-fix patterns are operational
+ Validate CI auto-fix patterns are operational
 
 Task 6: @copilot-task autonomous-test-healer-agent
-  Scan new tests for flakiness and stabilize
+ Scan new tests for flakiness and stabilize
 ```
 
 ---

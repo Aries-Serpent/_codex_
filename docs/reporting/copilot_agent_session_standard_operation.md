@@ -21,29 +21,29 @@ reference; the machine-readable canonical planset lives at
 
 flowchart TD
 
-  A[Session Start] --> B[Pre-load Context]
+ A[Session Start] --> B[Pre-load Context]
 
-  B --> B2[Session Access Probe + Drift Severity]
+ B --> B2[Session Access Probe + Drift Severity]
 
-  B2 --> B3[RAG Context Build + Bootstrap Health Score]
+ B2 --> B3[RAG Context Build + Bootstrap Health Score]
 
-  B3 --> C[Baseline Checks]
+ B3 --> C[Baseline Checks]
 
-  C --> D[Task Planning + Checklist]
+ C --> D[Task Planning + Checklist]
 
-  D --> E[Implementation Iterations]
+ D --> E[Implementation Iterations]
 
-  E --> F[Validation + Security Review]
+ E --> F[Validation + Security Review]
 
-  F --> G[Living Docs Refresh - Auto-Populate]
+ F --> G[Living Docs Refresh - Auto-Populate]
 
-  G --> H[Progress Commit/Push]
+ G --> H[Progress Commit/Push]
 
-  H --> I[Session Handoff / Next Prompt]
+ H --> I[Session Handoff / Next Prompt]
 
-  B3 -- health < 80 --> MUST_FIX[Must-Fix Before Editing List]
+ B3 -- health < 80 --> MUST_FIX[Must-Fix Before Editing List]
 
-  MUST_FIX --> C
+ MUST_FIX --> C
 ```
 
 ## AI-Friendly Codeless Depiction of Intended Copilot Design
@@ -53,21 +53,21 @@ flowchart TD
 
 flowchart TD
 
-  A[Load session packet] --> B[Assess drift + health]
+ A[Load session packet] --> B[Assess drift + health]
 
-  B --> C{Risk posture}
+ B --> C{Risk posture}
 
-  C -->|LOW| D[Execute scoped task plan]
+ C -->|LOW| D[Execute scoped task plan]
 
-  C -->|MEDIUM/HIGH| E[Apply conflict mitigations + rebase gate]
+ C -->|MEDIUM/HIGH| E[Apply conflict mitigations + rebase gate]
 
-  E --> D
+ E --> D
 
-  D --> F[Validate]
+ D --> F[Validate]
 
-  F --> G[Auto-populate living docs]
+ F --> G[Auto-populate living docs]
 
-  G --> H[Handoff with tokenized state]
+ G --> H[Handoff with tokenized state]
 ```
 
 ### Quantum-Inspired Session Dynamics (Tokenized Variables)
@@ -147,11 +147,11 @@ Use tokenized variable aliases in living docs and session handoffs to keep refer
 > Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)
 
 ```
-Detect drift:  git log main..HEAD --oneline | wc -l
-  0      → LOW     → proceed normally
-  1–3    → MEDIUM  → set CODEX_SWEEP_SKIP_MAIN=true before any write op
-  4+     → HIGH    → rebase first, then re-run session probe
-  force  → CRITICAL→ abort session; fetch main; restart bootstrap
+Detect drift: git log main..HEAD --oneline | wc -l
+ 0 LOW proceed normally
+ 1–3 MEDIUM set CODEX_SWEEP_SKIP_MAIN=true before any write op
+ 4+ HIGH rebase first, then re-run session probe
+ force CRITICAL abort session; fetch main; restart bootstrap
 ```
 
 **HIGH-risk workflows to guard (write-capable; conflict immediately if main drifts):**
@@ -214,33 +214,33 @@ This section describes how session events flow into living docs without manual e
 
 ```
 Copilot Agent Session
-  |
-  +- session_logger.log_event(session_id, role="system", message="...", meta={...})
-  |       |  emits events to: .codex/session_logs.db (SQLite)
-  |
-  v
+ |
+ +- session_logger.log_event(session_id, role="system", message="...", meta={...})
+ | | emits events to: .codex/session_logs.db (SQLite)
+ |
+ v
 update_cognitive_brain.py living_doc_sync()
-  |  reads: session_events WHERE session_id = latest AND role = "system"
-  |  queries: session_start event (context), session_end event (summary)
-  |  builds: structured delta blocks per target doc
-  |
-  +- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  <- session summary block
-  +- CHANGELOG.md                                         <- [Unreleased] entry
-  +- docs/roadmap/PR<id>_whats_next.md                   <- status table update
-  +- .codex/aftermath/pda_iterations.jsonl               <- PDA loop feed
+ | reads: session_events WHERE session_id = latest AND role = "system"
+ | queries: session_start event (context), session_end event (summary)
+ | builds: structured delta blocks per target doc
+ |
+ +- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md <- session summary block
+ +- CHANGELOG.md <- [Unreleased] entry
+ +- docs/roadmap/PR<id>_whats_next.md <- status table update
+ +- .codex/aftermath/pda_iterations.jsonl <- PDA loop feed
 ```
 
 ### Required Meta Fields (session_start event)
 
 ```python
 meta = {
-    "session_id":                  "S1035-lean-workflow-os",
-    "branch":                      "copilot/lean-workflow-os",
-    "pr_number":                   4470,
-    "context_load_status":         "complete",   # complete | partial | failed
-    "drift_severity":              "LOW",         # LOW | MEDIUM | HIGH | CRITICAL
-    "policy_version":              "CODEBASE_AGENCY_POLICY.md s3a",
-    "repo_variables_snapshot_sha": "35d136b",
+ "session_id": "S1035-lean-workflow-os",
+ "branch": "copilot/lean-workflow-os",
+ "pr_number": 4470,
+ "context_load_status": "complete", # complete | partial | failed
+ "drift_severity": "LOW", # LOW | MEDIUM | HIGH | CRITICAL
+ "policy_version": "CODEBASE_AGENCY_POLICY.md s3a",
+ "repo_variables_snapshot_sha": "35d136b",
 }
 ```
 
@@ -248,11 +248,11 @@ meta = {
 
 ```python
 meta = {
-    "session_id":          "S1035-lean-workflow-os",
-    "completed_tasks":     ["Plan A consolidation", "Phase 6 added"],
-    "pending_tasks":       ["Plan B token contracts"],
-    "pattern_compliance":  {"P25": "pass", "P30": "pass"},
-    "living_docs_updated": [".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md", "CHANGELOG.md"],
+ "session_id": "S1035-lean-workflow-os",
+ "completed_tasks": ["Plan A consolidation", "Phase 6 added"],
+ "pending_tasks": ["Plan B token contracts"],
+ "pattern_compliance": {"P25": "pass", "P30": "pass"},
+ "living_docs_updated": [".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md", "CHANGELOG.md"],
 }
 ```
 
@@ -276,13 +276,13 @@ python scripts/aftermath/update_cognitive_brain.py --mode living-doc-sync
 
 ```
 health_score = 100
-- 30  if drift_severity == CRITICAL
-- 15  if drift_severity == HIGH
-- 10  if any required check is failing
-- 10  if ci_failure_rate > threshold (TVAR_CODEX_CI_FAILURE_RATE)
-- 10  if any living doc is stale (> 24h from latest session_end)
-- 5   if token contract block missing from any session-critical doc
-- 5   if repo variables snapshot is > 1h old
+- 30 if drift_severity == CRITICAL
+- 15 if drift_severity == HIGH
+- 10 if any required check is failing
+- 10 if ci_failure_rate > threshold (TVAR_CODEX_CI_FAILURE_RATE)
+- 10 if any living doc is stale (> 24h from latest session_end)
+- 5 if token contract block missing from any session-critical doc
+- 5 if repo variables snapshot is > 1h old
 ```
 
 Score >= 80 = GREEN (proceed). Score 50-79 = YELLOW (fix listed items first). Score < 50 = RED.

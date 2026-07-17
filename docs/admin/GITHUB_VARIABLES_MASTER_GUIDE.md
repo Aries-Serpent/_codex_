@@ -48,27 +48,27 @@
 GitHub provides **six distinct storage layers** for variables and secrets. Choosing the wrong layer is the most common misconfiguration.
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    Variable Storage Hierarchy                        │
-│                                                                      │
-│  🏢 ORGANIZATION LEVEL  (Aries-Serpent)                             │
-│  ├─ Org Secrets       → shared across all repos in org              │  # pragma: allowlist secret
-│  └─ Org Variables     → [none currently, use repo vars instead]     │
-│                                                                      │
-│  📦 REPOSITORY LEVEL  (Aries-Serpent/_codex_)                       │
-│  ├─ Repo Secrets      → encrypted, not readable by agents           │  # pragma: allowlist secret
-│  └─ Repo Variables    → readable plaintext, writable via API        │
-│                                                                      │
-│  🌍 ENVIRONMENT LEVEL  (Aries_Serpent_codex_ environment)           │
-│  ├─ Env Secrets       → override repo secrets for this env          │  # pragma: allowlist secret
-│  └─ Env Variables     → override repo variables for this env        │
-│                                                                      │
-│  💻 CODESPACE LEVEL  (org or user-scoped)                           │
-│  └─ Codespace Secrets → injected into interactive Codespace only    │  # pragma: allowlist secret
-└─────────────────────────────────────────────────────────────────────┘
+
+ Variable Storage Hierarchy 
+ 
+ ORGANIZATION LEVEL (Aries-Serpent) 
+ Org Secrets shared across all repos in org # pragma: allowlist secret
+ Org Variables [none currently, use repo vars instead] 
+ 
+ REPOSITORY LEVEL (Aries-Serpent/_codex_) 
+ Repo Secrets encrypted, not readable by agents # pragma: allowlist secret
+ Repo Variables readable plaintext, writable via API 
+ 
+ ENVIRONMENT LEVEL (Aries_Serpent_codex_ environment) 
+ Env Secrets override repo secrets for this env # pragma: allowlist secret
+ Env Variables override repo variables for this env 
+ 
+ CODESPACE LEVEL (org or user-scoped) 
+ Codespace Secrets injected into interactive Codespace only # pragma: allowlist secret
+
 
 Resolution order (GitHub Actions): Env > Repo > Org (most specific wins)
-Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN  # pragma: allowlist secret
+Token access: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN # pragma: allowlist secret
 ```
 
 **Key constraints:**
@@ -156,10 +156,10 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 <!-- anchor: token-decoder-priority-order -->
 
 ```
-1. CODEX_GHP_TOKEN_CONFIG   (Combined AES — not currently set)  # pragma: allowlist secret
-2. CODEX_GHP_TOKEN_BASE64    (present — simplest, recommended)  # pragma: allowlist secret
-3. CODEX_GHP_TOKEN_HEX       (present — alternative)  # pragma: allowlist secret
-4. GITHUB_TOKEN             (auto-provided by Actions)  # pragma: allowlist secret
+1. CODEX_GHP_TOKEN_CONFIG (Combined AES — not currently set) # pragma: allowlist secret
+2. CODEX_GHP_TOKEN_BASE64 (present — simplest, recommended) # pragma: allowlist secret
+3. CODEX_GHP_TOKEN_HEX (present — alternative) # pragma: allowlist secret
+4. GITHUB_TOKEN (auto-provided by Actions) # pragma: allowlist secret
 ```
 
 ---
@@ -360,14 +360,14 @@ All scripts fall back to safe coded defaults when variables are unset.
 >
 > **Quick-set all agent config vars:**
 > ```bash
-> gh variable set AGENT_KILL_SWITCH            --body "0"   --repo Aries-Serpent/_codex_
-> gh variable set AUTONOMY_BUDGET_SECONDS      --body "60"  --repo Aries-Serpent/_codex_
-> gh variable set AUTONOMY_MAX_ITERATIONS      --body "3"   --repo Aries-Serpent/_codex_
-> gh variable set AUTONOMY_DRY_RUN             --body "0"   --repo Aries-Serpent/_codex_
-> gh variable set AGENT_RUNNER_BUDGET_SECONDS  --body "120" --repo Aries-Serpent/_codex_
-> gh variable set AGENT_RUNNER_ITERATIONS      --body "2"   --repo Aries-Serpent/_codex_
-> gh variable set AGENT_RUNNER_DRY_RUN         --body "0"   --repo Aries-Serpent/_codex_
-> gh variable set UNCERTAINTY_BUDGET_SECONDS   --body "10"  --repo Aries-Serpent/_codex_
+> gh variable set AGENT_KILL_SWITCH --body "0" --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_BUDGET_SECONDS --body "60" --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_MAX_ITERATIONS --body "3" --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_DRY_RUN --body "0" --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_BUDGET_SECONDS --body "120" --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_ITERATIONS --body "2" --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_DRY_RUN --body "0" --repo Aries-Serpent/_codex_
+> gh variable set UNCERTAINTY_BUDGET_SECONDS --body "10" --repo Aries-Serpent/_codex_
 > ```
 
 ---
@@ -450,14 +450,14 @@ No further admin action is required for Codespace agent sessions.
 For reference, the CLI commands used were:
 ```bash
 # All secrets are now set — commands below are for documentation/recovery only
-gh secret set CODEX_BACKUP_KEY             --app codespaces  # user-level
-gh secret set CODEX_ADMIN_KEY              --app codespaces  # user-level
-gh secret set _GITHUB_APP_ID              --app codespaces  # user-level
-gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces  # user-level
-gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces  # user-level
-gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces  # user-level
-gh secret set WEBHOOK_SECRET               --app codespaces  # user-level
-gh secret set WEBHOOK_RECEIVER_URL         --app codespaces  # user-level
+gh secret set CODEX_BACKUP_KEY --app codespaces # user-level
+gh secret set CODEX_ADMIN_KEY --app codespaces # user-level
+gh secret set _GITHUB_APP_ID --app codespaces # user-level
+gh secret set _GITHUB_APP_PRIVATE_KEY --app codespaces # user-level
+gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces # user-level
+gh secret set _GITHUB_APP_CLIENT_SECRET --app codespaces # user-level
+gh secret set WEBHOOK_SECRET --app codespaces # user-level
+gh secret set WEBHOOK_RECEIVER_URL --app codespaces # user-level
 ```
 
 ---
@@ -554,12 +554,12 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 
 ```
 Symptom: VariableManager or brain_client raises AuthenticationError on variable read/write
-Cause:   GITHUB_TOKEN used instead of CODEX_MASTER_KEY  # pragma: allowlist secret
+Cause: GITHUB_TOKEN used instead of CODEX_MASTER_KEY # pragma: allowlist secret
 Fix:
-  1. Confirm CODEX_MASTER_KEY is set as an org secret (§3)  # pragma: allowlist secret
-  2. Confirm copilot-setup-steps.yml "🔑 Export Auth Tokens" step is running  # pragma: allowlist secret
-  3. In code, use: from scripts.tools.variable_manager import VariableManager; vm = VariableManager()
-  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix  # pragma: allowlist secret
+ 1. Confirm CODEX_MASTER_KEY is set as an org secret (§3) # pragma: allowlist secret
+ 2. Confirm copilot-setup-steps.yml " Export Auth Tokens" step is running # pragma: allowlist secret
+ 3. In code, use: from scripts.tools.variable_manager import VariableManager; vm = VariableManager()
+ Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Permission Matrix # pragma: allowlist secret
 ```
 
 ### "Webhooks return 403 on create/update"
@@ -567,11 +567,11 @@ Fix:
 
 ```
 Symptom: webhook_configurator.py fails with HTTP 403 on webhook API calls
-Cause:   GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed  # pragma: allowlist secret
+Cause: GITHUB_TOKEN cannot manage webhooks; CODEX_ADMIN_KEY / CODEX_MASTER_KEY needed # pragma: allowlist secret
 Fix:
-  1. Confirm CODEX_MASTER_KEY has admin:repo_hook scope, OR
-  2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret  # pragma: allowlist secret
-  Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section  # pragma: allowlist secret
+ 1. Confirm CODEX_MASTER_KEY has admin:repo_hook scope, OR
+ 2. Create CODEX_ADMIN_KEY (fine-grained, Webhooks:write) and set as org secret # pragma: allowlist secret
+ Reference: docs/agent/COPILOT_TOKEN_GUIDE.md — Webhook operations section # pragma: allowlist secret
 ```
 
 ### "Python version mismatch between jobs"
@@ -579,7 +579,7 @@ Fix:
 
 ```
 Symptom: Tests pass in some jobs, fail in others due to Python syntax/type differences
-Status:   RESOLVED (2026-03-06) — CODEX_ENV_PYTHON_VERSION updated to 3.12 (Issue 2)
+Status: RESOLVED (2026-03-06) — CODEX_ENV_PYTHON_VERSION updated to 3.12 (Issue 2)
 Both CODEX_PYTHON_VERSION (repo var) and CODEX_ENV_PYTHON_VERSION (env var) are now 3.12.
 If you still see version mismatches, confirm no other variable overrides exist.
 ```
@@ -589,8 +589,8 @@ If you still see version mismatches, confirm no other variable overrides exist.
 
 ```
 Symptom: Node.js version appears masked in CI logs
-Status:   RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and  # pragma: allowlist secret
-         recreated as an env variable. Value is now readable in logs and by the Variables API.
+Status: RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env secrets and # pragma: allowlist secret
+ recreated as an env variable. Value is now readable in logs and by the Variables API.
 Current required value: `22` (major-only).
 ```
 
@@ -599,9 +599,9 @@ Current required value: `22` (major-only).
 
 ```
 Symptom: post-start.sh health check fails; uvicorn :8765 not reachable
-Cause:   CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets  # pragma: allowlist secret
-Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8  # pragma: allowlist secret
-         Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
+Cause: CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets # pragma: allowlist secret
+Fix: All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8 # pragma: allowlist secret
+ Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
 ```
 
 ### "CODEX_CI_FAILURE_RATE shows stale value"
@@ -609,24 +609,24 @@ Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — s
 
 ```
 Symptom: CODEX_CI_FAILURE_RATE hasn't updated in > 24 hours
-Cause:   ci-health-monitor.yml workflow not running, or CODEX_MASTER_KEY lacked write access
+Cause: ci-health-monitor.yml workflow not running, or CODEX_MASTER_KEY lacked write access
 Fix:
-  1. Check .github/workflows/ci-health-monitor.yml is enabled
-  2. Verify CODEX_MASTER_KEY has variables:write permission
-  Format: "<float>:<status>" — e.g. "6.3:ok", "15.2:degraded", "22.1:critical"
+ 1. Check .github/workflows/ci-health-monitor.yml is enabled
+ 2. Verify CODEX_MASTER_KEY has variables:write permission
+ Format: "<float>:<status>" — e.g. "6.3:ok", "15.2:degraded", "22.1:critical"
 ```
 
 ### "Secret rotation — CODEX_MASTER_KEY / CODEX_BACKUP_KEY"
 <!-- anchor: "secret-rotation-—-codex_master_key---codex_backup_key" -->
 
 ```
-Full runbook: docs/ops/secrets_rotation_runbook.md  # pragma: allowlist secret
+Full runbook: docs/ops/secrets_rotation_runbook.md # pragma: allowlist secret
 Quick summary:
-  1. Generate new 32-byte base64 key offline
-  2. Copy current CODEX_MASTER_KEY → set as CODEX_BACKUP_KEY (opens grace window)
-  3. Set new key as CODEX_MASTER_KEY
-  4. Wait 48 hours (grace window) then verify
-  5. Update CODEX_BACKUP_KEY to new value (closes grace window)
+ 1. Generate new 32-byte base64 key offline
+ 2. Copy current CODEX_MASTER_KEY set as CODEX_BACKUP_KEY (opens grace window)
+ 3. Set new key as CODEX_MASTER_KEY
+ 4. Wait 48 hours (grace window) then verify
+ 5. Update CODEX_BACKUP_KEY to new value (closes grace window)
 ```
 
 ### "Incorrect variable format"

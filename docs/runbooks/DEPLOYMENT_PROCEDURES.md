@@ -84,7 +84,7 @@ sqlite3 /var/lib/codex/codex.db ".dump" > /var/backups/codex_backup_$(date +%Y%m
 
 # Backup models
 tar -czf /var/backups/codex_models_$(date +%Y%m%d_%H%M%S).tar.gz \
-  /var/lib/codex/models/
+ /var/lib/codex/models/
 
 echo " Backup complete"
 ```
@@ -218,28 +218,28 @@ docker pull registry.example.com/codex-ml:v0.2.1
 ```yaml
 # values-prod.yaml
 image:
-  repository: registry.example.com/codex-ml
-  tag: v0.2.1
-  pullPolicy: IfNotPresent
+ repository: registry.example.com/codex-ml
+ tag: v0.2.1
+ pullPolicy: IfNotPresent
 
 replicas: 3
 
 resources:
-  requests:
-    memory: "4Gi"
-    cpu: "2"
-  limits:
-    memory: "8Gi"
-    cpu: "4"
+ requests:
+ memory: "4Gi"
+ cpu: "2"
+ limits:
+ memory: "8Gi"
+ cpu: "4"
 
 database:
-  host: postgres.default.svc.cluster.local
-  port: 5432
-  name: codex_prod
+ host: postgres.default.svc.cluster.local
+ port: 5432
+ name: codex_prod
 
 monitoring:
-  enabled: true
-  prometheus: true
+ enabled: true
+ prometheus: true
 ```
 
 #### Step 3: Create/Update Kubernetes Resources
@@ -250,9 +250,9 @@ kubectl create namespace codex-prod
 
 # Create secrets
 kubectl create secret generic codex-secrets \
-  --from-literal=db-****** \
-  --from-literal=api-key=your-key \
-  -n codex-prod
+ --from-literal=db-****** \
+ --from-literal=api-key=your-key \
+ -n codex-prod
 
 # Apply configuration
 kubectl apply -k config/kubernetes/overlays/prod/
@@ -271,9 +271,9 @@ helm repo update
 
 # Deploy
 helm upgrade --install codex-prod codex/codex \
-  -f values-prod.yaml \
-  --namespace codex-prod \
-  --version 1.0.0
+ -f values-prod.yaml \
+ --namespace codex-prod \
+ --version 1.0.0
 
 # Monitor deployment
 kubectl rollout status deployment/codex-api -n codex-prod
@@ -299,8 +299,8 @@ curl http://localhost:8000/health
 
 # 2. Check API is responding
 curl -X POST http://localhost:8000/api/v1/inference \
-  -H "Content-Type: application/json" \
-  -d '{"query": "test"}'
+ -H "Content-Type: application/json" \
+ -d '{"query": "test"}'
 # Expected: 200 OK with inference result
 
 # 3. Check database connectivity
@@ -323,14 +323,14 @@ tail -n 20 /var/log/codex/worker.log
 ```bash
 # Run performance test
 python -m codex.perf.benchmark \
-  --num_requests 100 \
-  --concurrency 10 \
-  --timeout 30
+ --num_requests 100 \
+ --concurrency 10 \
+ --timeout 30
 
 # Expected output:
-#  Mean latency: 250ms (p50), 450ms (p95)
-#  Throughput: 40 req/sec
-#  Error rate: <1%
+# Mean latency: 250ms (p50), 450ms (p95)
+# Throughput: 40 req/sec
+# Error rate: <1%
 ```
 
 ### Functionality Tests
@@ -340,10 +340,10 @@ python -m codex.perf.benchmark \
 pytest tests/smoke/ -v
 
 # Expected: All tests pass
-#  test_api_health
-#  test_inference_basic
-#  test_data_ingestion
-#  test_model_loading
+# test_api_health
+# test_inference_basic
+# test_data_ingestion
+# test_model_loading
 ```
 
 ### Monitoring Setup
@@ -358,7 +358,7 @@ curl http://prometheus:9090/api/v1/query?query=up
 # Dashboard "Codex Performance" should show metrics
 
 # Set up alerts
-# In Grafana: Alerts → New Rule
+# In Grafana: Alerts New Rule
 # Alert on: error_rate > 1% or latency_p95 > 2000ms
 ```
 
@@ -438,9 +438,9 @@ print(f' {len(tables)} tables exist')
 
 # Check row counts
 for table in tables:
-    cursor.execute(f'SELECT COUNT(*) FROM {table[0]}')
-    count = cursor.fetchone()[0]
-    print(f'  - {table[0]}: {count} rows')
+ cursor.execute(f'SELECT COUNT(*) FROM {table[0]}')
+ count = cursor.fetchone()[0]
+ print(f' - {table[0]}: {count} rows')
 "
 ```
 
@@ -587,7 +587,7 @@ After any deployment issue:
 ```bash
 # 1. Collect logs
 tar -czf deployment_logs_$(date +%Y%m%d_%H%M%S).tar.gz \
-  /var/log/codex/ /var/logs/kubernetes/
+ /var/log/codex/ /var/logs/kubernetes/
 
 # 2. Document incident
 # Create issue: https://github.com/Aries-Serpent/_codex_/issues

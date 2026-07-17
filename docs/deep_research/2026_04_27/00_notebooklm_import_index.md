@@ -32,9 +32,9 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 $C_pT$ is heat capacity at constant pressure multiplied by absolute temperature. In thermodynamics, it approximates specific enthalpy under simplified reference assumptions. In security/access modeling, it can analogize the capacity of a system to carry governed access under a given threat temperature.
 
 ```text
-Thermodynamic:      h ≈ C_pT
-Security analogy:   H_sa ≈ C_aΘ
-Expanded analogy:   H_sa = C_aΘΦ_context − μF + Ω_obs
+Thermodynamic: h ≈ C_pT
+Security analogy: H_sa ≈ C_aΘ
+Expanded analogy: H_sa = C_aΘΦ_context − μF + Ω_obs
 ```
 
 The thermodynamic equations are physical relations. The security equations are structured analogies and synthetic models for reasoning.
@@ -141,7 +141,7 @@ The recent adaptive-energy notes use one shared variable grammar so NotebookLM c
 Diagram alignment rule:
 
 ```text
-source/input → state/context estimation → balance equation → route/store/convert/shed → feedback/learning
+source/input state/context estimation balance equation route/store/convert/shed feedback/learning
 ```
 
 

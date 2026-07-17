@@ -139,16 +139,16 @@ SHOW PROFILE ALL;
 **Workload:**
 ```sql
 SELECT
-  o.order_id,
-  o.total_amount,
-  c.customer_name,
-  COUNT(i.item_id) as item_count,
-  SUM(i.quantity) as total_quantity
+ o.order_id,
+ o.total_amount,
+ c.customer_name,
+ COUNT(i.item_id) as item_count,
+ SUM(i.quantity) as total_quantity
 FROM orders o
 JOIN customers c ON o.customer_id = c.id
 LEFT JOIN order_items i ON o.order_id = i.order_id
 WHERE o.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-  AND o.status = ?
+ AND o.status = ?
 GROUP BY o.order_id, o.total_amount, c.customer_name
 HAVING COUNT(i.item_id) > 0
 ORDER BY o.created_at DESC
@@ -182,7 +182,7 @@ LIMIT 1000
 CREATE INDEX idx_orders_customer_status
 ON orders(customer_id, status, created_at DESC);
 
--- Index for JOIN on order_items  
+-- Index for JOIN on order_items 
 CREATE INDEX idx_order_items_order_id
 ON order_items(order_id, item_id, quantity);
 
@@ -199,26 +199,26 @@ ANALYZE TABLE orders, order_items, customers;
 ```sql
 -- Optimized query: use subquery to filter orders first
 SELECT
-  o.order_id,
-  o.total_amount,
-  c.customer_name,
-  COALESCE(item_stats.item_count, 0) as item_count,
-  COALESCE(item_stats.total_quantity, 0) as total_quantity
+ o.order_id,
+ o.total_amount,
+ c.customer_name,
+ COALESCE(item_stats.item_count, 0) as item_count,
+ COALESCE(item_stats.total_quantity, 0) as total_quantity
 FROM (
-  SELECT order_id, customer_id, total_amount, created_at
-  FROM orders
-  WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-    AND status = ?
+ SELECT order_id, customer_id, total_amount, created_at
+ FROM orders
+ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+ AND status = ?
 ) o
 JOIN customers c ON o.customer_id = c.id
 LEFT JOIN (
-  SELECT
-    order_id,
-    COUNT(*) as item_count,
-    SUM(quantity) as total_quantity
-  FROM order_items
-  GROUP BY order_id
-  HAVING COUNT(*) > 0
+ SELECT
+ order_id,
+ COUNT(*) as item_count,
+ SUM(quantity) as total_quantity
+ FROM order_items
+ GROUP BY order_id
+ HAVING COUNT(*) > 0
 ) item_stats ON o.order_id = item_stats.order_id
 ORDER BY o.created_at DESC
 LIMIT 1000;
@@ -230,15 +230,15 @@ LIMIT 1000;
 ```sql
 -- For frequently accessed reports
 CREATE TABLE order_summary_cache (
-  order_id BIGINT PRIMARY KEY,
-  customer_id BIGINT,
-  customer_name VARCHAR(255),
-  total_amount DECIMAL(10,2),
-  item_count INT,
-  total_quantity INT,
-  created_at TIMESTAMP,
-  INDEX idx_created_at (created_at DESC),
-  INDEX idx_status (status)
+ order_id BIGINT PRIMARY KEY,
+ customer_id BIGINT,
+ customer_name VARCHAR(255),
+ total_amount DECIMAL(10,2),
+ item_count INT,
+ total_quantity INT,
+ created_at TIMESTAMP,
+ INDEX idx_created_at (created_at DESC),
+ INDEX idx_status (status)
 );
 
 -- Refresh periodically (e.g., every 5 minutes)
@@ -255,9 +255,9 @@ ON DUPLICATE KEY UPDATE ... ;
 ```sql
 INSERT INTO audit_logs (user_id, action, timestamp)
 VALUES
-  (?, ?, NOW()),
-  (?, ?, NOW()),
-  ...  -- 1000 rows
+ (?, ?, NOW()),
+ (?, ?, NOW()),
+ ... -- 1000 rows
 ;
 ```
 
@@ -340,7 +340,7 @@ ON orders(created_at DESC, status);
 ```sql
 -- Enable slow query log
 SET GLOBAL slow_query_log = 'ON';
-SET GLOBAL long_query_time = 0.1;  -- 100ms threshold
+SET GLOBAL long_query_time = 0.1; -- 100ms threshold
 
 -- After collection period, analyze
 SELECT query, time, rows_sent, rows_examined
@@ -356,9 +356,9 @@ EXPLAIN FORMAT=JSON
 SELECT ... FROM ... WHERE ... ;
 
 -- Look for:
---  Good: type = "index" or "ref"
--- ️ Warning: type = "range"
---  Bad: type = "ALL" (full table scan)
+-- Good: type = "index" or "ref"
+-- Warning: type = "range"
+-- Bad: type = "ALL" (full table scan)
 ```
 
 ### 5.3 Optimize Identified Queries
@@ -384,7 +384,7 @@ max_connections: 1000
 max_user_connections: 100
 
 # Query Performance
-long_query_time: 0.5         # Log queries > 500ms
+long_query_time: 0.5 # Log queries > 500ms
 slow_query_log: ON
 log_queries_not_using_indexes: ON
 
@@ -428,54 +428,54 @@ import random
 from statistics import mean, stdev
 
 def run_query(query_type: str) -> float:
-    """Execute query and return latency in ms."""
-    conn = get_db_connection()
+ """Execute query and return latency in ms."""
+ conn = get_db_connection()
 
-    query = {
-        "simple": "SELECT ... WHERE category = ?",
-        "complex": "SELECT ... FROM ... JOIN ...",
-    }[query_type]
+ query = {
+ "simple": "SELECT ... WHERE category = ?",
+ "complex": "SELECT ... FROM ... JOIN ...",
+ }[query_type]
 
-    params = [random.choice(test_data)]
+ params = [random.choice(test_data)]
 
-    start = time.perf_counter()
-    cursor = conn.cursor()
-    cursor.execute(query, params)
-    results = cursor.fetchall()
-    elapsed_ms = (time.perf_counter() - start) * 1000
+ start = time.perf_counter()
+ cursor = conn.cursor()
+ cursor.execute(query, params)
+ results = cursor.fetchall()
+ elapsed_ms = (time.perf_counter() - start) * 1000
 
-    conn.close()
-    return elapsed_ms
+ conn.close()
+ return elapsed_ms
 
 def benchmark(query_type: str, num_queries: int = 100) -> dict:
-    """Benchmark query performance."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        latencies = list(executor.map(
-            lambda _: run_query(query_type),
-            range(num_queries)
-        ))
+ """Benchmark query performance."""
+ with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+ latencies = list(executor.map(
+ lambda _: run_query(query_type),
+ range(num_queries)
+ ))
 
-    latencies.sort()
-    return {
-        "query_type": query_type,
-        "min": latencies[0],
-        "max": latencies[-1],
-        "mean": mean(latencies),
-        "stdev": stdev(latencies),
-        "p50": latencies[len(latencies) // 2],
-        "p95": latencies[int(len(latencies) * 0.95)],
-        "p99": latencies[int(len(latencies) * 0.99)],
-    }
+ latencies.sort()
+ return {
+ "query_type": query_type,
+ "min": latencies[0],
+ "max": latencies[-1],
+ "mean": mean(latencies),
+ "stdev": stdev(latencies),
+ "p50": latencies[len(latencies) // 2],
+ "p95": latencies[int(len(latencies) * 0.95)],
+ "p99": latencies[int(len(latencies) * 0.99)],
+ }
 
 if __name__ == "__main__":
-    print("Benchmarking Simple Queries...")
-    simple_results = benchmark("simple")
+ print("Benchmarking Simple Queries...")
+ simple_results = benchmark("simple")
 
-    print("Benchmarking Complex Queries...")
-    complex_results = benchmark("complex")
+ print("Benchmarking Complex Queries...")
+ complex_results = benchmark("complex")
 
-    print(f"\nSimple: p99={simple_results['p99']:.1f}ms")
-    print(f"Complex: p99={complex_results['p99']:.1f}ms")
+ print(f"\nSimple: p99={simple_results['p99']:.1f}ms")
+ print(f"Complex: p99={complex_results['p99']:.1f}ms")
 ```
 
 ### 7.2 Expected Results After Optimization
@@ -521,24 +521,24 @@ if __name__ == "__main__":
 
 ```yaml
 database_query_latency_p99_ms:
-  simple_query:
-    target: 5
-    warning: 8
-    critical: 15
-  complex_query:
-    target: 50
-    warning: 75
-    critical: 150
+ simple_query:
+ target: 5
+ warning: 8
+ critical: 15
+ complex_query:
+ target: 50
+ warning: 75
+ critical: 150
 
 database_query_count_per_minute:
-  target: 100-1000
-  warning: <50 or >2000
-  critical: <20 or >5000
+ target: 100-1000
+ warning: <50 or >2000
+ critical: <20 or >5000
 
 database_error_rate_percent:
-  target: <0.1
-  warning: 0.1-0.5
-  critical: >0.5
+ target: <0.1
+ warning: 0.1-0.5
+ critical: >0.5
 ```
 
 ### 9.2 Dashboard Requirements
@@ -599,7 +599,7 @@ EXPLAIN FORMAT=JSON SELECT ... ;
 
 **Diagnosis:**
 ```sql
-SHOW PROCESSLIST;  -- Many connections?
+SHOW PROCESSLIST; -- Many connections?
 ```
 
 **Solutions:**
@@ -612,7 +612,7 @@ SHOW PROCESSLIST;  -- Many connections?
 
 **Diagnosis:**
 ```sql
-SHOW ENGINE INNODB STATUS;  -- Deadlocks?
+SHOW ENGINE INNODB STATUS; -- Deadlocks?
 ```
 
 **Solutions:**

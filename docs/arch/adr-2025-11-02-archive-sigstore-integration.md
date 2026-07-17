@@ -114,14 +114,14 @@ export SIGSTORE_ID_TOKEN=$(gh auth token)
 
 ```yaml
 permissions:
-  id-token: write  # ← REQUIRED for OIDC token
-  contents: read
+ id-token: write # REQUIRED for OIDC token
+ contents: read
 
 steps:
-  - name: Archive with standardization
-    env:
-      CODEX_ENABLE_SIGNING: "true"
-    run: python -m codex.cli archive store ...
+ - name: Archive with standardization
+ env:
+ CODEX_ENABLE_SIGNING: "true"
+ run: python -m codex.cli archive store ...
 ```text
 
 ## Approval

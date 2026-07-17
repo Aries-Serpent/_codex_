@@ -138,19 +138,19 @@ python -c "from src.codex.utils.session_cache import FileCache; print(FileCache(
 
 ```text
 Before Optimization:
-├── Planning: 4% (12 ops) → Many rework cycles
-├── Execution: 50% (143 ops) → Frequent failures
-├── Validation: 18% (52 ops) → Manual, repetitive
-├── Discovery: 15% (43 ops) → Duplicate searches
-└── Overhead: 13% (37 ops) → Hook delays, testing
+ Planning: 4% (12 ops) Many rework cycles
+ Execution: 50% (143 ops) Frequent failures
+ Validation: 18% (52 ops) Manual, repetitive
+ Discovery: 15% (43 ops) Duplicate searches
+ Overhead: 13% (37 ops) Hook delays, testing
 Total: 287 operations
 
 After Optimization:
-├── Planning: 20% (24 ops) → Structured, prevents rework
-├── Execution: 35% (42 ops) → Clean, validated first
-├── Validation: 15% (18 ops) → Automated
-├── Discovery: 20% (24 ops) → Single pass with cache
-└── Overhead: 10% (12 ops) → Pre-configured timeouts
+ Planning: 20% (24 ops) Structured, prevents rework
+ Execution: 35% (42 ops) Clean, validated first
+ Validation: 15% (18 ops) Automated
+ Discovery: 20% (24 ops) Single pass with cache
+ Overhead: 10% (12 ops) Pre-configured timeouts
 Total: 120 operations (58% reduction)
 ```text
 ### Time-to-Value Improvement

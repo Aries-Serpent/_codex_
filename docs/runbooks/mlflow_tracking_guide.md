@@ -23,22 +23,22 @@ from codex_ml.training.mlflow_integration import MLflowTracker
 
 # Initialize tracker
 tracker = MLflowTracker(
-    experiment_name="my_experiment",
-    tracking_uri="./mlruns"  # or http://mlflow-server:5000
+ experiment_name="my_experiment",
+ tracking_uri="./mlruns" # or http://mlflow-server:5000
 )
 
 # Start tracking
 with tracker:
-    # Log parameters
-    tracker.log_params({"lr": 0.001, "batch_size": 32})
+ # Log parameters
+ tracker.log_params({"lr": 0.001, "batch_size": 32})
 
-    # Training loop
-    for epoch in range(num_epochs):
-        # ... training code ...
-        tracker.log_metrics({"loss": loss, "accuracy": acc}, step=epoch)
+ # Training loop
+ for epoch in range(num_epochs):
+ # ... training code ...
+ tracker.log_metrics({"loss": loss, "accuracy": acc}, step=epoch)
 
-    # Log artifacts
-    tracker.log_artifact("model.pt")
+ # Log artifacts
+ tracker.log_artifact("model.pt")
 ```
 
 ## View Results
@@ -58,10 +58,10 @@ mlflow ui --backend-store-uri file://./mlruns
 ```yaml
 # configs/development/tracking.yaml
 tracking:
-  mlflow:
-    enabled: true
-    uri: "file://./mlruns"
-    experiment_name: "dev_experiments"
+ mlflow:
+ enabled: true
+ uri: "file://./mlruns"
+ experiment_name: "dev_experiments"
 ```
 
 ## Production Environment
@@ -69,10 +69,10 @@ tracking:
 ```yaml
 # configs/production/tracking.yaml
 tracking:
-  mlflow:
-    enabled: true
-    uri: "http://mlflow-server:5000"  # Centralized server
-    experiment_name: "production_experiments"
+ mlflow:
+ enabled: true
+ uri: "http://mlflow-server:5000" # Centralized server
+ experiment_name: "production_experiments"
 ```
 
 ---
@@ -83,9 +83,9 @@ tracking:
 
 ```python
 tracker = MLflowTracker(
-    experiment_name="new_model_experiment",
-    run_name="initial_baseline",
-    tags={"model": "transformer", "version": "v1"}
+ experiment_name="new_model_experiment",
+ run_name="initial_baseline",
+ tags={"model": "transformer", "version": "v1"}
 )
 ```
 
@@ -93,11 +93,11 @@ tracker = MLflowTracker(
 
 ```python
 tracker.log_params({
-    "learning_rate": 0.001,
-    "batch_size": 32,
-    "num_epochs": 100,
-    "optimizer": "adam",
-    "model_architecture": "transformer"
+ "learning_rate": 0.001,
+ "batch_size": 32,
+ "num_epochs": 100,
+ "optimizer": "adam",
+ "model_architecture": "transformer"
 })
 ```
 
@@ -105,14 +105,14 @@ tracker.log_params({
 
 ```python
 for epoch in range(num_epochs):
-    train_loss = train_one_epoch(model, dataloader)
-    val_loss = validate(model, val_dataloader)
+ train_loss = train_one_epoch(model, dataloader)
+ val_loss = validate(model, val_dataloader)
 
-    tracker.log_metrics({
-        "train_loss": train_loss,
-        "val_loss": val_loss,
-        "learning_rate": optimizer.param_groups[0]['lr']
-    }, step=epoch)
+ tracker.log_metrics({
+ "train_loss": train_loss,
+ "val_loss": val_loss,
+ "learning_rate": optimizer.param_groups[0]['lr']
+ }, step=epoch)
 ```
 
 ### 4. Log Artifacts
@@ -135,9 +135,9 @@ import mlflow
 
 # Search for runs
 runs = mlflow.search_runs(
-    experiment_names=["production_experiments"],
-    filter_string="metrics.accuracy > 0.9",
-    order_by=["metrics.accuracy DESC"]
+ experiment_names=["production_experiments"],
+ filter_string="metrics.accuracy > 0.9",
+ order_by=["metrics.accuracy DESC"]
 )
 
 print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
@@ -153,13 +153,13 @@ print(runs[["run_id", "metrics.accuracy", "params.learning_rate"]])
 
 **Solutions**:
 1. Check if MLflow is enabled in config:
-   ```yaml
-   tracking.mlflow.enabled: true
+ ```yaml
+ tracking.mlflow.enabled: true
  ```
 
 2. Verify MLflow is installed:
-   ```bash
-   python -c "import mlflow; print(mlflow.__version__)"
+ ```bash
+ python -c "import mlflow; print(mlflow.__version__)"
  ```
 
 3. Check tracking URI:
@@ -174,20 +174,20 @@ print(mlflow.get_tracking_uri())
 
 **Solutions**:
 1. Verify server is running:
-   ```bash
-   curl http://mlflow-server:5000/health
+ ```bash
+ curl http://mlflow-server:5000/health
  ```
 
 2. Check network connectivity:
-   ```bash
-   ping mlflow-server
+ ```bash
+ ping mlflow-server
  ```
 
 3. Fall back to local tracking:
 ```python
 tracker = MLflowTracker(
-     experiment_name="my_exp",
-     tracking_uri="file://./mlruns"  # Local fallback
+ experiment_name="my_exp",
+ tracking_uri="file://./mlruns" # Local fallback
 )
 ```
 
@@ -197,23 +197,23 @@ tracker = MLflowTracker(
 
 **Solutions**:
 1. Enable async logging:
-   ```yaml
-   tracking:
-     mlflow:
-       async_logging: true
+ ```yaml
+ tracking:
+ mlflow:
+ async_logging: true
  ```
 
 2. Batch metrics:
-   ```yaml
-   tracking:
-     mlflow:
-       batch_metrics: true
+ ```yaml
+ tracking:
+ mlflow:
+ batch_metrics: true
  ```
 
 3. Reduce logging frequency:
 ```python
-if epoch % 10 == 0:  # Log every 10 epochs
-    tracker.log_metrics(metrics, step=epoch)
+if epoch % 10 == 0: # Log every 10 epochs
+ tracker.log_metrics(metrics, step=epoch)
 ```
 
 ---
@@ -231,10 +231,10 @@ if epoch % 10 == 0:  # Log every 10 epochs
 - **Tags**: Use for categorization:
 ```python
 tags={
-    "model_family": "transformer",
-    "dataset": "squad",
-    "environment": "production",
-    "team": "ml_core"
+ "model_family": "transformer",
+ "dataset": "squad",
+ "environment": "production",
+ "team": "ml_core"
 }
 ```
 
@@ -263,15 +263,15 @@ tags={
 
 ```
 mlruns/
-├── experiment_1/          # Baseline models
-│   ├── run_abc123/
-│   └── run_def456/
-├── experiment_2/          # Hyperparameter tuning
-│   ├── run_ghi789/
-│   └── run_jkl012/
-└── experiment_3/          # Production candidates
-    ├── run_mno345/
-    └── run_pqr678/
+ experiment_1/ # Baseline models
+ run_abc123/
+ run_def456/
+ experiment_2/ # Hyperparameter tuning
+ run_ghi789/
+ run_jkl012/
+ experiment_3/ # Production candidates
+ run_mno345/
+ run_pqr678/
 ```
 
 ---
@@ -283,13 +283,13 @@ mlruns/
 ```python
 # In your training script
 try:
-    with tracker:
-        # Training code
-        results = train_model()
-        tracker.log_metrics(results)
+ with tracker:
+ # Training code
+ results = train_model()
+ tracker.log_metrics(results)
 except Exception as e:
-    tracker.set_tags({"status": "failed", "error": str(e)})
-    raise
+ tracker.set_tags({"status": "failed", "error": str(e)})
+ raise
 ```
 
 ## Monitor Run Duration
@@ -299,14 +299,14 @@ import time
 
 start_time = time.time()
 with tracker:
-    # Training
-    pass
+ # Training
+ pass
 
 duration = time.time() - start_time
 tracker.log_metrics({"duration_seconds": duration})
 
-if duration > 3600:  # Alert if > 1 hour
-    send_alert(f"Long training run: {duration}s")
+if duration > 3600: # Alert if > 1 hour
+ send_alert(f"Long training run: {duration}s")
 ```
 
 ---
@@ -322,28 +322,28 @@ name: Train Model
 on: [push]
 
 jobs:
-  train:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+ train:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
+ - name: Set up Python
+ uses: actions/setup-python@v2
+ with:
+ python-version: 3.9
 
-      - name: Install dependencies
-        run: pip install -e .
+ - name: Install dependencies
+ run: pip install -e .
 
-      - name: Train model with MLflow
-        env:
-          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_URI }}
-        run: |
-          python train.py --config configs/production/tracking.yaml
+ - name: Train model with MLflow
+ env:
+ MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_URI }}
+ run: |
+ python train.py --config configs/production/tracking.yaml
 
-      - name: Check model quality
-        run: |
-          python scripts/check_mlflow_metrics.py --min-accuracy 0.85
+ - name: Check model quality
+ run: |
+ python scripts/check_mlflow_metrics.py --min-accuracy 0.85
 ```
 
 ---

@@ -125,21 +125,21 @@ This document provides a comprehensive search and analysis of the cognitive brai
 **Structure**:
 ```
 _codex_/
-├── src/              # Core application code
-│   ├── codex/       # Ingestion pipeline (ingest→analyze→transform→verify)
-│   ├── rag/         # RAG pipelines & retrieval
-│   ├── verification/ # Chain-of-Verification (CoVe)
-│   ├── mcp/         # Model Context Protocol adapters
-│   └── tools/       # Tool registry
-├── agents/          # Autonomous agents (workflow, quantum, physics)
-├── scripts/         # Automation & utilities
-│   └── mcp/        # ChatGPT Project packaging system
-├── tests/           # 21,500+ test suite
-├── docs/            # Documentation hub
-│   ├── mcp/        # MCP packaging docs (93+ KB)
-│   ├── system/     # Cognitive brain (this file)
-│   └── capabilities/ # Capability guides
-└── .github/         # CI/CD workflows & automation
+ src/ # Core application code
+ codex/ # Ingestion pipeline (ingestanalyzetransformverify)
+ rag/ # RAG pipelines & retrieval
+ verification/ # Chain-of-Verification (CoVe)
+ mcp/ # Model Context Protocol adapters
+ tools/ # Tool registry
+ agents/ # Autonomous agents (workflow, quantum, physics)
+ scripts/ # Automation & utilities
+ mcp/ # ChatGPT Project packaging system
+ tests/ # 21,500+ test suite
+ docs/ # Documentation hub
+ mcp/ # MCP packaging docs (93+ KB)
+ system/ # Cognitive brain (this file)
+ capabilities/ # Capability guides
+ .github/ # CI/CD workflows & automation
 ```
 
 **Key Components**:
@@ -192,33 +192,33 @@ _codex_/
 **Architecture**:
 ```python
 class CognitiveBrain:
-    """
-    Main coordinator for the Cognitive Brain system.
-    Manages the PDA Loop + AfterMath cycle across all 10 V10 agents.
-    """
+ """
+ Main coordinator for the Cognitive Brain system.
+ Manages the PDA Loop + AfterMath cycle across all 10 V10 agents.
+ """
 
-    def __init__(self, workspace_dir: str = "cognitive"):
-        # Initialize subsystems
-        self.perception = PerceptionLayer(self.workspace / "perceptions")
-        self.decision = DecisionEngine(self.workspace / "decisions")
-        self.action = ActionExecutor(self.workspace / "actions")
-        self.aftermath = AfterMathEvaluator(self.workspace / "aftermath")
+ def __init__(self, workspace_dir: str = "cognitive"):
+ # Initialize subsystems
+ self.perception = PerceptionLayer(self.workspace / "perceptions")
+ self.decision = DecisionEngine(self.workspace / "decisions")
+ self.action = ActionExecutor(self.workspace / "actions")
+ self.aftermath = AfterMathEvaluator(self.workspace / "aftermath")
 
-    def run_pda_cycle(self) -> Dict[str, Any]:
-        """Execute one complete PDA Loop + AfterMath cycle."""
-        # Stage 1: Perceive
-        perception_data = self.perception.perceive()
+ def run_pda_cycle(self) -> Dict[str, Any]:
+ """Execute one complete PDA Loop + AfterMath cycle."""
+ # Stage 1: Perceive
+ perception_data = self.perception.perceive()
 
-        # Stage 2: Decide
-        decisions = self.decision.make_decisions(perception_data)
+ # Stage 2: Decide
+ decisions = self.decision.make_decisions(perception_data)
 
-        # Stage 3: Act
-        action_results = self.action.execute(decisions)
+ # Stage 3: Act
+ action_results = self.action.execute(decisions)
 
-        # Stage 4: AfterMath
-        learnings = self.aftermath.evaluate_and_learn(
-            perception_data, decisions, action_results
-        )
+ # Stage 4: AfterMath
+ learnings = self.aftermath.evaluate_and_learn(
+ perception_data, decisions, action_results
+ )
 ```
 
 **4-Stage Cycle**:
@@ -236,46 +236,46 @@ class CognitiveBrain:
 **Schema Structure**:
 ```yaml
 meta:
-  session_id: "S-PR2671-2025-12-30-1"
-  pr_number: 2671
-  branch: "copilot/sub-pr-2668-again"
-  started_at: "2025-12-30T07:45:00Z"
-  finished_at: "2025-12-30T08:18:00Z"
-  context: "Resolve PR review items; implement AfterMath logging"
+ session_id: "S-PR2671-2025-12-30-1"
+ pr_number: 2671
+ branch: "copilot/sub-pr-2668-again"
+ started_at: "2025-12-30T07:45:00Z"
+ finished_at: "2025-12-30T08:18:00Z"
+ context: "Resolve PR review items; implement AfterMath logging"
 
 lessons:
-  - title: "Code quality maintenance scripts"
-    context: "Review comments about shell script portability"
-    root_cause: "BSD vs. GNU date incompatibility"
-    fix: "Used `date -u +%Y%m%d%H%M%S` for cross-platform support"
-    evidence: "commit:b62e012"
-    outcome: "Scripts now work on macOS and Linux"
+ - title: "Code quality maintenance scripts"
+ context: "Review comments about shell script portability"
+ root_cause: "BSD vs. GNU date incompatibility"
+ fix: "Used `date -u +%Y%m%d%H%M%S` for cross-platform support"
+ evidence: "commit:b62e012"
+ outcome: "Scripts now work on macOS and Linux"
 
 decisions:
-  - what: "Implement AfterMath logging system"
-    why: "Enable AI agents to learn from session experience"
-    alternatives: ["Manual session summaries", "External logging service"]
-    chosen: "Structured YAML blocks in GitHub outputs"
-    rationale: "Native GitHub integration, no external dependencies"
+ - what: "Implement AfterMath logging system"
+ why: "Enable AI agents to learn from session experience"
+ alternatives: ["Manual session summaries", "External logging service"]
+ chosen: "Structured YAML blocks in GitHub outputs"
+ rationale: "Native GitHub integration, no external dependencies"
 
 metrics:
-  tokens_used: 107199
-  tokens_limit: 1000000
-  commits: 24
-  files_changed: 35
-  lines_added: 1847
-  lines_removed: 423
+ tokens_used: 107199
+ tokens_limit: 1000000
+ commits: 24
+ files_changed: 35
+ lines_added: 1847
+ lines_removed: 423
 
 quality:
-  tests_passing: true
-  coverage_maintained: true
-  linting_clean: true
-  security_clean: true
+ tests_passing: true
+ coverage_maintained: true
+ linting_clean: true
+ security_clean: true
 
 next_steps:
-  - task: "Implement AfterMath logging in all future sessions"
-    priority: "high"
-    status: "complete"
+ - task: "Implement AfterMath logging in all future sessions"
+ priority: "high"
+ status: "complete"
 ```
 
 **AfterMath Scripts**:
@@ -343,66 +343,66 @@ next_steps:
 from abc import ABC, abstractmethod
 
 class Planner(ABC):
-    """Base abstract class for all cognitive agents."""
+ """Base abstract class for all cognitive agents."""
 
-    @abstractmethod
-    def observe(self, input_data: Dict[str, Any]) -> ObservationData:
-        """Observe: Collect data from environment"""
+ @abstractmethod
+ def observe(self, input_data: Dict[str, Any]) -> ObservationData:
+ """Observe: Collect data from environment"""
 
-    @abstractmethod
-    def orient(self, observation: ObservationData) -> OrientationResult:
-        """Orient: Analyze and contextualize observations"""
+ @abstractmethod
+ def orient(self, observation: ObservationData) -> OrientationResult:
+ """Orient: Analyze and contextualize observations"""
 
-    @abstractmethod
-    def decide(self, orientation: OrientationResult) -> Decision:
-        """Decide: Determine optimal action"""
+ @abstractmethod
+ def decide(self, orientation: OrientationResult) -> Decision:
+ """Decide: Determine optimal action"""
 
-    @abstractmethod
-    def act(self, decision: Decision) -> ActionResult:
-        """Act: Execute decided action"""
+ @abstractmethod
+ def act(self, decision: Decision) -> ActionResult:
+ """Act: Execute decided action"""
 
-    def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
-        """Execute full OODA loop"""
-        observation = self.observe(input_data)
-        orientation = self.orient(observation)
-        decision = self.decide(orientation)
-        return self.act(decision)
+ def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
+ """Execute full OODA loop"""
+ observation = self.observe(input_data)
+ orientation = self.orient(observation)
+ decision = self.decide(orientation)
+ return self.act(decision)
 ```
 
 **Pattern 2: Legacy Agent Adapter** (`agents/cognitive_adapter.py`)
 
 ```python
 class LegacyAgentAdapter(Planner):
-    """Wrap legacy agents into new Planner interface."""
+ """Wrap legacy agents into new Planner interface."""
 
-    def __init__(self, legacy_agent: Any, memory: Optional[MemoryInterface] = None):
-        self.legacy_agent = legacy_agent
-        self.memory = memory or SimpleDictMemory()
+ def __init__(self, legacy_agent: Any, memory: Optional[MemoryInterface] = None):
+ self.legacy_agent = legacy_agent
+ self.memory = memory or SimpleDictMemory()
 
-    def observe(self, input_data: Dict[str, Any]) -> ObservationData:
-        """Wrap input data in ObservationData structure"""
-        return ObservationData(
-            timestamp=datetime.now(),
-            source="legacy_agent",
-            data=input_data,
-            metadata={"agent_type": type(self.legacy_agent).__name__}
-        )
+ def observe(self, input_data: Dict[str, Any]) -> ObservationData:
+ """Wrap input data in ObservationData structure"""
+ return ObservationData(
+ timestamp=datetime.now(),
+ source="legacy_agent",
+ data=input_data,
+ metadata={"agent_type": type(self.legacy_agent).__name__}
+ )
 ```
 
 **Pattern 3: Agent Orchestration** (`agents/workflow_navigator.py`)
 
 ```python
 class WorkflowNavigator:
-    """Tokenized workflow navigation and execution."""
+ """Tokenized workflow navigation and execution."""
 
-    TOKENS = {
-        "audit": "Audit execution and compliance",
-        "decide": "Decision-making and optimization",
-        "docs": "Documentation generation",
-        "organize": "Task organization and planning",
-        "review": "Code review and validation",
-        "heal": "Self-healing and error recovery"
-    }
+ TOKENS = {
+ "audit": "Audit execution and compliance",
+ "decide": "Decision-making and optimization",
+ "docs": "Documentation generation",
+ "organize": "Task organization and planning",
+ "review": "Code review and validation",
+ "heal": "Self-healing and error recovery"
+ }
 ```
 
 ### 3.3 Agent Configuration Examples
@@ -414,18 +414,18 @@ version: 1.0.0
 description: Automated code review agent
 
 capabilities:
-  - code_review
-  - quality_analysis
-  - security_scanning
+ - code_review
+ - quality_analysis
+ - security_scanning
 
 triggers:
-  - pull_request.opened
-  - pull_request.synchronize
+ - pull_request.opened
+ - pull_request.synchronize
 
 parameters:
-  max_files: 50
-  review_depth: comprehensive
-  security_level: high
+ max_files: 50
+ review_depth: comprehensive
+ security_level: high
 ```
 
 **Markdown Specification** (`.agent.md` files):
@@ -457,143 +457,143 @@ parameters:
 
 ```python
 def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
-    """Naive cache with timestamp; actions are human-in-the-loop so short TTL"""
-    obj = {"ts": time.time(), "data": data}
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
+ """Naive cache with timestamp; actions are human-in-the-loop so short TTL"""
+ obj = {"ts": time.time(), "data": data}
+ p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
+ with open(p, "w", encoding="utf-8") as f:
+ json.dump(obj, f, ensure_ascii=False, indent=2)
 
 def get_branches(owner: str, repo: str):
-    key = f"branches:{owner}/{repo}"
-    c = _cache_get(key)
-    if c and time.time() - c["ts"] < 60:
-        return c["data"]
-    data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
-    _cache_set(key, data)
-    return data
+ key = f"branches:{owner}/{repo}"
+ c = _cache_get(key)
+ if c and time.time() - c["ts"] < 60:
+ return c["data"]
+ data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
+ _cache_set(key, data)
+ return data
 ```
 
 #### **GitHub Client Cache** (`src/codex_bridge/github_client.py`)
 
 ```python
 def cache_set(key: str, data: Any) -> None:
-    """Set cache with timestamp"""
-    p = _cache_path(key)
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump({"ts": time.time(), "data": data}, f, ensure_ascii=False)
+ """Set cache with timestamp"""
+ p = _cache_path(key)
+ with open(p, "w", encoding="utf-8") as f:
+ json.dump({"ts": time.time(), "data": data}, f, ensure_ascii=False)
 
 def get_branches(owner: str, repo: str):
-    key = f"branches:{owner}/{repo}"
-    c = cache_get(key, ttl=60)
-    if c is not None:
-        return c
-    data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
-    cache_set(key, data)
-    return data
+ key = f"branches:{owner}/{repo}"
+ c = cache_get(key, ttl=60)
+ if c is not None:
+ return c
+ data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
+ cache_set(key, data)
+ return data
 ```
 
 #### **Tokenization Cache** (`tests/tokenization/test_cache.py`)
 
 ```python
 class TokenizationCache:
-    """Cache for tokenized text with TTL support."""
+ """Cache for tokenized text with TTL support."""
 
-    def __init__(self, ttl_hours: float = 24.0):
-        self.ttl = timedelta(hours=ttl_hours)
-        self._cache: Dict[str, CacheEntry] = {}
+ def __init__(self, ttl_hours: float = 24.0):
+ self.ttl = timedelta(hours=ttl_hours)
+ self._cache: Dict[str, CacheEntry] = {}
 
-    def set(self, text: str, config: Dict[str, Any], tokens: List[int]) -> None:
-        """Store tokenization result"""
-        key = self._make_key(text, config)
-        self._cache[key] = CacheEntry(
-            tokens=tokens,
-            timestamp=datetime.now()
-        )
+ def set(self, text: str, config: Dict[str, Any], tokens: List[int]) -> None:
+ """Store tokenization result"""
+ key = self._make_key(text, config)
+ self._cache[key] = CacheEntry(
+ tokens=tokens,
+ timestamp=datetime.now()
+ )
 
-    def get(self, text: str, config: Dict[str, Any]) -> Optional[List[int]]:
-        """Retrieve cached tokens if not expired"""
-        key = self._make_key(text, config)
-        entry = self._cache.get(key)
-        if entry and (datetime.now() - entry.timestamp) < self.ttl:
-            return entry.tokens
-        return None
+ def get(self, text: str, config: Dict[str, Any]) -> Optional[List[int]]:
+ """Retrieve cached tokens if not expired"""
+ key = self._make_key(text, config)
+ entry = self._cache.get(key)
+ if entry and (datetime.now() - entry.timestamp) < self.ttl:
+ return entry.tokens
+ return None
 ```
 
 #### **Training Data Cache** (`src/training/data_utils.py`)
 
 ```python
 def cache_dataset(
-    ds: Iterable[Mapping[str, Tensor | np.ndarray | Any]],
-    cache_dir: str | Path,
+ ds: Iterable[Mapping[str, Tensor | np.ndarray | Any]],
+ cache_dir: str | Path,
 ) -> None:
-    """Cache tokenised dataset ds under cache_dir as .npz shards."""
-    path = Path(cache_dir)
-    path.mkdir(parents=True, exist_ok=True)
-    for i, sample in enumerate(ds):
-        try:
-            arr = {k: _to_ndarray(v) for k, v in sample.items()}
-            np.savez_compressed(path / f"sample_{i:06d}.npz", **arr)
-        except Exception:
-            continue
+ """Cache tokenised dataset ds under cache_dir as .npz shards."""
+ path = Path(cache_dir)
+ path.mkdir(parents=True, exist_ok=True)
+ for i, sample in enumerate(ds):
+ try:
+ arr = {k: _to_ndarray(v) for k, v in sample.items()}
+ np.savez_compressed(path / f"sample_{i:06d}.npz", **arr)
+ except Exception:
+ continue
 
 def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
-    """Yield cached samples stored by cache_dataset."""
-    path = Path(cache_dir)
-    for npz in sorted(path.glob("*.npz")):
-        try:
-            data = np.load(npz)
-            yield {k: torch.from_numpy(v) for k, v in data.items()}
-        except Exception:
-            continue
+ """Yield cached samples stored by cache_dataset."""
+ path = Path(cache_dir)
+ for npz in sorted(path.glob("*.npz")):
+ try:
+ data = np.load(npz)
+ yield {k: torch.from_numpy(v) for k, v in data.items()}
+ except Exception:
+ continue
 ```
 
 #### **Context Cache** (`tests/context_management/test_enhanced_modules.py`)
 
 ```python
 class ContextCache:
-    """Context-aware caching with tag-based invalidation."""
+ """Context-aware caching with tag-based invalidation."""
 
-    def set(self, key: str, value: Any, tags: Optional[List[str]] = None) -> None:
-        """Store value with optional tags"""
-        self._storage[key] = value
-        if tags:
-            for tag in tags:
-                self._tags.setdefault(tag, set()).add(key)
+ def set(self, key: str, value: Any, tags: Optional[List[str]] = None) -> None:
+ """Store value with optional tags"""
+ self._storage[key] = value
+ if tags:
+ for tag in tags:
+ self._tags.setdefault(tag, set()).add(key)
 
-    def invalidate_by_tag(self, tag: str) -> int:
-        """Invalidate all entries with given tag"""
-        keys = self._tags.get(tag, set())
-        for key in keys:
-            del self._storage[key]
-        del self._tags[tag]
-        return len(keys)
+ def invalidate_by_tag(self, tag: str) -> int:
+ """Invalidate all entries with given tag"""
+ keys = self._tags.get(tag, set())
+ for key in keys:
+ del self._storage[key]
+ del self._tags[tag]
+ return len(keys)
 ```
 
 #### **File Cache** (`scripts/space_traversal/performance.py`)
 
 ```python
 class FileCache:
-    """Simple file-based cache with TTL."""
+ """Simple file-based cache with TTL."""
 
-    def set(self, key: str, result: Any, ttl_seconds: int = 3600) -> None:
-        """Store result in cache file"""
-        p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
-        data = {
-            "key": key,
-            "result": result,
-            "expires_at": time.time() + ttl_seconds
-        }
-        p.write_text(json.dumps(data), encoding="utf-8")
+ def set(self, key: str, result: Any, ttl_seconds: int = 3600) -> None:
+ """Store result in cache file"""
+ p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
+ data = {
+ "key": key,
+ "result": result,
+ "expires_at": time.time() + ttl_seconds
+ }
+ p.write_text(json.dumps(data), encoding="utf-8")
 
-    def get(self, key: str) -> Optional[Any]:
-        """Retrieve from cache if not expired"""
-        p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
-        if not p.exists():
-            return None
-        data = json.loads(p.read_text(encoding="utf-8"))
-        if time.time() > data["expires_at"]:
-            return None
-        return data["result"]
+ def get(self, key: str) -> Optional[Any]:
+ """Retrieve from cache if not expired"""
+ p = self.cache_dir / f"{hashlib.sha256(key.encode()).hexdigest()}.json"
+ if not p.exists():
+ return None
+ data = json.loads(p.read_text(encoding="utf-8"))
+ if time.time() > data["expires_at"]:
+ return None
+ return data["result"]
 ```
 
 ### 4.2 Cache Strategy (Phase 3C-Lite)
@@ -627,55 +627,55 @@ class FileCache:
 #### **Phase 1: Context Loading (First 2K tokens)**
 ```
 1. Load Cognitive Brain
-   → Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
-   → Read docs/DOCUMENTATION_INDEX.md (current status)
-   → Read docs/ROADMAP.md (planned work)
+ Read docs/system/CODEBASE_COGNITIVE_MAP.md (architecture)
+ Read docs/DOCUMENTATION_INDEX.md (current status)
+ Read docs/ROADMAP.md (planned work)
 
 2. Identify Current Phase
-   → Check Dashboard for "Active Initiatives"
-   → Note completion percentages
-   → Identify blocking issues
+ Check Dashboard for "Active Initiatives"
+ Note completion percentages
+ Identify blocking issues
 
 3. Assess Session Capacity
-   → Estimate token budget (typical: 64K-128K)
-   → Calculate work capacity (tokens / complexity)
-   → Determine if quick wins or deep work
+ Estimate token budget (typical: 64K-128K)
+ Calculate work capacity (tokens / complexity)
+ Determine if quick wins or deep work
 ```
 
 #### **Phase 2: Work Execution (Main session)**
 ```
 4. Execute Highest Priority Work
-   → Follow roadmap priorities
-   → Complete atomic units of work
-   → Commit frequently with clear messages
+ Follow roadmap priorities
+ Complete atomic units of work
+ Commit frequently with clear messages
 
 5. Update Cognitive Brain
-   → Mark completed tasks in Dashboard
-   → Update completion percentages
-   → Document decisions and blockers
+ Mark completed tasks in Dashboard
+ Update completion percentages
+ Document decisions and blockers
 
 6. Validate Changes
-   → Run linters, tests, syntax checks
-   → Verify no regressions
-   → Check CI/CD status
+ Run linters, tests, syntax checks
+ Verify no regressions
+ Check CI/CD status
 ```
 
 #### **Phase 3: Session Closure (Last 5K tokens)**
 ```
 7. Self-Review Protocol
-   → Perform 5-pass review (see below)
-   → Address all concerns
-   → Iterate until 0 issues
+ Perform 5-pass review (see below)
+ Address all concerns
+ Iterate until 0 issues
 
 8. Prepare Continuation
-   → If work remains: Generate continuation prompt
-   → Update Dashboard with next steps
-   → Post continuation comment to PR
+ If work remains: Generate continuation prompt
+ Update Dashboard with next steps
+ Post continuation comment to PR
 
 9. Document Session
-   → Update Dashboard with session summary
-   → Commit final changes
-   → Mark phase complete if done
+ Update Dashboard with session summary
+ Commit final changes
+ Mark phase complete if done
 ```
 
 ### 5.2 Self-Review Protocol (5 Passes)
@@ -745,7 +745,7 @@ class FileCache:
 ```markdown
 @copilot Continue Phase [N]: [Phase Name]
 
-##  Session Summary
+## Session Summary
 
 **Completed Work**:
 - [x] Task 1 (commit abc123)
@@ -757,7 +757,7 @@ class FileCache:
 
 **Commits**: abc123, def456, ghi789
 
-##  Next Steps
+## Next Steps
 
 **Priority Tasks**:
 1. [ ] Task A - [Brief description]
@@ -770,7 +770,7 @@ class FileCache:
 
 **Duration Estimate**: [X] sessions (~[Y]K tokens)
 
-##  Context References
+## Context References
 
 - Cognitive Map
 - Dashboard (documentation pending)
@@ -788,12 +788,12 @@ class FileCache:
 ```markdown
 @copilot Continue Phase 9.1: Critical Path Coverage
 
-##  Session Summary
+## Session Summary
 **Completed**: Roadmap created, standards documented
 **Progress**: Phase 9: 18% complete (27/150 tests)
 **Commits**: da5d1f7
 
-##  Next Steps
+## Next Steps
 1. [ ] Add critical path tests (src/codex/cli.py)
 2. [ ] Cover error handling paths
 3. [ ] Test edge cases
@@ -848,27 +848,27 @@ Agent system requires normalization and enhanced capabilities.
 **SimpleDictMemory** (`agents/cognitive_adapter.py`):
 ```python
 class SimpleDictMemory(MemoryInterface):
-    """Simple in-memory implementation of MemoryInterface."""
+ """Simple in-memory implementation of MemoryInterface."""
 
-    def __init__(self):
-        self._storage: Dict[str, Any] = {}
-        self._metadata: Dict[str, Dict[str, Any]] = {}
-        self._history: Dict[str, list[tuple[datetime, Any]]] = {}
+ def __init__(self):
+ self._storage: Dict[str, Any] = {}
+ self._metadata: Dict[str, Dict[str, Any]] = {}
+ self._history: Dict[str, list[tuple[datetime, Any]]] = {}
 
-    def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
-        """Store with history tracking"""
-        self._storage[key] = value
-        if metadata:
-            self._metadata[key] = metadata
-        if key not in self._history:
-            self._history[key] = []
-        self._history[key].append((datetime.now(), value))
-        return True
+ def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
+ """Store with history tracking"""
+ self._storage[key] = value
+ if metadata:
+ self._metadata[key] = metadata
+ if key not in self._history:
+ self._history[key] = []
+ self._history[key].append((datetime.now(), value))
+ return True
 
-    def get_history(self, key: str, limit: int = 10) -> list[tuple[datetime, Any]]:
-        """Get historical versions"""
-        history = self._history.get(key, [])
-        return history[-limit:][::-1]  # Most recent first
+ def get_history(self, key: str, limit: int = 10) -> list[tuple[datetime, Any]]:
+ """Get historical versions"""
+ history = self._history.get(key, [])
+ return history[-limit:][::-1] # Most recent first
 ```
 
 ---

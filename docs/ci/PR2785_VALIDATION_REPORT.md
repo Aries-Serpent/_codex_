@@ -153,9 +153,9 @@ Executable benches/swarm_benchmarks.rs (target/release/deps/swarm_benchmarks-ef8
 **Dependency Tree**:
 ```
 pyo3 0.22.6
-├── pyo3-async-runtimes 0.22.0
-│   └── codex-swarm-engine 0.1.0
-└── codex-swarm-engine 0.1.0
+ pyo3-async-runtimes 0.22.0
+ codex-swarm-engine 0.1.0
+ codex-swarm-engine 0.1.0
 ```
 
 **Impact Assessment**:
@@ -218,7 +218,7 @@ assert result.operation == IndexOperation.DELETE
 ```python
 assert result.success is False
 assert result.operation == IndexOperation.DELETE
-assert "No indices found" in result.message  # Added specific check
+assert "No indices found" in result.message # Added specific check
 ```
 
 **Status**: CORRECT - Test now validates the exact error message
@@ -238,7 +238,7 @@ assert result.success is False
 ```python
 assert result.success is False
 assert result.operation == IndexOperation.MERGE
-assert "No indices found" in result.message  # Added specific check
+assert "No indices found" in result.message # Added specific check
 ```
 
 **Status**: CORRECT - Test now validates error handling properly
@@ -257,8 +257,8 @@ assert list_result.success is True
 **After**:
 ```python
 assert list_result.success is True
-assert "Found" in list_result.message  # Added message validation
-assert len(list_result.details["indices"]) == 2  # Added count check
+assert "Found" in list_result.message # Added message validation
+assert len(list_result.details["indices"]) == 2 # Added count check
 ```
 
 **Status**: CORRECT - More thorough validation

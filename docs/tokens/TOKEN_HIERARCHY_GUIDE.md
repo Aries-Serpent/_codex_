@@ -73,32 +73,32 @@ Best For: Organization variables, token rotation, emergency dispatch
 ```
 START: I need to perform an operation
 
-├─ Does it involve ORGANIZATION-level data?
-│  ├─ YES: Go to "Organization Operations" (see below)
-│  └─ NO: Go to "Repository Operations" (see below)
+ Does it involve ORGANIZATION-level data?
+ YES: Go to "Organization Operations" (see below)
+ NO: Go to "Repository Operations" (see below)
 
 ORGANIZATION OPERATIONS:
-├─ Creating or modifying ORG VARIABLES?
-│  ├─ YES: Use CODEX_MASTER_KEY (Level 3)
-│  └─ NO: Use CODEX_BACKUP_TOKEN (Level 2)
-├─ Reading ORG data only?
-│  └─ Use CODEX_BACKUP_TOKEN (Level 2)
-├─ Emergency: Rotating tokens or dispatch override?
-│  └─ Use CODEX_MASTER_KEY (Level 3)
+ Creating or modifying ORG VARIABLES?
+ YES: Use CODEX_MASTER_KEY (Level 3)
+ NO: Use CODEX_BACKUP_TOKEN (Level 2)
+ Reading ORG data only?
+ Use CODEX_BACKUP_TOKEN (Level 2)
+ Emergency: Rotating tokens or dispatch override?
+ Use CODEX_MASTER_KEY (Level 3)
 
 REPOSITORY OPERATIONS:
-├─ Creating REPO VARIABLES?
-│  └─ Use GITHUB_TOKEN (Level 1) - sufficient scope
-├─ Updating WORKFLOW FILES?
-│  ├─ Org-level changes: Use CODEX_MASTER_KEY (Level 3)
-│  ├─ Repo-level changes: Use CODEX_BACKUP_TOKEN (Level 2)
-│  └─ Status/comment: Use GITHUB_TOKEN (Level 1)
-├─ Reading repo secrets/variables?
-│  └─ Use GITHUB_TOKEN (Level 1) - sufficient scope
-├─ Accessing GitHub API?
-│  ├─ Admin operations: Use CODEX_BACKUP_TOKEN (Level 2+)
-│  ├─ Standard operations: Use GITHUB_TOKEN (Level 1)
-│  └─ Org admin ops: Use CODEX_MASTER_KEY (Level 3)
+ Creating REPO VARIABLES?
+ Use GITHUB_TOKEN (Level 1) - sufficient scope
+ Updating WORKFLOW FILES?
+ Org-level changes: Use CODEX_MASTER_KEY (Level 3)
+ Repo-level changes: Use CODEX_BACKUP_TOKEN (Level 2)
+ Status/comment: Use GITHUB_TOKEN (Level 1)
+ Reading repo secrets/variables?
+ Use GITHUB_TOKEN (Level 1) - sufficient scope
+ Accessing GitHub API?
+ Admin operations: Use CODEX_BACKUP_TOKEN (Level 2+)
+ Standard operations: Use GITHUB_TOKEN (Level 1)
+ Org admin ops: Use CODEX_MASTER_KEY (Level 3)
 ```
 
 ---
@@ -132,11 +132,11 @@ response = requests.get(url, headers=headers)
 variables = response.json()
 
 if response.status_code == 200:
-    for var in variables.get('variables', []):
-        if var['name'] == 'DEPLOYMENT_TARGET':
-            print(f"Target: {var['value']}")
+ for var in variables.get('variables', []):
+ if var['name'] == 'DEPLOYMENT_TARGET':
+ print(f"Target: {var['value']}")
 else:
-    print(f"Error: {response.status_code}")
+ print(f"Error: {response.status_code}")
 ```
 
 ---
@@ -164,13 +164,13 @@ VARIABLE_NAME="BUILD_ENVIRONMENT"
 VARIABLE_VALUE="production"
 
 curl -X POST \
-  -H "Authorization: token ${TOKEN}" \
-  -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${OWNER}/${REPO_NAME}/actions/variables" \
-  -d @- <<EOF
+ -H "Authorization: token ${TOKEN}" \
+ -H "Accept: application/vnd.github.v3+json" \
+ "https://api.github.com/repos/${OWNER}/${REPO_NAME}/actions/variables" \
+ -d @- <<EOF
 {
-  "name": "${VARIABLE_NAME}",
-  "value": "${VARIABLE_VALUE}"
+ "name": "${VARIABLE_NAME}",
+ "value": "${VARIABLE_VALUE}"
 }
 EOF
 ```
@@ -191,32 +191,32 @@ EOF
 name: Create Organization Variable
 
 on:
-  workflow_dispatch:
-    inputs:
-      variable_name:
-        description: Name of organization variable
-        required: true
-      variable_value:
-        description: Value of organization variable
-        required: true
+ workflow_dispatch:
+ inputs:
+ variable_name:
+ description: Name of organization variable
+ required: true
+ variable_value:
+ description: Value of organization variable
+ required: true
 
 jobs:
-  create-org-variable:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create organization variable
-        env:
-          ORG_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}  # Requires elevated access
-          GITHUB_ORGANIZATION: 'aries-serpent'
-        run: |
-          VARIABLE_NAME="${{ github.event.inputs.variable_name }}"
-          VARIABLE_VALUE="${{ github.event.inputs.variable_value }}"
-          
-          curl -X POST \
-            -H "Authorization: token ${ORG_TOKEN}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/orgs/${GITHUB_ORGANIZATION}/actions/variables" \
-            -d "{\"name\":\"${VARIABLE_NAME}\",\"value\":\"${VARIABLE_VALUE}\"}"
+ create-org-variable:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Create organization variable
+ env:
+ ORG_TOKEN: ${{ secrets.CODEX_MASTER_KEY }} # Requires elevated access
+ GITHUB_ORGANIZATION: 'aries-serpent'
+ run: |
+ VARIABLE_NAME="${{ github.event.inputs.variable_name }}"
+ VARIABLE_VALUE="${{ github.event.inputs.variable_value }}"
+ 
+ curl -X POST \
+ -H "Authorization: token ${ORG_TOKEN}" \
+ -H "Accept: application/vnd.github.v3+json" \
+ "https://api.github.com/orgs/${GITHUB_ORGANIZATION}/actions/variables" \
+ -d "{\"name\":\"${VARIABLE_NAME}\",\"value\":\"${VARIABLE_VALUE}\"}"
 ```
 
 ---
@@ -232,27 +232,27 @@ jobs:
 from scripts.ci._token_resolver import get_token, validate_token_scope
 
 def read_organization_variables():
-    """Read org variables with proper token selection."""
-    
-    # Get appropriate token for org read operation
-    # Falls back: CODEX_MASTER_KEY → CODEX_BACKUP_KEY → GH_TOKEN → GITHUB_TOKEN
-    token, token_source = get_token(required_elevated=True)
-    
-    if not token:
-        raise Exception("No suitable token available for org variable read")
-    
-    # Validate token has required scope
-    is_valid, msg = validate_token_scope(token, ['admin:org_hook'])
-    if not is_valid:
-        raise Exception(f"Token validation failed: {msg}")
-    
-    # Perform operation with selected token
-    import requests
-    url = "https://api.github.com/orgs/aries-serpent/actions/variables"
-    headers = {"Authorization": f"token {token}"}
-    
-    response = requests.get(url, headers=headers)
-    return response.json() if response.status_code == 200 else None
+ """Read org variables with proper token selection."""
+ 
+ # Get appropriate token for org read operation
+ # Falls back: CODEX_MASTER_KEY CODEX_BACKUP_KEY GH_TOKEN GITHUB_TOKEN
+ token, token_source = get_token(required_elevated=True)
+ 
+ if not token:
+ raise Exception("No suitable token available for org variable read")
+ 
+ # Validate token has required scope
+ is_valid, msg = validate_token_scope(token, ['admin:org_hook'])
+ if not is_valid:
+ raise Exception(f"Token validation failed: {msg}")
+ 
+ # Perform operation with selected token
+ import requests
+ url = "https://api.github.com/orgs/aries-serpent/actions/variables"
+ headers = {"Authorization": f"token {token}"}
+ 
+ response = requests.get(url, headers=headers)
+ return response.json() if response.status_code == 200 else None
 ```
 
 ---
@@ -269,49 +269,49 @@ import requests
 import logging
 
 def update_workflow_with_retry():
-    """Update workflow file with intelligent token fallback."""
-    
-    operation_requires_levels = ['elevated', 'critical']  # Levels 2 or 3
-    
-    from scripts.ci._token_resolver import get_token
-    
-    # Try each token level from highest to lowest
-    for level in operation_requires_levels:
-        token = get_token(required_level=level)
-        
-        if not token:
-            logging.warning(f"No {level} token available, trying lower level")
-            continue
-        
-        try:
-            # Attempt workflow update
-            response = requests.patch(
-                "https://api.github.com/repos/owner/repo/contents/.github/workflows/ci.yml",
-                headers={"Authorization": f"token {token}"},
-                json={
-                    "message": "Update workflow",
-                    "content": new_workflow_content,
-                    "sha": current_sha
-                }
-            )
-            
-            if response.status_code == 200:
-                logging.info(f"Workflow updated using {level} token")
-                return True
-            
-            elif response.status_code == 403:
-                logging.warning(f"Insufficient scope at {level}, trying lower")
-                continue
-            
-            else:
-                logging.error(f"Unexpected error: {response.status_code}")
-                raise Exception(f"HTTP {response.status_code}: {response.text}")
-        
-        except Exception as e:
-            logging.debug(f"Attempt with {level} token failed: {e}")
-            continue
-    
-    raise Exception("No suitable token available for workflow update")
+ """Update workflow file with intelligent token fallback."""
+ 
+ operation_requires_levels = ['elevated', 'critical'] # Levels 2 or 3
+ 
+ from scripts.ci._token_resolver import get_token
+ 
+ # Try each token level from highest to lowest
+ for level in operation_requires_levels:
+ token = get_token(required_level=level)
+ 
+ if not token:
+ logging.warning(f"No {level} token available, trying lower level")
+ continue
+ 
+ try:
+ # Attempt workflow update
+ response = requests.patch(
+ "https://api.github.com/repos/owner/repo/contents/.github/workflows/ci.yml",
+ headers={"Authorization": f"token {token}"},
+ json={
+ "message": "Update workflow",
+ "content": new_workflow_content,
+ "sha": current_sha
+ }
+ )
+ 
+ if response.status_code == 200:
+ logging.info(f"Workflow updated using {level} token")
+ return True
+ 
+ elif response.status_code == 403:
+ logging.warning(f"Insufficient scope at {level}, trying lower")
+ continue
+ 
+ else:
+ logging.error(f"Unexpected error: {response.status_code}")
+ raise Exception(f"HTTP {response.status_code}: {response.text}")
+ 
+ except Exception as e:
+ logging.debug(f"Attempt with {level} token failed: {e}")
+ continue
+ 
+ raise Exception("No suitable token available for workflow update")
 ```
 
 ---
@@ -331,11 +331,11 @@ def update_workflow_with_retry():
 **Example**:
 ```python
 # WRONG: Trying to read org variables with GITHUB_TOKEN
-token = os.environ.get('GITHUB_TOKEN')  # Level 1 - insufficient
+token = os.environ.get('GITHUB_TOKEN') # Level 1 - insufficient
 
 # RIGHT: Request CODEX_BACKUP_TOKEN for org read
 from scripts.ci._token_resolver import get_token
-token = get_token(required_level='elevated')  # Level 2
+token = get_token(required_level='elevated') # Level 2
 ```
 
 ---
@@ -356,23 +356,23 @@ token = get_token(required_level='elevated')  # Level 2
 # Check if token is valid
 TOKEN=$1
 if [ -z "$TOKEN" ]; then
-    echo "Error: No token provided"
-    exit 1
+ echo "Error: No token provided"
+ exit 1
 fi
 
 # Attempt simple API call to validate
 response=$(curl -s -I -H "Authorization: token ${TOKEN}" \
-    https://api.github.com/user)
+ https://api.github.com/user)
 
 if echo "$response" | grep -q "401 Unauthorized"; then
-    echo "Token is invalid/revoked. Contact repo admin."
-    exit 1
+ echo "Token is invalid/revoked. Contact repo admin."
+ exit 1
 elif echo "$response" | grep -q "200 OK"; then
-    echo "Token is valid"
-    exit 0
+ echo "Token is valid"
+ exit 0
 else
-    echo "Token validation inconclusive"
-    exit 1
+ echo "Token validation inconclusive"
+ exit 1
 fi
 ```
 
@@ -388,13 +388,13 @@ fi
 ```python
 # Check scope error
 if "insufficient" in error_message.lower():
-    print("Need different token with different scope")
-    print("Try: CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY")
+ print("Need different token with different scope")
+ print("Try: CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY")
 
-# Check permission error  
+# Check permission error 
 elif "permission" in error_message.lower():
-    print("Current user lacks role permission")
-    print("Contact repo admin or use elevated token")
+ print("Current user lacks role permission")
+ print("Contact repo admin or use elevated token")
 ```
 
 ---
@@ -414,26 +414,26 @@ import time
 import requests
 
 def api_call_with_retry(url, token, max_retries=3):
-    """Make API call with automatic retry on rate limit."""
-    
-    for attempt in range(max_retries):
-        headers = {"Authorization": f"token {token}"}
-        response = requests.get(url, headers=headers)
-        
-        if response.status_code == 200:
-            return response.json()
-        
-        elif response.status_code == 429:
-            # Rate limited - use exponential backoff
-            wait_time = 2 ** attempt  # 1s, 2s, 4s
-            print(f"Rate limited. Waiting {wait_time}s before retry...")
-            time.sleep(wait_time)
-            continue
-        
-        else:
-            raise Exception(f"API Error: {response.status_code}")
-    
-    raise Exception("Max retries exceeded")
+ """Make API call with automatic retry on rate limit."""
+ 
+ for attempt in range(max_retries):
+ headers = {"Authorization": f"token {token}"}
+ response = requests.get(url, headers=headers)
+ 
+ if response.status_code == 200:
+ return response.json()
+ 
+ elif response.status_code == 429:
+ # Rate limited - use exponential backoff
+ wait_time = 2 ** attempt # 1s, 2s, 4s
+ print(f"Rate limited. Waiting {wait_time}s before retry...")
+ time.sleep(wait_time)
+ continue
+ 
+ else:
+ raise Exception(f"API Error: {response.status_code}")
+ 
+ raise Exception("Max retries exceeded")
 ```
 
 ---
@@ -473,7 +473,7 @@ logging.info(f"Using token: {token}")
 from scripts.ci._token_resolver import validate_token_scope
 
 if not validate_token_scope(token, ['admin:org']):
-    raise Exception("Token lacks required scope")
+ raise Exception("Token lacks required scope")
 ```
 
 ** DON'T**: Assume token has sufficient scope
@@ -487,11 +487,11 @@ requests.get(url, headers={"Authorization": f"token {token}"})
 ** DO**: Include helpful guidance in errors
 ```python
 if response.status_code == 403:
-    raise Exception(
-        "Scope insufficient for this operation. "
-        "Use CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY. "
-        "See: TOKEN_HIERARCHY_GUIDE.md"
-    )
+ raise Exception(
+ "Scope insufficient for this operation. "
+ "Use CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY. "
+ "See: TOKEN_HIERARCHY_GUIDE.md"
+ )
 ```
 
 ** DON'T**: Expose token in error messages

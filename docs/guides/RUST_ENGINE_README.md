@@ -19,13 +19,13 @@ The Codex Swarm Engine replaces Python's GIL-bound execution with true paralleli
 
 ```
 Python "Brain" (ML Logic)
-         ↓
-    PyO3 Bridge
-         ↓
+ 
+ PyO3 Bridge
+ 
 Rust "Body" (Orchestration)
-    ├── SwarmState (DashMap)
-    ├── Orchestrator (Tokio)
-    └── TaskQueue (MPSC)
+ SwarmState (DashMap)
+ Orchestrator (Tokio)
+ TaskQueue (MPSC)
 ```
 
 ## Installation
@@ -81,12 +81,12 @@ queue.submit(task)
 
 # Agents receive tasks
 while True:
-    task = queue.receive()
-    if task:
-        print(f"Processing task: {task.id}")
-        state.set_agent_status("agent_1", "working", task.id)
-        # ... process task ...
-        state.set_agent_status("agent_1", "complete")
+ task = queue.receive()
+ if task:
+ print(f"Processing task: {task.id}")
+ state.set_agent_status("agent_1", "working", task.id)
+ # ... process task ...
+ state.set_agent_status("agent_1", "complete")
 ```
 
 ## Agent Status Management

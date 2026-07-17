@@ -420,7 +420,7 @@ export ENCRYPTION_KEY=$(python -c "from codex.security.storage import generate_k
 **Command**: Add to workflow:
 ```yaml
 - name: Security Validation
-  run: python scripts/security/validate_security.py --verbose
+ run: python scripts/security/validate_security.py --verbose
 ```
 **Impact**: Automated security checking
 **Estimated Time**: 30 minutes
@@ -470,7 +470,7 @@ Run the following to get current list:
 ```bash
 cd /home/runner/work/_codex_/_codex_
 grep -rn "# TODO\|# FIXME\|# ACTION\|# MANUAL\|# OWNER" \
-  src/ agents/ scripts/ services/ --include="*.py"
+ src/ agents/ scripts/ services/ --include="*.py"
 ```
 
 ### Action Keywords Found
@@ -567,13 +567,13 @@ This document serves as the authoritative catalog of all items requiring human i
 
 ### Path - Action Resolution Flow
 ```
-Discovery → Triage → Assignment → Execution → Validation → Closure
-    ↓          ↓          ↓           ↓            ↓          ↓
-  Audit    Priority   Owner      Resolution    Testing    Archive
-  Scan    Critical   @mention   Implement     Verify     Document
-          High                  Fix           Review     Update
-          Medium                Deploy
-          Low
+Discovery Triage Assignment Execution Validation Closure
+ 
+ Audit Priority Owner Resolution Testing Archive
+ Scan Critical @mention Implement Verify Document
+ High Fix Review Update
+ Medium Deploy
+ Low
 ```
 **Alignment:** Systematic progression ensures no action stuck in limbo
 
@@ -597,10 +597,10 @@ Discovery → Triage → Assignment → Execution → Validation → Closure
 
 ### Balance - Action Load Distribution
 ```
-Critical (3 items):  █████████████████████████████████ 40% effort
-High (8 items):      ███████████████████ 30% effort
-Medium (25 items):   ████████ 20% effort
-Low (20 items):      ██ 10% effort
+Critical (3 items): █████████████████████████████████ 40% effort
+High (8 items): ███████████████████ 30% effort
+Medium (25 items): ████████ 20% effort
+Low (20 items): ██ 10% effort
 ```
 **Equilibrium Point:** Resource allocation matches impact severity
 
@@ -616,10 +616,10 @@ Low (20 items):      ██ 10% effort
 
 ### Temporal Energy Flow
 ```
-Iteration 1-2:   ████████████ Critical actions (3 items)
-Iteration 3-7:   ███████████████ High actions (8 items)
-Iteration 8-17:  ████████████████████ Medium actions (25 items)
-Iteration 18+:   ██████ Low actions (20 items, opportunistic)
+Iteration 1-2: ████████████ Critical actions (3 items)
+Iteration 3-7: ███████████████ High actions (8 items)
+Iteration 8-17: ████████████████████ Medium actions (25 items)
+Iteration 18+: ██████ Low actions (20 items, opportunistic)
 ```
 
 **Rationale:** Front-load critical items to unblock dependent work; low-priority items resolved opportunistically alongside other changes.

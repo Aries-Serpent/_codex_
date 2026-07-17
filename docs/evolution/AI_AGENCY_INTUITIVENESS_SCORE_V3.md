@@ -251,13 +251,13 @@ The Task Prosecution Layer executes plans and gathers environmental feedback.
 ## Score Evolution Trajectory
 
 ```text
-V1.0 (2026-01-23):  ██████████████████░░ 87.3/100  A-  (Baseline)
-V2.0 (2026-01-23):  ████████████████████ 91.8/100  A   (+4.5 Phase 8.7)
-V3.0 (2026-02-11):  ████████████████████ 93.2/100  A   (+1.4 Evolution Center)
-V3.1 (2026-02-12):  ████████████████████ 93.7/100  A   (+0.5 PR #3244 improvements)
-V3.2 (2026-02-12):  ████████████████████ 94.8/100  A   (+1.1 Ethics+OKR+Introspection)
-V3.3 (2026-02-12):  ████████████████████ 95.5/100  A   (+0.7 Multi-agent consensus)
-V3.4 (2026-02-12):  ████████████████████ 97.0/100  A+  (+1.5 Context+KT)  TARGET REACHED
+V1.0 (2026-01-23): ██████████████████░░ 87.3/100 A- (Baseline)
+V2.0 (2026-01-23): ████████████████████ 91.8/100 A (+4.5 Phase 8.7)
+V3.0 (2026-02-11): ████████████████████ 93.2/100 A (+1.4 Evolution Center)
+V3.1 (2026-02-12): ████████████████████ 93.7/100 A (+0.5 PR #3244 improvements)
+V3.2 (2026-02-12): ████████████████████ 94.8/100 A (+1.1 Ethics+OKR+Introspection)
+V3.3 (2026-02-12): ████████████████████ 95.5/100 A (+0.7 Multi-agent consensus)
+V3.4 (2026-02-12): ████████████████████ 97.0/100 A+ (+1.5 Context+KT) TARGET REACHED
 ```
 
 ### Score Delta Analysis
@@ -348,33 +348,33 @@ V3.4 (2026-02-12):  ████████████████████
 %%{init: {'accessibility': {'title': 'Flowchart showing L5: 93/100, L5: 97/100'}}%%
 
 graph LR
-    subgraph "V3.1 → V3.2 Score Improvements"
-        direction TB
+ subgraph "V3.1 V3.2 Score Improvements"
+ direction TB
 
-        L5_OLD[L5: 93/100] -->|+4| L5_NEW[L5: 97/100]
+ L5_OLD[L5: 93/100] -->|+4| L5_NEW[L5: 97/100]
 
-        L6_OLD[L6: 91/100] -->|+5| L6_NEW[L6: 96/100]
+ L6_OLD[L6: 91/100] -->|+5| L6_NEW[L6: 96/100]
 
-        ERR_OLD[Error Recovery: 93] -->|+2| ERR_NEW[Error Recovery: 95]
-    end
+ ERR_OLD[Error Recovery: 93] -->|+2| ERR_NEW[Error Recovery: 95]
+ end
 
-    subgraph "Key Evidence"
-        E1[628 files<br/>trailing whitespace]
-        E2[marshmallow 3→4<br/>dependency resolution]
-        E3[transformers 5.2<br/>getattr compat]
-        E4[RAGIndexer facade<br/>test patchability]
-        E5[12 CI patterns<br/>knowledge graph v1.4]
-    end
+ subgraph "Key Evidence"
+ E1[628 files<br/>trailing whitespace]
+ E2[marshmallow 34<br/>dependency resolution]
+ E3[transformers 5.2<br/>getattr compat]
+ E4[RAGIndexer facade<br/>test patchability]
+ E5[12 CI patterns<br/>knowledge graph v1.4]
+ end
 
-    L5_NEW -.-> E1
-    L5_NEW -.-> E2
-    L6_NEW -.-> E3
-    L6_NEW -.-> E4
-    ERR_NEW -.-> E5
+ L5_NEW -.-> E1
+ L5_NEW -.-> E2
+ L6_NEW -.-> E3
+ L6_NEW -.-> E4
+ ERR_NEW -.-> E5
 
-    style L5_NEW fill:#10b981,stroke:#059669
-    style L6_NEW fill:#10b981,stroke:#059669
-    style ERR_NEW fill:#10b981,stroke:#059669
+ style L5_NEW fill:#10b981,stroke:#059669
+ style L6_NEW fill:#10b981,stroke:#059669
+ style ERR_NEW fill:#10b981,stroke:#059669
 ```
 
 ---

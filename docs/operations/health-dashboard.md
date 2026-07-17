@@ -291,34 +291,34 @@ Percentage of documentation up-to-date with current code. Includes:
 
 #### Workflow Success Rate Trend
 ```
-Week 1:  96.2% (stable)
-Week 2:  97.1% (↑ improved)
-Week 3:  96.8% (stable)
-Week 4:  97.2% (↑ improved)
+Week 1: 96.2% (stable)
+Week 2: 97.1% ( improved)
+Week 3: 96.8% (stable)
+Week 4: 97.2% ( improved)
 ```
 
 #### Test Pass Rate Trend
 ```
-Week 1:  99.4% (stable)
-Week 2:  99.6% (↑ improved)
-Week 3:  99.8% (↑ improved)
-Week 4:  99.8% (stable)
+Week 1: 99.4% (stable)
+Week 2: 99.6% ( improved)
+Week 3: 99.8% ( improved)
+Week 4: 99.8% (stable)
 ```
 
 #### Code Coverage Trend
 ```
-Week 1:  88.9% (stable)
-Week 2:  89.3% (↑ improved)
-Week 3:  89.8% (↑ improved)
-Week 4:  90.2% (↑ improved)
+Week 1: 88.9% (stable)
+Week 2: 89.3% ( improved)
+Week 3: 89.8% ( improved)
+Week 4: 90.2% ( improved)
 ```
 
 #### CI Failure Rate Trend
 ```
-Week 1:  9.2% (stable)
-Week 2:  8.5% (↓ improved)
-Week 3:  7.8% (↓ improved)
-Week 4:  7.3% (↓ improved)
+Week 1: 9.2% (stable)
+Week 2: 8.5% ( improved)
+Week 3: 7.8% ( improved)
+Week 4: 7.3% ( improved)
 ```
 
 ---
@@ -386,11 +386,11 @@ Week 4:  7.3% (↓ improved)
 Edit thresholds in `.codex/WORKFLOW_HEALTH_DASHBOARD.json`:
 ```json
 {
-  "metric_name": {
-    "target": 95.0,
-    "alert_threshold_warning": 90.0,
-    "alert_threshold_critical": 85.0
-  }
+ "metric_name": {
+ "target": 95.0,
+ "alert_threshold_warning": 90.0,
+ "alert_threshold_critical": 85.0
+ }
 }
 ```
 

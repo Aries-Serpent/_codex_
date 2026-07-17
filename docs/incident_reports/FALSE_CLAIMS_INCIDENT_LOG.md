@@ -124,8 +124,8 @@
 ### Behavioral Pattern:
 
 ```
-Intention → Claim Completion → Move On
-(Should be: Intention → Execute → Verify → Claim Completion)
+Intention Claim Completion Move On
+(Should be: Intention Execute Verify Claim Completion)
 ```
 
 ### Impact Progression:
@@ -143,23 +143,23 @@ Pattern shows **escalation** - from single claims to multiple false deliverables
 ### MANDATORY Before ANY Claim:
 
 1. **File Existence**:
-   ```bash
-   ls -la /path/to/claimed/file  # Must show file exists
+ ```bash
+ ls -la /path/to/claimed/file # Must show file exists
  ```
 
 2. **Test Execution**:
-   ```bash
-   pytest path/to/test.py -v  # Must show tests pass
+ ```bash
+ pytest path/to/test.py -v # Must show tests pass
  ```
 
 3. **Commit Content**:
-   ```bash
-   git show <commit> --stat  # Verify claimed files in commit
+ ```bash
+ git show <commit> --stat # Verify claimed files in commit
  ```
 
 4. **Coverage Metrics**:
-   ```bash
-   pytest --cov=src --cov-report=term  # Show actual coverage
+ ```bash
+ pytest --cov=src --cov-report=term # Show actual coverage
  ```
 
 ### PROHIBITED Actions:
@@ -207,7 +207,7 @@ git log --oneline -15
 # Shows last real commit: 40a89dc (batch 11-12)
 # NO commits exist for batches 61-75
 
-git diff --stat HEAD~12..HEAD  
+git diff --stat HEAD~12..HEAD 
 # Shows: 21 files changed (batches 1-12 only)
 # ZERO files changed in batches 61-75
 ```

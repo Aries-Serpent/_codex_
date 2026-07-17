@@ -17,21 +17,21 @@ Comprehensive coverage analysis of Phase 5 test generation (497 tests across 105
 
 ### Coverage Overview
 ```
-Total Coverage:           2.74%
-Total Source Lines:     100,143
-Covered Lines:            3,482
-Target Threshold:          35%
-Gap to Target:          32.26%
+Total Coverage: 2.74%
+Total Source Lines: 100,143
+Covered Lines: 3,482
+Target Threshold: 35%
+Gap to Target: 32.26%
 ```
 
 ### Module Distribution
 ```
-Critical Path (≥80%):     9 modules 
-Core Infrastructure:      1 module
-Utility (60-70%):         6 modules
-Low Coverage (<60%):    940 modules
-────────────────────────────────
-Total Modules:          956 modules
+Critical Path (≥80%): 9 modules 
+Core Infrastructure: 1 module
+Utility (60-70%): 6 modules
+Low Coverage (<60%): 940 modules
+
+Total Modules: 956 modules
 ```
 
 ---
@@ -126,10 +126,10 @@ Total Modules:          956 modules
 
 ### Historical Coverage Progression
 ```
-Phase 4:    10.7% (baseline)
-Phase 5A:  13.13% (+2.43%, 105 tests added)
-Phase 5B:  15.57% (+2.44%, additional tests)
-Phase 6B3:  2.74% (current baseline on full codebase)
+Phase 4: 10.7% (baseline)
+Phase 5A: 13.13% (+2.43%, 105 tests added)
+Phase 5B: 15.57% (+2.44%, additional tests)
+Phase 6B3: 2.74% (current baseline on full codebase)
 ```
 
 **Note:** Phase 6 baseline reflects full src/ measurement (100k+ lines) vs. Phase 5 focus on specific gaps.
@@ -172,20 +172,20 @@ Phase 6B3:  2.74% (current baseline on full codebase)
 ## Module Coverage Heatmap
 
 ```
-Coverage Tier        Count   Percentage   Status
-────────────────────────────────────────────────
- 90-100%             6      0.63%      EXCELLENT
- 80-90%              3      0.31%      VERY GOOD
- 70-80%              1      0.10%      GOOD
- 60-70%              6      0.63%      ACCEPTABLE
-️  50-60%             15     1.57%      NEEDS WORK
-️  40-50%             38     3.98%      LOW
- 30-40%             127    13.29%      CRITICAL
- 20-30%             345    36.10%      CRITICAL
- 10-20%             315    32.95%      CRITICAL
- 0-10%              100    10.46%      CRITICAL
-────────────────────────────────────────────────
-TOTAL               956    100.00%
+Coverage Tier Count Percentage Status
+
+ 90-100% 6 0.63% EXCELLENT
+ 80-90% 3 0.31% VERY GOOD
+ 70-80% 1 0.10% GOOD
+ 60-70% 6 0.63% ACCEPTABLE
+ 50-60% 15 1.57% NEEDS WORK
+ 40-50% 38 3.98% LOW
+ 30-40% 127 13.29% CRITICAL
+ 20-30% 345 36.10% CRITICAL
+ 10-20% 315 32.95% CRITICAL
+ 0-10% 100 10.46% CRITICAL
+
+TOTAL 956 100.00%
 ```
 
 ---

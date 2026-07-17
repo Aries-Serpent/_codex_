@@ -142,7 +142,7 @@ learn energy weights from outcomes
 Adaptive energy-management across thermal, electrical, electromagnetic, chemical, mechanical, informational, and security/access domains follows the same control pattern:
 
 ```text
-sense → estimate → forecast → optimize → route/convert/store/dissipate → observe → learn
+sense estimate forecast optimize route/convert/store/dissipate observe learn
 ```
 
 The electromagnetic spectrum adds a key lesson: sustained presence is not sustained usefulness. Energy must be coupled, converted, stored, and constrained safely. This maps directly back to access governance: a sustained identity session is not sustained trust; trust must be re-measured, context-coupled, scoped, logged, and decayed.
@@ -191,29 +191,29 @@ Useful adaptive energy is capacity times context-sensitive intensity, corrected 
 
 flowchart TD
 
-    Scenario[Scenario input] --> Variables[Map observed variables]
+ Scenario[Scenario input] --> Variables[Map observed variables]
 
-    Variables --> Supply[P_in / P_incident]
+ Variables --> Supply[P_in / P_incident]
 
-    Variables --> Demand[P_load]
+ Variables --> Demand[P_load]
 
-    Variables --> Reserve[S_d / SOC / storage]
+ Variables --> Reserve[S_d / SOC / storage]
 
-    Variables --> Context[Phi_d / trust / alignment]
+ Variables --> Context[Phi_d / trust / alignment]
 
-    Variables --> Risk[R_d / blast radius]
+ Variables --> Risk[R_d / blast radius]
 
-    Supply --> Decision[Adaptive response]
+ Supply --> Decision[Adaptive response]
 
-    Demand --> Decision
+ Demand --> Decision
 
-    Reserve --> Decision
+ Reserve --> Decision
 
-    Context --> Decision
+ Context --> Decision
 
-    Risk --> Decision
+ Risk --> Decision
 
-    Decision --> Actions[harvest / store / shift / scope / shed]
+ Decision --> Actions[harvest / store / shift / scope / shed]
 ```
 
 ---

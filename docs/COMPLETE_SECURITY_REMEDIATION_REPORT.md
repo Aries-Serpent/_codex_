@@ -254,7 +254,7 @@ python scripts/security_audit.py
 
 **Expected Output:**
 ```
-️ Running Security Audit...
+ Running Security Audit...
 
  torch: 2.2.2+ (required: >=2.2.2)
  starlette: 0.50.0 (required: >=0.37.2)
@@ -262,7 +262,7 @@ python scripts/security_audit.py
  marshmallow: 3.26.1 (required: >=3.21.3)
  aiohttp: 3.12.15 (required: >=3.9.5)
 
-══════════════════════════════════════════════════════════════════
+
  All security checks passed!
  All 14 Dependabot vulnerabilities have been remediated.
 ```
@@ -307,9 +307,9 @@ python scripts/security_audit.py
 ## Achievement Summary
 
 ```
-═══════════════════════════════════════════════════════════════
+
  COMPLETE SECURITY REMEDIATION - 100% SUCCESS! 
-═══════════════════════════════════════════════════════════════
+
 
  39 Total Vulnerabilities Fixed
  1,353 Lines of Security Code Added
@@ -320,7 +320,7 @@ python scripts/security_audit.py
  Security Posture: EXCELLENT
  Code Quality: EXCELLENT
  Ready for Production Deployment
-═══════════════════════════════════════════════════════════════
+
 ```
 
 **Mission Accomplished! **

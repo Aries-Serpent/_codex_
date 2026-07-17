@@ -10,12 +10,12 @@
 ## Deployment Methods Overview
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Aries-Serpent Deployment Options              │
-├────────────────┬────────────────┬──────────────┤
-│ Local/Dev      │ Docker Compose │ Kubernetes   │
-│ (Single Node)  │ (Multi-Node)   │ (Production) │
-└────────────────┴────────────────┴──────────────┘
+
+ Aries-Serpent Deployment Options 
+
+ Local/Dev Docker Compose Kubernetes 
+ (Single Node) (Multi-Node) (Production) 
+
 ```
 
 ## 1. Docker Compose Deployment
@@ -51,64 +51,64 @@ curl http://localhost:8000/api/v1/health
 version: '3.9'
 
 services:
-  api:
-    image: aries-serpent:0.1.0-api
-    ports:
-      - "${API_PORT}:8000"
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-    depends_on:
-      - postgres
-      - redis
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+ api:
+ image: aries-serpent:0.1.0-api
+ ports:
+ - "${API_PORT}:8000"
+ environment:
+ DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+ REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+ depends_on:
+ - postgres
+ - redis
+ healthcheck:
+ test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+ interval: 30s
+ timeout: 10s
+ retries: 3
 
-  inference:
-    image: aries-serpent:0.1.0-inference
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-    depends_on:
-      - postgres
-      - redis
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 4G
+ inference:
+ image: aries-serpent:0.1.0-inference
+ environment:
+ DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+ REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+ depends_on:
+ - postgres
+ - redis
+ deploy:
+ resources:
+ limits:
+ cpus: '2'
+ memory: 4G
 
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
+ postgres:
+ image: postgres:15-alpine
+ environment:
+ POSTGRES_USER: ${POSTGRES_USER}
+ POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+ POSTGRES_DB: ${POSTGRES_DB}
+ volumes:
+ - postgres_data:/var/lib/postgresql/data
+ healthcheck:
+ test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+ interval: 10s
 
-  redis:
-    image: redis:7-alpine
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
+ redis:
+ image: redis:7-alpine
+ command: redis-server --requirepass ${REDIS_PASSWORD}
+ volumes:
+ - redis_data:/data
+ healthcheck:
+ test: ["CMD", "redis-cli", "ping"]
+ interval: 10s
 
 volumes:
-  postgres_data:
-  redis_data:
+ postgres_data:
+ redis_data:
 
 networks:
-  default:
-    name: aries-network
+ default:
+ name: aries-network
 ```
 
 ### 1.3 Scaling with Docker Compose
@@ -133,7 +133,7 @@ docker-compose -f docker/docker-compose.yml down
 
 ```bash
 # Install minikube (if not installed)
-brew install minikube  # macOS
+brew install minikube # macOS
 # or curl https://minikube.sigs.k8s.io/docs/start/ for other platforms
 
 # Start minikube cluster
@@ -178,13 +178,13 @@ kubectl config set-context --current --namespace=aries-prod
 
 # Create secrets
 kubectl create secret generic db-credentials \
-  --from-literal=username=aries \
-  --from-literal=password='secure-password' \
-  -n aries-prod
+ --from-literal=username=aries \
+ --from-literal=password='secure-password' \
+ -n aries-prod
 
 kubectl create secret generic api-secrets \
-  --from-literal=jwt-secret='jwt-secret-key' \
-  -n aries-prod
+ --from-literal=jwt-secret='jwt-secret-key' \
+ -n aries-prod
 ```
 
 #### Deployment
@@ -213,47 +213,47 @@ kubectl top nodes
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+ name: api
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: api
-  template:
-    metadata:
-      labels:
-        app: api
-    spec:
-      containers:
-      - name: api
-        image: aries-serpent:0.1.0-api
-        ports:
-        - containerPort: 8000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: url
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "1Gi"
-          limits:
-            cpu: "2"
-            memory: "4Gi"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+ replicas: 3
+ selector:
+ matchLabels:
+ app: api
+ template:
+ metadata:
+ labels:
+ app: api
+ spec:
+ containers:
+ - name: api
+ image: aries-serpent:0.1.0-api
+ ports:
+ - containerPort: 8000
+ env:
+ - name: DATABASE_URL
+ valueFrom:
+ secretKeyRef:
+ name: db-credentials
+ key: url
+ resources:
+ requests:
+ cpu: "500m"
+ memory: "1Gi"
+ limits:
+ cpu: "2"
+ memory: "4Gi"
+ livenessProbe:
+ httpGet:
+ path: /health
+ port: 8000
+ initialDelaySeconds: 30
+ periodSeconds: 10
+ readinessProbe:
+ httpGet:
+ path: /ready
+ port: 8000
+ initialDelaySeconds: 5
+ periodSeconds: 5
 ```
 
 ### 2.4 Auto-scaling
@@ -263,27 +263,27 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: api-hpa
+ name: api-hpa
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: api
-  minReplicas: 3
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+ scaleTargetRef:
+ apiVersion: apps/v1
+ kind: Deployment
+ name: api
+ minReplicas: 3
+ maxReplicas: 10
+ metrics:
+ - type: Resource
+ resource:
+ name: cpu
+ target:
+ type: Utilization
+ averageUtilization: 70
+ - type: Resource
+ resource:
+ name: memory
+ target:
+ type: Utilization
+ averageUtilization: 80
 ```
 
 ## 3. Backup & Recovery
@@ -293,16 +293,16 @@ spec:
 ```bash
 # Backup PostgreSQL
 kubectl exec -it postgres-0 -n aries-prod -- \
-  pg_dump -U aries aries_db > backup-$(date +%Y%m%d).sql
+ pg_dump -U aries aries_db > backup-$(date +%Y%m%d).sql
 
 # Backup to S3
 kubectl exec -it postgres-0 -n aries-prod -- \
-  pg_dump -U aries aries_db | gzip | \
-  aws s3 cp - s3://backups/aries-db-$(date +%Y%m%d).sql.gz
+ pg_dump -U aries aries_db | gzip | \
+ aws s3 cp - s3://backups/aries-db-$(date +%Y%m%d).sql.gz
 
 # Restore from backup
 kubectl exec -i postgres-0 -n aries-prod -- \
-  psql -U aries aries_db < backup-20260709.sql
+ psql -U aries aries_db < backup-20260709.sql
 ```
 
 ### 3.2 Configuration Backup
@@ -366,9 +366,9 @@ kubectl get pods -l app=api -n aries-prod
 ```yaml
 # Update resource limits in deployment
 kubectl set resources deployment api \
-  --limits=cpu=4,memory=8Gi \
-  --requests=cpu=2,memory=4Gi \
-  -n aries-prod
+ --limits=cpu=4,memory=8Gi \
+ --requests=cpu=2,memory=4Gi \
+ -n aries-prod
 ```
 
 ### 5.3 Multi-Region Deployment
@@ -376,8 +376,8 @@ kubectl set resources deployment api \
 ```bash
 # Deploy to multiple regions
 for region in us-east-1 eu-west-1 ap-southeast-1; do
-  KUBECONFIG=~/.kube/${region}-config \
-    kubectl apply -f manifests/k8s/overlays/production/
+ KUBECONFIG=~/.kube/${region}-config \
+ kubectl apply -f manifests/k8s/overlays/production/
 done
 ```
 
@@ -390,9 +390,9 @@ done
 kubectl describe pod <pod-name>
 # Check image registry credentials
 kubectl create secret docker-registry regcred \
-  --docker-server=ghcr.io \
-  --docker-username=user \
-  --docker-******
+ --docker-server=ghcr.io \
+ --docker-username=user \
+ --docker-******
 ```
 
 **Node disk pressure:**
@@ -413,7 +413,7 @@ kubectl logs postgres-0
 
 # Test connection from pod
 kubectl exec -it api-0 -- \
-  psql -h postgres -U aries -d aries_db
+ psql -h postgres -U aries -d aries_db
 ```
 
 ### 6.2 Debug Commands

@@ -131,14 +131,14 @@ print(f"Expires: {decoded['exp']}")
 
 **If circuit breaker is open:**
 1. Check underlying model health:
-   ```bash
-   # Test model directly
-   python3 -c "
-   from src.codex_ml.serving.model_loader import ModelLoader
-   loader = ModelLoader()
-   model = loader.load('model_name')
-   print('Model healthy')
-   "
+ ```bash
+ # Test model directly
+ python3 -c "
+ from src.codex_ml.serving.model_loader import ModelLoader
+ loader = ModelLoader()
+ model = loader.load('model_name')
+ print('Model healthy')
+ "
  ```
 
 2. Wait for exponential backoff to complete:
@@ -166,27 +166,27 @@ breaker.reset()
 #### Diagnostic Workflow
 
 1. **Check P95/P99 latency:**
-   ```bash
+ ```bash
  ```
 
 2. **Identify bottleneck:**
-   ```bash
-   # Check model inference time
+ ```bash
+ # Check model inference time
 
-   # Check queueing time
-   # latency_total - prediction_latency = queue_time
+ # Check queueing time
+ # latency_total - prediction_latency = queue_time
  ```
 
 3. **Check resource utilization:**
-   ```bash
-   # CPU
-   top -bn1 | grep python
+ ```bash
+ # CPU
+ top -bn1 | grep python
 
-   # GPU (if applicable)
-   nvidia-smi
+ # GPU (if applicable)
+ nvidia-smi
 
-   # Memory
-   free -h
+ # Memory
+ free -h
  ```
 
 #### Solutions
@@ -211,19 +211,19 @@ breaker.reset()
 ```python
 # In inference server config
 from src.codex_ml.serving.optimizations import (
-    RequestBatcher,
-    DynamicBatchSizer
+ RequestBatcher,
+ DynamicBatchSizer
 )
 
 # Enable batching
 batcher = RequestBatcher(
-    max_batch_size=32,
-    max_wait_ms=10
+ max_batch_size=32,
+ max_wait_ms=10
 )
 
 # Enable dynamic sizing
 sizer = DynamicBatchSizer(
-    target_latency_ms=100
+ target_latency_ms=100
 )
 ```
 
@@ -257,16 +257,16 @@ import time
 import requests
 
 def predict_with_retry(data, max_retries=3):
-    for attempt in range(max_retries):
-        response = requests.post(
-            json=data
-        )
-        if response.status_code == 429:
-            # Exponential backoff
-            time.sleep(2 ** attempt)
-            continue
-        return response.json()
-    raise Exception("Rate limit exceeded")
+ for attempt in range(max_retries):
+ response = requests.post(
+ json=data
+ )
+ if response.status_code == 429:
+ # Exponential backoff
+ time.sleep(2 ** attempt)
+ continue
+ return response.json()
+ raise Exception("Rate limit exceeded")
 ```
 
 **Use token bucket algorithm:**
@@ -285,29 +285,29 @@ def predict_with_retry(data, max_retries=3):
 #### Diagnostic Steps
 
 1. **Verify service is running:**
-   ```bash
-   # Check process
-   ps aux | grep inference_server
+ ```bash
+ # Check process
+ ps aux | grep inference_server
 
-   # Check port binding
-   netstat -tlnp | grep 8000
+ # Check port binding
+ netstat -tlnp | grep 8000
  ```
 
 2. **Test connectivity:**
-   ```bash
-   # Local
+ ```bash
+ # Local
 
-   # Remote
-   curl http://<server-ip>:8000/health
+ # Remote
+ curl http://<server-ip>:8000/health
  ```
 
 3. **Check firewall rules:**
-   ```bash
-   # Linux
-   sudo iptables -L -n | grep 8000
+ ```bash
+ # Linux
+ sudo iptables -L -n | grep 8000
 
-   # Check if port is blocked
-   telnet <server-ip> 8000
+ # Check if port is blocked
+ telnet <server-ip> 8000
  ```
 
 #### Solutions
@@ -364,7 +364,7 @@ deployment.config.error_threshold_percent = 10.0
 from src.codex_ml.serving.deployment import TrafficSplitter
 
 splitter = TrafficSplitter()
-splitter.set_weights(blue=70, green=30)  # 70% blue, 30% green
+splitter.set_weights(blue=70, green=30) # 70% blue, 30% green
 ```
 
 ---
@@ -420,11 +420,11 @@ splitter.set_weights(blue=70, green=30)  # 70% blue, 30% green
 ```text
 # Example latency breakdown
 total_latency = 500ms
-├── Queue wait: 10ms (2%)
-├── Authentication: 5ms (1%)
-├── Preprocessing: 50ms (10%)
-├── Model inference: 400ms (80%)
-└── Postprocessing: 35ms (7%)
+ Queue wait: 10ms (2%)
+ Authentication: 5ms (1%)
+ Preprocessing: 50ms (10%)
+ Model inference: 400ms (80%)
+ Postprocessing: 35ms (7%)
 ```
 
 ## Optimization Priority
@@ -452,7 +452,7 @@ total_latency = 500ms
 ```yaml
 # Recommended Prometheus alert thresholds
 - error_rate > 5% for 5 minutes
-- p95_latency > 1s for 10 minutes  
+- p95_latency > 1s for 10 minutes 
 - circuit_breaker_open > 0 for 2 minutes
 - cache_hit_rate < 40% for 30 minutes
 - cpu_usage > 90% for 5 minutes

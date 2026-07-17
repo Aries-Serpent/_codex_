@@ -192,34 +192,34 @@
 
 ```
 Issue: Workflow failing
-├── Permission error?
-│   └── Check: Settings → Actions → Workflow permissions
-├── Missing secret?
-│   └── Check: Settings → Secrets and variables → Actions
-├── Timeout?
-│   └── Check: Workflow has `timeout-minutes` set appropriately
-└── Unknown error?
-    └── Check: Workflow logs for specific error message
+ Permission error?
+ Check: Settings Actions Workflow permissions
+ Missing secret?
+ Check: Settings Secrets and variables Actions
+ Timeout?
+ Check: Workflow has `timeout-minutes` set appropriately
+ Unknown error?
+ Check: Workflow logs for specific error message
 ```
 
 ```
 Issue: Can't create GitHub App
-├── Not an org owner?
-│   └── Ask org owner or create under personal account
-├── App name already taken?
-│   └── Choose a different name
-└── Missing required fields?
-    └── Ensure all required fields are filled
+ Not an org owner?
+ Ask org owner or create under personal account
+ App name already taken?
+ Choose a different name
+ Missing required fields?
+ Ensure all required fields are filled
 ```
 
 ```
 Issue: Secrets not working
-├── Secret name typo?
-│   └── Verify exact name matches workflow reference
-├── Secret in wrong scope?
-│   └── Check if using org vs repo secrets correctly
-└── Secret recently added?
-    └── Re-run the workflow (secrets are loaded at run start)
+ Secret name typo?
+ Verify exact name matches workflow reference
+ Secret in wrong scope?
+ Check if using org vs repo secrets correctly
+ Secret recently added?
+ Re-run the workflow (secrets are loaded at run start)
 ```
 
 ---

@@ -21,14 +21,14 @@
 ### Real-world cascade (PR #4389, 2026-05-10)
 
 ```
-Run #3476  23:53Z  → 429 (session 1)
-Run #3477  00:41Z  → 429 (session 2, immediate retry)
-Run #3478  00:54Z  → 429
-Run #3479  01:09Z  → 429
-Runs 3480–3483     → 429 (cascade: ~15 min each)
-            [~15h gap — rate limit resets]
-Run #3486  17:13Z  → push conflict (bot commits during session)
-Run #3489  17:47Z  → push conflict (bot commits during session)
+Run #3476 23:53Z 429 (session 1)
+Run #3477 00:41Z 429 (session 2, immediate retry)
+Run #3478 00:54Z 429
+Run #3479 01:09Z 429
+Runs 3480–3483 429 (cascade: ~15 min each)
+ [~15h gap — rate limit resets]
+Run #3486 17:13Z push conflict (bot commits during session)
+Run #3489 17:47Z push conflict (bot commits during session)
 ```
 
 **Root cause:** Each 429 session-termination triggers CI automation which
@@ -87,12 +87,12 @@ When a session is interrupted by a 429 error, call the handler to preserve state
 
 ```bash
 python3 scripts/ci/rate_limit_handler.py \
-  --pr-number 4389 \
-  --error-json '{"code":"user_weekly_rate_limited","text":"reset in 6 hours 5 minutes","ghRequestId":"CC44:7229D:..."}' \
-  --completed "Fix CodeQL #13447,Resolve merge conflict" \
-  --in-progress "Fix CodeQL #13429" \
-  --pending "Update CHANGELOG,Run parallel_validation" \
-  --session S923
+ --pr-number 4389 \
+ --error-json '{"code":"user_weekly_rate_limited","text":"reset in 6 hours 5 minutes","ghRequestId":"CC44:7229D:..."}' \
+ --completed "Fix CodeQL #13447,Resolve merge conflict" \
+ --in-progress "Fix CodeQL #13429" \
+ --pending "Update CHANGELOG,Run parallel_validation" \
+ --session S923
 ```
 
 This:
@@ -104,10 +104,10 @@ This:
 
 ```bash
 echo "$COPILOT_ERROR_JSON" | python3 scripts/ci/rate_limit_handler.py \
-  --pr-number 4389 \
-  --stdin-error \
-  --completed "..." \
-  --pending "..."
+ --pr-number 4389 \
+ --stdin-error \
+ --completed "..." \
+ --pending "..."
 ```
 
 ---
@@ -118,11 +118,11 @@ echo "$COPILOT_ERROR_JSON" | python3 scripts/ci/rate_limit_handler.py \
 automatically surfaces an unresolved checkpoint at every CI scan:
 
 ```
-  Pattern 33 (Rate Limit Checkpoint): Unresolved rate-limit checkpoint from
-   session S923 (PR #4389). Retry after: 2026-05-10T10:45Z. Pending: [Fix C, Fix D].
-      → Load checkpoint:  python3 scripts/ci/rate_limit_handler.py --check
-      → Resolve conflict: python3 scripts/ci/push_conflict_resolver.py
-      → Mark resolved:    python3 scripts/ci/rate_limit_handler.py --resolve
+ Pattern 33 (Rate Limit Checkpoint): Unresolved rate-limit checkpoint from
+ session S923 (PR #4389). Retry after: 2026-05-10T10:45Z. Pending: [Fix C, Fix D].
+ Load checkpoint: python3 scripts/ci/rate_limit_handler.py --check
+ Resolve conflict: python3 scripts/ci/push_conflict_resolver.py
+ Mark resolved: python3 scripts/ci/rate_limit_handler.py --resolve
 ```
 
 This is **informational only** — it never blocks CI or causes a non-zero exit.

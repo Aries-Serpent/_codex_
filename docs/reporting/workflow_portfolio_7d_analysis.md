@@ -88,31 +88,31 @@ Repository: `Aries-Serpent/_codex_`
 
 flowchart TD
 
-  A[Trigger Event] --> B[Workflow Entry]
+ A[Trigger Event] --> B[Workflow Entry]
 
-  B --> C{Guardrails}
+ B --> C{Guardrails}
 
-  C --> C1[permissions]
+ C --> C1[permissions]
 
-  C --> C2[concurrency/rate-limit]
+ C --> C2[concurrency/rate-limit]
 
-  C --> C3[timeout-minutes]
+ C --> C3[timeout-minutes]
 
-  C --> D[Execution + Artifacts]
+ C --> D[Execution + Artifacts]
 
-  D --> E{Dependency Paths}
+ D --> E{Dependency Paths}
 
-  E --> E1[workflow_call]
+ E --> E1[workflow_call]
 
-  E --> E2[workflow_run]
+ E --> E2[workflow_run]
 
-  E --> E3[direct jobs]
+ E --> E3[direct jobs]
 
-  E1 --> F[Session Context Outputs]
+ E1 --> F[Session Context Outputs]
 
-  E2 --> F
+ E2 --> F
 
-  E3 --> F
+ E3 --> F
 ```
 
 ```mermaid
@@ -120,16 +120,16 @@ flowchart TD
 
 flowchart LR
 
-  M[main branch update] --> G[PR branch behind]
+ M[main branch update] --> G[PR branch behind]
 
-  G --> H{Write-capable workflows?}
+ G --> H{Write-capable workflows?}
 
-  H -->|yes| I[Conflict risk rises
+ H -->|yes| I[Conflict risk rises
 merge/rebase/write races]
 
-  H -->|no| J[Low conflict risk]
+ H -->|no| J[Low conflict risk]
 
-  I --> K[Mitigation vars
+ I --> K[Mitigation vars
 CODEX_SWEEP_SKIP_MAIN
 CODEX_MAX_HEALER_RUNS_PER_HOUR
 CODEX_HEALER_SKIP_SKIPCI]
@@ -172,23 +172,23 @@ CODEX_HEALER_SKIP_SKIPCI]
 
 flowchart TD
 
-  S[Copilot session start] --> SETUP["copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"]
+ S[Copilot session start] --> SETUP["copilot-setup-steps.yml<br/>TVAR_CODEX_CACHE_VERSION<br/>TVAR_CODEX_CI_LAST_GREEN_SHA<br/>TVAR_CODEX_SWEEP_SKIP_MAIN"]
 
-  SETUP --> WEC["workflow-execution-gate.yml<br/>TSEC_CODEX_MASTER_KEY<br/>TSEC_CODEX_BACKUP_KEY<br/>TSEC_GITHUB_TOKEN"]
+ SETUP --> WEC["workflow-execution-gate.yml<br/>TSEC_CODEX_MASTER_KEY<br/>TSEC_CODEX_BACKUP_KEY<br/>TSEC_GITHUB_TOKEN"]
 
-  WEC --> ALWAYS["Always-required WEC<br/>pre-merge-validation.yml<br/>comment-review-gate.yml<br/>deferral-language-gate.yml<br/>agent-auth-delegation.yml<br/>workflow-execution-gate.yml<br/>copilot-agent-checkin.yml<br/>cost-gate.yml"]
+ WEC --> ALWAYS["Always-required WEC<br/>pre-merge-validation.yml<br/>comment-review-gate.yml<br/>deferral-language-gate.yml<br/>agent-auth-delegation.yml<br/>workflow-execution-gate.yml<br/>copilot-agent-checkin.yml<br/>cost-gate.yml"]
 
-  WEC --> ACTIVE["Always-active but never auto-checked<br/>copilot-agent-session-done.yml<br/>copilot-iterative-self-healing.yml"]
+ WEC --> ACTIVE["Always-active but never auto-checked<br/>copilot-agent-session-done.yml<br/>copilot-iterative-self-healing.yml"]
 
-  WEC --> VALIDATE["Validation & testing opt-ins<br/>validate.yml<br/>resilient_validation.yml<br/>nox_gates.yml<br/>mypy-baseline.yml<br/>coverage-with-timeout.yml<br/>progressive-validation.yml<br/>pre-flight-validation.yml<br/>ci-checkpoint-validation.yml<br/>data-quality-suite.yml<br/>auth-tests.yml<br/>pr-checks.yml<br/>html_visual_regression.yml"]
+ WEC --> VALIDATE["Validation & testing opt-ins<br/>validate.yml<br/>resilient_validation.yml<br/>nox_gates.yml<br/>mypy-baseline.yml<br/>coverage-with-timeout.yml<br/>progressive-validation.yml<br/>pre-flight-validation.yml<br/>ci-checkpoint-validation.yml<br/>data-quality-suite.yml<br/>auth-tests.yml<br/>pr-checks.yml<br/>html_visual_regression.yml"]
 
-  WEC --> SECURITY["Security & quality opt-ins<br/>security-scanning-suite.yml<br/>codeql-analysis.yml<br/>actionlint-audit.yml<br/>semgrep_sarif.yml<br/>auto-fix-common-issues.yml<br/>auto-fix-pr-check.yml<br/>code-quality-coverage-suite.yml<br/>audit-qa-suite.yml<br/>template_lint.yml<br/>codeql-alert-fetcher.yml"]
+ WEC --> SECURITY["Security & quality opt-ins<br/>security-scanning-suite.yml<br/>codeql-analysis.yml<br/>actionlint-audit.yml<br/>semgrep_sarif.yml<br/>auto-fix-common-issues.yml<br/>auto-fix-pr-check.yml<br/>code-quality-coverage-suite.yml<br/>audit-qa-suite.yml<br/>template_lint.yml<br/>codeql-alert-fetcher.yml"]
 
-  WEC --> DOCS["Documentation opt-ins<br/>documentation-link-checker.yml<br/>pages-pre-merge-validation.yml"]
+ WEC --> DOCS["Documentation opt-ins<br/>documentation-link-checker.yml<br/>pages-pre-merge-validation.yml"]
 
-  WEC --> INFRA["Infrastructure & deploy opt-ins<br/>reference-integrity.yml<br/>dependency-submission.yml<br/>docker-build-push.yml<br/>rust_swarm_ci.yml<br/>root-org-validation.yml<br/>agent-registry-validation.yml<br/>qa-walkthrough.yml"]
+ WEC --> INFRA["Infrastructure & deploy opt-ins<br/>reference-integrity.yml<br/>dependency-submission.yml<br/>docker-build-push.yml<br/>rust_swarm_ci.yml<br/>root-org-validation.yml<br/>agent-registry-validation.yml<br/>qa-walkthrough.yml"]
 
-  WEC --> APPROVE["Autonomy grant<br/>auto-approve-workflows"]
+ WEC --> APPROVE["Autonomy grant<br/>auto-approve-workflows"]
 ```
 
 | WEC group | Workflow set | Primary tokenized variables | How Copilot uses it |
@@ -238,23 +238,23 @@ Where:
 
 flowchart LR
 
-  S0[Copilot session starts] --> S1[Read startup packet + conflict dashboard]
+ S0[Copilot session starts] --> S1[Read startup packet + conflict dashboard]
 
-  S1 --> S2{drift severity}
+ S1 --> S2{drift severity}
 
-  S2 -->|LOW| S3[Run planned workflow path]
+ S2 -->|LOW| S3[Run planned workflow path]
 
-  S2 -->|MED/HIGH| S4[Set TVAR_CODEX_SWEEP_SKIP_MAIN + healer bounds]
+ S2 -->|MED/HIGH| S4[Set TVAR_CODEX_SWEEP_SKIP_MAIN + healer bounds]
 
-  S4 --> S5[Rebase gate]
+ S4 --> S5[Rebase gate]
 
-  S5 --> S3
+ S5 --> S3
 
-  S3 --> S6[Validation + checks]
+ S3 --> S6[Validation + checks]
 
-  S6 --> S7[Living-doc updates]
+ S6 --> S7[Living-doc updates]
 
-  S7 --> S8[Session handoff]
+ S7 --> S8[Session handoff]
 ```
 
 ## Copilot Session Operating Envelope
@@ -377,10 +377,10 @@ so disabling them will not interrupt a current repository process:
 
 ```
 Detect drift (git log main..HEAD --oneline | wc -l):
-  0 commits → LOW   → proceed normally
-  1–3       → MEDIUM → add drift note to handoff; set CODEX_SWEEP_SKIP_MAIN=true if writing
-  4+        → HIGH   → rebase first; run steps below before ANY write operation
-  force-push→ CRITICAL → abort session; fetch main; restart from baseline
+ 0 commits LOW proceed normally
+ 1–3 MEDIUM add drift note to handoff; set CODEX_SWEEP_SKIP_MAIN=true if writing
+ 4+ HIGH rebase first; run steps below before ANY write operation
+ force-push CRITICAL abort session; fetch main; restart from baseline
 ```
 
 ```mermaid
@@ -388,29 +388,29 @@ Detect drift (git log main..HEAD --oneline | wc -l):
 
 flowchart TD
 
-  START([Active Copilot Session]) --> DETECT{Detect branch drift\ngit log main..HEAD}
+ START([Active Copilot Session]) --> DETECT{Detect branch drift\ngit log main..HEAD}
 
-  DETECT -->|0 commits| LOW[LOW: Proceed normally]
+ DETECT -->|0 commits| LOW[LOW: Proceed normally]
 
-  DETECT -->|1-3 commits| MEDIUM[MEDIUM: Note drift in handoff]
+ DETECT -->|1-3 commits| MEDIUM[MEDIUM: Note drift in handoff]
 
-  DETECT -->|4+ commits| HIGH[HIGH: Rebase before any write]
+ DETECT -->|4+ commits| HIGH[HIGH: Rebase before any write]
 
-  DETECT -->|force-push detected| CRIT[CRITICAL: Abort + Restart]
+ DETECT -->|force-push detected| CRIT[CRITICAL: Abort + Restart]
 
-  MEDIUM --> MITM[Set CODEX_SWEEP_SKIP_MAIN=true\nfor all write-capable workflows]
+ MEDIUM --> MITM[Set CODEX_SWEEP_SKIP_MAIN=true\nfor all write-capable workflows]
 
-  HIGH --> MITH[1 Rebase branch on main\n2 Re-run setup probe\n3 Set all three mitigation vars]
+ HIGH --> MITH[1 Rebase branch on main\n2 Re-run setup probe\n3 Set all three mitigation vars]
 
-  CRIT --> MITC[Fetch latest main\nRe-run session bootstrap\nRe-validate required checks]
+ CRIT --> MITC[Fetch latest main\nRe-run session bootstrap\nRe-validate required checks]
 
-  MITM --> WRITE[Safe to edit files]
+ MITM --> WRITE[Safe to edit files]
 
-  MITH --> WRITE
+ MITH --> WRITE
 
-  LOW --> WRITE
+ LOW --> WRITE
 
-  WRITE --> DONE([Continue session])
+ WRITE --> DONE([Continue session])
 ```
 
 ### Mitigation Variables — Quick Reference
@@ -440,11 +440,11 @@ flowchart TD
  4. Rebase your branch on latest `main` before committing any healer-initiated changes.
  5. After rebase, re-run the session access probe to confirm drift is cleared.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "${{ github.workflow }}-${{ github.head_ref }}"
-    cancel-in-progress: true
-  timeout-minutes: 30
+ ```yaml
+ concurrency:
+ group: "${{ github.workflow }}-${{ github.head_ref }}"
+ cancel-in-progress: true
+ timeout-minutes: 30
  ```
 
 ---
@@ -459,11 +459,11 @@ flowchart TD
  3. Do not trigger manually during HIGH drift; wait for rebase to complete.
  4. After rebase, confirm no open review comments from a prior run target stale lines.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "${{ github.workflow }}-${{ github.head_ref }}"
-    cancel-in-progress: true
-  timeout-minutes: 45
+ ```yaml
+ concurrency:
+ group: "${{ github.workflow }}-${{ github.head_ref }}"
+ cancel-in-progress: true
+ timeout-minutes: 45
  ```
 
 ---
@@ -478,11 +478,11 @@ flowchart TD
  3. If auto-post fires against a stale SHA, manually close the generated comment and re-trigger
  after rebase.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "${{ github.workflow }}-${{ github.head_ref }}"
-    cancel-in-progress: false  # allow completion but gate new runs
-  timeout-minutes: 15
+ ```yaml
+ concurrency:
+ group: "${{ github.workflow }}-${{ github.head_ref }}"
+ cancel-in-progress: false # allow completion but gate new runs
+ timeout-minutes: 15
  ```
 
 ---
@@ -498,11 +498,11 @@ flowchart TD
  4. After any variable write, re-read the value via the GitHub API to confirm it was not
  overwritten by a concurrent run.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "var-writer-${{ github.repository }}"
-    cancel-in-progress: false  # variable writes must not be interrupted mid-write
-  timeout-minutes: 10
+ ```yaml
+ concurrency:
+ group: "var-writer-${{ github.repository }}"
+ cancel-in-progress: false # variable writes must not be interrupted mid-write
+ timeout-minutes: 10
  ```
 
 ---
@@ -518,11 +518,11 @@ flowchart TD
  first job; fail fast if the check fails.
  3. Set all three mitigation variables before any chain run when drift is MEDIUM or higher.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "${{ github.workflow }}-${{ github.head_ref }}"
-    cancel-in-progress: true
-  timeout-minutes: 60
+ ```yaml
+ concurrency:
+ group: "${{ github.workflow }}-${{ github.head_ref }}"
+ cancel-in-progress: true
+ timeout-minutes: 60
  ```
 
 ---
@@ -537,11 +537,11 @@ flowchart TD
  2. Add a drift gate: if `drift_severity != LOW`, sub-agents that write should be skipped.
  3. Set `CODEX_SWEEP_SKIP_MAIN=true` and `CODEX_MAX_HEALER_RUNS_PER_HOUR=2`.
 - **Required workflow controls:**
-  ```yaml
-  concurrency:
-    group: "${{ github.workflow }}-${{ github.head_ref }}"
-    cancel-in-progress: true
-  timeout-minutes: 60
+ ```yaml
+ concurrency:
+ group: "${{ github.workflow }}-${{ github.head_ref }}"
+ cancel-in-progress: true
+ timeout-minutes: 60
  ```
 
 ---

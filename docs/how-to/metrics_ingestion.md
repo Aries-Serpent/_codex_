@@ -12,12 +12,12 @@ This guide demonstrates converting newline-delimited JSON (**NDJSON**) metrics i
 
 ## Steps
 ```bash
-# Convert NDJSON → CSV (always)
+# Convert NDJSON CSV (always)
 python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson --out-csv artifacts/metrics.csv
 
 # Optional: also emit Parquet (requires pandas + pyarrow/fastparquet)
 python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson \
-  --out-csv artifacts/metrics.csv --out-parquet artifacts/metrics.parquet
+ --out-csv artifacts/metrics.csv --out-parquet artifacts/metrics.parquet
 
 # Print quick stats (last/min/max by key)
 python -m codex_ml.cli metrics summary --input artifacts/metrics.ndjson

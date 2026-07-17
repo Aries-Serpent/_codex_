@@ -108,16 +108,16 @@ Link health analysis:
 Machine-readable audit data:
 ```json
 {
-  "overall_score": 73.04,
-  "module_coverage": 100.0,
-  "function_coverage": 50.9,
-  "class_coverage": 82.7,
-  "method_coverage": 67.1,
-  "public_api_coverage": 74.8,
-  "total_files": 1036,
-  "total_lines": 196013,
-  "markdown_stats": {...},
-  "cli_stats": {...}
+ "overall_score": 73.04,
+ "module_coverage": 100.0,
+ "function_coverage": 50.9,
+ "class_coverage": 82.7,
+ "method_coverage": 67.1,
+ "public_api_coverage": 74.8,
+ "total_files": 1036,
+ "total_lines": 196013,
+ "markdown_stats": {...},
+ "cli_stats": {...}
 }
 ```
 
@@ -131,25 +131,25 @@ Machine-readable audit data:
 
 ```
 Week 1-2: Quick Wins & Foundation
-├── codex_audit (0% → 90%)
-├── codex_harness (6% → 90%)
-├── codex_cli (8% → 95%)
-└── training (36% → 80%)
+ codex_audit (0% 90%)
+ codex_harness (6% 90%)
+ codex_cli (8% 95%)
+ training (36% 80%)
 
 Week 3-4: codex_ml Core
-├── codex_ml/modeling/
-├── codex_ml/training/
-└── codex_ml/data/
+ codex_ml/modeling/
+ codex_ml/training/
+ codex_ml/data/
 
 Week 5-6: Main Packages & Tutorials
-├── codex/rag/
-├── mcp/
-└── 7 new tutorials
+ codex/rag/
+ mcp/
+ 7 new tutorials
 
 Week 7-8: Polish & Completion
-├── Remaining codex_ml
-├── Fix 108 broken links
-└── Generate API reference
+ Remaining codex_ml
+ Fix 108 broken links
+ Generate API reference
 ```
 
 ### Key Deliverables
@@ -242,9 +242,9 @@ Week 7-8: Polish & Completion
  - codex: [TBD]
  - training: [TBD]
 3. **Set up tooling:**
-   ```bash
-   pip install interrogate linkchecker pydocstyle sphinx
-   pre-commit install
+ ```bash
+ pip install interrogate linkchecker pydocstyle sphinx
+ pre-commit install
  ```
 4. **Create documentation templates** (see Package Prioritization doc)
 5. **Schedule per-phase syncs** (every Friday)
@@ -270,14 +270,14 @@ Week 7-8: Polish & Completion
 
 ```yaml
 week_1:
-  overall_score: 87.0
-  packages_completed: [codex_audit, codex_harness, codex_cli]
-  hours_spent: 40
+ overall_score: 87.0
+ packages_completed: [codex_audit, codex_harness, codex_cli]
+ hours_spent: 40
 
 week_2:
-  overall_score: 88.0
-  packages_completed: [training]
-  hours_spent: 40
+ overall_score: 88.0
+ packages_completed: [training]
+ hours_spent: 40
 
 # ... continue tracking per-phase
 ```
@@ -309,24 +309,24 @@ week_2:
 
 ```python
 def function_name(arg1: str, arg2: int) -> bool:
-    """Short one-line description.
+ """Short one-line description.
 
-    Longer description with details.
+ Longer description with details.
 
-    Args:
-        arg1: Description of arg1
-        arg2: Description of arg2
+ Args:
+ arg1: Description of arg1
+ arg2: Description of arg2
 
-    Returns:
-        Description of return value
+ Returns:
+ Description of return value
 
-    Raises:
-        ValueError: When arg2 is negative
+ Raises:
+ ValueError: When arg2 is negative
 
-    Example:
-        >>> function_name("test", 42)
-        True
-    """
+ Example:
+ >>> function_name("test", 42)
+ True
+ """
 ```
 
 ## Guide Structure
@@ -337,7 +337,7 @@ def function_name(arg1: str, arg2: int) -> bool:
 ## Prerequisites
 - List prerequisites
 
-## Overview  
+## Overview 
 - What you'll learn
 - Time estimate
 
@@ -359,22 +359,22 @@ def function_name(arg1: str, arg2: int) -> bool:
 
 ```
 Overall Score = Weighted Average:
-  - API Documentation (50%):
-    * Module docstrings (15%)
-    * Function docstrings (25%)
-    * Class docstrings (25%)
-    * Method docstrings (20%)
-    * Public API coverage (15%)
+ - API Documentation (50%):
+ * Module docstrings (15%)
+ * Function docstrings (25%)
+ * Class docstrings (25%)
+ * Method docstrings (20%)
+ * Public API coverage (15%)
 
-  - User Documentation (30%):
-    * File count
-    * API reference files
-    * Tutorial files
-    * Guide files
-    * Architecture files
+ - User Documentation (30%):
+ * File count
+ * API reference files
+ * Tutorial files
+ * Guide files
+ * Architecture files
 
-  - CLI Documentation (20%):
-    * Commands with help text
+ - CLI Documentation (20%):
+ * Commands with help text
 ```
 
 ### Quality Grades
@@ -431,11 +431,11 @@ Overall Score = Weighted Average:
 ## TIMELINE
 
 ```
-January 18, 2026   - Audit Complete 
-January 20, 2026   - Phase 5 Kickoff
-February 15, 2026  - Mid-Phase Review (Week 4)
-March 15, 2026     - Final Review (Week 8)
-March 20, 2026     - Phase 5 Complete
+January 18, 2026 - Audit Complete 
+January 20, 2026 - Phase 5 Kickoff
+February 15, 2026 - Mid-Phase Review (Week 4)
+March 15, 2026 - Final Review (Week 8)
+March 20, 2026 - Phase 5 Complete
 ```
 
 ---

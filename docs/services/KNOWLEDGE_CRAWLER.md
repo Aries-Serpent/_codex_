@@ -47,8 +47,8 @@ python -m src.services.crawler.zendesk_sync --pipeline
 ## Architecture
 
 ```
-Zendesk API → Check (Metadata) → Compare Cache → Pull (if changed)
-    → PII Scrubbing → Disk Write → Cache Update → JSON Export
+Zendesk API Check (Metadata) Compare Cache Pull (if changed)
+ PII Scrubbing Disk Write Cache Update JSON Export
 ```
 
 ---
@@ -61,9 +61,9 @@ Edit `configs/services/zendesk_crawler.yaml`:
 sync_mode: incremental
 retries: 3
 monitoring:
-  log_level: INFO
-  alerts:
-    max_failures: 5
+ log_level: INFO
+ alerts:
+ max_failures: 5
 ```
 
 ---
@@ -80,9 +80,9 @@ Tracks article ETags, Last-Modified timestamps, and sync history for incremental
 
 ```
 docs/vendors/zendesk/
-└── YYYY-MM-DD/
-    ├── <section>/<bucket>/*.html
-    └── zendesk_knowledge_dataset.json
+ YYYY-MM-DD/
+ <section>/<bucket>/*.html
+ zendesk_knowledge_dataset.json
 ```
 
 ---

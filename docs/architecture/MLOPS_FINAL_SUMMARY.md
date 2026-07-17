@@ -152,40 +152,40 @@ Successfully completed comprehensive MLOps architecture remediation addressing a
 ## Architecture Stack
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│         Cognitive App Runtime (OODA Orchestrator)        │
-│  ┌───────────────────────────────────────────────────┐  │
-│  │    Physics of Thought Engine (Planner + Memory)   │  │
-│  └───────────────────────────────────────────────────┘  │
-└──────────────┬──────────────────────────────────────────┘
-               │
-        ┌──────┴──────┐
-        │   Agents    │ (inherit Planner ABC)
-        └──────┬──────┘
-               │
-               ▼
-┌──────────────────────────────────────────────────────────┐
-│  Secure Bridge (IPC) - Named Pipe/Unix Socket            │
-│  - fcntl locking  - Typed messages  - Owner-only (0o600) │
-└──────────────┬───────────────────────────────────────────┘
-               │
-               ▼
-┌──────────────────────────────────────────────────────────┐
-│  Configuration Loader - conf/ (Single Source of Truth)   │
-│  - Multi-format  - Caching  - Deprecation warnings       │
-└──────────────┬───────────────────────────────────────────┘
-               │
-               ▼
-┌──────────────────────────────────────────────────────────┐
-│  CI/CD Pipeline - workflow_dispatch + [self-hosted]      │
-│  - Manual gating  - Cost control  - Context generation   │
-└──────────────┬───────────────────────────────────────────┘
-               │
-               ▼
-┌──────────────────────────────────────────────────────────┐
-│  Context Distiller - Agent-Friendly Digest               │
-│  - Code structure  - Token budget  - Module mapping      │
-└──────────────────────────────────────────────────────────┘
+
+ Cognitive App Runtime (OODA Orchestrator) 
+ 
+ Physics of Thought Engine (Planner + Memory) 
+ 
+
+ 
+ 
+ Agents (inherit Planner ABC)
+ 
+ 
+ 
+
+ Secure Bridge (IPC) - Named Pipe/Unix Socket 
+ - fcntl locking - Typed messages - Owner-only (0o600) 
+
+ 
+ 
+
+ Configuration Loader - conf/ (Single Source of Truth) 
+ - Multi-format - Caching - Deprecation warnings 
+
+ 
+ 
+
+ CI/CD Pipeline - workflow_dispatch + [self-hosted] 
+ - Manual gating - Cost control - Context generation 
+
+ 
+ 
+
+ Context Distiller - Agent-Friendly Digest 
+ - Code structure - Token budget - Module mapping 
+
 ```
 
 ---

@@ -18,9 +18,9 @@
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 
 pie title Merge Readiness Gates (S899-final)
-    "Passing" : 17
-    "In-progress CI" : 1
-    "Pre-existing infra failures" : 1
+ "Passing" : 17
+ "In-progress CI" : 1
+ "Pre-existing infra failures" : 1
 ```
 
 | Gate | Status | Notes |
@@ -133,37 +133,37 @@ pie title Merge Readiness Gates (S899-final)
 
 flowchart TD
 
-    A[New Session Start] --> B{Any merge conflicts?}
+ A[New Session Start] --> B{Any merge conflicts?}
 
-    B -->|Yes| C[git fetch --unshallow\nresolve + 2-parent merge commit\nP-045: take branch .secrets.baseline]
+ B -->|Yes| C[git fetch --unshallow\nresolve + 2-parent merge commit\nP-045: take branch .secrets.baseline]
 
-    B -->|No| D{Any CI failures\non HEAD?}
+ B -->|No| D{Any CI failures\non HEAD?}
 
-    C --> D
+ C --> D
 
-    D -->|Yes — code fixable| E[Run pytest -x frontier\nFix failures\nruff + mypy check]
+ D -->|Yes — code fixable| E[Run pytest -x frontier\nFix failures\nruff + mypy check]
 
-    D -->|Yes — infra startup_failure| F[Triage: pre-existing?\nIf yes → skip, document\nIf no → investigate]
+ D -->|Yes — infra startup_failure| F[Triage: pre-existing?\nIf yes skip, document\nIf no investigate]
 
-    D -->|No failures| G{Pattern 25 check}
+ D -->|No failures| G{Pattern 25 check}
 
-    E --> G
+ E --> G
 
-    F --> G
+ F --> G
 
-    G -->|CHANGELOG + accountability\nnot in latest commit| H[Update both files\nreport_progress]
+ G -->|CHANGELOG + accountability\nnot in latest commit| H[Update both files\nreport_progress]
 
-    G -->|Both present | I{All required\nCI green?}
+ G -->|Both present | I{All required\nCI green?}
 
-    H --> I
+ H --> I
 
-    I -->|No| J[Wait for in-progress\nApprove pending workflows\nMonitor]
+ I -->|No| J[Wait for in-progress\nApprove pending workflows\nMonitor]
 
-    I -->|Yes| K[🎉 READY TO MERGE\nRequest review from @mbaetiong]
+ I -->|Yes| K[ READY TO MERGE\nRequest review from @mbaetiong]
 
-    J -->|Failures found| E
+ J -->|Failures found| E
 
-    J -->|All green| K
+ J -->|All green| K
 ```
 
 ---
@@ -175,21 +175,21 @@ flowchart TD
 
 flowchart LR
 
-    M[Merge PR #4368] --> T1[T-03: Add security_events scope\nto CODEX_MASTER_KEY]
+ M[Merge PR #4368] --> T1[T-03: Add security_events scope\nto CODEX_MASTER_KEY]
 
-    M --> T2[CB Phase 2:\nExpand PerceptionLayer sensors\nMore ActionExecutor targets\nMemoryLayer eviction policy]
+ M --> T2[CB Phase 2:\nExpand PerceptionLayer sensors\nMore ActionExecutor targets\nMemoryLayer eviction policy]
 
-    M --> T3[Drive AAIS to 100%:\n14 sustained green runs\nAAIS CI/CD Maturity = 100]
+ M --> T3[Drive AAIS to 100%:\n14 sustained green runs\nAAIS CI/CD Maturity = 100]
 
-    M --> T4[Monitor workflow cascade\nVerify ≤4 action_required\nper push after fix]
+ M --> T4[Monitor workflow cascade\nVerify ≤4 action_required\nper push after fix]
 
-    T1 --> T5[Run full test suite\non main post-merge]
+ T1 --> T5[Run full test suite\non main post-merge]
 
-    T2 --> T5
+ T2 --> T5
 
-    T3 --> T5
+ T3 --> T5
 
-    T4 --> T5
+ T4 --> T5
 ```
 
 ---

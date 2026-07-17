@@ -13,65 +13,65 @@
 
 ```
 Home (index.md)
-├── Quick Start (getting-started.md)
-│ ├── Local Setup (LOCAL_DEV_ENV_SETUP.md)
-│ ├── Installation (INSTALLATION.md)
-│ └── Tutorial (quickstart.md)
-│
-├── Documentation Index (DOC_KNOWLEDGE_GRAPH_INDEX.md) ← YOU ARE HERE
-│ ├── Navigation Guide (DOC_OPERATIONAL_RUNBOOK.md)
-│ ├── Health Dashboard (DOC_HEALTH_DASHBOARD.html)
-│ └── Category Indexes (see below)
-│
-├── API Reference (api/index.md)
-│ ├── Integration Guide (INTEGRATION_MASTER_GUIDE.md)
-│ ├── API Catalog (api_catalog.md)
-│ └── Integration Examples (INTEGRATION_EXAMPLES.md)
-│
-├── Architecture (architecture.md)
-│ ├── System Design (REPOSITORY_ARCHITECTURE_DIAGRAMS.md)
-│ ├── Pipeline (architecture/codex_pipeline.md)
-│ └── Performance (PERFORMANCE_MASTER_GUIDE.md)
-│
-├── Cognitive Brain (cognitive_brain/index.md)
-│ ├── Evolution Timeline (evolution/EVOLUTION_TIMELINE.md)
-│ ├── AI Agency Score (evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md)
-│ └── Status (COGNITIVE_BRAIN_STATUS_PHASE_11_X_COMPLETE.md)
-│
-├── Deployment (deployment/DEPLOYMENT_GUIDE.md)
-│ ├── Local Deployment (deployment/LOCAL_DEPLOYMENT_GUIDE.md)
-│ ├── Verification (deployment/DEPLOYMENT_VERIFICATION_CHECKLIST.md)
-│ └── Operations (ops/RUNBOOK.md)
-│
-├── CI/CD (ci/INDEX.md)
-│ ├── Workflow Index (WORKFLOW_QUICK_REFERENCE.md)
-│ ├── CI Rescue (ci/CI_RESCUE_PIPELINE.md)
-│ └── Failure Analysis (ci/CI_FAILURE_ANALYSIS.md)
-│
-├── Contributing (CONTRIBUTING.md)
-│ ├── Code Style (guides/code_style_guide.md)
-│ ├── Testing (TESTING.md)
-│ └── Code Review (CODE_REVIEW_GUIDE.md)
-│
-├── Security (SECURITY.md)
-│ ├── Safety Guide (safety/safety_guide.md)
-│ ├── Secret Management (SECRETS_RUNBOOK.md) # pragma: allowlist secret
-│ └── Alert Audit (SECURITY_ALERT_AUDIT_REPORT.md)
-│
-├── Admin (REPO_ADMIN_IMPLEMENTATION_DECISIONS.md)
-│ ├── Policies (POLICY_COMPLIANCE_SESSION_2026-01-08.md)
-│ ├── Governance (governance/GOVERNANCE_PATTERNS.md)
-│ └── Access (REPOSITORY_ARCHITECTURE_DIAGRAMS.md)
-│
-├── Troubleshooting (TROUBLESHOOTING.md)
-│ ├── FAQ (FAQ.md)
-│ ├── Error Log (troubleshooting/error_log.md)
-│ └── Common Issues (TROUBLESHOOTING_GUIDE.md)
-│
-└── Reference
- ├── Roadmap (ROADMAP.md)
- ├── Changelog (CHANGELOG.md)
- └── Glossary (TERMINOLOGY_MIGRATION.md)
+ Quick Start (getting-started.md)
+ Local Setup (LOCAL_DEV_ENV_SETUP.md)
+ Installation (INSTALLATION.md)
+ Tutorial (quickstart.md)
+
+ Documentation Index (DOC_KNOWLEDGE_GRAPH_INDEX.md) YOU ARE HERE
+ Navigation Guide (DOC_OPERATIONAL_RUNBOOK.md)
+ Health Dashboard (DOC_HEALTH_DASHBOARD.html)
+ Category Indexes (see below)
+
+ API Reference (api/index.md)
+ Integration Guide (INTEGRATION_MASTER_GUIDE.md)
+ API Catalog (api_catalog.md)
+ Integration Examples (INTEGRATION_EXAMPLES.md)
+
+ Architecture (architecture.md)
+ System Design (REPOSITORY_ARCHITECTURE_DIAGRAMS.md)
+ Pipeline (architecture/codex_pipeline.md)
+ Performance (PERFORMANCE_MASTER_GUIDE.md)
+
+ Cognitive Brain (cognitive_brain/index.md)
+ Evolution Timeline (evolution/EVOLUTION_TIMELINE.md)
+ AI Agency Score (evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md)
+ Status (COGNITIVE_BRAIN_STATUS_PHASE_11_X_COMPLETE.md)
+
+ Deployment (deployment/DEPLOYMENT_GUIDE.md)
+ Local Deployment (deployment/LOCAL_DEPLOYMENT_GUIDE.md)
+ Verification (deployment/DEPLOYMENT_VERIFICATION_CHECKLIST.md)
+ Operations (ops/RUNBOOK.md)
+
+ CI/CD (ci/INDEX.md)
+ Workflow Index (WORKFLOW_QUICK_REFERENCE.md)
+ CI Rescue (ci/CI_RESCUE_PIPELINE.md)
+ Failure Analysis (ci/CI_FAILURE_ANALYSIS.md)
+
+ Contributing (CONTRIBUTING.md)
+ Code Style (guides/code_style_guide.md)
+ Testing (TESTING.md)
+ Code Review (CODE_REVIEW_GUIDE.md)
+
+ Security (SECURITY.md)
+ Safety Guide (safety/safety_guide.md)
+ Secret Management (SECRETS_RUNBOOK.md) # pragma: allowlist secret
+ Alert Audit (SECURITY_ALERT_AUDIT_REPORT.md)
+
+ Admin (REPO_ADMIN_IMPLEMENTATION_DECISIONS.md)
+ Policies (POLICY_COMPLIANCE_SESSION_2026-01-08.md)
+ Governance (governance/GOVERNANCE_PATTERNS.md)
+ Access (REPOSITORY_ARCHITECTURE_DIAGRAMS.md)
+
+ Troubleshooting (TROUBLESHOOTING.md)
+ FAQ (FAQ.md)
+ Error Log (troubleshooting/error_log.md)
+ Common Issues (TROUBLESHOOTING_GUIDE.md)
+
+ Reference
+ Roadmap (ROADMAP.md)
+ Changelog (CHANGELOG.md)
+ Glossary (TERMINOLOGY_MIGRATION.md)
 ```
 
 ---
@@ -99,13 +99,13 @@ Home (index.md)
 **Example Navigation Flow**:
 ```
 User wants to "Integrate with REST API"
- → Start: api/index.md
- → Read: INTEGRATION_MASTER_GUIDE.md
- → Example: INTEGRATION_EXAMPLES.md
- → Implement: [SDK docs]
- → Deploy: deployment/DEPLOYMENT_GUIDE.md
- → Monitor: ops/monitoring.md
- → Troubleshoot: TROUBLESHOOTING_GUIDE.md
+ Start: api/index.md
+ Read: INTEGRATION_MASTER_GUIDE.md
+ Example: INTEGRATION_EXAMPLES.md
+ Implement: [SDK docs]
+ Deploy: deployment/DEPLOYMENT_GUIDE.md
+ Monitor: ops/monitoring.md
+ Troubleshoot: TROUBLESHOOTING_GUIDE.md
 ```
 
 ---
@@ -313,19 +313,19 @@ User wants to "Integrate with REST API"
 
 ```
 Getting Started
- ↓
+ 
 Local Setup (LOCAL_DEV_ENV_SETUP.md)
- ↓
-Contributing (CONTRIBUTING.md) → Code Style (CODE_STYLE_GUIDE.md)
- ↓
-Testing (TESTING.md) → Quality Gates (QUALITY_GATES.md)
- ↓
+ 
+Contributing (CONTRIBUTING.md) Code Style (CODE_STYLE_GUIDE.md)
+ 
+Testing (TESTING.md) Quality Gates (QUALITY_GATES.md)
+ 
 Architecture (architecture.md) [parallel]
- ↓
+ 
 Deployment (deployment/DEPLOYMENT_GUIDE.md)
- ↓
-Operations (ops/RUNBOOK.md) → Monitoring (ops/monitoring.md)
- ↓
+ 
+Operations (ops/RUNBOOK.md) Monitoring (ops/monitoring.md)
+ 
 Troubleshooting (TROUBLESHOOTING.md)
 ```
 

@@ -232,17 +232,17 @@ name: Capability Quality Gate
 on: [push, pull_request]
 
 jobs:
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run Audit
-        run: python scripts/space_traversal/audit_runner.py run
-      - name: Check Thresholds
-        run: |
-          python scripts/check_audit_thresholds.py \
-            --min-score 0.70 \
-            --min-average 0.85
+ audit:
+ runs-on: ubuntu-latest
+ steps:
+ - uses: actions/checkout@v3
+ - name: Run Audit
+ run: python scripts/space_traversal/audit_runner.py run
+ - name: Check Thresholds
+ run: |
+ python scripts/check_audit_thresholds.py \
+ --min-score 0.70 \
+ --min-average 0.85
 ```
 
 **Script to Create**: `scripts/check_audit_thresholds.py`
@@ -325,7 +325,7 @@ Each major task should result in a commit with:
 
 ### Recommended Commit Messages
 ```
-Batch 13 activation: 25/25 tests passing, +10.2% coverage (30.4% → 40.6%)
+Batch 13 activation: 25/25 tests passing, +10.2% coverage (30.4% 40.6%)
 Push final 5 capabilities above 0.70 threshold
 Batch 14-15 activation: 46/46 tests passing, +18% coverage
 Optimize test detection: +0.15 avg test score improvement

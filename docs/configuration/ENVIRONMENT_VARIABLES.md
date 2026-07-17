@@ -120,7 +120,7 @@ RAY_ADDRESS=local
 RAY_ADDRESS=ray://cluster.example.com:10001
 RAY_NUM_CPUS=16
 RAY_NUM_GPUS=2
-RAY_MEMORY=67108864000  # 62.5 GB
+RAY_MEMORY=67108864000 # 62.5 GB
 ```
 
 ---
@@ -180,10 +180,10 @@ JAEGER_AGENT_PORT=6831
 **Example:**
 ```bash
 JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRY=7200  # 2 hours
+JWT_EXPIRY=7200 # 2 hours
 SSL_CERT_PATH=/etc/ssl/certs/server.crt
 SSL_KEY_PATH=/etc/ssl/private/server.key
-SESSION_TIMEOUT=3600  # 1 hour
+SESSION_TIMEOUT=3600 # 1 hour
 ```
 
 ---
@@ -234,7 +234,7 @@ MCP_BACKEND=mock
 ```bash
 # Production requirements
 ENVIRONMENT=production
-DEBUG=False  # ️ NEVER set to True in production
+DEBUG=False # NEVER set to True in production
 LOG_LEVEL=WARNING
 DATABASE_URL=******db.production.svc/codex
 MCP_BACKEND=pinecone
@@ -269,19 +269,19 @@ workers = int(os.getenv("WORKERS", "4"))
 # Use .env file
 ENV_FILE=.env.production
 RUN --mount=type=secret,id=env \
-    source /run/secrets/env && \
-    echo "Database: ${DATABASE_URL}"
+ source /run/secrets/env && \
+ echo "Database: ${DATABASE_URL}"
 ```
 
 ## Docker Compose
 
 ```yaml
 services:
-  api:
-    env_file: .env.production
-    environment:
-      - ENVIRONMENT=production
-      - DEBUG=False
+ api:
+ env_file: .env.production
+ environment:
+ - ENVIRONMENT=production
+ - DEBUG=False
 ```
 
 ---
@@ -300,9 +300,9 @@ required = ['ENVIRONMENT', 'DATABASE_URL', 'SECRET_KEY']
 missing = [var for var in required if not os.getenv(var)]
 
 if missing:
-    print(f' Missing variables: {missing}')
+ print(f' Missing variables: {missing}')
 else:
-    print(' All required variables set')
+ print(' All required variables set')
 "
 ```
 

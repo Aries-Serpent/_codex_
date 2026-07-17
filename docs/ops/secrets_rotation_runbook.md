@@ -57,7 +57,7 @@ key = base64.b64encode(secrets.token_bytes(32)).decode()
 print(f'New key ({len(key)} chars): {key}')
 "
 # Example output: New key (44 chars): <base64-string>
-# ️ Store this value in your password manager BEFORE proceeding
+# Store this value in your password manager BEFORE proceeding
 ```
 
 **Never generate keys inside CI/CD.** Keys generated on ephemeral runners are
@@ -73,8 +73,8 @@ transient and may be exposed via logs if `set -x` is active.
 ```bash
 # Using GitHub CLI (requires `admin:repo` scope)
 gh secret set CODEX_BACKUP_KEY \
-  --repo Aries-Serpent/_codex_ \
-  --body "<CURRENT_MASTER_KEY_VALUE>"
+ --repo Aries-Serpent/_codex_ \
+ --body "<CURRENT_MASTER_KEY_VALUE>"
 ```
 
 This opens a 48-hour grace window during which both keys are accepted.
@@ -85,8 +85,8 @@ This opens a 48-hour grace window during which both keys are accepted.
 
 ```bash
 gh secret set CODEX_MASTER_KEY \
-  --repo Aries-Serpent/_codex_ \
-  --body "<NEW_KEY_VALUE>"
+ --repo Aries-Serpent/_codex_ \
+ --body "<NEW_KEY_VALUE>"
 ```
 
 ---
@@ -96,8 +96,8 @@ gh secret set CODEX_MASTER_KEY \
 ```bash
 # Trigger a manual CI run to confirm the new key works
 gh workflow run resilient_validation.yml \
-  --repo Aries-Serpent/_codex_ \
-  --ref main
+ --repo Aries-Serpent/_codex_ \
+ --ref main
 
 # Monitor for success (wait ~10 min)
 gh run watch --repo Aries-Serpent/_codex_
@@ -117,8 +117,8 @@ Once validation is confirmed:
 ```bash
 # Set BACKUP_KEY to empty string (disables fallback)
 gh secret set CODEX_BACKUP_KEY \
-  --repo Aries-Serpent/_codex_ \
-  --body ""
+ --repo Aries-Serpent/_codex_ \
+ --body ""
 ```
 
 > **Note**: GitHub does not support deleting secrets via CLI in all plan tiers.
@@ -155,23 +155,23 @@ All code consuming `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` must follow this patt
 import os
 
 def _get_active_key() -> bytes:
-    """Return master key, falling back to backup key during rotation window."""
-    master = os.environ.get("CODEX_MASTER_KEY", "").strip()
-    backup = os.environ.get("CODEX_BACKUP_KEY", "").strip()
-    if master:
-        return master.encode()
-    if backup:
-        import warnings
-        warnings.warn(
-            "CODEX_MASTER_KEY unset — using CODEX_BACKUP_KEY (rotation window)",
-            RuntimeWarning,
-            stacklevel=2,
-        )
-        return backup.encode()
-    raise EnvironmentError(
-        "Neither CODEX_MASTER_KEY nor CODEX_BACKUP_KEY is set. "
-        "Cannot proceed with encrypted operations."
-    )
+ """Return master key, falling back to backup key during rotation window."""
+ master = os.environ.get("CODEX_MASTER_KEY", "").strip()
+ backup = os.environ.get("CODEX_BACKUP_KEY", "").strip()
+ if master:
+ return master.encode()
+ if backup:
+ import warnings
+ warnings.warn(
+ "CODEX_MASTER_KEY unset — using CODEX_BACKUP_KEY (rotation window)",
+ RuntimeWarning,
+ stacklevel=2,
+ )
+ return backup.encode()
+ raise EnvironmentError(
+ "Neither CODEX_MASTER_KEY nor CODEX_BACKUP_KEY is set. "
+ "Cannot proceed with encrypted operations."
+ )
 ```
 
 ---

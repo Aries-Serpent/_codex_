@@ -96,7 +96,7 @@ Comprehensive analysis and resolution of CI/CD pipeline failures for PR #2968. I
 ruff check --fix --unsafe-fixes .codex/agents/
 
 # Manual fixes
-- Renamed variable `l` → `line` (E741)
+- Renamed variable `l` `line` (E741)
 - Removed unused variable `e` (F841)
 ```
 
@@ -111,16 +111,16 @@ ruff check --fix --unsafe-fixes .codex/agents/
 **Problem:**
 ```python
 def test_f1_micro_handles_zero_division():
-    metric.update([0, 0], [0, 0])
-    assert metric.compute()["f1_score"] == 0.0  #  WRONG
+ metric.update([0, 0], [0, 0])
+ assert metric.compute()["f1_score"] == 0.0 # WRONG
 ```
 
 **Solution:**
 ```python
 def test_f1_micro_handles_zero_division():
-    metric.update([0, 0], [0, 0])
-    # When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)
-    assert metric.compute()["f1_score"] == 1.0  #  CORRECT
+ metric.update([0, 0], [0, 0])
+ # When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)
+ assert metric.compute()["f1_score"] == 1.0 # CORRECT
 ```
 
 **Rationale:** When all predictions and labels match perfectly (even if single class), F1 score = 1.0
@@ -148,22 +148,22 @@ ValueError: Duplicated timeseries in CollectorRegistry:
 ```python
 @pytest.fixture(autouse=True)
 def clear_prometheus_registry():
-    """Clear Prometheus registry between tests to prevent collision."""
-    from prometheus_client import REGISTRY
+ """Clear Prometheus registry between tests to prevent collision."""
+ from prometheus_client import REGISTRY
 
-    # Save collectors before test
-    collectors_before = list(REGISTRY._collector_to_names.keys())
+ # Save collectors before test
+ collectors_before = list(REGISTRY._collector_to_names.keys())
 
-    yield
+ yield
 
-    # Clean up collectors added during test
-    collectors_after = list(REGISTRY._collector_to_names.keys())
-    for collector in collectors_after:
-        if collector not in collectors_before:
-            try:
-                REGISTRY.unregister(collector)
-            except Exception:
-                pass
+ # Clean up collectors added during test
+ collectors_after = list(REGISTRY._collector_to_names.keys())
+ for collector in collectors_after:
+ if collector not in collectors_before:
+ try:
+ REGISTRY.unregister(collector)
+ except Exception:
+ pass
 ```
 
 **Verification:**
@@ -180,13 +180,13 @@ tests/test_prometheus_metrics.py ........... (11 tests) PASSED
 **Problem:**
 ```python
 audit = AuditResult(
-    repo_name="test/repo",       #  Not in dataclass
-    audit_id="audit_001",
-    compliance_score=0.75,       #  Wrong parameter name
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact="moderate"   #  Should be float
+ repo_name="test/repo", # Not in dataclass
+ audit_id="audit_001",
+ compliance_score=0.75, # Wrong parameter name
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact="moderate" # Should be float
 )
 ```
 
@@ -194,23 +194,23 @@ audit = AuditResult(
 ```python
 @dataclass
 class AuditResult:
-    audit_id: str
-    score: float              #  Not 'compliance_score'
-    risk_level: str
-    remediation_cost: float
-    business_impact: float    #  Float 0-1, not string
-    violations: List[str]
+ audit_id: str
+ score: float # Not 'compliance_score'
+ risk_level: str
+ remediation_cost: float
+ business_impact: float # Float 0-1, not string
+ violations: List[str]
 ```
 
 **Solution:**
 ```python
 audit = AuditResult(
-    audit_id="audit_001",
-    score=0.75,              #  Correct parameter
-    violations=["missing-license"],
-    risk_level="medium",
-    remediation_cost=2.5,
-    business_impact=0.5      #  Float 0-1
+ audit_id="audit_001",
+ score=0.75, # Correct parameter
+ violations=["missing-license"],
+ risk_level="medium",
+ remediation_cost=2.5,
+ business_impact=0.5 # Float 0-1
 )
 ```
 
@@ -231,11 +231,11 @@ because it has a __init__ constructor
 **Solution:** Renamed classes + backward compatibility:
 ```text
 # Before
-class TestExecutionMetrics:  #  Confuses pytest
+class TestExecutionMetrics: # Confuses pytest
 class TestExecutionPriority:
 
 # After
-class ExecutionMetrics:      #  Clean name
+class ExecutionMetrics: # Clean name
 class ExecutionPriority:
 
 # Backward compatibility in __init__.py
@@ -251,12 +251,12 @@ TestExecutionPriority = ExecutionPriority
 
 **Problem:**
 ```python
-assessment = assessor.assess(audit)  #  Wrong method name
+assessment = assessor.assess(audit) # Wrong method name
 ```
 
 **Solution:**
 ```python
-assessment = assessor.assess_compliance(audit)  #  Correct method
+assessment = assessor.assess_compliance(audit) # Correct method
 ```
 
 ---
@@ -268,27 +268,27 @@ assessment = assessor.assess_compliance(audit)  #  Correct method
 **Problem:**
 ```python
 assert assessment.decision in [
-    ComplianceDecision.APPROVE,
-    ComplianceDecision.CONDITIONAL,  #  Wrong enum value
-    ComplianceDecision.REJECT
+ ComplianceDecision.APPROVE,
+ ComplianceDecision.CONDITIONAL, # Wrong enum value
+ ComplianceDecision.REJECT
 ]
 ```
 
 **Actual Enum:**
 ```python
 class ComplianceDecision(Enum):
-    APPROVE = "approve"
-    APPROVE_WITH_MONITORING = "approve_with_monitoring"
-    REJECT = "reject"
-    CONDITIONAL_APPROVAL = "conditional_approval"  #  Correct name
+ APPROVE = "approve"
+ APPROVE_WITH_MONITORING = "approve_with_monitoring"
+ REJECT = "reject"
+ CONDITIONAL_APPROVAL = "conditional_approval" # Correct name
 ```
 
 **Solution:**
 ```python
 assert assessment.decision in [
-    ComplianceDecision.APPROVE,
-    ComplianceDecision.CONDITIONAL_APPROVAL,  #  Fixed
-    ComplianceDecision.REJECT
+ ComplianceDecision.APPROVE,
+ ComplianceDecision.CONDITIONAL_APPROVAL, # Fixed
+ ComplianceDecision.REJECT
 ]
 ```
 
@@ -309,12 +309,12 @@ assert assessment.decision in [
 mkdir -p configs/hydra/data/
 cat > configs/hydra/data/base.yaml << 'EOF'
 defaults:
-  - _self_
+ - _self_
 
 data:
-  batch_size: 32
-  num_workers: 4
-  shuffle: true
+ batch_size: 32
+ num_workers: 4
+ shuffle: true
 EOF
 ```
 

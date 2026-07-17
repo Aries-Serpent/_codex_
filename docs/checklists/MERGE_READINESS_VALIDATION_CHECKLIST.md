@@ -113,19 +113,19 @@ python -m pip_audit --skip-editable --desc
 
 **Full WEC Block:**
 ```markdown
-##  Workflow Execution Checklist
+## Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 
-- [x] pre-merge-validation.yml        ← Always-required
-- [x] comment-review-gate.yml         ← Always-required
-- [x] deferral-language-gate.yml      ← Always-required
-- [x] agent-auth-delegation.yml       ← Always-required
-- [x] workflow-execution-gate.yml     ← Always-required (orchestrator)
-- [ ] copilot-agent-checkin.yml       ← Optional (checked if session active)
-- [ ] copilot-agent-session-done.yml  ← Optional (checked if awaiting closure)
-- [ ] copilot-iterative-self-healing.yml ← Optional (checked if fixing flaky tests)
-- [x] cost-gate.yml                   ← Always-required
+- [x] pre-merge-validation.yml Always-required
+- [x] comment-review-gate.yml Always-required
+- [x] deferral-language-gate.yml Always-required
+- [x] agent-auth-delegation.yml Always-required
+- [x] workflow-execution-gate.yml Always-required (orchestrator)
+- [ ] copilot-agent-checkin.yml Optional (checked if session active)
+- [ ] copilot-agent-session-done.yml Optional (checked if awaiting closure)
+- [ ] copilot-iterative-self-healing.yml Optional (checked if fixing flaky tests)
+- [x] cost-gate.yml Always-required
 ```
 
 **If Failed:** PR cannot merge — agent must add canonical WEC block
@@ -180,12 +180,12 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 **Checklist:**
 - [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
-  ```bash
-  git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
  ```
 - [ ] `CHANGELOG.md` updated in latest commit
-  ```bash
-  git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
  ```
 - [ ] Entry format validated:
  - [ ] Timestamp: ISO-8601 format (YYYY-MM-DDTHH:MM:SSZ)
@@ -219,14 +219,14 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 **Checklist:**
 - [ ] All GitHub Actions in `.github/workflows/` use approved versions
-  ```bash
-  grep -r "uses: actions/" .github/workflows/ | grep -v "@v5\|@v8\|@v6"
+ ```bash
+ grep -r "uses: actions/" .github/workflows/ | grep -v "@v5\|@v8\|@v6"
  ```
  Should return: No results (empty)
 
 - [ ] If violations found, auto-fix applied:
-  ```bash
-  python scripts/ci/enforce_actions_versions.py --fix
+ ```bash
+ python scripts/ci/enforce_actions_versions.py --fix
  ```
 - [ ] Commit includes updated actions with new versions
 
@@ -276,14 +276,14 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 
 **Checklist:**
 - [ ] No unresolved merge conflicts
-  ```bash
-  git diff --name-only --diff-filter=U
-  # Should return: (empty)
+ ```bash
+ git diff --name-only --diff-filter=U
+ # Should return: (empty)
  ```
 - [ ] Branch is up-to-date with `main` (or documented reason for divergence)
-  ```bash
-  git merge-base --is-ancestor main HEAD
-  # Exit 0 = ancestor (up-to-date or ahead)
+ ```bash
+ git merge-base --is-ancestor main HEAD
+ # Exit 0 = ancestor (up-to-date or ahead)
  ```
 - [ ] All required branch protection rules satisfied
  - [ ] All status checks passing (green checkmarks)
@@ -319,7 +319,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 Before clicking "Merge", confirm:
 
 ```markdown
-##  Ready for Merge
+## Ready for Merge
 
 - [ ] All 10 gates passing (score = 100/100)
 - [ ] WEC section present with canonical format (9 items)
@@ -330,7 +330,7 @@ Before clicking "Merge", confirm:
 - [ ] AAIS V4.0 composite score ≥ 95/100
 - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
 
-**Merge Status:**  APPROVED FOR MERGE
+**Merge Status:** APPROVED FOR MERGE
 ```
 
 ---

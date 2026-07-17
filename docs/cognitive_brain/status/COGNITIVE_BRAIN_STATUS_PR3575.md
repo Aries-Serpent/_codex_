@@ -36,31 +36,31 @@
 
 flowchart TD
 
-    PR["PR body text line"] --> S1
+ PR["PR body text line"] --> S1
 
-    subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
-        S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
-        S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
-        S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
+ subgraph "Pre-processing: _INLINE_CODE_SPAN.sub('', line)"
+ S1["Step 1: Outer single-bt display wrapper\n` `` content `` `\ne.g. ` `` `future task` `` `"]
+ S2["Step 2: Double-backtick span\n`` content ``\ne.g. `` `future task` ``"]
+ S3["Step 3: Single-backtick span\n` content `\ne.g. `future task`"]
 
-        S1 --> S2 --> S3
-    end
+ S1 --> S2 --> S3
+ end
 
-    S3 --> SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
+ S3 --> SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
 
-    SCAN -->|match| EXEMPTION["Exemption check\n(# noqa, <!-- noqa -->, path anchors)"]
+ SCAN -->|match| EXEMPTION["Exemption check\n(# noqa, <!-- noqa -->, path anchors)"]
 
-    SCAN -->|no match| PASS[" PASS"]
+ SCAN -->|no match| PASS[" PASS"]
 
-    EXEMPTION -->|exempt| PASS
+ EXEMPTION -->|exempt| PASS
 
-    EXEMPTION -->|not exempt| FAIL[" FAIL — policy violation"]
+ EXEMPTION -->|not exempt| FAIL[" FAIL — policy violation"]
 
-    style S1 fill:#ffd700
-    style S2 fill:#98fb98
-    style S3 fill:#87ceeb
-    style PASS fill:#90EE90
-    style FAIL fill:#ff6b6b
+ style S1 fill:#ffd700
+ style S2 fill:#98fb98
+ style S3 fill:#87ceeb
+ style PASS fill:#90EE90
+ style FAIL fill:#ff6b6b
 ```
 
 **Three-tier priority order is mandatory**: outer-single-bt wrapper MUST be stripped before
@@ -102,31 +102,31 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 
 flowchart TD
 
-    ATD["Agent Token Delegation\nenabled"] --> CPF
+ ATD["Agent Token Delegation\nenabled"] --> CPF
 
-    subgraph CPF["cognitive-preflight job"]
-        R4["REQ-4: accountability_check"]
-        R5["REQ-5: changelog_check"]
-        AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
+ subgraph CPF["cognitive-preflight job"]
+ R4["REQ-4: accountability_check"]
+ R5["REQ-5: changelog_check"]
+ AFX["autofix_docs step\n(if REQ-4 OR REQ-5 failed)"]
 
-        R4 -->|FAIL| AFX
+ R4 -->|FAIL| AFX
 
-        R5 -->|FAIL| AFX
+ R5 -->|FAIL| AFX
 
-        AFX --> FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
+ AFX --> FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
 
-        FIX --> PUSH["git commit [skip ci]\ngit push → PR branch"]
+ FIX --> PUSH["git commit [skip ci]\ngit push PR branch"]
 
-        PUSH --> NEXT["Next non-skip run:\nREQ-4  REQ-5 "]
-    end
+ PUSH --> NEXT["Next non-skip run:\nREQ-4 REQ-5 "]
+ end
 
-    R4 -->|PASS| DONE[" continue"]
+ R4 -->|PASS| DONE[" continue"]
 
-    R5 -->|PASS| DONE
+ R5 -->|PASS| DONE
 
-    style AFX fill:#ffd700
-    style FIX fill:#98fb98
-    style DONE fill:#90EE90
+ style AFX fill:#ffd700
+ style FIX fill:#98fb98
+ style DONE fill:#90EE90
 ```
 
 ---
@@ -136,22 +136,22 @@ flowchart TD
 ### Pattern #24 (PREFLIGHT_001 — Updated)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
-  auto_fixable: true
-  fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
-  workflow_step: "agent-auth-delegation.yml:autofix_docs"
-  sessions_affected: [22, 23, 24]
+ description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+ auto_fixable: true
+ fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
+ workflow_step: "agent-auth-delegation.yml:autofix_docs"
+ sessions_affected: [22, 23, 24]
 ```
 
 ### Pattern #25 (DEFERRAL_001 — Updated Session 24)
 ```yaml
 - id: deferral_language_gate_false_positive
-  description: "PR description contains nested backtick code span examples triggering scanner"
-  three_tier_fix:
-    tier_1: "outer ` `` content `` ` display wrapper — strip FIRST"
-    tier_2: "double-backtick span `` content `` — strip SECOND"
-    tier_3: "single-backtick span `content` — strip THIRD"
-  sessions_affected: [22, 23, 24]
+ description: "PR description contains nested backtick code span examples triggering scanner"
+ three_tier_fix:
+ tier_1: "outer ` `` content `` ` display wrapper — strip FIRST"
+ tier_2: "double-backtick span `` content `` — strip SECOND"
+ tier_3: "single-backtick span `content` — strip THIRD"
+ sessions_affected: [22, 23, 24]
 ```
 
 ---
@@ -239,25 +239,25 @@ that the scanner is designed to catch. These appear as plain text (not code span
 ## Architecture Diagram: Auto-Fix Flow
 
 ```
-Agent Token Delegation enabled  # pragma: allowlist secret
-         │
-         ▼
-┌─────────────────────────────────────────────────────────┐
-│            cognitive-preflight job                       │
-│                                                          │
-│  REQ-4: accountability_check ──── PASS ──► continue     │
-│                     │                                    │
-│                   FAIL                                   │
-│                     ▼                                    │
-│  REQ-5: changelog_check ─────── PASS/FAIL               │
-│                     │                                    │
-│  Auto-fix step (always, if REQ-4 or REQ-5 failed):      │
-│    1. session_wrapup_autofix.py --fix-accountability     │
-│                                 --fix-changelog          │
-│    2. git add + git commit [skip ci]                     │
-│    3. git push → PR branch (CODEX_MASTER_KEY)           │
-│    4. Next non-skip run: REQ-4 , REQ-5               │
-└─────────────────────────────────────────────────────────┘
+Agent Token Delegation enabled # pragma: allowlist secret
+ 
+ 
+
+ cognitive-preflight job 
+ 
+ REQ-4: accountability_check PASS continue 
+ 
+ FAIL 
+ 
+ REQ-5: changelog_check PASS/FAIL 
+ 
+ Auto-fix step (always, if REQ-4 or REQ-5 failed): 
+ 1. session_wrapup_autofix.py --fix-accountability 
+ --fix-changelog 
+ 2. git add + git commit [skip ci] 
+ 3. git push PR branch (CODEX_MASTER_KEY) 
+ 4. Next non-skip run: REQ-4 , REQ-5 
+
 ```
 
 ---
@@ -267,24 +267,24 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 ### New Pattern Added (Pattern #20)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
-  trigger: "Cognitive Pre-flight REQ-4 failure"
-  auto_fixable: true
-  fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
-  workflow_step: "agent-auth-delegation.yml:autofix_docs"
-  frequency: high
-  sessions_affected: [22, 21, 20, 19, 18]
+ description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+ trigger: "Cognitive Pre-flight REQ-4 failure"
+ auto_fixable: true
+ fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
+ workflow_step: "agent-auth-delegation.yml:autofix_docs"
+ frequency: high
+ sessions_affected: [22, 21, 20, 19, 18]
 ```
 
 ### Updated Pattern (Pattern #5)
 ```yaml
 - id: deferral_language_gate_false_positive
-  description: "PR description contains example deferral phrases triggering false positive"
-  trigger: "Deferral Language Gate PR_SCAN failure"
-  auto_fixable: false  # Requires PR description update
-  fix_guidance: "Wrap example phrases in backtick code spans OR add <!-- noqa: deferral --> comment"
-  frequency: medium
-  sessions_affected: [22]
+ description: "PR description contains example deferral phrases triggering false positive"
+ trigger: "Deferral Language Gate PR_SCAN failure"
+ auto_fixable: false # Requires PR description update
+ fix_guidance: "Wrap example phrases in backtick code spans OR add <!-- noqa: deferral --> comment"
+ frequency: medium
+ sessions_affected: [22]
 ```
 
 ---

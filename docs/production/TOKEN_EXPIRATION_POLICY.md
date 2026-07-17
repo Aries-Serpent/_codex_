@@ -8,10 +8,10 @@
 **For 90-day rotation tokens** (e.g., CODEX_MASTER_KEY):
 
 ```
-Day 75: 📧 Email to security team
-Day 80: 📧 Second email
-Day 85:  Daily alerts
-Day 90:  ROTATION REQUIRED
+Day 75: Email to security team
+Day 80: Second email
+Day 85: Daily alerts
+Day 90: ROTATION REQUIRED
 ```
 
 ### 2.2 Token Types & Periods

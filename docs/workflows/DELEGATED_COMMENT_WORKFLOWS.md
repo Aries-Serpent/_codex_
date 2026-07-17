@@ -34,94 +34,94 @@ The diagram below shows all 32 commenting workflows grouped by purpose and conne
 %%{init: {'accessibility': {'title': 'Diagram showing "External Triggers", /"push / pull_request"\'}}%%
 
 graph TB
-    subgraph TRIGGERS["External Triggers"]
-        T1[/"push / pull_request"\]
-        T2[/"issue_comment"\]
-        T3[/"workflow_run (completed)"\]
-        T4[/"schedule / workflow_dispatch"\]
-        T5[/"issues (opened)"\]
-    end
+ subgraph TRIGGERS["External Triggers"]
+ T1[/"push / pull_request"\]
+ T2[/"issue_comment"\]
+ T3[/"workflow_run (completed)"\]
+ T4[/"schedule / workflow_dispatch"\]
+ T5[/"issues (opened)"\]
+ end
 
-    subgraph RESCUE[" CI Rescue Layer"]
-        R1["actionlint-audit.yml\n(JS+PY rescue)"]
-        R2["pre-merge-validation.yml\n(PY rescue)"]
-        R3["resilient_validation.yml\n(JS rescue ×2 shards)"]
-        R4["auto-fix-common-issues.yml\n(JS + PY rescue)"]
-        R5["auto-fix-pr-check.yml\n(PY rescue)"]
-        R6["ci-rescue.yml\n(PY inline fallback)"]
-        R7["validate.yml → rescue jobs"]
-        R8["reference-integrity.yml\n(JS gate failure)"]
-        R9["root-org-validation.yml\n(JS upsert)"]
-        R10["e-to-d-transition-gate.yml\n(JS self-heal notice)"]
-        R11["workflow-link-validation.yml\n(PY rescue)"]
-        R12["pages-scheduled-validation.yml\n(JS-CONCAT issue)"]
-    end
+ subgraph RESCUE[" CI Rescue Layer"]
+ R1["actionlint-audit.yml\n(JS+PY rescue)"]
+ R2["pre-merge-validation.yml\n(PY rescue)"]
+ R3["resilient_validation.yml\n(JS rescue ×2 shards)"]
+ R4["auto-fix-common-issues.yml\n(JS + PY rescue)"]
+ R5["auto-fix-pr-check.yml\n(PY rescue)"]
+ R6["ci-rescue.yml\n(PY inline fallback)"]
+ R7["validate.yml rescue jobs"]
+ R8["reference-integrity.yml\n(JS gate failure)"]
+ R9["root-org-validation.yml\n(JS upsert)"]
+ R10["e-to-d-transition-gate.yml\n(JS self-heal notice)"]
+ R11["workflow-link-validation.yml\n(PY rescue)"]
+ R12["pages-scheduled-validation.yml\n(JS-CONCAT issue)"]
+ end
 
-    subgraph SESSION[" Session Lifecycle"]
-        S1["agent-auth-delegation.yml\n(checklist + REQ-11 + rescue)"]
-        S2["copilot-agent-checkin.yml\n(missed-trigger + incomplete guard)"]
-        S3["copilot-agent-session-done.yml\n(retrigger + loop-break)"]
-        S4["session-watchdog.yml\n(timebox + exploration + expired)"]
-        S5["session-incremental-summary-reminder.yml"]
-        S6["copilot-session-chain.yml\n(BASH trigger + rescue)"]
-        S7["copilot-review-responder.yml\n(apply trigger + rescue)"]
-        S8["copilot-iterative-self-healing.yml\n(BASH escalation)"]
-    end
+ subgraph SESSION[" Session Lifecycle"]
+ S1["agent-auth-delegation.yml\n(checklist + REQ-11 + rescue)"]
+ S2["copilot-agent-checkin.yml\n(missed-trigger + incomplete guard)"]
+ S3["copilot-agent-session-done.yml\n(retrigger + loop-break)"]
+ S4["session-watchdog.yml\n(timebox + exploration + expired)"]
+ S5["session-incremental-summary-reminder.yml"]
+ S6["copilot-session-chain.yml\n(BASH trigger + rescue)"]
+ S7["copilot-review-responder.yml\n(apply trigger + rescue)"]
+ S8["copilot-iterative-self-healing.yml\n(BASH escalation)"]
+ end
 
-    subgraph HEALING[" Self-Healing Pipeline"]
-        H1["iterative-self-healing-ci.yml\n(BASH printf + heredoc)"]
-        H2["agent-handoff-gate.yml\n(JS-CONCAT gate)"]
-        H3["agent-registry-validation.yml\n(JS-CONCAT validation)"]
-    end
+ subgraph HEALING[" Self-Healing Pipeline"]
+ H1["iterative-self-healing-ci.yml\n(BASH printf + heredoc)"]
+ H2["agent-handoff-gate.yml\n(JS-CONCAT gate)"]
+ H3["agent-registry-validation.yml\n(JS-CONCAT validation)"]
+ end
 
-    subgraph COST[" Cost & Status"]
-        C1["cost-gate.yml\n(JS array master comment)"]
-        C2["pr-cost-check.yml\n(JS-TMPL + PY rescue)"]
-        C3["consolidated-pr-status.yml\n(post-pr-summary action)"]
-        C4["pr-size-analyzer.yml\n(PY rescue)"]
-        C5["pr-followup-generator.yml\n(JS-TMPL + PY rescue)"]
-    end
+ subgraph COST[" Cost & Status"]
+ C1["cost-gate.yml\n(JS array master comment)"]
+ C2["pr-cost-check.yml\n(JS-TMPL + PY rescue)"]
+ C3["consolidated-pr-status.yml\n(post-pr-summary action)"]
+ C4["pr-size-analyzer.yml\n(PY rescue)"]
+ C5["pr-followup-generator.yml\n(JS-TMPL + PY rescue)"]
+ end
 
-    subgraph TRIAGE["🔎 Triage & Telemetry"]
-        TG1["copilot-issue-triage.yml\n(JS triage array)"]
-        TG2["ci-failure-issue-creator.yml\n(JS issue + cross-link + auto-close)"]
-        TG3["telemetry-collection.yml\n(JS-CONCAT alert)"]
-        TG4["token-probe.yml\n(JS array probe result)"]
-        TG5["chatops_copilot_trigger.yml\n(curl + Python status/tier)"]
-    end
+ subgraph TRIAGE[" Triage & Telemetry"]
+ TG1["copilot-issue-triage.yml\n(JS triage array)"]
+ TG2["ci-failure-issue-creator.yml\n(JS issue + cross-link + auto-close)"]
+ TG3["telemetry-collection.yml\n(JS-CONCAT alert)"]
+ TG4["token-probe.yml\n(JS array probe result)"]
+ TG5["chatops_copilot_trigger.yml\n(curl + Python status/tier)"]
+ end
 
-    subgraph PREFLIGHT["✈️ Pre-flight Gates"]
-        PF1["pre-flight-validation.yml\n(JS-TMPL + PY rescue)"]
-        PF2["rust_swarm_ci.yml\n(JS-TMPL benchmarks + PY rescue)"]
-    end
+ subgraph PREFLIGHT[" Pre-flight Gates"]
+ PF1["pre-flight-validation.yml\n(JS-TMPL + PY rescue)"]
+ PF2["rust_swarm_ci.yml\n(JS-TMPL benchmarks + PY rescue)"]
+ end
 
-    T1 -->|PR push| RESCUE
+ T1 -->|PR push| RESCUE
 
-    T1 -->|PR push| SESSION
+ T1 -->|PR push| SESSION
 
-    T1 -->|PR push| COST
+ T1 -->|PR push| COST
 
-    T1 -->|PR push| PREFLIGHT
+ T1 -->|PR push| PREFLIGHT
 
-    T3 -->|CI fails on main| HEALING
+ T3 -->|CI fails on main| HEALING
 
-    T3 -->|CI fails on PR| RESCUE
+ T3 -->|CI fails on PR| RESCUE
 
-    T5 -->|Issue opened| TG1
+ T5 -->|Issue opened| TG1
 
-    T4 -->|Nightly / dispatch| TG3
+ T4 -->|Nightly / dispatch| TG3
 
-    T2 -->|"/copilot ..."| TG5
+ T2 -->|"/copilot ..."| TG5
 
-    T2 -->|"@copilot mention"| SESSION
+ T2 -->|"@copilot mention"| SESSION
 
-    H1 -->|"@copilot escalation"| SESSION
+ H1 -->|"@copilot escalation"| SESSION
 
-    TG2 -->|"Creates fix PR + @copilot"| SESSION
+ TG2 -->|"Creates fix PR + @copilot"| SESSION
 
-    S3 -->|"@copilot review"| S7
+ S3 -->|"@copilot review"| S7
 
-    S4 -->|"timebox/exploration markers"| S1
+ S4 -->|"timebox/exploration markers"| S1
 ```
 
 ---
@@ -175,50 +175,50 @@ graph TB
 Triggered whenever a PR check fails on `0D_base_`. As shown in [Issue #3779](https://github.com/Aries-Serpent/_codex_/issues/3779), **7 workflows can fire simultaneously** on the same commit.
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram showing  Run link,  Run link'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing Run link, Run link'}}%%
 
 sequenceDiagram
-    participant DEV as Developer push
-    participant GHA as GitHub Actions
-    participant R1 as pre-merge-validation
-    participant R2 as resilient_validation
-    participant R3 as auto-fix-common-issues
-    participant R4 as auto-fix-pr-check
-    participant R5 as validate.yml
-    participant R6 as agent-auth-delegation
-    participant PR as PR Comments
-    participant H1 as iterative-self-healing-ci
+ participant DEV as Developer push
+ participant GHA as GitHub Actions
+ participant R1 as pre-merge-validation
+ participant R2 as resilient_validation
+ participant R3 as auto-fix-common-issues
+ participant R4 as auto-fix-pr-check
+ participant R5 as validate.yml
+ participant R6 as agent-auth-delegation
+ participant PR as PR Comments
+ participant H1 as iterative-self-healing-ci
 
-    DEV->>GHA: push to 0D_base_
+ DEV->>GHA: push to 0D_base_
 
-    par Simultaneous triggers (all fire within seconds)
-        GHA->>R1: pull_request event
-        GHA->>R2: pull_request event
-        GHA->>R3: pull_request event
-        GHA->>R4: pull_request event
-        GHA->>R5: pull_request event
-        GHA->>R6: pull_request event
-    end
+ par Simultaneous triggers (all fire within seconds)
+ GHA->>R1: pull_request event
+ GHA->>R2: pull_request event
+ GHA->>R3: pull_request event
+ GHA->>R4: pull_request event
+ GHA->>R5: pull_request event
+ GHA->>R6: pull_request event
+ end
 
-    R1-->>PR:  rescue comment (PY-RESCUE)\n[ Run link]
+ R1-->>PR: rescue comment (PY-RESCUE)\n[ Run link]
 
-    R2-->>PR:  rescue comment (upsert)\n[ Run link]
+ R2-->>PR: rescue comment (upsert)\n[ Run link]
 
-    R3-->>PR:  auto-fix issues detected\n[ Run link]
+ R3-->>PR: auto-fix issues detected\n[ Run link]
 
-    R4-->>PR:  fix instructions\n[ Run link]
+ R4-->>PR: fix instructions\n[ Run link]
 
-    R5-->>PR:  rescue via ci-rescue.yml fallback\n[ Run link]
+ R5-->>PR: rescue via ci-rescue.yml fallback\n[ Run link]
 
-    R6-->>PR:  preflight checklist (upsert)\n[ Run link]
+ R6-->>PR: preflight checklist (upsert)\n[ Run link]
 
-    Note over PR: ️ Up to 6 separate rescue comments\ncan land on the same PR within 60 seconds
+ Note over PR: Up to 6 separate rescue comments\ncan land on the same PR within 60 seconds
 
-    GHA->>H1: workflow_run (completed, failure)
+ GHA->>H1: workflow_run (completed, failure)
 
-    H1-->>PR:  @copilot escalation prompt\n[ Run link]
+ H1-->>PR: @copilot escalation prompt\n[ Run link]
 
-    Note over PR: ️ iterative-self-healing ALSO fires\ncreating a 7th simultaneous poster
+ Note over PR: iterative-self-healing ALSO fires\ncreating a 7th simultaneous poster
 ```
 
 ### 3.2 Agent Auth Delegation — Cognitive Pre-flight
@@ -228,35 +228,35 @@ sequenceDiagram
 
 flowchart TD
 
-    A[pull_request opened / push] --> B{REQ-11: Is head an\nintegration branch?}
+ A[pull_request opened / push] --> B{REQ-11: Is head an\nintegration branch?}
 
-    B -- YES --> C[Post REQ-11 guard comment\nwith run link]
+ B -- YES --> C[Post REQ-11 guard comment\nwith run link]
 
-    B -- NO --> D[Cognitive Pre-flight job]
+ B -- NO --> D[Cognitive Pre-flight job]
 
-    D --> E{REQ-4: AGENT_ACCOUNTABILITY_REPORT\nupdated in last commit?}
+ D --> E{REQ-4: AGENT_ACCOUNTABILITY_REPORT\nupdated in last commit?}
 
-    E -- FAIL --> F[Post rescue comment\nPY-RESCUE + run link]
+ E -- FAIL --> F[Post rescue comment\nPY-RESCUE + run link]
 
-    E -- PASS --> G{REQ-3b: Empty commits?}
+ E -- PASS --> G{REQ-3b: Empty commits?}
 
-    G -- WARN --> H[WARN + continue]
+ G -- WARN --> H[WARN + continue]
 
-    G -- PASS --> I[Post preflight checklist\nJS-ARRAY upsert + run link]
+ G -- PASS --> I[Post preflight checklist\nJS-ARRAY upsert + run link]
 
-    D --> J[Surface Session-Type Directives]
+ D --> J[Surface Session-Type Directives]
 
-    J --> K{Has SESSION_TIMEBOX_START\nor SESSION_TYPE_EXPLORATION?}
+ J --> K{Has SESSION_TIMEBOX_START\nor SESSION_TYPE_EXPLORATION?}
 
-    K -- YES --> L[Post WF-002 directive comment\nJS lines.push + run link]
+ K -- YES --> L[Post WF-002 directive comment\nJS lines.push + run link]
 
-    K -- NO --> M[Skip]
+ K -- NO --> M[Skip]
 
-    I --> N{COPILOT_AGENT_AUTH_ENABLED?}
+ I --> N{COPILOT_AGENT_AUTH_ENABLED?}
 
-    N -- true --> O[Post @copilot checklist\nand await session]
+ N -- true --> O[Post @copilot checklist\nand await session]
 
-    N -- false --> P[Gate passes silently]
+ N -- false --> P[Gate passes silently]
 ```
 
 ### 3.3 Iterative Self-Healing Pipeline
@@ -266,29 +266,29 @@ flowchart TD
 
 flowchart LR
 
-    F[CI failure on main\nor PR branch] --> T[iterative-self-healing-ci\ntriage job]
+ F[CI failure on main\nor PR branch] --> T[iterative-self-healing-ci\ntriage job]
 
-    T --> P{Pattern\nidentified?}
+ T --> P{Pattern\nidentified?}
 
-    P -- Known pattern --> AF[auto_fix_common_issues.py]
+ P -- Known pattern --> AF[auto_fix_common_issues.py]
 
-    P -- Unknown / complex --> ESC[BASH printf → PR comment\n+ run link]
+ P -- Unknown / complex --> ESC[BASH printf PR comment\n+ run link]
 
-    AF --> OK{Fixed?}
+ AF --> OK{Fixed?}
 
-    OK -- YES --> CI[Push fix commit]
+ OK -- YES --> CI[Push fix commit]
 
-    OK -- NO --> CE[Copilot escalation heredoc\n→ gh pr comment + run link]
+ OK -- NO --> CE[Copilot escalation heredoc\n gh pr comment + run link]
 
-    CE --> COP[@copilot picks up\nnew session]
+ CE --> COP[@copilot picks up\nnew session]
 
-    F --> CH[copilot-iterative-self-healing\nbuild prompt from file]
+ F --> CH[copilot-iterative-self-healing\nbuild prompt from file]
 
-    CH --> GH[gh pr comment --body BODY\n+ run link appended]
+ CH --> GH[gh pr comment --body BODY\n+ run link appended]
 
-    style ESC fill:#f96,stroke:#c33
-    style CE fill:#f96,stroke:#c33
-    style GH fill:#f96,stroke:#c33
+ style ESC fill:#f96,stroke:#c33
+ style CE fill:#f96,stroke:#c33
+ style GH fill:#f96,stroke:#c33
 ```
 
 ### 3.4 Session Lifecycle (watchdog checkin session-done)
@@ -298,38 +298,38 @@ flowchart LR
 
 stateDiagram-v2
 
-    [*] --> Idle
+ [*] --> Idle
 
-    Idle --> TimeboxActive : User posts "~N minutes" comment\nsession-watchdog posts\nSESSION_TIMEBOX_START []
+ Idle --> TimeboxActive : User posts "~N minutes" comment\nsession-watchdog posts\nSESSION_TIMEBOX_START []
 
-    Idle --> ExplorationActive : User posts "exploration session"\nsession-watchdog posts\nSESSION_TYPE_EXPLORATION []
+ Idle --> ExplorationActive : User posts "exploration session"\nsession-watchdog posts\nSESSION_TYPE_EXPLORATION []
 
-    TimeboxActive --> TimeboxExpired : schedule check\nsession-watchdog posts\nSESSION_TIMEBOX_EXPIRED []
+ TimeboxActive --> TimeboxExpired : schedule check\nsession-watchdog posts\nSESSION_TIMEBOX_EXPIRED []
 
-    TimeboxExpired --> WaitingSummary : Agent must post\n## Session Summary
+ TimeboxExpired --> WaitingSummary : Agent must post\n## Session Summary
 
-    ExplorationActive --> NudgeSent : 10+ min silence\nsession-incremental-summary-reminder\nposts nudge []
+ ExplorationActive --> NudgeSent : 10+ min silence\nsession-incremental-summary-reminder\nposts nudge []
 
-    WaitingSummary --> Idle : Summary posted
+ WaitingSummary --> Idle : Summary posted
 
-    state "Agent Active" as AA {
+ state "Agent Active" as AA {
 
-        [*] --> SessionRunning
+ [*] --> SessionRunning
 
-        SessionRunning --> IncompleteSuspected : copilot-agent-checkin\ndetects missing attestation\nposts incomplete-session guard []
+ SessionRunning --> IncompleteSuspected : copilot-agent-checkin\ndetects missing attestation\nposts incomplete-session guard []
 
-        SessionRunning --> RescuePending : CI failure → rescue comment posted
+ SessionRunning --> RescuePending : CI failure rescue comment posted
 
-        RescuePending --> Retriggered : copilot-agent-session-done\ndetects unanswered rescue\nposts retrigger []
+ RescuePending --> Retriggered : copilot-agent-session-done\ndetects unanswered rescue\nposts retrigger []
 
-        Retriggered --> SessionRunning : @copilot picks up
+ Retriggered --> SessionRunning : @copilot picks up
 
-        IncompleteSuspected --> SessionRunning : Agent posts attestation
-    }
+ IncompleteSuspected --> SessionRunning : Agent posts attestation
+ }
 
-    Idle --> AA : @copilot comment on PR\nagent-auth-delegation fires []
+ Idle --> AA : @copilot comment on PR\nagent-auth-delegation fires []
 
-    AA --> Idle : session-done: @copilot review posted []
+ AA --> Idle : session-done: @copilot review posted []
 ```
 
 ### 3.5 Issue Triage & Telemetry
@@ -338,45 +338,45 @@ stateDiagram-v2
 %%{init: {'accessibility': {'title': 'Flowchart showing issues opened, copilot-issue-triage\nCopilot AI analysis'}}%%
 
 flowchart TD
-    subgraph ON_ISSUE_OPEN
+ subgraph ON_ISSUE_OPEN
 
-        I1[issues opened] --> IT[copilot-issue-triage\nCopilot AI analysis]
+ I1[issues opened] --> IT[copilot-issue-triage\nCopilot AI analysis]
 
-        IT --> IC[Post AI triage comment\nJS-ARRAY + run link]
+ IT --> IC[Post AI triage comment\nJS-ARRAY + run link]
 
-        IC --> LA[Apply labels\nseverity/type/component]
-    end
+ IC --> LA[Apply labels\nseverity/type/component]
+ end
 
-    subgraph ON_CI_FAIL_MAIN
+ subgraph ON_CI_FAIL_MAIN
 
-        CF[workflow_run failed on main] --> TR[ci-failure-issue-creator\ntriage job]
+ CF[workflow_run failed on main] --> TR[ci-failure-issue-creator\ntriage job]
 
-        TR --> SV{Severity}
+ TR --> SV{Severity}
 
-        SV -- critical --> ISS[Create GitHub issue\nJS-ARRAY body + run link]
+ SV -- critical --> ISS[Create GitHub issue\nJS-ARRAY body + run link]
 
-        ISS --> FPR[Create fix PR + @copilot\nJS-ARRAY body + run link]
+ ISS --> FPR[Create fix PR + @copilot\nJS-ARRAY body + run link]
 
-        FPR --> XL[Cross-link issue → PR\nJS inline + run link]
+ FPR --> XL[Cross-link issue PR\nJS inline + run link]
 
-        SV -- medium --> ISS2[Create issue only]
+ SV -- medium --> ISS2[Create issue only]
 
-        TR --> AC[On pass: auto-close matching issues\ncomment + run link]
-    end
+ TR --> AC[On pass: auto-close matching issues\ncomment + run link]
+ end
 
-    subgraph TELEMETRY
+ subgraph TELEMETRY
 
-        SCH[schedule] --> TEL[telemetry-collection]
+ SCH[schedule] --> TEL[telemetry-collection]
 
-        TEL --> ANA[Analyse 7-day patterns]
+ TEL --> ANA[Analyse 7-day patterns]
 
-        ANA --> ALT{Failure rate > threshold?}
+ ANA --> ALT{Failure rate > threshold?}
 
-        ALT -- YES --> ICS[Create ci-health-alert issue\nJS-CONCAT body + run link]
-    end
+ ALT -- YES --> ICS[Create ci-health-alert issue\nJS-CONCAT body + run link]
+ end
 
-    IT --> TR2[ci-failure-issue-creator may also\ncreate issue for same event]
-    TR2 -.->|"RISK: duplicate issue + triage\ncomments on same event"| RISK((️))
+ IT --> TR2[ci-failure-issue-creator may also\ncreate issue for same event]
+ TR2 -.->|"RISK: duplicate issue + triage\ncomments on same event"| RISK(())
 ```
 
 ### 3.6 Cost Gate & PR Status Dashboard
@@ -385,48 +385,48 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Flowchart showing "Caller Workflows (via workflow_call)", pre-merge-validation'}}%%
 
 flowchart LR
-    subgraph CALLERS["Caller Workflows (via workflow_call)"]
-        W1[pre-merge-validation]
-        W2[resilient_validation]
-        W3[validate.yml]
-        W4[... N more callers]
-    end
+ subgraph CALLERS["Caller Workflows (via workflow_call)"]
+ W1[pre-merge-validation]
+ W2[resilient_validation]
+ W3[validate.yml]
+ W4[... N more callers]
+ end
 
-    subgraph COST_GATE["cost-gate.yml (grouped master comment)"]
-        CG[Build section per caller\n+ summary table]
+ subgraph COST_GATE["cost-gate.yml (grouped master comment)"]
+ CG[Build section per caller\n+ summary table]
 
-        CG --> MC{Master comment\nexists?}
+ CG --> MC{Master comment\nexists?}
 
-        MC -- YES --> UP[updateComment\nretry loop, max 3]
+ MC -- YES --> UP[updateComment\nretry loop, max 3]
 
-        MC -- NO --> CR[createComment\nJS-ARRAY + run link]
+ MC -- NO --> CR[createComment\nJS-ARRAY + run link]
 
-        UP --> RCR[Race condition risk:\nmultiple callers update\nsame comment simultaneously]
-    end
+ UP --> RCR[Race condition risk:\nmultiple callers update\nsame comment simultaneously]
+ end
 
-    subgraph DASHBOARD["consolidated-pr-status.yml\n(post-pr-summary action)"]
-        PS[pr_comment_consolidator.py]
+ subgraph DASHBOARD["consolidated-pr-status.yml\n(post-pr-summary action)"]
+ PS[pr_comment_consolidator.py]
 
-        PS --> DM{Dashboard comment\nexists?}
+ PS --> DM{Dashboard comment\nexists?}
 
-        DM -- YES --> DU[updateComment\nwith DETAILS + run link]
+ DM -- YES --> DU[updateComment\nwith DETAILS + run link]
 
-        DM -- NO --> DC[createComment]
-    end
+ DM -- NO --> DC[createComment]
+ end
 
-    W1 -->|workflow_call| COST_GATE
+ W1 -->|workflow_call| COST_GATE
 
-    W2 -->|workflow_call| COST_GATE
+ W2 -->|workflow_call| COST_GATE
 
-    W3 -->|workflow_call| COST_GATE
+ W3 -->|workflow_call| COST_GATE
 
-    W4 -->|workflow_call| COST_GATE
+ W4 -->|workflow_call| COST_GATE
 
-    W1 -->|workflow_call| DASHBOARD
+ W1 -->|workflow_call| DASHBOARD
 
-    W2 -->|workflow_call| DASHBOARD
+ W2 -->|workflow_call| DASHBOARD
 
-    RCR -.->|"documented: 3-attempt retry\nwith linear back-off"| NOTE((ℹ️))
+ RCR -.->|"documented: 3-attempt retry\nwith linear back-off"| NOTE((ℹ))
 ```
 
 ---
@@ -452,26 +452,26 @@ From issue #3779 (2026-03-29, 46 failures, 13 affected workflows):
 ```
 Timeline of PR #3790 / 0D_base_ simultaneous triggers (UTC):
 
-03:04  → auto-fix-common-issues #1746, auto-fix-pr-check #1411, resilient_validation #1471
-           ↳ All fail on same commit → 3 rescue comments posted within 30 seconds
+03:04 auto-fix-common-issues #1746, auto-fix-pr-check #1411, resilient_validation #1471
+ All fail on same commit 3 rescue comments posted within 30 seconds
 
-07:03  → auto-fix-common-issues #1751, auto-fix-pr-check #1416, validate.yml #1215
-           ↳ 3 more rescue comments posted within 30 seconds on same PR
+07:03 auto-fix-common-issues #1751, auto-fix-pr-check #1416, validate.yml #1215
+ 3 more rescue comments posted within 30 seconds on same PR
 
-07:36  → auto-fix-common-issues #1752, auto-fix-pr-check #1417, validate.yml #1216
-           ↳ 3 more (6 total for this commit batch)
+07:36 auto-fix-common-issues #1752, auto-fix-pr-check #1417, validate.yml #1216
+ 3 more (6 total for this commit batch)
 
-07:59  → auto-fix-common-issues #1753, auto-fix-pr-check #1418, validate.yml #1217,
-           pre-merge-validation #2915
-           ↳ 4 workflows fire; rescue comment spam reaches maximum
+07:59 auto-fix-common-issues #1753, auto-fix-pr-check #1418, validate.yml #1217,
+ pre-merge-validation #2915
+ 4 workflows fire; rescue comment spam reaches maximum
 
-12:36  → agent-auth-delegation #2872 fails REQ-4 (auto-merge commit b2f3b75
-           did not touch .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
-           ↳ Self-healer commits 5913b4f with [skip ci] — no re-trigger
-           ↳ agent-auth-delegation #2873 still fails on next push
+12:36 agent-auth-delegation #2872 fails REQ-4 (auto-merge commit b2f3b75
+ did not touch .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+ Self-healer commits 5913b4f with [skip ci] — no re-trigger
+ agent-auth-delegation #2873 still fails on next push
 
-12:37  → validate.yml #1220, pre-merge-validation #2922, agent-auth-delegation #2873
-           ↳ All fire simultaneously; 3 separate "CI Rescue" comments land within 10 seconds
+12:37 validate.yml #1220, pre-merge-validation #2922, agent-auth-delegation #2873
+ All fire simultaneously; 3 separate "CI Rescue" comments land within 10 seconds
 ```
 
 ### 4.3 Root-Cause Patterns

@@ -118,29 +118,29 @@ flowchart LR
 
 ```
 _codex_/
-├── .codex/ # Codex environment configuration
-├── .github/ # CI/CD workflows
-├── agents/ # AI Agent infrastructure
-│ ├── prompts/ # Pre-defined prompts
-│ └── codex_client/ # GitHub integration
-├── src/codex_ml/ # Core ML framework
-│ ├── training/ # Training pipelines
-│ ├── evaluation/ # Evaluation metrics
-│ ├── connectors/ # Storage connectors
-│ └── plugins/ # Plugin system
-├── scripts/ # Utility scripts (195+)
-├── tests/ # Test suite (2,079+)
-├── docs/ # Documentation (693+)
-│ ├── mcp/ # MCP documentation
-│ ├── api/ # API reference
-│ ├── architecture/ # Architecture docs
-│ ├── deployment/ # Deployment guides
-│ ├── security/ # Security documentation
-│ └── operations/ # Operations guides
-├── config/ # Configuration files
-│ └── training/ # Training configs
-├── requirements/ # Dependency specifications
-└── README.md # Project README
+ .codex/ # Codex environment configuration
+ .github/ # CI/CD workflows
+ agents/ # AI Agent infrastructure
+ prompts/ # Pre-defined prompts
+ codex_client/ # GitHub integration
+ src/codex_ml/ # Core ML framework
+ training/ # Training pipelines
+ evaluation/ # Evaluation metrics
+ connectors/ # Storage connectors
+ plugins/ # Plugin system
+ scripts/ # Utility scripts (195+)
+ tests/ # Test suite (2,079+)
+ docs/ # Documentation (693+)
+ mcp/ # MCP documentation
+ api/ # API reference
+ architecture/ # Architecture docs
+ deployment/ # Deployment guides
+ security/ # Security documentation
+ operations/ # Operations guides
+ config/ # Configuration files
+ training/ # Training configs
+ requirements/ # Dependency specifications
+ README.md # Project README
 ```
 
 ---

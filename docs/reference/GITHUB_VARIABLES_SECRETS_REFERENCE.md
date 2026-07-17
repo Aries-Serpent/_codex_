@@ -170,25 +170,25 @@
 ```bash
 # Read a repo variable (CODEX_MASTER_KEY token)
 curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE
 
 # Create / update a repo variable
 curl -L -X PATCH \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
-  -d '{"name":"COPILOT_AGENT_STATE","value":"ACTIVE"}'
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
+ -d '{"name":"COPILOT_AGENT_STATE","value":"ACTIVE"}'
 
 # Get public key (required before encrypting secrets)
 curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $CODEX_MASTER_KEY" \
-  -H "X-GitHub-Api-Version: 2026-03-10" \
-  https://api.github.com/repos/Aries-Serpent/_codex_/actions/secrets/public-key
+ -H "Accept: application/vnd.github+json" \
+ -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+ -H "X-GitHub-Api-Version: 2026-03-10" \
+ https://api.github.com/repos/Aries-Serpent/_codex_/actions/secrets/public-key
 ```
 
 ---
@@ -208,9 +208,9 @@ echo "value" | gh secret set SECRET_NAME --repo OWNER/REPO
 
 # Organization secret
 gh secret set SECRET_NAME --org MY_ORG
-gh secret set SECRET_NAME --org MY_ORG --visibility all          # all repos
-gh secret set SECRET_NAME --org MY_ORG --visibility private      # private repos only
-gh secret set SECRET_NAME --org MY_ORG --repos "repo1,repo2"    # selected repos
+gh secret set SECRET_NAME --org MY_ORG --visibility all # all repos
+gh secret set SECRET_NAME --org MY_ORG --visibility private # private repos only
+gh secret set SECRET_NAME --org MY_ORG --repos "repo1,repo2" # selected repos
 
 # Environment secret
 gh secret set SECRET_NAME --env ENVIRONMENT_NAME --repo OWNER/REPO
@@ -270,15 +270,15 @@ gh api /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE --jq '
 
 # Write a repo variable (canonical pattern from GITHUB_API_COPILOT_AGENT_REFERENCE.md)
 gh api PATCH /repos/Aries-Serpent/_codex_/actions/variables/COPILOT_AGENT_STATE \
-  -f name='COPILOT_AGENT_STATE' \
-  -f value='ACTIVE'
+ -f name='COPILOT_AGENT_STATE' \
+ -f value='ACTIVE'
 
 # Increment a counter variable (pattern from agent-auth-delegation.yml)
 CURRENT=$(gh api /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER --jq '.value // "0"')
 NEXT=$((CURRENT + 1))
 gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
-  -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
-  -f value="$NEXT"
+ -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+ -f value="$NEXT"
 
 # Cancel a workflow run (used in wec_enforcer.py --cancel-unchecked)
 gh api POST /repos/$REPO/actions/runs/$RUN_ID/cancel
@@ -335,27 +335,27 @@ As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, up
 
 ```json
 {
-  "servers": {
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
-    }
-  }
+ "servers": {
+ "github": {
+ "type": "http",
+ "url": "https://api.githubcopilot.com/mcp/"
+ }
+ }
 }
 ```
 
 With specific toolsets:
 ```json
 {
-  "servers": {
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "X-MCP-Toolsets": "repos,issues,pull_requests,actions,secret_protection"
-      }
-    }
-  }
+ "servers": {
+ "github": {
+ "type": "http",
+ "url": "https://api.githubcopilot.com/mcp/",
+ "headers": {
+ "X-MCP-Toolsets": "repos,issues,pull_requests,actions,secret_protection"
+ }
+ }
+ }
 }
 ```
 
@@ -363,9 +363,9 @@ With specific toolsets:
 
 ```bash
 docker run -i --rm \
-  -e GITHUB_PERSONAL_ACCESS_TOKEN="$CODEX_MASTER_KEY" \
-  -e GITHUB_TOOLSETS="repos,issues,pull_requests,actions,secret_protection,dependabot" \
-  ghcr.io/github/github-mcp-server
+ -e GITHUB_PERSONAL_ACCESS_TOKEN="$CODEX_MASTER_KEY" \
+ -e GITHUB_TOOLSETS="repos,issues,pull_requests,actions,secret_protection,dependabot" \
+ ghcr.io/github/github-mcp-server
 ```
 
 ### 3e. MCP Configuration Options Reference
@@ -386,8 +386,8 @@ From `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md` (verified 2026-04-05):
 
 ```
 MCP aggregator :2301
-  ├─ playwright  (npx @playwright/mcp@0.0.40)      → 21 tools
-  └─ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) → 28 tools
+ playwright (npx @playwright/mcp@0.0.40) 21 tools
+ github-mcp-server (api.individual.githubcopilot.com/mcp/readonly) 28 tools
 ```
 
 > **Note:** The repo's live MCP connection uses the `/mcp/readonly` endpoint.
@@ -424,7 +424,7 @@ MCP aggregator :2301
 ```yaml
 # Canonical pattern — always use this token chain
 env:
-  GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 ```
 
 ---
@@ -439,12 +439,12 @@ from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey
 from cryptography.hazmat.bindings._rust import openssl as rust_openssl
 
 def encrypt_secret(public_key_b64: str, secret_value: str) -> str:
-    """Encrypt a secret value using the repo/org public key (libsodium sealed box)."""
-    from nacl.public import PublicKey, SealedBox
-    pk = PublicKey(base64.b64decode(public_key_b64))
-    box = SealedBox(pk)
-    encrypted = box.encrypt(secret_value.encode("utf-8"))
-    return base64.b64encode(encrypted).decode("utf-8")
+ """Encrypt a secret value using the repo/org public key (libsodium sealed box)."""
+ from nacl.public import PublicKey, SealedBox
+ pk = PublicKey(base64.b64decode(public_key_b64))
+ box = SealedBox(pk)
+ encrypted = box.encrypt(secret_value.encode("utf-8"))
+ return base64.b64encode(encrypted).decode("utf-8")
 
 # Then PUT: {"encrypted_value": encrypted, "key_id": key_id}
 ```
@@ -510,15 +510,15 @@ From `tests/github/conftest_codex_master_key.py`:
 ```python
 @pytest.fixture
 def test_repo_var_name() -> str:
-    """Generate timestamped test variable name."""
-    timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
-    random_suffix = secrets.token_hex(3)  # 6 chars
-    return f"CODEX_API_TEST_REPO_VAR_{timestamp}_{random_suffix}"
+ """Generate timestamped test variable name."""
+ timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
+ random_suffix = secrets.token_hex(3) # 6 chars
+ return f"CODEX_API_TEST_REPO_VAR_{timestamp}_{random_suffix}"
 
 def test_create_variable(github_token: str, test_repo_var_name: str):
-    """Test creating a variable with proper naming."""
-    # Variable automatically has unique, timestamped name
-    # Query and cleanup are trivial due to naming convention
+ """Test creating a variable with proper naming."""
+ # Variable automatically has unique, timestamped name
+ # Query and cleanup are trivial due to naming convention
 ```
 
 ---

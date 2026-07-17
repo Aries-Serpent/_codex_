@@ -53,18 +53,18 @@ from src.orchestration.gates.contract_gate import ContractGateSystem
 
 system = ContractGateSystem()
 proposal = {
-    "proposal_id": "prop_001",
-    "lane_id": "lane_a",
-    "action_type": "code_change",
-    "description": "Security patch",
-    "policy_tier": "T2",
-    "regression_tests": {"passed": True, "test_count": 50},
-    "security_audit": {"passed": True, "issues": []},
-    "input_lock": {"lock_hash": "abc123...", "is_signed": True},
-    "output_contract": {"schema": {...}},
-    "output": {...},
-    "decision_trace": {"trace_id": "...", "is_signed": True, "entries": [...]},
-    "rollback_instructions": {"steps": [...], "is_validated": True},
+ "proposal_id": "prop_001",
+ "lane_id": "lane_a",
+ "action_type": "code_change",
+ "description": "Security patch",
+ "policy_tier": "T2",
+ "regression_tests": {"passed": True, "test_count": 50},
+ "security_audit": {"passed": True, "issues": []},
+ "input_lock": {"lock_hash": "abc123...", "is_signed": True},
+ "output_contract": {"schema": {...}},
+ "output": {...},
+ "decision_trace": {"trace_id": "...", "is_signed": True, "entries": [...]},
+ "rollback_instructions": {"steps": [...], "is_validated": True},
 }
 
 result = system.validate_all_gates(proposal)
@@ -106,8 +106,8 @@ Automatically classifies actions into policy tiers (T0-T3) based on risk assessm
 from src.orchestration.healing.policy_tier_engine import PolicyTierEngine
 
 classification = PolicyTierEngine.classify_action(
-    action_description="Security patch for SQL injection vulnerability",
-    affected_modules=["src/db/query.py", "src/api/endpoint.py"],
+ action_description="Security patch for SQL injection vulnerability",
+ affected_modules=["src/db/query.py", "src/api/endpoint.py"],
 )
 
 print(f"Tier: {classification.tier}")
@@ -161,23 +161,23 @@ from src.orchestration.safety.rollback_controls import RollbackControlSystem
 
 system = RollbackControlSystem()
 instruction = {
-    "rollback_id": "rb_001",
-    "steps": [
-        {
-            "step_id": "step_1",
-            "step_type": "git_revert",
-            "description": "Revert bad commit",
-            "action": {"commit_sha": "abc123..."},
-            "optional": False,
-        },
-        {
-            "step_id": "step_2",
-            "step_type": "data_migration",
-            "description": "Restore database",
-            "action": {"operation": "restore_from_backup"},
-            "optional": False,
-        },
-    ],
+ "rollback_id": "rb_001",
+ "steps": [
+ {
+ "step_id": "step_1",
+ "step_type": "git_revert",
+ "description": "Revert bad commit",
+ "action": {"commit_sha": "abc123..."},
+ "optional": False,
+ },
+ {
+ "step_id": "step_2",
+ "step_type": "data_migration",
+ "description": "Restore database",
+ "action": {"operation": "restore_from_backup"},
+ "optional": False,
+ },
+ ],
 }
 
 result = system.execute_rollback(instruction)
@@ -222,9 +222,9 @@ Basic lane execution coordinator with dependency tracking and deterministic orde
 
 ```python
 from src.orchestration.scheduling.lane_scheduler_v1 import (
-    LaneSchedulerV1,
-    Lane,
-    ExecutionMode,
+ LaneSchedulerV1,
+ Lane,
+ ExecutionMode,
 )
 
 scheduler = LaneSchedulerV1()
@@ -240,7 +240,7 @@ scheduler.register_lanes([lane_a, lane_b, lane_c])
 results = scheduler.schedule_all_lanes(mode=ExecutionMode.SEQUENTIAL)
 
 for lane_id, result in results.items():
-    print(f"{lane_id}: {result.state.value}")
+ print(f"{lane_id}: {result.state.value}")
 ```
 
 ### Execution Modes
@@ -262,16 +262,16 @@ for lane_id, result in results.items():
 
 ```
 Phase 1 (Determinism)
-├── InputLockAdapter (immutability)
-├── SeedControlSystem (determinism)
-├── DecisionTraceWriter (audit logs)
-└── LaneManifestContract (validation)
-         ↓
+ InputLockAdapter (immutability)
+ SeedControlSystem (determinism)
+ DecisionTraceWriter (audit logs)
+ LaneManifestContract (validation)
+ 
 Phase 2 (Foundation)
-├── Contract Gate System (uses InputLock, DecisionTrace)
-├── Policy Tier Engine (uses SeedControl)
-├── Rollback Controls (uses DecisionTrace)
-└── Lane Scheduler (uses SeedControl)
+ Contract Gate System (uses InputLock, DecisionTrace)
+ Policy Tier Engine (uses SeedControl)
+ Rollback Controls (uses DecisionTrace)
+ Lane Scheduler (uses SeedControl)
 ```
 
 ### No Regressions

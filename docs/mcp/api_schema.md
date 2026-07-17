@@ -75,31 +75,31 @@
 
 graph LR
 
-    A[HTTP Request] --> B{Endpoint Router}
+ A[HTTP Request] --> B{Endpoint Router}
 
-    B -->|/health| C[Health Check]
+ B -->|/health| C[Health Check]
 
-    B -->|/query| D[Auth Middleware]
+ B -->|/query| D[Auth Middleware]
 
-    B -->|/context| D
+ B -->|/context| D
 
-    D --> E{Valid Auth?}
+ D --> E{Valid Auth?}
 
-    E -->|No| F[401 Unauthorized]
+ E -->|No| F[401 Unauthorized]
 
-    E -->|Yes| G[Request Validation]
+ E -->|Yes| G[Request Validation]
 
-    G --> H{Valid Schema?}
+ G --> H{Valid Schema?}
 
-    H -->|No| I[400 Bad Request]
+ H -->|No| I[400 Bad Request]
 
-    H -->|Yes| J[Business Logic]
+ H -->|Yes| J[Business Logic]
 
-    J --> K[VectorStore Query/Upsert]
+ J --> K[VectorStore Query/Upsert]
 
-    K --> L[Format Response]
+ K --> L[Format Response]
 
-    L --> M[200 OK + JSON]
+ L --> M[200 OK + JSON]
 ```
 
 ### Fields (State Transitions)
@@ -160,7 +160,7 @@ graph LR
 **Scenario 1: Breaking API Change**
 ```bash
 # Rollback: Version API endpoints
-# /mcp/v1/* → /mcp/v2/*
+# /mcp/v1/* /mcp/v2/*
 # Keep v1 operational during migration
 
 # Deploy v2 alongside v1
@@ -171,7 +171,7 @@ graph LR
 **Scenario 2: Authentication Vulnerability**
 ```bash
 # Immediate rollback: Disable affected endpoint
-# POST /context → 503 Service Unavailable
+# POST /context 503 Service Unavailable
 
 # Fix: Update auth middleware
 # Test: Comprehensive security audit
@@ -219,31 +219,31 @@ The FastAPI prototype in `src/mcp/server/http.py` exposes three endpoints compat
 - `POST /mcp/v1/query`
  - Headers: `X-MCP-API-Key` or `Authorization: Bearer <token>`
  - Body:
-    ```json
-    { "query": "<text>", "top_k": 5, "filters": {"scope": "repo"} }
+ ```json
+ { "query": "<text>", "top_k": 5, "filters": {"scope": "repo"} }
  ```
  - Response:
-    ```json
-    { "results": [{"id": "demo-1", "score": 1.0, "content": "...", "metadata": {"scope": "repo"}}] }
+ ```json
+ { "results": [{"id": "demo-1", "score": 1.0, "content": "...", "metadata": {"scope": "repo"}}] }
  ```
 - `POST /mcp/v1/context`
  - Headers: same as `/query`
  - Body:
-    ```json
-    { "items": [{"id": "doc-1", "content": "text", "metadata": {"scope": "repo"}}] }
+ ```json
+ { "items": [{"id": "doc-1", "content": "text", "metadata": {"scope": "repo"}}] }
  ```
  - Response: `{ "upserted": 1 }`
 
 ## Workers (Node) sketch
 ```ts
 export default {
-  async fetch(request: Request): Promise<Response> {
-    if (request.method === "GET" && request.url.endsWith("/mcp/v1/health")) {
-      return Response.json({ status: "healthy", documents: 0 });
-    }
-    // Mirror FastAPI payloads for /query and /context
-    return new Response("not implemented", { status: 501 });
-  }
+ async fetch(request: Request): Promise<Response> {
+ if (request.method === "GET" && request.url.endsWith("/mcp/v1/health")) {
+ return Response.json({ status: "healthy", documents: 0 });
+ }
+ // Mirror FastAPI payloads for /query and /context
+ return new Response("not implemented", { status: 501 });
+ }
 };
 ```
 

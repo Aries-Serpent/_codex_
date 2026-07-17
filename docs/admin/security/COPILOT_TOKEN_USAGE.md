@@ -41,7 +41,7 @@ from scripts.security.copilot_token_decoder import copilot_get_github_token
 token = copilot_get_github_token()
 
 # Use token for GitHub API operations
-print(f"Token retrieved: {token[:10]}...")  # Safe to show prefix
+print(f"Token retrieved: {token[:10]}...") # Safe to show prefix
 ```
 
 ## Safe Retrieval (No Exception)
@@ -53,11 +53,11 @@ from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
 token = copilot_get_github_token_safe()
 
 if token:
-    print(" Token retrieved successfully")
-    # Use token...
+ print(" Token retrieved successfully")
+ # Use token...
 else:
-    print("️ No token configured, using fallback method")
-    # Handle gracefully...
+ print(" No token configured, using fallback method")
+ # Handle gracefully...
 ```
 
 ## Advanced: Manual Method Selection
@@ -71,7 +71,7 @@ decoder = CodexTokenDecoder()
 token = decoder.get_token(method='base64')
 
 # Or auto-detect
-token = decoder.get_token()  # Auto-detects best method
+token = decoder.get_token() # Auto-detects best method
 ```
 
 ---
@@ -89,32 +89,32 @@ from scripts.security.copilot_token_decoder import copilot_get_github_token
 import requests
 
 def main():
-    # Get token
-    token = copilot_get_github_token()
+ # Get token
+ token = copilot_get_github_token()
 
-    # Setup headers
-    headers = {
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json'
-    }
+ # Setup headers
+ headers = {
+ 'Authorization': f'token {token}',
+ 'Accept': 'application/vnd.github.v3+json'
+ }
 
-    # Example: Get user info
-    response = requests.get('https://api.github.com/user', headers=headers)
-    user = response.json()
+ # Example: Get user info
+ response = requests.get('https://api.github.com/user', headers=headers)
+ user = response.json()
 
-    print(f" Authenticated as: {user['login']}")
+ print(f" Authenticated as: {user['login']}")
 
-    # Example: List repository issues
-    response = requests.get(
-        'https://api.github.com/repos/Aries-Serpent/_codex_/issues',
-        headers=headers
-    )
-    issues = response.json()
+ # Example: List repository issues
+ response = requests.get(
+ 'https://api.github.com/repos/Aries-Serpent/_codex_/issues',
+ headers=headers
+ )
+ issues = response.json()
 
-    print(f" Found {len(issues)} open issues")
+ print(f" Found {len(issues)} open issues")
 
 if __name__ == '__main__':
-    main()
+ main()
 ```
 
 ### Pattern 2: PyGithub Integration
@@ -128,26 +128,26 @@ from scripts.security.copilot_token_decoder import copilot_get_github_token
 from github import Github
 
 def main():
-    # Get token
-    token = copilot_get_github_token()
+ # Get token
+ token = copilot_get_github_token()
 
-    # Initialize PyGithub
-    g = Github(token)
+ # Initialize PyGithub
+ g = Github(token)
 
-    # Get repository
-    repo = g.get_repo("Aries-Serpent/_codex_")
+ # Get repository
+ repo = g.get_repo("Aries-Serpent/_codex_")
 
-    # Example operations
-    print(f"Repository: {repo.full_name}")
-    print(f"Stars: {repo.stargazers_count}")
+ # Example operations
+ print(f"Repository: {repo.full_name}")
+ print(f"Stars: {repo.stargazers_count}")
 
-    # List recent commits
-    commits = repo.get_commits()
-    for commit in commits[:5]:
-        print(f"- {commit.sha[:8]}: {commit.commit.message.split()[0]}")
+ # List recent commits
+ commits = repo.get_commits()
+ for commit in commits[:5]:
+ print(f"- {commit.sha[:8]}: {commit.commit.message.split()[0]}")
 
 if __name__ == '__main__':
-    main()
+ main()
 ```
 
 ### Pattern 3: Subprocess with gh CLI
@@ -162,26 +162,26 @@ import subprocess
 import os
 
 def main():
-    # Get token
-    token = copilot_get_github_token()
+ # Get token
+ token = copilot_get_github_token()
 
-    # Set environment for gh CLI
-    env = os.environ.copy()
-    env['GH_TOKEN'] = token
+ # Set environment for gh CLI
+ env = os.environ.copy()
+ env['GH_TOKEN'] = token
 
-    # Example: List pull requests
-    result = subprocess.run(
-        ['gh', 'pr', 'list', '--repo', 'Aries-Serpent/_codex_'],
-        env=env,
-        capture_output=True,
-        text=True
-    )
+ # Example: List pull requests
+ result = subprocess.run(
+ ['gh', 'pr', 'list', '--repo', 'Aries-Serpent/_codex_'],
+ env=env,
+ capture_output=True,
+ text=True
+ )
 
-    print(" Open Pull Requests:")
-    print(result.stdout)
+ print(" Open Pull Requests:")
+ print(result.stdout)
 
 if __name__ == '__main__':
-    main()
+ main()
 ```
 
 ---
@@ -194,39 +194,39 @@ if __name__ == '__main__':
 name: Copilot Task Example
 
 on:
-  workflow_dispatch:
+ workflow_dispatch:
 
 jobs:
-  copilot-task:
-    runs-on: ubuntu-latest
+ copilot-task:
+ runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+ - name: Setup Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install cryptography requests
+ - name: Install dependencies
+ run: |
+ pip install cryptography requests
 
-      - name: Execute Copilot task
-        env:
-          # Use recommended Base64 encoding
-          CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
-        run: |
-          python3 -c "
-          from scripts.security.copilot_token_decoder import copilot_get_github_token
-          import requests
+ - name: Execute Copilot task
+ env:
+ # Use recommended Base64 encoding
+ CODEX_GHP_TOKEN_BASE64: ${{ secrets.CODEX_GHP_TOKEN_BASE64 }}
+ run: |
+ python3 -c "
+ from scripts.security.copilot_token_decoder import copilot_get_github_token
+ import requests
 
-          token = copilot_get_github_token()
-          headers = {'Authorization': f'token {token}'}
+ token = copilot_get_github_token()
+ headers = {'Authorization': f'token {token}'}
 
-          response = requests.get('https://api.github.com/user', headers=headers)
-          print(f' Authenticated as: {response.json()[\"login\"]}')
-          "
+ response = requests.get('https://api.github.com/user', headers=headers)
+ print(f' Authenticated as: {response.json()[\"login\"]}')
+ "
 ```
 
 ### Example 2: Using AES-256-GCM Encryption
@@ -235,30 +235,30 @@ jobs:
 name: Copilot Secure Task
 
 on:
-  workflow_dispatch:
+ workflow_dispatch:
 
 jobs:
-  copilot-secure-task:
-    runs-on: ubuntu-latest
+ copilot-secure-task:
+ runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+ - name: Setup Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install cryptography requests
+ - name: Install dependencies
+ run: |
+ pip install cryptography requests
 
-      - name: Execute Copilot task with AES encryption
-        env:
-          # Use combined AES config (most secure)
-          CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
-        run: |
-          python3 scripts/copilot_secure_task.py
+ - name: Execute Copilot task with AES encryption
+ env:
+ # Use combined AES config (most secure)
+ CODEX_GHP_TOKEN_CONFIG: ${{ secrets.CODEX_GHP_TOKEN_CONFIG }}
+ run: |
+ python3 scripts/copilot_secure_task.py
 ```
 
 ---
@@ -271,20 +271,20 @@ jobs:
 from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
 
 def main():
-    token = copilot_get_github_token_safe()
+ token = copilot_get_github_token_safe()
 
-    if not token:
-        print(" ERROR: No GitHub token configured")
-        print("Please configure CODEX_GHP_TOKEN_* secrets")
-        print("See: docs/admin/security/ADMIN_TOKEN_SETUP.md")
-        return 1
+ if not token:
+ print(" ERROR: No GitHub token configured")
+ print("Please configure CODEX_GHP_TOKEN_* secrets")
+ print("See: docs/admin/security/ADMIN_TOKEN_SETUP.md")
+ return 1
 
-    # Continue with token...
-    print(" Token retrieved successfully")
-    return 0
+ # Continue with token...
+ print(" Token retrieved successfully")
+ return 0
 
 if __name__ == '__main__':
-    exit(main())
+ exit(main())
 ```
 
 ### Handling Decryption Failure
@@ -296,28 +296,28 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 def main():
-    decoder = CodexTokenDecoder()
+ decoder = CodexTokenDecoder()
 
-    # Try AES first
-    token = decoder.get_token(method='aes_config')
+ # Try AES first
+ token = decoder.get_token(method='aes_config')
 
-    if not token:
-        print("️ AES decryption failed, trying Base64...")
-        token = decoder.get_token(method='base64')
+ if not token:
+ print(" AES decryption failed, trying Base64...")
+ token = decoder.get_token(method='base64')
 
-    if not token:
-        print("️ Base64 failed, trying plaintext fallback...")
-        token = decoder.get_token(method='plaintext')
+ if not token:
+ print(" Base64 failed, trying plaintext fallback...")
+ token = decoder.get_token(method='plaintext')
 
-    if not token:
-        print(" All decryption methods failed")
-        return 1
+ if not token:
+ print(" All decryption methods failed")
+ return 1
 
-    print(" Token retrieved via fallback chain")
-    return 0
+ print(" Token retrieved via fallback chain")
+ return 0
 
 if __name__ == '__main__':
-    exit(main())
+ exit(main())
 ```
 
 ---
@@ -327,10 +327,10 @@ if __name__ == '__main__':
 ### 1. Never Log or Print Full Token
 
 ```python
-#  BAD - Exposes token in logs
+# BAD - Exposes token in logs
 print(f"Token: {token}")
 
-#  GOOD - Shows only prefix
+# GOOD - Shows only prefix
 print(f"Token: {token[:10]}... (length: {len(token)})")
 ```
 
@@ -338,11 +338,11 @@ print(f"Token: {token[:10]}... (length: {len(token)})")
 
 ```python
 try:
-    token = copilot_get_github_token()
-    # Use token...
+ token = copilot_get_github_token()
+ # Use token...
 except ValueError as e:
-    logging.error(f"Token retrieval failed: {e}")
-    # Implement fallback or alert...
+ logging.error(f"Token retrieval failed: {e}")
+ # Implement fallback or alert...
 ```
 
 ### 3. Validate Token Before Use
@@ -354,11 +354,11 @@ decoder = CodexTokenDecoder()
 token = decoder.get_token()
 
 if token and decoder.verify_token(token):
-    # Token is valid, proceed
-    pass
+ # Token is valid, proceed
+ pass
 else:
-    # Token is invalid, handle error
-    raise ValueError("Invalid or missing token")
+ # Token is invalid, handle error
+ raise ValueError("Invalid or missing token")
 ```
 
 ### 4. Use Environment-Specific Secrets
@@ -366,10 +366,10 @@ else:
 ```yaml
 # Different secrets for different environments
 environments:
-  development:
-    CODEX_GHP_TOKEN_BASE64: ${{ secrets.DEV_TOKEN_BASE64 }}
-  production:
-    CODEX_GHP_TOKEN_CONFIG: ${{ secrets.PROD_TOKEN_CONFIG }}
+ development:
+ CODEX_GHP_TOKEN_BASE64: ${{ secrets.DEV_TOKEN_BASE64 }}
+ production:
+ CODEX_GHP_TOKEN_CONFIG: ${{ secrets.PROD_TOKEN_CONFIG }}
 ```
 
 ---
@@ -397,7 +397,7 @@ pip install cryptography
 
 # Or in workflow:
 - name: Install cryptography
-  run: pip install cryptography
+ run: pip install cryptography
 ```
 
 ## Issue: "Token verification failed"

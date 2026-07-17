@@ -49,98 +49,98 @@ Schema Alignment:
  - Checkpoint metadata uses schema_version=2 (see checkpoint_core).
 
 Usage:
-    from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
-    cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)
-    run_unified_training(cfg)
+ from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+ cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)
+ run_unified_training(cfg)
 """
 ...
 @dataclass
 class UnifiedTrainingConfig:
-    model_name: str = "dummy"
-    epochs: int = 1
-    batch_size: int = 8
-    grad_accum: int = 1
-    learning_rate: float = 3e-4
-    seed: int = 42
-    output_dir: str = "runs/unified"
-    backend: str | None = None  # "functional" | "legacy" | None (auto)
-    mlflow_enable: bool = False
-    wandb_enable: bool = False
-    enable_eval_callback: bool = True
-    enable_logging_callback: bool = True
-    grad_clip_norm: float | None = None
-    dtype: str = "fp32"
-    resume_from: str | None = None
-    extra: dict[str, Any] = field(default_factory=dict)
-    keep_last: int = 3
-    best_k: int = 0
-    best_metric: str = "val_loss"
-    continual: ContinualConfig | dict[str, Any] | None = None
+ model_name: str = "dummy"
+ epochs: int = 1
+ batch_size: int = 8
+ grad_accum: int = 1
+ learning_rate: float = 3e-4
+ seed: int = 42
+ output_dir: str = "runs/unified"
+ backend: str | None = None # "functional" | "legacy" | None (auto)
+ mlflow_enable: bool = False
+ wandb_enable: bool = False
+ enable_eval_callback: bool = True
+ enable_logging_callback: bool = True
+ grad_clip_norm: float | None = None
+ dtype: str = "fp32"
+ resume_from: str | None = None
+ extra: dict[str, Any] = field(default_factory=dict)
+ keep_last: int = 3
+ best_k: int = 0
+ best_metric: str = "val_loss"
+ continual: ContinualConfig | dict[str, Any] | None = None
 ```text
 
 **FILE:** src/codex_ml/train_loop.py@0D_base_
 ```text
-    try:
-        reasoning_cfg = _coerce_reasoning_config(raw_cfg)
-    except ConfigError as exc:
-        logger.warning("Invalid reasoning configuration: %s", exc)
-        return model, None
-    if reasoning_cfg is None or not reasoning_cfg.enabled:
-        return model, None
-    try:
-        harness = attach_reasoning_adapters(model, reasoning_cfg)
-    except Exception as exc:  # pragma: no cover - adapter construction best effort
-        logger.warning("Failed to attach reasoning adapters: %s", exc)
-        return model, None
-    store_path = None
-    if art_dir_path is not None:
-        trace_name = reasoning_cfg.objective.trace_store or "reasoning_traces.ndjson"
-        store_path = Path(art_dir_path) / trace_name
-    runtime = ReasoningRuntime(
-        config=reasoning_cfg,
-        harness=harness,
-        store_path=store_path,
-        per_epoch_limit=int(reasoning_cfg.objective.max_traces_per_epoch),
-        top_k=int(reasoning_cfg.objective.log_top_k),
-        threshold=reasoning_cfg.log_probability_threshold,
-    )
-    runtime.bind_model(model)
-    return model, runtime
+ try:
+ reasoning_cfg = _coerce_reasoning_config(raw_cfg)
+ except ConfigError as exc:
+ logger.warning("Invalid reasoning configuration: %s", exc)
+ return model, None
+ if reasoning_cfg is None or not reasoning_cfg.enabled:
+ return model, None
+ try:
+ harness = attach_reasoning_adapters(model, reasoning_cfg)
+ except Exception as exc: # pragma: no cover - adapter construction best effort
+ logger.warning("Failed to attach reasoning adapters: %s", exc)
+ return model, None
+ store_path = None
+ if art_dir_path is not None:
+ trace_name = reasoning_cfg.objective.trace_store or "reasoning_traces.ndjson"
+ store_path = Path(art_dir_path) / trace_name
+ runtime = ReasoningRuntime(
+ config=reasoning_cfg,
+ harness=harness,
+ store_path=store_path,
+ per_epoch_limit=int(reasoning_cfg.objective.max_traces_per_epoch),
+ top_k=int(reasoning_cfg.objective.log_top_k),
+ threshold=reasoning_cfg.log_probability_threshold,
+ )
+ runtime.bind_model(model)
+ return model, runtime
 ```text
 
 **FILE:** src/codex_ml/models/reasoning.py@0D_base_
 ```text
-    # Trace capture semantics are configured via `training.reasoning.trace_mode`
-    # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
-    # with config guidance so downstream surfaces stay honest.
-    def _vectorise_model(self, model: Any, *, hidden_states: Any | None = None) -> torch.Tensor:
-        """Produce a trace vector for logging when traces are enabled."""
+ # Trace capture semantics are configured via `training.reasoning.trace_mode`
+ # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
+ # with config guidance so downstream surfaces stay honest.
+ def _vectorise_model(self, model: Any, *, hidden_states: Any | None = None) -> torch.Tensor:
+ """Produce a trace vector for logging when traces are enabled."""
 
-        size = int(self.head.cfg.hidden_size)
-        try:
-            head_device = next(self.head.parameters()).device
-        except StopIteration:  # pragma: no cover - Linear modules always have params
-            head_device = torch.device("cpu")
-        if self._trace_mode == "activations" and hidden_states is not None:
-            try:
-                return self._pool_hidden_states(hidden_states, head_device, size)
-            except Exception as exc:
-                logger.warning("Activation vectorization failed; falling back to weights: %s", exc)
-        buffer = torch.zeros(size, dtype=torch.float32, device=head_device)
-        if not isinstance(model, nn.Module):
-            return buffer
-        first_param = None
-        for param in model.parameters():
-            if param.requires_grad and param.ndim > 0:
-                first_param = param.detach().float().flatten()
-                break
-        if first_param is None:
-            return buffer
-        data = first_param.to(device=head_device)
-        if data.numel() >= size:
-            return data[:size]
-        buffer[: data.numel()] = data
-        return buffer
+ size = int(self.head.cfg.hidden_size)
+ try:
+ head_device = next(self.head.parameters()).device
+ except StopIteration: # pragma: no cover - Linear modules always have params
+ head_device = torch.device("cpu")
+ if self._trace_mode == "activations" and hidden_states is not None:
+ try:
+ return self._pool_hidden_states(hidden_states, head_device, size)
+ except Exception as exc:
+ logger.warning("Activation vectorization failed; falling back to weights: %s", exc)
+ buffer = torch.zeros(size, dtype=torch.float32, device=head_device)
+ if not isinstance(model, nn.Module):
+ return buffer
+ first_param = None
+ for param in model.parameters():
+ if param.requires_grad and param.ndim > 0:
+ first_param = param.detach().float().flatten()
+ break
+ if first_param is None:
+ return buffer
+ data = first_param.to(device=head_device)
+ if data.numel() >= size:
+ return data[:size]
+ buffer[: data.numel()] = data
+ return buffer
 ```text
 
 **FILE:** configs/training/reasoning/baseline.yaml@0D_base_
@@ -148,62 +148,62 @@ class UnifiedTrainingConfig:
 # Template: Baseline reasoning overlay enabling traces and curriculum hooks.
 # @package _global_
 defaults:
-  - ../base
+ - ../base
 
 # === CONTROL SURFACE (local-first) ===
 # The fields below are the documented knobs surfaced via `codex repo-map --reasoning`
 # and the deployment dry-run workflow. Adjusting them does not require code changes.
 
 # Trace capture mode controls what is recorded for reasoning analysis.
-# - weights:     legacy mode; summarize trainable weights (safe fallback)
+# - weights: legacy mode; summarize trainable weights (safe fallback)
 # - activations: new mode; capture forward activations when available
 trace_capture:
-  mode: weights
+ mode: weights
 
 curriculum:
-  # preset is the curriculum name exposed to PM/infra reviewers.
-  preset: starter
-  phase_schedule: ${.preset}
+ # preset is the curriculum name exposed to PM/infra reviewers.
+ preset: starter
+ phase_schedule: ${.preset}
 
 evaluation:
-  # preset defines which evaluation suite must pass before promotion.
-  preset: base
+ # preset defines which evaluation suite must pass before promotion.
+ preset: base
 
 deployment:
-  # preset points at the expected dry-run deployment manifest.
-  preset: reasoning_pod
+ # preset points at the expected dry-run deployment manifest.
+ preset: reasoning_pod
 
 reasoning:
-  template: baseline
+ template: baseline
 
 training:
-  reasoning:
-    enabled: true
-    # Trace capture inherits from the top-level `trace_capture.mode` knob.
-    trace_mode: "weights"
-    trace_history: 128
-    log_probability_threshold: 0.15
-    objective:
-      mode: chain_of_thought
-      weight: 1.0
-      max_traces_per_epoch: 6
-      log_top_k: 5
-      trace_store: reasoning_traces.ndjson
-    head:
-      hidden_size: 768
-      projection_size: 256
-      trace_vocab_size: 64
-      dropout: 0.05
-    tool_adapter:
-      enabled: false
+ reasoning:
+ enabled: true
+ # Trace capture inherits from the top-level `trace_capture.mode` knob.
+ trace_mode: "weights"
+ trace_history: 128
+ log_probability_threshold: 0.15
+ objective:
+ mode: chain_of_thought
+ weight: 1.0
+ max_traces_per_epoch: 6
+ log_top_k: 5
+ trace_store: reasoning_traces.ndjson
+ head:
+ hidden_size: 768
+ projection_size: 256
+ trace_vocab_size: 64
+ dropout: 0.05
+ tool_adapter:
+ enabled: false
 
 metadata:
-  # rollout_ring declares intent in the promotion ladder and is enforced by
-  # `codex deploy --dry-run` when composing the dry-run manifest.
-  # 0A_base_ → 0B_base_ → 0C_base_ → 0D_base_ → main.
-  # It is an intent badge, not permission to ship.
-  rollout_ring: 0D_base_
-  owner: reasoning-foundations
+ # rollout_ring declares intent in the promotion ladder and is enforced by
+ # `codex deploy --dry-run` when composing the dry-run manifest.
+ # 0A_base_ 0B_base_ 0C_base_ 0D_base_ main.
+ # It is an intent badge, not permission to ship.
+ rollout_ring: 0D_base_
+ owner: reasoning-foundations
 ```text
 
 **FILE:** configs/evaluation/reasoning/base.yaml@0D_base_
@@ -213,118 +213,118 @@ metadata:
 # over the sample reasoning corpora bundled with Codex ML.
 
 defaults:
-  - override hydra/job_logging: disabled
-  - override hydra/hydra_logging: disabled
-  - _self_
+ - override hydra/job_logging: disabled
+ - override hydra/hydra_logging: disabled
+ - _self_
 
 datasets:
-  proof_logs:
-    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/proof_logs.jsonl
-    limit: ${oc.env:CODEX_REASONING_PROOF_LIMIT, 50}
-  math_word_problems:
-    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/math_word_problems.jsonl
-    limit: ${oc.env:CODEX_REASONING_MATH_LIMIT, 50}
-  tool_traces:
-    path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/tool_traces.jsonl
-    limit: ${oc.env:CODEX_REASONING_TOOL_LIMIT, 50}
+ proof_logs:
+ path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/proof_logs.jsonl
+ limit: ${oc.env:CODEX_REASONING_PROOF_LIMIT, 50}
+ math_word_problems:
+ path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/math_word_problems.jsonl
+ limit: ${oc.env:CODEX_REASONING_MATH_LIMIT, 50}
+ tool_traces:
+ path: ${oc.env:CODEX_REASONING_DATA_DIR, ${hydra:runtime.cwd}/data/sample/reasoning}/tool_traces.jsonl
+ limit: ${oc.env:CODEX_REASONING_TOOL_LIMIT, 50}
 
 probes:
-  - theorem_proving
-  - math_verification
-  - tool_audit
+ - theorem_proving
+ - math_verification
+ - tool_audit
 
 output:
-  dir: ${oc.env:CODEX_REASONING_EVAL_DIR, ${hydra:runtime.cwd}/artifacts/reasoning_eval}
-  summary_filename: summary.json
-  records_filename: records.ndjson
-  metrics_filename: metrics.ndjson
+ dir: ${oc.env:CODEX_REASONING_EVAL_DIR, ${hydra:runtime.cwd}/artifacts/reasoning_eval}
+ summary_filename: summary.json
+ records_filename: records.ndjson
+ metrics_filename: metrics.ndjson
 
 logging:
-  tags:
-    gate: reasoning
-    severity: info
+ tags:
+ gate: reasoning
+ severity: info
 ```text
 
 **FILE:** src/codex_cli/app.py@0D_base_
 ```text
-    @app.command("repo-map")
-    @_click.option("--reasoning", is_flag=True, help="Emit reasoning-specific entries.")
-    @_click.option(
-        "--include",
-        "includes",
-        multiple=True,
-        help="Only include specified categories (can be repeated).",
-    )
-    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
-        from codex_ml.cli.repo_map import render_repo_map
+ @app.command("repo-map")
+ @_click.option("--reasoning", is_flag=True, help="Emit reasoning-specific entries.")
+ @_click.option(
+ "--include",
+ "includes",
+ multiple=True,
+ help="Only include specified categories (can be repeated).",
+ )
+ def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
+ from codex_ml.cli.repo_map import render_repo_map
 
-        echo(render_repo_map(reasoning=reasoning, include=includes))
+ echo(render_repo_map(reasoning=reasoning, include=includes))
 ```text
 
 **FILE:** src/codex_ml/cli/codex_cli.py@0D_base_
 ```text
 @codex.command()
 @click.option(
-    "--reasoning",
-    is_flag=True,
-    help=(
-        "Emit reasoning-specific control surface entries (curriculum preset, "
-        "trace_mode, rollout ring, evaluation preset, deployment preset)."
-    ),
+ "--reasoning",
+ is_flag=True,
+ help=(
+ "Emit reasoning-specific control surface entries (curriculum preset, "
+ "trace_mode, rollout ring, evaluation preset, deployment preset)."
+ ),
 )
 def repo_map(reasoning: bool) -> None:
-    """Print a repository summary (optionally including reasoning knobs)."""
+ """Print a repository summary (optionally including reasoning knobs)."""
 
-    from codex_ml.cli.repo_map import render_repo_map
+ from codex_ml.cli.repo_map import render_repo_map
 
-    try:
-        click.echo(render_repo_map(reasoning=reasoning))
-    except TypeError:
-        # Back-compat with older render_repo_map signatures lacking the flag.
-        click.echo(render_repo_map())
+ try:
+ click.echo(render_repo_map(reasoning=reasoning))
+ except TypeError:
+ # Back-compat with older render_repo_map signatures lacking the flag.
+ click.echo(render_repo_map())
 ...
 @codex.command()
 @click.option(
-    "--config",
-    required=True,
-    type=click.Path(exists=True, dir_okay=False, path_type=Path),
-    help="Path to deployment preset YAML (e.g. configs/deploy/reasoning_pod.yaml).",
+ "--config",
+ required=True,
+ type=click.Path(exists=True, dir_okay=False, path_type=Path),
+ help="Path to deployment preset YAML (e.g. configs/deploy/reasoning_pod.yaml).",
 )
 @click.option(
-    "--dry-run",
-    is_flag=True,
-    help="Required flag. Perform offline validation only; never touch live infra.",
+ "--dry-run",
+ is_flag=True,
+ help="Required flag. Perform offline validation only; never touch live infra.",
 )
 @click.option(
-    "--run-metadata-dir",
-    default=Path("runs/train_loop"),
-    show_default=True,
-    type=click.Path(file_okay=False, path_type=Path),
-    help="Directory containing run_metadata.json from the latest TrainLoop run.",
+ "--run-metadata-dir",
+ default=Path("runs/train_loop"),
+ show_default=True,
+ type=click.Path(file_okay=False, path_type=Path),
+ help="Directory containing run_metadata.json from the latest TrainLoop run.",
 )
 def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
-    """Validate reasoning pod deployment readiness in dry-run mode."""
+ """Validate reasoning pod deployment readiness in dry-run mode."""
 
-    from codex_ml.cli.deploy import run_deploy_dry_run
+ from codex_ml.cli.deploy import run_deploy_dry_run
 
-    if not dry_run:
-        click.secho(
-            "DEPLOYMENT BLOCKED: --dry-run is required in this rollout ring.",
-            err=True,
-        )
-        raise SystemExit(1)
+ if not dry_run:
+ click.secho(
+ "DEPLOYMENT BLOCKED: --dry-run is required in this rollout ring.",
+ err=True,
+ )
+ raise SystemExit(1)
 
-    try:
-        summary = run_deploy_dry_run(
-            config_path=config,
-            dry_run=dry_run,
-            run_metadata_dir=run_metadata_dir,
-        )
-    except RuntimeError as exc:
-        click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
-        raise SystemExit(1) from exc
+ try:
+ summary = run_deploy_dry_run(
+ config_path=config,
+ dry_run=dry_run,
+ run_metadata_dir=run_metadata_dir,
+ )
+ except RuntimeError as exc:
+ click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
+ raise SystemExit(1) from exc
 
-    click.echo(json.dumps(summary, indent=2))
+ click.echo(json.dumps(summary, indent=2))
 ```text
 
 **FILE:** docs/deployment/reasoning_pod.md@0D_base_
@@ -358,35 +358,35 @@ name: codex-reasoning-pod
 version: 0
 
 image:
-  repository: local/offline/codex
-  tag: latest
-  # NOTE: This is descriptive-only in dry-run mode. No pulls are executed.
+ repository: local/offline/codex
+ tag: latest
+ # NOTE: This is descriptive-only in dry-run mode. No pulls are executed.
 
 resources:
-  cpu: "2"
-  memory: "8Gi"
-  # Disk, GPU fields may be added later; keep this minimal and deterministic.
+ cpu: "2"
+ memory: "8Gi"
+ # Disk, GPU fields may be added later; keep this minimal and deterministic.
 
 reasoning:
-  trace_capture:
-    mode: weights  # {weights, activations}; switch in baseline.yaml as desired
-  evaluation_preset: configs/evaluation/reasoning/base.yaml
-  curriculum_template: configs/training/reasoning/baseline.yaml
+ trace_capture:
+ mode: weights # {weights, activations}; switch in baseline.yaml as desired
+ evaluation_preset: configs/evaluation/reasoning/base.yaml
+ curriculum_template: configs/training/reasoning/baseline.yaml
 
 artifacts:
-  emit_markdown: docs/status_updates/deploy_dry_run.md
-  emit_json: docs/status_updates/deploy_dry_run.json
+ emit_markdown: docs/status_updates/deploy_dry_run.md
+ emit_json: docs/status_updates/deploy_dry_run.json
 
 notes:
-  - "This config is safe to commit; it does not perform deployment or network I/O."
-  - "Use Python local tools to generate review artifacts for promotion gates."
+ - "This config is safe to commit; it does not perform deployment or network I/O."
+ - "Use Python local tools to generate review artifacts for promotion gates."
 ```text
 
 **FILE:** docs/README_ROOT.md@0D_base_
 ```text
 codex deploy --config configs/deploy/reasoning_pod.yaml \
-  --model artifacts/runs/reasoning-starter:last \
-  --dry-run
+ --model artifacts/runs/reasoning-starter:last \
+ --dry-run
 
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
@@ -396,17 +396,17 @@ and runtime allowances required by bespoke hosts.
 **FILE:** docs/guides/reasoning_overview.md@0D_base_
 ```text
 2. **Training** — Training and trace capture are coordinated by the
-   unified training stack:
-   - `src/codex_ml/training/unified_training.py`
-     exposes configuration for curriculum phases, continual replay,
-     and resume strategy,
-   - `src/codex_ml/train_loop.py`
-     executes a single run, attaches the reasoning harness,
-     and logs traces / checkpoints.
-   When these docs refer to "the trainer", they mean this pair of
-   modules (plus the Hydra overlays in
-   `configs/training/reasoning/*`), not a class literally named
-   `ReasoningTrainer`.
+ unified training stack:
+ - `src/codex_ml/training/unified_training.py`
+ exposes configuration for curriculum phases, continual replay,
+ and resume strategy,
+ - `src/codex_ml/train_loop.py`
+ executes a single run, attaches the reasoning harness,
+ and logs traces / checkpoints.
+ When these docs refer to "the trainer", they mean this pair of
+ modules (plus the Hydra overlays in
+ `configs/training/reasoning/*`), not a class literally named
+ `ReasoningTrainer`.
 ```text
 
 ## >>> RESULT: reasoning_pod asset check@0D_base_

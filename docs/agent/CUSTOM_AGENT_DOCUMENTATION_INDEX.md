@@ -114,24 +114,24 @@ All four documents are cross-linked:
 
 ```
 SELECTION_FRAMEWORK.md
-  ├→ references Selection Algorithm → Interaction Protocol
-  ├→ references Capability Tags → Agent Registry
-  └→ references Decision Tree → Coordination Workflows
+ references Selection Algorithm Interaction Protocol
+ references Capability Tags Agent Registry
+ references Decision Tree Coordination Workflows
 
 INTERACTION_PROTOCOL.md
-  ├→ references Agent States → Session Lifecycle (Workflows)
-  ├→ references Handoff Patterns → Repeatable Processes
-  └→ references Communication Channels → examples in Processes
+ references Agent States Session Lifecycle (Workflows)
+ references Handoff Patterns Repeatable Processes
+ references Communication Channels examples in Processes
 
 COORDINATION_WORKFLOWS.md
-  ├→ references Decision Tree → Selection Framework
-  ├→ references Multi-Lane Model → Lane Management (Processes)
-  └→ references Agent Lifecycle → Interaction Protocol
+ references Decision Tree Selection Framework
+ references Multi-Lane Model Lane Management (Processes)
+ references Agent Lifecycle Interaction Protocol
 
 REPEATABLE_PROCESSES.md
-  ├→ references Phase Model → Coordination Workflows
-  ├→ references Lane Lifecycle → Interaction Protocol
-  └→ references Agent Selection → Selection Framework
+ references Phase Model Coordination Workflows
+ references Lane Lifecycle Interaction Protocol
+ references Agent Selection Selection Framework
 ```
 
 ### External References
@@ -160,14 +160,14 @@ REPEATABLE_PROCESSES.md
 Lane = Independent execution context for one agent
 
 Lanes:
-  Lane 1: ci-auto-healer-agent (fixing CI)
-  Lane 2: autonomous-test-healer-agent (fixing tests)
-  Lane 3: unified-coverage-agent (coverage gaps)
-  Lane 4: unified-doc-agent (doc structure)
+ Lane 1: ci-auto-healer-agent (fixing CI)
+ Lane 2: autonomous-test-healer-agent (fixing tests)
+ Lane 3: unified-coverage-agent (coverage gaps)
+ Lane 4: unified-doc-agent (doc structure)
 
 All lanes execute in parallel:
-  Total time ≈ max(lane1_time, lane2_time, lane3_time, lane4_time)
-  vs. sequential ≈ lane1_time + lane2_time + lane3_time + lane4_time
+ Total time ≈ max(lane1_time, lane2_time, lane3_time, lane4_time)
+ vs. sequential ≈ lane1_time + lane2_time + lane3_time + lane4_time
 
 Efficiency gain: 2-4x faster with careful parallelization
 ```
@@ -176,12 +176,12 @@ Efficiency gain: 2-4x faster with careful parallelization
 
 ```
 State transitions:
-  IDLE → RECEIVING → VALIDATING → EXECUTING → VERIFYING → RETURNING → IDLE
+ IDLE RECEIVING VALIDATING EXECUTING VERIFYING RETURNING IDLE
 
 Key gates:
-  VALIDATING: Prerequisite check (if fails → ESCALATING)
-  EXECUTING: Work in progress (if blocker → ESCALATING)
-  VERIFYING: Self-check results (if invalid → retry EXECUTING)
+ VALIDATING: Prerequisite check (if fails ESCALATING)
+ EXECUTING: Work in progress (if blocker ESCALATING)
+ VERIFYING: Self-check results (if invalid retry EXECUTING)
 ```
 
 ---
@@ -288,15 +288,15 @@ Key gates:
 Goal: Minimize idle lanes
 
 Good: 4 lanes, all executing = 100% utilization
-Bad:  4 lanes, 2 idle = 50% utilization
+Bad: 4 lanes, 2 idle = 50% utilization
 ```
 
 ### Time Efficiency
 
 ```
 Sequential execution: T = t1 + t2 + t3 + t4
-Parallel execution:   T = max(t1, t2, t3, t4)
-Efficiency gain:      2-4x faster with good lane balancing
+Parallel execution: T = max(t1, t2, t3, t4)
+Efficiency gain: 2-4x faster with good lane balancing
 ```
 
 ### Success Rate
@@ -337,13 +337,13 @@ With retries: 95%+ achievable
 
 ```
 docs/
-├── agent/
-│   ├── CUSTOM_AGENT_SELECTION_FRAMEWORK.md (⬅ YOU ARE HERE)
-│   ├── CUSTOM_AGENT_INTERACTION_PROTOCOL.md
-│   ├── CUSTOM_AGENT_COORDINATION_WORKFLOWS.md
-│   ├── CUSTOM_AGENT_REPEATABLE_PROCESSES.md
-│   ├── INDEX.md (this file)
-│   └── [other agent documentation]
+ agent/
+ CUSTOM_AGENT_SELECTION_FRAMEWORK.md (⬅ YOU ARE HERE)
+ CUSTOM_AGENT_INTERACTION_PROTOCOL.md
+ CUSTOM_AGENT_COORDINATION_WORKFLOWS.md
+ CUSTOM_AGENT_REPEATABLE_PROCESSES.md
+ INDEX.md (this file)
+ [other agent documentation]
 ```
 
 ---

@@ -321,7 +321,7 @@ bare except -> specific exceptions + logging -> remove redundant pass
 # scripts/patterns/improve_exception_handling.py
 def improve_exception_handling(file_path, line_number):
  """
- Tokenized pattern for improving exception handling.  # pragma: allowlist secret
+ Tokenized pattern for improving exception handling. # pragma: allowlist secret
 
  Steps:
  1. Parse AST to find bare except
@@ -380,11 +380,11 @@ Add logging import -> Replace print() -> Select appropriate log level
 **Proposed**: `.codex/patterns/` directory structure
 ```
 .codex/patterns/
-├── review_response.json
-├── exception_handling.json
-├── logging_consistency.json
-├── type_annotation_fix.json
-└── readme.md
+ review_response.json
+ exception_handling.json
+ logging_consistency.json
+ type_annotation_fix.json
+ readme.md
 ```
 
 **Each pattern includes**:

@@ -246,8 +246,8 @@ MentalMap = MentalMappingModel
 ```python
 @pytest.mark.skip(reason="HamiltonianEvolver.harmonic_hamiltonian requires q,p arguments")
 def test_harmonic_hamiltonian_creation(self):
-    """Test creating harmonic oscillator Hamiltonian"""
-    # Test code preserved for future implementation
+ """Test creating harmonic oscillator Hamiltonian"""
+ # Test code preserved for future implementation
 ```
 
 ---
@@ -265,7 +265,7 @@ pattern = r'@pytest\.mark\.skip\(.*?\)\s*\n'
 # Good: Line-by-line removal
 lines = f.readlines()
 if '@pytest.mark.skip' in lines[i]:
-    del lines[i]
+ del lines[i]
 ```
 
 ## Pitfall 2: Coverage Percentage Denominator
@@ -307,7 +307,7 @@ evolver.harmonic_hamiltonian(q=positions, p=momenta)
 
 ### 1. Incremental Development Cycle
 ```
-1. Analyze skip reasons → Group by category
+1. Analyze skip reasons Group by category
 2. Implement fixes for 1 category
 3. Activate 5-10 tests
 4. Run test suite

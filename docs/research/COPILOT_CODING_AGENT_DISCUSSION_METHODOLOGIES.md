@@ -36,26 +36,26 @@ navigation system, MCP Package System, API Reference, Architecture, and Changelo
 
 ```
 Issue assigned to @copilot
-        │
-        ▼
+ 
+ 
 Agent reads issue title + body + comments (up to assignment)
-        │
-        ▼
+ 
+ 
 Agent works in ephemeral GitHub Actions sandbox
-        │
-        ▼
+ 
+ 
 Agent opens PR with:
-  • Structured description (what/why/how)
-  • Inline code comments (via git diff + review annotations)
-  • Session log linked
-        │
-        ▼
+ • Structured description (what/why/how)
+ • Inline code comments (via git diff + review annotations)
+ • Session log linked
+ 
+ 
 Human reviewer leaves PR comments / inline suggestions
-        │
-        ▼
-Mention @copilot in comment → agent re-triggered → iterates
-        │
-        ▼
+ 
+ 
+Mention @copilot in comment agent re-triggered iterates
+ 
+ 
 Human approves & merges (agent cannot self-merge)
 ```
 
@@ -73,15 +73,15 @@ making it the lightest-weight method for Copilot-triggered comment posting.
 
 ```yaml
 - uses: actions/github-script@v7
-  with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-    script: |
-      await github.rest.issues.createComment({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: context.issue.number,
-        body: ' Copilot agent completed analysis. See PR #...'
-      });
+ with:
+ github-token: ${{ secrets.GITHUB_TOKEN }}
+ script: |
+ await github.rest.issues.createComment({
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ issue_number: context.issue.number,
+ body: ' Copilot agent completed analysis. See PR #...'
+ });
 ```
 
 **Used extensively in this repo** — see `agent-auth-delegation.yml`, `chatops_copilot_trigger.yml`,
@@ -91,15 +91,15 @@ making it the lightest-weight method for Copilot-triggered comment posting.
 
 ```yaml
 - name: Post agent result
-  env:
-    GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
-  run: |
-    BODY=$(printf '{"body":"## Agent Result\n\n%s"}' "${RESULT}")
-    curl -s -X POST \
-      -H "Authorization: Bearer ${GH_TOKEN}" \
-      -H "Accept: application/vnd.github+json" \
-      "https://api.github.com/repos/${REPO}/issues/${PR}/comments" \
-      -d "${BODY}"
+ env:
+ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+ run: |
+ BODY=$(printf '{"body":"## Agent Result\n\n%s"}' "${RESULT}")
+ curl -s -X POST \
+ -H "Authorization: Bearer ${GH_TOKEN}" \
+ -H "Accept: application/vnd.github+json" \
+ "https://api.github.com/repos/${REPO}/issues/${PR}/comments" \
+ -d "${BODY}"
 ```
 
 **Used in this repo** — `agent_infrastructure_manager.yml` (list-vars, apply-vars jobs).
@@ -108,17 +108,17 @@ making it the lightest-weight method for Copilot-triggered comment posting.
 
 ```yaml
 - uses: actions/github-script@v7
-  with:
-    script: |
-      await github.rest.pulls.createReviewComment({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        pull_number: context.payload.pull_request.number,
-        body: 'Suggestion: prefer ${variable//search/replace} over sed here',
-        commit_id: context.payload.pull_request.head.sha,
-        path: '.github/workflows/my-workflow.yml',
-        line: 42
-      });
+ with:
+ script: |
+ await github.rest.pulls.createReviewComment({
+ owner: context.repo.owner,
+ repo: context.repo.repo,
+ pull_number: context.payload.pull_request.number,
+ body: 'Suggestion: prefer ${variable//search/replace} over sed here',
+ commit_id: context.payload.pull_request.head.sha,
+ path: '.github/workflows/my-workflow.yml',
+ line: 42
+ });
 ```
 
 ### 2.4 GitHub Discussions API
@@ -128,22 +128,22 @@ using the GraphQL API:
 
 ```bash
 curl -s -X POST https://api.github.com/graphql \
-  -H "Authorization: bearer ${GH_TOKEN}" \
-  -d '{"query":"mutation { createDiscussion(input: { repositoryId: \"...\", categoryId: \"...\", body: \"...\", title: \"...\" }) { discussion { id } } }"}'
+ -H "Authorization: bearer ${GH_TOKEN}" \
+ -d '{"query":"mutation { createDiscussion(input: { repositoryId: \"...\", categoryId: \"...\", body: \"...\", title: \"...\" }) { discussion { id } } }"}'
 ```
 
 ### 2.5 `gh` CLI (Recommended for Simplicity)
 
 ```yaml
 - name: Post discussion comment
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run: |
-    gh pr comment ${{ github.event.pull_request.number }} \
-      --body "##  Copilot Agent Report\n\n$(cat .codex/report.md)"
+ env:
+ GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ run: |
+ gh pr comment ${{ github.event.pull_request.number }} \
+ --body "## Copilot Agent Report\n\n$(cat .codex/report.md)"
 
-    # Or create a new issue discussion
-    gh issue comment $ISSUE_NUMBER --body "Analysis complete. See PR #${PR}."
+ # Or create a new issue discussion
+ gh issue comment $ISSUE_NUMBER --body "Analysis complete. See PR #${PR}."
 ```
 
 ---

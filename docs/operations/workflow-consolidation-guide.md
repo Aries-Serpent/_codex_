@@ -88,16 +88,16 @@ All scan types available via single interface:
 
 ```yaml
 gh workflow run security-scanning-suite.yml \
-  -f scan-type=<TYPE>
+ -f scan-type=<TYPE>
 
 # Available types:
-# - all              (default, runs all scans)
-# - codeql           (CodeQL analysis only)
-# - dependency       (Dependency scanning only)
-# - semgrep          (SAST analysis only)
-# - cve              (CVE scanning only)
-# - containers       (Container image scanning)
-# - secrets          (Secrets detection only)
+# - all (default, runs all scans)
+# - codeql (CodeQL analysis only)
+# - dependency (Dependency scanning only)
+# - semgrep (SAST analysis only)
+# - cve (CVE scanning only)
+# - containers (Container image scanning)
+# - secrets (Secrets detection only)
 ```
 
 #### Examples
@@ -177,8 +177,8 @@ The following workflows are now consolidated into `optimized-test-execution.yml`
 **1. Workflow Dispatch Input**
 ```yaml
 gh workflow run optimized-test-execution.yml \
-  -f test-type=<TYPE> \
-  -f test-level=<LEVEL>
+ -f test-type=<TYPE> \
+ -f test-level=<LEVEL>
 
 # Test types: all, core, auth, ml, rag, rust
 # Test levels: smoke, full, extended
@@ -212,8 +212,8 @@ gh workflow run optimized-test-execution.yml -f test-type=ml
 
 # Run with specific level
 gh workflow run optimized-test-execution.yml \
-  -f test-type=core \
-  -f test-level=smoke
+ -f test-type=core \
+ -f test-level=smoke
 
 # Run all tests
 gh workflow run optimized-test-execution.yml -f test-type=all
@@ -223,24 +223,24 @@ gh workflow run optimized-test-execution.yml -f test-type=all
 
 **Core Tests (Always Run)**
 ```
-test-fast:          15 minutes (parallel with others)
-test-integration:   20 minutes (parallel with others)
-test-slow:          20 minutes (parallel with others)
-test-coverage:      20 minutes (after core)
-Total:              ~40 minutes (vs 55 min sequential)
+test-fast: 15 minutes (parallel with others)
+test-integration: 20 minutes (parallel with others)
+test-slow: 20 minutes (parallel with others)
+test-coverage: 20 minutes (after core)
+Total: ~40 minutes (vs 55 min sequential)
 ```
 
 **Specialized Tests (Conditional)**
 ```
-auth-tests:   30 minutes (if src/codex/auth/** changed)
-ml-tests:     45 minutes (2 Python × 3 suites)
-rag-tests:    30 minutes (if src/codex/rag/** changed)
-rust-tests:   45 minutes (if .rs files changed)
+auth-tests: 30 minutes (if src/codex/auth/** changed)
+ml-tests: 45 minutes (2 Python × 3 suites)
+rag-tests: 30 minutes (if src/codex/rag/** changed)
+rust-tests: 45 minutes (if .rs files changed)
 ```
 
 **P19 Shadow Import Check**
 ```
-Pre-flight:   5 minutes (prevents silent failures)
+Pre-flight: 5 minutes (prevents silent failures)
 ```
 
 #### Test Results
@@ -284,29 +284,29 @@ The following workflows are now consolidated into 2 master workflows:
 **1. `deploy-production.yml`**
 ```
 Triggers:
-  - Manual dispatch with environment selection
-  - Tag release (via GitHub Actions)
-  - Scheduled maintenance (configurable)
+ - Manual dispatch with environment selection
+ - Tag release (via GitHub Actions)
+ - Scheduled maintenance (configurable)
 
 Features:
-  - Multi-stage deployment (10% → 50% → 100%)
-  - Pre-deployment health checks
-  - Automated rollback on failure
-  - Cost tracking
+ - Multi-stage deployment (10% 50% 100%)
+ - Pre-deployment health checks
+ - Automated rollback on failure
+ - Cost tracking
 ```
 
 **2. `deploy-staging.yml`**
 ```
 Triggers:
-  - Push to develop/staging branch
-  - Manual dispatch for verification
-  - On-demand validation
+ - Push to develop/staging branch
+ - Manual dispatch for verification
+ - On-demand validation
 
 Features:
-  - Quick deployment for validation
-  - Health verification
-  - Performance baseline
-  - Integration testing
+ - Quick deployment for validation
+ - Health verification
+ - Performance baseline
+ - Integration testing
 ```
 
 #### Workflow Dispatch Options
@@ -314,16 +314,16 @@ Features:
 **Production Deployment**
 ```bash
 gh workflow run deploy-production.yml \
-  -f environment=production \
-  -f version=<SEMVER> \
-  -f canary-percentage=10
+ -f environment=production \
+ -f version=<SEMVER> \
+ -f canary-percentage=10
 ```
 
 **Staging Deployment**
 ```bash
 gh workflow run deploy-staging.yml \
-  -f environment=staging \
-  -f deployment-type=full
+ -f environment=staging \
+ -f deployment-type=full
 ```
 
 #### Health Verification
@@ -535,12 +535,12 @@ ls -la ./artifacts/
 ```yaml
 # Example: Run security scan in another workflow
 - name: Run Security Scans
-  uses: actions/github-script@v7
-  with:
-    script: |
-      const { execSync } = require('child_process');
-      execSync('gh workflow run security-scanning-suite.yml -f scan-type=all', 
-        { stdio: 'inherit' });
+ uses: actions/github-script@v7
+ with:
+ script: |
+ const { execSync } = require('child_process');
+ execSync('gh workflow run security-scanning-suite.yml -f scan-type=all', 
+ { stdio: 'inherit' });
 ```
 
 ### CI/CD Pipeline Hook
@@ -550,7 +550,7 @@ ls -la ./artifacts/
 # Example: Trigger tests on PR creation
 
 if [ $EVENT_NAME == "pull_request" ]; then
-  gh workflow run optimized-test-execution.yml -f test-type=all
+ gh workflow run optimized-test-execution.yml -f test-type=all
 fi
 ```
 
@@ -590,7 +590,7 @@ cp .github/workflows/archived/*.yml .github/workflows/
 
 # Disable problematic consolidated workflow
 mv .github/workflows/security-scanning-suite.yml \
-   .github/workflows/security-scanning-suite.yml.disabled
+ .github/workflows/security-scanning-suite.yml.disabled
 
 # Commit and notify
 git add .github/workflows/

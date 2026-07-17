@@ -123,7 +123,7 @@ Where:
 
 **Lagrangian Form**:
 ```
-min_T  I(X;T)  subject to  I(T;Y) ≥ I_min
+min_T I(X;T) subject to I(T;Y) ≥ I_min
 ```
 
 **Application**:
@@ -145,17 +145,17 @@ L_VAE = E_q[log p(x|z)] - KL(q(z|x) || p(z))
 **Neural Implementation**:
 ```python
 def quantum_vae_loss(x, z, Psi):
-    """Quantum-inspired VAE loss for code compression."""
-    reconstruction = quantum_decode(z, Psi)
-    recon_loss = -log_likelihood(x, reconstruction)
+ """Quantum-inspired VAE loss for code compression."""
+ reconstruction = quantum_decode(z, Psi)
+ recon_loss = -log_likelihood(x, reconstruction)
 
-    # Quantum KL: S(ρ||σ) = Tr(ρ(log ρ - log σ))
-    quantum_kl = quantum_relative_entropy(
-        posterior_state(z, x),
-        prior_state(Psi)
-    )
+ # Quantum KL: S(ρ||σ) = Tr(ρ(log ρ - log σ))
+ quantum_kl = quantum_relative_entropy(
+ posterior_state(z, x),
+ prior_state(Psi)
+ )
 
-    return recon_loss + beta * quantum_kl
+ return recon_loss + beta * quantum_kl
 ```
 
 ---
@@ -165,30 +165,30 @@ def quantum_vae_loss(x, z, Psi):
 ### Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│  Source Code Repository (Full Fidelity) │
-└────────────┬────────────────────────────┘
-             │
-    ┌────────┴────────┐
-    │   Compression   │
-    │    Pipeline     │
-    └────────┬────────┘
-             │
-    ┌────────┴────────────────────────────┐
-    │                                     │
-┌───▼────────┐                   ┌───────▼────┐
-│  Mirror 1  │                   │  Mirror 2  │
-│ (Lossless) │◄─────sync────────►│  (Lossy)   │
-│  Backup    │                   │  Fast Ret. │
-└────────────┘                   └────────────┘
-     │                                  │
-     └──────────┬───────────────────────┘
-                │
-         ┌──────▼──────┐
-         │   Quantum   │
-         │  Retrieval  │
-         │   Engine    │
-         └─────────────┘
+
+ Source Code Repository (Full Fidelity) 
+
+ 
+ 
+ Compression 
+ Pipeline 
+ 
+ 
+ 
+ 
+ 
+ Mirror 1 Mirror 2 
+ (Lossless) sync (Lossy) 
+ Backup Fast Ret. 
+ 
+ 
+ 
+ 
+ 
+ Quantum 
+ Retrieval 
+ Engine 
+ 
 ```
 
 ### Synchronization Protocol
@@ -205,16 +205,16 @@ def quantum_vae_loss(x, z, Psi):
 3. **Consistency Check**:
 ```python
 def verify_mirror_consistency(mirror1, mirror2):
-    """Quantum-inspired consistency verification."""
-    state1 = encode_quantum_state(mirror1)
-    state2 = encode_quantum_state(mirror2)
+ """Quantum-inspired consistency verification."""
+ state1 = encode_quantum_state(mirror1)
+ state2 = encode_quantum_state(mirror2)
 
-    fidelity = abs(inner_product(state1, state2))**2
+ fidelity = abs(inner_product(state1, state2))**2
 
-    if fidelity < THRESHOLD:
-        trigger_resync()
+ if fidelity < THRESHOLD:
+ trigger_resync()
 
-    return fidelity
+ return fidelity
 ```
 
 ---
@@ -262,28 +262,28 @@ def verify_mirror_consistency(mirror1, mirror2):
 from agents.quantum_orchestrator import QuantumOrchestrator
 
 class TesseractAESIntegration:
-    def __init__(self):
-        self.quantum_orchestrator = QuantumOrchestrator()
-        self.compression_mirrors = CompressionMirrorManager()
+ def __init__(self):
+ self.quantum_orchestrator = QuantumOrchestrator()
+ self.compression_mirrors = CompressionMirrorManager()
 
-    def retrieve_code_patterns(self, query, token_budget):
-        """Quantum-enhanced code pattern retrieval."""
-        # Prepare quantum state
-        query_state = self.quantum_orchestrator.prepare_state(query)
+ def retrieve_code_patterns(self, query, token_budget):
+ """Quantum-enhanced code pattern retrieval."""
+ # Prepare quantum state
+ query_state = self.quantum_orchestrator.prepare_state(query)
 
-        # Rate-distortion optimization
-        optimal_compression = self.optimize_rate_distortion(
-            query_state,
-            token_budget
-        )
+ # Rate-distortion optimization
+ optimal_compression = self.optimize_rate_distortion(
+ query_state,
+ token_budget
+ )
 
-        # Tesseract graph search
-        patterns = self.tesseract_search(
-            optimal_compression,
-            self.compression_mirrors
-        )
+ # Tesseract graph search
+ patterns = self.tesseract_search(
+ optimal_compression,
+ self.compression_mirrors
+ )
 
-        return patterns
+ return patterns
 ```
 
 **2. Physics-Inspired Workflows** (`docs/PHYSICS_INSPIRED_WORKFLOWS.md`)
@@ -344,13 +344,13 @@ class TesseractAESIntegration:
  - Identify code modification points
 
 2. **Prototype Rate-Distortion Module**:
-   ```bash
-   python scripts/quantum/implement_rate_distortion.py
+ ```bash
+ python scripts/quantum/implement_rate_distortion.py
  ```
 
 3. **Set Up Compression Mirrors**:
-   ```bash
-   python scripts/quantum/setup_compression_mirrors.py
+ ```bash
+ python scripts/quantum/setup_compression_mirrors.py
  ```
 
 ### Resource Requirements

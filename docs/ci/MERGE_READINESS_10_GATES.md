@@ -74,22 +74,22 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Detect-secrets check:
-   ```bash
-   detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD)
+ ```bash
+ detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD)
  ```
  - Exit code 0 = pass (no new secrets)
  - Exit code ≠ 0 = fail (new secrets detected)
 
 2. CodeQL alert count:
-   ```bash
-   gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open --jq '.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'
+ ```bash
+ gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open --jq '.[] | select(.rule.severity=="error" or .rule.severity=="warning") | .number'
  ```
  - Count open alerts
  - Threshold: 0 new alerts introduced in this PR
 
 3. Pip audit (CVE check):
-   ```bash
-   python -m pip_audit --skip-editable --desc
+ ```bash
+ python -m pip_audit --skip-editable --desc
  ```
  - Exit code 0 = pass (no vulnerabilities)
 
@@ -214,13 +214,13 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Check `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in last commit
-   ```bash
-   git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
  ```
 
 2. Check `CHANGELOG.md` updated in last commit
-   ```bash
-   git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
+ ```bash
+ git diff --name-only HEAD~1 HEAD | grep -q "CHANGELOG.md"
  ```
 
 3. Validate entry format:
@@ -280,15 +280,15 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Run actionlint on all workflow files:
-   ```bash
-   actionlint .github/workflows/*.yml 2>&1 | grep -c error
+ ```bash
+ actionlint .github/workflows/*.yml 2>&1 | grep -c error
  ```
  - Exit code 0 = pass (0 errors)
  - Exit code ≠ 0 = fail (errors found)
 
 2. Run yamllint:
-   ```bash
-   yamllint .github/workflows/ --config-file .yamllint.yml
+ ```bash
+ yamllint .github/workflows/ --config-file .yamllint.yml
  ```
  - Checks indentation, key ordering, line length
 
@@ -316,8 +316,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 
 **Validation Steps:**
 1. Check for unresolved merge conflicts:
-   ```bash
-   git diff --name-only --diff-filter=U
+ ```bash
+ git diff --name-only --diff-filter=U
  ```
  - Must return empty (no unmerged files)
 
@@ -348,9 +348,9 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 merge_readiness_score = Σ(gate_weight × gate_pass_rate)
 
 where:
-  gate_pass_rate = 1.0 if gate passes
-                 = 0.5 if gate partially passes (with documented gap)
-                 = 0.0 if gate fails
+ gate_pass_rate = 1.0 if gate passes
+ = 0.5 if gate partially passes (with documented gap)
+ = 0.0 if gate fails
 ```
 
 ### Example Score Calculation
@@ -385,20 +385,20 @@ where:
 Use this format in every PR body to document gate status:
 
 ```markdown
-##  Merge Readiness Summary
+## Merge Readiness Summary
 
 | Gate | Weight | Status | Score |
 |------|--------|--------|-------|
-| Code Quality | 12 |  | 12/12 |
-| Test Coverage | 12 |  | 12/12 |
-| Security & Secrets | 15 | ️ Partial | 7.5/15 |
-| WEC Integrity | 14 |  | 14/14 |
-| Deferral Language | 10 |  | 10/10 |
-| Comment Review | 12 |  | 0/12 |
-| Accountability Report | 8 |  | 8/8 |
-| Action Versions | 7 |  | 7/7 |
-| Workflow Syntax | 7 |  | 7/7 |
-| Merge Dependencies | 3 |  | 3/3 |
+| Code Quality | 12 | | 12/12 |
+| Test Coverage | 12 | | 12/12 |
+| Security & Secrets | 15 | Partial | 7.5/15 |
+| WEC Integrity | 14 | | 14/14 |
+| Deferral Language | 10 | | 10/10 |
+| Comment Review | 12 | | 0/12 |
+| Accountability Report | 8 | | 8/8 |
+| Action Versions | 7 | | 7/7 |
+| Workflow Syntax | 7 | | 7/7 |
+| Merge Dependencies | 3 | | 3/3 |
 | **TOTAL** | **100** | **8/10** | **80.5/100** |
 
 ### Failing Gates (Remediation Required)

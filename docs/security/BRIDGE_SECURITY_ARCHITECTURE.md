@@ -51,7 +51,7 @@ os.chmod(self.bridge_dir, 0o700)
 ```text
 # Direct constant-time comparison (no hashing to avoid timing variations)
 if not secrets.compare_digest(self.auth_token, message.auth_token):
-    return False
+ return False
 ```
 
 **Token Generation:**
@@ -101,15 +101,15 @@ fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 **Audit Log Format:**
 ```json
 {
-  "timestamp": "2026-01-09T10:30:15.123456+00:00",
-  "event": "AUTH_FAILURE",
-  "pid": 12345,
-  "uid": 1000,
-  "details": {
-    "reason": "invalid_token",
-    "source": "suspicious_client",
-    "message_type": "context_update"
-  }
+ "timestamp": "2026-01-09T10:30:15.123456+00:00",
+ "event": "AUTH_FAILURE",
+ "pid": 12345,
+ "uid": 1000,
+ "details": {
+ "reason": "invalid_token",
+ "source": "suspicious_client",
+ "message_type": "context_update"
+ }
 }
 ```
 
@@ -174,11 +174,11 @@ fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
 ```python
 bridge = BridgeManager(
-    bridge_dir=None,  # Use secure temp directory
-    mode=BridgeMode.NAMED_PIPE,  # More secure than sockets
-    owner_only=True,  # Enforce 0o600 permissions
-    require_auth=True,  # Require authentication tokens
-    audit_file=None  # Use default audit log location
+ bridge_dir=None, # Use secure temp directory
+ mode=BridgeMode.NAMED_PIPE, # More secure than sockets
+ owner_only=True, # Enforce 0o600 permissions
+ require_auth=True, # Require authentication tokens
+ audit_file=None # Use default audit log location
 )
 ```
 
@@ -195,10 +195,10 @@ export CODEX_BRIDGE_DIR="/secure/path/to/bridge"
 
 ```python
 bridge = BridgeManager(
-    bridge_dir=Path("/tmp/dev_bridge"),
-    mode=BridgeMode.NAMED_PIPE,
-    owner_only=True,
-    require_auth=False,  # ️ Disabled for testing
+ bridge_dir=Path("/tmp/dev_bridge"),
+ mode=BridgeMode.NAMED_PIPE,
+ owner_only=True,
+ require_auth=False, # Disabled for testing
 )
 ```
 
@@ -255,18 +255,18 @@ import json
 from pathlib import Path
 
 def check_suspicious_activity(audit_file: Path, threshold: int = 5):
-    """Alert if authentication failures exceed threshold."""
-    failures = 0
-    with open(audit_file, 'r') as f:
-        for line in f:
-            entry = json.loads(line)
-            if entry["event"] == "AUTH_FAILURE":
-                failures += 1
+ """Alert if authentication failures exceed threshold."""
+ failures = 0
+ with open(audit_file, 'r') as f:
+ for line in f:
+ entry = json.loads(line)
+ if entry["event"] == "AUTH_FAILURE":
+ failures += 1
 
-    if failures > threshold:
-        print(f"️  ALERT: {failures} authentication failures detected!")
-        return True
-    return False
+ if failures > threshold:
+ print(f" ALERT: {failures} authentication failures detected!")
+ return True
+ return False
 ```
 
 ## Incident Response
@@ -335,11 +335,11 @@ export CODEX_BRIDGE_TOKEN="test_token_123"
 
 # Test with valid token (should succeed)
 python -c "from src.bridge_manager import share_context_with_copilot; \
-           share_context_with_copilot({'test': 'data'})"
+ share_context_with_copilot({'test': 'data'})"
 
 # Test with invalid token (should fail)
 CODEX_BRIDGE_TOKEN="wrong" python -c "from src.bridge_manager import share_context_with_copilot; \
-           share_context_with_copilot({'test': 'data'})"
+ share_context_with_copilot({'test': 'data'})"
 ```
 
 ---
@@ -361,28 +361,28 @@ from src.bridge_manager import BridgeManager, ContextMessage, BridgeMode
 from datetime import datetime, UTC
 
 def benchmark_write_latency(iterations=1000):
-    bridge = BridgeManager(mode=BridgeMode.NAMED_PIPE, require_auth=False)
+ bridge = BridgeManager(mode=BridgeMode.NAMED_PIPE, require_auth=False)
 
-    latencies = []
-    for _ in range(iterations):
-        message = ContextMessage(
-            timestamp=datetime.now(UTC).isoformat(),
-            source="benchmark",
-            message_type="test",
-            context={"data": "test"}
-        )
+ latencies = []
+ for _ in range(iterations):
+ message = ContextMessage(
+ timestamp=datetime.now(UTC).isoformat(),
+ source="benchmark",
+ message_type="test",
+ context={"data": "test"}
+ )
 
-        start = time.perf_counter()
-        bridge.write_message(message)
-        end = time.perf_counter()
+ start = time.perf_counter()
+ bridge.write_message(message)
+ end = time.perf_counter()
 
-        latencies.append((end - start) * 1000)  # Convert to ms
+ latencies.append((end - start) * 1000) # Convert to ms
 
-    print(f"Avg: {sum(latencies)/len(latencies):.2f}ms")
-    print(f"P95: {sorted(latencies)[int(0.95 * len(latencies))]:.2f}ms")
-    print(f"Max: {max(latencies):.2f}ms")
+ print(f"Avg: {sum(latencies)/len(latencies):.2f}ms")
+ print(f"P95: {sorted(latencies)[int(0.95 * len(latencies))]:.2f}ms")
+ print(f"Max: {max(latencies):.2f}ms")
 
-    bridge.cleanup()
+ bridge.cleanup()
 ```
 
 ---
@@ -416,7 +416,7 @@ def benchmark_write_latency(iterations=1000):
 ```python
 # Old fragile bridge at temp/bridge_codex_copilot_bridge
 with open("temp/bridge_codex_copilot_bridge/context.json", "w") as f:
-    json.dump(context, f)
+ json.dump(context, f)
 ```
 
 **After (Secure):**
@@ -437,12 +437,12 @@ share_context_with_copilot(context)
 USE_SECURE_BRIDGE = os.getenv("CODEX_USE_SECURE_BRIDGE", "true").lower() == "true"
 
 if USE_SECURE_BRIDGE:
-    from src.bridge_manager import share_context_with_copilot
-    share_context_with_copilot(context)
+ from src.bridge_manager import share_context_with_copilot
+ share_context_with_copilot(context)
 else:
-    # Legacy fallback
-    with open("temp/bridge/context.json", "w") as f:
-        json.dump(context, f)
+ # Legacy fallback
+ with open("temp/bridge/context.json", "w") as f:
+ json.dump(context, f)
 ```
 
 ---

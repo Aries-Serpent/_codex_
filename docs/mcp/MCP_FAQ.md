@@ -65,17 +65,17 @@ Create `.mcp-config.json` in repository root:
 
 ```json
 {
-  "version": "1.0",
-  "server": {
-    "host": "0.0.0.0",
-    "port": 8000
-  },
-  "security": {
-    "api_keys": ["your-secure-api-key"],
-    "rate_limit": {
-      "requests_per_minute": 60
-    }
-  }
+ "version": "1.0",
+ "server": {
+ "host": "0.0.0.0",
+ "port": 8000
+ },
+ "security": {
+ "api_keys": ["your-secure-api-key"],
+ "rate_limit": {
+ "requests_per_minute": 60
+ }
+ }
 }
 ```
 
@@ -91,16 +91,16 @@ from mcp.registry import MCPToolRegistry
 registry = MCPToolRegistry()
 
 def my_tool(param1: str) -> dict:
-    """My custom tool."""
-    return {"result": f"Processed {param1}"}
+ """My custom tool."""
+ return {"result": f"Processed {param1}"}
 
 registry.register_tool(
-    name="my_tool",
-    handler=my_tool,
-    metadata={
-        "description": "Custom tool description",
-        "version": "1.0.0"
-    }
+ name="my_tool",
+ handler=my_tool,
+ metadata={
+ "description": "Custom tool description",
+ "version": "1.0.0"
+ }
 )
 ```
 
@@ -121,13 +121,13 @@ Yes, use `registry.unregister_tool("tool_name")` to remove a tool from the regis
 ```python
 # Via JSON-RPC
 request = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "callTool",
-    "params": {
-        "name": "my_tool",
-        "arguments": {"param1": "test"}
-    }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "callTool",
+ "params": {
+ "name": "my_tool",
+ "arguments": {"param1": "test"}
+ }
 }
 
 response = server.handle_request(request)
@@ -139,16 +139,16 @@ MCP returns a structured JSON-RPC error response:
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "error": {
-    "code": -32603,
-    "message": "Internal error",
-    "data": {
-      "tool": "my_tool",
-      "error_type": "RuntimeError"
-    }
-  }
+ "jsonrpc": "2.0",
+ "id": 1,
+ "error": {
+ "code": -32603,
+ "message": "Internal error",
+ "data": {
+ "tool": "my_tool",
+ "error_type": "RuntimeError"
+ }
+ }
 }
 ```
 
@@ -176,12 +176,12 @@ Rate limiting is automatic when configured in `.mcp-config.json`:
 
 ```json
 {
-  "security": {
-    "rate_limit": {
-      "requests_per_minute": 60,
-      "burst_size": 10
-    }
-  }
+ "security": {
+ "rate_limit": {
+ "requests_per_minute": 60,
+ "burst_size": 10
+ }
+ }
 }
 ```
 
@@ -370,7 +370,7 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ### Path (Question Resolution)
 ```
-Developer question → Search FAQ → Find answer → Apply solution → Verify success
+Developer question Search FAQ Find answer Apply solution Verify success
 ```
 
 ### Fields (Knowledge Transfer)

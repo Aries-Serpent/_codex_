@@ -140,16 +140,16 @@ python train.py +experiment=my_experiment
 
 ```
 _codex_/
-├── configs/
-│ ├── default/ # Default settings
-│ │ ├── training.yaml
-│ │ ├── model.yaml
-│ │ └── evaluation.yaml
-│ └── production/ # Production-specific settings
-│ ├── training.yaml
-│ └── features.yaml
-└── experiments/ # Experiment variations
- └── my_experiment.yaml
+ configs/
+ default/ # Default settings
+ training.yaml
+ model.yaml
+ evaluation.yaml
+ production/ # Production-specific settings
+ training.yaml
+ features.yaml
+ experiments/ # Experiment variations
+ my_experiment.yaml
 ```
 
 **Find the right config:**
@@ -354,7 +354,7 @@ cat results/eval_1/metrics.json
 ```bash
 # Use MLflow to compare runs
 # Open http://localhost:5000
-# Click "Experiments" → "Compare Runs"
+# Click "Experiments" "Compare Runs"
 ```
 
 ---
@@ -410,8 +410,8 @@ If still crashing, create an [issue on GitHub](https://github.com/Aries-Serpent/
 **Example interpretation:**
 ```
 Epoch 1: Loss=0.45, Accuracy=82%
-↓ Loss is decreasing (good!)
-↑ Accuracy is improving (good!)
+ Loss is decreasing (good!)
+ Accuracy is improving (good!)
 
 Epoch 10: Loss=0.05, Accuracy=95%
  Model is learning well
@@ -419,8 +419,8 @@ Epoch 10: Loss=0.05, Accuracy=95%
 
 **Warning signs:**
 ```
-Loss not decreasing → Learning rate too low or model too weak
-Accuracy stuck → Need more training data or better model
+Loss not decreasing Learning rate too low or model too weak
+Accuracy stuck Need more training data or better model
 ```
 
 ---

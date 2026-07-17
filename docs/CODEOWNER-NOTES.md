@@ -31,10 +31,10 @@
 **Content**:
 ```text
 validate-imports (2min)
-  ├─> test-core (parallel, 3min)
-  ├─> test-smoke (parallel, 1min)
-  ├─> lint-check (parallel, 1min)
-  └─> modernization-scan (parallel, 2min)
+ > test-core (parallel, 3min)
+ > test-smoke (parallel, 1min)
+ > lint-check (parallel, 1min)
+ > modernization-scan (parallel, 2min)
 ```text
 
 **Evidence for `text` classification**:

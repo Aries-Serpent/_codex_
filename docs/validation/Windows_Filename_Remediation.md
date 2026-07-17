@@ -92,7 +92,7 @@ pre-commit run check-windows-filenames --all-files
 # Creates colons - fails on Windows
 timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 filepath = Path(f"reports/status_{timestamp}.json")
-# Result: reports/status_2026-01-21T14:30:45Z.json ️ INVALID ON WINDOWS
+# Result: reports/status_2026-01-21T14:30:45Z.json INVALID ON WINDOWS
 ```
 
 ## After ( Safe)
@@ -102,7 +102,7 @@ from codex.utils.path_utils import windows_safe_timestamp
 # No colons - works on all platforms
 timestamp = windows_safe_timestamp(fmt="iso")
 filepath = Path(f"reports/status_{timestamp}.json")
-# Result: reports/status_2026-01-21T14-30-45Z.json  VALID EVERYWHERE
+# Result: reports/status_2026-01-21T14-30-45Z.json VALID EVERYWHERE
 ```
 
 ## Rollback Plan
@@ -112,8 +112,8 @@ If issues arise, temporarily disable pre-commit hook:
 ```yaml
 # .pre-commit-config.yaml
 - id: check-windows-filenames
-  # Temporarily disabled - investigating false positives
-  exclude: '.*'
+ # Temporarily disabled - investigating false positives
+ exclude: '.*'
 ```
 
 ## Success Criteria

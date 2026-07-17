@@ -37,8 +37,8 @@ Production module: [`src/codex_ml/symbolic_pipeline.py`](../src/codex_ml/symboli
 
 ```python
 from docs.examples.codex_symbolic_pipeline import (
-    pretrain, sft, train_reward_model, rlhf_ppo,
-    PretrainCfg, SFTCfg, RewardModelCfg, RLHFCfg,
+ pretrain, sft, train_reward_model, rlhf_ppo,
+ PretrainCfg, SFTCfg, RewardModelCfg, RLHFCfg,
 )
 
 # --- Stage 1: Pretrain ---
@@ -64,10 +64,10 @@ print("Pipeline complete. Final model token count:", len(m2.weights.probs))
 ```bash
 # From repo root
 python deploy/deploy_codex_pipeline.py \
-  --corpus  data/corpus.jsonl \
-  --demos   data/demos.jsonl \
-  --prefs   data/prefs.jsonl \
-  --output-dir runs/exp1
+ --corpus data/corpus.jsonl \
+ --demos data/demos.jsonl \
+ --prefs data/prefs.jsonl \
+ --output-dir runs/exp1
 ```
 
 ```bash
@@ -82,7 +82,7 @@ pytest tests/test_deploy_codex_pipeline.py -v
 ### Stage 1 — Pretraining
 
 ```
-Corpus (text/code) ──► tokenize ──► unigram LM ──► M₀ Weights
+Corpus (text/code) tokenize unigram LM M₀ Weights
 ```
 
 Builds a unigram probability table via maximum-likelihood estimation across
@@ -92,7 +92,7 @@ each epoch; a safety penalty suppresses disallowed tokens.
 ### Stage 2 — Supervised Fine-Tuning (SFT)
 
 ```
-M₀ + Demos ──► teacher-forcing cross-entropy ──► M₁ Weights
+M₀ + Demos teacher-forcing cross-entropy M₁ Weights
 ```
 
 Updates the pretrained weights by increasing probability mass on
@@ -101,7 +101,7 @@ demonstration response tokens. Uses `cfg.lr` as a simple additive step size.
 ### Stage 3 — RLHF (PPO)
 
 ```
-M₁ + Reward Model ──► PPO update (KL-regularised) ──► M₂ Weights
+M₁ + Reward Model PPO update (KL-regularised) M₂ Weights
 ```
 
 Samples prompts from the demonstration set, scores each response with the

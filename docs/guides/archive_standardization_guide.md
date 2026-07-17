@@ -54,13 +54,13 @@ python -m codex.cli archive show-standardization-status
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3
-Signing Enabled:  No
+Signing Enabled: No
 Schema Versions Supported: 1.0, 2.0
 
 Compliance:
-   SLSA_L3
-   IN_TOTO_READY
-   SAA_COMPLIANT
+ SLSA_L3
+ IN_TOTO_READY
+ SAA_COMPLIANT
 ```text
 ## 2. Enable Standardization
 
@@ -73,8 +73,8 @@ export CODEX_ENABLE_SIGNING=false
 **GitHub Actions** (with signing):
 ```yaml
 env:
-  CODEX_STANDARDIZATION_ENABLED: "true"
-  CODEX_ENABLE_SIGNING: "true"
+ CODEX_STANDARDIZATION_ENABLED: "true"
+ CODEX_ENABLE_SIGNING: "true"
 ```text
 
 ### 3. Validate Evidence Log
@@ -96,28 +96,28 @@ python -m codex.cli archive validate-standardization --check-signatures
 **v1 (Legacy)**:
 ```json
 {
-  "ts": "2025-11-03T00:00:00Z",
-  "action": "ARCHIVE",
-  "actor": "user",
-  "tombstone": "uuid",
-  "sha256": "hash"
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user",
+ "tombstone": "uuid",
+ "sha256": "hash"
 }
 ```text
 
 **v2 (Standardized)**:
 ```json
 {
-  "ts": "2025-11-03T00:00:00Z",
-  "action": "ARCHIVE",
-  "actor": "user",
-  "tombstone": "uuid",
-  "sha256": "hash",
-  "schemaVersion": "2.0",
-  "standardizationMetadata": {
-    "slsa_level": "L3",
-    "signature": "...",
-    "issuer": "https://token.actions.githubusercontent.com"
-  }
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "user",
+ "tombstone": "uuid",
+ "sha256": "hash",
+ "schemaVersion": "2.0",
+ "standardizationMetadata": {
+ "slsa_level": "L3",
+ "signature": "...",
+ "issuer": "https://token.actions.githubusercontent.com"
+ }
 }
 ```text
 
@@ -142,10 +142,10 @@ Both v1 and v2 records can exist in the same evidence log:
 
 ```text
 .codex/evidence/archive_ops.jsonl:
-  Line 1: {"ts": "...", ...}                                    [v1]
-  Line 2: {"ts": "...", "schemaVersion": "2.0", ...}            [v2]
-  Line 3: {"ts": "...", ...}                                    [v1]
-  Line N: {"ts": "...", "schemaVersion": "2.0", ...}            [v2]
+ Line 1: {"ts": "...", ...} [v1]
+ Line 2: {"ts": "...", "schemaVersion": "2.0", ...} [v2]
+ Line 3: {"ts": "...", ...} [v1]
+ Line N: {"ts": "...", "schemaVersion": "2.0", ...} [v2]
 ```text
 ---
 
@@ -160,11 +160,11 @@ from codex.archive.standardization import StandardizationManager
 manager = StandardizationManager(enable_signing=False)
 
 record = {
-    "ts": "2025-11-03T00:00:00Z",
-    "action": "ARCHIVE",
-    "actor": "developer",
-    "tombstone": "uuid",
-    "sha256": "hash"
+ "ts": "2025-11-03T00:00:00Z",
+ "action": "ARCHIVE",
+ "actor": "developer",
+ "tombstone": "uuid",
+ "sha256": "hash"
 }
 
 # Enhance without signature
@@ -180,35 +180,35 @@ name: Archive with Signing
 on: [push]
 
 jobs:
-  archive:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # ← REQUIRED for OIDC
-      contents: read
+ archive:
+ runs-on: ubuntu-latest
+ permissions:
+ id-token: write # REQUIRED for OIDC
+ contents: read
 
-    steps:
-      - uses: actions/checkout@v4
+ steps:
+ - uses: actions/checkout@v4
 
-      - name: Archive with signing
-        env:
-          CODEX_ENABLE_SIGNING: "true"
-          SIGSTORE_ID_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python -m codex.cli archive store _codex_ file.py \
-            --reason "cleanup" \
-            --by "${{ github.actor }}"
+ - name: Archive with signing
+ env:
+ CODEX_ENABLE_SIGNING: "true"
+ SIGSTORE_ID_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ run: |
+ python -m codex.cli archive store _codex_ file.py \
+ --reason "cleanup" \
+ --by "${{ github.actor }}"
 ```text
 
 **Signing Flow**:
 ```text
 GitHub Actions Job
-  ↓ (OIDC token via id-token permission)
+ (OIDC token via id-token permission)
 Sigstore Fulcio
-  ↓ (ephemeral certificate)
+ (ephemeral certificate)
 Evidence Record Signing
-  ↓ (signature + cert chain)
+ (signature + cert chain)
 Rekor Transparency Log
-  ↓ (public verification)
+ (public verification)
 Evidence Log (.codex/evidence/archive_ops.jsonl)
 ```text
 ---
@@ -230,8 +230,8 @@ python -m codex.cli archive validate-standardization --check-signatures
 **Combined Check**:
 ```bash
 python -m codex.cli archive validate-standardization \
-  --check-schema-version \
-  --check-signatures
+ --check-schema-version \
+ --check-signatures
 ```text
 
 ### Programmatic Validation
@@ -244,7 +244,7 @@ manager = StandardizationManager(enable_signing=False)
 validator = EvidenceSchemaValidator()
 
 # Validate a record
-record = {...}  # Your evidence record
+record = {...} # Your evidence record
 
 # Check schema
 version = validator.auto_detect_version(record)
@@ -262,25 +262,25 @@ print(f"Details: {result['verification_details']}")
 **Success**:
 ```text
  Validation Results: 1234 records scanned
-    Valid: 1234
-   ️  Warnings: 0
-    Errors: 0
+ Valid: 1234
+ Warnings: 0
+ Errors: 0
 
  All checks passed!
 ```text
 **With Issues**:
 ```text
  Validation Results: 1234 records scanned
-    Valid: 1230
-   ️  Warnings: 2
-    Errors: 2
+ Valid: 1230
+ Warnings: 2
+ Errors: 2
 
-️  Warnings:
-   Line 100: Signature verification failed
+ Warnings:
+ Line 100: Signature verification failed
 
  Errors:
-   Line 50: Schema error: 'schemaVersion' is required
-   Line 75: Invalid JSON: Expecting ',' delimiter
+ Line 50: Schema error: 'schemaVersion' is required
+ Line 75: Invalid JSON: Expecting ',' delimiter
 ```text
 ---
 
@@ -310,12 +310,12 @@ python -m codex.cli archive migrate-evidence-to-v2
 
 **Interactive Prompt**:
 ```text
-️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
- Starting migration v1 → v2...
-📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
+ This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
+ Starting migration v1 v2...
+ Backed up original to: .codex/evidence/archive_ops.jsonl.backup
  Migration complete: 1234 records converted
-   v1 records: 0
-   v2 records: 1234
+ v1 records: 0
+ v2 records: 1234
 ```text
 **3. Verify Migration**:
 ```bash
@@ -354,8 +354,8 @@ python -m codex.cli archive validate-standardization --check-schema-version
 1. Check record has all required fields: `ts`, `action`, `actor`, `tombstone`, `sha256`
 2. For v2 records, ensure `schemaVersion` field present
 3. Run with `--repair` to attempt automatic fix:
-   ```bash
-   python -m codex.cli archive validate-standardization --check-schema-version --repair
+ ```bash
+ python -m codex.cli archive validate-standardization --check-schema-version --repair
  ```
 
 ### Issue: Module not found
@@ -382,22 +382,22 @@ RuntimeError: Cannot obtain OIDC token
 ```text
 **Solution**:
 1. Check workflow has correct permissions:
-   ```yaml
-   permissions:
-     id-token: write  # ← Must be present
-     contents: read
+ ```yaml
+ permissions:
+ id-token: write # Must be present
+ contents: read
  ```
 
 2. Verify environment variable:
-   ```yaml
-   env:
-     CODEX_ENABLE_SIGNING: "true"
+ ```yaml
+ env:
+ CODEX_ENABLE_SIGNING: "true"
  ```
 
 3. Check Sigstore availability:
-   ```bash
-   curl -I https://fulcio.sigstore.dev
-   curl -I https://rekor.sigstore.dev
+ ```bash
+ curl -I https://fulcio.sigstore.dev
+ curl -I https://rekor.sigstore.dev
  ```
 
 ### Issue: Performance degradation
@@ -407,13 +407,13 @@ Archive operations significantly slower after enabling standardization.
 
 **Solution**:
 1. Check if signing is enabled (adds ~5-10ms per operation):
-   ```bash
-   python -m codex.cli archive show-standardization-status
+ ```bash
+ python -m codex.cli archive show-standardization-status
  ```
 
 2. Disable signing for development:
-   ```bash
-   export CODEX_ENABLE_SIGNING=false
+ ```bash
+ export CODEX_ENABLE_SIGNING=false
  ```
 
 3. Monitor with benchmarks:
@@ -467,9 +467,9 @@ export CODEX_STANDARDIZATION_ENABLED=true
  **DO**: Enable signing in production (GitHub Actions)
 ```yaml
 permissions:
-  id-token: write
+ id-token: write
 env:
-  CODEX_ENABLE_SIGNING: "true"
+ CODEX_ENABLE_SIGNING: "true"
 ```text
 
  **DO**: Disable signing in development (faster iteration)
@@ -489,11 +489,11 @@ CODEX_ENABLE_SIGNING=true python -m codex.cli archive store ...
  **DO**: Validate in CI/CD pipelines
 ```yaml
 steps:
-  - name: Validate archive standardization
-    run: |
-      python -m codex.cli archive validate-standardization \
-        --check-schema-version \
-        --check-signatures
+ - name: Validate archive standardization
+ run: |
+ python -m codex.cli archive validate-standardization \
+ --check-schema-version \
+ --check-signatures
 ```text
 
  **DO**: Validate before major migrations
@@ -539,27 +539,27 @@ python -m codex.cli archive validate-standardization --check-schema-version
 # Validate signatures
 python -m codex.cli archive validate-standardization --check-signatures
 
-# Migrate v1 → v2
+# Migrate v1 v2
 python -m codex.cli archive migrate-evidence-to-v2
 ```text
 
 ## Environment Variables
 
 ```bash
-CODEX_STANDARDIZATION_ENABLED=true   # Enable standardization
-CODEX_ENABLE_SIGNING=true            # Enable cryptographic signing
-CODEX_SCHEMA_DIR=./schemas           # Schema directory
-SIGSTORE_ID_TOKEN=$(gh auth token)   # OIDC token (GitHub Actions)
+CODEX_STANDARDIZATION_ENABLED=true # Enable standardization
+CODEX_ENABLE_SIGNING=true # Enable cryptographic signing
+CODEX_SCHEMA_DIR=./schemas # Schema directory
+SIGSTORE_ID_TOKEN=$(gh auth token) # OIDC token (GitHub Actions)
 ```text
 
 ### File Locations
 
 ```text
-.codex/evidence/archive_ops.jsonl              # Evidence log
-schemas/archive_evidence_schema_v1.json        # v1 schema
-schemas/archive_evidence_schema_v2.json        # v2 schema
-src/codex/archive/standardization.py           # Standardization manager
-src/codex/archive/evidence_schema.py           # Schema validator
+.codex/evidence/archive_ops.jsonl # Evidence log
+schemas/archive_evidence_schema_v1.json # v1 schema
+schemas/archive_evidence_schema_v2.json # v2 schema
+src/codex/archive/standardization.py # Standardization manager
+src/codex/archive/evidence_schema.py # Schema validator
 ```text
 ---
 

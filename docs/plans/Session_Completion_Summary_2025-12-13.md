@@ -166,28 +166,28 @@ From **Table 1** (Time Constraints):
 1. **Advanced Patterns** (physics_orchestrator):
 ```python
 def test_diffusion_flow_model():
-    """Test DiffusionFlowModel using Eq #11."""
-    from agents.physics_orchestrator import DiffusionFlowModel
-    model = DiffusionFlowModel()
-    assert model is not None
+ """Test DiffusionFlowModel using Eq #11."""
+ from agents.physics_orchestrator import DiffusionFlowModel
+ model = DiffusionFlowModel()
+ assert model is not None
 ```
 
 2. **Game Engines** (quantum_game_theory):
 ```python
 def test_quantum_game_engine_strategies():
-    """Test game engines using Eq #11."""
-    from agents.quantum_game_theory import QuantumInspiredGameEngine
-    engine = QuantumInspiredGameEngine()
-    # Test strategy spaces, payoff matrices
+ """Test game engines using Eq #11."""
+ from agents.quantum_game_theory import QuantumInspiredGameEngine
+ engine = QuantumInspiredGameEngine()
+ # Test strategy spaces, payoff matrices
 ```
 
 3. **Graph Operations** (mental_mapping):
 ```python
 def test_graph_traversal():
-    """Test graph operations using Eq #39."""
-    from agents.mental_mapping import MentalMapping
-    mapping = MentalMapping()
-    # Test node/edge operations, traversal
+ """Test graph operations using Eq #39."""
+ from agents.mental_mapping import MentalMapping
+ mapping = MentalMapping()
+ # Test node/edge operations, traversal
 ```
 
 ---
@@ -305,43 +305,43 @@ python tools/coverage_physics_toolkit.py --mode velocity
 ### Documentation (7 files)
 ```
 docs/plans/
-├── Physics_Equations_Time_Constraints_Plan_Prompts.md          (31 KB, 62 eq)
-├── Physics_Equations_Monitor_Behavior_Plan_Prompts.md          (27 KB, 62 eq)
-├── Physics_Equations_Multi_Orchestrator_Patterns.md            (21 KB, 60 eq) NEW
-├── Physics_Equations_Coverage_Uplift_Paths.md                  (19 KB, 53 eq) NEW
-├── Coverage_Physics_Toolkit_UserGuide.md                       (13 KB) NEW
-├── Physics_Guided_Coverage_System_README.md                    (11 KB) NEW
-└── (Table reference documents exist)
+ Physics_Equations_Time_Constraints_Plan_Prompts.md (31 KB, 62 eq)
+ Physics_Equations_Monitor_Behavior_Plan_Prompts.md (27 KB, 62 eq)
+ Physics_Equations_Multi_Orchestrator_Patterns.md (21 KB, 60 eq) NEW
+ Physics_Equations_Coverage_Uplift_Paths.md (19 KB, 53 eq) NEW
+ Coverage_Physics_Toolkit_UserGuide.md (13 KB) NEW
+ Physics_Guided_Coverage_System_README.md (11 KB) NEW
+ (Table reference documents exist)
 ```
 
 ### Toolkit (1 file)
 ```
 tools/
-└── coverage_physics_toolkit.py                                  (20 KB)
+ coverage_physics_toolkit.py (20 KB)
 ```
 
 ### Tests Created This Session (16 files)
 ```
 tests/agents/
-├── test_smoke_coverage.py
-├── test_advanced_physics_calculators.py
-├── test_physics_orchestrator_core.py
-├── test_production_readiness_gaps.py
-├── test_expanded_coverage.py
-├── test_invariants_minimal.py
-├── test_final_push_30pct.py
-├── test_properties_30pct.py
-├── test_phase1_completion.py
-├── test_30pct_final.py
-├── test_final_30pct_push.py
-├── test_exhaustive_30pct.py
-├── test_phase1_final_completion.py
-├── test_phase1_to_30pct.py
-├── test_final_30pct.py
-└── test_phase1_completion_final.py                             NEW (physics-guided)
+ test_smoke_coverage.py
+ test_advanced_physics_calculators.py
+ test_physics_orchestrator_core.py
+ test_production_readiness_gaps.py
+ test_expanded_coverage.py
+ test_invariants_minimal.py
+ test_final_push_30pct.py
+ test_properties_30pct.py
+ test_phase1_completion.py
+ test_30pct_final.py
+ test_final_30pct_push.py
+ test_exhaustive_30pct.py
+ test_phase1_final_completion.py
+ test_phase1_to_30pct.py
+ test_final_30pct.py
+ test_phase1_completion_final.py NEW (physics-guided)
 
 agents/
-└── exceptions.py                                                (infrastructure)
+ exceptions.py (infrastructure)
 ```
 
 ---
@@ -378,14 +378,14 @@ agents/
 ### For Next Session
 
 1. **Start with validation**:
-   ```bash
-   python tools/coverage_physics_toolkit.py --mode validate
+ ```bash
+ python tools/coverage_physics_toolkit.py --mode validate
  ```
 
 2. **Check current coverage**:
-   ```bash
-   python -m pytest tests/agents/ --cov=agents --cov-report=json -q
-   cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(sys.stdin)['totals']['percent_covered']:.2f}%\")"
+ ```bash
+ python -m pytest tests/agents/ --cov=agents --cov-report=json -q
+ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(sys.stdin)['totals']['percent_covered']:.2f}%\")"
  ```
 
 3. **If ≥30%**: Begin Phase 2 (see roadmap above)

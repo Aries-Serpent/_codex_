@@ -105,13 +105,13 @@ EOF
 # Security risk
 if 'GITHUB_OUTPUT' in os.environ:
  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
- f.write(f"new_secret={new_secret}\n") # EXPOSED!  # pragma: allowlist secret
+ f.write(f"new_secret={new_secret}\n") # EXPOSED! # pragma: allowlist secret
 
 # Secure approach
 if 'GITHUB_OUTPUT' in os.environ:
  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
- f.write(f"backup_file={backup_file}\n") # No secrets  # pragma: allowlist secret
- # Secret updated via API directly  # pragma: allowlist secret
+ f.write(f"backup_file={backup_file}\n") # No secrets # pragma: allowlist secret
+ # Secret updated via API directly # pragma: allowlist secret
 ```
 
 **Best Practice**: Use API calls for secret updates, not workflow outputs
@@ -148,21 +148,21 @@ if 'GITHUB_OUTPUT' in os.environ:
 ### New Documentation Tree
 ```
 docs/
-├── SECRETS_AND_ENVIRONMENT_VARIABLES.md [NEW]  # pragma: allowlist secret
-│ ├── Secret definitions and formats  # pragma: allowlist secret
-│ ├── Rotation schedules
-│ ├── Security best practices
-│ ├── Troubleshooting guide
-│ └── Audit procedures
-│
-├── CI_FAILURE_RESOLUTION_PR_2858.md [NEW]
-│ ├── Failure analysis (3 CI jobs)
-│ ├── Root cause investigation
-│ ├── Resolution documentation
-│ ├── Impact analysis
-│ └── Lessons learned
-│
-└── [Existing documentation enhanced]
+ SECRETS_AND_ENVIRONMENT_VARIABLES.md [NEW] # pragma: allowlist secret
+ Secret definitions and formats # pragma: allowlist secret
+ Rotation schedules
+ Security best practices
+ Troubleshooting guide
+ Audit procedures
+
+ CI_FAILURE_RESOLUTION_PR_2858.md [NEW]
+ Failure analysis (3 CI jobs)
+ Root cause investigation
+ Resolution documentation
+ Impact analysis
+ Lessons learned
+
+ [Existing documentation enhanced]
 ```
 
 **Impact**: 95% documentation coverage for security operations

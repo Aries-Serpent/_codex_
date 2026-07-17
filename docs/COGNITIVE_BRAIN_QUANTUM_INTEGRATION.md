@@ -14,28 +14,28 @@ The Cognitive Brain has been enhanced with a **Quantum Agent Framework** that im
 %%{init: {'accessibility': {'title': 'Diagram showing UI Layer 100%, AI Generation Layer 100%'}}%%
 
 graph TB
-    subgraph "Cognitive Brain v3.1 - Quantum Enhanced"
-        UI[UI Layer 100%]
-        AI[AI Generation Layer 100%]
-        EXEC[Interactive Execution Layer 100%]
-        QUANTUM[Quantum Processing Layer 100%]
-        AGENTS[Agent Orchestration Layer 100%]
-        MEMORY[Memory Management Layer 100%]
-        CODEGEN[Code Generation Layer]
-        WORKFLOW[Workflow Orchestration Layer 100%]
-        QAF[Quantum Agent Framework NEW]
-    end
+ subgraph "Cognitive Brain v3.1 - Quantum Enhanced"
+ UI[UI Layer 100%]
+ AI[AI Generation Layer 100%]
+ EXEC[Interactive Execution Layer 100%]
+ QUANTUM[Quantum Processing Layer 100%]
+ AGENTS[Agent Orchestration Layer 100%]
+ MEMORY[Memory Management Layer 100%]
+ CODEGEN[Code Generation Layer]
+ WORKFLOW[Workflow Orchestration Layer 100%]
+ QAF[Quantum Agent Framework NEW]
+ end
 
-    QAF --> AGENTS
+ QAF --> AGENTS
 
-    QAF --> AI
+ QAF --> AI
 
-    QAF --> QUANTUM
+ QAF --> QUANTUM
 
-    AGENTS --> WORKFLOW
+ AGENTS --> WORKFLOW
 
-    style QAF fill:#ff9,stroke:#333,stroke-width:4px
-    style AGENTS fill:#9f9,stroke:#333,stroke-width:2px
+ style QAF fill:#ff9,stroke:#333,stroke-width:4px
+ style AGENTS fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
 ## Quantum Agent Framework Components
@@ -53,7 +53,7 @@ graph TB
 
 **Data Flow**:
 ```
-User Input → Agent Selection → Load θ → Generate Response
+User Input Agent Selection Load θ Generate Response
 ```
 
 ### 2. Source Hilbert Space (ℋ_S)
@@ -94,7 +94,7 @@ Source Selection = {s_i : Relevance(s_i) > threshold}
 
 **Optimization Flow**:
 ```
-Initial θ_0 → Gradient Steps → Converged θ* → Production Use
+Initial θ_0 Gradient Steps Converged θ* Production Use
 ```
 
 ### 4. Policy Function π_θ
@@ -148,7 +148,7 @@ const response = await agent.generateResponse(query);
 
 **Execution Flow**:
 ```
-Query → Generate Candidates → Measure Energy → Select Optimal → Execute
+Query Generate Candidates Measure Energy Select Optimal Execute
 ```
 
 ### Layer 4: Quantum Processing Layer (100% tested)
@@ -187,9 +187,9 @@ const optimal = selectAgentByEnergy(agents, query);
 **Storage Schema**:
 ```json
 {
-  "agentConfigs": {"θ_id": θ},
-  "sourceMetrics": {"s_i": {reliability, access_count}},
-  "energyHistory": [{"timestamp": t, "E": E(θ)}]
+ "agentConfigs": {"θ_id": θ},
+ "sourceMetrics": {"s_i": {reliability, access_count}},
+ "energyHistory": [{"timestamp": t, "E": E(θ)}]
 }
 ```
 
@@ -202,7 +202,7 @@ const optimal = selectAgentByEnergy(agents, query);
 
 **Generation Flow**:
 ```
-Query → Select Template → Apply θ_prompts → Generate → Validate Format → Minimize E
+Query Select Template Apply θ_prompts Generate Validate Format Minimize E
 ```
 
 ### Layer 8: Workflow Orchestration Layer (100% tested)
@@ -237,9 +237,9 @@ const agent = createStandardAgent(name, description, sources);
 **Energy Minimization**:
 ```typescript
 await agent.optimizeConfiguration({
-  hallucinationThreshold: 0.1,
-  maxResponseTokens: 3000,
-  requiredSources: ['verified'],
+ hallucinationThreshold: 0.1,
+ maxResponseTokens: 3000,
+ requiredSources: ['verified'],
 });
 // Finds θ* = argmin E(θ)
 ```
@@ -258,13 +258,13 @@ await agent.optimizeConfiguration({
 
 ```typescript
 const retrieval: CapabilityOperator = {
-  name: 'semantic-retrieval',
-  type: 'retrieval',
-  operator: async (query, context) => {
-    const sources = context.config.θ_sources;
-    const relevant = filterByProjection(query, sources);
-    return await retrieveContent(relevant);
-  },
+ name: 'semantic-retrieval',
+ type: 'retrieval',
+ operator: async (query, context) => {
+ const sources = context.config.θ_sources;
+ const relevant = filterByProjection(query, sources);
+ return await retrieveContent(relevant);
+ },
 };
 ```
 
@@ -278,12 +278,12 @@ const retrieval: CapabilityOperator = {
 
 ```typescript
 const reasoning: CapabilityOperator = {
-  name: 'chain-of-thought',
-  type: 'reasoning',
-  operator: async (query, context) => {
-    const steps = await generateReasoningSteps(query);
-    return await executeSteps(steps, context);
-  },
+ name: 'chain-of-thought',
+ type: 'reasoning',
+ operator: async (query, context) => {
+ const steps = await generateReasoningSteps(query);
+ return await executeSteps(steps, context);
+ },
 };
 ```
 
@@ -297,11 +297,11 @@ const reasoning: CapabilityOperator = {
 
 ```typescript
 const generation: CapabilityOperator = {
-  name: 'code-generation',
-  type: 'generation',
-  operator: async (query, context) => {
-    return await sparkClient.generateCode(query, context);
-  },
+ name: 'code-generation',
+ type: 'generation',
+ operator: async (query, context) => {
+ return await sparkClient.generateCode(query, context);
+ },
 };
 ```
 
@@ -315,13 +315,13 @@ const generation: CapabilityOperator = {
 
 ```typescript
 const validation: CapabilityOperator = {
-  name: 'energy-validator',
-  type: 'validation',
-  operator: async (query, context) => {
-    const response = query.metadata.response;
-    const energy = await computeEnergy(response, context);
-    return { ...response, energy };
-  },
+ name: 'energy-validator',
+ type: 'validation',
+ operator: async (query, context) => {
+ const response = query.metadata.response;
+ const energy = await computeEnergy(response, context);
+ return { ...response, energy };
+ },
 };
 ```
 
@@ -338,10 +338,10 @@ const validation: CapabilityOperator = {
 **UI Component**:
 ```tsx
 <EnergyDashboard>
-  <TotalEnergy value={E_total} />
-  <ComponentChart components={[L_hall, L_fmt, L_src, L_coh]} />
-  <HistoryGraph data={energyHistory} />
-  <OptimizationProgress current={θ_current} optimal={θ_star} />
+ <TotalEnergy value={E_total} />
+ <ComponentChart components={[L_hall, L_fmt, L_src, L_coh]} />
+ <HistoryGraph data={energyHistory} />
+ <OptimizationProgress current={θ_current} optimal={θ_star} />
 </EnergyDashboard>
 ```
 
@@ -358,10 +358,10 @@ const validation: CapabilityOperator = {
 **UI Component**:
 ```tsx
 <SourceSpace>
-  <BasisStates sources={θ_sources} />
-  <RelevanceScores query={currentQuery} />
-  <SelectedSources selected={projectedSources} />
-  <ReliabilityMatrix sources={θ_sources} />
+ <BasisStates sources={θ_sources} />
+ <RelevanceScores query={currentQuery} />
+ <SelectedSources selected={projectedSources} />
+ <ReliabilityMatrix sources={θ_sources} />
 </SourceSpace>
 ```
 
@@ -374,9 +374,9 @@ const validation: CapabilityOperator = {
 **Implementation**:
 ```typescript
 const workflow = new QuantumMultiAgentWorkflow([
-  researchAgent,  // λ_src = 1.5
-  codeAgent,      // λ_fmt = 1.2
-  reviewAgent,    // λ_coh = 1.5
+ researchAgent, // λ_src = 1.5
+ codeAgent, // λ_fmt = 1.2
+ reviewAgent, // λ_coh = 1.5
 ]);
 
 // Each agent optimizes local θ_i
@@ -394,9 +394,9 @@ const result = await workflow.execute(query);
 **Implementation**:
 ```typescript
 const entangledPair = createEntangledAgents(
-  agent1Config,
-  agent2Config,
-  correlationStrength: 0.8
+ agent1Config,
+ agent2Config,
+ correlationStrength: 0.8
 );
 
 // Measuring agent1 constrains agent2
@@ -481,8 +481,8 @@ const optimal = superposition.measure(); // Collapses to best
 **Implementation**:
 ```typescript
 const θ_star = await agent.quantumOptimize(
-  enableTunneling: true,
-  tunnelingProbability: 0.1
+ enableTunneling: true,
+ tunnelingProbability: 0.1
 );
 // Occasionally jump to distant θ to explore configuration space
 ```
@@ -507,9 +507,9 @@ agent.energyWeights = optimalWeights;
 **Implementation**:
 ```typescript
 const pareto = await agent.paretoOptimize([
-  E_hallucination,
-  E_speed,
-  E_cost,
+ E_hallucination,
+ E_speed,
+ E_cost,
 ]);
 // Returns Pareto frontier of non-dominated configurations
 ```
@@ -537,7 +537,7 @@ const agent = createStandardAgent(name, desc, sources);
 ```typescript
 // Add to agent orchestration
 agent.addEventListener('energyUpdate', (e) => {
-  updateDashboard(e.energyComponents);
+ updateDashboard(e.energyComponents);
 });
 ```
 

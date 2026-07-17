@@ -70,19 +70,19 @@
 Use this as your "did I do everything?" reference. Tick each box as you complete it.
 
 ```
-[ ] A.  CODEX_MASTER_KEY secret created and injected
-[ ] B.  CODEX_BACKUP_KEY secret created and injected (optional but recommended)
-[ ] C.  Repository Actions permissions → "Allow all actions and reusable workflows"
-[ ] D.  GITHUB_TOKEN → "Read and write permissions" + allow PRs
-[ ] E.  Workflow approval for fork PRs → "Require approval for first-time contributors"
-[ ] F.  copilot-swe-agent[bot] listed as outside collaborator (if required by org policy)
-[ ] G.  Branch protection on `main` → allow the bot to bypass push restriction
-[ ] H.  Branch protection on `0D_base_` → same
-[ ] I.  Copilot Coding Agent enabled in org settings
-[ ] J.  Repository variables created (13 variables)
-[ ] K.  agent-auth-delegation environment — no required reviewers
-[ ] L.  Dependabot secrets (CODEX_MASTER_KEY accessible to Dependabot)
-[ ] M.  Personal notification: watch the repo for "Action required" emails
+[ ] A. CODEX_MASTER_KEY secret created and injected
+[ ] B. CODEX_BACKUP_KEY secret created and injected (optional but recommended)
+[ ] C. Repository Actions permissions "Allow all actions and reusable workflows"
+[ ] D. GITHUB_TOKEN "Read and write permissions" + allow PRs
+[ ] E. Workflow approval for fork PRs "Require approval for first-time contributors"
+[ ] F. copilot-swe-agent[bot] listed as outside collaborator (if required by org policy)
+[ ] G. Branch protection on `main` allow the bot to bypass push restriction
+[ ] H. Branch protection on `0D_base_` same
+[ ] I. Copilot Coding Agent enabled in org settings
+[ ] J. Repository variables created (13 variables)
+[ ] K. agent-auth-delegation environment — no required reviewers
+[ ] L. Dependabot secrets (CODEX_MASTER_KEY accessible to Dependabot)
+[ ] M. Personal notification: watch the repo for "Action required" emails
 ```
 
 ---
@@ -301,19 +301,19 @@ Run this in a terminal where `gh auth status` shows the `Aries-Serpent` org:
 ```bash
 REPO="Aries-Serpent/_codex_"
 
-gh variable set CODEX_ORG_NAME         --body "Aries-Serpent"            --repo "$REPO"
-gh variable set CODEX_AGENT_NAME       --body "ai_org_repo_admin"        --repo "$REPO"
-gh variable set CODEX_REPO_ID          --body "1040037790"               --repo "$REPO"
-gh variable set CODEX_NETWORK_MODE     --body "isolated"                 --repo "$REPO"
-gh variable set CODEX_API_VERSION      --body "2022-11-28"               --repo "$REPO"
-gh variable set CODEX_LOG_LEVEL        --body "INFO"                     --repo "$REPO"
-gh variable set GENESIS_TIMESTAMP      --body "2026-04-13T00:00:00Z"     --repo "$REPO"
-gh variable set AUDIT_RETENTION_DAYS   --body "90"                       --repo "$REPO"
-gh variable set COPILOT_AGENT_ENABLED  --body "true"                     --repo "$REPO"
-gh variable set CODEX_SAFE_MODE        --body "false"                    --repo "$REPO"
-gh variable set CODEX_ENV_PYTHON_VERSION --body "3.12"                   --repo "$REPO"
-gh variable set CODEX_FAILURE_RATE     --body "0"                        --repo "$REPO"
-gh variable set CODEX_CI_FAILURE_RATE  --body "0"                        --repo "$REPO"
+gh variable set CODEX_ORG_NAME --body "Aries-Serpent" --repo "$REPO"
+gh variable set CODEX_AGENT_NAME --body "ai_org_repo_admin" --repo "$REPO"
+gh variable set CODEX_REPO_ID --body "1040037790" --repo "$REPO"
+gh variable set CODEX_NETWORK_MODE --body "isolated" --repo "$REPO"
+gh variable set CODEX_API_VERSION --body "2022-11-28" --repo "$REPO"
+gh variable set CODEX_LOG_LEVEL --body "INFO" --repo "$REPO"
+gh variable set GENESIS_TIMESTAMP --body "2026-04-13T00:00:00Z" --repo "$REPO"
+gh variable set AUDIT_RETENTION_DAYS --body "90" --repo "$REPO"
+gh variable set COPILOT_AGENT_ENABLED --body "true" --repo "$REPO"
+gh variable set CODEX_SAFE_MODE --body "false" --repo "$REPO"
+gh variable set CODEX_ENV_PYTHON_VERSION --body "3.12" --repo "$REPO"
+gh variable set CODEX_FAILURE_RATE --body "0" --repo "$REPO"
+gh variable set CODEX_CI_FAILURE_RATE --body "0" --repo "$REPO"
 ```
 
 ### Step 5.2 — Verify variables were created
@@ -424,9 +424,9 @@ For each variable in the table above:
 
 ```bash
 gh workflow run genesis-bootstrap.yml \
-  --repo Aries-Serpent/_codex_ \
-  --ref main \
-  --field confirm=true
+ --repo Aries-Serpent/_codex_ \
+ --ref main \
+ --field confirm=true
 ```
 
 Or via the UI:
@@ -468,12 +468,12 @@ gh api repos/"$REPO"/actions/permissions/workflow | jq .
 
 echo "=== 5. Latest workflow runs (should be success/in_progress, NOT action_required) ==="
 gh run list --repo "$REPO" --limit 10 --json status,conclusion,name \
-  | jq '.[] | select(.status == "action_required") | .name'
-# ↑ This should print NOTHING. Any "action_required" runs still need approval.
+ | jq '.[] | select(.status == "action_required") | .name'
+# This should print NOTHING. Any "action_required" runs still need approval.
 
 echo "=== 6. Branch protection bypass actors ==="
 gh api repos/"$REPO"/branches/main/protection \
-  | jq '.restrictions.apps // "no app restrictions"'
+ | jq '.restrictions.apps // "no app restrictions"'
 
 echo "=== DONE ==="
 ```
@@ -491,8 +491,8 @@ echo "=== DONE ==="
 ```bash
 # Approve all pending runs for the current branch in bulk
 gh run list --repo Aries-Serpent/_codex_ --json id,status \
-  | jq -r '.[] | select(.status == "action_required") | .id' \
-  | xargs -I{} gh run rerun {} --repo Aries-Serpent/_codex_
+ | jq -r '.[] | select(.status == "action_required") | .id' \
+ | xargs -I{} gh run rerun {} --repo Aries-Serpent/_codex_
 ```
 
 After completing Section 2, all future runs will auto-start.
@@ -514,7 +514,7 @@ After completing Section 2, all future runs will auto-start.
 **Fix:**
 ```bash
 gh api repos/Aries-Serpent/_codex_/branches/main/protection \
-  --jq '.required_pull_request_reviews.bypass_pull_request_allowances'
+ --jq '.required_pull_request_reviews.bypass_pull_request_allowances'
 ```
 If `copilot-swe-agent[bot]` is absent, re-do Steps 3.1–3.2.
 
@@ -545,29 +545,29 @@ If `copilot-swe-agent[bot]` is absent, re-do Steps 3.1–3.2.
 
 flowchart TD
 
-    A[Push to PR branch] --> B[copilot-agent-checkin.yml]
+ A[Push to PR branch] --> B[copilot-agent-checkin.yml]
 
-    B --> C{COPILOT_AGENT_AUTH_ENABLED\nrepo var = true?}
+ B --> C{COPILOT_AGENT_AUTH_ENABLED\nrepo var = true?}
 
-    C -- yes --> D[always-approve-and-arm job]
+ C -- yes --> D[always-approve-and-arm job]
 
-    C -- no  --> D
+ C -- no --> D
 
-    D --> E[session_wrapup_autofix.py\n--activate-workflows]
+ D --> E[session_wrapup_autofix.py\n--activate-workflows]
 
-    E --> F[WEC: all core items set to  WILL RUN]
+ E --> F[WEC: all core items set to WILL RUN]
 
-    F --> G[workflow-execution-gate.yml dispatched]
+ F --> G[workflow-execution-gate.yml dispatched]
 
-    G --> H[agent-auth-delegation.yml triggered]
+ G --> H[agent-auth-delegation.yml triggered]
 
-    H --> I{cognitive-preflight\nchecks pass?}
+ H --> I{cognitive-preflight\nchecks pass?}
 
-    I -- success OR failure --> J[activate-delegation job]
+ I -- success OR failure --> J[activate-delegation job]
 
-    J --> K[CODEX_AGENT_DELEGATED = true\nrepo variable written]
+ J --> K[CODEX_AGENT_DELEGATED = true\nrepo variable written]
 
-    K --> L[ Copilot fully authorised\nno human approval needed]
+ K --> L[ Copilot fully authorised\nno human approval needed]
 ```
 
 ### Auto-Approve — Same-repo PR action_required clearance
@@ -577,23 +577,23 @@ flowchart TD
 
 flowchart TD
 
-    S[Schedule: every 5 min] --> AA[auto-approve-workflows.yml]
+ S[Schedule: every 5 min] --> AA[auto-approve-workflows.yml]
 
-    P[PR push event] --> AA
+ P[PR push event] --> AA
 
-    AA --> B[Enumerate all open PRs]
+ AA --> B[Enumerate all open PRs]
 
-    B --> C[For each PR HEAD SHA:\nfind action_required runs]
+ B --> C[For each PR HEAD SHA:\nfind action_required runs]
 
-    C --> D{Run type?}
+ C --> D{Run type?}
 
-    D -- fork PR --> E[approveWorkflowRun API\n works for forks]
+ D -- fork PR --> E[approveWorkflowRun API\n works for forks]
 
-    D -- same-repo PR\n'not from a fork' --> F[gh run rerun {run_id}\n clears action_required\nfor same-repo branches]
+ D -- same-repo PR\n'not from a fork' --> F[gh run rerun {run_id}\n clears action_required\nfor same-repo branches]
 
-    E --> G[Run unblocked]
+ E --> G[Run unblocked]
 
-    F --> G
+ F --> G
 ```
 
 ### WEC State — Workflow Execution Checklist (always-on)
@@ -602,26 +602,26 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Flowchart showing " Always Required (auto-checked by Copilot)", validate.yml'}}%%
 
 flowchart LR
-    subgraph ALWAYS_REQUIRED[" Always Required (auto-checked by Copilot)"]
-        V[validate.yml]
-        RV[resilient_validation.yml]
-        NG[nox_gates.yml]
-        CQ[codeql-analysis.yml]
-        SS[security-scanning-suite.yml]
-        RI[reference-integrity.yml]
-        AD[agent-auth-delegation.yml]
-        AA[auto-approve-workflows]
-        CC[copilot-agent-checkin.yml]
-        SD[copilot-agent-session-done.yml]
-        WG[workflow-execution-gate.yml]
-        CG[comment-review-gate.yml]
-        DG[deferral-language-gate.yml]
-    end
-    subgraph COPILOT_MANAGED[" Managed by session_wrapup_autofix.py"]
-        SW[--activate-workflows flag\nsets all above to x on every push]
-    end
+ subgraph ALWAYS_REQUIRED[" Always Required (auto-checked by Copilot)"]
+ V[validate.yml]
+ RV[resilient_validation.yml]
+ NG[nox_gates.yml]
+ CQ[codeql-analysis.yml]
+ SS[security-scanning-suite.yml]
+ RI[reference-integrity.yml]
+ AD[agent-auth-delegation.yml]
+ AA[auto-approve-workflows]
+ CC[copilot-agent-checkin.yml]
+ SD[copilot-agent-session-done.yml]
+ WG[workflow-execution-gate.yml]
+ CG[comment-review-gate.yml]
+ DG[deferral-language-gate.yml]
+ end
+ subgraph COPILOT_MANAGED[" Managed by session_wrapup_autofix.py"]
+ SW[--activate-workflows flag\nsets all above to x on every push]
+ end
 
-    COPILOT_MANAGED --> ALWAYS_REQUIRED
+ COPILOT_MANAGED --> ALWAYS_REQUIRED
 ```
 
 ### PDA Loop — AfterMath auth-state logging
@@ -630,20 +630,20 @@ flowchart LR
 %%{init: {'accessibility': {'title': 'Sequence Diagram: pr'}}%%
 
 sequenceDiagram
-    participant C as Copilot Session
-    participant S as session_wrapup_autofix.py
-    participant A as .codex/AGENTIC_REPO_STATE.md
-    participant P as pda_iterations.jsonl
-    participant W as agent-auth-delegation.yml
+ participant C as Copilot Session
+ participant S as session_wrapup_autofix.py
+ participant A as .codex/AGENTIC_REPO_STATE.md
+ participant P as pda_iterations.jsonl
+ participant W as agent-auth-delegation.yml
 
-    C->>S: start --pr-number N --activate-workflows
-    S->>A: read AGENTIC_REPO_STATE.md\n(confirms auth already established)
-    S->>P: append iteration: auth_verified=true
-    S->>W: dispatch delegation workflow
-    W->>P: append: CODEX_AGENT_DELEGATED=true
-    W->>A: update last_delegation_at timestamp
+ C->>S: start --pr-number N --activate-workflows
+ S->>A: read AGENTIC_REPO_STATE.md\n(confirms auth already established)
+ S->>P: append iteration: auth_verified=true
+ S->>W: dispatch delegation workflow
+ W->>P: append: CODEX_AGENT_DELEGATED=true
+ W->>A: update last_delegation_at timestamp
 
-    A-->>C: "This is an agentic repo.\nCopilot is self-managing.\nNo human approval required."
+ A-->>C: "This is an agentic repo.\nCopilot is self-managing.\nNo human approval required."
 ```
 
 ---

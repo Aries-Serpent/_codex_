@@ -65,11 +65,11 @@ The system was designed following the research plan at
 
 ```
 operating_model:
-  current: "E"
-  target: "D"
-  d_capable_agents: 0        # unlocked after all 5 C-conditions pass continuously
-  transition_active: false   # gate passes 5/5 — human activation required for D
-  gate_score: "5/5"          #  C1 C2 C3 C4 C5 all satisfied (as of 2026-03-02)
+ current: "E"
+ target: "D"
+ d_capable_agents: 0 # unlocked after all 5 C-conditions pass continuously
+ transition_active: false # gate passes 5/5 — human activation required for D
+ gate_score: "5/5" # C1 C2 C3 C4 C5 all satisfied (as of 2026-03-02)
 ```
 
 Check transition readiness by running the
@@ -120,10 +120,10 @@ workflow.
 python3 -c "
 import yaml, json, jsonschema
 schema = json.load(open('.codex/schemas/AgentRegistrySchema.json'))
-data   = yaml.safe_load(open('.github/agents/AGENT_REGISTRY.yaml'))
+data = yaml.safe_load(open('.github/agents/AGENT_REGISTRY.yaml'))
 jsonschema.validate(data, schema)
 for a in data['agents']:
-    jsonschema.validate(a, schema['definitions']['AgentEntry'])
+ jsonschema.validate(a, schema['definitions']['AgentEntry'])
 print(' All', len(data['agents']), 'agents valid')
 "
 ```
@@ -133,10 +133,10 @@ print(' All', len(data['agents']), 'agents valid')
 ## 4. Enforcement Tier System
 
 ```
-GROUNDED  ──  Hard gate: CI blocks merge on violation (exit 1)
-PARTIAL   ──  Canary gate: ::warning:: annotation, does not block
-SOFT      ──  Advisory: recommendation only, no CI annotation
-ARCHIVED  ──  Deprecated agent, skip all enforcement
+GROUNDED Hard gate: CI blocks merge on violation (exit 1)
+PARTIAL Canary gate: ::warning:: annotation, does not block
+SOFT Advisory: recommendation only, no CI annotation
+ARCHIVED Deprecated agent, skip all enforcement
 ```
 
 ### Current Distribution (v0.2.1)
@@ -179,14 +179,14 @@ python scripts/ci/generate_manifest.py --verify-integrity
 
 ```json
 {
-  "schema_version": "1.0",
-  "generated_at": "<ISO-8601>",
-  "agents": [{ "name": "...", "role": "...", "enforcement_tier": "...", "autonomy_model": "..." }],
-  "workflows": [{ "name": "...", "enforcement_tier": "...", "has_concurrency": true }],
-  "policies": [{ "path": "...", "type": "enforcement" }],
-  "enforcement_kpis": { "tier1_count": 8, "tier2_count": 142, "tier3_count": 2 },
-  "operating_model": { "current": "E", "target": "D", "d_capable_agents": 0, "gate_score": "5/5" },
-  "integrity_sha256": "<64-char hex>"
+ "schema_version": "1.0",
+ "generated_at": "<ISO-8601>",
+ "agents": [{ "name": "...", "role": "...", "enforcement_tier": "...", "autonomy_model": "..." }],
+ "workflows": [{ "name": "...", "enforcement_tier": "...", "has_concurrency": true }],
+ "policies": [{ "path": "...", "type": "enforcement" }],
+ "enforcement_kpis": { "tier1_count": 8, "tier2_count": 142, "tier3_count": 2 },
+ "operating_model": { "current": "E", "target": "D", "d_capable_agents": 0, "gate_score": "5/5" },
+ "integrity_sha256": "<64-char hex>"
 }
 ```
 

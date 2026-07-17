@@ -18,15 +18,15 @@
 
 ```
 docs/accountability/
-├── README.md                                    (this file)
-├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md               (main index)
-├── AGENT_ACCESS_EXPERIENCE_REPORT.md            (access analysis)
-├── INDEX.md                                     (landing reference)
-└── chunks/
-    ├── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md   (sessions 1-10)
-    ├── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md   (sessions 11-20)
-    ├── ...
-    └── AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md   (sessions 311-316)
+ README.md (this file)
+ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (main index)
+ AGENT_ACCESS_EXPERIENCE_REPORT.md (access analysis)
+ INDEX.md (landing reference)
+ chunks/
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_01.md (sessions 1-10)
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_02.md (sessions 11-20)
+ ...
+ AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md (sessions 311-316)
 ```
 
 ---
@@ -68,24 +68,24 @@ docs/accountability/
 ### Before (Single File)
 ```
 docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
-├── Size: 4.1 MB
-├── Lines: 66,071
-├── Load time: 5-10 seconds
-└── Navigation: Search + scroll
+ Size: 4.1 MB
+ Lines: 66,071
+ Load time: 5-10 seconds
+ Navigation: Search + scroll
 ```
 
 ### After (32 Chunks)
 ```
 docs/accountability/
-├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (index, 6.8 KB)
-└── chunks/
-    ├── GROUP_01.md (8.75 KB)
-    ├── GROUP_02.md (8.75 KB)
-    ├── ... (30 more)
-    └── GROUP_32.md (5 KB)
-├── Total: 280 KB
-├── Load time: <1 second
-└── Navigation: Direct jump via index
+ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (index, 6.8 KB)
+ chunks/
+ GROUP_01.md (8.75 KB)
+ GROUP_02.md (8.75 KB)
+ ... (30 more)
+ GROUP_32.md (5 KB)
+ Total: 280 KB
+ Load time: <1 second
+ Navigation: Direct jump via index
 ```
 
 ### Benefits

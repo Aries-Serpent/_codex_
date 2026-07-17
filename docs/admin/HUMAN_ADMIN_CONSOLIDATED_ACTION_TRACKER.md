@@ -209,29 +209,29 @@ This document consolidates **ALL** human admin intervention points from:
 **Manual Steps Required**:
 
 1. **Create Google Cloud Project**:
-   ```bash
-   # Navigate to: https://console.cloud.google.com/
-   # Click "Create Project"
-   # Project Name: "Codex NotebookLM Integration"
-   # Project ID: codex-notebooklm-integration
-   # Billing Account: [Select appropriate account]
+ ```bash
+ # Navigate to: https://console.cloud.google.com/
+ # Click "Create Project"
+ # Project Name: "Codex NotebookLM Integration"
+ # Project ID: codex-notebooklm-integration
+ # Billing Account: [Select appropriate account]
  ```
 
 2. **Enable Google Drive API**:
-   ```bash
-   # In Cloud Console: APIs & Services → Library
-   # Search: "Google Drive API"
-   # Click "Enable"
+ ```bash
+ # In Cloud Console: APIs & Services Library
+ # Search: "Google Drive API"
+ # Click "Enable"
  ```
 
 3. **Create Service Account**:
-   ```bash
-   # Navigate to: IAM & Admin → Service Accounts
-   # Click "Create Service Account"
-   # Name: codex-notebooklm-sync
-   # Role: "Editor" (or custom role with Drive write permissions)
-   # Click "Create Key" → JSON format
-   # Download: codex-service-account.json
+ ```bash
+ # Navigate to: IAM & Admin Service Accounts
+ # Click "Create Service Account"
+ # Name: codex-notebooklm-sync
+ # Role: "Editor" (or custom role with Drive write permissions)
+ # Click "Create Key" JSON format
+ # Download: codex-service-account.json
  ```
 
 **Validation**:
@@ -270,32 +270,32 @@ gcloud iam service-accounts list --project=codex-notebooklm-integration
 **Manual Steps Required**:
 
 1. **Upload Service Account JSON**:
-   ```bash
-   # Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
-   # Click "New repository secret"
-   # Name: GDRIVE_SERVICE_ACCOUNT_JSON
-   # Value: [paste entire content of codex-service-account.json]
-   # Click "Add secret"
+ ```bash
+ # Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
+ # Click "New repository secret"
+ # Name: GDRIVE_SERVICE_ACCOUNT_JSON
+ # Value: [paste entire content of codex-service-account.json]
+ # Click "Add secret"
  ```
 
 2. **Set OAuth Credentials** (for Claude Code integration):
-   ```bash
-   # In Google Cloud Console: APIs & Services → Credentials
-   # Create OAuth 2.0 Client ID
-   # Application type: Desktop app
-   # Name: Codex Claude Code Integration
-   # Download client_secret_*.json
+ ```bash
+ # In Google Cloud Console: APIs & Services Credentials
+ # Create OAuth 2.0 Client ID
+ # Application type: Desktop app
+ # Name: Codex Claude Code Integration
+ # Download client_secret_*.json
 
-   # Extract and add to GitHub Secrets:
-   # GOOGLE_CLIENT_ID: [from client_secret JSON]
-   # GOOGLE_CLIENT_SECRET: [from client_secret JSON]
+ # Extract and add to GitHub Secrets:
+ # GOOGLE_CLIENT_ID: [from client_secret JSON]
+ # GOOGLE_CLIENT_SECRET: [from client_secret JSON]
  ```
 
 3. **Set Optional Webhook URL**:
-   ```bash
-   # If you want notifications:
-   # Name: NOTEBOOKLM_WEBHOOK_URL
-   # Value: https://your-webhook-service.com/notify
+ ```bash
+ # If you want notifications:
+ # Name: NOTEBOOKLM_WEBHOOK_URL
+ # Value: https://your-webhook-service.com/notify
  ```
 
 **Validation**:
@@ -304,9 +304,9 @@ gcloud iam service-accounts list --project=codex-notebooklm-integration
 gh secret list --repo Aries-Serpent/_codex_ | grep -E "GDRIVE|GOOGLE_CLIENT"
 
 # Expected output:
-# GDRIVE_SERVICE_ACCOUNT_JSON    Updated 2026-07-13
-# GOOGLE_CLIENT_ID                Updated 2026-07-13
-# GOOGLE_CLIENT_SECRET            Updated 2026-07-13
+# GDRIVE_SERVICE_ACCOUNT_JSON Updated 2026-07-13
+# GOOGLE_CLIENT_ID Updated 2026-07-13
+# GOOGLE_CLIENT_SECRET Updated 2026-07-13
 ```
 
 **Expected Outcome**: All required secrets configured and accessible to workflows
@@ -330,39 +330,39 @@ gh secret list --repo Aries-Serpent/_codex_ | grep -E "GDRIVE|GOOGLE_CLIENT"
 **Manual Steps Required**:
 
 1. **Create NotebookLM Notebook**:
-   ```bash
-   # Navigate to: https://notebooklm.google.com/
-   # Sign in with Google account
-   # Click "New notebook"
-   # Name: "Codex Architecture Knowledge Base"
-   # Description: "Comprehensive architectural documentation for Aries-Serpent/_codex_ repository"
+ ```bash
+ # Navigate to: https://notebooklm.google.com/
+ # Sign in with Google account
+ # Click "New notebook"
+ # Name: "Codex Architecture Knowledge Base"
+ # Description: "Comprehensive architectural documentation for Aries-Serpent/_codex_ repository"
  ```
 
 2. **Add Google Drive Source**:
-   ```bash
-   # After first workflow run (manual trigger required - see HA-WF-001):
-   # In NotebookLM notebook:
-   # Click "Add source" → "Google Drive"
-   # Navigate to: Codex Repository Sync folder
-   # Select: codex-architecture-sync.xml
-   # Click "Add"
-   # Wait for indexing (~2-5 minutes)
+ ```bash
+ # After first workflow run (manual trigger required - see HA-WF-001):
+ # In NotebookLM notebook:
+ # Click "Add source" "Google Drive"
+ # Navigate to: Codex Repository Sync folder
+ # Select: codex-architecture-sync.xml
+ # Click "Add"
+ # Wait for indexing (~2-5 minutes)
  ```
 
 3. **Configure Notebook Instructions**:
-   ```bash
-   # In notebook settings:
-   # Click "Instructions" or "System prompt"
-   # Copy content from: docs/notebooklm-architect-prompt.md
-   # Paste into instructions field
-   # Save
+ ```bash
+ # In notebook settings:
+ # Click "Instructions" or "System prompt"
+ # Copy content from: docs/notebooklm-architect-prompt.md
+ # Paste into instructions field
+ # Save
  ```
 
 4. **Get Notebook URL** (for Claude Code integration):
-   ```bash
-   # Copy notebook URL from browser address bar
-   # Format: https://notebooklm.google.com/notebook/[NOTEBOOK_ID]
-   # Save for Task 3 (HA-CC-001)
+ ```bash
+ # Copy notebook URL from browser address bar
+ # Format: https://notebooklm.google.com/notebook/[NOTEBOOK_ID]
+ # Save for Task 3 (HA-CC-001)
  ```
 
 **Validation**:
@@ -399,31 +399,31 @@ gh secret list --repo Aries-Serpent/_codex_ | grep -E "GDRIVE|GOOGLE_CLIENT"
 **Manual Steps** (IF NOT ALREADY DONE):
 
 1. **Generate Key** (automated script available):
-   ```bash
-   # Run automated generation:
-   ./scripts/generate_codex_master_key.sh
+ ```bash
+ # Run automated generation:
+ ./scripts/generate_codex_master_key.sh
 
-   # OR manually:
-   openssl rand -base64 32
+ # OR manually:
+ openssl rand -base64 32
  ```
 
 2. **Inject Secret**:
-   ```bash
-   # Via GitHub UI:
-   # Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
-   # Click "New repository secret"
-   # Name: CODEX_MASTER_KEY
-   # Value: [paste generated key]
-   # Click "Add secret"
+ ```bash
+ # Via GitHub UI:
+ # Navigate to: https://github.com/Aries-Serpent/_codex_/settings/secrets/actions
+ # Click "New repository secret"
+ # Name: CODEX_MASTER_KEY
+ # Value: [paste generated key]
+ # Click "Add secret"
 
-   # OR via GitHub CLI (if authenticated):
-   echo "[generated-key]" | gh secret set CODEX_MASTER_KEY --repo Aries-Serpent/_codex_
+ # OR via GitHub CLI (if authenticated):
+ echo "[generated-key]" | gh secret set CODEX_MASTER_KEY --repo Aries-Serpent/_codex_
  ```
 
 **Validation**:
 ```bash
 gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
-# Expected: CODEX_MASTER_KEY    Updated YYYY-MM-DD
+# Expected: CODEX_MASTER_KEY Updated YYYY-MM-DD
 ```
 
 **Expected Outcome**: CODEX_MASTER_KEY configured and workflows can use encrypted operations
@@ -451,36 +451,36 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 **Manual Steps Required**:
 
 1. **Trigger Workflow via GitHub UI**:
-   ```bash
-   # Navigate to: https://github.com/Aries-Serpent/_codex_/actions/workflows/notebooklm-sync.yml
-   # Click "Run workflow" button
-   # Branch: main (or copilot/sub-pr-2836-again for testing)
-   # Leave inputs default
-   # Click "Run workflow"
+ ```bash
+ # Navigate to: https://github.com/Aries-Serpent/_codex_/actions/workflows/notebooklm-sync.yml
+ # Click "Run workflow" button
+ # Branch: main (or copilot/sub-pr-2836-again for testing)
+ # Leave inputs default
+ # Click "Run workflow"
  ```
 
 2. **Monitor Execution**:
-   ```bash
-   # Watch workflow progress in Actions tab
-   # Verify steps complete successfully:
-   #  Checkout repository
-   #  Setup Node.js and install repomix
-   #  Run repomix consolidation
-   #  Security scanning (Secretlint + detect-secrets)
-   #  Upload to Google Drive
-   #  Generate job summary
+ ```bash
+ # Watch workflow progress in Actions tab
+ # Verify steps complete successfully:
+ # Checkout repository
+ # Setup Node.js and install repomix
+ # Run repomix consolidation
+ # Security scanning (Secretlint + detect-secrets)
+ # Upload to Google Drive
+ # Generate job summary
  ```
 
 3. **Verify Artifacts**:
-   ```bash
-   # Check GitHub Actions artifacts:
-   # - codex-architecture-sync.xml (backup, 7-day retention)
+ ```bash
+ # Check GitHub Actions artifacts:
+ # - codex-architecture-sync.xml (backup, 7-day retention)
 
-   # Check Google Drive:
-   # - Folder: Codex Repository Sync
-   # - File: codex-architecture-sync.xml
-   # - File size: < 5MB (compression target)
-   # - Last modified: Today's date
+ # Check Google Drive:
+ # - Folder: Codex Repository Sync
+ # - File: codex-architecture-sync.xml
+ # - File size: < 5MB (compression target)
+ # - Last modified: Today's date
  ```
 
 **Validation**:
@@ -521,40 +521,40 @@ ls -lh codex-architecture-sync.xml
 **Manual Steps Required** (follow `docs/TASK_3_NOTEBOOKLM_SKILL_SETUP.md`):
 
 1. **Install notebooklm-skill**:
-   ```bash
-   git clone https://github.com/PleasePrompto/notebooklm-skill ~/.claude/skills/notebooklm
-   cd ~/.claude/skills/notebooklm
-   pip install -r requirements.txt
+ ```bash
+ git clone https://github.com/PleasePrompto/notebooklm-skill ~/.claude/skills/notebooklm
+ cd ~/.claude/skills/notebooklm
+ pip install -r requirements.txt
  ```
 
 2. **Complete Google OAuth**:
-   ```bash
-   python scripts/run.py auth_manager.py setup
-   # Follow interactive prompts
-   # Open browser URL
-   # Sign in with Google account
-   # Grant permissions
-   # Token saved to: ~/.claude/skills/notebooklm/credentials.json
+ ```bash
+ python scripts/run.py auth_manager.py setup
+ # Follow interactive prompts
+ # Open browser URL
+ # Sign in with Google account
+ # Grant permissions
+ # Token saved to: ~/.claude/skills/notebooklm/credentials.json
  ```
 
 3. **Register _codex_ Notebook**:
-   ```bash
-   python scripts/run.py notebook_manager.py add \
-     --url [NOTEBOOK_URL from HA-NB-001] \
-     --description "Codex Architecture Knowledge Base"
+ ```bash
+ python scripts/run.py notebook_manager.py add \
+ --url [NOTEBOOK_URL from HA-NB-001] \
+ --description "Codex Architecture Knowledge Base"
  ```
 
 4. **Test Integration**:
-   ```bash
-   # In Claude Code/Desktop:
-   @architect health check
+ ```bash
+ # In Claude Code/Desktop:
+ @architect health check
 
-   # Expected: Comprehensive health check report with:
-   # - Architectural consistency analysis
-   # - Security validation results
-   # - Performance analysis
-   # - Code quality metrics
-   # - Dependency health
+ # Expected: Comprehensive health check report with:
+ # - Architectural consistency analysis
+ # - Security validation results
+ # - Performance analysis
+ # - Code quality metrics
+ # - Dependency health
  ```
 
 **Validation**:

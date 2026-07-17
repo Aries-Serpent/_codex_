@@ -142,29 +142,29 @@
 
 graph TD
 
-  A[CB Objective: CI Reliability Uplift] --> A1[Current: Pattern 30 = 100/100]
+ A[CB Objective: CI Reliability Uplift] --> A1[Current: Pattern 30 = 100/100]
 
-  A --> A2[Current head: 8 success / 15 completed]
+ A --> A2[Current head: 8 success / 15 completed]
 
-  A --> A3[Next: reduce startup_failure recurrence]
+ A --> A3[Next: reduce startup_failure recurrence]
 
-  B[CB Objective: Session Continuity] --> B1[Living docs refreshed]
+ B[CB Objective: Session Continuity] --> B1[Living docs refreshed]
 
-  B --> B2[Accountability + changelog updated]
+ B --> B2[Accountability + changelog updated]
 
-  B --> B3[PDA/accountability chain preserved]
+ B --> B3[PDA/accountability chain preserved]
 
-  C[CB Objective: Security Posture] --> C1[Semgrep + security suite monitored]
+ C[CB Objective: Security Posture] --> C1[Semgrep + security suite monitored]
 
-  C --> C2[Dependency submission transient handling retained]
+ C --> C2[Dependency submission transient handling retained]
 
-  C --> C3[No new CodeQL alerts in this session]
+ C --> C3[No new CodeQL alerts in this session]
 
-  D[CB Objective: Workflow Governance] --> D1[WEC section restored in PR updates]
+ D[CB Objective: Workflow Governance] --> D1[WEC section restored in PR updates]
 
-  D --> D2[Workflow approval loop monitored]
+ D --> D2[Workflow approval loop monitored]
 
-  D --> D3[Action-required runs tracked for maintainer approval]
+ D --> D3[Action-required runs tracked for maintainer approval]
 ```
 
 ## Official Merge-Readiness + Tailored Post-Merge Prompt
@@ -221,53 +221,53 @@ and per-iteration accountability/living-doc updates.
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 
 pie title CI Workflow Status Distribution
-    " Completed Successfully" : 9
-    " In Progress" : 10
-    " Pending" : 30
-    "ℹ️ Startup Failures (Pre-existing)" : 3
-    "⏭️ Skipped" : 2
+ " Completed Successfully" : 9
+ " In Progress" : 10
+ " Pending" : 30
+ "ℹ Startup Failures (Pre-existing)" : 3
+ " Skipped" : 2
 ```
 
 ### Critical Gates Status Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing PR #4366,  Deferral Language'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing PR #4366, Deferral Language'}}%%
 
 graph LR
 
-    A[PR #4366] --> B{Critical<br/>Gates}
+ A[PR #4366] --> B{Critical<br/>Gates}
 
-    B --> C[ Deferral Language]
+ B --> C[ Deferral Language]
 
-    B --> D[ Reference Integrity]
+ B --> D[ Reference Integrity]
 
-    B --> E[ Branch Rebase]
+ B --> E[ Branch Rebase]
 
-    B --> F[ Comment Review]
+ B --> F[ Comment Review]
 
-    B --> G[ Workflow Execution]
+ B --> G[ Workflow Execution]
 
-    C --> H{All<br/>Pass?}
+ C --> H{All<br/>Pass?}
 
-    D --> H
+ D --> H
 
-    E --> H
+ E --> H
 
-    F --> H
+ F --> H
 
-    G --> H
+ G --> H
 
-    H -->|Yes| I[ Ready for Merge]
+ H -->|Yes| I[ Ready for Merge]
 
-    H -->|No| J[ Blocked]
+ H -->|No| J[ Blocked]
 
-    style C fill:#90EE90
-    style D fill:#90EE90
-    style E fill:#90EE90
-    style F fill:#90EE90
-    style G fill:#90EE90
-    style I fill:#FFD700
-    style J fill:#FF6B6B
+ style C fill:#90EE90
+ style D fill:#90EE90
+ style E fill:#90EE90
+ style F fill:#90EE90
+ style G fill:#90EE90
+ style I fill:#FFD700
+ style J fill:#FF6B6B
 ```
 
 ---
@@ -313,43 +313,43 @@ graph LR
 
 graph TD
 
-    A[PR Review Thread] --> B[test_data_registry fix]
+ A[PR Review Thread] --> B[test_data_registry fix]
 
-    A --> C[evaluate_dataloader fake_torch fix]
+ A --> C[evaluate_dataloader fake_torch fix]
 
-    A --> D[circuit breaker threshold derivation]
+ A --> D[circuit breaker threshold derivation]
 
-    A --> E[docs glyph fix]
+ A --> E[docs glyph fix]
 
-    A --> F[runner callable-path hardening]
+ A --> F[runner callable-path hardening]
 
-    G[CodeQL Artifact 6882773618] --> H[rag_api path-injection remediation]
+ G[CodeQL Artifact 6882773618] --> H[rag_api path-injection remediation]
 
-    G --> I[test wrong-named-arg remediation]
+ G --> I[test wrong-named-arg remediation]
 
-    G --> J[test uninitialized-local fixes]
+ G --> J[test uninitialized-local fixes]
 
-    G --> F
+ G --> F
 
-    B --> K[Targeted pytest]
+ B --> K[Targeted pytest]
 
-    C --> K
+ C --> K
 
-    D --> K
+ D --> K
 
-    H --> L[ruff + mypy baseline]
+ H --> L[ruff + mypy baseline]
 
-    I --> L
+ I --> L
 
-    J --> L
+ J --> L
 
-    F --> L
+ F --> L
 
-    K --> M[Readiness 100/100]
+ K --> M[Readiness 100/100]
 
-    L --> M
+ L --> M
 
-    M --> N[Final wrap-up]
+ M --> N[Final wrap-up]
 ```
 
 ---

@@ -61,16 +61,16 @@
 # Create: security-scanning-suite.yml
 
 on:
-  workflow_dispatch:
-    inputs:
-      scan-type: [codeql, secrets, dependencies, all]
+ workflow_dispatch:
+ inputs:
+ scan-type: [codeql, secrets, dependencies, all]
 
 jobs:
-  codeql:
-    if: github.event.inputs.scan-type == 'codeql' || == 'all'
-  secrets:
-    if: github.event.inputs.scan-type == 'secrets' || == 'all'
-  # ...
+ codeql:
+ if: github.event.inputs.scan-type == 'codeql' || == 'all'
+ secrets:
+ if: github.event.inputs.scan-type == 'secrets' || == 'all'
+ # ...
 ```
 
 **Confidence Level:** 95% (comprehensive analysis of all 235+ workflows)
@@ -213,17 +213,17 @@ jobs:
 
 ```
 .codex/
-├── PHASE_3_DEDUPLICATION_ANALYSIS.md        ✅ 18 KB
-├── PHASE_3_DISABLED_AUDIT.md                ✅ 16 KB
-├── ARCHIVED_WORKFLOWS_CATALOG.md            ✅ 18 KB
-└── restore_workflow.sh                      ✅ 11 KB (executable)
+ PHASE_3_DEDUPLICATION_ANALYSIS.md 18 KB
+ PHASE_3_DISABLED_AUDIT.md 16 KB
+ ARCHIVED_WORKFLOWS_CATALOG.md 18 KB
+ restore_workflow.sh 11 KB (executable)
 
 .github/
-├── WORKFLOW_GOVERNANCE.md                   ✅ 22 KB
-└── (existing structure unchanged)
+ WORKFLOW_GOVERNANCE.md 22 KB
+ (existing structure unchanged)
 
 docs/accountability/
-└── PHASE_3_WORKFLOW_CONSOLIDATION_SESSION_SUMMARY.md ✅ THIS FILE
+ PHASE_3_WORKFLOW_CONSOLIDATION_SESSION_SUMMARY.md THIS FILE
 ```
 
 **Total New Documentation:** ~85 KB
@@ -499,34 +499,34 @@ docs/accountability/
 ### For Team Members
 
 1. **Review Governance Standards**
-   ```
-   Read: .github/WORKFLOW_GOVERNANCE.md
-   Time: 15 minutes
+ ```
+ Read: .github/WORKFLOW_GOVERNANCE.md
+ Time: 15 minutes
  ```
 
 2. **Understand Current State**
-   ```
-   Read: .codex/PHASE_3_DEDUPLICATION_ANALYSIS.md
-   Time: 10 minutes
+ ```
+ Read: .codex/PHASE_3_DEDUPLICATION_ANALYSIS.md
+ Time: 10 minutes
  ```
 
 3. **Learn Restoration Tool**
-   ```bash
-   .codex/restore_workflow.sh --help
-   .codex/restore_workflow.sh --list
-   Time: 5 minutes
+ ```bash
+ .codex/restore_workflow.sh --help
+ .codex/restore_workflow.sh --list
+ Time: 5 minutes
  ```
 
 4. **Check Disabled Audit**
-   ```
-   Read: .codex/PHASE_3_DISABLED_AUDIT.md
-   Focus on: Critical Actions (ml-tests.yml verification)
+ ```
+ Read: .codex/PHASE_3_DISABLED_AUDIT.md
+ Focus on: Critical Actions (ml-tests.yml verification)
  ```
 
 5. **Archive Reference**
-   ```
-   Reference: .codex/ARCHIVED_WORKFLOWS_CATALOG.md
-   Use for: Understanding archived workflows
+ ```
+ Reference: .codex/ARCHIVED_WORKFLOWS_CATALOG.md
+ Use for: Understanding archived workflows
  ```
 
 ### For Phase 3 Implementation Team
