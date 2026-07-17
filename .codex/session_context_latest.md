@@ -1,32 +1,32 @@
-# Session Context — 2026-07-17T03:33:28Z
-**Branch:** `0D_base_`  **PR:** #5332  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-17T03:42:57Z
+**Branch:** `0D_base_`  **PR:** #5328  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4982` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4991` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5332 — fix(ci): 🔧 Critical — RAG Module Tests [8c1ab40]
-State: `open`  Draft: `False`  Branch: `fix/ci-rag-module-tests-20260717033301` → `main`
+## 📋 PR #5328 — 0 d base
+State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-07-17)
-- **Batch CI Failure Triage** — `failure` on `main` (2026-07-17)
-- **Validation Pipeline** — `failure` on `0D_base__` (2026-07-17)
-- **Pre-Merge Validation** — `failure` on `0D_base__` (2026-07-17)
-- **.github/workflows/build-agent-env-cache.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/trigger-on-approval.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/code-quality-coverage-suite.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/issue-resolution-gate.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `0D_base_` (2026-07-17)
+- **.github/workflows/agent-auth-delegation.yml** — `failure` on `0D_base_` (2026-07-17)
 
 ## 📝 Recent Commits
+- `d1d8876d` fix: Add missing configuration to workflow files — copilot-swe-agent[bot] (2026-07-17)
+- `03ddf2e0` Plan: Fix 2 workflow configuration failures (workflow-execution-gate.yml and val — copilot-swe-agent[bot] (2026-07-17)
 - `335d10fa` Merge branch 'main' into 0D_base_ — Statix (2026-07-17)
 - `8c1ab409` 0 d base   (#5330) — Statix (2026-07-17)
 - `7a9ec4bf` docs: Add workflow health monitoring report for PR #5328 post-merge (CRITICAL AL — copilot-swe-agent[bot] (2026-07-17)
 - `71297d63` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `b8cd6a61` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
 - `3f74404f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-17)
-- `83e6f898` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
-- `0d8fce6a` fix(ci): Update action versions to approved levels (cache@v5, github-script@v8) — copilot-swe-agent[bot] (2026-07-17)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
