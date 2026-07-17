@@ -195,10 +195,10 @@ class TestCryptographyEncryption:
         DEPRECATED: CBC without authentication is not recommended.
         This test is kept for backward compatibility only.
         Use test_aes_encryption_decryption_gcm instead for authenticated encryption.
-         
+          
         CWE-327: Use of Weak Cryptography - Remediation:
         GCM mode provides authenticated encryption preventing tampering.
-         
+          
         SECURITY NOTE: This is intentional test code for coverage of legacy encryption.
         The codebase should use GCM mode for all new code. This method deliberately uses
         weak CBC mode to test backward compatibility. Not used in production.
@@ -206,8 +206,8 @@ class TestCryptographyEncryption:
         pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
         iv = os.urandom(16)  # 128-bit IV
- 
-        # lgtm[py/mode-without-authentication] - Intentional: Test code for legacy crypto coverage
+  
+        # lgtm[py/mode-without-authentication] - Intentional: Legacy crypto coverage
         # nosemgrep: python.cryptography.security.mode-without-authentication
         cipher = Cipher(
             algorithms.AES(key),

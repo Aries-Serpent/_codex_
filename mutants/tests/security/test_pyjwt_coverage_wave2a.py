@@ -25,7 +25,7 @@ import time
 import pytest
 from codex.auth.token_manager import TokenManager
 
-# codeql[py/hardcoded-sql-string,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
+# codeql[py/hardcoded-credentials,py/clear-text-logging-sensitive-data] - False positive: These are test secrets
 # nosemgrep: python.jwt.security.jwt-hardcode - Intentional: Test-only hardcoded secrets
 
 
@@ -35,7 +35,7 @@ class TestPyJWTTokenValidation:
     @pytest.fixture
     def token_manager(self):
         """Create token manager with test secret."""
-        # lgtm[py/hardcoded-sql-string] - False positive: Test secret only
+        # lgtm[py/hardcoded-credentials] - False positive: Test secret only
         # nosemgrep: python.jwt.security.jwt-hardcode
         return TokenManager(secret_key=os.environ.get('TEST_JWT_SECRET', 'test-secret-key-for-testing-only'))
 
