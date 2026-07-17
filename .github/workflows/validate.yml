@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -94,7 +94,7 @@ jobs:
         shell: bash
         run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
       - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: failure()
         with:
           name: hook-failures-fast-${{ github.run_id }}
@@ -102,7 +102,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload validation log (fast)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-log-fast-${{ github.run_id }}
@@ -110,7 +110,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload JUnit XML
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-junit-fast-${{ github.run_id }}
@@ -118,7 +118,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload JSON summary
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-summary-fast-${{ github.run_id }}
@@ -145,7 +145,7 @@ jobs:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -164,7 +164,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -174,10 +174,12 @@ jobs:
           python-version: 3.12.13
           extras: dev
       - name: Run full validation
+        env:
+          PYTEST_OPTS: ${{ inputs.pytest_opts || '' }}
         run: |
           set -e
           chmod +x scripts/run_validation.sh
-          python tools/validate.py --mode full ${{ inputs.pytest_opts || '' }} || {
+          python tools/validate.py --mode full ${PYTEST_OPTS} || {
             echo "⚠️ Full validation script failed, but continuing to upload artifacts"
             exit 1
           }
@@ -186,7 +188,7 @@ jobs:
         shell: bash
         run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
       - name: Upload hook failures JSON (OBJ-001-F)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: failure()
         with:
           name: hook-failures-full-${{ github.run_id }}
@@ -194,7 +196,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload validation log (full)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-log-full-${{ github.run_id }}
@@ -202,7 +204,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload JUnit XML
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-junit-full-${{ github.run_id }}
@@ -210,7 +212,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Upload coverage report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-coverage-${{ github.run_id }}
@@ -225,7 +227,7 @@ jobs:
           # Generate head coverage report for delta tracking
           python -m coverage html --directory .codex/coverage/html || echo "Coverage HTML generation skipped"
       - name: Upload JSON summary
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
         if: always()
         with:
           name: validation-summary-full-${{ github.run_id }}

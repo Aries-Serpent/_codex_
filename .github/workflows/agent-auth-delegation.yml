@@ -892,7 +892,7 @@ jobs:
       - name: 'REQ-10: Branch rebase check (hard block if behind/diverged)'
         id: req10
         if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: "const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';\nconst RESOLVED_MARKER\

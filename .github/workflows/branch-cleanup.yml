@@ -63,7 +63,7 @@ jobs:
           '
         sparse-checkout-cone-mode: false
     - name: 🐍 Set up Python
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
       with:
         python-version: 3.12.13
         cache: 'pip'
@@ -74,6 +74,10 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         INPUT_PREFIXES: ${{ inputs.prefixes }}
         INPUT_STALE_DAYS: ${{ inputs.stale_days || 30 }}
+        INPUT_DELETE_MERGED: ${{ inputs.delete_merged }}
+        INPUT_DELETE_STALE: ${{ inputs.delete_stale }}
+        INPUT_DELETE_BY_PREFIX: ${{ inputs.delete_by_prefix }}
+        INPUT_DRY_RUN: ${{ inputs.dry_run }}
       run: |
         # Build argument list using an array to avoid SC2089/SC2090
         ARGS=()
@@ -86,10 +90,10 @@ jobs:
           ARGS+=(--execute)
         else
           # Manual dispatch — respect inputs
-          [ "${{ inputs.delete_merged }}" = "true" ]     && ARGS+=(--delete-merged)
-          [ "${{ inputs.delete_stale }}" = "true" ]     && ARGS+=(--delete-stale --stale-days "$INPUT_STALE_DAYS")
-          [ "${{ inputs.delete_by_prefix }}" = "true" ]  && ARGS+=(--delete-by-prefix --prefixes "$INPUT_PREFIXES")
-          [ "${{ inputs.dry_run }}" != "true" ]          && ARGS+=(--execute)
+          [ "${INPUT_DELETE_MERGED:-false}" = "true" ]     && ARGS+=(--delete-merged)
+          [ "${INPUT_DELETE_STALE:-false}" = "true" ]     && ARGS+=(--delete-stale --stale-days "$INPUT_STALE_DAYS")
+          [ "${INPUT_DELETE_BY_PREFIX:-false}" = "true" ]  && ARGS+=(--delete-by-prefix --prefixes "$INPUT_PREFIXES")
+          [ "${INPUT_DRY_RUN:-true}" != "true" ]          && ARGS+=(--execute)
         fi
 
         ARGS+=(--json-output /tmp/branch_cleanup_report.json --github-summary)
