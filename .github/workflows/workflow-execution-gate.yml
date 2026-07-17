@@ -52,14 +52,17 @@ jobs:
         run: |
           set -euo pipefail
           echo "✓ Gate check initialized successfully"
-          echo "PR_NUMBER: ${{ inputs.pr_number }}"
+          if [ -n "${{ inputs.pr_number }}" ]; then
+            echo "PR_NUMBER: ${{ inputs.pr_number }}"
+          fi
           exit 0
       - name: Trigger auto-approve workflows (optional)
         continue-on-error: true
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
         run: |
           set -e
-          PR_NUMBER="${{ inputs.pr_number }}"
-          if [ -z "$PR_NUMBER" ]; then
+          if [ -z "${PR_NUMBER:-}" ]; then
             echo "⚠️  No PR number provided, skipping auto-approve trigger"
             exit 0
           fi
