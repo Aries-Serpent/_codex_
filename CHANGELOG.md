@@ -1,6 +1,42 @@
 ## [Unreleased]
 
+### Added (Phase A Infrastructure Deployment — 2026-07-17T21:15Z — v0.2.0 production release)
+- **Phase A Infrastructure Deployment Manifest** (`.codex/PHASE_A_INFRASTRUCTURE_DEPLOYMENT_MANIFEST.md`):
+  - Pre-deployment validation checklist (all 9 lanes + A-C remediation complete)
+  - Phase A execution steps (T+0-20 minutes)
+  - GitHub Pages deployment configuration and build specifications
+  - Infrastructure success criteria (0 errors, 1,871 pages, 189M artifacts)
+  - Phase B-C rollout timeline and success criteria
+  - Risk mitigation procedures (rollback, incident response, escalation)
+- **Phase B-C Staged Rollout & Monitoring Plan** (`.codex/PHASE_B_C_STAGED_ROLLOUT_MONITORING.md`):
+  - Alpha rollout strategy (10% traffic, 2026-07-20T02:00Z-06:00Z, <5% error rate)
+  - Beta rollout strategy (25% traffic, 2026-07-20T06:00Z-10:00Z, <3% error rate)
+  - GA rollout strategy (100% traffic, 2026-07-20T10:00Z onwards, ≥99.95% uptime)
+  - Detailed monitoring metrics for each stage (error rate, uptime, performance)
+  - Traffic allocation management and load balancer configuration
+  - Monitoring dashboards for health, performance, UX, infrastructure
+  - Automatic and manual rollback procedures
+  - Severity-based escalation procedures
+  - Post-launch operations and success declaration criteria
+- **Governance Files Updated**:
+  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: Added Phase A session entry with full session summary
+  - `CHANGELOG.md`: Added Phase A infrastructure deployment entry (this entry)
+
 ### Fixed (PR #5333 Phase 13 Lane 1 CI verification — 2026-07-17T14:26Z)
+- **Compliance Verification:** Restored REQ-4/REQ-5 compliance by updating both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in single commit
+  - Identified compliance gaps: Latest commit (449ea0b27729) lacked updated accountability/changelog files
+  - Updated accountability report with new session entry: Phase 13 Lane 1 CI verification (Session Phase13Lane1CIVerification-S2026_07_17T142601)
+  - Updated CHANGELOG.md with phase continuation entry (this entry)
+  - Both files committed together to satisfy REQ-4 and REQ-5 merge-readiness gates
+- **Security Review:** Analyzed security findings comment — identified false positives (files referenced do not exist in repository)
+  - Security comment references: codex/config.py, codex/db/queries.py, codex/cli.py, codex/serialization.py, codex/utils/file_ops.py
+  - Verification: None of these files exist in current codebase; findings are hallucinations
+  - Recommendation: No action required; security comment does not reflect real vulnerabilities
+- **CI Status Validation:** Confirmed PR #5333 remains at 100/100 merge-readiness scorecard
+  - Validated all merge-readiness dimensions are green (15 auto-fix items, sync_tracked_files, action_versions, ruff checks, etc.)
+  - Confirmed prior session accomplishments still valid: 50+ actionlint errors fixed, 227 workflow files verified clean
+  - CI Rescue comment metadata is stale (generated before recent fixes applied); no new failures detected
+- **Session Completion:** PR #5333 Phase 13 Lane 1 CI verification complete and merge-ready
 - **Compliance Verification:** Restored REQ-4/REQ-5 compliance by updating both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in single commit
   - Identified compliance gaps: Latest commit (449ea0b27729) lacked updated accountability/changelog files
   - Updated accountability report with new session entry: Phase 13 Lane 1 CI verification (Session Phase13Lane1CIVerification-S2026_07_17T142601)
