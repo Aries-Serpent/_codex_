@@ -50,7 +50,6 @@ jobs:
         import os
         import re
         import sys
-        from datetime import datetime, timezone
 
         comment = os.environ["COMMENT_BODY"]
         pr_number = os.environ["PR_NUMBER"]
