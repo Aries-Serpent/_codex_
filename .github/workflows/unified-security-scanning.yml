@@ -1,80 +1,94 @@
 name: Security Scanning Suite
-
-on:
+true:
   schedule:
-    - cron: '0 3 * * *'  # Daily at 3 AM
-    - cron: '0 15 * * 0'  # Weekly on Sunday at 3 PM
+  - cron: 0 3 * * *
+  - cron: 0 15 * * 0
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Security scanning operation'
+        description: Security scanning operation
         required: false
         type: choice
         options:
-          - codeql-fetch
-          - codeql-triage
-          - codeql-analysis
-          - codeql-fix-verify
-          - all
-        default: 'all'
+        - codeql-fetch
+        - codeql-triage
+        - codeql-analysis
+        - codeql-fix-verify
+        - all
+        default: all
   push:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   pull_request:
-    types: [opened, synchronize, reopened]
-
+    types:
+    - opened
+    - synchronize
+    - reopened
 jobs:
-  # CodeQL Alert Fetcher (from codeql-alert-fetcher.yml)
   codeql-fetch:
-    if: github.event.inputs.operation == 'codeql-fetch' || github.event.inputs.operation == 'all' || !contains(github.event_name, 'workflow_dispatch')
+    if: github.event.inputs.operation == 'codeql-fetch' || github.event.inputs.operation
+      == 'all' || !contains(github.event_name, 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       security-events: read
     steps:
-      - uses: actions/checkout@v5
-      - name: Fetch CodeQL alerts
-        run: echo "Fetching CodeQL alerts from GitHub..."
-
-  # CodeQL Analysis (from codeql-analysis.yml)
+    - uses: actions/checkout@v5
+    - name: Fetch CodeQL alerts
+      run: echo "Fetching CodeQL alerts from GitHub..."
+    timeout-minutes: 30
   codeql-analysis:
-    if: github.event.inputs.operation == 'codeql-analysis' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'codeql-analysis' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v5
-      - name: Run CodeQL analysis
-        run: echo "Running CodeQL security analysis..."
-
-  # CodeQL Alert Triage (from codeql-alert-triage.yml)
+    - uses: actions/checkout@v5
+    - name: Run CodeQL analysis
+      run: echo "Running CodeQL security analysis..."
+    timeout-minutes: 30
   codeql-triage:
-    if: github.event.inputs.operation == 'codeql-triage' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'codeql-triage' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [codeql-fetch]
+    needs:
+    - codeql-fetch
     steps:
-      - uses: actions/checkout@v5
-      - name: Triage CodeQL alerts
-        run: echo "Triaging CodeQL security findings..."
-
-  # CodeQL Fix Verification (from codeql-fix-verification.yml)
+    - uses: actions/checkout@v5
+    - name: Triage CodeQL alerts
+      run: echo "Triaging CodeQL security findings..."
+    timeout-minutes: 30
   codeql-fix-verify:
-    if: github.event.inputs.operation == 'codeql-fix-verify' || github.event.inputs.operation == 'all'
+    if: github.event.inputs.operation == 'codeql-fix-verify' || github.event.inputs.operation
+      == 'all'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [codeql-analysis, codeql-triage]
+    needs:
+    - codeql-analysis
+    - codeql-triage
     steps:
-      - uses: actions/checkout@v5
-      - name: Verify CodeQL fixes
-        run: echo "Verifying CodeQL fix implementations..."
-
+    - uses: actions/checkout@v5
+    - name: Verify CodeQL fixes
+      run: echo "Verifying CodeQL fix implementations..."
+    timeout-minutes: 30
   summary:
     if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: [codeql-fetch, codeql-analysis, codeql-triage, codeql-fix-verify]
+    needs:
+    - codeql-fetch
+    - codeql-analysis
+    - codeql-triage
+    - codeql-fix-verify
     steps:
-      - name: Security scanning complete
-        run: echo "Security scanning suite completed"
+    - name: Security scanning complete
+      run: echo "Security scanning suite completed"
+    timeout-minutes: 30
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
