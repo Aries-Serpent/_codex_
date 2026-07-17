@@ -2,9 +2,9 @@
 
 import pytest
 
-from services.workflow.inventory import WorkflowInventory
-from services.workflow.parser import WorkflowParser
-from services.workflow.types import (
+from src.services.workflow.inventory import WorkflowInventory
+from src.services.workflow.parser import WorkflowParser
+from src.services.workflow.types import (
     TriggerType,
 )
 from tests.services.workflow._helpers import raise_exception
@@ -377,7 +377,7 @@ def test_real_workflow_integration():
 def test_workflow_inventory_import_from_services():
     """Test that WorkflowInventory can be imported from services module."""
     from services import WorkflowInventory as WI
-    from services.workflow import WorkflowInventory
+    from src.services.workflow import WorkflowInventory
 
     # Verify both import paths work
     assert WI is WorkflowInventory, "WI is not valid"
@@ -385,7 +385,7 @@ def test_workflow_inventory_import_from_services():
 
 def test_parser_handles_invalid_yaml(temp_workflows_dir):
     """Test that parser handles invalid YAML gracefully."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     # Create file with invalid YAML
     invalid_file = temp_workflows_dir / "invalid.yml"
@@ -400,7 +400,7 @@ def test_parser_handles_invalid_yaml(temp_workflows_dir):
 
 def test_parser_handles_invalid_utf8(temp_workflows_dir):
     """Test that parser handles invalid UTF-8 gracefully."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     # Create file with invalid UTF-8
     invalid_file = temp_workflows_dir / "invalid_utf8.yml"
@@ -435,7 +435,7 @@ def test_parser_handles_missing_required_fields():
     """Test parser handles workflows missing required fields."""
     from pathlib import Path
 
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     # Workflow with no jobs
     content = """
@@ -582,7 +582,7 @@ def test_refresh_workflow_handles_parser_exception(
 
 def test_parser_with_list_trigger_format(temp_workflows_dir):
     """Test parsing workflows with list format triggers."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Multi Trigger
@@ -603,7 +603,7 @@ jobs:
 
 def test_parser_with_string_trigger_format(temp_workflows_dir):
     """Test parsing workflows with string format triggers."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Simple
@@ -676,7 +676,7 @@ def test_clear_parser_cache():
     """Test clearing parser cache."""
     from pathlib import Path
 
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     parser = WorkflowParser()
 
@@ -819,7 +819,7 @@ jobs:
 
 def test_input_with_invalid_type(temp_workflows_dir):
     """Test input with invalid type falls back to string."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Invalid Input
@@ -842,7 +842,7 @@ jobs:
     assert wf is not None, "wf must be initialized"
     assert "test" in wf.inputs, "Condition must be true"
     # Should fall back to STRING for invalid type
-    from services.workflow.types import InputType
+    from src.services.workflow.types import InputType
 
     assert wf.inputs["test"].type == InputType.STRING, "type is not valid"
 
@@ -980,7 +980,7 @@ jobs:
 
 def test_trigger_with_string_branches(temp_workflows_dir):
     """Test trigger with branches as string (single branch)."""
-    from services.workflow.parser import WorkflowParser
+    from src.services.workflow.parser import WorkflowParser
 
     content = """
 name: Single Branch
