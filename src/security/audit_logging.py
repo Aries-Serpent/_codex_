@@ -295,6 +295,9 @@ class SecurityAuditLogger:
         event : SecurityEvent
             Event to write
         """
+        if not self.audit_log_path:
+            return
+        
         try:
             with open(self.audit_log_path, "a", encoding="utf-8") as f:
                 f.write(event.to_json() + "\n")
